@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rooster, Hen, Farmer and Wife</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light; }
+  body {
+    font-family: Georgia, "Times New Roman", serif;
+    background: #f4f1ea;
+    margin: 0;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 { font-size: 1.4rem; margin: 0 0 4px; }
+  p.byline { margin: 0 0 16px; color: #555; font-size: 0.9rem; }
+  p.byline a { color: #2a5db0; }
+  #board {
+    background: #c0dcc0;
+    border: 2px solid #333;
+    touch-action: none;
+    cursor: grab;
+  }
+  #board.dragging { cursor: grabbing; }
+  #board:focus { outline: 3px solid #2a5db0; outline-offset: 2px; }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    justify-content: center;
+    margin-top: 14px;
+    max-width: 560px;
+  }
+  fieldset {
+    border: 1px solid #999;
+    border-radius: 6px;
+    padding: 6px 10px;
+  }
+  legend { font-size: 0.8rem; color: #555; padding: 0 4px; }
+  label { font-size: 0.9rem; margin-right: 10px; white-space: nowrap; }
+  #status {
+    margin-top: 12px;
+    font-size: 1rem;
+    min-height: 1.4em;
+    text-align: center;
+  }
+  #status.win { color: #0a7a0a; font-weight: bold; }
+  #selected-info {
+    font-size: 0.85rem;
+    color: #444;
+    min-height: 1.2em;
+    margin-top: 4px;
+  }
+  #selected-info kbd {
+    font-family: inherit;
+    border: 1px solid #999;
+    border-radius: 4px;
+    padding: 0 5px;
+    background: #fff;
+  }
+  button#reset {
+    margin-top: 10px;
+    padding: 6px 16px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  #rules {
+    max-width: 560px;
+    margin-top: 18px;
+    font-size: 0.85rem;
+    color: #444;
+    line-height: 1.4;
+  }
+  details#math {
+    max-width: 560px;
+    margin-top: 22px;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+  }
+  details#math summary {
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #2a5db0;
+  }
+  details#math .math-body {
+    margin-top: 12px;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: #333;
+  }
+  details#math .math-body h3 {
+    font-size: 0.95rem;
+    margin: 18px 0 4px;
+  }
+  details#math .math-body blockquote {
+    margin: 8px 0;
+    padding: 4px 12px;
+    border-left: 3px solid #bbb;
+    color: #555;
+    font-style: italic;
+  }
+  details#math code {
+    background: #eee;
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+
+  /* Wikipedia-style hover cards */
+  .wiki-term {
+    text-decoration: underline dotted;
+    text-decoration-color: #888;
+    color: inherit;
+    cursor: help;
+  }
+  .wiki-card {
+    position: absolute;
+    z-index: 1000;
+    width: 280px;
+    background: #fff;
+    border: 1px solid #a2a9b1;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    padding: 10px;
+    font-family: sans-serif;
+    font-size: 0.8rem;
+    line-height: 1.35;
+    color: #222;
+    display: none;
+  }
+  .wiki-card.visible { display: block; }
+  .wiki-card img {
+    float: right;
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 3px;
+    margin-left: 8px;
+  }
+  .wiki-card h4 {
+    margin: 0 0 4px;
+    font-size: 0.9rem;
+  }
+  .wiki-card p { margin: 0; }
+  .wiki-card a.wiki-more { display: inline-block; margin-top: 6px; font-size: 0.75rem; }
+  .wiki-card .wiki-loading { color: #888; }
+</style>
+</head>
+<body>
+  <h1>Rooster, Hen, Farmer and Wife</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/RFWH.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <canvas id="board" width="480" height="540" tabindex="0"></canvas>
+  <div id="selected-info"></div>
+
+  <div class="controls">
+    <fieldset>
+      <legend>Who's playing</legend>
+      <label><input type="radio" name="mode" value="rf"> Farmer &amp; Rooster</label>
+      <label><input type="radio" name="mode" value="wh"> Wife &amp; Hen</label>
+      <label><input type="radio" name="mode" value="rw"> Rooster &amp; Wife</label>
+      <label><input type="radio" name="mode" value="fh"> Farmer &amp; Hen</label>
+      <label><input type="radio" name="mode" value="all" checked> All of them</label>
+    </fieldset>
+    <fieldset>
+      <legend>Board size</legend>
+      <label><input type="radio" name="size" value="6"> 6&times;6</label>
+      <label><input type="radio" name="size" value="7"> 7&times;7</label>
+      <label><input type="radio" name="size" value="8" checked> 8&times;8</label>
+    </fieldset>
+  </div>
+
+  <div id="status"></div>
+  <button id="reset">New Game</button>
+
+  <div id="rules">
+    <strong>How to play:</strong> click or drag the farmer and/or wife one square up, down,
+    left or right onto an empty square &mdash; or click a piece to select it, then use the
+    arrow keys. Once your side has moved, the rooster and/or hen each try to flee one square
+    away from danger &mdash; but if every escape square is covered, they're forced to move
+    into your grasp. Corner every animal in play to win. You can't move onto a square already
+    holding another human.
+  </div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        This is a browser version of one of
+        <a class="wiki-term" data-wiki="Sam_Loyd" href="https://en.wikipedia.org/wiki/Sam_Loyd" target="_blank" rel="noopener">Sam Loyd</a>'s
+        puzzles, as retold by Alexander Bogomolny on
+        <a href="https://www.cut-the-knot.org/SimpleGames/RFWH.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>.
+        The surprising part isn't the puzzle's rules &mdash; it's that on an 8&times;8 board,
+        no amount of skill lets the farmer catch the rooster, or the wife catch the hen. The
+        only winning pairings are the crossed ones: farmer&nbsp;vs.&nbsp;hen, and
+        wife&nbsp;vs.&nbsp;rooster. That's exactly why this page's "Farmer &amp; Rooster" and
+        "Wife &amp; Hen" modes are the two you can never finish, while "Rooster &amp; Wife" and
+        "Farmer &amp; Hen" always can.
+      </p>
+
+      <h3>Measuring distance on a grid</h3>
+      <p>
+        Everyone here moves one step at a time, orthogonally &mdash; never diagonally. The
+        natural way to measure "how far apart" two squares are under that rule is
+        <a class="wiki-term" data-wiki="Taxicab_geometry" href="https://en.wikipedia.org/wiki/Taxicab_geometry" target="_blank" rel="noopener">taxicab (city-block) distance</a>:
+        the number of grid steps between them, not a straight line through the middle.
+        For squares <code>(r1, c1)</code> and <code>(r2, c2)</code>:
+      </p>
+      <blockquote><code>dist(P, Q) = |r1 &minus; r2| + |c1 &minus; c2|</code></blockquote>
+      <p>
+        On the original 8&times;8 board, the farmer starts 2 steps from the rooster and 5 steps
+        from the hen (the wife's numbers mirror this the other way around):
+      </p>
+      <blockquote>"At the outset, dist(rooster, farmer) = 2, dist(farmer, hen) = 5."</blockquote>
+
+      <h3>The parity argument</h3>
+      <p>
+        A capture can only happen at the instant a human steps onto a bird's square &mdash;
+        which means the distance between them was exactly 1 right before that move. Every
+        single step, by anyone, changes the taxicab distance between two pieces by exactly 1
+        (never by 0 or 2), so it flips the
+        <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a>
+        of that distance &mdash; odd becomes even, even becomes odd. In one full round the
+        human moves once and, if it wasn't caught, the bird moves once too, so the distance
+        gets flipped twice and lands back on the parity it started with:
+      </p>
+      <blockquote>"Unless it's captured, a move by a chicken restores the parity of the distance between it and the pursuing human."</blockquote>
+      <p>
+        That makes the starting parity an
+        <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>
+        of the chase: it can never change, round after round. Since capture requires the
+        distance to be the odd number 1, a pairing that starts at an <em>even</em> distance
+        (farmer&ndash;rooster: 2, wife&ndash;hen: 2) can never be captured &mdash; the parity
+        simply won't allow it, no matter how many moves are played. A pairing that starts at
+        an <em>odd</em> distance (farmer&ndash;hen: 5, wife&ndash;rooster: 5) is exactly the
+        reverse: with the right play it's only a matter of time before the bird runs out of
+        safe squares and is forced onto the human's square. On the classic board, Loyd's
+        solution catches the first bird on move 8 and the second on move 9.
+      </p>
+      <p>
+        This whole setup &mdash; two sides taking turns, one chasing, one fleeing, on a
+        board &mdash; is a small, fully-solved example of a
+        <a class="wiki-term" data-wiki="Pursuit%E2%80%93evasion" href="https://en.wikipedia.org/wiki/Pursuit%E2%80%93evasion" target="_blank" rel="noopener">pursuit&ndash;evasion game</a>.
+        What makes this one worth remembering isn't a clever chase pattern; it's that the
+        outcome is decided before the first move is even made, purely by the parity of the
+        starting distance.
+      </p>
+      <p style="font-size:0.8rem;color:#777;margin-top:16px;">
+        Try it yourself: switch to "Farmer &amp; Rooster" or "Wife &amp; Hen" above and play
+        for a while &mdash; then switch to "Farmer &amp; Hen" or "Rooster &amp; Wife" and watch
+        how quickly it ends instead.
+      </p>
+    </div>
+  </details>
+
+<script src="wiki-hovercard.js"></script>
+<script src="rfwh.js"></script>
+</body>
+</html>
