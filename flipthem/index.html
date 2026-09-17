@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Flip Them</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light; }
+  body {
+    font-family: Georgia, "Times New Roman", serif;
+    background: #fff;
+    margin: 0;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 { font-size: 1.4rem; margin: 0 0 4px; }
+  p.byline { margin: 0 0 16px; color: #555; font-size: 0.9rem; }
+  p.byline a { color: #2a5db0; }
+
+  #board {
+    display: flex;
+    gap: 6px;
+    padding: 16px;
+    background: #c0dcc0;
+    border: 2px solid #333;
+    border-radius: 6px;
+  }
+  .tri {
+    width: 46px;
+    height: 70px;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .tri .shape {
+    width: 100%;
+    height: 56px;
+    background: #c0392b;
+    clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+    transition: clip-path 0.15s, background 0.15s, transform 0.2s;
+  }
+  .tri.down .shape {
+    clip-path: polygon(0% 0%, 50% 100%, 100% 0%);
+  }
+  .tri.selected .shape {
+    background: #2a5db0;
+    transform: scale(0.88);
+  }
+  .tri:focus-visible {
+    outline: 3px solid #2a5db0;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+  }
+  .controls label {
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .controls input[type="number"] {
+    width: 3.5em;
+    font-size: 0.95rem;
+    padding: 2px 4px;
+  }
+  button#reset {
+    padding: 6px 16px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+
+  #status {
+    margin-top: 14px;
+    font-size: 1rem;
+    min-height: 1.4em;
+    text-align: center;
+  }
+  #status.win { color: #0a7a0a; font-weight: bold; }
+
+  #rules {
+    max-width: 560px;
+    margin-top: 18px;
+    font-size: 0.85rem;
+    color: #444;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  details#math {
+    max-width: 560px;
+    margin-top: 22px;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+  }
+  details#math summary {
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #2a5db0;
+  }
+  details#math .math-body {
+    margin-top: 12px;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: #333;
+  }
+  details#math .math-body h3 {
+    font-size: 0.95rem;
+    margin: 18px 0 4px;
+  }
+  details#math .math-body blockquote {
+    margin: 8px 0;
+    padding: 4px 12px;
+    border-left: 3px solid #bbb;
+    color: #555;
+    font-style: italic;
+  }
+  details#math code {
+    background: #eee;
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+
+  /* Wikipedia-style hover cards (shared with the RFWH page) */
+  .wiki-term {
+    text-decoration: underline dotted;
+    text-decoration-color: #888;
+    color: inherit;
+    cursor: help;
+  }
+  .wiki-card {
+    position: absolute;
+    z-index: 1000;
+    width: 280px;
+    background: #fff;
+    border: 1px solid #a2a9b1;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    padding: 10px;
+    font-family: sans-serif;
+    font-size: 0.8rem;
+    line-height: 1.35;
+    color: #222;
+    display: none;
+  }
+  .wiki-card.visible { display: block; }
+  .wiki-card img {
+    float: right;
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 3px;
+    margin-left: 8px;
+  }
+  .wiki-card h4 { margin: 0 0 4px; font-size: 0.9rem; }
+  .wiki-card p { margin: 0; }
+  .wiki-card a.wiki-more { display: inline-block; margin-top: 6px; font-size: 0.75rem; }
+  .wiki-card .wiki-loading { color: #888; }
+</style>
+</head>
+<body>
+  <h1>Flip Them</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/FlipThem.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="board"></div>
+
+  <div class="controls">
+    <label>M <input type="number" id="mInput" min="2" max="19" value="4"></label>
+    <label>N <input type="number" id="nInput" min="4" max="20" value="7"></label>
+    <button id="reset">Reset</button>
+  </div>
+
+  <div id="status"></div>
+
+  <div id="rules">
+    <strong>Goal:</strong> flip every triangle so it points down.<br>
+    <strong>How to play:</strong> click any M triangles &mdash; they flip together.
+  </div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        This is a browser version of Alexander Bogomolny's
+        <a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/FlipThem.shtml" target="_blank" rel="noopener">"Flipping Items Simultaneously"</a>,
+        which starts from a specific case: 7 triangles, flipping 4 at a time. However you
+        choose your moves, you can never turn every triangle downward. Try it above with
+        M&nbsp;=&nbsp;4, N&nbsp;=&nbsp;7 &mdash; then read on for why it's hopeless.
+      </p>
+
+      <h3>An invariant: the sign of a product</h3>
+      <p>
+        Give every triangle the value +1 when it points up and &minus;1 when it points down,
+        and look at the product &Pi; of all N values. All-up starts at &Pi;&nbsp;=&nbsp;1; the
+        goal, all-down, is &Pi;&nbsp;=&nbsp;(&minus;1)<sup>N</sup>. Flipping a triangle just
+        multiplies &Pi; by &minus;1, so flipping M of them at once multiplies &Pi; by
+        (&minus;1)<sup>M</sup>:
+      </p>
+      <blockquote>"If M is even then flipping M triangles does not affect &Pi;."</blockquote>
+      <p>
+        &Pi; staying fixed forever is exactly the kind of
+        <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>
+        that decides a puzzle before you've made a single move: with N&nbsp;=&nbsp;7 (odd) the
+        target needs &Pi; to flip sign, but an even M can never change it. That's the whole
+        proof that M&nbsp;=&nbsp;4, N&nbsp;=&nbsp;7 is impossible &mdash; and more generally,
+        "when N is odd and M is even, the puzzle is unsolvable."
+      </p>
+
+      <h3>When M and N share no factors</h3>
+      <p>
+        Bogomolny credits the general result to a "well known" fact about combining moves of
+        size M until you effectively can flip any single triangle. When M and N are
+        <a class="wiki-term" data-wiki="Coprime_integers" href="https://en.wikipedia.org/wiki/Coprime_integers" target="_blank" rel="noopener">coprime</a>
+        (share no common factor), the picture is completely settled:
+      </p>
+      <blockquote>"When M and N are mutually prime, the puzzle is solvable wherever M is odd, and unsolvable otherwise."</blockquote>
+      <p>
+        Try M&nbsp;=&nbsp;3, N&nbsp;=&nbsp;7 (coprime, M odd) and it falls quickly; M&nbsp;=&nbsp;2,
+        N&nbsp;=&nbsp;7 (coprime, M even) never does, for the same parity reason as above.
+      </p>
+
+      <h3>The near-total flip: M = N &minus; 1</h3>
+      <p>
+        A cute special case uses
+        <a class="wiki-term" data-wiki="Binomial_coefficient" href="https://en.wikipedia.org/wiki/Binomial_coefficient" target="_blank" rel="noopener">counting combinations</a>
+        directly instead of the parity trick:
+      </p>
+      <blockquote>
+        "If M = N &minus; 1, there are C(N, N&minus;1) = N combinations of N&minus;1 elements
+        out of N. Each of N elements enters N&minus;1 of the combinations. Carrying out the
+        flips corresponding to all N combinations will turn each of the N triangles
+        N&minus;1 times, which is an odd number [when N is even]."
+      </blockquote>
+      <p>
+        So for M&nbsp;=&nbsp;N&minus;1, the puzzle is solvable when N is even and unsolvable
+        when N is odd &mdash; the mirror image of the mutual-primality case above, because now
+        gcd(M,&nbsp;N)&nbsp;=&nbsp;gcd(N&minus;1,&nbsp;N)&nbsp;=&nbsp;1 always, but M's parity
+        runs opposite to N's.
+      </p>
+
+      <h3>How many moves does it take?</h3>
+      <p>
+        When a configuration is solvable at all, Bogomolny notes it doesn't take long:
+      </p>
+      <blockquote>"For odd N, the problem can always be solved in 3 steps. When N is even, one needs at least 4 moves."</blockquote>
+      <p style="font-size:0.8rem;color:#777;margin-top:16px;">
+        Try it yourself: N&nbsp;=&nbsp;7, M&nbsp;=&nbsp;4 never finishes no matter how you play;
+        switch to N&nbsp;=&nbsp;7, M&nbsp;=&nbsp;3 and it's over in three clicks of three
+        triangles each.
+      </p>
+    </div>
+  </details>
+
+<script src="wiki-hovercard.js"></script>
+<script src="flipthem.js"></script>
+</body>
+</html>
