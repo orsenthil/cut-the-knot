@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Coins in a Row</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light; }
+  body {
+    font-family: Georgia, "Times New Roman", serif;
+    background: #fff;
+    margin: 0;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 { font-size: 1.4rem; margin: 0 0 4px; }
+  p.byline { margin: 0 0 16px; color: #555; font-size: 0.9rem; }
+  p.byline a { color: #2a5db0; }
+
+  #stage {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    aspect-ratio: 500 / 350;
+    container-type: inline-size;
+    box-sizing: border-box;
+    background: #c0dcc0;
+    border: 2px solid #333;
+    border-radius: 6px 6px 0 0;
+  }
+  .coin {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    aspect-ratio: 1 / 1;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    cursor: pointer;
+    transition: opacity 0.25s, transform 0.25s;
+  }
+  .coin img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .coin.number {
+    border: 1px solid #000;
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: bold;
+    font-size: 5cqw;
+    color: #000;
+  }
+  .coin.end { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9), 0 0 0 5px #2a5db0; }
+  .coin:hover:not(.gone) { filter: brightness(1.08); }
+  .coin:focus-visible { outline: 3px solid #2a5db0; outline-offset: 3px; }
+  .coin.gone { opacity: 0; transform: translate(-50%, -50%) scale(0.6); pointer-events: none; }
+  #stage.busy .coin { cursor: default; }
+
+  .score {
+    position: absolute;
+    top: 6px;
+    font-weight: bold;
+    font-size: 5cqw;
+    line-height: 1.1;
+    text-align: center;
+    z-index: 100;
+    pointer-events: none;
+  }
+  #scoreYou { left: 10px; }
+  #scoreMe { right: 10px; }
+
+  #ticker {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    height: 30px;
+    box-sizing: border-box;
+    background: #00b200;
+    border: 2px solid #333;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    overflow: hidden;
+  }
+  #tickerCells { position: absolute; inset: 3px 0; display: flex; }
+  #tickerCells .cell {
+    flex: 1;
+    margin: 0 0.3%;
+    border: 1px solid transparent;
+  }
+  #tickerCells .cell.on { background: #007c00; border-color: #000; }
+  #tickerCaption {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.15rem;
+    color: #ffef00;
+    text-shadow: -1px -1px 0 #000;
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    font-size: 0.9rem;
+  }
+  .controls .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    align-items: center;
+    justify-content: center;
+  }
+  .controls label { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+  .controls input[type="number"] { width: 3.5em; font-size: 0.95rem; padding: 2px 4px; }
+  .controls button { padding: 6px 14px; font-size: 0.9rem; cursor: pointer; }
+  .controls button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  #hint { margin-top: 10px; min-height: 1.3em; font-size: 0.95rem; text-align: center; }
+
+  #rules {
+    max-width: 560px;
+    margin-top: 14px;
+    font-size: 0.85rem;
+    color: #444;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  details#math {
+    max-width: 560px;
+    margin-top: 22px;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+  }
+  details#math summary {
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #2a5db0;
+  }
+  details#math .math-body {
+    margin-top: 12px;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: #333;
+  }
+  details#math .math-body h3 { font-size: 0.95rem; margin: 18px 0 4px; }
+  details#math .math-body blockquote {
+    margin: 8px 0;
+    padding: 4px 12px;
+    border-left: 3px solid #bbb;
+    color: #555;
+    font-style: italic;
+  }
+  details#math code {
+    background: #eee;
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+
+  /* Wikipedia-style hover cards (shared with the other pages) */
+  .wiki-term {
+    text-decoration: underline dotted;
+    text-decoration-color: #888;
+    color: inherit;
+    cursor: help;
+  }
+  .wiki-card {
+    position: absolute;
+    z-index: 1000;
+    width: 280px;
+    background: #fff;
+    border: 1px solid #a2a9b1;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    padding: 10px;
+    font-family: sans-serif;
+    font-size: 0.8rem;
+    line-height: 1.35;
+    color: #222;
+    display: none;
+  }
+  .wiki-card.visible { display: block; }
+  .wiki-card img {
+    float: right;
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 3px;
+    margin-left: 8px;
+  }
+  .wiki-card h4 { margin: 0 0 4px; font-size: 0.9rem; }
+  .wiki-card p { margin: 0; }
+  .wiki-card a.wiki-more { display: inline-block; margin-top: 6px; font-size: 0.75rem; }
+  .wiki-card .wiki-loading { color: #888; }
+</style>
+</head>
+<body>
+  <h1>Coins in a Row</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/Coins.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="stage">
+    <div class="score" id="scoreYou" hidden></div>
+    <div class="score" id="scoreMe" hidden></div>
+  </div>
+  <div id="ticker" role="status" aria-live="polite">
+    <div id="tickerCells"></div>
+    <span id="tickerCaption"></span>
+  </div>
+
+  <div class="controls">
+    <div class="row">
+      <span>Use</span>
+      <label><input type="radio" name="use" value="coins" checked> US coins</label>
+      <label><input type="radio" name="use" value="numbers"> random numbers</label>
+      <label><input type="checkbox" id="scoresBox"> Show scores</label>
+      <label><input type="checkbox" id="loopBox"> Arrange in a loop</label>
+    </div>
+    <div class="row">
+      <button id="moveBtn" type="button">Make Move</button>
+      <button id="resetBtn" type="button">Reset</button>
+      <button id="repeatBtn" type="button">Repeat</button>
+      <label>Coins <input type="number" id="nInput" min="2" max="20" value="6"></label>
+    </div>
+  </div>
+
+  <div id="hint"></div>
+
+  <div id="rules">
+    <strong>Goal:</strong> end up with more money than the computer.<br>
+    <strong>How to play:</strong> take turns picking a coin from one end of the row
+    (the glowing coins). Whoever collects more wins. Press "Make Move" if you want the
+    computer to go first.
+  </div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        This is a browser version of Alexander Bogomolny's applet
+        <a href="https://www.cut-the-knot.org/Curriculum/Games/Coins.shtml" target="_blank" rel="noopener">"A Game With Coins"</a>,
+        after a puzzle in
+        <a class="wiki-term" data-wiki="Peter_Winkler" href="https://en.wikipedia.org/wiki/Peter_Winkler" target="_blank" rel="noopener">Peter Winkler</a>'s
+        <em>Mathematical Puzzles: A Connoisseur's Collection</em> (A K Peters, 2004). The rules:
+      </p>
+      <blockquote>
+        "The coins of various denominations are arranged in a chain with two end points. A move
+        consists in removing an end coin, whereby the coin's immediate neighbor becomes an end
+        coin available for removal on successive moves. When all coins have been removed, the
+        player with the larger amount wins."
+      </blockquote>
+
+      <h3>An even number of coins: the first player can't lose</h3>
+      <blockquote>
+        "Number the coins 1, 2, ..., 2n. Sum the odd numbered denominations and separately the
+        even numbered ones. If one sum is greater, the first player wins by sticking with those
+        numbered coins. This is always possible."
+      </blockquote>
+      <p>
+        The trick is a matter of
+        <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a>.
+        In a row of 2n coins the two ends always have different numbers: one odd, one even.
+        Say the even-numbered coins are worth more, so you take coin 2n. Now both ends of the
+        remaining row (coins 1 and 2n&minus;1) are odd, so your opponent is forced to take an
+        odd coin. Whichever one he takes, an even coin is showing at one end again &mdash; take
+        it. This repeats all game long, so you collect <em>every</em> even coin and he collects
+        every odd one. Since the bigger of the two sums can always be chosen, you get at least
+        half the total. It's an
+        <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>:
+        each time it's your turn, one end has the parity you want.
+      </p>
+      <p>
+        That's exactly how the computer plays here. It adds up the two groups, picks the larger,
+        and keeps taking end coins of that parity. If the parity rule doesn't decide (both ends
+        or neither end fit), it just takes the bigger end coin, a
+        <a class="wiki-term" data-wiki="Greedy_algorithm" href="https://en.wikipedia.org/wiki/Greedy_algorithm" target="_blank" rel="noopener">greedy</a>
+        choice. Try it: with an even number of coins, press "Make Move" so the computer goes
+        first &mdash; you can't beat it. Now play first yourself and use the same trick, and it
+        can't beat you.
+      </p>
+
+      <h3>An odd number of coins: it depends</h3>
+      <blockquote>
+        With coins "1, 5, 1" the first player loses. With "5, 1, 5" the first player wins easily.
+      </blockquote>
+      <p>
+        With an odd row, the trick moves to the other side of the table. As soon as the first
+        player takes a coin, an even number is left &mdash; and now the <em>second</em> player
+        is the one who can claim the bigger parity group. The first player can only hope that
+        the coin he just took is worth more than the advantage he handed over. In 1&nbsp;&ndash;&nbsp;5&nbsp;&ndash;&nbsp;1
+        it isn't (he takes a 1 and the 5 is lost); in 5&nbsp;&ndash;&nbsp;1&nbsp;&ndash;&nbsp;5
+        it is. For odd rows the best play depends on the actual numbers, and can be worked out
+        by
+        <a class="wiki-term" data-wiki="Dynamic_programming" href="https://en.wikipedia.org/wiki/Dynamic_programming" target="_blank" rel="noopener">dynamic programming</a>.
+      </p>
+
+      <h3>Arranged in a loop</h3>
+      <blockquote>
+        "In a loop, the first player has more freedom to choose a coin: any coin will do whose
+        number is of required parity."
+      </blockquote>
+      <p>
+        Tick "Arrange in a loop" and there are no ends yet, so the first player may open the
+        loop anywhere. Choosing a coin from the better parity group puts him in the same
+        winning position as before. When the computer opens, it looks for a starting coin worth
+        more than the edge its opponent would then get, and falls back to the biggest coin if
+        none exists.
+      </p>
+    </div>
+  </details>
+
+<script src="wiki-hovercard.js"></script>
+<script src="coin-game.js"></script>
+<script src="coins.js"></script>
+</body>
+</html>
