@@ -20,6 +20,9 @@ window.COOLMATHS = {
     "induction": "Induction",
     "counting": "Counting",
     "algorithms": "Algorithms",
+    "algebra": "Algebra",
+    "area": "Area",
+    "paradoxes": "Paradoxes",
   },
 
   games: [
@@ -64,6 +67,12 @@ window.COOLMATHS = {
       title: "Cool Maths Quiz",
       blurb: "Quick-fire practice with adding, taking away, times tables and sharing. How long a streak can you build?",
       tags: ["arithmetic", "mental-math"],
+    },
+    {
+      slug: "eye-opener",
+      title: "The Eye Opener: 99 = 100",
+      blurb: "Slide one piece of a 9 by 11 rectangle and it fills a 10 by 10 square. Where did the extra square come from?",
+      tags: ["paradoxes", "area", "algebra"],
     },
   ],
 };

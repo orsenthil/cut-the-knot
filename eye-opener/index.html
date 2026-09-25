@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Eye Opener: 99 = 100 &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage {
+    width: 100%;
+    max-width: 520px;
+    padding: 14px 14px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #eyes {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0 6px;
+  }
+  #eyes .pair { display: flex; gap: 2px; }
+  #eyes .pair.small .eye { width: 26px; height: 26px; }
+  #eyes .pair.big .eye { width: 40px; height: 40px; }
+  #eyes .pair:last-child { margin-top: 18px; }
+  .eye .white { fill: #ffffff; }
+  .eye .iris { fill: #1c7ed6; }
+  .eye .pupil { fill: #111111; }
+  .eye .rim { fill: none; stroke: var(--ink); stroke-width: 1.2; }
+  .eye .lid { fill: #9aa1ad; transition: transform 0.25s ease; transform-origin: 0 -9px; }
+  #eyes.wide .eye .lid { transform: scaleY(0); }
+
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: 4px;
+    touch-action: none;
+    cursor: grab;
+  }
+  #board.dragging { cursor: grabbing; }
+  #board .piece { stroke: var(--ink); stroke-width: 1.5; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+  #board .lower { fill: var(--piece-lower); }
+  #board .upper { fill: var(--piece-upper); }
+  #board.fitted .upper { fill: var(--piece-fitted); }
+  #board .grid rect, #board .grid line {
+    fill: none;
+    stroke: var(--grid-line);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+  #board .strip { fill: var(--accent); stroke: var(--accent); stroke-width: 1; vector-effect: non-scaling-stroke; }
+
+  /* piece colours for this page, in both themes */
+  #board {
+    --piece-lower: #c3c9d3;
+    --piece-upper: #b3b8f5;
+    --piece-fitted: #a8e0b8;
+    --grid-line: rgba(226, 56, 56, 0.55);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) #board {
+      --piece-lower: #3b414d;
+      --piece-upper: #454a8a;
+      --piece-fitted: #2f6a47;
+      --grid-line: rgba(255, 120, 120, 0.45);
+    }
+  }
+  :root[data-theme="dark"] #board {
+    --piece-lower: #3b414d;
+    --piece-upper: #454a8a;
+    --piece-fitted: #2f6a47;
+    --grid-line: rgba(255, 120, 120, 0.45);
+  }
+
+  .size { display: inline-flex; align-items: center; gap: 8px; }
+  .size button { width: 38px; padding: 6px 0; font-size: 1.05rem; line-height: 1; }
+  #nValue { min-width: 2ch; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+  #revealBtn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+
+  #status { min-height: 3em; }
+  #status strong { color: var(--accent); }
+</style>
+</head>
+<body data-game="eye-opener">
+  <h1>The Eye Opener: 99 = 100</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/tricky.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="stage" class="stage">
+    <div id="eyes"></div>
+    <svg id="board" tabindex="0" role="img"
+         aria-label="A grey rectangle cut by a staircase into two pieces, with the outline of a square above and to the right. Drag the top piece, or use the arrow keys."></svg>
+  </div>
+
+  <div class="controls">
+    <span class="size">
+      Size
+      <button type="button" id="lessBtn" aria-label="Smaller">&minus;</button>
+      <span id="nValue" aria-live="polite">10</span>
+      <button type="button" id="moreBtn" aria-label="Bigger">+</button>
+    </span>
+    <button type="button" id="resetBtn">Start again</button>
+    <button type="button" id="revealBtn" aria-pressed="false">Reveal the trick</button>
+  </div>
+
+  <div id="status" aria-live="polite"></div>
+
+  <div id="rules">
+    <strong>Goal:</strong> fit the top piece into the square drawn above it.<br>
+    <strong>How to play:</strong> drag the top piece one square up and one square right
+    (or use the arrow keys). Then count the squares before and after.
+  </div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        You started with a rectangle 9 squares tall and 11 wide: 9&nbsp;&times;&nbsp;11&nbsp;=&nbsp;99 squares.
+        You slid one piece and got a square 10 by 10: 100 squares. Sliding a shape never changes its
+        <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a>,
+        so one square has to come from somewhere. This is a cousin of the famous
+        <a class="wiki-term" data-wiki="Missing_square_puzzle" href="https://en.wikipedia.org/wiki/Missing_square_puzzle" target="_blank" rel="noopener">missing square puzzle</a>.
+      </p>
+
+      <h3>The steps are not whole squares</h3>
+      <p>
+        Look closely at the staircase. The rectangle is 9 squares tall, but the staircase climbs it in
+        10 steps, so each step is only <code>9/10</code> of a square high. That's why the step lines sit
+        a little off the grid lines.
+      </p>
+      <p>
+        To make the stairs fit together, you move the top piece up by one step: <code>9/10</code> of a square.
+        But to reach the top of the 10&nbsp;&times;&nbsp;10 square, it has to go up a full square.
+        Honest pieces would leave a thin gap along the top, <code>1/10</code> of a square high.
+      </p>
+
+      <h3>Where the extra square comes from</h3>
+      <p>
+        The original applet quietly covers the gap. While you drag, it stretches the top of the piece by
+        <code>1/10</code> of a square. The piece is 10 squares wide, so the stretch adds
+      </p>
+      <blockquote><code>10 &times; 1/10 = 1</code> whole square.</blockquote>
+      <p>
+        That's the 100th square. The part of the program that does it is even called <code>CheatHere</code>.
+        Press <strong>Reveal the trick</strong> and lift the piece to see the sliver light up.
+        For any size <em>n</em>, the steps are <code>(n&minus;1)/n</code> high and the hidden strip is
+        <em>n</em> squares long and <code>1/n</code> tall: always exactly one square.
+      </p>
+
+      <h3>What the picture really proves</h3>
+      <p>
+        The picture still tells the truth about something. The rectangle has area <code>(n&minus;1)(n+1)</code>
+        and the square has area <code>n&sup2;</code>. Split the rectangle into its first column and the rest, and split
+        the square into its top row and the rest. Using the
+        <a class="wiki-term" data-wiki="Distributive_property" href="https://en.wikipedia.org/wiki/Distributive_property" target="_blank" rel="noopener">distributive law</a>:
+      </p>
+      <blockquote>
+        <code>(n&minus;1)(n+1) = (n&minus;1) + (n&minus;1)n</code><br>
+        <code>n &times; n = n + n(n&minus;1)</code>
+      </blockquote>
+      <p>
+        The pieces <code>(n&minus;1)n</code> and <code>n(n&minus;1)</code> are the same. What's left over is a column of
+        <code>n&minus;1</code> squares against a row of <code>n</code> squares, so the square is bigger by exactly one:
+      </p>
+      <blockquote><code>(n&minus;1)(n+1) = n&sup2; &minus; 1</code></blockquote>
+      <p>
+        That's the
+        <a class="wiki-term" data-wiki="Difference_of_two_squares" href="https://en.wikipedia.org/wiki/Difference_of_two_squares" target="_blank" rel="noopener">difference of two squares</a>.
+        It's why the sizes always come out as 24&nbsp;=&nbsp;25, 48&nbsp;=&nbsp;49, 99&nbsp;=&nbsp;100: one less than a perfect square
+        against the square itself.
+      </p>
+
+      <h3>Pictures help, proofs decide</h3>
+      <p>
+        Bogomolny's point is that a drawing can suggest an idea, but only a
+        <a class="wiki-term" data-wiki="Mathematical_proof" href="https://en.wikipedia.org/wiki/Mathematical_proof" target="_blank" rel="noopener">proof</a>
+        settles it. A picture is safe to use only when you know the lengths exactly instead of judging them by eye.
+        And once you accept 99&nbsp;=&nbsp;100, anything at all follows (logicians call this the
+        <a class="wiki-term" data-wiki="Principle_of_explosion" href="https://en.wikipedia.org/wiki/Principle_of_explosion" target="_blank" rel="noopener">principle of explosion</a>).
+        As a reader once joked, slide the piece down and left instead, and you get 98&nbsp;=&nbsp;99&nbsp;=&nbsp;100.
+      </p>
+      <p class="tip">
+        Try it: set the size to 5, so the claim is 4&nbsp;&times;&nbsp;6&nbsp;=&nbsp;5&nbsp;&times;&nbsp;5, that is 24&nbsp;=&nbsp;25.
+        With fewer, bigger steps the trick is much easier to spot. Can you see the gap before you press Reveal?
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="eye-opener-core.js"></script>
+<script src="eye-opener.js"></script>
+</body>
+</html>
