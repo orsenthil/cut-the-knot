@@ -59,5 +59,11 @@ window.COOLMATHS = {
       blurb: "Boil an egg for exactly 15 minutes with only a 7-minute and an 11-minute sand timer, in as few flips as you can.",
       tags: ["number-theory", "algorithms", "invariants"],
     },
+    {
+      slug: "maths-quiz",
+      title: "Cool Maths Quiz",
+      blurb: "Quick-fire practice with adding, taking away, times tables and sharing. How long a streak can you build?",
+      tags: ["arithmetic", "mental-math"],
+    },
   ],
 };

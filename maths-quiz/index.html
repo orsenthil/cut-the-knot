@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cool Maths Quiz &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage {
+    width: 100%;
+    max-width: 480px;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  #question {
+    width: 100%;
+    padding: 16px 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    text-align: center;
+    font-size: clamp(2rem, 9vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  #answer {
+    width: 160px;
+    padding: 8px;
+    font-size: 2rem;
+    font-weight: 750;
+    text-align: center;
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    color: var(--accent);
+  }
+  #answer:focus { outline: 3px solid var(--focus); }
+
+  #keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  #keypad button {
+    width: 68px;
+    height: 54px;
+    padding: 0;
+    font-size: 1.3rem;
+  }
+
+  #feedback {
+    min-height: 3em;
+    text-align: center;
+    font-size: 1.05rem;
+    max-width: 400px;
+  }
+  #feedback.right { color: var(--good); }
+  #feedback.wrong { color: var(--bad); }
+
+  #stats { margin-top: 14px; font-size: 0.9rem; color: var(--muted); white-space: pre; }
+</style>
+</head>
+<body data-game="maths-quiz">
+  <h1>Cool Maths Quiz</h1>
+  <p class="byline">
+    An elementary maths quiz inspired by
+    <a href="https://github.com/tux4kids/tuxmath" target="_blank" rel="noopener">TuxMath</a>
+  </p>
+
+  <div id="stage" class="stage">
+    <div id="question" aria-live="polite"></div>
+    <input id="answer" type="text" inputmode="numeric" autocomplete="off"
+           placeholder="?" aria-label="Your answer">
+    <div id="keypad"></div>
+    <div id="feedback" aria-live="polite"></div>
+  </div>
+
+  <div id="stats"></div>
+
+  <div id="rules">
+    <strong>Goal:</strong> answer as many problems in a row as you can.<br>
+    <strong>How to play:</strong> work out the answer, type it in, and press
+    <strong>OK</strong> (or Enter). There's a new problem every time.
+  </div>
+
+<script src="maths-quiz.js"></script>
+</body>
+</html>
