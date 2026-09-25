@@ -2,33 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Coins in a Row</title>
+<title>Coins in a Row &mdash; coolmaths</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
 <style>
-  :root { color-scheme: light; }
-  body {
-    font-family: Georgia, "Times New Roman", serif;
-    background: #fff;
-    margin: 0;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  h1 { font-size: 1.4rem; margin: 0 0 4px; }
-  p.byline { margin: 0 0 16px; color: #555; font-size: 0.9rem; }
-  p.byline a { color: #2a5db0; }
-
   #stage {
     position: relative;
     width: 100%;
     max-width: 500px;
     aspect-ratio: 500 / 350;
     container-type: inline-size;
-    box-sizing: border-box;
-    background: #c0dcc0;
-    border: 2px solid #333;
-    border-radius: 6px 6px 0 0;
+    border-bottom: none;
+    border-radius: var(--radius) var(--radius) 0 0;
+    box-shadow: none;
   }
   .coin {
     position: absolute;
@@ -41,6 +29,7 @@
     cursor: pointer;
     transition: opacity 0.25s, transform 0.25s;
   }
+  .coin:hover:not(:disabled) { background: none; }
   .coin img {
     position: absolute;
     left: 50%;
@@ -49,163 +38,70 @@
     pointer-events: none;
   }
   .coin.number {
-    border: 1px solid #000;
-    font-family: Georgia, "Times New Roman", serif;
-    font-weight: bold;
+    border: 1.5px solid var(--ink);
+    background: var(--card);
+    font-weight: 700;
     font-size: 5cqw;
-    color: #000;
+    color: var(--text);
   }
-  .coin.end { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9), 0 0 0 5px #2a5db0; }
+  .coin.number:hover:not(:disabled) { background: var(--card); }
+  .coin.end { box-shadow: 0 0 0 3px var(--stage), 0 0 0 6px var(--accent); }
   .coin:hover:not(.gone) { filter: brightness(1.08); }
-  .coin:focus-visible { outline: 3px solid #2a5db0; outline-offset: 3px; }
   .coin.gone { opacity: 0; transform: translate(-50%, -50%) scale(0.6); pointer-events: none; }
   #stage.busy .coin { cursor: default; }
 
   .score {
     position: absolute;
-    top: 6px;
-    font-weight: bold;
-    font-size: 5cqw;
-    line-height: 1.1;
+    top: 8px;
+    font-weight: 700;
+    font-size: 4.5cqw;
+    line-height: 1.15;
     text-align: center;
     z-index: 100;
     pointer-events: none;
   }
-  #scoreYou { left: 10px; }
-  #scoreMe { right: 10px; }
+  #scoreYou { left: 12px; }
+  #scoreMe { right: 12px; }
 
   #ticker {
     position: relative;
     width: 100%;
     max-width: 500px;
-    height: 30px;
-    box-sizing: border-box;
-    background: #00b200;
-    border: 2px solid #333;
+    height: 34px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
     border-top: none;
-    border-radius: 0 0 6px 6px;
+    border-radius: 0 0 var(--radius) var(--radius);
     overflow: hidden;
+    box-shadow: var(--shadow);
   }
-  #tickerCells { position: absolute; inset: 3px 0; display: flex; }
-  #tickerCells .cell {
-    flex: 1;
-    margin: 0 0.3%;
-    border: 1px solid transparent;
-  }
-  #tickerCells .cell.on { background: #007c00; border-color: #000; }
+  #tickerCells { position: absolute; inset: 0; display: flex; }
+  #tickerCells .cell { flex: 1; }
+  #tickerCells .cell.on { background: var(--accent-soft); }
   #tickerCaption {
     position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-    font-size: 1.15rem;
-    color: #ffef00;
-    text-shadow: -1px -1px 0 #000;
+    font-weight: 650;
+    font-size: 0.95rem;
+    color: var(--text);
   }
 
-  .controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    margin-top: 16px;
-    font-size: 0.9rem;
-  }
+  .controls { flex-direction: column; gap: 12px; }
   .controls .row {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px 18px;
+    gap: 8px 18px;
     align-items: center;
     justify-content: center;
   }
-  .controls label { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
-  .controls input[type="number"] { width: 3.5em; font-size: 0.95rem; padding: 2px 4px; }
-  .controls button { padding: 6px 14px; font-size: 0.9rem; cursor: pointer; }
-  .controls button:disabled { opacity: 0.45; cursor: not-allowed; }
 
-  #hint { margin-top: 10px; min-height: 1.3em; font-size: 0.95rem; text-align: center; }
-
-  #rules {
-    max-width: 560px;
-    margin-top: 14px;
-    font-size: 0.85rem;
-    color: #444;
-    line-height: 1.4;
-    text-align: center;
-  }
-
-  details#math {
-    max-width: 560px;
-    margin-top: 22px;
-    border-top: 1px solid #ccc;
-    padding-top: 10px;
-  }
-  details#math summary {
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 1rem;
-    color: #2a5db0;
-  }
-  details#math .math-body {
-    margin-top: 12px;
-    font-size: 0.9rem;
-    line-height: 1.55;
-    color: #333;
-  }
-  details#math .math-body h3 { font-size: 0.95rem; margin: 18px 0 4px; }
-  details#math .math-body blockquote {
-    margin: 8px 0;
-    padding: 4px 12px;
-    border-left: 3px solid #bbb;
-    color: #555;
-    font-style: italic;
-  }
-  details#math code {
-    background: #eee;
-    padding: 1px 4px;
-    border-radius: 3px;
-  }
-
-  /* Wikipedia-style hover cards (shared with the other pages) */
-  .wiki-term {
-    text-decoration: underline dotted;
-    text-decoration-color: #888;
-    color: inherit;
-    cursor: help;
-  }
-  .wiki-card {
-    position: absolute;
-    z-index: 1000;
-    width: 280px;
-    background: #fff;
-    border: 1px solid #a2a9b1;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-    padding: 10px;
-    font-family: sans-serif;
-    font-size: 0.8rem;
-    line-height: 1.35;
-    color: #222;
-    display: none;
-  }
-  .wiki-card.visible { display: block; }
-  .wiki-card img {
-    float: right;
-    width: 70px;
-    height: 70px;
-    object-fit: cover;
-    border-radius: 3px;
-    margin-left: 8px;
-  }
-  .wiki-card h4 { margin: 0 0 4px; font-size: 0.9rem; }
-  .wiki-card p { margin: 0; }
-  .wiki-card a.wiki-more { display: inline-block; margin-top: 6px; font-size: 0.75rem; }
-  .wiki-card .wiki-loading { color: #888; }
+  #hint { margin-top: 12px; min-height: 1.4em; font-size: 0.95rem; text-align: center; }
 </style>
 </head>
-<body>
+<body data-game="coins">
   <h1>Coins in a Row</h1>
   <p class="byline">
     Puzzle by
@@ -213,7 +109,7 @@
     (<a href="https://www.cut-the-knot.org/Curriculum/Games/Coins.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
   </p>
 
-  <div id="stage">
+  <div id="stage" class="stage">
     <div class="score" id="scoreYou" hidden></div>
     <div class="score" id="scoreMe" hidden></div>
   </div>
@@ -323,7 +219,7 @@
     </div>
   </details>
 
-<script src="wiki-hovercard.js"></script>
+<script src="../assets/wiki-hovercard.js"></script>
 <script src="coin-game.js"></script>
 <script src="coins.js"></script>
 </body>

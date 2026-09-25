@@ -68,13 +68,13 @@ function glassMarkup(cap) {
         <clipPath id="ct${id}"><path d="${topShape}"/></clipPath>
         <clipPath id="cb${id}"><path d="${botShape}"/></clipPath>
       </defs>
-      <rect x="0" y="-10" width="${W}" height="9" rx="3" fill="#7a5230" stroke="#333"/>
-      <rect x="0" y="${H + 1}" width="${W}" height="9" rx="3" fill="#7a5230" stroke="#333"/>
+      <rect x="0" y="-10" width="${W}" height="9" rx="3" class="hg-cap"/>
+      <rect x="0" y="${H + 1}" width="${W}" height="9" rx="3" class="hg-cap"/>
       <rect class="sandTop" x="0" width="${W}" fill="#d9a441" clip-path="url(#ct${id})"/>
       <rect class="sandBot" x="0" width="${W}" fill="#d9a441" clip-path="url(#cb${id})"/>
       <line class="stream" x1="50" x2="50" stroke="#b8862b" stroke-width="2.5" stroke-dasharray="3 3" visibility="hidden"/>
-      <path d="${topShape}" fill="rgba(255,255,255,0.25)" stroke="#333" stroke-width="2.5" stroke-linejoin="round"/>
-      <path d="${botShape}" fill="rgba(255,255,255,0.25)" stroke="#333" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="${topShape}" class="hg-glass" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="${botShape}" class="hg-glass" stroke-width="2.5" stroke-linejoin="round"/>
     </svg>`;
 }
 

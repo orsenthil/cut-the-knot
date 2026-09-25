@@ -2,107 +2,204 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Cut the Knot &mdash; Interactive Puzzles</title>
+<title>coolmaths &mdash; Math Puzzles and Games</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Math puzzles and games to play first and understand after. Classic cut-the-knot puzzles, rebuilt for the modern web.">
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/games.js"></script>
+<script src="assets/site.js"></script>
 <style>
-  :root { color-scheme: light; }
-  body {
-    font-family: Georgia, "Times New Roman", serif;
-    background: #ffffff;
-    margin: 0;
-    padding: 40px 24px;
+  .hero { text-align: center; max-width: 640px; margin: 8px 0 36px; }
+  .hero img { width: min(300px, 70vw); height: auto; }
+  .hero p { margin: 14px auto 0; color: var(--muted); font-size: 1.05rem; max-width: 520px; }
+
+  .filters {
+    width: 100%;
+    max-width: 1120px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 18px;
+  }
+  .filters a {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .filters a:hover { border-color: var(--border-strong); background: var(--surface-2); }
+  .filters a .count { color: var(--muted); font-weight: 500; margin-left: 4px; }
+  .filters a[aria-current="true"] { background: var(--text); border-color: var(--text); color: var(--bg); }
+  .filters a[aria-current="true"] .count { color: inherit; opacity: 0.7; }
+
+  #heading {
+    width: 100%;
+    max-width: 1120px;
+    min-height: 1.5em;
+    margin: 0 0 16px;
+    font-size: 0.95rem;
+    color: var(--muted);
+    text-align: center;
+  }
+  #heading strong { color: var(--text); }
+
+  .grid {
+    width: 100%;
+    max-width: 1120px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    position: relative;
     display: flex;
     flex-direction: column;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: var(--border-strong); }
+  .card:focus-within { border-color: var(--accent); }
+  .card .thumb {
+    aspect-ratio: 16 / 10;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
     align-items: center;
+    justify-content: center;
   }
-  h1 { font-size: 1.6rem; margin: 0 0 4px; }
-  p.byline { margin: 0 0 32px; color: #555; font-size: 0.9rem; }
-  p.byline a { color: #2a5db0; }
-  .games {
-    display: grid;
-    gap: 16px;
-    width: 100%;
-    max-width: 640px;
-  }
-  a.game-card {
-    display: block;
-    padding: 16px 20px;
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    text-decoration: none;
-    color: inherit;
-    transition: box-shadow 0.15s, border-color 0.15s;
-  }
-  a.game-card:hover {
-    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
-    border-color: #2a5db0;
-  }
-  a.game-card h2 {
-    margin: 0 0 4px;
-    font-size: 1.1rem;
-    color: #2a5db0;
-  }
-  a.game-card p {
-    margin: 0;
-    font-size: 0.88rem;
-    color: #444;
-    line-height: 1.4;
+  .card .thumb img { width: 100%; height: 100%; object-fit: contain; }
+  .card .body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .card h2 { margin: 0; font-size: 1.08rem; letter-spacing: -0.01em; line-height: 1.3; }
+  .card h2 a { color: var(--text); text-decoration: none; }
+  .card h2 a:focus-visible { outline: none; }
+  /* the title link covers the whole card; tags sit above it so they stay clickable */
+  .card h2 a::after { content: ""; position: absolute; inset: 0; }
+  .card p { margin: 0; font-size: 0.9rem; color: var(--muted); line-height: 1.5; flex: 1; }
+  .card .tags { justify-content: flex-start; position: relative; z-index: 1; margin-top: 4px; }
+
+  .empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 48px 16px;
+    color: var(--muted);
+    border: 1px dashed var(--border-strong);
+    border-radius: 18px;
   }
 </style>
 </head>
-<body>
-  <h1>Cut the Knot &mdash; Interactive Puzzles</h1>
-  <p class="byline">
-    Browser ports of puzzles originally published as Java applets on
-    <a href="https://www.cut-the-knot.org/" target="_blank" rel="noopener">cut-the-knot.org</a>
-    by Alexander Bogomolny.
-  </p>
+<body class="home">
+  <section class="hero">
+    <h1 class="sr-only">coolmaths</h1>
+    <img class="logo-light" src="assets/logo-light.webp" alt="coolmaths" width="607" height="437">
+    <img class="logo-dark" src="assets/logo-dark.webp" alt="coolmaths" width="607" height="437">
+    <p>
+      Math puzzles and games to play first and understand after.
+      Classic puzzles from Alexander Bogomolny's cut-the-knot, rebuilt for today.
+    </p>
+  </section>
 
-  <div class="games">
-    <a class="game-card" href="rfwh/index.html">
-      <h2>Rooster, Hen, Farmer and Wife</h2>
-      <p>
-        A Sam Loyd pursuit puzzle on a checkerboard, with a surprising parity
-        argument hiding behind it. Play it, then look for the math.
-      </p>
-    </a>
-    <a class="game-card" href="flipthem/index.html">
-      <h2>Flip Them</h2>
-      <p>
-        Flip any M of N triangles at a time and try to turn them all
-        downward &mdash; some combinations are impossible, and a simple
-        invariant proves it.
-      </p>
-    </a>
-    <a class="game-card" href="vanishing-digit/index.html">
-      <h2>The Vanishing Digit</h2>
-      <p>
-        Reverse a 3-digit number, subtract, and tell me two digits of the
-        answer &mdash; I'll name the third. Then find out why it always works.
-      </p>
-    </a>
-    <a class="game-card" href="coins/index.html">
-      <h2>Coins in a Row</h2>
-      <p>
-        Take turns grabbing a coin from either end of a row. Can you beat
-        the computer &mdash; and does going first help?
-      </p>
-    </a>
-    <a class="game-card" href="chocolate/index.html">
-      <h2>Breaking Chocolate Bars</h2>
-      <p>
-        Snap a chocolate bar into single squares however you like &mdash; the
-        number of snaps it takes is fixed before you start.
-      </p>
-    </a>
-    <a class="game-card" href="hourglass/index.html">
-      <h2>The Hourglass Puzzle</h2>
-      <p>
-        Boil an egg for exactly 15 minutes with only a 7-minute and an
-        11-minute sand timer &mdash; in as few flips as you can.
-      </p>
-    </a>
-  </div>
+  <nav class="filters" id="filters" aria-label="Filter games by concept"></nav>
+  <p id="heading" aria-live="polite"></p>
+  <main class="grid" id="grid"></main>
+
+<script>
+"use strict";
+
+(function () {
+  const { games, tags } = window.COOLMATHS;
+  const { tagLabel } = window.COOLMATHS_SITE;
+  const filtersEl = document.getElementById("filters");
+  const headingEl = document.getElementById("heading");
+  const gridEl = document.getElementById("grid");
+
+  function activeTag() {
+    return decodeURIComponent(location.hash.replace(/^#\/?/, "")).trim().toLowerCase();
+  }
+
+  function countFor(tag) {
+    return games.filter((g) => g.tags.includes(tag)).length;
+  }
+
+  function renderFilters(active) {
+    filtersEl.innerHTML = "";
+    const all = document.createElement("a");
+    all.href = "#";
+    all.textContent = "All games";
+    all.setAttribute("aria-current", String(!active));
+    filtersEl.appendChild(all);
+    Object.keys(tags)
+      .filter((t) => countFor(t) > 0)
+      .sort((a, b) => countFor(b) - countFor(a) || tagLabel(a).localeCompare(tagLabel(b)))
+      .forEach((t) => {
+        const a = document.createElement("a");
+        a.href = "#" + t;
+        a.innerHTML = `${tagLabel(t)}<span class="count">${countFor(t)}</span>`;
+        a.setAttribute("aria-current", String(active === t));
+        filtersEl.appendChild(a);
+      });
+  }
+
+  function card(game) {
+    const article = document.createElement("article");
+    article.className = "card";
+    article.innerHTML = `
+      <div class="thumb"><img src="${game.slug}/thumb.svg" alt="" loading="lazy"></div>
+      <div class="body">
+        <h2><a href="${game.slug}/index.html"></a></h2>
+        <p></p>
+        <div class="tags"></div>
+      </div>`;
+    article.querySelector("h2 a").textContent = game.title;
+    article.querySelector("p").textContent = game.blurb;
+    const tagRow = article.querySelector(".tags");
+    game.tags.forEach((t) => {
+      const a = document.createElement("a");
+      a.className = "tag";
+      a.href = "#" + t;
+      a.textContent = tagLabel(t);
+      tagRow.appendChild(a);
+    });
+    return article;
+  }
+
+  function render() {
+    const tag = activeTag();
+    const shown = tag ? games.filter((g) => g.tags.includes(tag)) : games;
+    renderFilters(tag);
+    gridEl.innerHTML = "";
+    if (!tag) {
+      headingEl.textContent = `${games.length} games`;
+    } else {
+      headingEl.innerHTML = `<strong></strong> &middot; ${shown.length} ${shown.length === 1 ? "game" : "games"}`;
+      headingEl.querySelector("strong").textContent = tagLabel(tag);
+    }
+    if (shown.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.innerHTML = `No games about <strong></strong> yet. <a href="#">See all games</a>`;
+      empty.querySelector("strong").textContent = tagLabel(tag);
+      gridEl.appendChild(empty);
+      return;
+    }
+    shown.forEach((g) => gridEl.appendChild(card(g)));
+  }
+
+  window.addEventListener("hashchange", () => {
+    render();
+    if (activeTag()) filtersEl.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  });
+  render();
+})();
+</script>
 </body>
 </html>

@@ -253,20 +253,27 @@ function cellFromPoint(px, py) {
   return { x: Math.floor(px / CELL), y: Math.floor(py / CELL) };
 }
 
+function themeColor(name) {
+  return getComputedStyle(canvas).getPropertyValue(name).trim();
+}
+
 function draw() {
   const n = state.n;
+  const squareA = themeColor("--board-a");
+  const squareB = themeColor("--board-b");
+  const grid = themeColor("--border-strong");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let y = 0; y < n; y++) {
     for (let x = 0; x < n; x++) {
-      ctx.fillStyle = (x + y) % 2 === 0 ? "#c0dcc0" : "#a9c7a9";
+      ctx.fillStyle = (x + y) % 2 === 0 ? squareA : squareB;
       ctx.fillRect(x * CELL, y * CELL, CELL, CELL);
-      ctx.strokeStyle = "#333";
-      ctx.strokeRect(x * CELL, y * CELL, CELL, CELL);
+      ctx.strokeStyle = grid;
+      ctx.strokeRect(x * CELL + 0.5, y * CELL + 0.5, CELL - 1, CELL - 1);
     }
   }
   if (state.selected && !state.drag) {
     const origin = cellOrigin(state.pieces[state.selected]);
-    ctx.strokeStyle = "#2a5db0";
+    ctx.strokeStyle = themeColor("--accent");
     ctx.lineWidth = 3;
     ctx.strokeRect(origin.x + 1.5, origin.y + 1.5, CELL - 3, CELL - 3);
     ctx.lineWidth = 1;
@@ -280,8 +287,8 @@ function draw() {
     const img = images[name];
     ctx.drawImage(img, px - img.width / 2, py - img.height / 2);
   }
-  ctx.fillStyle = "#222";
-  ctx.font = "bold 14px Georgia, serif";
+  ctx.fillStyle = themeColor("--text");
+  ctx.font = "600 14px " + themeColor("--font");
   ctx.fillText(`Moves: ${state.moves}`, 6, canvas.height - 8);
 }
 
@@ -299,8 +306,8 @@ function drawPiece(name, pos) {
 function pointerPos(evt) {
   const rect = canvas.getBoundingClientRect();
   return {
-    px: evt.clientX - rect.left,
-    py: evt.clientY - rect.top,
+    px: ((evt.clientX - rect.left) * canvas.width) / rect.width,
+    py: ((evt.clientY - rect.top) * canvas.height) / rect.height,
   };
 }
 
@@ -383,3 +390,5 @@ resetButton.addEventListener("click", () => {
 });
 
 newGame("all", 8);
+
+window.addEventListener("themechange", draw);

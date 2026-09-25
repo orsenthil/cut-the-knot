@@ -110,7 +110,7 @@ function render() {
     const pad = el("div", "keypad");
     for (let d = 0; d <= 9; d++) pad.appendChild(button(d, "", () => pressDigit(d)));
     stage.appendChild(pad);
-    const go = button("Guess my digit", "btn", reveal);
+    const go = button("Guess my digit", "primary", reveal);
     go.disabled = digits[0] === null || digits[1] === null;
     stage.appendChild(go);
   } else if (phase === "guessed") {
