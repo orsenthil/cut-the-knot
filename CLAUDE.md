@@ -8,6 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `classes/` (and `classes.zip`) holds the original applets as `.jar`/`.zip` files, with decompiled or extracted Java sources in some cases (`*_src/`, e.g. `classes/RFWH_src/`, `classes/FlipThem_src/`). It is reference material for porting and is not part of the site. Ports aim to reproduce the original behaviour exactly (e.g. `coins/coin-game.js` mirrors `CoinGame.java`'s strategy).
 
+`xscreensaver/` similarly holds reference sources for XScreenSaver hacks (e.g. `xscreensaver/hacks/euler2d.c`, ported to `euler2d/`) and is not part of the site either. XScreenSaver's own [screenshot gallery](https://www.jwz.org/xscreensaver/screenshots/) is a good place to find more of its math-flavored demos worth porting.
+
 ## Running and checking
 
 ```sh
