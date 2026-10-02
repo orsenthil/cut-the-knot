@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Euler 2D Fluid Flow &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stageWrap { width: 100%; max-width: 760px; }
+  #canvasBox {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 8 / 5;
+    overflow: hidden;
+  }
+  #flowCanvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .controls { max-width: 760px; }
+  .controls label { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.82rem; white-space: normal; }
+  .controls label .val { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .controls input[type="range"] { width: 130px; accent-color: var(--accent); }
+  .controls select { font-size: 0.85rem; }
+  .checkrow { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
+  #liveStatus { font-size: 0.85rem; color: var(--muted); text-align: center; margin-top: 10px; }
+</style>
+</head>
+<body data-game="euler2d">
+  <h1>Euler 2D Fluid Flow</h1>
+  <p class="byline">
+    Ported from
+    <a class="wiki-term" data-wiki="XScreenSaver" href="https://en.wikipedia.org/wiki/XScreenSaver" target="_blank" rel="noopener">XScreenSaver</a>'s
+    <code>euler2d</code> hack by Stephen Montgomery-Smith
+    (<a href="https://github.com/Zygo/xscreensaver/blob/master/hacks/euler2d.c" target="_blank" rel="noopener">source</a>,
+    <a href="https://github.com/Zygo/xscreensaver/blob/master/hacks/euler2d.man" target="_blank" rel="noopener">man page</a>,
+    <a href="https://github.com/Zygo/xscreensaver/blob/master/hacks/euler2d.tex" target="_blank" rel="noopener">math write-up</a>)
+  </p>
+
+  <div id="rules">
+    <strong>What it shows:</strong> a cloud of coloured points carried along by a swirling, perfectly
+    incompressible 2D fluid &mdash; a handful of hidden "vortex" points are doing all the stirring.<br>
+    <strong>How to play:</strong> there's nothing to win here &mdash; just tune the sliders below and watch
+    how the flow changes. Press "New flow" any time for a fresh random boundary and set of vortices.
+  </div>
+
+  <div id="stageWrap">
+    <div id="canvasBox" class="stage">
+      <canvas id="flowCanvas" aria-label="Animated simulation of a 2D incompressible fluid flow"></canvas>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label>Particles
+      <input type="range" id="particlesInput" min="50" max="800" step="25" value="300">
+      <span class="val" id="particlesVal">300</span>
+    </label>
+    <label>Trail length
+      <input type="range" id="trailInput" min="2" max="40" step="1" value="14">
+      <span class="val" id="trailVal">14</span>
+    </label>
+    <label>Flow duration
+      <input type="range" id="cyclesInput" min="200" max="3000" step="100" value="900">
+      <span class="val" id="cyclesVal">900 steps</span>
+    </label>
+    <label>Speed
+      <input type="range" id="speedInput" min="1" max="4" step="1" value="1">
+      <span class="val" id="speedVal">1&times;</span>
+    </label>
+    <label>Power law
+      <select id="powerInput">
+        <option value="1" selected>1 &mdash; standard Euler flow (curvy boundary)</option>
+        <option value="0.5">0.5 &mdash; slower decay (circle)</option>
+        <option value="1.5">1.5 (circle)</option>
+        <option value="2">2 &mdash; quasi-geostrophic (circle)</option>
+        <option value="2.5">2.5 (circle)</option>
+        <option value="3">3 &mdash; fast decay (circle)</option>
+      </select>
+    </label>
+    <label class="checkrow" style="flex-direction: row;">
+      <input type="checkbox" id="vortexInput">
+      Show vortex points
+    </label>
+  </div>
+
+  <div class="actions">
+    <button type="button" id="playPauseBtn" class="primary">Pause</button>
+    <button type="button" id="newFlowBtn">New flow</button>
+  </div>
+
+  <div id="liveStatus" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        This page isn't a puzzle &mdash; it's a running simulation of a two dimensional
+        <a class="wiki-term" data-wiki="Incompressible_flow" href="https://en.wikipedia.org/wiki/Incompressible_flow" target="_blank" rel="noopener">incompressible</a>,
+        inviscid fluid, following the
+        <a class="wiki-term" data-wiki="Euler_equations_%28fluid_dynamics%29" href="https://en.wikipedia.org/wiki/Euler_equations_(fluid_dynamics)" target="_blank" rel="noopener">Euler equations</a>.
+        Stephen Montgomery-Smith wrote the original as the <code>euler2d</code> mode for the
+        <code>xlock</code>/XScreenSaver screensaver collection; everything below follows the
+        method in his <code>euler2d.tex</code> write-up.
+      </p>
+
+      <h3>Vorticity: the fluid's hidden scalar</h3>
+      <p>
+        Tracking the velocity of every point in a fluid directly is hard, because pressure
+        couples every point to every other. It's easier to track the
+        <a class="wiki-term" data-wiki="Vorticity" href="https://en.wikipedia.org/wiki/Vorticity" target="_blank" rel="noopener">vorticity</a>
+        &mdash; a single number at each point measuring how much the fluid is locally spinning.
+        For an inviscid 2D flow, vorticity has a beautifully simple life: it is just carried along
+        by the flow, unchanged, forever. Once you know where the vorticity started and how the
+        fluid moves, you know where the vorticity is at any later time.
+      </p>
+
+      <h3>The Biot&ndash;Savart kernel: velocity from vortices</h3>
+      <p>
+        This simulation starts with vorticity concentrated at a handful of points &mdash; think of
+        them as the eyes of tiny hurricanes &mdash; each carrying a fixed strength <code>w<sub>k</sub></code>.
+        The
+        <a class="wiki-term" data-wiki="Biot%E2%80%93Savart_law" href="https://en.wikipedia.org/wiki/Biot%E2%80%93Savart_law" target="_blank" rel="noopener">Biot&ndash;Savart law</a>
+        turns that vorticity back into a velocity field that every point in the fluid &mdash; vortex
+        or plain tracer &mdash; obeys:
+      </p>
+      <blockquote><code>u(x) = &Sigma;<sub>k</sub> w<sub>k</sub> (x &minus; a<sub>k</sub>)<sup>&perp;</sup> / |x &minus; a<sub>k</sub>|<sup>2</sup></code></blockquote>
+      <p>
+        where <code>a<sub>k</sub></code> is a vortex's position and <code>v<sup>&perp;</sup></code> means
+        <code>v</code> rotated a quarter turn. The "Power law" slider changes the exponent on the
+        distance: the default, power 1, is the ordinary Biot&ndash;Savart law; power 2 gives the
+        <a class="wiki-term" data-wiki="Quasi-geostrophic_equations" href="https://en.wikipedia.org/wiki/Quasi-geostrophic_equations" target="_blank" rel="noopener">quasi-geostrophic equations</a>
+        used to model large-scale ocean and atmosphere currents, where the influence of a vortex
+        fades faster with distance.
+      </p>
+
+      <h3>Keeping the flow inside the wall</h3>
+      <p>
+        A real fluid can't flow through its container's wall. On the unit disk, that boundary
+        condition is enforced with a classic trick: for every vortex at <code>a</code>, add a
+        mirror-image anti-vortex at its reflection <code>a* = a / |a|<sup>2</sup></code> just
+        outside the disk. The two together cancel out exactly on the boundary circle, so the real
+        fluid inside never crosses it. Watch a point drift close to the edge: it visibly curves
+        away, repelled by its own mirror image.
+      </p>
+
+      <h3>A new boundary every run</h3>
+      <p>
+        A plain disk gets boring fast, so the "standard" power-law setting instead draws the
+        domain as the image of the unit disk under a random
+        <a class="wiki-term" data-wiki="Conformal_map" href="https://en.wikipedia.org/wiki/Conformal_map" target="_blank" rel="noopener">conformal map</a>
+        <code>p(z) = z + c<sub>2</sub>z<sup>2</sup> + &hellip; + c<sub>6</sub>z<sup>6</sup></code>.
+        Keeping <code>&Sigma; k|c<sub>k</sub>| = 1</code> guarantees <code>p</code> never folds the
+        disk over itself, so the result is always a single simple blob &mdash; a different one each
+        time you press "New flow". Points are scattered inside with density weighted by
+        <code>1/|p&prime;(z)|<sup>2</sup></code> so that, once mapped through <code>p</code>, they look
+        evenly spread over the oddly-shaped domain rather than bunched near its corners.
+      </p>
+
+      <h3>Marching forward in time</h3>
+      <p>
+        At every step the simulation adds up the pull of all the vortices on every point, then
+        nudges each point along by a tiny amount. The very first step uses the midpoint method;
+        every step after that switches to second-order
+        <a class="wiki-term" data-wiki="Linear_multistep_method" href="https://en.wikipedia.org/wiki/Linear_multistep_method" target="_blank" rel="noopener">Adams&ndash;Bashforth</a>,
+        which reuses the previous step's velocity to get a better estimate for less work &mdash; twice
+        the speed of the fourth-order method the original program used before 2000. A point that
+        gets flung too far in one step, or pushed outside the boundary by rounding error, is simply
+        retired rather than left to blow up the whole simulation; a flow "ages out" and a fresh one
+        begins once it has run for the chosen number of steps.
+      </p>
+      <p class="tip">
+        Try setting "Power law" to 2 and compare how tightly the vortices hold onto nearby points
+        versus the default &mdash; that's the same mathematics behind why ocean eddies can persist
+        for months.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="euler2d-core.js"></script>
+<script src="euler2d.js"></script>
+</body>
+</html>

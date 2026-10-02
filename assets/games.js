@@ -23,6 +23,9 @@ window.COOLMATHS = {
     "algebra": "Algebra",
     "area": "Area",
     "paradoxes": "Paradoxes",
+    "differential-equations": "Differential Equations",
+    "fluid-dynamics": "Fluid Dynamics",
+    "complex-analysis": "Complex Analysis",
   },
 
   games: [
@@ -79,6 +82,12 @@ window.COOLMATHS = {
       title: "The Mind Reader",
       blurb: "Pick a number, do a little subtraction, and think hard about a shape. How can the computer possibly know which one?",
       tags: ["place-value", "divisibility", "algebra"],
+    },
+    {
+      slug: "euler2d",
+      title: "Euler 2D Fluid Flow",
+      blurb: "Watch a cloud of points swirl through a perfectly incompressible fluid, stirred by a few hidden vortices. What happens if you change the power law?",
+      tags: ["fluid-dynamics", "differential-equations", "complex-analysis"],
     },
   ],
 };
