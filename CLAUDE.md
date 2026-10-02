@@ -59,9 +59,9 @@ Follow these rules when converting another applet. The existing games are the re
 1. `<title>Game Name &mdash; coolmaths</title>`, and in `<head>` the three `../assets/` includes (`site.css`, `games.js`, `site.js`).
 2. `<body data-game="<slug>">`, then `<h1>` with the game name. `site.js` inserts the tag chips below it automatically.
 3. Byline: `Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" …>Alexander Bogomolny</a> (<a href="…original cut-the-knot page…">cut-the-knot.org</a>)`.
-4. The play area, marked `class="stage"`.
-5. `.controls` for options (sizes, modes) and buttons: `Reset`/`New Game`, with `class="primary"` on at most one main action. Status line in `#status` (`.win` / `.lose`).
-6. `<div id="rules">` with exactly two lines: **Goal:** one sentence saying what winning means, and **How to play:** one or two short sentences. Write for a young player: plain words, no jargon, no maths.
+4. `<div id="rules">`, directly after the byline so players read it before the game: exactly two lines, **Game:** one sentence saying what the game is or what winning means, and **How to play:** one or two short sentences. Write for a young player: plain words, no jargon, no maths.
+5. The play area, marked `class="stage"` (controls that set up the puzzle, like the hourglass's puzzle picker, may sit just above it).
+6. `.controls` for options (sizes, modes) and buttons: `Reset`/`New Game`, with `class="primary"` on at most one main action. Status line in `#status` (`.win` / `.lose`).
 7. `<details id="math"><summary>Look for the math</summary><div class="math-body">…`, closed by default. Start with a short intro paragraph. Then use 2–5 `<h3>` sections that build the explanation (the invariant, parity, formula or strategy behind the puzzle), with formulas in `<code>` or a `<blockquote>`. Link each named concept once with a `wiki-term` Wikipedia link. End with an optional `<p class="tip">` suggesting something to try.
 8. Scripts at the end of `<body>`: `../assets/wiki-hovercard.js`, then the core script, then the UI script.
 
