@@ -28,6 +28,7 @@
   const playPauseBtn = document.getElementById("playPauseBtn");
   const newFlowBtn = document.getElementById("newFlowBtn");
   const liveStatus = document.getElementById("liveStatus");
+  const pausedNotice = document.getElementById("pausedNotice");
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -171,24 +172,29 @@
     if (running) return;
     running = true;
     playPauseBtn.textContent = "Pause";
+    pausedNotice.hidden = true;
     rafId = requestAnimationFrame(loop);
   }
   function pause() {
     running = false;
-    playPauseBtn.textContent = "Resume";
+    playPauseBtn.textContent = "Play";
+    pausedNotice.hidden = false;
     if (rafId) cancelAnimationFrame(rafId);
   }
 
   playPauseBtn.addEventListener("click", () => (running ? pause() : play()));
   newFlowBtn.addEventListener("click", () => {
     newFlow();
-    if (!running) draw(vortexInput.checked);
+    draw(vortexInput.checked);
   });
 
   particlesInput.addEventListener("input", () => {
     particlesVal.textContent = particlesInput.value;
   });
-  particlesInput.addEventListener("change", newFlow);
+  particlesInput.addEventListener("change", () => {
+    newFlow();
+    draw(vortexInput.checked);
+  });
 
   trailInput.addEventListener("input", () => {
     trailVal.textContent = trailInput.value;
@@ -205,7 +211,10 @@
     speedVal.textContent = `${speedInput.value}×`;
   });
 
-  powerInput.addEventListener("change", newFlow);
+  powerInput.addEventListener("change", () => {
+    newFlow();
+    draw(vortexInput.checked);
+  });
 
   vortexInput.addEventListener("change", () => {
     if (!running) draw(vortexInput.checked);
@@ -216,15 +225,15 @@
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       newFlow();
-      if (!running) draw(vortexInput.checked);
+      draw(vortexInput.checked);
     }, 200);
   });
 
   newFlow();
   draw(vortexInput.checked);
   if (reducedMotion) {
+    pausedNotice.hidden = false;
     playPauseBtn.textContent = "Play";
-    liveStatus.textContent += " — animation paused (reduced motion preferred). Press Play to run it.";
   } else {
     play();
   }
