@@ -74,5 +74,11 @@ window.COOLMATHS = {
       blurb: "Slide one piece of a 9 by 11 rectangle and it fills a 10 by 10 square. Where did the extra square come from?",
       tags: ["paradoxes", "area", "algebra"],
     },
+    {
+      slug: "mind-reader",
+      title: "The Mind Reader",
+      blurb: "Pick a number, do a little subtraction, and think hard about a shape. How can the computer possibly know which one?",
+      tags: ["place-value", "divisibility", "algebra"],
+    },
   ],
 };
