@@ -103,5 +103,11 @@ window.COOLMATHS = {
       blurb: "Swap two red and two blue knights on a cramped 3 by 3 board using only legal chess moves. A second view of the same board makes it much easier than it looks.",
       tags: ["graph-theory", "game-strategy", "algorithms"],
     },
+    {
+      slug: "four-by-four",
+      title: "Four By Four",
+      blurb: "3D tic-tac-toe on a 4 by 4 by 4 cube against a computer that never looks ahead, just recognizes patterns. There are faults in its logic — can you find one?",
+      tags: ["game-strategy", "algorithms", "counting"],
+    },
   ],
 };

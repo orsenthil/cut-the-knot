@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Four By Four &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #layers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 24px 14px;
+    width: 100%;
+  }
+  .layer { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .layer h2 { font-size: 0.78rem; font-weight: 650; color: var(--muted); margin: 0; text-transform: uppercase; letter-spacing: 0.04em; }
+  .layerGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3px;
+    background: var(--ink);
+    padding: 3px;
+    border-radius: 8px;
+  }
+  .cell {
+    width: 38px;
+    height: 38px;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    background: var(--board-a);
+    border-radius: 3px;
+    position: relative;
+  }
+  .cell:hover:not(:disabled) { background: var(--board-b); }
+  .cell:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; z-index: 1; }
+  .cell .mark {
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+  }
+  .cell .mark.human { background: #c0362c; }
+  .cell .mark.machine { background: #2c5fc0; }
+  .cell.winCell .mark { outline: 3px solid var(--highlight); outline-offset: 2px; }
+  .cell:disabled { cursor: default; }
+
+  .controls select { font-size: 0.85rem; }
+  #scoreLine { font-size: 0.9rem; color: var(--muted); text-align: center; margin-top: 6px; }
+  #bestScores { max-width: 420px; width: 100%; font-size: 0.85rem; color: var(--muted); text-align: center; margin-top: 4px; }
+  #bestScores[hidden] { display: none; }
+</style>
+</head>
+<body data-game="four-by-four">
+  <h1>Four By Four</h1>
+  <p class="byline">
+    A Java3D demo applet by Sun Microsystems, hosted (not authored) by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    at <a href="https://www.cut-the-knot.org/Curriculum/Games/FourByFour.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>.
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> three-dimensional tic-tac-toe on a 4&times;4&times;4 cube. Be first to get four
+    marks in a straight line &mdash; along any row, any column, any diagonal, through any layer.<br>
+    <strong>How to play:</strong> the cube is shown as its four horizontal layers, bottom to top. Tap any
+    empty circle to play there; the computer replies right away.
+  </div>
+
+  <div id="layers" class="stage"></div>
+
+  <div class="controls">
+    <label>Opponent
+      <select id="skillInput">
+        <option value="0">Babe in the Woods</option>
+        <option value="1">Walk and Chew Gum</option>
+        <option value="2">Jeopardy Contestant</option>
+        <option value="3">Rocket Scientist</option>
+        <option value="4" selected>Be afraid, be very afraid</option>
+      </select>
+    </label>
+    <button type="button" id="undoBtn">Undo move</button>
+    <button type="button" id="newGameBtn" class="primary">New game</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <div id="scoreLine"></div>
+  <div id="bestScores" hidden>
+    <strong>Your best games:</strong> <span id="bestScoresList"></span>
+  </div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        This one isn't a cut-the-knot original: it's a Java3D sample program Sun Microsystems shipped with
+        its own developer kit, which Bogomolny simply hosts. It's ordinary tic-tac-toe stretched into a third
+        dimension &mdash; a 4&times;4&times;4 cube instead of a 3&times;3 square &mdash; and that extra
+        dimension changes the counting in interesting ways.
+      </p>
+
+      <h3>76 ways to win</h3>
+      <p>
+        In flat 3&times;3 tic-tac-toe there are 8 winning lines. Stretch the board into a cube and let lines
+        run in any of the 13 directions a <a class="wiki-term" data-wiki="Line_(geometry)" href="https://en.wikipedia.org/wiki/Line_(geometry)" target="_blank" rel="noopener">straight line</a>
+        can take through a 3D grid (axis-aligned, face-diagonal, or the four long diagonals through the whole
+        cube) and the count jumps to 76: 48 straight rows (3 directions &times; 16 each), 24 face diagonals (3
+        axis-pairs &times; 4 layers &times; 2 diagonals), and 4 space diagonals corner-to-corner through the
+        middle. The game's own instructions point out that the 8 outer corners and the 8 cells of the very
+        centre each sit on exactly 7 of those 76 lines &mdash; more than anywhere else on the board &mdash;
+        which is why both are worth grabbing early.
+      </p>
+
+      <h3>An AI built from carpentry, not lookahead</h3>
+      <p>
+        This computer opponent never searches ahead the way a
+        <a class="wiki-term" data-wiki="Minimax" href="https://en.wikipedia.org/wiki/Minimax" target="_blank" rel="noopener">minimax</a>
+        chess engine does. It's a stack of named, hand-built pattern checks &mdash; "is there an open
+        three anywhere?", "do two of my opponent's pairs cross at an empty cell?", "do three corners of a
+        face plus one more piece make the exact shape I call a chair?" &mdash; tried in order, first match
+        wins. Each skill level simply uses a shorter or longer list of checks, from a handful at the easiest
+        setting up to the full stack at the hardest.
+      </p>
+      <p>
+        The game's own instructions are refreshingly honest about what that approach costs: "there are...
+        faults in its logic that can be exploited. Thus the human player can win even at the highest skill
+        level." A fixed list of patterns can only ever catch the shapes someone thought to name.
+      </p>
+
+      <h3>Scoring a win</h3>
+      <p>
+        Beating the computer scores <code>skill &times; 1311 + (66 &minus; moves) &times; 111 &minus;
+        min(seconds &times; 1000, 5000)</code> &mdash; the original's own formula. Harder opponents, fewer
+        total moves, and a faster finish are each worth more.
+      </p>
+      <p class="tip">
+        Try the hardest setting and aim for one of the 8 corner cells or the 8 centre cells on your first
+        move &mdash; the instructions call them "the most winning combinations" for a reason.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="fbf-core.js"></script>
+<script src="fbf.js"></script>
+</body>
+</html>
