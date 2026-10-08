@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Torque &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #beamStage { padding: 28px 10px 18px; display: flex; flex-direction: column; align-items: center; gap: 22px; width: 100%; max-width: 620px; }
+
+  .beamArea { position: relative; width: 100%; padding-top: 34px; padding-bottom: 14px; }
+  .pivot {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 16px solid transparent;
+    border-right: 16px solid transparent;
+    border-bottom: 26px solid var(--ink);
+    opacity: 0.85;
+  }
+  .beam {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2px;
+    transition: transform 0.35s cubic-bezier(.34,1.3,.64,1);
+    transform-origin: 50% 0;
+  }
+  .beam::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: 14px;
+    height: 6px;
+    background: var(--ink);
+    border-radius: 3px;
+    z-index: 0;
+  }
+  .peg {
+    position: relative;
+    z-index: 1;
+    width: 26px;
+    flex: 1 1 26px;
+    max-width: 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+  }
+  .peg .tick { width: 3px; height: 14px; background: var(--ink); border-radius: 2px; }
+  .peg .label { font-size: 0.62rem; color: var(--muted); margin-top: 2px; min-height: 1.1em; }
+  .peg .slot {
+    margin-top: 4px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 2px dashed var(--border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--muted);
+    background: var(--card);
+  }
+  .peg:hover .slot { border-color: var(--accent); }
+  .peg:focus-visible .slot { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .peg .slot.filled { border-style: solid; color: #fff; }
+  .peg .slot.weight { background: #8a8f99; border-color: #70747d; }
+  .peg .slot.balloon { background: #e2574c; border-color: #c0362c; }
+  .peg .slot.joker { background: var(--accent); border-color: var(--accent-hover); }
+  .peg .slot.dropReady { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  .tray {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    min-height: 54px;
+  }
+  .chip {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #fff;
+    border: 2px solid transparent;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+  }
+  .chip.weight { background: #8a8f99; border-color: #70747d; }
+  .chip.balloon { background: #e2574c; border-color: #c0362c; }
+  .chip.joker { background: var(--accent); border-color: var(--accent-hover); }
+  .chip.selected { outline: 3px solid var(--highlight); outline-offset: 2px; transform: translateY(-3px); }
+  .chip:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .trayEmpty { color: var(--muted); font-size: 0.85rem; padding: 14px 0; }
+
+  #solvedCount { font-size: 0.9rem; color: var(--muted); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .beam { transition: none; }
+  }
+</style>
+</head>
+<body data-game="torque">
+  <h1>Torque</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Games/Torque.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+    &mdash; the original "Achieve the Equilibrium" widget was Flash, courtesy Umapalata.com. Flash hasn't run in a
+    browser since 2021, and what's left of its code is deliberately obfuscated, so this is a fresh build on the
+    same balancing idea rather than a port of it.
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> hang every weight and balloon on the beam so it balances perfectly level.<br>
+    <strong>How to play:</strong> tap an item below, then tap an empty peg to hang it there (tap a hung item to take
+    it back). Once every item is hung, press "Verify".
+  </div>
+
+  <div id="beamStage" class="stage">
+    <div class="beamArea">
+      <div class="pivot" aria-hidden="true"></div>
+      <div class="beam" id="beam"></div>
+    </div>
+    <div class="tray" id="tray"></div>
+  </div>
+
+  <div class="controls">
+    <button type="button" id="verifyBtn" class="primary">Verify</button>
+    <button type="button" id="resetBtn">Reset placements</button>
+    <button type="button" id="newPuzzleBtn">New puzzle</button>
+    <span id="solvedCount">Solved: <strong id="solvedNum">0</strong></span>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        A balanced beam is one of the oldest ideas in physics and one of the cleanest ways to feel arithmetic with
+        signed numbers in your hands. Every item you hang on this beam contributes a
+        <a class="wiki-term" data-wiki="Torque" href="https://en.wikipedia.org/wiki/Torque" target="_blank" rel="noopener">torque</a>
+        (also called a moment) equal to its weight times its distance from the middle &mdash; and the beam is level
+        exactly when all those torques, added up with sign, cancel to zero.
+      </p>
+
+      <h3>The lever principle</h3>
+      <p>
+        <a class="wiki-term" data-wiki="Archimedes" href="https://en.wikipedia.org/wiki/Archimedes" target="_blank" rel="noopener">Archimedes</a>
+        is credited with the first clean statement of it: a weight <code>w</code> hung at distance <code>d</code>
+        from the pivot turns the beam with "force" <code>w &times; d</code>. Put two items on opposite sides and the
+        beam balances exactly when <code>w<sub>1</sub>d<sub>1</sub> = w<sub>2</sub>d<sub>2</sub></code> &mdash; the
+        classic <a class="wiki-term" data-wiki="Lever" href="https://en.wikipedia.org/wiki/Lever" target="_blank" rel="noopener">lever</a>
+        law, and the reason a small child can lift an adult on a see-saw by sitting further from the middle.
+      </p>
+
+      <h3>Signed distance does the bookkeeping</h3>
+      <p>
+        This puzzle has more than two items, so it's easier to let distance carry a sign: pegs left of the pivot are
+        negative, pegs right of it are positive, and a "balloon" is just a negative weight (it lifts instead of
+        pulling down). Add up every item's <code>value &times; position</code> and equilibrium is simply:
+      </p>
+      <blockquote><code>value<sub>1</sub>&middot;pos<sub>1</sub> + value<sub>2</sub>&middot;pos<sub>2</sub> + &hellip; = 0</code></blockquote>
+      <p>
+        That single equation is doing the same job as separately balancing "pull left" against "pull right" &mdash;
+        the signs sort it out automatically, the same trick that makes a
+        <a class="wiki-term" data-wiki="Number_line" href="https://en.wikipedia.org/wiki/Number_line" target="_blank" rel="noopener">number line</a>
+        useful in the first place.
+      </p>
+
+      <h3>Why the joker is always worth exactly 1</h3>
+      <p>
+        Every round includes one item worth exactly &plusmn;1 unit. With only big weights available, the sum of
+        torques you can reach jumps in big, uneven steps, and zero might not be one of the stops. A &plusmn;1 piece
+        is the finest adjustment there is: moved one peg over, it changes the total by exactly 1 &mdash; enough to
+        patch up whatever parity the bigger items left behind, however far off they happen to leave you. It's the
+        same role a 1-unit weight plays on a real balance scale, and the same idea behind why having a "1" lets a
+        counting system reach every whole number instead of skipping some.
+      </p>
+
+      <h3>Many right answers</h3>
+      <p>
+        A round is only guaranteed to have <em>a</em> solution; it doesn't promise just one. If you find an
+        arrangement that balances, it's correct even if it's not the one the generator originally had in mind &mdash;
+        there's usually more than one way to zero out the sum.
+      </p>
+      <p class="tip">
+        Watch the beam tilt as you place items, before you press "Verify" &mdash; it leans toward whichever side is
+        currently heavier, which is often enough to tell you where the next item should go.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="torque-core.js"></script>
+<script src="torque.js"></script>
+</body>
+</html>

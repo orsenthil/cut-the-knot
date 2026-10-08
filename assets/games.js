@@ -26,6 +26,7 @@ window.COOLMATHS = {
     "differential-equations": "Differential Equations",
     "fluid-dynamics": "Fluid Dynamics",
     "complex-analysis": "Complex Analysis",
+    "physics": "Physics",
   },
 
   games: [
@@ -88,6 +89,12 @@ window.COOLMATHS = {
       title: "Euler 2D Fluid Flow",
       blurb: "Watch a cloud of points swirl through a perfectly incompressible fluid, stirred by a few hidden vortices. What happens if you change the power law?",
       tags: ["fluid-dynamics", "differential-equations", "complex-analysis"],
+    },
+    {
+      slug: "torque",
+      title: "Torque",
+      blurb: "Hang weights and balloons on a beam so it balances perfectly level. Every round includes one item worth exactly 1 — can you see why that always helps?",
+      tags: ["arithmetic", "algebra", "physics"],
     },
   ],
 };
