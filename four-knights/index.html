@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Four Knights &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #boards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    justify-content: center;
+    align-items: center;
+    padding: 26px 16px;
+    width: 100%;
+  }
+  .boardWrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .boardWrap h2 { font-size: 0.82rem; font-weight: 650; color: var(--muted); margin: 0; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  #chessBoard {
+    display: grid;
+    grid-template-columns: repeat(3, 56px);
+    grid-template-rows: repeat(3, 56px);
+    gap: 2px;
+    background: var(--ink);
+    padding: 2px;
+    border-radius: 8px;
+  }
+  #ringBoard {
+    position: relative;
+    width: 220px;
+    height: 220px;
+  }
+
+  .cell {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    position: relative;
+  }
+  #chessBoard .cell.dark { background: var(--board-b); }
+  #chessBoard .cell.light { background: var(--board-a); }
+  #chessBoard .cell.center { cursor: default; background: var(--surface-2); }
+  #ringBoard .cell {
+    position: absolute;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--board-a);
+    transform: translate(-50%, -50%);
+  }
+
+  .cell .ringLabel {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 0.6rem;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .cell.selectable { outline: 3px solid var(--accent); outline-offset: -3px; }
+  .cell.selected { outline: 3px solid var(--highlight); outline-offset: -3px; }
+  .cell:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  .knight {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    box-shadow: var(--shadow);
+    pointer-events: none;
+  }
+  .knight.red { background: #c0362c; color: #fff; }
+  .knight.blue { background: #2c5fc0; color: #fff; }
+
+  .controls label { gap: 6px; }
+  #moveCount { font-size: 0.9rem; color: var(--muted); }
+</style>
+</head>
+<body data-game="four-knights">
+  <h1>Four Knights</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/FourKnights.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> two red and two blue knights sit on the corners of a 3&times;3 board. Swap the reds
+    and the blues using only real chess knight moves.<br>
+    <strong>How to play:</strong> tap a knight, then tap one of its glowing legal squares to move it there. The
+    ring on the right shows the exact same knights &mdash; just laid out in a line instead of a grid.
+  </div>
+
+  <div id="boards" class="stage">
+    <div class="boardWrap">
+      <h2>The board</h2>
+      <div id="chessBoard"></div>
+    </div>
+    <div class="boardWrap">
+      <h2>The same board, unfolded</h2>
+      <div id="ringBoard"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button type="button" id="resetBtn" class="primary">Reset</button>
+    <label><input type="checkbox" id="hintInput"> Hint (show square numbers)</label>
+    <span id="moveCount">Moves: <strong id="moveNum">0</strong></span>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        This is an old puzzle Bogomolny calls simply "an old puzzle": swap two pairs of knights using nothing but
+        legal chess moves, on a board too small for a knight to have many options.
+      </p>
+
+      <h3>Only two moves from anywhere</h3>
+      <p>
+        A <a class="wiki-term" data-wiki="Knight_(chess)" href="https://en.wikipedia.org/wiki/Knight_(chess)" target="_blank" rel="noopener">knight</a>
+        moves in an L-shape, and on this cramped 3&times;3 board that shape is very restrictive: the centre square
+        can't be reached by a knight at all, and every one of the other 8 squares has <em>exactly</em> two legal
+        knight moves, both landing on other outer squares.
+      </p>
+
+      <h3>Eight squares, one cycle</h3>
+      <p>
+        Draw those connections as a <a class="wiki-term" data-wiki="Graph_theory" href="https://en.wikipedia.org/wiki/Graph_theory" target="_blank" rel="noopener">graph</a>
+        &mdash; a dot for each square, a line for each legal move &mdash; and something nice happens: every square
+        has degree exactly 2, and following the lines visits all 8 squares and returns to where you started. That's
+        a <a class="wiki-term" data-wiki="Hamiltonian_path" href="https://en.wikipedia.org/wiki/Hamiltonian_path" target="_blank" rel="noopener">Hamiltonian cycle</a>
+        hiding inside the knight's tangled-looking moves. The ring on the right <em>is</em> that cycle, drawn out
+        straight. Once you see the board that way, "which squares can this knight reach?" stops being a chess
+        question and becomes "which two squares are next to it in the ring?"
+      </p>
+
+      <h3>A puzzle about a line, not a board</h3>
+      <p>
+        On a plain line of 8 slots with 4 tokens and 4 gaps, sliding tokens into adjacent empty slots is a much
+        more familiar kind of puzzle than knight moves on a chessboard &mdash; and now they're the same puzzle.
+        Every move you make on either board does exactly the same thing to the shared position underneath.
+      </p>
+      <p class="tip">
+        Two questions the original page leaves open, worth sitting with: what is the <em>fewest</em> moves this
+        can be solved in? And could you instead arrange the knights to match the ring's own natural order
+        (red, empty, red, empty all the way round) &mdash; starting from here?
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="knights-core.js"></script>
+<script src="knights.js"></script>
+</body>
+</html>

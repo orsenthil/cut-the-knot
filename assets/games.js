@@ -27,6 +27,7 @@ window.COOLMATHS = {
     "fluid-dynamics": "Fluid Dynamics",
     "complex-analysis": "Complex Analysis",
     "physics": "Physics",
+    "graph-theory": "Graph Theory",
   },
 
   games: [
@@ -95,6 +96,12 @@ window.COOLMATHS = {
       title: "Torque",
       blurb: "Hang weights and balloons on a beam so it balances perfectly level. Every round includes one item worth exactly 1 — can you see why that always helps?",
       tags: ["arithmetic", "algebra", "physics"],
+    },
+    {
+      slug: "four-knights",
+      title: "Four Knights",
+      blurb: "Swap two red and two blue knights on a cramped 3 by 3 board using only legal chess moves. A second view of the same board makes it much easier than it looks.",
+      tags: ["graph-theory", "game-strategy", "algorithms"],
     },
   ],
 };
