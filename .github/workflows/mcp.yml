@@ -1,0 +1,83 @@
+name: Deploy MCP tutor
+
+# Every merged port should update the tutor, so this runs on pushes to web that
+# touch the server, any game folder, or the manifest the server serves.
+# The content index is rebuilt from the repo on each run, which is what keeps
+# the tutor from drifting away from the site.
+on:
+  push:
+    branches: [web]
+    paths:
+      - "mcp/**"
+      - "assets/games.js"
+      - "porting/manifest.json"
+      - "*/index.html"
+      - "*/*.js"
+      - ".github/workflows/mcp.yml"
+  workflow_dispatch:
+
+concurrency:
+  # One deploy at a time; a newer push supersedes one still running.
+  group: mcp-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    # Job level, not step level: a step's `if` cannot read that step's own env,
+    # so the "are the secrets set?" check has to live here.
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: mcp/package-lock.json
+
+      - name: Install
+        working-directory: mcp
+        run: npm ci
+
+      - name: Build the content index
+        working-directory: mcp
+        run: npm run build-index
+
+      - name: Typecheck
+        working-directory: mcp
+        run: npm run typecheck
+
+      # Catch a bundle that will not deploy (size, a bad import) before the
+      # real deploy touches production.
+      - name: Check the bundle builds
+        working-directory: mcp
+        run: npx wrangler deploy --dry-run
+
+      - name: Deploy
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
+        working-directory: mcp
+        run: npx wrangler deploy
+
+      - name: Report the deployed endpoint
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
+        run: |
+          echo "Deployed. The MCP endpoint is the worker URL with /mcp on the end." >> "$GITHUB_STEP_SUMMARY"
+          echo '`claude mcp add --transport http coolmaths https://coolmaths-tutor.<account>.workers.dev/mcp`' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Say what to do when the secrets are missing
+        if: ${{ env.CLOUDFLARE_API_TOKEN == '' }}
+        run: |
+          echo "::warning title=MCP not deployed::CLOUDFLARE_API_TOKEN is not set, so the build was checked but not deployed."
+          echo "Add these under Settings -> Secrets and variables -> Actions:" >> "$GITHUB_STEP_SUMMARY"
+          echo "  * CLOUDFLARE_API_TOKEN  - an 'Edit Cloudflare Workers' API token" >> "$GITHUB_STEP_SUMMARY"
+          echo "  * CLOUDFLARE_ACCOUNT_ID - the account id from the Cloudflare dashboard" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "The bundle was built and typechecked, so re-running this workflow after adding them will deploy." >> "$GITHUB_STEP_SUMMARY"
