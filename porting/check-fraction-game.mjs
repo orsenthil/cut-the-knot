@@ -16,6 +16,8 @@
  *      applet's greedy opponent, which is a heuristic and does lose games it
  *      should win - the test records exactly how often, so a change in the
  *      opponent cannot slip through unnoticed.
+ *   4. parents() is checked against the original applet itself, rather than
+ *      against the mathematics a second time. See the section for how.
  */
 
 import { loadCore, check, equal, done } from "./lib/load-core.mjs";
@@ -259,6 +261,91 @@ function universe(max) {
       check(`count=${count} max=${max}: the loser really is stuck`, F.isStuck(b, who));
     }
   }
+}
+
+/* ------------------------- 4. parents() against the applet's own answers */
+
+/*
+ * Everything above checks the port against the mathematics. This checks it
+ * against the applet, which is a different question and the one CLAUDE.md
+ * actually asks: does it do what the original did?
+ *
+ * FractionGame.zip has no source, but its ContinuedFraction class is
+ * self-contained - only Vector and Point - so it still runs. Loading it under
+ * Java and calling GetFareyMin / GetFareyMax, the two methods
+ * FractionGameCanvas.SuggestMove builds every move out of, gives the applet's
+ * own answer for any p/q. That was done for every reduced p/q with p, q <= 60,
+ * 3600 of them, and parents() agreed on all 3600 - which is worth knowing,
+ * because parents() finds them by inverting p modulo q while the applet walks
+ * a continued fraction. Two unrelated methods, same answers, and one of them
+ * is the original.
+ *
+ * The rows below are a spread of that run kept as a regression: the integers,
+ * the unit fractions, the Fibonacci ratios and a scattering of the rest. They
+ * are the applet's output verbatim, not values worked out by hand.
+ *
+ * One difference in convention: where there is no parent - above an integer,
+ * or either side of 0 - the applet returns the number itself, and parents()
+ * returns null. The comparison below maps the one onto the other.
+ */
+{
+  const APPLET = [
+    ["1/1", "0/1", "1/1"], ["2/1", "1/1", "2/1"], ["3/1", "2/1", "3/1"],
+    ["4/1", "3/1", "4/1"], ["5/1", "4/1", "5/1"], ["6/1", "5/1", "6/1"],
+    ["7/1", "6/1", "7/1"], ["8/1", "7/1", "8/1"], ["9/1", "8/1", "9/1"],
+    ["1/2", "0/1", "1/1"], ["3/2", "1/1", "2/1"], ["5/2", "2/1", "3/1"],
+    ["7/2", "3/1", "4/1"], ["9/2", "4/1", "5/1"], ["1/3", "0/1", "1/2"],
+    ["2/3", "1/2", "1/1"], ["4/3", "1/1", "3/2"], ["5/3", "3/2", "2/1"],
+    ["7/3", "2/1", "5/2"], ["8/3", "5/2", "3/1"], ["1/4", "0/1", "1/3"],
+    ["3/4", "2/3", "1/1"], ["5/4", "1/1", "4/3"], ["7/4", "5/3", "2/1"],
+    ["9/4", "2/1", "7/3"], ["1/5", "0/1", "1/4"], ["2/5", "1/3", "1/2"],
+    ["3/5", "1/2", "2/3"], ["4/5", "3/4", "1/1"], ["6/5", "1/1", "5/4"],
+    ["7/5", "4/3", "3/2"], ["8/5", "3/2", "5/3"], ["9/5", "7/4", "2/1"],
+    ["51/5", "10/1", "41/4"], ["1/6", "0/1", "1/5"], ["19/6", "3/1", "16/5"],
+    ["1/7", "0/1", "1/6"], ["1/8", "0/1", "1/7"], ["13/8", "8/5", "5/3"],
+    ["1/9", "0/1", "1/8"], ["1/10", "0/1", "1/9"], ["1/11", "0/1", "1/10"],
+    ["1/12", "0/1", "1/11"], ["1/13", "0/1", "1/12"], ["6/13", "5/11", "1/2"],
+    ["21/13", "8/5", "13/8"], ["1/14", "0/1", "1/13"], ["1/15", "0/1", "1/14"],
+    ["1/16", "0/1", "1/15"], ["1/17", "0/1", "1/16"], ["1/18", "0/1", "1/17"],
+    ["1/19", "0/1", "1/18"], ["25/19", "21/16", "4/3"], ["1/20", "0/1", "1/19"],
+    ["1/21", "0/1", "1/20"], ["34/21", "21/13", "13/8"], ["1/22", "0/1", "1/21"],
+    ["1/23", "0/1", "1/22"], ["1/24", "0/1", "1/23"], ["1/25", "0/1", "1/24"],
+    ["44/25", "7/4", "37/21"], ["1/26", "0/1", "1/25"], ["1/27", "0/1", "1/26"],
+    ["1/28", "0/1", "1/27"], ["1/29", "0/1", "1/28"], ["1/30", "0/1", "1/29"],
+    ["1/31", "0/1", "1/30"], ["1/32", "0/1", "1/31"], ["31/32", "30/31", "1/1"],
+    ["1/33", "0/1", "1/32"], ["1/34", "0/1", "1/33"], ["55/34", "21/13", "34/21"],
+    ["1/35", "0/1", "1/34"], ["1/36", "0/1", "1/35"], ["1/37", "0/1", "1/36"],
+    ["1/38", "0/1", "1/37"], ["1/39", "0/1", "1/38"], ["1/40", "0/1", "1/39"],
+    ["1/41", "0/1", "1/40"], ["1/42", "0/1", "1/41"], ["1/43", "0/1", "1/42"],
+    ["1/44", "0/1", "1/43"], ["1/45", "0/1", "1/44"], ["37/45", "23/28", "14/17"],
+    ["1/46", "0/1", "1/45"], ["5/46", "4/37", "1/9"], ["1/47", "0/1", "1/46"],
+    ["1/48", "0/1", "1/47"], ["1/49", "0/1", "1/48"], ["1/50", "0/1", "1/49"],
+    ["1/51", "0/1", "1/50"], ["56/51", "45/41", "11/10"], ["1/52", "0/1", "1/51"],
+    ["1/53", "0/1", "1/52"], ["1/54", "0/1", "1/53"], ["1/55", "0/1", "1/54"],
+    ["1/56", "0/1", "1/55"], ["1/57", "0/1", "1/56"], ["1/58", "0/1", "1/57"],
+    ["43/58", "20/27", "23/31"], ["1/59", "0/1", "1/58"], ["11/59", "8/43", "3/16"],
+    ["1/60", "0/1", "1/59"],
+  ];
+
+  let integersSeen = 0;
+  for (const [pq, lo, hi] of APPLET) {
+    const [p, q] = pq.split("/").map(Number);
+    const x = frac(p, q);
+    const { lower, upper } = F.parents(x);
+    // The applet says "no parent" by handing the number straight back.
+    const gotLower = lower === null ? text(x) : text(lower);
+    const gotUpper = upper === null ? text(x) : text(upper);
+    const wantLower = lo === pq ? text(x) : text(frac(...lo.split("/").map(Number)));
+    const wantUpper = hi === pq ? text(x) : text(frac(...hi.split("/").map(Number)));
+    equal(`the applet's GetFareyMin for ${pq}`, gotLower, wantLower);
+    equal(`the applet's GetFareyMax for ${pq}`, gotUpper, wantUpper);
+    if (q === 1) {
+      integersSeen++;
+      check(`${pq} has no parent above it, as in the applet`, upper === null);
+    }
+  }
+  check(`the applet's own answers were reproduced on ${APPLET.length} fractions`, APPLET.length > 90);
+  check(`including ${integersSeen} integers, where the applet has no upper parent`, integersSeen > 5);
 }
 
 done("check-fraction-game");
