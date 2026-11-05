@@ -255,5 +255,11 @@ window.COOLMATHS = {
       blurb: "Three towers, three colours, and a disk may sit on one its own size. Can you move every tower to a different peg \u2014 and how few moves does it take?",
       tags: ["induction", "algorithms", "counting"],
     },
+    {
+      slug: "hex7",
+      title: "Hex 7",
+      blurb: "Join your two edges of the board before the computer joins its two. Hex can never end in a draw, and the first player can always win \u2014 so why can't anyone tell you how?",
+      tags: ["game-strategy", "graph-theory"],
+    },
   ],
 };

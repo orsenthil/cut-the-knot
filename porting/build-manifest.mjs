@@ -99,6 +99,7 @@ const SLUG_TO_APPLET = {
   "whats-next": "guess",
   hanoi: "hanoi",
   "hanoi-3c": "Hanoi3c",
+  hex7: "Hex7",
   "gergonne": "GergonneMagic",
   "vanishing-digit": null,
   hourglass: null,
