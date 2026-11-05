@@ -62,7 +62,11 @@ This is the whole routine for a scheduled or hand-run step. Do exactly one apple
 
 3. **Check it isn't done already.** `ls -d *<word>*` and grep `assets/games.js` and
    `overrides.json`: a sibling port may already cover it (FrogsAndToads2D's page also
-   described the 1-D puzzle; it still needed its own page).
+   described the 1-D puzzle; it still needed its own page). The hand-made ports that
+   predate the manifest are mapped to `null` in `SLUG_TO_APPLET`, and one of them was
+   this applet all along (`four-knights` is `Horse`): run `page.mjs` on such a port's
+   byline URL to see which applet it embeds, and if it is yours, map it instead of
+   porting again.
 
 4. **Read the original**, cheaply:
 

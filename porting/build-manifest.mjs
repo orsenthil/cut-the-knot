@@ -116,7 +116,7 @@ const SLUG_TO_APPLET = {
   "vanishing-digit": null,
   hourglass: null,
   torque: null,
-  "four-knights": null,
+  "four-knights": "Horse",
   "maths-quiz": null,
   euler2d: null,
   aliquot: "Aliquot",
