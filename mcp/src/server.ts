@@ -1,5 +1,5 @@
 /*
- * What the tutor exposes (porting/PLAN.md B2).
+ * What the tutor exposes (see mcp/README.md).
  *
  * The server does not teach. The client's model teaches, and this supplies
  * grounded material: the site's own rules text, its own "Look for the math"

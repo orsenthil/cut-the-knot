@@ -6,7 +6,7 @@
  * between requests, so there is no session id to track and no Durable Object
  * to pay for; see src/transport.ts for why that is the right trade here.
  *
- * The server is read-only and public, as PLAN.md B3 specifies. If that ever
+ * The server is read-only and public (see mcp/README.md). If that ever
  * needs to change, the place to check a bearer token is at the top of fetch().
  */
 

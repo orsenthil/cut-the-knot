@@ -24,7 +24,9 @@ node -e 'const src=require("fs").readFileSync("hourglass/hourglass-core.js","utf
 const H=new Function(src+"; return HourglassCore;")(); console.log(H.solve)'
 ```
 
-To check a page visually, use headless Chrome (`/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` on macOS, `chromium` or `google-chrome` on Linux, or in cloud sessions `/usr/bin/google-chrome` / Playwright's `/opt/pw-browsers/chromium`, which need `--no-sandbox`: `<chrome> --headless=new --screenshot=... --window-size=W,H URL`). In cloud sessions `curl` can't reach `localhost`, but Chrome and Python can; Playwright can set a true 375px viewport, which avoids the `<iframe>` workaround. Add `--force-dark-mode` for the dark theme. Headless windows are at least 500px wide, so load the page in a 375px `<iframe>` to test phone width. In dark mode Chrome can hang after writing the screenshot, so run it with a kill timeout. Pages with a `requestAnimationFrame` loop (hourglass) need `--timeout=` rather than `--virtual-time-budget=`.
+For porting there are tools in `porting/` (see `porting/README.md`): `disasm.mjs <Applet>` prints an applet's bytecode compactly, `page.mjs <Applet|url>` prints its cut-the-knot page as text, `verify.sh <slug>` is the gate every port must pass, and `play.mjs <slug>` plays a page from a short scenario and joins the light and dark screenshots into one image. Run the browser tools with `NODE_PATH=$(npm root -g)` (Playwright is installed globally).
+
+To check a page by hand without Playwright, use headless Chrome (`chromium`/`google-chrome` on Linux, `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` on macOS; `--no-sandbox` in containers): `<chrome> --headless=new --screenshot=... --window-size=W,H URL`, plus `--force-dark-mode` for dark. Its window is at least 500px wide, so phone width needs a 375px `<iframe>`; run it with a kill timeout, since dark mode can hang after the screenshot; pages with a `requestAnimationFrame` loop (hourglass) need `--timeout=` rather than `--virtual-time-budget=`. In cloud sessions `curl` can't reach `localhost`, but browsers and Python can.
 
 ## Architecture
 
@@ -44,15 +46,17 @@ Follow these rules when converting another applet. The existing games are the re
 
 ### 1. Understand the original first
 
-- Find the applet in `classes.zip` (`classes/<Name>.jar` / `.zip`, sometimes with a `*_src/` or `*_extracted/` folder next to it). Read the Java source when it exists. When there is only bytecode, extract it with `jar xf` and inspect it with `javap -c -p`; no decompiler is installed.
-- Read the original cut-the-knot.org page for the puzzle's rules and the intended mathematical point. The byline links to that page.
-- **Port behaviour faithfully.** Rules, win conditions, the computer opponent's strategy, board sizes and option ranges should match the applet. Modernize the presentation, not the game. If you change a behaviour on purpose (e.g. dropping a real-time rush), say so in the commit message.
+- Read the bytecode with `node porting/disasm.mjs <Name>` (no decompiler is installed) and the page with `node porting/page.mjs <Name>`. Check that the page really embeds the applet: the manifest's URL comes from a name match and can be wrong. The byline links to the applet's own page.
+- **Port behaviour faithfully.** Rules, win conditions, the computer opponent's strategy, board sizes, option ranges and messages should match the applet. Modernize the presentation, not the game. If you change a behaviour on purpose (e.g. dropping a real-time rush), say so in the commit message.
+- **When the applet and its page disagree.** Applets were often built by copying a sibling, and keep its leftovers: Hanoi3c's closing message compared the move count with 2^N from plain Hanoi, and its win test accepted mixed piles the page's goal does not. A leftover that contradicts the puzzle the page states follows the page. A harmless quirk stays as it is (What's Next?'s "shifted powers" that never shift). Either way, say which in the math section and the commit message.
+- **Check the page's claims, don't copy them.** Test formulas, minimum counts and "always/never" statements exhaustively where the sizes allow (see "The logic test" in `porting/README.md`). If a claim is wrong, the math section says so plainly and gives what is true.
+- **Rights.** Bogomolny's applets are what this site ports. If an applet or its page credits someone else with all rights reserved (Hex7 is Robert Kirkland's "Hex 2.0"), take only the rules and options from it and write the computer player yourself; say so on the page and in the commit.
 
 ### 2. Code structure
 
 - Folder `<slug>/`, where the slug is short, lowercase and hyphenated. It contains `index.html`, `<slug>.js`, `thumb.svg`, and `images/` only when you reuse the applet's own artwork.
 - When the game has non-trivial logic (an opponent strategy, a solver, state transitions), put it in a DOM-free `<slug>-core.js` or `<name>-game.js` that defines one global (see `hourglass-core.js`, `coin-game.js`). The UI script only renders and handles input.
-- **Verify the logic in Node before calling it done.** Where the state space is small, check it exhaustively (e.g. every possible human reply against the computer's strategy, every generated problem is correct, the solver finds the true minimum).
+- **Verify the logic in Node before calling it done**, in `porting/check-<slug>.mjs`. Where the state space is small, check it exhaustively (e.g. every possible human reply against the computer's strategy, every generated problem is correct, the solver finds the true minimum). Compare the core with a second transcription of the applet's own method over the whole parameter space.
 - Plain ES2017+ with `"use strict"`, no libraries, no build step. Start each script with a comment block explaining the puzzle and the key idea the code relies on.
 - Support mouse, touch and keyboard. Give interactive elements real `<button>`s or `tabindex` plus `aria-label`s, and use `aria-live` on status text. When drawing on a canvas, map pointer coordinates through `canvas.width / rect.width` so the board can shrink on phones.
 
@@ -82,9 +86,10 @@ Follow these rules when converting another applet. The existing games are the re
 1. Add an entry to `assets/games.js`: `slug`, `title`, a one- or two-sentence `blurb` that poses the challenge (often ending in a question), and **at most 3 `tags`** naming the mathematical concepts from the "Look for the math" section. Reuse existing tag slugs; add a new one to `tags` only when no existing tag fits.
 2. Add `<slug>/thumb.svg`: viewBox `0 0 320 200`, transparent background, a simple flat illustration of the game's key moment, using mid-tone colours that read on both white and near-black. It's loaded via `<img>`, so it can't use the page's CSS variables. Embed any raster art as a data URI.
 3. You don't need to edit `index.html`; the grid is built from `games.js`.
+4. Add the slug to `SLUG_TO_APPLET` in `porting/build-manifest.mjs`, give the applet a `"status": "ported"` entry with a one-line note in `porting/overrides.json`, and run `node porting/build-manifest.mjs`.
 
 ### 6. Before finishing
 
-- `node --check` every new script, and run the Node logic checks.
-- Screenshot the page and the home grid in light and dark mode and at phone width (see "Running and checking"). Play through to a win and to a loss or impossible state.
+- `porting/verify.sh <slug>` must pass: it runs `node --check`, the logic test, the page lint and a headless load at phone and desktop width in both themes.
+- Play through to a win and to a loss or impossible state with `porting/play/<slug>.mjs` and `node porting/play.mjs <slug>`, and look at the combined screenshot.
 - Commit one game per commit, titled `Add <Game Name> puzzle`. The body says what the applet was, how faithfully it was ported and how that was verified, and what the math section covers.

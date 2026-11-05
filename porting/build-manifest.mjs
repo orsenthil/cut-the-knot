@@ -3,7 +3,7 @@
 
 /*
  * Builds porting/manifest.json: the inventory that drives the porting campaign
- * (porting/PLAN.md track A) and that the MCP tutor serves as
+ * (porting/PLAN.md) and that the MCP tutor serves as
  * coolmaths://manifest.
  *
  *   node porting/build-manifest.mjs           # rewrite the manifest
@@ -15,7 +15,7 @@
  *
  * How kind is decided
  * -------------------
- * PLAN.md asked for a per-applet Claude pass. At ~1,280 applets that is neither
+ * The original plan asked for a per-applet Claude pass. At ~1,280 applets that is neither
  * affordable nor reproducible, and `--check` needs the build to be a pure
  * function of what is checked in. So classification is deterministic and
  * auditable instead, from three sources, strongest first:
@@ -51,6 +51,17 @@ const readJson = (p, fallback) => (existsSync(p) ? JSON.parse(readFileSync(p, "u
 
 const ctkUrls = readJson(join(HERE, "ctk-urls.json"), {});
 const overrides = readJson(join(HERE, "overrides.json"), {});
+
+// JSON.parse keeps the last of two equal keys without a word, which once hid a
+// stale "in-progress" claim behind a "ported" entry. Refuse duplicates outright.
+{
+  const keys = [...readFileSync(join(HERE, "overrides.json"), "utf8").matchAll(/^ {2}"([^"]+)"\s*:/gm)].map((m) => m[1]);
+  const dupes = [...new Set(keys.filter((k, i) => keys.indexOf(k) !== i))];
+  if (dupes.length) {
+    console.error(`porting/overrides.json has duplicate keys: ${dupes.join(", ")}. Merge them into one entry.`);
+    process.exit(1);
+  }
+}
 
 /* ---------------------------------------------------------------- games.js */
 
@@ -366,7 +377,7 @@ if (process.argv.includes("--check")) {
   console.log("  by status:", JSON.stringify(statuses));
 }
 
-// Every slug in the catalogue must be represented, per PLAN.md's verification.
+// Every slug in the catalogue must be represented in the manifest.
 const covered = new Set(entries.filter((e) => e.slug).map((e) => e.slug));
 const missing = [...portedSlugs].filter((s) => !covered.has(s));
 if (missing.length) {
