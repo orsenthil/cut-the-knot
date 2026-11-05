@@ -89,6 +89,7 @@ const SLUG_TO_APPLET = {
   "eight-digits": "EightDigitPuzzle",
   "domino-faults": "DominoCovering",
   "full-house": "FullHouse",
+  "pennies-in-boxes": "IntIter2",
   diagonals: "Diagonals",
   "flipping-pancakes": "Flipper",
   "frogs-toads-2d": "FrogsAndToads2D",

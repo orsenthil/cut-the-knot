@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pennies in Boxes &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #picker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 18px;
+    margin-bottom: 14px;
+    font-size: 0.92rem;
+    color: var(--muted);
+  }
+  #picker label { display: flex; align-items: center; gap: 6px; }
+  #boxLabel, #pennyLabel {
+    font-variant-numeric: tabular-nums;
+    min-width: 1.8em;
+    text-align: center;
+    color: var(--text);
+    font-weight: 600;
+  }
+  #stage { width: 100%; max-width: 560px; padding: 18px 14px; }
+  #boxes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  .box {
+    flex: 0 0 auto;
+    width: 92px;
+    min-height: 118px;
+    padding: 8px 6px 6px;
+    border: 2px solid var(--border-strong);
+    border-radius: 12px;
+    background: var(--board-a);
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    transition: border-color 140ms ease, background-color 140ms ease, transform 140ms ease;
+  }
+  .box:hover { background: var(--board-b); }
+  .box:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .box.picked {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .box.hinted { border-color: var(--accent); border-style: dashed; }
+  .box.flash { background: var(--highlight); }
+  .box.empty { opacity: 0.55; cursor: default; }
+  .pennies {
+    display: flex;
+    flex-wrap: wrap-reverse;
+    justify-content: center;
+    align-content: flex-start;
+    gap: 3px;
+    min-height: 62px;
+    width: 100%;
+  }
+  /* Pennies have a colour of their own; it reads on both stage backgrounds. */
+  .penny {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #c87d3f;
+    box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, 0.25);
+  }
+  .count {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+  .box.empty .count { font-weight: 500; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) {
+    .box { transition: none; }
+  }
+</style>
+</head>
+<body data-game="pennies-in-boxes">
+  <h1>Pennies in Boxes</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/IntIter2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> get every penny into a single box. Pick two boxes and the fuller one pays the
+    other exactly as many pennies as that one is holding, so the smaller pile doubles.<br>
+    <strong>How to play:</strong> click one box, then click another. Click the same box twice to change
+    your mind.
+  </div>
+
+  <div id="picker">
+    <label>Boxes
+      <button type="button" id="fewerBoxes" aria-label="Fewer boxes">&minus;</button>
+      <span id="boxLabel">3</span>
+      <button type="button" id="moreBoxes" aria-label="More boxes">+</button>
+    </label>
+    <label>Pennies
+      <button type="button" id="fewerPennies" aria-label="Fewer pennies">&minus;</button>
+      <span id="pennyLabel">16</span>
+      <button type="button" id="morePennies" aria-label="More pennies">+</button>
+    </label>
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="boxes"></div>
+  </div>
+
+  <div class="controls">
+    <button type="button" id="hintBtn">Hint</button>
+    <button type="button" id="backBtn">Step back</button>
+    <button type="button" id="dealBtn" class="primary">New deal</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Sixteen pennies always come together in the end, however they are dealt out. Twelve pennies almost
+        never do. The difference is not luck, and you can see it before you make a move.
+      </p>
+
+      <h3>Every move doubles a box</h3>
+      <p>
+        Write the two chosen boxes as <code>p</code> and <code>q</code> with <code>p &ge; q</code>. After
+        the move they hold
+      </p>
+      <blockquote><code>(p, q) &rarr; (p &minus; q, 2q)</code></blockquote>
+      <p>
+        The total never changes, and the receiving box always doubles. That already rules out half of all
+        deals: the very last move leaves one box holding everything, and it got there by doubling, so the
+        total must be even. An odd number of pennies can never be gathered up.
+      </p>
+
+      <h3>Powers of two always work</h3>
+      <p>
+        Bogomolny's page proves the opposite extreme. If two boxes hold odd numbers, one move leaves both
+        of them even &mdash; <code>p &minus; q</code> and <code>2q</code> are both even when
+        <code>p</code> and <code>q</code> are odd. Pair the odd boxes off like that and every box holds an
+        even number, so you can glue the pennies together in twos and play the same puzzle with
+        <code>2<sup>n&minus;1</sup></code> double pennies instead. Repeat, and the deal shrinks to a single
+        penny: that is
+        <a class="wiki-term" data-wiki="Mathematical_induction" href="https://en.wikipedia.org/wiki/Mathematical_induction" target="_blank" rel="noopener">induction</a>
+        on <code>n</code>. To empty one of three boxes <code>x &lt; y &lt; z</code> the page writes
+        <code>y = qx + r</code> and reads the binary digits of <code>q</code>: each move doubles the small
+        box to <code>x, 2x, 4x, &hellip;</code>, and taking each power out of <code>y</code> or
+        <code>z</code> as the digits dictate leaves the remainder <code>r &lt; x</code>. The remainders keep
+        shrinking, which is
+        <a class="wiki-term" data-wiki="Proof_by_infinite_descent" href="https://en.wikipedia.org/wiki/Proof_by_infinite_descent" target="_blank" rel="noopener">infinite descent</a>:
+        it has to stop.
+      </p>
+
+      <h3>The test: divide by the common factor</h3>
+      <p>
+        Between "never" and "always" there is one clean rule. Let <code>g</code> be the
+        <a class="wiki-term" data-wiki="Greatest_common_divisor" href="https://en.wikipedia.org/wiki/Greatest_common_divisor" target="_blank" rel="noopener">greatest common divisor</a>
+        of the piles. Then:
+      </p>
+      <blockquote>
+        the pennies can be gathered into one box exactly when <code>total &divide; g</code> is a power of two.
+      </blockquote>
+      <p>
+        One way round is easy: divide every pile by <code>g</code> and the rule for a move is untouched, so
+        a scaled-down deal with a power-of-two total can be gathered by the argument above, and scaling back
+        up gathers the real one. The other way round is the <code>gcd</code> itself. If <code>g'</code> is
+        the new gcd after a move then <code>g'</code> divides <code>p &minus; q</code> and <code>2q</code>,
+        so it divides <code>2p</code> too, and it divides twice every other pile for free &mdash; meaning
+        <code>g'</code> divides <code>2g</code>. The common factor can only stay put or double. One box
+        holding everything has gcd <code>N</code>, so <code>N</code> must be <code>g</code> times a string
+        of doublings. That is the test, and the Hint button uses it: it will tell you plainly when a deal is
+        hopeless.
+      </p>
+      <p class="tip">
+        Try it: deal 12 pennies into three boxes. Only <code>3 + 3 + 6</code> can be gathered up &mdash;
+        divide by 3 and it is <code>1 + 1 + 2</code>, total 4. Every other split of 12 is a dead loss, and
+        now you can say why without touching a penny.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="pennies-core.js"></script>
+<script src="pennies-in-boxes.js"></script>
+</body>
+</html>

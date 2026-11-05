@@ -206,5 +206,11 @@ window.COOLMATHS = {
       blurb: "Left may only shrink a number, Right may only grow it, and the denominator has to drop every time. Each fraction is worth a tidy number of halves and quarters \u2014 add them up and you know who wins before a move is made.",
       tags: ["game-strategy", "number-theory", "arithmetic"],
     },
+    {
+      slug: "pennies-in-boxes",
+      title: "Pennies in Boxes",
+      blurb: "Pick two boxes and the fuller one pays the other exactly what it holds, doubling the smaller pile. Can you always get every penny into one box?",
+      tags: ["number-theory", "divisibility", "invariants"],
+    },
   ],
 };
