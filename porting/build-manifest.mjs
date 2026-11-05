@@ -84,6 +84,7 @@ const SLUG_TO_APPLET = {
   "clone-escape": "CloneEscape",
   "dawsons-chess": "DawsonChess",
   "bicolor-hanoi": "BiColorHanoi",
+  "stones-in-cups": "BarryCipra",
   "vanishing-digit": null,
   hourglass: null,
   torque: null,

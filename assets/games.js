@@ -146,5 +146,11 @@ window.COOLMATHS = {
       blurb: "Two towers of disks, both striped gold and red, and one spare peg. Make each tower a single colour \u2014 and swap the two towers over. Three sizes can be done in 29 moves: can you?",
       tags: ["induction", "algorithms", "counting"],
     },
+    {
+      slug: "stones-in-cups",
+      title: "Stones in Cups",
+      blurb: "Scoop up the stones under your hand and drop them one by one round the circle, over and over. They always end up piled in a single cup \u2014 or do they?",
+      tags: ["algorithms", "graph-theory", "counting"],
+    },
   ],
 };

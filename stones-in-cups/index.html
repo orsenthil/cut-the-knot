@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Stones in Cups &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #ring {
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  /* The stage shrinks to its contents by default, which would leave the
+     circle tiny; give it a width so the SVG can fill it. */
+  .stage {
+    padding: 14px 10px;
+    width: 100%;
+    max-width: 440px;
+    box-sizing: border-box;
+  }
+
+  #ring .bowl {
+    fill: var(--board-a);
+    stroke: var(--ink);
+    stroke-width: 1.5;
+  }
+  #ring .cup.empty .bowl { fill: var(--stage); stroke-dasharray: 3 3; }
+  #ring .cup.fresh .bowl { fill: var(--highlight); }
+  #ring .cup.hand-cup .bowl {
+    fill: var(--accent-soft);
+    stroke: var(--accent);
+    stroke-width: 3;
+    stroke-dasharray: none;
+  }
+
+  #ring .count {
+    fill: var(--text);
+    font-family: var(--font);
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+  #ring .label {
+    fill: var(--muted);
+    font-family: var(--font);
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+  #ring .hand { fill: var(--accent); }
+  #ring .centre {
+    fill: var(--muted);
+    font-family: var(--font);
+    font-size: 13px;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    #ring .bowl { transition: fill 120ms linear; }
+  }
+
+  #progress { font-size: 0.9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="stones-in-cups">
+  <h1>Stones in Cups</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/BarryCipra.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> cups stand in a circle with stones in them. Keep scooping and sharing out stones
+    until every single stone has piled up in one cup.<br>
+    <strong>How to play:</strong> the arrow shows the cup your hand is at. Press <em>One Move</em> to pick up all
+    its stones and drop them one at a time into the cups going round to the left; your hand follows the last
+    stone it drops, and that is where the next move starts.
+  </div>
+
+  <div class="stage">
+    <svg id="ring" viewBox="0 0 400 400" role="img" aria-label="A circle of cups holding stones"></svg>
+  </div>
+
+  <div class="controls">
+    <label>Cups <input type="number" id="cupsIn" value="10" min="1" max="50" step="1"></label>
+    <label>Stones in each <input type="number" id="stonesIn" value="1" min="1" max="50" step="1"></label>
+    <label>Empty cups <input type="number" id="emptiesIn" value="0" min="0" max="9" step="1"></label>
+    <label>Hand starts at <input type="number" id="startIn" value="1" min="1" max="10" step="1"></label>
+    <label>Speed
+      <select id="speedIn">
+        <option value="slow">Slow</option>
+        <option value="fast" selected>Fast</option>
+        <option value="instant">Fastest</option>
+      </select>
+    </label>
+    <button type="button" id="moveBtn" class="primary">One Move</button>
+    <button type="button" id="runBtn">Run</button>
+    <button type="button" id="resetBtn">Reset</button>
+    <span id="progress">Moves: 0</span>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Barry Cipra set this as problem #1388 in <em>Mathematics Magazine</em> in 1992: with <code>n</code> cups
+        in a circle and <code>k</code> stones in every one of them, prove that repeating the scoop-and-share move
+        must eventually pile all <code>kn</code> stones into the cup you began at. Try the circle above with no
+        empty cups and it always happens &mdash; but the published proof had a hole in it, and this applet is
+        where Bogomolny went looking for it.
+      </p>
+
+      <h3>You can always run the move backwards</h3>
+      <p>
+        Here is the move in reverse. Pick up the stones under your hand, then walk <em>clockwise</em> taking one
+        stone out of each cup you pass, until you reach a cup that is empty; pour everything you are holding into
+        that one. Check it against any move you just made and you will get back exactly where you were. The
+        undo is forced &mdash; there is never a choice about it &mdash; and that is the key fact.
+      </p>
+
+      <h3>Finitely many positions, so you must go round in a circle</h3>
+      <p>
+        A position means the stone counts plus where your hand is, and with a fixed number of stones there are
+        only finitely many positions. So a long enough run has to repeat one. Now use the undo: if two different
+        positions led to the same one, undoing it would have to give both answers, and it cannot. So the run
+        cannot be a lasso that loops back into its own middle &mdash; the repeat has to be the <em>opening</em>
+        position itself. Every run is a
+        <a class="wiki-term" data-wiki="Cycle_(graph_theory)" href="https://en.wikipedia.org/wiki/Cycle_(graph_theory)" target="_blank" rel="noopener">closed cycle</a>
+        that comes home. That is why pressing <em>Run</em> above can always reach a verdict rather than spinning
+        for ever: either the stones gather, or the opening position comes back round.
+      </p>
+
+      <h3>Where the proof breaks</h3>
+      <p>
+        The published solution finished like this: undo one move from the opening position and you get "all the
+        stones in the original cup", so that position is on the cycle and must be reached. Try it. Undo from
+        <code>n</code> full cups: you take the <code>k</code> stones under your hand, then one stone from each of
+        the other <code>n-1</code> cups, which is <code>k + n - 1</code> stones &mdash; not <code>kn</code> of
+        them, unless <code>k = 1</code>. The step only works for one stone per cup. Nathan Bowler pointed this
+        out to Bogomolny, and the page now carries the correction.
+      </p>
+
+      <h3>A setup that never finishes</h3>
+      <p>
+        The applet was built to explore a wider version of the puzzle, where a run of cups starts out empty, and
+        there it found something better than a gap in a proof &mdash; a genuine
+        <a class="wiki-term" data-wiki="Counterexample" href="https://en.wikipedia.org/wiki/Counterexample" target="_blank" rel="noopener">counterexample</a>.
+        Set the circle to 6 cups, 2 stones in each, 1 empty cup, hand starting at cup 1, and press <em>Run</em>:
+      </p>
+      <blockquote>
+        After twelve moves the picture is the one you started with, rotated two cups along. Twelve more and it
+        rotates two further. After 36 moves it is back exactly where it began &mdash; and the stones were never
+        once all in the same cup.
+      </blockquote>
+      <p>
+        So with empty cups allowed, the claim is simply false, and the cycle argument above is what proves this
+        particular run will never gather: a position that has come back once will keep coming back for ever.
+      </p>
+      <p class="tip">
+        With no empty cups, watch how long the gathering takes as you turn the stones up: 6 cups with 1 stone
+        each takes 33 moves, with 2 stones each it takes 746. Can you find a pair of settings that takes
+        thousands?
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="cups-core.js"></script>
+<script src="stones-in-cups.js"></script>
+</body>
+</html>
