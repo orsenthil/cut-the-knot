@@ -114,6 +114,7 @@ const SLUG_TO_APPLET = {
   "hex-draw": "HexTheory",
   "hare-hounds": "Hounds",
   ducci: "IntIter",
+  jam: "Jam",
   "gergonne": "GergonneMagic",
   "vanishing-digit": null,
   hourglass: null,

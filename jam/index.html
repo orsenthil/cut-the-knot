@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Game of Jam &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage { width: 100%; padding: 12px 8px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; }
+  #map { width: 100%; max-width: 400px; height: auto; display: block; touch-action: manipulation; }
+  #secret { width: 46%; max-width: 160px; height: auto; display: none; }
+  #stage.reveal #secret { display: block; }
+  #stage.reveal #map { max-width: 300px; }
+  @media (min-width: 560px) { #stage.reveal #map { width: 52%; } }
+  .road { stroke: var(--border-strong); stroke-width: 7; stroke-linecap: round; pointer-events: none; }
+  .road.you { stroke: #3d74c4; }
+  .road.computer { stroke: #d0463b; }
+  .road-hit { stroke: transparent; stroke-width: 22; stroke-linecap: round; cursor: pointer; outline: none; }
+  .road-hit:hover + .road:not(.you):not(.computer) { stroke: var(--highlight); }
+  .road-hit:focus-visible + .road { stroke-dasharray: 2 6; }
+  .city { fill: var(--board-a); stroke: var(--ink); stroke-width: 2; pointer-events: none; }
+  .city.you { fill: #3d74c4; }
+  .city.computer { fill: #d0463b; }
+  .sq { fill: var(--board-a); stroke: var(--border-strong); stroke-width: 1.5; }
+  .sq.you { fill: #3d74c4; }
+  .sq.computer { fill: #d0463b; }
+  .sq-num { font: 700 18px system-ui, sans-serif; text-anchor: middle; dominant-baseline: central; fill: var(--ink); }
+  .sq-num.taken { fill: #fff; }
+  #map.over .road-hit { cursor: default; }
+  #score { width: 100%; text-align: center; font-size: 0.9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="jam">
+  <h1>The Game of Jam</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/Jam.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> you and the computer take turns claiming roads. Win by owning every road that runs into one city.<br>
+    <strong>How to play:</strong> click a road to claim it; yours turn blue and the computer's red. The game has a secret: can you find it?
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="map" viewBox="0 0 300 300" role="group" aria-label="Map of nine roads and eight cities"></svg>
+    <svg id="secret" viewBox="0 0 156 156" aria-label="The secret: the same game on a tic-tac-toe board"></svg>
+    <div id="score"></div>
+  </div>
+
+  <div class="controls">
+    <label><input type="checkbox" id="firstInput"> Computer moves first</label>
+    <button type="button" id="startBtn" disabled>Start</button>
+    <button type="button" id="clearBtn" class="primary">New game</button>
+    <label><input type="checkbox" id="secretInput"> Show the secret</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        John Michon's Jam looks like a game about a map, but it is a game everybody already knows.
+        Two games that are the same game in disguise are called
+        <a class="wiki-term" data-wiki="Isomorphism" href="https://en.wikipedia.org/wiki/Isomorphism" target="_blank" rel="noopener">isomorphic</a>.
+      </p>
+
+      <h3>The secret: tic-tac-toe</h3>
+      <p>
+        There are nine roads and eight cities, and every city has exactly three roads. Make each road a square
+        of a 3 by 3 board and each city one of the eight lines: three rows, three columns, two diagonals.
+        Owning all three roads into a city is owning a whole line. The middle road runs through four cities,
+        like the centre square in four lines; four roads run through three, like the corners; four through two,
+        like the edges. Tick "Show the secret" to watch both boards at once.
+      </p>
+
+      <h3>And a third disguise: adding to 15</h3>
+      <p>
+        Number the squares with the
+        <a class="wiki-term" data-wiki="Lo_Shu_Square" href="https://en.wikipedia.org/wiki/Lo_Shu_Square" target="_blank" rel="noopener">Lo Shu magic square</a>:
+      </p>
+      <blockquote><code>4 9 2 &nbsp; 3 5 7 &nbsp; 8 1 6</code></blockquote>
+      <p>
+        The eight lines are exactly the eight ways to pick three different numbers from 1 to 9 that add up to 15.
+        So "take turns picking numbers; first to hold three that add to 15 wins" is tic-tac-toe again. That
+        game is called Fif. The applet carries this table inside it.
+      </p>
+
+      <h3>Can the computer be beaten?</h3>
+      <p>
+        With perfect play tic-tac-toe is a draw, so Jam is a stalemate when both sides know the secret. The
+        page says the computer is one of those "in the know", making the odd "benevolent mistake". In fact it
+        only looks one move ahead. It takes a win when it sees one and blocks yours, but it doesn't see
+        <a class="wiki-term" data-wiki="Fork_(chess)" href="https://en.wikipedia.org/wiki/Fork_(chess)" target="_blank" rel="noopener">forks</a>,
+        where you threaten two cities at once. Checking every game shows that, even with its mistakes switched
+        off, you can always beat it when you move first, and also after two of its nine possible openings.
+      </p>
+      <p class="tip">
+        Moving first, take a corner road, then look for a move that threatens two cities at once.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="jam-core.js"></script>
+<script src="jam.js"></script>
+</body>
+</html>

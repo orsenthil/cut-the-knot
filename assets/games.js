@@ -279,5 +279,11 @@ window.COOLMATHS = {
       blurb: "Replace the numbers on a circle by the gaps between neighbours, again and again. Four numbers always end as zeros \u2014 so why don't five?",
       tags: ["sequences", "parity", "number-theory"],
     },
+    {
+      slug: "jam",
+      title: "The Game of Jam",
+      blurb: "Claim roads until you own every road into a city. It looks like a new game \u2014 but you have played it many times before. Which game is it?",
+      tags: ["game-strategy", "graph-theory"],
+    },
   ],
 };
