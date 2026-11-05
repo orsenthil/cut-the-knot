@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **coolmaths** is a static website of browser ports of Alexander Bogomolny's cut-the-knot.org Java applet puzzles, plus an arithmetic quiz (`maths-quiz/`). It uses plain HTML, CSS and vanilla JS: no build step, no package manager, no framework. The web work lives on the `web` branch. `master` holds the original upload.
 
-`classes/` (and `classes.zip`) holds the original applets as `.jar`/`.zip` files, with decompiled or extracted Java sources in some cases (`*_src/`, e.g. `classes/RFWH_src/`, `classes/FlipThem_src/`). It is reference material for porting and is not part of the site. Ports aim to reproduce the original behaviour exactly (e.g. `coins/coin-game.js` mirrors `CoinGame.java`'s strategy).
+`classes.zip` holds the original applets (about 1,300 `.jar`/`.zip` archives under `classes/`). Only the zip is checked in: extract what you need with `unzip classes.zip 'classes/<Name>*' -d <scratch dir>`. Decompiled or extracted Java sources (`*_src/`, e.g. `classes/RFWH_src/`) were made locally for some earlier ports and are not in the repo. The applets are reference material for porting and are not part of the site. Ports aim to reproduce the original behaviour exactly (e.g. `coins/coin-game.js` mirrors `CoinGame.java`'s strategy). `porting/manifest.json` lists every applet with its porting status, and `porting/PLAN.md` describes the porting campaign.
 
 `xscreensaver/` similarly holds reference sources for XScreenSaver hacks (e.g. `xscreensaver/hacks/euler2d.c`, ported to `euler2d/`) and is not part of the site either. XScreenSaver's own [screenshot gallery](https://www.jwz.org/xscreensaver/screenshots/) is a good place to find more of its math-flavored demos worth porting.
 
@@ -24,7 +24,7 @@ node -e 'const src=require("fs").readFileSync("hourglass/hourglass-core.js","utf
 const H=new Function(src+"; return HourglassCore;")(); console.log(H.solve)'
 ```
 
-To check a page visually, use headless Chrome (`/Applications/Google Chrome.app/Contents/MacOS/Google Chrome --headless=new --screenshot=... --window-size=W,H URL`). Add `--force-dark-mode` for the dark theme. Headless windows are at least 500px wide, so load the page in a 375px `<iframe>` to test phone width. In dark mode Chrome can hang after writing the screenshot, so run it with a kill timeout. Pages with a `requestAnimationFrame` loop (hourglass) need `--timeout=` rather than `--virtual-time-budget=`.
+To check a page visually, use headless Chrome (`/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` on macOS, `chromium` or `google-chrome` on Linux, or Playwright's Chromium in cloud sessions: `<chrome> --headless=new --screenshot=... --window-size=W,H URL`). Add `--force-dark-mode` for the dark theme. Headless windows are at least 500px wide, so load the page in a 375px `<iframe>` to test phone width. In dark mode Chrome can hang after writing the screenshot, so run it with a kill timeout. Pages with a `requestAnimationFrame` loop (hourglass) need `--timeout=` rather than `--virtual-time-budget=`.
 
 ## Architecture
 
@@ -44,7 +44,7 @@ Follow these rules when converting another applet. The existing games are the re
 
 ### 1. Understand the original first
 
-- Find the applet in `classes/` (`<Name>.jar` / `.zip`, sometimes with a `*_src/` or `*_extracted/` folder next to it). Read the Java source when it exists. When there is only bytecode, extract it with `jar xf` and inspect it with `javap -c -p`; no decompiler is installed.
+- Find the applet in `classes.zip` (`classes/<Name>.jar` / `.zip`, sometimes with a `*_src/` or `*_extracted/` folder next to it). Read the Java source when it exists. When there is only bytecode, extract it with `jar xf` and inspect it with `javap -c -p`; no decompiler is installed.
 - Read the original cut-the-knot.org page for the puzzle's rules and the intended mathematical point. The byline links to that page.
 - **Port behaviour faithfully.** Rules, win conditions, the computer opponent's strategy, board sizes and option ranges should match the applet. Modernize the presentation, not the game. If you change a behaviour on purpose (e.g. dropping a real-time rush), say so in the commit message.
 
