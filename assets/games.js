@@ -261,5 +261,11 @@ window.COOLMATHS = {
       blurb: "Join your two edges of the board before the computer joins its two. Hex can never end in a draw, and the first player can always win \u2014 so why can't anyone tell you how?",
       tags: ["game-strategy", "graph-theory"],
     },
+    {
+      slug: "hex-draw",
+      title: "Hex Can't End in a Draw",
+      blurb: "Colour a Hex board red and blue any way you like: someone always has a winning path. Can you beat it on a board of squares?",
+      tags: ["graph-theory", "game-strategy"],
+    },
   ],
 };

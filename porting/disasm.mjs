@@ -133,6 +133,35 @@ function compactMethod(lines) {
     else tok = op;
     out.push((targets.has(off) ? "@" + off + ": " : "") + tok);
   }
+  return literalArrays(out);
+}
+
+/**
+ * Small array literals - `new int[] {1, -1}` compiles to size, newarray, then
+ * (index, value, iastore) per element - folded back into "[1,-1]". Tables of
+ * neighbour offsets come out readable. Note the order: an array is built first
+ * and the putfield that names it comes after it.
+ */
+function literalArrays(tokens) {
+  const out = [];
+  for (let i = 0; i < tokens.length; i++) {
+    if (tokens[i + 1] === "newarray" && /^\d+$/.test(tokens[i])) {
+      const vals = [];
+      let j = i + 2;
+      while (/^-?\d+$/.test(tokens[j] || "") && /^-?\d+$/.test(tokens[j + 1] || "") && /^[bsi]astore$/.test(tokens[j + 2] || "")) {
+        vals.push(tokens[j + 1]);
+        j += 3;
+      }
+      if (vals.length) {
+        // drop the outer index pushed before the size, and the aastore after
+        if (out.length && /^\d+$/.test(out[out.length - 1]) && tokens[j] === "aastore") out.pop();
+        out.push("[" + vals.join(",") + "]");
+        i = tokens[j] === "aastore" ? j : j - 1;
+        continue;
+      }
+    }
+    out.push(tokens[i]);
+  }
   return out;
 }
 
@@ -171,10 +200,15 @@ for (const f of files) {
   const members = javap(["-p"], f).split("\n").filter((l) => l && !l.startsWith("Compiled from"));
   const code = javap(["-c", "-p"], f);
   const strings = [...new Set([...code.matchAll(/\/\/ String (.*)$/gm)].map((m) => m[1]))];
-  console.log(`\n## ${name}`);
-  console.log(members.join("\n"));
-  if (strings.length) console.log("strings: " + strings.map((s) => JSON.stringify(s)).join(" "));
-  for (const t of staticTables(code)) console.log("table " + t);
+  const header = () => {
+    console.log(`\n## ${name}`);
+    if (onlyMethod) return; // with --method, only the matching methods
+    console.log(members.join("\n"));
+    if (strings.length) console.log("strings: " + strings.map((s) => JSON.stringify(s)).join(" "));
+    for (const t of staticTables(code)) console.log("table " + t);
+  };
+  let headed = false;
+  if (!onlyMethod) { header(); headed = true; }
 
   const methods = code.split(/\n(?=  \S.*\);$|  static \{\};$)/m).slice(1);
   for (const block of methods) {
@@ -183,6 +217,7 @@ for (const f of files) {
     if (onlyMethod && !sig.includes(onlyMethod)) continue;
     const toks = compactMethod(body);
     if (!toks.length) continue;
+    if (!headed) { header(); headed = true; }
     const drawing = DRAWING.test(mname) || /java\.awt\.Graphics/.test(sig);
     if (drawing && !all && !onlyMethod) {
       console.log(`- ${sig.trim()}  (${toks.length} ops, drawing; --all to show)`);

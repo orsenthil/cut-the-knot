@@ -111,6 +111,7 @@ const SLUG_TO_APPLET = {
   hanoi: "hanoi",
   "hanoi-3c": "Hanoi3c",
   hex7: "Hex7",
+  "hex-draw": "HexTheory",
   "gergonne": "GergonneMagic",
   "vanishing-digit": null,
   hourglass: null,

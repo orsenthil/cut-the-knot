@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hex Can't End in a Draw &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage { width: 100%; padding: 14px 8px; display: flex; justify-content: center; }
+  #board { width: 100%; max-width: 560px; height: auto; display: block; touch-action: manipulation; }
+
+  /* Red and blue are the chips' own colours, mid-tones that read on both stages. */
+  .cell { stroke: var(--stage, #fff); stroke-width: 1.2; cursor: pointer; outline: none; }
+  .cell.red { fill: #d0463b; }
+  .cell.blue { fill: #3d74c4; }
+  .cell:hover { filter: brightness(1.15); }
+  .cell:focus-visible { stroke: var(--focus); stroke-width: 3.5; }
+  .edge { stroke: none; pointer-events: none; opacity: 0.35; }
+  .edge.red { fill: #d0463b; }
+  .edge.blue { fill: #3d74c4; }
+  .dot { fill: #fff; stroke: #1d1f24; stroke-width: 1; pointer-events: none; }
+  .walk { fill: none; stroke: #ffd24a; stroke-width: 3.2; stroke-linejoin: round; stroke-linecap: round; pointer-events: none; }
+  .walk-end { fill: #ffd24a; stroke: #1d1f24; stroke-width: 1; pointer-events: none; }
+</style>
+</head>
+<body data-game="hex-draw">
+  <h1>Hex Can't End in a Draw</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/HexTheory.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> red wants a path from top to bottom, blue a path from left to right. Try to colour the board so that nobody wins.<br>
+    <strong>How to play:</strong> click a cell to swap its colour. The dots show the winning path. Then try the square grids.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" role="grid" aria-label="Board of red and blue cells"></svg>
+  </div>
+
+  <div class="controls">
+    <label>Grid <select id="gridInput">
+      <option value="hex">Hexagonal grid</option>
+      <option value="sq4">4-grid</option>
+      <option value="sq6">6-grid</option>
+      <option value="sq8">8-grid</option>
+    </select></label>
+    <label>Size <select id="nInput"></select></label>
+    <label><input type="checkbox" id="walkInput"> Separation edges</label>
+    <button type="button" id="resetBtn" class="primary">New board</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        <a class="wiki-term" data-wiki="Hex_(board_game)" href="https://en.wikipedia.org/wiki/Hex_(board_game)" target="_blank" rel="noopener">Hex</a>
+        has a remarkable property: however the board is filled, exactly one player has a winning path.
+        It sounds obvious. It isn't, and the square grids show why.
+      </p>
+
+      <h3>Why there is always a winner</h3>
+      <p>
+        Suppose blue has no left-to-right path. Take every blue cell that is joined to the left edge. The
+        cells that border that region on its right can't be blue (they would be in it), so they are red,
+        and they link up into a red path from top to bottom. A board where nobody wins can't exist.
+        David Gale showed that this fact is equivalent to the two-dimensional
+        <a class="wiki-term" data-wiki="Brouwer_fixed-point_theorem" href="https://en.wikipedia.org/wiki/Brouwer_fixed-point_theorem" target="_blank" rel="noopener">Brouwer fixed-point theorem</a>.
+        A check of every board up to 4 by 4, and of thousands of random boards up to 10 by 10, finds exactly
+        one winner each time.
+      </p>
+
+      <h3>Gale's walk</h3>
+      <p>
+        Tick "Separation edges" to see Gale's proof run. The walk starts at the top-left corner, where the
+        red edge meets the blue one, and always follows a side with red on one hand and blue on the other.
+        At every corner of the honeycomb three cells meet, so there is exactly one way on. The walk can never
+        come back to a corner it has used, so it must come out at another corner of the board, and the
+        cells along it contain the winning path. The check confirms this on every board up to 4 by 4.
+      </p>
+
+      <h3>Squares need the right neighbours</h3>
+      <p>
+        With four neighbours per square, a draw <em>is</em> possible: a checkerboard pattern blocks both
+        colours. With eight neighbours, a red and a blue path can cross at a diagonal and both win. These
+        two failures are the same thing seen twice: red has no four-neighbour path exactly when blue has an
+        eight-neighbour one. On a 4 by 4 board, 21,150 of the 65,536 colourings are draws on the 4-grid,
+        and exactly those 21,150 are double wins on the 8-grid. Six neighbours (four sides and one
+        diagonal) works like hexagons, and that is the grid John Nash used.
+      </p>
+      <p class="tip">
+        On the 4-grid, try to build a draw on a big board. Then switch to the 8-grid with the same idea and
+        see both colours win.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="hex-draw-core.js"></script>
+<script src="hex-draw.js"></script>
+</body>
+</html>
