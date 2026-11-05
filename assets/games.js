@@ -267,5 +267,11 @@ window.COOLMATHS = {
       blurb: "Colour a Hex board red and blue any way you like: someone always has a winning path. Can you beat it on a board of squares?",
       tags: ["graph-theory", "game-strategy"],
     },
+    {
+      slug: "hare-hounds",
+      title: "Hare and Hounds",
+      blurb: "Three hounds that can never step back hunt one nimble hare. Can the hare slip past them \u2014 or do the hounds always win?",
+      tags: ["game-strategy", "algorithms"],
+    },
   ],
 };

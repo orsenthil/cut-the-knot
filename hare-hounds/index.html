@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hare and Hounds &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage { width: 100%; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  #board { width: 100%; max-width: 520px; height: auto; display: block; touch-action: manipulation; }
+  .line { stroke: var(--border-strong); stroke-width: 3; stroke-linecap: round; }
+  .spot { fill: var(--board-a); stroke: var(--border-strong); stroke-width: 2; cursor: pointer; outline: none; }
+  .spot:focus-visible { stroke: var(--focus); stroke-width: 4; }
+  .spot.target { fill: var(--accent-soft); stroke: var(--accent); stroke-dasharray: 4 3; }
+  .spot.target:hover { fill: var(--highlight); }
+  /* The animals have colours of their own, outlined to read on both stages. */
+  .hound { fill: #3a3f4a; stroke: #9aa1ad; stroke-width: 2; pointer-events: none; }
+  .hare { fill: #d9a46b; stroke: #6b4a2a; stroke-width: 2; pointer-events: none; }
+  .piece-label { font: 700 15px system-ui, sans-serif; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+  .hound + .piece-label { fill: #f1f2f4; }
+  .selected { stroke: var(--accent); stroke-width: 4; }
+  .last { stroke: var(--highlight); stroke-width: 4; }
+  #board.busy .spot { cursor: wait; }
+  #score { font-size: 0.9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="hare-hounds">
+  <h1>Hare and Hounds</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Games/Hounds.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> three hounds hunt a hare. The hounds win if the hare can't move; the hare wins by slipping past them all.<br>
+    <strong>How to play:</strong> click one of your animals (the hounds are marked H, the hare has ears), then the spot to move it to. Hounds can never go left, and if they only go up and down ten times in a row, the hare wins.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 480 240" role="group" aria-label="Hare and Hounds board"></svg>
+    <div id="score"></div>
+  </div>
+
+  <div class="controls">
+    <label>You play <select id="sideInput"><option value="1">Hounds</option><option value="2">Hare</option></select></label>
+    <label>Level <select id="levelInput">
+      <option value="beginner" selected>Beginner</option>
+      <option value="intermediate">Intermediate</option>
+      <option value="expert">Expert</option>
+    </select></label>
+    <button type="button" id="newBtn" class="primary">New game</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Hare and Hounds is an old French military game, analysed by Édouard Lucas and later in
+        <em>Winning Ways</em>. Unlike Hex or Nim, the two sides have different moves, which makes it a
+        <a class="wiki-term" data-wiki="Partisan_game" href="https://en.wikipedia.org/wiki/Partisan_game" target="_blank" rel="noopener">partisan game</a>.
+      </p>
+
+      <h3>The game always ends</h3>
+      <p>
+        A hound that steps right can never come back, and there are only so many steps to the right on the
+        board. Vertical moves could go on forever, so the rules cap them: ten in a row and the hare wins. With
+        the hounds' moves limited, the whole game is finite, so every position is either a win for the side to
+        move or a loss.
+      </p>
+
+      <h3>Solving it completely</h3>
+      <p>
+        A finite game on a small board can be solved by working backwards from every possible ending, a method
+        called <a class="wiki-term" data-wiki="Retrograde_analysis" href="https://en.wikipedia.org/wiki/Retrograde_analysis" target="_blank" rel="noopener">retrograde analysis</a>.
+        Doing that here confirms the classic answer: the hounds, moving first, win with best play, and they can
+        do it in at most 23 moves counting both sides. The computer on Expert plays from that solution, so as the
+        hare you can't beat it, and as the hounds it never lets a win slip.
+      </p>
+
+      <h3>The hounds' secret: keep the formation</h3>
+      <p>
+        The hounds advance as a wall, never leaving a gap the hare can run through, and they use their vertical
+        moves to wait without stalling for too long. Most hound losses come from moving a hound forward too early,
+        which opens a hole behind the wall.
+      </p>
+      <p class="tip">
+        Play the hare against Expert hounds and watch how they never step forward until the hare is boxed in on
+        that side.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="hare-hounds-core.js"></script>
+<script src="hare-hounds.js"></script>
+</body>
+</html>
