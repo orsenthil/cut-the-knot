@@ -182,5 +182,11 @@ window.COOLMATHS = {
       blurb: "Join corners of a polygon with lines that never cross, until no more will fit. However you do it you always draw the same number of them \u2014 can you work out what it is before you start?",
       tags: ["counting", "induction", "invariants"],
     },
+    {
+      slug: "flipping-pancakes",
+      title: "Flipping Pancakes",
+      blurb: "Slide a flipper under a pancake and the whole stack above it turns over. Sort them biggest-first — and good luck, because nobody knows the best possible number of flips.",
+      tags: ["algorithms", "counting", "invariants"],
+    },
   ],
 };

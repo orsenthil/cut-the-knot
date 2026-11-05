@@ -89,6 +89,7 @@ const SLUG_TO_APPLET = {
   "domino-faults": "DominoCovering",
   "full-house": "FullHouse",
   diagonals: "Diagonals",
+  "flipping-pancakes": "Flipper",
   "vanishing-digit": null,
   hourglass: null,
   torque: null,

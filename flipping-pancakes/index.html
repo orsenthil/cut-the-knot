@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Flipping Pancakes &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage { width: 100%; max-width: 460px; padding: 16px 16px 10px; }
+  #stack {
+    display: flex;
+    flex-direction: column-reverse; /* index 0 is the bottom of the stack */
+    align-items: center;
+    gap: 2px;
+    width: 100%;
+  }
+  .cake {
+    height: var(--ch);
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    /* Pancakes are pancake-coloured, which is not a theme token. */
+    background: #d9a441;
+    box-shadow: inset 0 0 0 1px #9c7124;
+    position: relative;
+    transition: background-color 120ms ease, transform 120ms ease;
+  }
+  .cake:hover, .cake:focus-visible { background: #e8b95c; }
+  .cake:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; z-index: 1; }
+  .cake.willflip { background: #e8b95c; box-shadow: inset 0 0 0 1px #9c7124, 0 0 0 2px var(--accent); }
+  .cake.just { background: #f0cd84; }
+  #spatula {
+    height: 3px;
+    width: 100%;
+    border-radius: 2px;
+    background: var(--accent);
+    opacity: 0;
+    margin: 1px 0;
+  }
+  #spatula.on { opacity: 1; }
+
+  #countLine { margin-top: 8px; font-size: 0.9rem; color: var(--muted); text-align: center; }
+  #countLine strong { color: var(--text); font-variant-numeric: tabular-nums; }
+  .readout { font-variant-numeric: tabular-nums; min-width: 4.6em; text-align: center; display: inline-block; }
+
+  @media (prefers-reduced-motion: reduce) { .cake { transition: none; } }
+</style>
+</head>
+<body data-game="flipping-pancakes">
+  <h1>Flipping Pancakes</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/Flipper.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> a messy stack of pancakes, all different sizes. Tidy it up so the biggest is at
+    the bottom and they get smaller all the way to the top.<br>
+    <strong>How to play:</strong> click a pancake to slide a flipper underneath it; everything from there
+    upwards turns over in one go. Do it in as few flips as you can.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="stack"></div>
+  </div>
+
+  <div class="controls">
+    <label>Pancakes
+      <button type="button" id="fewerBtn" aria-label="Fewer pancakes">&minus;</button>
+      <span class="readout" id="sizeLabel">5</span>
+      <button type="button" id="moreBtn" aria-label="More pancakes">+</button>
+    </label>
+    <label>Flip reaches
+      <button type="button" id="spanLessBtn" aria-label="Shorter flip">&minus;</button>
+      <span class="readout" id="spanLabel">the top</span>
+      <button type="button" id="spanMoreBtn" aria-label="Longer flip">+</button>
+    </label>
+    <label><input type="checkbox" id="scarceInput"> Swap ends only</label>
+    <button type="button" id="resetBtn" class="primary">New stack</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <div id="countLine"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        This is a real research problem in disguise. It reached the
+        <em>American Mathematical Monthly</em> in 1975 from someone signing himself "Harry Dweighter" &mdash;
+        say it out loud &mdash; and mathematicians have been chipping away at it ever since. It is known as
+        <a class="wiki-term" data-wiki="Pancake_sorting" href="https://en.wikipedia.org/wiki/Pancake_sorting" target="_blank" rel="noopener">pancake sorting</a>.
+      </p>
+
+      <h3>Every mess can be tidied</h3>
+      <p>
+        Call the flip that starts under pancake <code>i</code> the move <code>M<sub>i</sub></code>. A stack
+        is just a
+        <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">permutation</a>
+        of the pancakes, and the question is whether the moves can reach every one of them. They can:
+        flipping the same spot twice undoes it, and the page shows how to build a plain swap of two
+        neighbours out of four flips,
+      </p>
+      <blockquote><code>(i&nbsp;i+1) = M<sub>i+1</sub> M<sub>i</sub> M<sub>i+1</sub> M<sub>i+2</sub></code></blockquote>
+      <p>
+        and neighbour swaps alone can build any rearrangement at all. That also tells you why the stack you
+        are given is always solvable: it was made by flipping a tidy stack at random, so flipping those same
+        places in reverse order puts it back.
+      </p>
+
+      <h3>A method, and how good it is</h3>
+      <p>
+        Here is a strategy that always works. Find the biggest pancake that is in the wrong place, flip it
+        to the top, then flip it straight back down onto its proper spot. Two flips put one pancake away for
+        good, so <code>n</code> pancakes take at most <code>2n &minus; 3</code> flips. Going the other way,
+        count the pairs of pancakes that are already neighbours in the right order; a single flip can create
+        at most one new such pair, which forces at least <code>n</code> flips in the worst case once
+        <code>n &ge; 4</code>. So the true worst case <code>f(n)</code> sits between them:
+      </p>
+      <blockquote><code>n &le; f(n) &le; 2n &minus; 3</code></blockquote>
+
+      <h3>Nobody knows the answer</h3>
+      <p>
+        Checking every stack by computer gives the first few exactly:
+      </p>
+      <blockquote>
+        <code>f(2..8) = 1, 3, 4, 5, 7, 8, 9</code>
+      </blockquote>
+      <p>
+        and there the trouble starts: no formula for <code>f(n)</code> is known. The best bounds are still
+        estimates. In 1979 a graduate student named
+        <a class="wiki-term" data-wiki="Bill_Gates" href="https://en.wikipedia.org/wiki/Bill_Gates" target="_blank" rel="noopener">Bill Gates</a>,
+        with Christos Papadimitriou, narrowed it to <code>17n/16 &lt; f(n) &lt; 5n/3</code> &mdash; it
+        remains his only published mathematics paper &mdash; and Heydari and Sudborough pushed the lower end
+        to <code>15n/14</code> in 1997.
+      </p>
+      <p class="tip">
+        Try the two switches. "Flip reaches" fixes how many pancakes turn over at a time &mdash; set it to 2
+        and you are left with neighbour swaps, which is bubble sort. "Swap ends only" turns the flip into a
+        plain exchange of the two ends and leaves the filling untouched; the counting changes completely.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="pancakes-core.js"></script>
+<script src="flipping-pancakes.js"></script>
+</body>
+</html>
