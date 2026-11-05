@@ -29,6 +29,7 @@ window.COOLMATHS = {
     "physics": "Physics",
     "graph-theory": "Graph Theory",
     "series": "Infinite Series",
+    "sequences": "Sequences",
   },
 
   games: [
@@ -235,6 +236,12 @@ window.COOLMATHS = {
       title: "Grundy's Game",
       blurb: "Take turns breaking a bar of chocolate into two unequal pieces; whoever makes the last break wins. The computer knows a secret number for every bar \u2014 can you work it out?",
       tags: ["game-strategy", "algorithms"],
+    },
+    {
+      slug: "whats-next",
+      title: "What's Next?",
+      blurb: "Six numbers follow a secret rule. Can you name the seventh \u2014 and is there ever only one right answer?",
+      tags: ["sequences", "algebra"],
     },
   ],
 };

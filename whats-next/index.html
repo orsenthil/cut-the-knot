@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>What's Next? &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage {
+    width: 100%;
+    padding: 22px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  #sequence {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 1.35rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  #sequence li {
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: var(--board-a);
+    overflow-wrap: anywhere;
+    max-width: 100%;
+  }
+  #sequence li.next {
+    background: transparent;
+    box-shadow: inset 0 0 0 2px var(--accent);
+    color: var(--accent);
+  }
+  #guessForm { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; }
+  #guessInput {
+    width: 11em;
+    max-width: 100%;
+    font: inherit;
+    font-size: 1.05rem;
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg);
+    color: var(--ink);
+  }
+  #guessInput:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+  #hint { font-size: 0.92rem; color: var(--muted); text-align: center; min-height: 1.3em; }
+  #score { font-size: 0.9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="whats-next">
+  <h1>What's Next?</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/recurrence/guess.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> you see six numbers that follow a secret rule. Work out the rule and say which number comes next.<br>
+    <strong>How to play:</strong> type your answer and press Check. If you get it wrong you get a hint, and you can try the same numbers again.
+  </div>
+
+  <div id="stage" class="stage">
+    <ol id="sequence" aria-label="The sequence so far"></ol>
+    <form id="guessForm" autocomplete="off">
+      <label for="guessInput" class="sr-only">Your guess</label>
+      <input id="guessInput" type="text" inputmode="text" placeholder="Your guess" spellcheck="false">
+      <button type="submit" id="checkBtn" class="primary">Check my guess</button>
+    </form>
+    <div id="hint" aria-live="polite"></div>
+  </div>
+
+  <div class="controls">
+    <button type="button" id="repeatBtn">Try it again</button>
+    <button type="button" id="newBtn">New sequence</button>
+    <span id="score"></span>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Each sequence comes from one of nine rules, with small random numbers plugged in. Most of them are
+        <a class="wiki-term" data-wiki="Recurrence_relation" href="https://en.wikipedia.org/wiki/Recurrence_relation" target="_blank" rel="noopener">recurrences</a>:
+        each term is made from the ones before it.
+      </p>
+
+      <h3>The nine rules</h3>
+      <p>
+        Add the same number each time (<code>a, a+d, a+2d, &hellip;</code>). Multiply by the same number
+        (<code>a, aq, aq&sup2;, &hellip;</code>). Add the last two terms, as in the
+        <a class="wiki-term" data-wiki="Fibonacci_sequence" href="https://en.wikipedia.org/wiki/Fibonacci_sequence" target="_blank" rel="noopener">Fibonacci numbers</a>,
+        or the last three. Take turns adding and multiplying, or take turns adding two different numbers.
+        Use a formula <code>an&sup2; + bn + c</code>. And the odd one out:
+        <a class="wiki-term" data-wiki="Look-and-say_sequence" href="https://en.wikipedia.org/wiki/Look-and-say_sequence" target="_blank" rel="noopener">look-and-say</a>,
+        where each term reads the previous one aloud. <code>21</code> is "one 2, one 1", so the next term is
+        <code>1211</code>, then <code>111221</code>, then <code>312211</code>.
+      </p>
+      <p>
+        The ninth rule is "shifted powers", <code>c + bq<sup>n</sup></code>. In Bogomolny's applet the shift
+        <code>c</code> is always 0, so it is really another geometric sequence, and this port does the same.
+        Its "add the same number" sequences also always start at 0 or below and never go up.
+      </p>
+
+      <h3>Differences find the polynomial</h3>
+      <p>
+        Subtract each term from the next. For <code>an&sup2; + bn + c</code> those differences are
+        <code>a(2n+1) + b</code>, a sequence that goes up by the same step each time, and subtracting again gives
+        the constant <code>2a</code>:
+      </p>
+      <blockquote><code>1, 4, 9, 16, 25, 36 &rarr; 3, 5, 7, 9, 11 &rarr; 2, 2, 2, 2</code></blockquote>
+      <p>
+        So when the second differences settle down, run them backwards: the next difference is
+        <code>13</code> and the next term is <code>49</code>.
+      </p>
+
+      <h3>Is there only one right answer?</h3>
+      <p>
+        Inside this game, yes. Every rule and every set of numbers the applet can draw gives 2,673 different
+        sequences in all. Checking every one of them, whenever two rules make the same six terms (like
+        <code>3, 6, 12, 24, 48, 96</code>), they also agree on the seventh.
+      </p>
+      <p>
+        Outside the game, never. Six numbers fit infinitely many rules: through any seven points there is a
+        <a class="wiki-term" data-wiki="Polynomial_interpolation" href="https://en.wikipedia.org/wiki/Polynomial_interpolation" target="_blank" rel="noopener">polynomial</a>
+        that makes the next term anything you like. Bogomolny's own example: what follows 7, 14, 21, 28? If those
+        are the dates of the Mondays in March, the next one is April 4, not 35.
+      </p>
+      <p class="tip">
+        Stuck? Write the differences under the numbers, then the ratios. One of the two usually gives the
+        rule away.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="whats-next-core.js"></script>
+<script src="whats-next.js"></script>
+</body>
+</html>
