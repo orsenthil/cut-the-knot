@@ -91,6 +91,7 @@ const SLUG_TO_APPLET = {
   "full-house": "FullHouse",
   diagonals: "Diagonals",
   "flipping-pancakes": "Flipper",
+  "frogs-toads-2d": "FrogsAndToads2D",
   "vanishing-digit": null,
   hourglass: null,
   torque: null,

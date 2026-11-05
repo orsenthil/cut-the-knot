@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Toads and Frogs in 2D &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #boardWrap {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 18px 12px;
+  }
+  #board {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    gap: 3px;
+    width: 100%;
+    touch-action: manipulation;
+  }
+  .cell {
+    aspect-ratio: 1;
+    padding: 2px;
+    border: none;
+    border-radius: 8px;
+    background: var(--board-a);
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+  }
+  .cell.hole { background: var(--board-b); box-shadow: inset 0 0 0 2px var(--border-strong); }
+  .cell.canMove { cursor: pointer; }
+  .cell.canMove:hover { background: var(--highlight); }
+  .cell:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .cell.justMoved { background: var(--accent-soft); }
+  .cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+    display: block;
+  }
+  .cell.stuckFlash { background: var(--bad); }
+
+  #scoreLine { margin-top: 10px; font-size: 0.9rem; color: var(--muted); text-align: center; }
+  .legend { display: inline-flex; align-items: center; gap: 5px; }
+  .legend img { width: 20px; height: 20px; object-fit: contain; vertical-align: middle; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cell { transition: background-color 140ms ease; }
+  }
+</style>
+</head>
+<body data-game="frogs-toads-2d">
+  <h1>Toads and Frogs in 2D</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/FrogsAndToads2D.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> green frogs on one side, brown toads on the other, one empty square between them.
+    Win by getting every frog onto a toad's square and every toad onto a frog's.<br>
+    <strong>How to play:</strong> click an animal to move it. Frogs only go right or down, toads only go left
+    or up, into the empty square or in one hop over a single animal of the other kind.
+  </div>
+
+  <div id="boardWrap" class="stage">
+    <div id="board"></div>
+  </div>
+
+  <div class="controls">
+    <label>Columns <select id="colsInput"></select></label>
+    <label>Rows <select id="rowsInput"></select></label>
+    <button type="button" id="backBtn">Take back</button>
+    <button type="button" id="newBtn" class="primary">New game</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <div id="scoreLine"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        This is the old Toads and Frogs puzzle &mdash; also sold as Hares and Tortoises, or Traffic Jam
+        &mdash; opened out into two dimensions. The flat version is a single row of squares, and it is
+        worth meeting first, because the two-dimensional one is built out of copies of it.
+      </p>
+
+      <h3>The puzzle in a line, and its formula</h3>
+      <p>
+        Put <code>N</code> frogs on the left, <code>M</code> toads on the right, one gap between them. Every
+        frog has to end up <code>M+1</code> places to the right and every toad <code>N+1</code> places to
+        the left, which is <code>N(M+1) + M(N+1)</code> places of travel in all. A slide covers one place
+        and a hop covers two, so the number of moves is that total minus the number of hops. Every frog must
+        get past every toad exactly once, and the only way past is a hop, so there are exactly
+        <code>MN</code> hops:
+      </p>
+      <blockquote><code>moves = N(M+1) + M(N+1) &minus; MN = MN + M + N</code>, of which <code>MN</code> are hops.</blockquote>
+      <p>
+        Set this board to one column (or one row) and you have exactly that puzzle. An exhaustive search
+        over every position confirms the formula for all of them: 3 moves for one of each, then 8, 15 and 24.
+      </p>
+
+      <h3>Why the square board is so much cheaper</h3>
+      <p>
+        A 3 by 3 board holds four frogs and four toads &mdash; the same eight animals as a line of nine
+        squares, which needs 24 moves. The square needs 12. In a line every frog has to hop over every
+        single toad, because there is no other way past. On a grid a frog can go right <em>or</em> down, so
+        animals can walk around one another and most of those 16 hops are never needed.
+      </p>
+
+      <h3>The shape of the board matters, not just its size</h3>
+      <p>
+        3 columns by 5 rows takes 22 moves; 5 columns by 3 rows takes 27, although both hold seven frogs and
+        seven toads. The opening position is not symmetric: the middle column is frogs above the hole and
+        toads below it, so turning the board on its side gives a genuinely different puzzle.
+      </p>
+
+      <h3>Solving it as a stack of line puzzles</h3>
+      <p>
+        Bogomolny's hint is to watch the middle column on its own. Every animal in it has to move, so the
+        empty square must visit every square of that column &mdash; which is itself the one-dimensional
+        puzzle. Each time the hole settles in a new row, that row is another one-dimensional puzzle waiting
+        to be solved. Solving the column tells you which row puzzle to solve next.
+      </p>
+      <p class="tip">
+        Try one column with two frogs and two toads first (8 moves), and notice the rule that always works:
+        when you can hop, hop; never leave two hops facing each other.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="frogs-core.js"></script>
+<script src="frogs-toads-2d.js"></script>
+</body>
+</html>

@@ -194,5 +194,11 @@ window.COOLMATHS = {
       blurb: "A row of red, blue and white squares, and one rule about being leftmost. Paint them all one colour \u2014 but first work out which famous puzzle this really is.",
       tags: ["induction", "algorithms", "counting"],
     },
+    {
+      slug: "frogs-toads-2d",
+      title: "Toads and Frogs in 2D",
+      blurb: "Frogs go right and down, toads go left and up, and one empty square is all the room they have. Swap the two sides \u2014 why is the square board so much easier than a single row?",
+      tags: ["counting", "algorithms"],
+    },
   ],
 };
