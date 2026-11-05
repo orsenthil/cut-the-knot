@@ -176,5 +176,11 @@ window.COOLMATHS = {
       blurb: "Draw one path through every white square. The snag: once it is moving it cannot stop or turn until something gets in its way.",
       tags: ["graph-theory", "parity", "algorithms"],
     },
+    {
+      slug: "diagonals",
+      title: "Diagonal Count",
+      blurb: "Join corners of a polygon with lines that never cross, until no more will fit. However you do it you always draw the same number of them \u2014 can you work out what it is before you start?",
+      tags: ["counting", "induction", "invariants"],
+    },
   ],
 };

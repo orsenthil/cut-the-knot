@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Diagonal Count &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  .stage {
+    padding: 14px 10px;
+    width: 100%;
+    max-width: 440px;
+    box-sizing: border-box;
+  }
+  #poly {
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    touch-action: none;
+  }
+
+  #sides {
+    fill: var(--board-a);
+    stroke: var(--ink);
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+  }
+  #poly.done #sides { fill: var(--accent-soft); }
+
+  .diagonal {
+    stroke: var(--accent);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+  #rubber {
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-dasharray: 5 5;
+    stroke-linecap: round;
+  }
+  #rubber.hidden { display: none; }
+
+  .vertex {
+    fill: var(--stage);
+    stroke: var(--ink);
+    stroke-width: 2;
+    cursor: pointer;
+  }
+  .vertex:hover { fill: var(--highlight); }
+  .vertex.picked { fill: var(--accent); stroke: var(--accent); }
+  .vertex:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  #count { font-size: 0.9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="diagonals">
+  <h1>Diagonal Count</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/Diagonals.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> join up corners of the polygon with straight lines that never cross each other,
+    and keep going until no more will fit.<br>
+    <strong>How to play:</strong> drag from one corner to another, or tap one corner and then the other. Corners
+    next door to each other don't count &mdash; that line is just a side. Guess how many lines you will fit
+    before you start.
+  </div>
+
+  <div class="stage">
+    <svg id="poly" viewBox="0 0 400 400" role="img" aria-label="A convex polygon">
+      <polygon id="sides" points=""></polygon>
+      <g id="diags"></g>
+      <line id="rubber" class="hidden"></line>
+      <g id="verts"></g>
+    </svg>
+  </div>
+
+  <div class="controls">
+    <label>Corners <input type="number" id="sizeIn" value="5" min="4" max="40" step="1"></label>
+    <button type="button" id="resetBtn" class="primary">Reset</button>
+    <span id="count">Diagonals: 0 / 2</span>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Bogomolny's page sets this as an experiment rather than a lesson: draw non-crossing diagonals however
+        you like, and work out the rule for yourself before reading on. Try a few different polygons above and
+        watch the second number in the counter. Whatever order you draw them in, and whichever diagonals you
+        pick, you fill a
+        <a class="wiki-term" data-wiki="Convex_polygon" href="https://en.wikipedia.org/wiki/Convex_polygon" target="_blank" rel="noopener">convex polygon</a>
+        with <code>n</code> corners using exactly <code>n &minus; 3</code> of them &mdash; never more, and you
+        can never get stuck on fewer.
+      </p>
+
+      <h3>Counting the angles</h3>
+      <p>
+        When no more diagonals fit, the polygon has been cut into triangles. Say there are <code>T</code> of
+        them and you drew <code>D</code> diagonals. Those triangles have <code>3T</code> sides between them,
+        and each of those sides is either an edge of the polygon, counted once, or a diagonal, counted from
+        both sides:
+      </p>
+      <blockquote><code>3T = n + 2D</code></blockquote>
+      <p>
+        Now add up all the angles. The triangles contribute <code>180&deg; &times; T</code>, and because no
+        diagonal crosses another, every one of those angles sits inside a corner of the polygon &mdash; so they
+        must add up to the polygon's own angle total, <code>180&deg; &times; (n &minus; 2)</code>. Putting the
+        two together, <code>180(n &minus; 2) = 180(n + 2D)/3</code>, which tidies up to
+        <code>D = n &minus; 3</code>. Feed that back into the first equation and you get the number of pieces
+        for free: <code>T = n &minus; 2</code>.
+      </p>
+
+      <h3>Or cut along one diagonal</h3>
+      <p>
+        Here is the same result by
+        <a class="wiki-term" data-wiki="Mathematical_induction" href="https://en.wikipedia.org/wiki/Mathematical_induction" target="_blank" rel="noopener">induction</a>.
+        A triangle has no diagonals, so <code>D = 0 = 3 &minus; 3</code> starts us off. For a bigger polygon,
+        finish the drawing and then cut along any one of your diagonals. You get two smaller polygons, each
+        already full &mdash; any diagonal you could add to one would have been legal in the original too. If
+        they have <code>n&#8321;</code> and <code>n&#8322;</code> corners then
+        <code>n&#8321; + n&#8322; = n + 2</code>, because the cut line becomes a side of both. Their diagonals
+        are <code>D &minus; 1</code> between them, since the cut itself is no longer one, so
+        <code>(n&#8321; &minus; 3) + (n&#8322; &minus; 3) = D &minus; 1</code> &mdash; and that rearranges to
+        <code>D = n &minus; 3</code> again.
+      </p>
+
+      <h3>How many are there altogether?</h3>
+      <p>
+        That is a different question, and an easier one. From each of the <code>n</code> corners you can reach
+        <code>n &minus; 3</code> others, which counts every diagonal twice, once from each end:
+        <code>n(n &minus; 3)/2</code> in all. A pentagon has 5 and a 40-gon has 740. The puzzle is that no
+        matter which of them you start with, you always run out of room after the same small handful.
+      </p>
+      <p class="tip">
+        One last question the page raises: the <em>number</em> of diagonals is always the same, but the
+        <em>pictures</em> are not. Counting how many different ways a polygon can be cut up like this gives the
+        <a class="wiki-term" data-wiki="Catalan_number" href="https://en.wikipedia.org/wiki/Catalan_number" target="_blank" rel="noopener">Catalan numbers</a>
+        &mdash; 1, 2, 5, 14, 42, 132 for polygons with 3, 4, 5, 6, 7, 8 corners. Try to find all 5 for the
+        pentagon.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="diagonals-core.js"></script>
+<script src="diagonals.js"></script>
+</body>
+</html>

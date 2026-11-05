@@ -88,6 +88,7 @@ const SLUG_TO_APPLET = {
   "eight-digits": "EightDigitPuzzle",
   "domino-faults": "DominoCovering",
   "full-house": "FullHouse",
+  diagonals: "Diagonals",
   "vanishing-digit": null,
   hourglass: null,
   torque: null,
