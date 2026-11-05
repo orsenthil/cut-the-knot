@@ -273,5 +273,11 @@ window.COOLMATHS = {
       blurb: "Three hounds that can never step back hunt one nimble hare. Can the hare slip past them \u2014 or do the hounds always win?",
       tags: ["game-strategy", "algorithms"],
     },
+    {
+      slug: "ducci",
+      title: "Integer Iterations on a Circle",
+      blurb: "Replace the numbers on a circle by the gaps between neighbours, again and again. Four numbers always end as zeros \u2014 so why don't five?",
+      tags: ["sequences", "parity", "number-theory"],
+    },
   ],
 };

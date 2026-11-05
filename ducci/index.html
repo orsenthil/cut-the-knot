@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Integer Iterations on a Circle &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage { width: 100%; padding: 12px 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  #circle { width: 100%; max-width: 420px; height: auto; display: block; touch-action: manipulation; }
+  .ring { fill: none; stroke: var(--border); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  .num { cursor: pointer; outline: none; }
+  .num .disc { fill: var(--board-a); stroke: var(--border-strong); stroke-width: 1.5; }
+  .num:hover .disc { fill: var(--highlight); }
+  .num:focus-visible .disc { stroke: var(--focus); stroke-width: 3.5; }
+  .num.zero .disc { fill: var(--surface-2); }
+  .num text { font: 700 18px system-ui, sans-serif; text-anchor: middle; dominant-baseline: central; fill: var(--ink); pointer-events: none; }
+  .num.zero text { fill: var(--muted); }
+  .half { fill: transparent; }
+  .sign { font: 600 11px system-ui, sans-serif; fill: var(--muted); opacity: 0; pointer-events: none; }
+  .num:hover .sign, .num:focus-visible .sign { opacity: 1; }
+  #stepLine { font-size: 0.9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  @media (prefers-reduced-motion: no-preference) {
+    .num { transition: transform 200ms ease; }
+  }
+</style>
+</head>
+<body data-game="ducci">
+  <h1>Integer Iterations on a Circle</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/IntIter.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> numbers sit in a circle. Each step, every pair of neighbours is replaced by the gap between them. Will the circle end up all zeros?<br>
+    <strong>How to play:</strong> press "One step" and watch. Click the right side of a number to add 1, the left side to take 1 away, and try other sizes.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="circle" viewBox="0 0 400 400" role="group" aria-label="Numbers on a circle"></svg>
+    <div id="stepLine"></div>
+  </div>
+
+  <div class="controls">
+    <label>Numbers <select id="nInput"></select></label>
+    <label><input type="checkbox" id="randomInput" checked> Random numbers</label>
+    <button type="button" id="stepBtn" class="primary">One step</button>
+    <button type="button" id="undoBtn">Undo</button>
+    <button type="button" id="resetBtn">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        This is E. Ducci's problem, and the sequences it makes are called
+        <a class="wiki-term" data-wiki="Ducci_sequence" href="https://en.wikipedia.org/wiki/Ducci_sequence" target="_blank" rel="noopener">Ducci sequences</a>.
+        Start with four numbers and you always end at four zeros. Change the number of numbers and
+        something different happens.
+      </p>
+
+      <h3>Why four always dies out</h3>
+      <p>
+        The numbers never get bigger: a gap between two numbers is at most the larger of them. Now look at
+        them only as even or odd. Whatever four numbers you start with, within four steps they are all even.
+        Halve them all and the same argument applies again, so they become divisible by 4, then by 8, and so
+        on. Numbers that never grow but are divisible by every power of 2 must be 0. Checking every start with
+        numbers from 0 to 15 agrees, and also confirms Honsberger's observation that the largest number drops
+        within four steps.
+      </p>
+
+      <h3>Powers of two, and everything else</h3>
+      <p>
+        The same parity argument works for 8, 16, 32 numbers: any power of 2 dies out. For other sizes it
+        usually fails. Start with a single 1 among zeros: it reaches all zeros exactly when the number of
+        numbers is a power of 2, which links to the even and odd entries of
+        <a class="wiki-term" data-wiki="Pascal%27s_triangle" href="https://en.wikipedia.org/wiki/Pascal%27s_triangle" target="_blank" rel="noopener">Pascal's triangle</a>
+        through <a class="wiki-term" data-wiki="Lucas%27s_theorem" href="https://en.wikipedia.org/wiki/Lucas%27s_theorem" target="_blank" rel="noopener">Lucas' theorem</a>.
+        Some other starts still die out, like <code>1 0 1 0 1 0</code>, <code>1 2 1 2 1 0</code> and
+        <code>1 2 3 2 1 0</code> with six numbers.
+      </p>
+
+      <h3>Loops</h3>
+      <p>
+        When a circle doesn't die out, it falls into a
+        <a class="wiki-term" data-wiki="Periodic_sequence" href="https://en.wikipedia.org/wiki/Periodic_sequence" target="_blank" rel="noopener">loop</a>,
+        and how long the loop is depends on what you count as "the same". With five numbers the circle comes
+        back turned round after 3 steps, on the same ring of positions after 6, and exactly as it was after 15.
+        Bogomolny's page says six numbers give loops of length 2 and 3. Checking every start with numbers up to 3
+        gives a slightly different picture: there are two kinds of loop, one that repeats exactly after 6 steps
+        and one after 3, or after 2 and 1 steps if you allow the circle to turn.
+      </p>
+      <p class="tip">
+        The absolute value matters. Without it (just <code>a &minus; b</code>), four numbers that are not all
+        equal grow without limit. Try three numbers too: <code>0 0 1</code> never dies out.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="ducci-core.js"></script>
+<script src="ducci.js"></script>
+</body>
+</html>
