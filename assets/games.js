@@ -243,5 +243,11 @@ window.COOLMATHS = {
       blurb: "Six numbers follow a secret rule. Can you name the seventh \u2014 and is there ever only one right answer?",
       tags: ["sequences", "algebra"],
     },
+    {
+      slug: "hanoi",
+      title: "Tower of Hanoi",
+      blurb: "Move a tower of disks to another peg, one at a time, never a big one on a small one. Why does every extra disk double the work?",
+      tags: ["induction", "algorithms"],
+    },
   ],
 };

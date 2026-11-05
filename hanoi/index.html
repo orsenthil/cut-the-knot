@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tower of Hanoi &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #pegs {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    width: 100%;
+    max-width: 520px;
+    padding: 16px 10px;
+  }
+  .peg {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 4px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    box-shadow: none;
+    line-height: 0;
+  }
+  .peg:hover:not(:disabled) { background: var(--surface-2); }
+  .peg:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .peg.holding { border-color: var(--accent); background: var(--accent-soft); }
+  .peg.target { border-style: dashed; border-color: var(--accent); }
+  .peg.illegal { background: var(--highlight); }
+  .peg.hinted { background: var(--highlight); }
+  .pegArt { width: 100%; height: auto; display: block; pointer-events: none; }
+
+  /* The disks have a real colour of their own: the applet's green, lightened
+     a little so it reads on the light and the dark stage. */
+  .disk { fill: #3d9a5c; stroke: var(--ink); stroke-width: 0.7; }
+  .rod, .plinth { fill: var(--border-strong); }
+
+  #scoreLine { margin-top: 10px; font-size: 0.9rem; color: var(--muted); text-align: center; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .peg { transition: background-color 140ms ease; }
+  }
+</style>
+</head>
+<body data-game="hanoi">
+  <h1>Tower of Hanoi</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/recurrence/hanoi.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> move the whole tower of disks from the left peg to the right peg.<br>
+    <strong>How to play:</strong> click a peg to lift its top disk, then click another peg to drop it there.
+    Move one disk at a time, and never put a disk on a smaller one.
+  </div>
+
+  <div id="pegs" class="stage"></div>
+
+  <div class="controls">
+    <label>Disks <select id="nInput"></select></label>
+    <button type="button" id="slowBtn">Slow</button>
+    <button type="button" id="fastBtn">Fast</button>
+    <button type="button" id="hintBtn">Suggest move</button>
+    <button type="button" id="resetBtn" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <div id="scoreLine"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        &Eacute;douard Lucas invented this puzzle in 1883. It is the classic first example of
+        <a class="wiki-term" data-wiki="Recursion_(computer_science)" href="https://en.wikipedia.org/wiki/Recursion_(computer_science)" target="_blank" rel="noopener">recursion</a>:
+        a big problem solved by solving a smaller copy of itself.
+      </p>
+
+      <h3>The recursive solution</h3>
+      <p>
+        Sooner or later the biggest disk has to move from the left peg to the right one. At that moment
+        every other disk must be stacked on the middle peg. So: move the top <code>N&minus;1</code> disks to
+        the middle, move the big disk, then move the <code>N&minus;1</code> disks on top of it.
+      </p>
+      <blockquote><code>Solve(N, Src, Aux, Dst) = Solve(N&minus;1, Src, Dst, Aux), Src&rarr;Dst, Solve(N&minus;1, Aux, Src, Dst)</code></blockquote>
+      <p>The Slow and Fast buttons play exactly this.</p>
+
+      <h3>How many moves</h3>
+      <p>
+        Let <code>T<sub>N</sub></code> be the fewest moves for <code>N</code> disks. The argument above says
+        you must move <code>N&minus;1</code> disks twice and the big one once, so
+      </p>
+      <blockquote><code>T<sub>0</sub> = 0, T<sub>N</sub> = 2T<sub>N&minus;1</sub> + 1</code>, which gives <code>T<sub>N</sub> = 2<sup>N</sup> &minus; 1</code>.</blockquote>
+      <p>
+        This is a
+        <a class="wiki-term" data-wiki="Recurrence_relation" href="https://en.wikipedia.org/wiki/Recurrence_relation" target="_blank" rel="noopener">recurrence relation</a>.
+        Add 1 to both sides and it doubles each time: <code>T<sub>N</sub>+1 = 2(T<sub>N&minus;1</sub>+1)</code>.
+        Four disks take 15 moves and ten take 1,023. The legend's 64 disks, at one move a second, would
+        take about 585 billion years.
+      </p>
+
+      <h3>A hint from anywhere</h3>
+      <p>
+        "Suggest move" doesn't replay the recursion. It works from any position, even a messy one, using
+        an idea of Romek Zylla. Start with the biggest disk and the right peg as its target. If the disk is
+        already there, look at the next disk down with the same target. If the disk is free to move onto its
+        target, that's the move. Otherwise the disks above it have to get out of the way first, onto the third
+        peg, so that peg becomes the next disk's target. Checking every one of the
+        <code>3<sup>N</sup></code> positions for up to 8 disks, following the hints always finishes in the
+        fewest possible moves.
+      </p>
+      <p class="tip">
+        Watch the smallest disk in a perfect solution: it moves every other turn, always around the pegs in
+        the same direction.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="hanoi-core.js"></script>
+<script src="hanoi.js"></script>
+</body>
+</html>

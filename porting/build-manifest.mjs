@@ -97,6 +97,7 @@ const SLUG_TO_APPLET = {
   "frogs-toads": "FrogsAndToads",
   grundy: "Grundy",
   "whats-next": "guess",
+  hanoi: "hanoi",
   "gergonne": "GergonneMagic",
   "vanishing-digit": null,
   hourglass: null,
