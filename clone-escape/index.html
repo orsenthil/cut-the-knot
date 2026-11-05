@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Escape of the Clones &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage {
+    width: 100%;
+    max-width: 440px;
+    padding: 16px;
+  }
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 1px;
+    background: var(--border-strong);
+    padding: 1px;
+    border-radius: 6px;
+    width: 100%;
+  }
+  .cell {
+    aspect-ratio: 1;
+    position: relative;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: var(--board-a);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cell:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; z-index: 2; }
+  /* The prison fence is the applet's own dark orange: it is the one thing on
+     the board with a colour of its own. */
+  .cell.prison { background: var(--prison); }
+  #grid { --prison: #fbe6cd; --fence: #c96a10; --body: #3f6fd8; }
+  :root[data-theme="dark"] #grid { --prison: #3a2a16; --fence: #e08a2e; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) #grid { --prison: #3a2a16; --fence: #e08a2e; }
+  }
+
+  .clone {
+    width: 72%;
+    height: 72%;
+    border-radius: 50%;
+    background: var(--body);
+    position: relative;
+    transition: width 140ms ease, height 140ms ease;
+  }
+  .clone::before, .clone::after {
+    content: "";
+    position: absolute;
+    top: 30%;
+    width: 15%;
+    height: 15%;
+    border-radius: 50%;
+    background: #fff;
+    transition: height 140ms ease, top 140ms ease;
+  }
+  .clone::before { left: 25%; }
+  .clone::after { right: 25%; }
+  /* OpenEyes: the clones look up when a click does nothing, or when they win. */
+  #grid.staring .clone::before, #grid.staring .clone::after { height: 28%; top: 24%; }
+  .cell.fresh .clone { width: 86%; height: 86%; }
+
+  .label {
+    position: absolute;
+    top: 1px;
+    left: 2px;
+    font-size: 9px;
+    line-height: 1;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+  }
+  #grid:not(.weights) .label { display: none; }
+  #grid.weights .clone { width: 60%; height: 60%; }
+
+  #weightLine {
+    margin-top: 12px;
+    font-size: 0.88rem;
+    color: var(--muted);
+    text-align: center;
+    min-height: 1.3em;
+  }
+  #weightLine code { font-size: 0.95em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .clone, .clone::before, .clone::after { transition: none; }
+  }
+</style>
+</head>
+<body data-game="clone-escape">
+  <h1>Escape of the Clones</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/CloneEscape.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> get every clone out of the orange prison in the corner. Click a clone and it
+    splits in two: one copy moves down, one moves right.<br>
+    <strong>How to play:</strong> a clone can only split if both squares &mdash; below it and to its right
+    &mdash; are free. Start with the small prison and work up. Some of them cannot be escaped at all.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="grid"></div>
+  </div>
+
+  <div class="controls">
+    <label>Prison
+      <select id="prisonInput">
+        <option value="1">1 square</option>
+        <option value="2">3 squares</option>
+        <option value="3">2&times;2 square</option>
+        <option value="4">6 squares</option>
+        <option value="5">10 squares</option>
+      </select>
+    </label>
+    <label>Start rows
+      <input type="number" id="rowsInput" min="1" max="10" value="1">
+    </label>
+    <label><input type="checkbox" id="weightsInput"> Show weights</label>
+    <button type="button" id="undoBtn">Undo</button>
+    <button type="button" id="resetBtn" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <div id="weightLine"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Three of the five prisons can be emptied and two cannot, and no amount of clicking will tell you
+        which is which &mdash; the board is infinite, so "I couldn't do it" proves nothing. What settles it
+        is a single number that never changes however you play. Turn on <strong>Show weights</strong> to see
+        it being carried around.
+      </p>
+
+      <h3>Give every square a weight</h3>
+      <p>
+        Write <code>2<sup>&minus;(row+col)</sup></code> on the square in that row and column: <code>1</code>
+        in the corner, <code>1/2</code> on its two neighbours, <code>1/4</code> on the next diagonal, and so
+        on forever. Now watch what a split does. A clone of weight <code>2<sup>&minus;s</sup></code> becomes
+        two clones one step further out, each worth <code>2<sup>&minus;(s+1)</sup></code>, and
+      </p>
+      <blockquote><code>2<sup>&minus;(s+1)</sup> + 2<sup>&minus;(s+1)</sup> = 2<sup>&minus;s</sup></code></blockquote>
+      <p>
+        so the total weight the clones are standing on is exactly the same after the move as before. That
+        total is an
+        <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>:
+        one clone in the corner is worth 1, and every position you can ever reach from it is worth 1 too.
+      </p>
+
+      <h3>The whole board is only worth 4</h3>
+      <p>
+        Add up every square. The top row is <code>1 + 1/2 + 1/4 + &hellip;</code>, a
+        <a class="wiki-term" data-wiki="Geometric_series" href="https://en.wikipedia.org/wiki/Geometric_series" target="_blank" rel="noopener">geometric series</a>
+        worth 2. The next row is half of that, the one after half again, and the rows together come to
+        <code>2 + 1 + 1/2 + &hellip; = 4</code>. So the infinite board holds a grand total of 4, and the
+        prisons eat a lot of it:
+      </p>
+      <blockquote>
+        1 square: <code>1</code> &nbsp;&middot;&nbsp; 3 squares: <code>2</code> &nbsp;&middot;&nbsp;
+        2&times;2: <code>9/4</code> &nbsp;&middot;&nbsp; 6 squares: <code>11/4</code> &nbsp;&middot;&nbsp;
+        10 squares: <code>13/4</code>
+      </blockquote>
+      <p>
+        Escaping means every clone ends up outside the prison, so the weight they carry &mdash; always 1
+        &mdash; has to fit in what is left of the 4. The 10-square prison leaves only
+        <code>4 &minus; 13/4 = 3/4</code>, and 3/4 is not enough room for 1. That prison can never be
+        emptied, and you now know it without trying a single move.
+      </p>
+
+      <h3>The awkward one</h3>
+      <p>
+        The 6-square prison leaves <code>4 &minus; 11/4 = 5/4</code>, which is more than 1, so the simple
+        count does not decide it. Two extra observations finish the job. After the first split there is
+        always exactly one clone in the top row and exactly one in the left column, and the best they can do
+        is sit on the <code>1/8</code> squares just outside the fence &mdash; so a good chunk of that
+        <code>5/4</code> is unreachable. And a finite pile of clones can never collect the <em>whole</em>
+        weight of an infinite region anyway: any total that needs infinitely many squares is out of reach in
+        finitely many moves. Squeeze from both sides and the room left really is under 1. So the 6-square
+        prison is inescapable too, just less obviously.
+      </p>
+      <p class="tip">
+        Try this: set the prison to 1 square but the start to 2 rows. Three clones carry a weight of 2,
+        the board outside that one square holds 3, and it works. Now keep 2 rows and ask for the 3-square
+        prison &mdash; weight 2 against exactly 2 of room, and suddenly it is hopeless.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="clones-core.js"></script>
+<script src="clone-escape.js"></script>
+</body>
+</html>

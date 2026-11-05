@@ -81,6 +81,7 @@ const SLUG_TO_APPLET = {
   "four-by-four": "FourByFour",
   "circle-solitaire": "CSolitaire",
   "calendar-magic": "Calendar",
+  "clone-escape": "CloneEscape",
   "vanishing-digit": null,
   hourglass: null,
   torque: null,

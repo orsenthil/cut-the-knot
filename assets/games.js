@@ -28,6 +28,7 @@ window.COOLMATHS = {
     "complex-analysis": "Complex Analysis",
     "physics": "Physics",
     "graph-theory": "Graph Theory",
+    "series": "Infinite Series",
   },
 
   games: [
@@ -126,6 +127,12 @@ window.COOLMATHS = {
       title: "Calendar Magic",
       blurb: "Outline a square of dates on a calendar and circle one in each row and column. The total is announced before you pick a thing \u2014 how can it already be known?",
       tags: ["arithmetic", "invariants", "algebra"],
+    },
+    {
+      slug: "clone-escape",
+      title: "Escape of the Clones",
+      blurb: "A clone in the corner splits into two: one below, one to the right. Can you empty the prison it starts in? For some prisons no sequence of moves works, and a weight you write on every square says which.",
+      tags: ["invariants", "series"],
     },
   ],
 };
