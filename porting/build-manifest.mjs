@@ -82,6 +82,7 @@ const SLUG_TO_APPLET = {
   "circle-solitaire": "CSolitaire",
   "calendar-magic": "Calendar",
   "clone-escape": "CloneEscape",
+  "dawsons-chess": "DawsonChess",
   "vanishing-digit": null,
   hourglass: null,
   torque: null,

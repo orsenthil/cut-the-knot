@@ -134,5 +134,11 @@ window.COOLMATHS = {
       blurb: "A clone in the corner splits into two: one below, one to the right. Can you empty the prison it starts in? For some prisons no sequence of moves works, and a weight you write on every square says which.",
       tags: ["invariants", "series"],
     },
+    {
+      slug: "dawsons-chess",
+      title: "Dawson's Chess",
+      blurb: "Knock down a skittle in the ring and the ones on either side of it go too. Take the last skittle and you win \u2014 so which rings can you not lose from?",
+      tags: ["game-strategy", "invariants", "induction"],
+    },
   ],
 };

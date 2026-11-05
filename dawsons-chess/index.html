@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dawson&rsquo;s Chess &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage {
+    width: 100%;
+    max-width: 460px;
+    padding: 20px;
+  }
+  #ring {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 1;
+    margin: 0 auto;
+  }
+  /* Skittles have a colour of their own: turned wood, with an ink outline so
+     they read on both --stage backgrounds. */
+  .skittle {
+    position: absolute;
+    width: var(--d);
+    height: var(--d);
+    padding: 0;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle at 34% 28%, #f6ecd2, #d8bd86 70%, #c2a269);
+    border: 2px solid var(--ink);
+    cursor: pointer;
+    transition: background-color 150ms ease, opacity 150ms ease, box-shadow 150ms ease;
+  }
+  .skittle:hover:not(:disabled) { background: radial-gradient(circle at 34% 28%, #fffaf0, #f0dfb5 70%, #d9bd84); }
+  .skittle:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; z-index: 1; }
+  .skittle.down {
+    background: none;
+    border: 2px dashed var(--border-strong);
+    opacity: 0.55;
+    cursor: default;
+  }
+  .skittle.fell { box-shadow: 0 0 0 5px var(--highlight); opacity: 1; }
+  .skittle:disabled:not(.down) { cursor: default; }
+
+  #countLabel { font-variant-numeric: tabular-nums; min-width: 1.6em; text-align: center; display: inline-block; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skittle { transition: none; }
+  }
+</style>
+</head>
+<body data-game="dawsons-chess">
+  <h1>Dawson&rsquo;s Chess</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/DawsonChess.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> knock down the last skittle in the ring and you win.<br>
+    <strong>How to play:</strong> click any standing skittle. It falls, and so does the skittle on each
+    side of it. Then the computer takes a turn, and you keep going until the ring is empty.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="ring"></div>
+  </div>
+
+  <div class="controls">
+    <label>Skittles
+      <button type="button" id="fewerBtn" aria-label="Fewer skittles">&minus;</button>
+      <span id="countLabel" aria-live="off">18</span>
+      <button type="button" id="moreBtn" aria-label="More skittles">+</button>
+    </label>
+    <label><input type="checkbox" id="fullBox"> Full circle</label>
+    <button type="button" id="cpuBtn">Computer moves</button>
+    <button type="button" id="newBtn" class="primary">New game</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Knocking over skittles looks like nothing much, and the whole theory of two-player games with no
+        hidden information and no draws is hiding inside it. This one is the standard example of that
+        theory, and of the one embarrassing thing the theory still cannot explain.
+      </p>
+
+      <h3>From pawns to skittles</h3>
+      <p>
+        <a class="wiki-term" data-wiki="Thomas_Rayner_Dawson" href="https://en.wikipedia.org/wiki/Thomas_Rayner_Dawson" target="_blank" rel="noopener">T. R. Dawson</a>,
+        a chess-problem composer, invented this in the 1930s as a game of pawns: a board three squares deep
+        and <code>n</code> wide, a row of white pawns along one edge facing a row of black along the other,
+        pawns moving straight forward and capturing diagonally, and capturing compulsory. Work through the forced exchanges and a file where the pawns meet is used up along with
+        the files on either side of it, and the rest of the board is untouched. That is exactly the skittle
+        rule, so the pawns can be thrown away and only the ring of files kept.
+      </p>
+
+      <h3>A move cuts the ring into arcs</h3>
+      <p>
+        A fallen skittle never gets back up, and knocking over an empty place does nothing. So the first
+        move turns the ring into an arc, and every move after that cuts an arc into two shorter ones. The
+        pieces can never join back up, and a move inside one of them cannot touch any other. The position is
+        therefore a <em>sum</em> of small independent games, which is the shape the theory needs. Watch the
+        status line: it tells you which arcs you are holding.
+      </p>
+
+      <h3>Nim-values, added with XOR</h3>
+      <p>
+        The <a class="wiki-term" data-wiki="Sprague–Grundy_theorem" href="https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem" target="_blank" rel="noopener">Sprague&ndash;Grundy theorem</a>
+        says every such game behaves like a heap in
+        <a class="wiki-term" data-wiki="Nim" href="https://en.wikipedia.org/wiki/Nim" target="_blank" rel="noopener">Nim</a>
+        of some size, its <em>nim-value</em>. An empty arc is worth <code>0</code>, and any other arc is worth
+        the <a class="wiki-term" data-wiki="Mex_(mathematics)" href="https://en.wikipedia.org/wiki/Mex_(mathematics)" target="_blank" rel="noopener">mex</a>
+        &mdash; the smallest whole number not there &mdash; of the values its moves lead to. Building that up
+        by hand from <code>0</code> gives the nim-values of an arc of <code>n</code> skittles:
+      </p>
+      <blockquote>
+        <code>n&nbsp;&nbsp;:&nbsp;0&nbsp;1&nbsp;2&nbsp;3&nbsp;4&nbsp;5&nbsp;6&nbsp;7&nbsp;8&nbsp;9&nbsp;10&nbsp;11&nbsp;12&nbsp;13&nbsp;14&nbsp;15&nbsp;16&nbsp;17</code><br>
+        <code>G&nbsp;&nbsp;:&nbsp;0&nbsp;1&nbsp;1&nbsp;2&nbsp;0&nbsp;3&nbsp;1&nbsp;1&nbsp;0&nbsp;3&nbsp;&nbsp;3&nbsp;&nbsp;2&nbsp;&nbsp;2&nbsp;&nbsp;4&nbsp;&nbsp;0&nbsp;&nbsp;5&nbsp;&nbsp;2&nbsp;&nbsp;2</code>
+      </blockquote>
+      <p>
+        The payoff is that a sum of arcs is worth the <code>XOR</code> of their values &mdash; add them in
+        binary and throw the carries away. And the rule is the Nim rule:
+      </p>
+      <blockquote>Whoever has to move when the XOR is <code>0</code> loses.</blockquote>
+      <p>
+        An arc of 4 is worth <code>0</code>, so arcs of <code>4 + 4</code> is a position you want to hand
+        your opponent; arcs of <code>5 + 9</code> is worth <code>3 XOR 3 = 0</code> and just as deadly. That
+        is the whole of the computer's strategy, and the only reason it ever loses is that from a
+        <code>0</code> position there is no good move and it plays at random.
+      </p>
+
+      <h3>The sequence that nearly repeats</h3>
+      <p>
+        Octal games like this one almost always end up with a periodic nim-sequence, and this is the famous
+        case. Dawson's values repeat with period <strong>34</strong> &mdash; but only from <code>n = 52</code>
+        onwards, and exactly five earlier values break the pattern, at <code>n = 14, 16, 31, 34</code> and
+        <code>51</code>. Nobody knows a reason for the 34, for where the periodicity starts, or for why those
+        five misbehave; they were found by computing the table, and that is still the only way to know. For
+        the record, no arc is ever worth more than <code>9</code>.
+      </p>
+      <p class="tip">
+        Try this: tick <em>Full circle</em>, set 18 skittles, and press <em>Computer moves</em> so it has to
+        go first. An unbroken ring of 18 is a losing position for whoever has to move, so from there a
+        careful game is always a win for you &mdash; and if you move first instead, nothing can save it.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="dawson-core.js"></script>
+<script src="dawsons-chess.js"></script>
+</body>
+</html>
