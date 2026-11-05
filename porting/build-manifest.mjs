@@ -83,6 +83,7 @@ const SLUG_TO_APPLET = {
   "calendar-magic": "Calendar",
   "clone-escape": "CloneEscape",
   "dawsons-chess": "DawsonChess",
+  "bicolor-hanoi": "BiColorHanoi",
   "vanishing-digit": null,
   hourglass: null,
   torque: null,

@@ -140,5 +140,11 @@ window.COOLMATHS = {
       blurb: "Knock down a skittle in the ring and the ones on either side of it go too. Take the last skittle and you win \u2014 so which rings can you not lose from?",
       tags: ["game-strategy", "invariants", "induction"],
     },
+    {
+      slug: "bicolor-hanoi",
+      title: "Bicolor Towers of Hanoi",
+      blurb: "Two towers of disks, both striped gold and red, and one spare peg. Make each tower a single colour \u2014 and swap the two towers over. Three sizes can be done in 29 moves: can you?",
+      tags: ["induction", "algorithms", "counting"],
+    },
   ],
 };
