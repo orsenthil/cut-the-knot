@@ -164,5 +164,11 @@ window.COOLMATHS = {
       blurb: "Skittles stand in a ring and each move knocks down two that are side by side. Take the last pair to win \u2014 but the ring quietly breaks into separate games, and only their XOR tells you who is winning.",
       tags: ["game-strategy", "invariants", "algorithms"],
     },
+    {
+      slug: "domino-faults",
+      title: "Dominoes on a Chessboard",
+      blurb: "Cover the board with dominoes so that no straight line runs clean across it. On a 6 by 6 board it cannot be done, however you try \u2014 can you see what stops you?",
+      tags: ["parity", "counting"],
+    },
   ],
 };

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dominoes on a Chessboard &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #boardWrap {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 18px 12px;
+  }
+  #board {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    aspect-ratio: var(--cols) / var(--rows);
+    width: 100%;
+    touch-action: manipulation;
+  }
+  .cell {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: var(--board-a);
+    box-shadow: inset 0 0 0 1px var(--border-strong);
+    min-width: 0;
+    cursor: pointer;
+  }
+  .cell.dark { background: var(--board-b); }
+  .cell:hover:not(:disabled) { background: var(--highlight); }
+  .cell:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; z-index: 3; }
+  .cell.picked { box-shadow: inset 0 0 0 3px var(--accent); z-index: 2; }
+
+  .overlay { position: absolute; inset: 0; pointer-events: none; }
+  /* A domino is a real object, so it keeps its own colour on both themes. */
+  .piece {
+    position: absolute;
+    border-radius: 7px;
+    background: #d8b26a;
+    box-shadow: inset 0 0 0 1px rgba(60, 42, 10, 0.55);
+  }
+  .fault { position: absolute; background: var(--bad); border-radius: 2px; }
+
+  #scoreLine { margin-top: 10px; font-size: 0.9rem; color: var(--muted); text-align: center; }
+</style>
+</head>
+<body data-game="domino-faults">
+  <h1>Dominoes on a Chessboard</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/DominoCovering.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> fill the board with dominoes so that no straight line runs all the way across
+    between them. A line nothing crosses turns red and is called a fault.<br>
+    <strong>How to play:</strong> click a square, then a square next to it, to lay a domino across the two.
+    Click a domino to take it away. Some boards cannot be done at all &mdash; the 6 by 6 is the famous one.
+  </div>
+
+  <div id="boardWrap" class="stage">
+    <div id="board"></div>
+  </div>
+
+  <div class="controls">
+    <label>Rows <select id="rowsInput"></select></label>
+    <label>Columns <select id="colsInput"></select></label>
+    <button type="button" id="removeBtn">Remove last</button>
+    <button type="button" id="resetBtn" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <div id="scoreLine"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        A domino covers two squares that share an edge. Covering a board with them is easy; covering it so
+        that no grid line survives uncrossed is not. Bogomolny's page sets one exercise: prove that every
+        covering of the 6 by 6 board leaves a fault line. The whole proof is counting.
+      </p>
+
+      <h3>One domino across a line is never enough</h3>
+      <p>
+        Take an interior line of the 6 by 6 and look at the board on one side of it: a 6 by <code>t</code>
+        rectangle, which has an even number of squares whatever <code>t</code> is. Now suppose exactly one
+        domino straddled the line. That side would then hold a whole number of dominoes plus one half
+        &mdash; an odd number of squares &mdash; which an even rectangle cannot be. So crossings come in
+        pairs:
+      </p>
+      <blockquote>every interior line needs at least <code>2</code> dominoes crossing it.</blockquote>
+      <p>
+        The argument works on any line that leaves an even number of squares on each side of it, which on
+        the 6 by 6 means all ten of them.
+      </p>
+
+      <h3>Why the 6 by 6 cannot be done</h3>
+      <p>
+        A 6 by 6 board has 5 horizontal and 5 vertical interior lines, so 10 in all. Two dominoes each
+        makes 20 dominoes, and every domino crosses only one line, so no domino is counted twice. Those 20
+        dominoes would cover 40 squares &mdash; on a board that has 36. The covering cannot exist.
+      </p>
+      <p>
+        The board gets very close, though. There are 6728 ways to cover a 6 by 6 with dominoes, and the
+        best of them leaves exactly one fault line. Every one of those coverings has been checked by the
+        test that ships with this page, and no line in any of them is crossed by exactly one domino, just
+        as the argument above says.
+      </p>
+
+      <h3>Which boards do work</h3>
+      <p>
+        The page states the general rule: a fault-free covering of an <code>N</code> by <code>M</code>
+        board exists exactly when
+      </p>
+      <blockquote><code>N&middot;M</code> is even, <code>N &gt; 4</code>, <code>M &gt; 4</code>, and the board is not the 6 by 6.</blockquote>
+      <p>
+        So the smallest one that works is 5 by 6. The thin boards fail for the same counting reason as the
+        6 by 6, only sooner, and an odd number of squares cannot be covered at all. Every board up to 7 by 8
+        has been searched exhaustively here, and the search agrees with the rule in every case.
+      </p>
+      <p class="tip">
+        Try 5 by 6 first, then the 6 by 6: get it down to a single fault line and you have matched the best
+        covering there is.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="domino-core.js"></script>
+<script src="domino-faults.js"></script>
+</body>
+</html>
