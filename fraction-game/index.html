@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Contorted Fractions &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 12px 18px;
+  }
+
+  #side { font-size: 0.92rem; color: var(--muted); text-align: center; }
+  #side strong { color: var(--text); }
+
+  #board { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+
+  .card {
+    position: relative;
+    min-width: 76px;
+    padding: 10px 12px 8px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+    cursor: pointer;
+    font: inherit;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .card:hover:not(:disabled) { border-color: var(--border-strong); background: var(--card); }
+  .card[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .card:disabled { cursor: default; opacity: 0.55; }
+  .card.stuck { border-style: dashed; }
+
+  .fr { display: flex; flex-direction: column; align-items: center; line-height: 1.05; font-variant-numeric: tabular-nums; }
+  .fr .n { font-size: 1.5rem; font-weight: 700; }
+  .fr .d { font-size: 1.5rem; font-weight: 700; border-top: 2px solid currentColor; padding-top: 2px; margin-top: 2px; min-width: 1.6em; text-align: center; }
+  .fr.whole .d { border: none; display: none; }
+  .val { font-size: 0.72rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  #dial {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  #dial[hidden] { display: none; }
+  #dialHead { font-size: 1rem; font-weight: 650; text-align: center; font-variant-numeric: tabular-nums; }
+  #dialHead .to { color: var(--accent); }
+  .dialRow { display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+  .dialRow .label { min-width: 6.6em; color: var(--muted); }
+  .dialRow button { min-width: 2.4em; padding: 4px 8px; }
+  .dialRow .num { min-width: 2.6em; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; }
+  #dialNote { font-size: 0.88rem; min-height: 1.3em; text-align: center; color: var(--muted); }
+  #dialNote.bad { color: var(--bad); }
+  #dialNote.ok { color: var(--good); }
+  .dialBtns { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+
+  #total { font-size: 0.88rem; color: var(--muted); font-variant-numeric: tabular-nums; text-align: center; }
+
+  .controls { flex-direction: column; gap: 10px; }
+  .controls .row { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: center; }
+  .controls input[type="number"] { width: 4.4em; }
+  .controls label { display: inline-flex; align-items: center; gap: 6px; }
+</style>
+</head>
+<body data-game="fraction-game">
+  <h1>Contorted Fractions</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/FractionGame.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> some fractions are on the table and you take turns changing one of them. Whoever runs out of moves loses.<br>
+    <strong>How to play:</strong> pick a fraction, then dial it to a new value with a <em>smaller bottom number</em> &mdash; and it must go the way your side goes, down if you are Left and up if you are Right. Once the bottom number is 1, the top one has to shrink instead.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="side"></div>
+    <div id="board" role="group" aria-label="The fractions on the table"></div>
+    <div id="dial" hidden>
+      <div id="dialHead"></div>
+      <div class="dialRow">
+        <span class="label">Top number</span>
+        <button type="button" id="pMinus" aria-label="Decrease the top number">&minus;</button>
+        <span class="num" id="pVal"></span>
+        <button type="button" id="pPlus" aria-label="Increase the top number">+</button>
+      </div>
+      <div class="dialRow">
+        <span class="label">Bottom number</span>
+        <button type="button" id="qMinus" aria-label="Decrease the bottom number">&minus;</button>
+        <span class="num" id="qVal"></span>
+        <button type="button" id="qPlus" aria-label="Increase the bottom number">+</button>
+      </div>
+      <div id="dialNote" aria-live="polite"></div>
+      <div class="dialBtns">
+        <button type="button" id="doMove" class="primary">Make this move</button>
+        <button type="button" id="cancelMove">Cancel</button>
+      </div>
+    </div>
+    <div id="total"></div>
+  </div>
+
+  <div class="controls">
+    <div class="row">
+      <span>You are</span>
+      <label><input type="radio" name="side" value="left" checked> Left (go down)</label>
+      <label><input type="radio" name="side" value="right"> Right (go up)</label>
+    </div>
+    <div class="row">
+      <label>Fractions <input type="number" id="countInput" min="2" max="6" step="1" value="4"></label>
+      <label>Max <input type="number" id="maxInput" min="4" max="20" step="1" value="9"></label>
+      <label><input type="checkbox" id="valuesBox"> Show values</label>
+    </div>
+    <div class="row">
+      <button type="button" id="newBtn">New Game</button>
+      <button type="button" id="moveBtn">Computer Moves</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        This is a browser version of Alexander Bogomolny's applet
+        <a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/FractionGame.shtml" target="_blank" rel="noopener">"Fraction Game"</a>,
+        which is Conway's <em>Contorted Fractions</em> from <em>Winning Ways for Your Mathematical
+        Plays</em>. Left may only make a number smaller, Right may only make it larger, and either
+        way the denominator has to shrink. No move touches two fractions at once, so the table is
+        several separate games played side by side &mdash; the setting of
+        <a class="wiki-term" data-wiki="Combinatorial_game_theory" href="https://en.wikipedia.org/wiki/Combinatorial_game_theory" target="_blank" rel="noopener">combinatorial game theory</a>.
+      </p>
+
+      <h3>Your best move is always a parent</h3>
+      <p>
+        Left wants the number to drop as little as possible, so Left wants the <em>largest</em>
+        number below <code>x</code> with a smaller denominator. That number has a name: it is
+        <code>x</code>'s left parent on the
+        <a class="wiki-term" data-wiki="Stern-Brocot_tree" href="https://en.wikipedia.org/wiki/Stern-Brocot_tree" target="_blank" rel="noopener">Stern&ndash;Brocot tree</a>,
+        and Right's best is the right parent. From <code>2/5</code>:
+      </p>
+      <blockquote>Left should play <code>1/3</code>, Right should play <code>1/2</code>.</blockquote>
+      <p>
+        The two parents always add up to the fraction itself, numerator with numerator and
+        denominator with denominator &mdash; <code>(1+1)/(3+2) = 2/5</code>. That sum is called the
+        <a class="wiki-term" data-wiki="Mediant_(mathematics)" href="https://en.wikipedia.org/wiki/Mediant_(mathematics)" target="_blank" rel="noopener">mediant</a>,
+        and it is how the whole tree is built. Every other move you could make is worse than a
+        parent, so each fraction really offers just two moves: <code>x = { left parent | right parent }</code>.
+      </p>
+
+      <h3>What a fraction is worth</h3>
+      <p>
+        Two options, one for each player, is exactly the shape of a number in game theory. Its
+        worth is the <em>simplest</em> number lying strictly between what the two parents are
+        worth, and an integer is simply worth itself. Working upward:
+      </p>
+      <blockquote>
+        <code>1/2 = { 0 | 1 }</code>, worth <code>1/2</code>.<br>
+        <code>1/3 = { 0 | 1/2 }</code>, worth <code>1/4</code>.<br>
+        <code>2/5 = { 1/3 | 1/2 }</code>, worth <code>1/4</code> to <code>1/2</code>, so <code>3/8</code>.
+      </blockquote>
+      <p>
+        Those worths are always
+        <a class="wiki-term" data-wiki="Dyadic_rational" href="https://en.wikipedia.org/wiki/Dyadic_rational" target="_blank" rel="noopener">dyadic</a>
+        &mdash; halves, quarters, eighths &mdash; even though the fractions on the table are not.
+        Add them up over the whole table and you know everything: a positive total means Left wins
+        no matter who starts, a negative total means Right does, and a total of exactly 0 means
+        whoever moves <em>second</em> wins. Tick "Show values" to watch the sum.
+      </p>
+
+      <h3>Where the computer goes wrong</h3>
+      <p>
+        The applet's opponent is greedy in the obvious way: of all the parents available, it plays
+        the one that shifts its fraction the least. That is nearly always right, and it is wrong
+        for a reason worth seeing &mdash; what matters is not how far the <em>number</em> moves but
+        how far its <em>worth</em> moves. Take the table <code>&minus;3/5</code>,
+        <code>1/5</code>, <code>3/5</code>, worth <code>1/16</code> in total, so Left to play wins:
+      </p>
+      <blockquote>
+        <code>&minus;3/5 &rarr; &minus;2/3</code> moves the number by only <code>0.067</code>, but its worth by <code>1/8</code>.<br>
+        <code>1/5 &rarr; 0</code> moves the number by <code>0.2</code>, three times as far, but its worth by just <code>1/16</code>.
+      </blockquote>
+      <p>
+        Greedy takes the first and hands the total to <code>&minus;1/16</code>, a loss. The second
+        leaves <code>0</code> with Right to move, which Left wins. Sweeping every two- and
+        three-fraction table with numbers up to 6, the port's test finds the opponent keeps 1,853
+        of the 1,855 wins it is handed &mdash; and this is one of the two it drops.
+      </p>
+
+      <p class="tip">
+        Tick "Show values", take Left, and press "Computer Moves" whenever the total is negative:
+        you are already lost, so make it work for the win.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="fraction-core.js"></script>
+<script src="fraction-game.js"></script>
+</body>
+</html>

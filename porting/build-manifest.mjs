@@ -100,6 +100,7 @@ const SLUG_TO_APPLET = {
   euler2d: null,
   aliquot: "Aliquot",
   "dawsons-kayles": "DawsonKayles",
+  "fraction-game": "FractionGame",
 };
 
 /** Pages for ported games whose applet is missing from classes.zip. */

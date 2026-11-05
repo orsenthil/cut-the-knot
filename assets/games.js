@@ -200,5 +200,11 @@ window.COOLMATHS = {
       blurb: "Frogs go right and down, toads go left and up, and one empty square is all the room they have. Swap the two sides \u2014 why is the square board so much easier than a single row?",
       tags: ["counting", "algorithms"],
     },
+    {
+      slug: "fraction-game",
+      title: "Contorted Fractions",
+      blurb: "Left may only shrink a number, Right may only grow it, and the denominator has to drop every time. Each fraction is worth a tidy number of halves and quarters \u2014 add them up and you know who wins before a move is made.",
+      tags: ["game-strategy", "number-theory", "arithmetic"],
+    },
   ],
 };
