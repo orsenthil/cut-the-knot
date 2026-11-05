@@ -86,6 +86,7 @@ const SLUG_TO_APPLET = {
   "four-knights": null,
   "maths-quiz": null,
   euler2d: null,
+  aliquot: "Aliquot",
 };
 
 /** Pages for ported games whose applet is missing from classes.zip. */

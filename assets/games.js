@@ -115,5 +115,11 @@ window.COOLMATHS = {
       blurb: "Counters in a ring, red on one face and green on the other. Clicking a green one removes it and turns over both its neighbours. Clear the ring \u2014 but can you tell before you start whether it is even possible?",
       tags: ["parity", "invariants", "induction"],
     },
+    {
+      slug: "aliquot",
+      title: "Aliquot",
+      blurb: "Take turns subtracting a divisor of the number; whoever is handed 1 cannot move and loses. The winner is decided before anybody plays \u2014 can you tell who, just by looking at the number?",
+      tags: ["divisibility", "parity", "game-strategy"],
+    },
   ],
 };

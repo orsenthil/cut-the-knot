@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Aliquot &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 18px 14px 20px;
+  }
+
+  #score {
+    font-size: 0.9rem;
+    font-weight: 650;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  #score strong { color: var(--text); font-variant-numeric: tabular-nums; }
+
+  #numberLabel { font-size: 0.9rem; color: var(--muted); text-align: center; }
+  #number {
+    font-size: clamp(3.6rem, 22vw, 6rem);
+    font-weight: 750;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    text-align: center;
+  }
+  #number.flash { animation: pop 0.3s ease-out; }
+  @keyframes pop { from { transform: scale(1.18); color: var(--accent); } to { transform: scale(1); } }
+  #number.dead { color: var(--bad); }
+
+  #partsLabel { font-size: 0.9rem; color: var(--muted); text-align: center; }
+  #parts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    max-width: 440px;
+  }
+  #parts button {
+    min-width: 54px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+  }
+  #parts button.taken { animation: none; }
+
+  #log {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    min-height: 2.1em;
+    width: 100%;
+    max-width: 440px;
+    font-size: 0.95rem;
+    text-align: center;
+  }
+  #log li { padding: 1px 0; color: var(--muted); }
+  #log li:last-child { color: var(--text); font-weight: 600; }
+  #log li .num { font-variant-numeric: tabular-nums; }
+
+  #thinking { color: var(--muted); font-size: 0.95rem; min-height: 1.4em; }
+  #thinking span { animation: blink 1s infinite; }
+  #thinking span:nth-child(2) { animation-delay: 0.2s; }
+  #thinking span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink { 0%, 60%, 100% { opacity: 0.25; } 30% { opacity: 1; } }
+
+  .controls label { display: inline-flex; align-items: center; gap: 6px; }
+  .controls input[type="number"] { width: 5.2em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    #number.flash, #thinking span { animation: none; }
+  }
+</style>
+</head>
+<body data-game="aliquot">
+  <h1>Aliquot</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/Aliquot.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> take turns making the number smaller. Whoever is left with 1 has no move and loses.<br>
+    <strong>How to play:</strong> you go first. Click one of the small numbers to take it off the big one &mdash;
+    you may only take off a number that divides it exactly, and never the whole thing.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="score">You <strong id="scoreYou">0</strong> &ndash; <strong id="scoreMe">0</strong> Computer</div>
+    <div>
+      <div id="numberLabel">The number is</div>
+      <div id="number" aria-live="polite" aria-atomic="true">48</div>
+    </div>
+    <div id="partsLabel">Take one of these off:</div>
+    <div id="parts" role="group" aria-label="Numbers you can take off"></div>
+    <div id="thinking" aria-hidden="true"></div>
+    <ul id="log"></ul>
+  </div>
+
+  <div class="controls">
+    <label>Start at
+      <input type="number" id="startInput" min="2" max="99" step="1" value="48">
+    </label>
+    <button id="newBtn" type="button" class="primary">New Game</button>
+    <button id="backBtn" type="button" disabled>Take Move Back</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        This is a browser version of Alexander Bogomolny's applet
+        <a href="https://www.cut-the-knot.org/SimpleGames/Aliquot.shtml" target="_blank" rel="noopener">"Aliquot game"</a>,
+        after a puzzle in D. L. Silverman's <em>Your Move</em> (McGraw-Hill, 1971). An
+        <em>aliquot part</em> of a number is a proper
+        <a class="wiki-term" data-wiki="Divisor" href="https://en.wikipedia.org/wiki/Divisor" target="_blank" rel="noopener">divisor</a>:
+        any divisor except the number itself. So 12 has the aliquot parts 1, 2, 3, 4 and 6; a prime
+        has only 1; and 1 has none at all, which is exactly why being handed 1 loses.
+      </p>
+
+      <h3>An odd number hides no even divisor</h3>
+      <p>
+        Say <code>d</code> divides an odd number <code>n</code>, so <code>n = d &times; k</code>.
+        If <code>d</code> were even then <code>n</code> would be even as well. So every divisor of an
+        odd number is odd &mdash; and odd minus odd is even:
+      </p>
+      <blockquote>From an odd number, every legal move hands your opponent an even number.</blockquote>
+      <p>You have no choice in the matter. That is the half of the game you cannot escape.</p>
+
+      <h3>So the game is nothing but parity</h3>
+      <p>
+        The other half is just as blunt: 1 is an aliquot part of every number above 1, so from an
+        even number you can always leave <code>n &minus; 1</code>, which is odd. Now run
+        <a class="wiki-term" data-wiki="Mathematical_induction" href="https://en.wikipedia.org/wiki/Mathematical_induction" target="_blank" rel="noopener">induction</a>
+        up from the bottom:
+      </p>
+      <blockquote>
+        <code>n = 1</code>: no move, so the player facing it has lost.<br>
+        <code>n</code> even: take 1 off and hand over an odd number, which is lost. So even is <em>won</em>.<br>
+        <code>n</code> odd: every move hands over an even number, which is won for your opponent. So odd is <em>lost</em>.
+      </blockquote>
+      <p>
+        Nothing about the number matters except its
+        <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a>
+        &mdash; not how big it is, not how it factorises. The port's logic test solves the whole game
+        backwards from 1 up to 2000, position by position, and the answer is always "even wins".
+      </p>
+
+      <h3>How the computer keeps a straight face</h3>
+      <p>
+        Taking 1 every single turn would win and would also give the secret away by the second move.
+        So the applet's opponent divides the twos out of the number, takes the smallest divisor of 3
+        or more left over, and only falls back to 1 when nothing is left over:
+      </p>
+      <blockquote>
+        48 = 2<sup>4</sup> &times; 3, so it takes 3 and leaves 45.<br>
+        50 = 2 &times; 5<sup>2</sup>, so it takes 5 and leaves 45.<br>
+        64 = 2<sup>6</sup> has no odd part, so it takes 1 and leaves 63.
+      </blockquote>
+      <p>
+        Each of those is odd, because an odd divisor taken off an even number must leave an odd
+        number. The one shape with nothing to hide behind is a
+        <a class="wiki-term" data-wiki="Power_of_two" href="https://en.wikipedia.org/wiki/Power_of_two" target="_blank" rel="noopener">power of two</a>,
+        whose only odd aliquot part is 1. Bogomolny suggests a harder variant on his page &mdash; you
+        may not take 1 off a composite number &mdash; and powers of two are exactly where that rule
+        bites: from 4, 8, 16, &hellip; you would be forced to leave an even number behind.
+      </p>
+
+      <p class="tip">
+        Start at 99. You are lost before you move, so see how long you can make the computer work
+        for it. Then start at 64 and watch which single number it takes.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="aliquot-core.js"></script>
+<script src="aliquot.js"></script>
+</body>
+</html>
