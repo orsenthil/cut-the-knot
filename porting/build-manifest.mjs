@@ -79,6 +79,7 @@ const SLUG_TO_APPLET = {
   "mind-reader": "MindReaderNine",
   "eye-opener": "WProblem",
   "four-by-four": "FourByFour",
+  "circle-solitaire": "CSolitaire",
   "vanishing-digit": null,
   hourglass: null,
   torque: null,

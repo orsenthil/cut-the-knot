@@ -109,5 +109,11 @@ window.COOLMATHS = {
       blurb: "3D tic-tac-toe on a 4 by 4 by 4 cube against a computer that never looks ahead, just recognizes patterns. There are faults in its logic — can you find one?",
       tags: ["game-strategy", "algorithms", "counting"],
     },
+    {
+      slug: "circle-solitaire",
+      title: "Solitaire on a Circle",
+      blurb: "Counters in a ring, red on one face and green on the other. Clicking a green one removes it and turns over both its neighbours. Clear the ring \u2014 but can you tell before you start whether it is even possible?",
+      tags: ["parity", "invariants", "induction"],
+    },
   ],
 };

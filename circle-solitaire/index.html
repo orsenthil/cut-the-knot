@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Solitaire on a Circle &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage {
+    width: 100%;
+    max-width: 460px;
+    padding: 20px;
+  }
+  #ring {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 1;
+    margin: 0 auto;
+  }
+  .counter {
+    position: absolute;
+    width: var(--d);
+    height: var(--d);
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+  }
+  /* The counters have two real faces, so these two colours are the applet's
+     own (java.awt.Color(64,191,32) and (191,91,0)); they read on both themes. */
+  .counter.green {
+    background: #40bf20;
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.5);
+  }
+  .counter.red { background: #bf5b00; }
+  .counter.empty {
+    background: transparent;
+    box-shadow: inset 0 0 0 2px var(--border-strong);
+    cursor: default;
+  }
+  .counter.green:hover { background: #4ed62a; }
+  .counter.red:hover { background: #d66a08; }
+  .counter:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; z-index: 1; }
+  .counter.flipped { box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.5), 0 0 0 6px var(--highlight); }
+  .counter.taken { box-shadow: inset 0 0 0 2px var(--border-strong), 0 0 0 6px var(--highlight); }
+
+  #countLabel { font-variant-numeric: tabular-nums; min-width: 1.6em; text-align: center; display: inline-block; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .counter { transition: none; }
+  }
+</style>
+</head>
+<body data-game="circle-solitaire">
+  <h1>Solitaire on a Circle</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/CSolitaire.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> clear the whole circle. Clicking a green counter takes it away &mdash; and turns
+    over the counter on each side of it, so green becomes red and red becomes green.<br>
+    <strong>How to play:</strong> click any green counter. Red ones can't be clicked, so if no green is left
+    you are stuck. Watch out: some circles can't be cleared at all, however well you play.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="ring"></div>
+  </div>
+
+  <div class="controls">
+    <label>Counters
+      <button type="button" id="fewerBtn" aria-label="Fewer counters">&minus;</button>
+      <span id="countLabel" aria-live="off">10</span>
+      <button type="button" id="moreBtn" aria-label="More counters">+</button>
+    </label>
+    <button type="button" id="undoBtn">Undo</button>
+    <button type="button" id="repeatBtn">Repeat</button>
+    <button type="button" id="newBtn" class="primary">New circle</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        This is the rare puzzle you can lose before you touch it. The counters are dealt red or green by a
+        coin flip, and roughly half of the circles you are given cannot be cleared no matter what you do.
+        There is a test that tells you which, and it takes one glance.
+      </p>
+
+      <h3>A gap is forever</h3>
+      <p>
+        The first thing to notice is what "the counter on each side" means. It means the two
+        <em>places</em> next to the one you clicked, not the nearest counters still standing &mdash; and
+        turning over an empty place does nothing at all. So the hole you leave behind never closes, and it
+        never conducts. Once a circle has holes in it, the counters that remain sit in separate arcs, and
+        nothing you do in one arc can ever reach another. The puzzle quietly becomes several smaller,
+        independent puzzles, each one a straight line of counters with a gap at both ends.
+      </p>
+
+      <h3>One arc, one parity test</h3>
+      <p>
+        Count the greens in a single arc. That count's
+        <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a>
+        &mdash; odd or even &mdash; decides everything:
+      </p>
+      <blockquote>An arc with a gap at each end can be cleared exactly when the number of greens in it is odd.</blockquote>
+      <p>
+        Both halves of that follow by
+        <a class="wiki-term" data-wiki="Mathematical_induction" href="https://en.wikipedia.org/wiki/Mathematical_induction" target="_blank" rel="noopener">induction</a>
+        on the length of the arc. If the count is odd, click the <em>leftmost</em> green: it has no greens to
+        its left and therefore an even number on each side. Taking it away splits the arc in two and turns
+        over the inside end of each half, which makes each half odd &mdash; so each half can be cleared the
+        same way, all the way down.
+      </p>
+      <p>
+        If the count is even, every move fails, and it fails in the same way each time. Removing a green
+        leaves two halves whose green counts add up to an odd number, and the two end-flips keep that sum
+        odd, so one half is bound to come out even. "Some arc has an even number of greens" is therefore an
+        <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>:
+        once it is true it stays true forever. A cleared board has no arcs at all, so it can never be
+        reached. An arc with no greens is the plainest case &mdash; zero is even, and there is nothing left
+        to click.
+      </p>
+
+      <h3>Which circles can be cleared</h3>
+      <p>
+        A fresh circle has no gaps, so the arc test does not apply to it yet. But the first move makes it
+        apply. On a full circle both neighbours of your counter are occupied, so that move changes the green
+        count by <code>&minus;1 &plusmn; 1 &plusmn; 1</code>, which is always odd: the parity of the green
+        count always flips. One move in, you hold a single arc whose green count is odd exactly when the
+        circle started out even. Add the obvious requirement that you need at least one green to move at all,
+        and the whole puzzle collapses to a glance:
+      </p>
+      <blockquote>A circle can be cleared exactly when its number of greens is even and not zero.</blockquote>
+      <p>
+        That is the result Bogomolny's page proves, published in the <em>American Mathematical Monthly</em>
+        in November 1997. Note how little it cares about the arrangement: it is only the <em>number</em> of
+        greens that matters, not where they sit.
+      </p>
+      <p class="tip">
+        Try this: count the greens before your first click. If the number is odd, no sequence of moves can
+        save the circle &mdash; take one counter anyway and watch the arcs get stuck one by one.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="solitaire-core.js"></script>
+<script src="circle-solitaire.js"></script>
+</body>
+</html>
