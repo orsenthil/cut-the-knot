@@ -121,5 +121,11 @@ window.COOLMATHS = {
       blurb: "Take turns subtracting a divisor of the number; whoever is handed 1 cannot move and loses. The winner is decided before anybody plays \u2014 can you tell who, just by looking at the number?",
       tags: ["divisibility", "parity", "game-strategy"],
     },
+    {
+      slug: "calendar-magic",
+      title: "Calendar Magic",
+      blurb: "Outline a square of dates on a calendar and circle one in each row and column. The total is announced before you pick a thing \u2014 how can it already be known?",
+      tags: ["arithmetic", "invariants", "algebra"],
+    },
   ],
 };

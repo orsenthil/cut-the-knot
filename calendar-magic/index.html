@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Calendar Magic &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #monthbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  #monthLabel {
+    min-width: 9.5em;
+    text-align: center;
+    font-weight: 650;
+    font-size: 1.05rem;
+  }
+  #stage {
+    width: 100%;
+    max-width: 460px;
+    padding: 16px;
+  }
+  #cal {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+  .dow {
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-bottom: 4px;
+  }
+  .blank { aspect-ratio: 1; }
+  .day {
+    aspect-ratio: 1;
+    width: 100%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: inherit;
+    font-size: clamp(0.8rem, 3.4vw, 1rem);
+    font-variant-numeric: tabular-nums;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--board-a);
+    color: var(--text);
+    cursor: pointer;
+    transition: background-color 140ms ease, box-shadow 140ms ease, color 140ms ease;
+  }
+  .day:hover { background: var(--board-b); }
+  .day:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; z-index: 1; }
+  /* the n-by-n square under the cursor while you are choosing one */
+  .day.preview { background: var(--highlight); }
+  /* the square that is in play */
+  .day.inside {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+  /* a date inside the square whose row or column is already used up */
+  .day.blocked { color: var(--muted); opacity: 0.55; }
+  .day.picked {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-text);
+    font-weight: 700;
+  }
+  .day.outside { opacity: 0.45; }
+
+  #scoreline {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 18px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 0.92rem;
+    color: var(--muted);
+  }
+  #scoreline b {
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  #scoreline .match b { color: var(--good); }
+  #sizeLabel {
+    font-variant-numeric: tabular-nums;
+    min-width: 2.6em;
+    text-align: center;
+    display: inline-block;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .day { transition: none; }
+  }
+</style>
+</head>
+<body data-game="calendar-magic">
+  <h1>Calendar Magic</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/Calendar.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> outline a square of dates on the calendar and circle one date in each row and
+    each column of it. The computer tells you the total before you pick a single date, and it is never
+    wrong.<br>
+    <strong>How to play:</strong> click a date to put the square's top left corner there. Then click one
+    date inside the square &mdash; never two in the same row or the same column &mdash; until the square is
+    used up.
+  </div>
+
+  <div id="monthbar">
+    <button type="button" id="prevBtn" aria-label="Previous month">&lsaquo;</button>
+    <span id="monthLabel" aria-live="polite">November 2026</span>
+    <button type="button" id="nextBtn" aria-label="Next month">&rsaquo;</button>
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="cal"></div>
+    <div id="scoreline">
+      <span id="predictionLine">My prediction: <b id="prediction">&mdash;</b></span>
+      <span id="totalLine">Your total: <b id="total">&mdash;</b></span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label>Square
+      <button type="button" id="smallerBtn" aria-label="Smaller square">&minus;</button>
+      <span id="sizeLabel" aria-live="off">4&times;4</span>
+      <button type="button" id="biggerBtn" aria-label="Bigger square">+</button>
+    </label>
+    <button type="button" id="clearBtn">Clear picks</button>
+    <button type="button" id="newBtn" class="primary">New square</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        The prediction is not a guess and it is not a trick of arithmetic speed: the computer never looks at
+        the dates you circle. It only looks at the square. Once you know why, you can perform this on paper
+        with a real calendar, writing the total down in a sealed envelope before anyone picks anything.
+      </p>
+
+      <h3>A calendar is an arithmetic grid</h3>
+      <p>
+        Printed Sunday first, a month is one long run of numbers folded into rows of seven. So every line
+        through it is an
+        <a class="wiki-term" data-wiki="Arithmetic_progression" href="https://en.wikipedia.org/wiki/Arithmetic_progression" target="_blank" rel="noopener">arithmetic progression</a>:
+        step right and the date goes up by <code>1</code>, step down and it goes up by <code>7</code>, step
+        diagonally and it goes up by <code>8</code> or <code>6</code>. Writing <code>a</code> for the date in
+        the top left corner of your square, the date <code>r</code> rows down and <code>c</code> columns
+        across is always
+      </p>
+      <blockquote><code>a + 7r + c</code></blockquote>
+      <p>
+        That one formula is the whole puzzle. Nothing about dates, months or leap years matters from here on
+        &mdash; only the grid.
+      </p>
+
+      <h3>One from each row, one from each column</h3>
+      <p>
+        Now add up your picks. The rule says you use each row once and each column once, so your picks are
+        the dates <code>a + 7r + c</code> where the row numbers <code>r</code> run through
+        <code>0, 1, &hellip;, n&minus;1</code> in some order, and so do the column numbers <code>c</code>
+        &mdash; they are matched up by a
+        <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">permutation</a>,
+        and which permutation you chose is exactly what the sum forgets:
+      </p>
+      <blockquote>
+        <code>total = n&middot;a + 7(0+1+&hellip;+(n&minus;1)) + (0+1+&hellip;+(n&minus;1)) = n&middot;a + 4n(n&minus;1)</code>
+      </blockquote>
+      <p>
+        For a 4&times;4 square that is <code>4a + 48</code>, which is the number Bogomolny's page predicts.
+        Every row contributes its <code>7r</code> once and every column its <code>c</code> once, whatever
+        order you pair them in, so there is nothing left for your choices to change. Picking one cell per row
+        and per column is the same as placing <a class="wiki-term" data-wiki="Eight_rooks_puzzle" href="https://en.wikipedia.org/wiki/Eight_rooks_puzzle" target="_blank" rel="noopener">non-attacking rooks</a>,
+        and the same as one symbol of a
+        <a class="wiki-term" data-wiki="Latin_square" href="https://en.wikipedia.org/wiki/Latin_square" target="_blank" rel="noopener">Latin square</a>
+        &mdash; which is how the trick generalises to sharing out presents fairly.
+      </p>
+
+      <h3>The same grid, a second trick</h3>
+      <p>
+        Three dates in a row, a column or a diagonal are <code>a&minus;d, a, a+d</code>, so the middle one is
+        the average of the outer two and the three of them add up to <code>3a</code>. Write three such dates
+        side by side as one long number and its digits add up to a multiple of <code>3</code>, so by the
+        usual <a class="wiki-term" data-wiki="Divisibility_rule" href="https://en.wikipedia.org/wiki/Divisibility_rule" target="_blank" rel="noopener">divisibility rule</a>
+        the number itself is a multiple of <code>3</code>. Multiply two of them and the product is a multiple
+        of <code>9</code> &mdash; so its digits must add up to a multiple of <code>9</code> too.
+      </p>
+      <p class="tip">
+        Try this on paper: take <code>11, 12, 13</code> and <code>20, 21, 22</code>, form 111213 and 202122,
+        and multiply. Read the digits of the product out to a friend but skip one, and they can tell you the
+        digit you skipped &mdash; whatever makes the digit sum reach the next multiple of 9.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="calendar-core.js"></script>
+<script src="calendar-magic.js"></script>
+</body>
+</html>

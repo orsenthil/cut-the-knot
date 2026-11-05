@@ -80,6 +80,7 @@ const SLUG_TO_APPLET = {
   "eye-opener": "WProblem",
   "four-by-four": "FourByFour",
   "circle-solitaire": "CSolitaire",
+  "calendar-magic": "Calendar",
   "vanishing-digit": null,
   hourglass: null,
   torque: null,
