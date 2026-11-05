@@ -19,7 +19,7 @@
  * So the two towers must each end up one colour AND trade pegs: all the reds
  * where the gold tower stood, all the golds where the red tower stood.
  *
- * MINIMUM holds the fewest possible moves for 0..6 sizes. Every entry comes
+ * MINIMUM holds the fewest possible moves for 0..7 sizes. Every entry comes
  * from an exhaustive breadth-first search over all positions, re-derived for
  * the small cases by porting/check-bicolor-hanoi.mjs. Note 29 for three sizes:
  * the solution page on cut-the-knot offers 30 moves and asks "Is that right?".
@@ -36,10 +36,15 @@ var BicolorHanoi = (function () {
   const colourOf = (d) => d & 1;
 
   const MIN_SIZES = 1;
-  const MAX_SIZES = 6;
+  const MAX_SIZES = 8; // the applet's m_Max
 
-  /** Fewest moves for 0..MAX_SIZES sizes, by exhaustive search. */
-  const MINIMUM = [0, 3, 10, 29, 67, 147, 310];
+  /**
+   * Fewest moves for 0..7 sizes, by exhaustive search. 6 and 7 need the search
+   * run from both ends to fit in memory. Eight sizes is past what the search
+   * reaches, so minimum(8) is null and the page simply does not quote a target
+   * there -- the applet offered the size, and nobody knows the answer for it.
+   */
+  const MINIMUM = [0, 3, 10, 29, 67, 147, 310, 640];
 
   /** The opening position: two striped towers, third peg empty. */
   function start(n) {

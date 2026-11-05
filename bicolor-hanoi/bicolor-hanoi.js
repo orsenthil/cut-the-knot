@@ -137,7 +137,10 @@
     }
     if (H.won(state)) {
       const target = H.minimum(state.n);
-      if (target !== null && state.moves > target) {
+      if (target === null) {
+        // Nobody knows the fewest moves at this size, so do not claim one.
+        say("Solved in " + state.moves + " moves.", "win");
+      } else if (state.moves > target) {
         say("Solved in " + state.moves + " moves. Now try it in " + target + ".", "win");
       } else {
         say("Solved in " + state.moves + " moves — nobody can do it faster.", "win");

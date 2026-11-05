@@ -150,13 +150,25 @@ function minimumBySearch(n) {
 }
 
 {
-  equal("minimum table shape", H.MINIMUM.length, H.MAX_SIZES + 1);
+  // The applet's spinner goes to m_Max = 8, so the page offers 8 sizes too.
+  // The search only reaches 7, so the table is allowed to stop short of the
+  // largest board -- what it may not do is guess.
+  equal("the size range is the applet's", [H.MIN_SIZES, H.MAX_SIZES], [1, 8]);
+  equal("the table covers 0..7", H.MINIMUM.length, 8);
   equal("minimum(0): nothing to do", H.minimum(0), 0);
+  equal("minimum(8) admits it is not known", H.minimum(8), null);
   equal("minimum() off the end is honest", H.minimum(H.MAX_SIZES + 1), null);
-  // n = 5 and 6 are in the table from the same search run offline; 1..4 are
-  // cheap enough to redo on every verify.
+  // n = 5, 6 and 7 are in the table from a search run from both ends offline;
+  // 1..4 are cheap enough to redo on every verify.
   for (let n = 1; n <= 4; n++) {
     equal(`minimum(${n}) by search`, minimumBySearch(n), H.MINIMUM[n]);
+  }
+  // The entries the quick search cannot reach still have to sit below Nathan
+  // Bowler's published strategy, L(k) = 11(2^(k-1) - 1) - 3(k-2), which is a
+  // real upper bound on the minimum: 329 for six sizes and 678 for seven.
+  for (let n = 5; n < H.MINIMUM.length; n++) {
+    const bowler = 11 * (2 ** (n - 1) - 1) - 3 * (n - 2);
+    check(`minimum(${n}) = ${H.MINIMUM[n]} does not exceed Bowler's ${bowler}`, H.MINIMUM[n] <= bowler);
   }
   check("minimum grows with the board", H.MINIMUM.every((v, i) => i === 0 || v > H.MINIMUM[i - 1]));
 }
