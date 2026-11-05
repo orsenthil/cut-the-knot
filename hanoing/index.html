@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hanoing &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  .setup { margin: 0 0 14px; }
+
+  #stage {
+    width: 100%;
+    max-width: 560px;
+    padding: 18px 16px;
+  }
+
+  /* The puzzle itself: one square per disk, left to right. */
+  #row {
+    display: flex;
+    gap: 3px;
+    align-items: stretch;
+  }
+  .sq {
+    flex: 1 1 0;
+    min-width: 0;
+    aspect-ratio: 1;
+    max-height: 56px;
+    padding: 0;
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 140ms ease, transform 140ms ease;
+  }
+  /* The three colours are the puzzle's own, named on the original page. */
+  .sq.c0 { background: #d64545; }
+  .sq.c1 { background: #3f6fd8; }
+  .sq.c2 { background: #f2f2f5; }
+  #row .sq:hover { transform: translateY(-3px); }
+  .sq:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  .sq.justMoved { box-shadow: 0 0 0 4px var(--highlight); }
+
+  /* The same position drawn as three pegs, for when the penny drops. */
+  #towers { display: none; margin-top: 18px; }
+  #towers.on { display: flex; gap: 10px; }
+  .peg {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 6px 4px 0;
+    border-bottom: 3px solid var(--border-strong);
+    min-height: 92px;
+  }
+  .peg .cap { font-size: 0.7rem; color: var(--muted); text-align: center; padding-bottom: 4px; }
+  /* The discs pile up from the base, but the label stays pinned at the top so
+     the three pegs line up with each other. */
+  .peg .stack { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; }
+  .disk { height: 9px; border-radius: 4px; margin: 0 auto; border: 1px solid var(--ink); }
+  .disk.c0 { background: #d64545; }
+  .disk.c1 { background: #3f6fd8; }
+  .disk.c2 { background: #f2f2f5; }
+
+  #tally {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  #tally b { color: var(--text); font-variant-numeric: tabular-nums; }
+
+  #nLabel { font-variant-numeric: tabular-nums; min-width: 1.8em; text-align: center; display: inline-block; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sq { transition: none; }
+    #row .sq:hover { transform: none; }
+  }
+</style>
+</head>
+<body data-game="hanoing">
+  <h1>Hanoing</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/Hanoing.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> paint the whole row one colour. White always wins, and from the all-red
+    start blue wins too.<br>
+    <strong>How to play:</strong> click a square to repaint it. It may only change colour if it is
+    the leftmost square of the colour it is losing, and ends up the leftmost square of the one it gains.
+  </div>
+
+  <div class="controls setup">
+    <label>Squares
+      <button type="button" id="fewerBtn" aria-label="Fewer squares">&minus;</button>
+      <span id="nLabel">4</span>
+      <button type="button" id="moreBtn" aria-label="More squares">+</button>
+    </label>
+    <label><input type="checkbox" id="towersChk"> Show the towers</label>
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="row"></div>
+    <div id="towers" aria-hidden="true"></div>
+    <div id="tally">
+      <span>Moves: <b id="moves">0</b></span>
+      <span>Best possible from here: <b id="best">&mdash;</b></span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button type="button" id="hintBtn">Suggest move</button>
+    <button type="button" id="slowBtn">Slow</button>
+    <button type="button" id="fastBtn">Fast</button>
+    <button type="button" id="randomBtn">Randomize</button>
+    <button type="button" id="resetBtn" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Nothing here looks like a tower. There are no discs, no pegs and no stacking &mdash; just a row of
+        coloured squares and a rule about being leftmost. And yet this is the
+        <a class="wiki-term" data-wiki="Tower_of_Hanoi" href="https://en.wikipedia.org/wiki/Tower_of_Hanoi" target="_blank" rel="noopener">Tower of Hanoi</a>,
+        exactly, with the same best play and the same number of moves. Finding the disguise is the puzzle.
+      </p>
+
+      <h3>Reading the row as a tower</h3>
+      <p>
+        Here is the dictionary. Square <code>i</code>, counting from the left, is disc <code>i</code> &mdash;
+        the leftmost square is the smallest disc. The square's colour is the peg that disc is sitting on.
+        That is all; the position of the row is the position of the tower. Now read the two rules again:
+      </p>
+      <blockquote>
+        leftmost of the colour it loses = smallest disc on its peg = <em>on top, so you may lift it</em><br>
+        leftmost of the colour it gains = smaller than everything there = <em>you may drop it on that peg</em>
+      </blockquote>
+      <p>
+        The disguise works because a peg never needs remembering: discs on a peg are always stacked smallest
+        first, so the single list "which peg is each disc on" is the whole state. Tick <em>Show the towers</em>
+        to watch the two pictures move together.
+      </p>
+
+      <h3>Why it takes 2<sup>n</sup> &minus; 1 moves</h3>
+      <p>
+        To get <code>n</code> discs onto a target peg, the biggest one has to move, and before it can, the
+        other <code>n&minus;1</code> must be piled out of the way on the third peg. Then the big one moves
+        once. Then that pile of <code>n&minus;1</code> has to be rebuilt on top of it. So if
+        <code>T(n)</code> is the cost,
+      </p>
+      <blockquote><code>T(n) = 2&middot;T(n&minus;1) + 1,&nbsp;&nbsp; T(0) = 0</code></blockquote>
+      <p>
+        and <a class="wiki-term" data-wiki="Mathematical_induction" href="https://en.wikipedia.org/wiki/Mathematical_induction" target="_blank" rel="noopener">induction</a>
+        turns that <a class="wiki-term" data-wiki="Recurrence_relation" href="https://en.wikipedia.org/wiki/Recurrence_relation" target="_blank" rel="noopener">recurrence</a>
+        into <code>T(n) = 2<sup>n</sup> &minus; 1</code>: adding one square doubles the work and then some.
+        Four squares take 15 moves, ten take 1023, and twenty take 1,048,575.
+      </p>
+
+      <h3>The best move from a muddle</h3>
+      <p>
+        <em>Randomize</em> drops you somewhere in the middle, and the recursion above no longer applies
+        &mdash; but the same reasoning does, and it gives the exact answer rather than an estimate. Work down
+        from the largest disc. If it is already where it needs to be, ignore it and ask again about the rest.
+        If it is not, everything smaller has to clear onto the one remaining peg, which is the same question
+        with a different goal, and then you pay <code>1 + (2<sup>i</sup> &minus; 1)</code> for the move itself
+        and the rebuild. That loop is what fills in <em>Best possible from here</em>, and
+        <em>Suggest move</em> plays its first step &mdash; which is why following the hints never wastes a move.
+      </p>
+      <p class="tip">
+        Try this: set 4 squares, solve it by hand, and watch <em>Best possible from here</em>. If it ever goes
+        up, your last click was a detour. Getting from 15 to 0 without it ever rising is a perfect game.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="hanoing-core.js"></script>
+<script src="hanoing.js"></script>
+</body>
+</html>

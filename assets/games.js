@@ -188,5 +188,11 @@ window.COOLMATHS = {
       blurb: "Slide a flipper under a pancake and the whole stack above it turns over. Sort them biggest-first — and good luck, because nobody knows the best possible number of flips.",
       tags: ["algorithms", "counting", "invariants"],
     },
+    {
+      slug: "hanoing",
+      title: "Hanoing",
+      blurb: "A row of red, blue and white squares, and one rule about being leftmost. Paint them all one colour \u2014 but first work out which famous puzzle this really is.",
+      tags: ["induction", "algorithms", "counting"],
+    },
   ],
 };

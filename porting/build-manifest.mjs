@@ -81,6 +81,7 @@ const SLUG_TO_APPLET = {
   "four-by-four": "FourByFour",
   "circle-solitaire": "CSolitaire",
   "calendar-magic": "Calendar",
+  hanoing: "Hanoing",
   "clone-escape": "CloneEscape",
   "dawsons-chess": "DawsonChess",
   "bicolor-hanoi": "BiColorHanoi",
