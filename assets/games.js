@@ -170,5 +170,11 @@ window.COOLMATHS = {
       blurb: "Cover the board with dominoes so that no straight line runs clean across it. On a 6 by 6 board it cannot be done, however you try \u2014 can you see what stops you?",
       tags: ["parity", "counting"],
     },
+    {
+      slug: "full-house",
+      title: "Full House",
+      blurb: "Draw one path through every white square. The snag: once it is moving it cannot stop or turn until something gets in its way.",
+      tags: ["graph-theory", "parity", "algorithms"],
+    },
   ],
 };

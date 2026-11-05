@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Full House &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #picker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 18px;
+    margin-bottom: 14px;
+    font-size: 0.92rem;
+    color: var(--muted);
+  }
+  #picker label { display: flex; align-items: center; gap: 6px; }
+  #sizeLabel, #puzzleLabel {
+    font-variant-numeric: tabular-nums;
+    min-width: 3.2em;
+    text-align: center;
+    color: var(--text);
+    font-weight: 600;
+  }
+  #puzzleLabel { min-width: 5.5em; }
+  #stage {
+    width: 100%;
+    max-width: 440px;
+    padding: 16px;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 380px;
+    margin: 0 auto;
+    touch-action: manipulation;
+  }
+  .cell { fill: var(--board-a); }
+  .cell.blocked { fill: var(--ink); }
+  .cell.walked { fill: var(--accent-soft); }
+  .trail {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 16;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .head { fill: var(--accent); }
+  .start { fill: none; stroke: var(--accent); stroke-width: 6; }
+  .target {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 5;
+    stroke-dasharray: 5 7;
+    opacity: 0.8;
+  }
+  .hit { fill: transparent; cursor: pointer; }
+  .hit:focus { outline: none; }
+  .hit:focus-visible { stroke: var(--focus); stroke-width: 6; }
+  .hit:hover { fill: var(--highlight); }
+  .hit.dead { cursor: default; }
+  .hit.dead:hover { fill: transparent; }
+  #count {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 0.92rem;
+    color: var(--muted);
+  }
+  #count b { color: var(--text); font-variant-numeric: tabular-nums; }
+  button[aria-pressed="true"] {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+</style>
+</head>
+<body data-game="full-house">
+  <h1>Full House</h1>
+  <p class="byline">
+    Puzzle by Erich Friedman, presented by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/FullHouse.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> draw one path that goes through every white square exactly once. Once the path
+    is moving it keeps going until something stops it &mdash; the edge, a dark square, or the path
+    itself.<br>
+    <strong>How to play:</strong> click a square to start, then click a square to one side of the path's
+    head to send it that way. It always slides as far as it can go.
+  </div>
+
+  <div id="picker">
+    <label>Board
+      <button type="button" id="smallerBtn" aria-label="Smaller board">&minus;</button>
+      <span id="sizeLabel">5&times;5</span>
+      <button type="button" id="biggerBtn" aria-label="Bigger board">+</button>
+    </label>
+    <label>Puzzle
+      <button type="button" id="prevBtn" aria-label="Previous puzzle">&lsaquo;</button>
+      <span id="puzzleLabel">1 of 23</span>
+      <button type="button" id="nextBtn" aria-label="Next puzzle">&rsaquo;</button>
+    </label>
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 500" role="group" aria-label="The puzzle board"></svg>
+    <div id="count">Squares covered: <b id="covered">0</b> of <b id="total">23</b></div>
+  </div>
+
+  <div class="controls">
+    <button type="button" id="autoBtn" aria-pressed="false">Auto-slide forced moves</button>
+    <button type="button" id="backBtn">Step back</button>
+    <button type="button" id="resetBtn" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        The rule that the path cannot stop where it likes is what turns a doodle into a puzzle. It also
+        makes the puzzle small enough to think your way through, and it leaves two tests you can run on a
+        board before you touch it.
+      </p>
+
+      <h3>You only ever choose a turn</h3>
+      <p>
+        You never choose how far to go, only which way to turn, and even that is a choice between two. At
+        the end of a slide the path cannot carry straight on &mdash; that is why it stopped &mdash; and it
+        cannot go back along itself, so only left and right are left. A route with <code>t</code> turns is
+        one of at most <code>2<sup>t</sup></code> routes, and a 5&times;5 board needs around ten turns. That
+        is a puzzle you can search by hand, which is exactly what the designer is counting on.
+      </p>
+
+      <h3>Colour the board like a chessboard</h3>
+      <p>
+        Every step of the path moves to a square of the other colour, so the path alternates all the way
+        along: light, dark, light, dark. A path covering <code>n</code> squares therefore uses
+        <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">equal numbers</a>
+        of each colour when <code>n</code> is even, and one extra of its starting colour when <code>n</code>
+        is odd. Count the white squares of each colour on your board:
+      </p>
+      <blockquote>
+        If the two colours differ by more than one, no path can cover the board &mdash; whatever the sliding
+        rule says.
+      </blockquote>
+      <p>
+        And when they differ by exactly one, the path has to start <em>and</em> finish on the colour there
+        is more of. Every board in this applet passes the test, of course; try it on a board of your own
+        and you can throw out most blocked-square patterns without drawing anything. Covering every square
+        of a grid once is a
+        <a class="wiki-term" data-wiki="Hamiltonian_path" href="https://en.wikipedia.org/wiki/Hamiltonian_path" target="_blank" rel="noopener">Hamiltonian path</a>,
+        and this colouring argument is the standard way to prove one cannot exist.
+      </p>
+
+      <h3>Every slide is a cut</h3>
+      <p>
+        You lose by stranding squares, not by running out of room. The path is one unbroken run, so the
+        squares it has not reached yet must stay in one
+        <a class="wiki-term" data-wiki="Connectivity_(graph_theory)" href="https://en.wikipedia.org/wiki/Connectivity_(graph_theory)" target="_blank" rel="noopener">connected</a>
+        piece &mdash; and the piece has to be the one the head is standing next to. A long slide across the
+        middle of the board cuts what is left into two islands, and that is the move that loses, several
+        turns before you notice. This is why good play hugs the edges early: a slide along a wall takes
+        squares away without splitting anything.
+      </p>
+      <p class="tip">
+        Try this: before each slide, ask what shape the uncovered squares will be left in. If they fall
+        into two groups, step back and turn the other way.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="fullhouse-core.js"></script>
+<script src="full-house.js"></script>
+</body>
+</html>

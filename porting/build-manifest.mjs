@@ -87,6 +87,7 @@ const SLUG_TO_APPLET = {
   "stones-in-cups": "BarryCipra",
   "eight-digits": "EightDigitPuzzle",
   "domino-faults": "DominoCovering",
+  "full-house": "FullHouse",
   "vanishing-digit": null,
   hourglass: null,
   torque: null,
