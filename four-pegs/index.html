@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Four Pegs &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage { width: 100%; max-width: 460px; padding: 16px; }
+  #field {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 1;
+    margin: 0 auto;
+  }
+  #paper { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #paper .grid line { stroke: var(--border); stroke-width: 0.03; }
+  #paper .opening { fill: none; stroke: var(--border-strong); stroke-width: 0.07; stroke-dasharray: 0.25 0.2; }
+  #paper .shape { fill: var(--accent); fill-opacity: 0.14; stroke: var(--accent); stroke-width: 0.06; }
+  #paper .hop { stroke: var(--highlight); stroke-width: 0.06; stroke-dasharray: 0.18 0.14; }
+
+  /* The button is the tap target, a full grid step across; the dot drawn
+     inside it is half that, so the pegs never run into one another. */
+  #field button {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 8%;
+    height: 8%;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+  }
+  #field button::before {
+    content: "";
+    position: absolute;
+    inset: 25%;
+    border-radius: 50%;
+  }
+  .peg::before { background: var(--ink); }
+  .peg.extra::before { background: var(--highlight); }
+  .peg.picked::before { box-shadow: 0 0 0 3px var(--accent); }
+  .target::before { box-shadow: inset 0 0 0 2px var(--accent); }
+  .target:hover::before { background: var(--accent); opacity: 0.45; }
+  #field button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; z-index: 1; }
+
+  #sideLabel { font-variant-numeric: tabular-nums; min-width: 1.2em; text-align: center; display: inline-block; }
+</style>
+</head>
+<body data-game="four-pegs">
+  <h1>Four Pegs</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/FourPegs.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> four pegs sit at the corners of a square &mdash; try to move them into a bigger square.<br>
+    <strong>How to play:</strong> click a peg and it shows you where it can go. A peg may hop over another peg
+    and land the same distance past it; the peg it hopped over stays put.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="field"><svg id="paper" aria-hidden="true"></svg></div>
+  </div>
+
+  <div class="controls">
+    <label>Square side
+      <button type="button" id="smallerBtn" aria-label="Smaller starting square">&minus;</button>
+      <span id="sideLabel" aria-live="off">1</span>
+      <button type="button" id="biggerBtn" aria-label="Bigger starting square">+</button>
+    </label>
+    <label><input type="checkbox" id="fiveBox"> Five pegs</label>
+    <label><input type="checkbox" id="gridBox" checked> Show grid</label>
+    <button type="button" id="resetBtn" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        You can hop the pegs about for a long time without getting anywhere, and there is a reason for that:
+        a bigger square is impossible. So is a smaller one, and so is a tilted one. The proof is two short
+        steps, and the second is the kind of trick worth stealing.
+      </p>
+
+      <h3>A hop cannot leave the grid</h3>
+      <p>
+        Call a set of points a
+        <a class="wiki-term" data-wiki="Lattice_(group)" href="https://en.wikipedia.org/wiki/Lattice_(group)" target="_blank" rel="noopener">lattice</a>
+        if, whenever three corners of a parallelogram are in it, the fourth is too &mdash; in vectors, if
+        <code>a</code>, <code>b</code> and <code>c</code> are in it then so is <code>a + b &minus; c</code>.
+        Every set of points sits inside a smallest lattice containing it. Now look at a hop: peg <code>p</code>
+        jumps over peg <code>q</code> and lands at
+      </p>
+      <blockquote><code>p&prime; = 2q &minus; p = q + q &minus; p</code></blockquote>
+      <p>
+        which is exactly the parallelogram rule applied to <code>q</code>, <code>q</code> and <code>p</code>.
+        So the new point was already in the smallest lattice containing the old ones &mdash; the lattice does
+        not grow. And a hop undoes itself (jump straight back over the same peg), so it cannot shrink either.
+        The smallest lattice is an
+        <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>:
+        it is the same after every move you will ever make. The status line prints its step, and you can
+        watch it refuse to budge.
+      </p>
+
+      <h3>So the square can never change size</h3>
+      <p>
+        Start from a square of side 1. Its smallest lattice is the ordinary grid of whole-number points, and
+        the closest two points of that grid are 1 apart &mdash; so <em>no square smaller than the original is
+        ever reachable</em>. That is the easy half. The other half comes free:
+      </p>
+      <blockquote>
+        Suppose some sequence of hops turned the side-1 square into a square of side <code>s &gt; 1</code>.
+        Run it backwards &mdash; every hop reverses &mdash; and it turns a side-<code>s</code> square into a
+        side-1 one. Shrink that whole picture by a factor of <code>s</code>: hops are defined by midpoints, so
+        a shrunk game is still a legal game. It takes a side-1 square to a square of side
+        <code>1/s &lt; 1</code>, which the first half just ruled out.
+      </blockquote>
+      <p>
+        So no bigger square, no smaller one, and the same argument in any direction kills the tilted ones:
+        a square of side <code>&radic;2</code> would shrink to one of side <code>1/&radic;2</code>.
+      </p>
+
+      <h3>The fifth peg changes the game</h3>
+      <p>
+        Turn the fifth peg on with the side set to 2 and you may drop it on a point the other four could
+        never reach. Their lattice gets finer &mdash; the status line will read <em>step 1 by 2</em> &mdash;
+        and the argument above loses its grip, because the pegs' grid is now finer than their square. That is
+        not a technicality. Three hops are then enough to put the four original pegs on a square of side
+        <code>&radic;8</code>, twice the area of the one they started in:
+      </p>
+      <blockquote>
+        The square sits at <code>(5,5) (7,5) (7,7) (5,7)</code>; drop the helper at <code>(6,5)</code>.
+        Hop the <code>(5,5)</code> peg over <code>(7,5)</code> to <code>(9,5)</code>, then back over the
+        helper to <code>(3,5)</code>, then hop <code>(7,7)</code> over the helper to <code>(5,3)</code>.
+        The four now sit on <code>(3,5) (7,5) (5,3) (5,7)</code> &mdash; a square of side
+        <code>&radic;8</code>.
+      </blockquote>
+      <p>
+        One peg of help, and the impossible becomes a three-move exercise. What the search never turned up
+        was a bigger square sitting <em>square to the grid</em>: every bigger one it found was tilted. The
+        five-peg case has its own argument on Bogomolny's page, with a
+        <a class="wiki-term" data-wiki="Greatest_common_divisor" href="https://en.wikipedia.org/wiki/Greatest_common_divisor" target="_blank" rel="noopener">greatest common divisor</a>
+        and a count of grid points inside the square; follow the link under the title. With the side left at
+        1 the fifth peg does nothing at all, since every grid point is already in the pegs' own lattice.
+      </p>
+      <p class="tip">
+        Try this: set the side to 2, turn on the fifth peg and drop it one step to the right of a corner.
+        The status line should say the pegs reach a grid of step 1 by 2 &mdash; then see how few hops you
+        need to beat the square. Three is enough.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="pegs-core.js"></script>
+<script src="four-pegs.js"></script>
+</body>
+</html>

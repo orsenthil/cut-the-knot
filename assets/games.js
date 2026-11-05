@@ -218,5 +218,11 @@ window.COOLMATHS = {
       blurb: "Think of one of 27 numbers and answer three questions about which row it is in. That is exactly enough information to name it — and it always ends up in the same seat.",
       tags: ["counting", "invariants", "algorithms"],
     },
+    {
+      slug: "four-pegs",
+      title: "Four Pegs",
+      blurb: "Four pegs at the corners of a square. A peg may hop over another and land the same distance beyond. Can you ever make a bigger square \u2014 and how would you know for sure that you cannot?",
+      tags: ["invariants", "algebra", "number-theory"],
+    },
   ],
 };

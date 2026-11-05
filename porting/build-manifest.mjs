@@ -72,6 +72,7 @@ function readGamesJs() {
  * are.
  */
 const SLUG_TO_APPLET = {
+  "four-pegs": "FourPegs",
   rfwh: "RFWH",
   flipthem: "FlipThem",
   coins: "CoinsGame",
