@@ -98,6 +98,7 @@ const SLUG_TO_APPLET = {
   grundy: "Grundy",
   "whats-next": "guess",
   hanoi: "hanoi",
+  "hanoi-3c": "Hanoi3c",
   "gergonne": "GergonneMagic",
   "vanishing-digit": null,
   hourglass: null,

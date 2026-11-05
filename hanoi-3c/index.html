@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>3-Colour Tower of Hanoi &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #pegs {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    width: 100%;
+    max-width: 520px;
+    padding: 16px 10px;
+  }
+  .peg {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 4px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    box-shadow: none;
+    line-height: 0;
+  }
+  .peg:hover:not(:disabled) { background: var(--surface-2); }
+  .peg:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .peg.holding { border-color: var(--accent); background: var(--accent-soft); }
+  .peg.target { border-style: dashed; border-color: var(--accent); }
+  .peg.illegal { background: var(--highlight); }
+  .peg.hinted { background: var(--highlight); }
+  .pegArt { width: 100%; height: auto; display: block; pointer-events: none; }
+
+  /* Three real colours of their own, mid-tones that read on both stages. */
+  .disk { stroke: var(--ink); stroke-width: 0.6; }
+  .disk.c0 { fill: #c4453a; }
+  .disk.c1 { fill: #dda01b; }
+  .disk.c2 { fill: #3d74c4; }
+  .rod, .plinth { fill: var(--border-strong); }
+
+  #scoreLine { margin-top: 10px; font-size: 0.9rem; color: var(--muted); text-align: center; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .peg { transition: background-color 140ms ease; }
+  }
+</style>
+</head>
+<body data-game="hanoi-3c">
+  <h1>3-Colour Tower of Hanoi</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/Hanoi3c.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> three towers, red, gold and blue. Win by rebuilding all three, each on a different peg from the one it started on.<br>
+    <strong>How to play:</strong> click a peg to lift its top disk, then click another peg to drop it there.
+    A disk can never go on a smaller one, but it may go on one of the same size.
+  </div>
+
+  <div id="pegs" class="stage"></div>
+
+  <div class="controls">
+    <label>Disks of each colour <select id="nInput"></select></label>
+    <button type="button" id="slowBtn">Slow</button>
+    <button type="button" id="fastBtn">Fast</button>
+    <button type="button" id="stepBtn">One step</button>
+    <button type="button" id="stopBtn">Stop</button>
+    <button type="button" id="resetBtn" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <div id="scoreLine"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        John Mason pointed out that this puzzle can be solved if the goal is a
+        <a class="wiki-term" data-wiki="Derangement" href="https://en.wikipedia.org/wiki/Derangement" target="_blank" rel="noopener">derangement</a>:
+        every tower ends somewhere it didn't start. With three towers there are only two derangements, the two
+        ways of turning the colours one peg round. The Slow, Fast and One step buttons play an algorithm by
+        Stuart Anderson.
+      </p>
+
+      <h3>Gather, shift, spread</h3>
+      <p>
+        To swap the biggest disks, every smaller disk must first be out of the way in one pile. So Anderson
+        works with a few building blocks. <code>SHIFT</code> moves a pile of size-matched triples from one peg
+        to another, just like the ordinary
+        <a class="wiki-term" data-wiki="Tower_of_Hanoi" href="https://en.wikipedia.org/wiki/Tower_of_Hanoi" target="_blank" rel="noopener">Tower of Hanoi</a>
+        but three disks at a time. <code>GATHER</code> collects all the disks into one pile, and
+        <code>SPREAD</code> undoes it. The whole solution is
+      </p>
+      <blockquote><code>GATHER, SHIFT, SHIFT, SPREAD</code></blockquote>
+      <p>
+        The two <code>SHIFT</code>s carry the gathered pile one peg round. <code>SPREAD</code> then deals the
+        disks back out exactly as <code>GATHER</code> collected them, but from a rotated starting point, so each
+        colour lands one peg along.
+      </p>
+
+      <h3>Is it the shortest way?</h3>
+      <p>
+        Anderson wrote that his method "may not be optimal". A computer search of every position settles it
+        for small towers: it isn't.
+      </p>
+      <blockquote>
+        <code>disks of each colour &nbsp; 1 &nbsp; 2 &nbsp; 3</code><br>
+        <code>Anderson's algorithm &nbsp; 10 &nbsp;38 102</code><br>
+        <code>fewest possible &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5 &nbsp;22 &nbsp;62</code>
+      </blockquote>
+      <p>
+        He also guessed that his building blocks only work for some orders of the pegs. In fact all six
+        orders work: three of them give one derangement and three give the other.
+      </p>
+
+      <h3>The applet's finish line</h3>
+      <p>
+        Bogomolny's applet only checked that no peg held a disk of its own starting colour, so mixed-up piles
+        counted as a win (one disk of each colour "solves" in 4 moves). This version asks for what the puzzle
+        states: three whole single-colour towers.
+      </p>
+      <p class="tip">
+        Try one disk of each colour first. Five moves is the best possible. Can you find them?
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="hanoi-3c-core.js"></script>
+<script src="hanoi-3c.js"></script>
+</body>
+</html>

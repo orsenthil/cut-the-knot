@@ -249,5 +249,11 @@ window.COOLMATHS = {
       blurb: "Move a tower of disks to another peg, one at a time, never a big one on a small one. Why does every extra disk double the work?",
       tags: ["induction", "algorithms"],
     },
+    {
+      slug: "hanoi-3c",
+      title: "3-Colour Tower of Hanoi",
+      blurb: "Three towers, three colours, and a disk may sit on one its own size. Can you move every tower to a different peg \u2014 and how few moves does it take?",
+      tags: ["induction", "algorithms", "counting"],
+    },
   ],
 };
