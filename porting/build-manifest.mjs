@@ -94,6 +94,7 @@ const SLUG_TO_APPLET = {
   diagonals: "Diagonals",
   "flipping-pancakes": "Flipper",
   "frogs-toads-2d": "FrogsAndToads2D",
+  "frogs-toads": "FrogsAndToads",
   "gergonne": "GergonneMagic",
   "vanishing-digit": null,
   hourglass: null,

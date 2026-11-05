@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Toads and Frogs &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #boardWrap {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 18px 12px;
+  }
+  #board {
+    display: grid;
+    grid-template-columns: repeat(var(--cells), 1fr);
+    gap: 3px;
+    width: 100%;
+    touch-action: manipulation;
+  }
+  .cell {
+    aspect-ratio: 1;
+    padding: 2px;
+    border: none;
+    border-radius: 8px;
+    background: var(--board-a);
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+  }
+  .cell.hole { background: var(--board-b); box-shadow: inset 0 0 0 2px var(--border-strong); }
+  .cell.canMove { cursor: pointer; }
+  .cell.canMove:hover { background: var(--highlight); }
+  .cell:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .cell.justMoved { background: var(--accent-soft); }
+  .cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+    display: block;
+  }
+
+  #scoreLine { margin-top: 10px; font-size: 0.9rem; color: var(--muted); text-align: center; }
+  #moveString {
+    margin-top: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    text-align: center;
+    overflow-wrap: anywhere;
+    min-height: 1.4em;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cell { transition: background-color 140ms ease; }
+  }
+</style>
+</head>
+<body data-game="frogs-toads">
+  <h1>Toads and Frogs</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/FrogsAndToads.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> green frogs on the left, brown toads on the right, one empty square between them.
+    Win by getting all the toads to the left end and all the frogs to the right end.<br>
+    <strong>How to play:</strong> click an animal to move it. Frogs only go right and toads only go left,
+    into the empty square or in one hop over a single animal of the other kind.
+  </div>
+
+  <div id="boardWrap" class="stage">
+    <div id="board"></div>
+  </div>
+
+  <div class="controls">
+    <label>Frogs <select id="frogsInput"></select></label>
+    <label>Toads <select id="toadsInput"></select></label>
+    <label><input type="checkbox" id="holeInput"> Hole moves</label>
+    <button type="button" id="backBtn">Take back</button>
+    <button type="button" id="newBtn" class="primary">New game</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <div id="scoreLine"></div>
+  <div id="moveString" aria-label="Moves so far"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        This old puzzle is also sold as Hares and Tortoises, Sheep and Goats, or Traffic Jam. Bogomolny's
+        applet writes down every move as you play: <code>S</code> for a slide, <code>J</code> for a jump.
+        Those letters turn out to say a lot about the puzzle.
+      </p>
+
+      <h3>How many moves</h3>
+      <p>
+        With <code>N</code> frogs and <code>M</code> toads, every frog has to travel <code>M+1</code> squares
+        right and every toad <code>N+1</code> squares left. A slide covers one square and a jump covers two.
+        A jump is the only way a frog and a toad can get past each other, and every frog must pass every
+        toad once, so there are exactly <code>MN</code> jumps:
+      </p>
+      <blockquote><code>moves = N(M+1) + M(N+1) &minus; MN = MN + M + N</code></blockquote>
+      <p>
+        Every solution takes exactly that many moves: there is no shorter way and, if you finish at all,
+        no longer one.
+      </p>
+
+      <h3>The moves read the same backwards</h3>
+      <p>
+        Play a finished solution backwards and it solves the puzzle again, with the animals' roles swapped.
+        That is why the string of <code>S</code>s and <code>J</code>s is always a
+        <a class="wiki-term" data-wiki="Palindrome" href="https://en.wikipedia.org/wiki/Palindrome" target="_blank" rel="noopener">palindrome</a>.
+        Three of each gives <code>SJSJJSJJJSJJSJS</code>. With at least two animals on each side there are
+        exactly two solutions, one starting each way, and they write the same string even when
+        <code>N</code> and <code>M</code> differ.
+      </p>
+
+      <h3>Every move is forced</h3>
+      <p>
+        Two jumps on offer at once is fatal: whichever you take, you are stuck soon after. Facing a jump
+        and a slide, always jump. Facing two slides, pick the one that does not set up two jumps. Checking
+        every position on every board up to five a side confirms what the page says: after the first move,
+        only one move ever keeps the puzzle solvable.
+      </p>
+      <p>
+        Except when one side has a single animal. Then there are many solutions: 3, 5, 8 and 13 of them
+        for 2, 3, 4 and 5 animals on the other side. Those are the
+        <a class="wiki-term" data-wiki="Fibonacci_sequence" href="https://en.wikipedia.org/wiki/Fibonacci_sequence" target="_blank" rel="noopener">Fibonacci numbers</a>.
+      </p>
+
+      <h3>Following the hole</h3>
+      <p>
+        Tick "Hole moves" to record the empty square instead: <code>r</code> or <code>R</code> when it moves
+        one or two squares right, <code>l</code> or <code>L</code> for left. The two solutions now give
+        different strings. Bogomolny's page says they are palindromes only when <code>M = N</code>, but
+        checking every board up to five a side shows more: with two or more animals on each side, the hole's
+        string is a palindrome exactly when <code>N + M</code> is even. Three frogs and five toads give
+        <code>lRrLLlRRRrLLLrRRRlLLrRl</code>.
+      </p>
+      <p class="tip">
+        Try two frogs and four toads with "Hole moves" ticked, then two frogs and three toads. Can you see
+        why the even case reads the same both ways?
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="frogs-toads-core.js"></script>
+<script src="frogs-toads.js"></script>
+</body>
+</html>

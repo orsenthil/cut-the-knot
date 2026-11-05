@@ -224,5 +224,11 @@ window.COOLMATHS = {
       blurb: "Four pegs at the corners of a square. A peg may hop over another and land the same distance beyond. Can you ever make a bigger square \u2014 and how would you know for sure that you cannot?",
       tags: ["invariants", "algebra", "number-theory"],
     },
+    {
+      slug: "frogs-toads",
+      title: "Toads and Frogs",
+      blurb: "Frogs hop right, toads hop left, and there is only one empty square. Every solution takes exactly the same number of moves \u2014 and the moves read the same backwards. Why?",
+      tags: ["counting", "algorithms"],
+    },
   ],
 };
