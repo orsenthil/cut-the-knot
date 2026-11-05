@@ -212,5 +212,11 @@ window.COOLMATHS = {
       blurb: "Pick two boxes and the fuller one pays the other exactly what it holds, doubling the smaller pile. Can you always get every penny into one box?",
       tags: ["number-theory", "divisibility", "invariants"],
     },
+    {
+      slug: "gergonne",
+      title: "Gergonne's Magic Trick",
+      blurb: "Think of one of 27 numbers and answer three questions about which row it is in. That is exactly enough information to name it — and it always ends up in the same seat.",
+      tags: ["counting", "invariants", "algorithms"],
+    },
   ],
 };

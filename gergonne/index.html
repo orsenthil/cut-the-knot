@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Gergonne's Magic Trick &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage { width: 100%; max-width: 560px; padding: 16px 12px; }
+  .rowline { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .rowline:last-child { margin-bottom: 0; }
+  .pick {
+    flex: 0 0 auto;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+  .cards {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 3px;
+    min-width: 0;
+  }
+  .card {
+    aspect-ratio: 3 / 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    background: var(--board-a);
+    color: var(--text);
+    font-size: clamp(9px, 2.6vw, 15px);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+  .card.answer {
+    background: var(--accent);
+    color: var(--accent-text);
+    box-shadow: 0 0 0 3px var(--highlight);
+  }
+  #stage.done .pick { visibility: hidden; }
+
+  #roundLine { margin-top: 10px; font-size: 0.88rem; color: var(--muted); text-align: center; }
+  @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+</style>
+</head>
+<body data-game="gergonne">
+  <h1>Gergonne's Magic Trick</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/GergonneMagic.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> think of one of the 27 numbers and keep it to yourself. After three questions
+    the computer will tell you exactly which one it is.<br>
+    <strong>How to play:</strong> click the button beside the row your number is in. The numbers get
+    gathered up and dealt again; do it three times and watch.
+  </div>
+
+  <div id="stage" class="stage"></div>
+
+  <div class="controls">
+    <button type="button" id="resetBtn" class="primary">New deal</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <div id="roundLine"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        There is no guessing here and nothing is hidden from you. The three answers you give are enough, all
+        by themselves, to pin down one number out of twenty-seven &mdash; and the trick is arranged so that
+        the answer always finishes in the same seat. It is named after
+        <a class="wiki-term" data-wiki="Joseph_Diez_Gergonne" href="https://en.wikipedia.org/wiki/Joseph_Diez_Gergonne" target="_blank" rel="noopener">Joseph Diez Gergonne</a>,
+        who analysed it in 1813.
+      </p>
+
+      <h3>Each answer divides the field by three</h3>
+      <p>
+        Before you say anything, your number could be any of the 27. Your first answer rules out two rows
+        and leaves 9. The numbers are gathered and dealt out again, which spreads those 9 across all three
+        rows &mdash; three in each &mdash; so your second answer leaves 3. Deal again and those 3 are spread
+        one per row, so your third answer leaves exactly 1:
+      </p>
+      <blockquote><code>27 &rarr; 9 &rarr; 3 &rarr; 1</code></blockquote>
+      <p>
+        That is the real content of the trick. Three answers, each with three possible values, carry
+        <code>3 &times; 3 &times; 3 = 27</code> different messages, which is precisely enough to name one
+        number out of 27. Nothing is left over, and nothing is missing.
+      </p>
+
+      <h3>Why it is always the middle one</h3>
+      <p>
+        Knowing <em>which</em> number is left is not the same as knowing <em>where</em> it is, and that is
+        the sleight of hand. When the rows are gathered up, the row you pointed at is always picked up
+        second &mdash; sandwiched in the middle &mdash; so after the gather your number sits somewhere in the
+        middle third of the stack, whatever you answered. Deal that stack out again and watch where it can
+        be. In the real order of the rows, which the shuffling hides from you until the end:
+      </p>
+      <blockquote>
+        after one answer: one of the middle three places of its row<br>
+        after two: the middle place of its row, exactly<br>
+        after three: the middle place of the middle row
+      </blockquote>
+      <p>
+        Each round squeezes it one step further in, and the third leaves nowhere else to be: counting across
+        the rows, the 14th of the 27. The computer does not so much deduce your number as walk it into a
+        chair.
+      </p>
+
+      <h3>Three rows is not an accident</h3>
+      <p>
+        The applet deals <code>N = 3</code> rows of <code>N<sup>N&minus;1</sup> = 9</code>, which is
+        <code>N<sup>N</sup> = 27</code> numbers in all, and asks <code>N</code> questions. Those sizes have
+        to match: <code>N</code> answers of <code>N</code> kinds each can distinguish
+        <code>N<sup>N</sup></code> numbers and no more. But the counting is not the whole story &mdash; the
+        gather has to put the named row in a true middle, so it also wants an odd number of rows. Simulating
+        the same procedure shows it corners the number for 3 rows and for 5, and fails outright for 4.
+      </p>
+      <p class="tip">
+        Try answering the same row three times on purpose, if your number lets you. The gather barely moves
+        anything &mdash; and the trick still works, because it never needed your answers to be interesting,
+        only to be true.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="gergonne-core.js"></script>
+<script src="gergonne.js"></script>
+</body>
+</html>
