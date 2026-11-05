@@ -158,5 +158,11 @@ window.COOLMATHS = {
       blurb: "Drop the digits 1 to 8 into eight circles so that no two digits in a row land in circles that touch. Two of the circles decide almost everything \u2014 which two?",
       tags: ["graph-theory", "counting"],
     },
+    {
+      slug: "dawsons-kayles",
+      title: "Dawson's Kayles",
+      blurb: "Skittles stand in a ring and each move knocks down two that are side by side. Take the last pair to win \u2014 but the ring quietly breaks into separate games, and only their XOR tells you who is winning.",
+      tags: ["game-strategy", "invariants", "algorithms"],
+    },
   ],
 };

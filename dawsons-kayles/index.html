@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dawson's Kayles &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage {
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  #ring { width: 100%; max-width: 400px; height: auto; display: block; touch-action: manipulation; }
+
+  .track { fill: none; stroke: var(--border); stroke-width: 1.5; }
+  .pin { fill: var(--ink); stroke: none; transition: opacity 0.2s; }
+  .pin.down { fill: none; stroke: var(--border-strong); stroke-width: 2; stroke-dasharray: 3 3; }
+  .pin.fresh { animation: fall 0.3s ease-out; }
+  @keyframes fall { from { opacity: 1; } to { opacity: 1; } }
+
+  .gap-hit { fill: transparent; cursor: pointer; outline: none; }
+  .gap-dot { fill: var(--accent); opacity: 0.35; pointer-events: none; transition: opacity 0.15s, r 0.15s; }
+  .gap-hit:hover + .gap-dot,
+  .gap-hit:focus-visible + .gap-dot { opacity: 1; }
+  .gap-hit:focus-visible + .gap-dot { stroke: var(--focus); stroke-width: 4; }
+  #ring.busy .gap-hit { cursor: default; pointer-events: none; }
+  #ring.busy .gap-dot { opacity: 0.12; }
+
+  #count { font-size: 0.9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .controls { flex-direction: column; gap: 10px; }
+  .controls .row { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: center; }
+  .controls input[type="number"] { width: 4.6em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pin, .gap-dot { transition: none; }
+    .pin.fresh { animation: none; }
+  }
+</style>
+</head>
+<body data-game="dawsons-kayles">
+  <h1>Dawson's Kayles</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/DawsonKayles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> skittles stand in a ring and every move knocks down two that are side by side. Knock down the last pair and you win.<br>
+    <strong>How to play:</strong> click the small dot between two standing skittles to knock both over. A skittle with nobody standing beside it can never be knocked down.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="ring" viewBox="0 0 400 400" role="group" aria-label="A ring of skittles"></svg>
+    <div id="count"></div>
+  </div>
+
+  <div class="controls">
+    <div class="row">
+      <label>Skittles <input type="number" id="nInput" min="4" max="40" step="1" value="18"></label>
+      <label><input type="checkbox" id="fullBox"> Full circle</label>
+    </div>
+    <div class="row">
+      <button id="newBtn" type="button" class="primary">New Game</button>
+      <button id="moveBtn" type="button">Make Move</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        This is a browser version of Alexander Bogomolny's applet
+        <a href="https://www.cut-the-knot.org/Curriculum/Games/DawsonKayles.shtml" target="_blank" rel="noopener">"Dawson's Kayles"</a>,
+        a 1930s game described in Berlekamp, Conway and Guy's <em>Winning Ways for Your
+        Mathematical Plays</em>. Each move takes two neighbouring skittles, and the player who
+        cannot move has lost.
+      </p>
+
+      <h3>The ring falls apart into separate games</h3>
+      <p>
+        Knock out a pair and the skittles on either side of the hole stop being neighbours. So
+        after a move or two the board is a handful of separate arcs, and no move can ever involve
+        two of them at once. A lone skittle is dead weight: nothing beside it, so nothing can ever
+        remove it. That is the structure a
+        <a class="wiki-term" data-wiki="Sprague-Grundy_theorem" href="https://en.wikipedia.org/wiki/Sprague-Grundy_theorem" target="_blank" rel="noopener">Sprague&ndash;Grundy</a>
+        argument needs. Give every arc length a number <code>G(n)</code>, its
+        <a class="wiki-term" data-wiki="Nimber" href="https://en.wikipedia.org/wiki/Nimber" target="_blank" rel="noopener">nimber</a>,
+        and the whole board behaves like one heap of size
+      </p>
+      <blockquote><code>G(arc&#8321;) XOR G(arc&#8322;) XOR &hellip;</code></blockquote>
+      <p>You are lost exactly when that total is 0, so winning means handing it back at 0 every turn.</p>
+
+      <h3>Working the numbers out</h3>
+      <p>
+        Taking the pair that sits <code>a</code> places into a row of <code>n</code> leaves rows of
+        <code>a</code> and <code>n &minus; 2 &minus; a</code>, so the values come from the
+        <a class="wiki-term" data-wiki="Mex_(mathematics)" href="https://en.wikipedia.org/wiki/Mex_(mathematics)" target="_blank" rel="noopener">mex</a>
+        rule &mdash; the smallest whole number that is <em>not</em> among the options:
+      </p>
+      <blockquote><code>G(n) = mex { G(a) XOR G(n &minus; 2 &minus; a) : 0 &le; a &le; n &minus; 2 }</code></blockquote>
+      <p>
+        Starting from <code>G(0) = G(1) = 0</code> that gives 0, 0, 1, 1, 2, 0, 3, 1, 1, 0, 3, 3,
+        2, 2, 4, 0, 5, 2, 2, 3, &hellip; The arcs worth handing over are the ones with
+        <code>G = 0</code>: lengths 0, 1, 5, 9, 15, 21, 25, 29, 35, 39, 43, 55, 59. The applet
+        stores 137 of these values in its code; this port recomputes them with the mex rule, and
+        the port's test checks that all 137 come out the same.
+      </p>
+
+      <h3>A pattern that almost repeats</h3>
+      <p>
+        There is no formula for <code>G(n)</code>, but the list is eventually periodic:
+        <code>G(n + 34) = G(n)</code> for every <code>n</code> except six stubborn ones, namely
+        0, 15, 17, 32, 35 and 52. Past that the whole sequence just repeats in blocks of 34. In
+        the notation of <em>Winning Ways</em> this is the
+        <a class="wiki-term" data-wiki="Octal_game" href="https://en.wikipedia.org/wiki/Octal_game" target="_blank" rel="noopener">octal game</a>
+        &middot;07, and, as Bogomolny notes, its values are the values of Dawson's chess with an
+        extra 0 pushed on the front.
+      </p>
+
+      <h3>A full ring is not a row</h3>
+      <p>
+        An untouched ring has no ends, so every opening move does the same thing: whichever pair
+        you take, what is left is one arc of <code>n &minus; 2</code>. There is no choice to get
+        wrong and no choice to get right. The ring of <code>n</code> is therefore won by whoever
+        moves first exactly when <code>G(n &minus; 2) = 0</code> &mdash; rings of 7, 11, 17, 23,
+        27, 31 and 37 in the range on offer here, and nothing else.
+      </p>
+
+      <p class="tip">
+        Tick "Full circle" with 18 skittles and press "Make Move": the game is lost for whoever
+        goes first, so let the computer have it. Then try 17 and open yourself.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="dk-core.js"></script>
+<script src="dawsons-kayles.js"></script>
+</body>
+</html>

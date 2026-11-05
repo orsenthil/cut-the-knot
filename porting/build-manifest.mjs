@@ -93,6 +93,7 @@ const SLUG_TO_APPLET = {
   "maths-quiz": null,
   euler2d: null,
   aliquot: "Aliquot",
+  "dawsons-kayles": "DawsonKayles",
 };
 
 /** Pages for ported games whose applet is missing from classes.zip. */
