@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Grundy's Game &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage {
+    width: 100%;
+    padding: 14px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  #board { width: 100%; height: auto; display: block; touch-action: manipulation; }
+
+  /* Heaps are chocolate bars: a real colour of their own, readable on both stages. */
+  .heap { fill: #8a5a3b; stroke: #5e3a22; stroke-width: 1.5; }
+  .heap.dead { fill: #b89a84; stroke: #8f735e; }
+  .groove { stroke: #5e3a22; stroke-width: 1; opacity: 0.55; }
+  .heap.dead + .grooves .groove { stroke: #8f735e; }
+
+  .cut-hit { fill: transparent; cursor: pointer; outline: none; }
+  .cut-line { stroke: var(--accent); stroke-width: 3; stroke-linecap: round; opacity: 0; pointer-events: none; }
+  .cut-hit:hover + .cut-line,
+  .cut-hit:focus-visible + .cut-line { opacity: 1; }
+  .cut-hit:focus-visible + .cut-line { stroke: var(--focus); stroke-width: 5; }
+  .cut-hit.equal:hover + .cut-line,
+  .cut-hit.equal:focus-visible + .cut-line { stroke: var(--bad); }
+  #board.busy .cut-hit { pointer-events: none; cursor: default; }
+  .last-cut { stroke: var(--highlight); stroke-width: 6; stroke-linecap: round; }
+
+  #heapsLine { font-size: 0.9rem; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cut-line { transition: opacity 120ms ease; }
+  }
+</style>
+</head>
+<body data-game="grundy">
+  <h1>Grundy's Game</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/Grundy.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> you and the computer take turns breaking one bar of chocolate into two pieces of different sizes. Make the last break and you win.<br>
+    <strong>How to play:</strong> click between two squares to break the bar there. You go first, and you can't break a bar into two equal halves.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" role="group" aria-label="Bars of chocolate"></svg>
+    <div id="heapsLine"></div>
+  </div>
+
+  <div class="controls">
+    <label>Biggest bar <select id="sizeInput"></select></label>
+    <label>Bars <select id="heapsInput"></select></label>
+    <label><input type="checkbox" id="randomInput"> Random sizes</label>
+    <button type="button" id="newBtn" class="primary">New game</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Grundy's game is an
+        <a class="wiki-term" data-wiki="Impartial_game" href="https://en.wikipedia.org/wiki/Impartial_game" target="_blank" rel="noopener">impartial game</a>:
+        both players have the same moves, and the last one to move wins. Games like that have a hidden
+        arithmetic, and the computer uses it to play perfectly whenever it can.
+      </p>
+
+      <h3>A number for every bar</h3>
+      <p>
+        A bar of 1 or 2 squares can't be broken, so it is worth <code>0</code>. Every longer bar gets the
+        smallest number that none of its breaks are worth. That rule is called the
+        <a class="wiki-term" data-wiki="Mex_(mathematics)" href="https://en.wikipedia.org/wiki/Mex_(mathematics)" target="_blank" rel="noopener">mex</a>,
+        the "minimum excluded" value. A bar of 3 can only become 1 + 2, worth <code>0</code>, so 3 is worth
+        <code>1</code>. Working upwards:
+      </p>
+      <blockquote>
+        <code>size&nbsp; 3 4 5 6 7 8 9 10 11 12 13 14 15</code><br>
+        <code>value 1 0 2 1 0 2 1 &nbsp;0 &nbsp;2 &nbsp;1 &nbsp;3 &nbsp;2 &nbsp;1</code>
+      </blockquote>
+
+      <h3>Adding bars with XOR</h3>
+      <p>
+        Two bars side by side are worth their numbers combined with
+        <a class="wiki-term" data-wiki="Exclusive_or" href="https://en.wikipedia.org/wiki/Exclusive_or" target="_blank" rel="noopener">exclusive or</a>
+        (XOR): write them in binary and add without carrying. This is the
+        <a class="wiki-term" data-wiki="Sprague–Grundy_theorem" href="https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem" target="_blank" rel="noopener">Sprague&ndash;Grundy theorem</a>,
+        and it says the player to move is lost exactly when the total is <code>0</code>. Breaking a bar of 8
+        into 3 + 5 gives <code>1 XOR 2 = 3</code>, not <code>0</code>, so it hands the win to your opponent.
+        Checking every position of up to 30 squares by brute force gives the same answer as the XOR
+        every time.
+      </p>
+
+      <h3>How the computer plays</h3>
+      <p>
+        On its turn the computer works out the XOR of all the bars. If it isn't <code>0</code>, it finds a
+        break that makes it <code>0</code>; there always is one. If it is already <code>0</code>, it is
+        losing, so it breaks a bar at random and hopes you slip. So the opening bar of 15, worth
+        <code>1</code>, is a win for you if you never slip. A single bar of 7, 20, 23 or 26 is worth
+        <code>0</code>, and then you can't beat the computer at all.
+      </p>
+      <p class="tip">
+        Start with one bar of 15 and look for the break that leaves a total of <code>0</code>. Hint: 15
+        breaks into 7 + 8, and those are worth 0 and 2. Try another break.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="grundy-core.js"></script>
+<script src="grundy.js"></script>
+</body>
+</html>

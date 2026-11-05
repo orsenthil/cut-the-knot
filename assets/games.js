@@ -230,5 +230,11 @@ window.COOLMATHS = {
       blurb: "Frogs hop right, toads hop left, and there is only one empty square. Every solution takes exactly the same number of moves \u2014 and the moves read the same backwards. Why?",
       tags: ["counting", "algorithms"],
     },
+    {
+      slug: "grundy",
+      title: "Grundy's Game",
+      blurb: "Take turns breaking a bar of chocolate into two unequal pieces; whoever makes the last break wins. The computer knows a secret number for every bar \u2014 can you work it out?",
+      tags: ["game-strategy", "algorithms"],
+    },
   ],
 };
