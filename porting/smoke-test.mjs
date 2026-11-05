@@ -60,6 +60,12 @@ function serveRepo() {
   const server = createServer(async (req, res) => {
     try {
       let path = decodeURIComponent(new URL(req.url, "http://x").pathname);
+      // The site has no favicon. Some Chromium builds ask for one on the first
+      // page load and log the 404 as a console error, which is not the port's fault.
+      if (path === "/favicon.ico") {
+        res.writeHead(204).end();
+        return;
+      }
       if (path.endsWith("/")) path += "index.html";
       const file = join(REPO, normalize(path).replace(/^(\.\.[/\\])+/, ""));
       if (!file.startsWith(REPO)) {
