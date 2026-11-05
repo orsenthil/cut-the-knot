@@ -152,5 +152,11 @@ window.COOLMATHS = {
       blurb: "Scoop up the stones under your hand and drop them one by one round the circle, over and over. They always end up piled in a single cup \u2014 or do they?",
       tags: ["algorithms", "graph-theory", "counting"],
     },
+    {
+      slug: "eight-digits",
+      title: "Eight Digits Puzzle",
+      blurb: "Drop the digits 1 to 8 into eight circles so that no two digits in a row land in circles that touch. Two of the circles decide almost everything \u2014 which two?",
+      tags: ["graph-theory", "counting"],
+    },
   ],
 };

@@ -85,6 +85,7 @@ const SLUG_TO_APPLET = {
   "dawsons-chess": "DawsonChess",
   "bicolor-hanoi": "BiColorHanoi",
   "stones-in-cups": "BarryCipra",
+  "eight-digits": "EightDigitPuzzle",
   "vanishing-digit": null,
   hourglass: null,
   torque: null,

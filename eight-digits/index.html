@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Eight Digits Puzzle &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage {
+    width: 100%;
+    max-width: 420px;
+    padding: 16px 16px 10px;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+    touch-action: manipulation;
+  }
+  .link {
+    stroke: var(--border-strong);
+    stroke-width: 5;
+    stroke-linecap: round;
+  }
+  .safe-link {
+    stroke: var(--accent);
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-dasharray: 2 14;
+  }
+  .node { cursor: pointer; }
+  .node .disc {
+    fill: var(--board-a);
+    stroke: var(--ink);
+    stroke-width: 3;
+    transition: fill 140ms ease, stroke 140ms ease;
+  }
+  .node:hover .disc { fill: var(--board-b); }
+  .node:focus { outline: none; }
+  .node:focus-visible .disc { stroke: var(--accent); stroke-width: 6; }
+  .node.filled .disc { fill: var(--accent); stroke: var(--accent); }
+  .node.last .disc { stroke: var(--ink); stroke-width: 6; }
+  .node.clash .disc { fill: var(--bad); stroke: var(--bad); }
+  .node .digit {
+    fill: var(--accent-text);
+    font-family: var(--font);
+    font-size: 40px;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+  }
+  #nextline {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 0.92rem;
+    color: var(--muted);
+  }
+  #nextline b { color: var(--text); font-variant-numeric: tabular-nums; }
+  button[aria-pressed="true"] {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .node .disc { transition: none; }
+  }
+</style>
+</head>
+<body data-game="eight-digits">
+  <h1>Eight Digits Puzzle</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/EightDigitPuzzle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> put the digits 1 to 8 in the eight circles so that no two numbers that come one
+    after the other sit in circles that touch.<br>
+    <strong>How to play:</strong> click a circle to drop in the next digit, starting with 1. Click the
+    circle you have just filled to take that digit back.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 300 400" role="group" aria-label="Eight circles joined by links"></svg>
+    <div id="nextline">Next digit: <b id="nextDigit">1</b></div>
+  </div>
+
+  <div class="controls">
+    <button type="button" id="linksBtn" aria-pressed="false">Show safe links</button>
+    <button type="button" id="backBtn">Step back</button>
+    <button type="button" id="resetBtn" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Trial and error will get you there in the end, but the puzzle is nearly solved before you place a
+        digit. Two counts do almost all of the work, and the second one turns the whole thing into a walk.
+      </p>
+
+      <h3>The two middle circles are forced</h3>
+      <p>
+        Count the links. The two middle circles touch <em>six</em> others each &mdash; every circle but one.
+        Now count forbidden partners: the digit 4 must avoid both 3 and 5, and so it goes for 2, 3, 5, 6 and
+        7. Only <code>1</code> and <code>8</code> are different: they have a single forbidden partner each,
+        <code>2</code> and <code>7</code>.
+      </p>
+      <p>
+        So suppose some digit <code>d</code> sits in a middle circle. Its forbidden partners must all squeeze
+        into the one circle that the middle circle does not touch &mdash; and one circle holds one digit.
+        A digit with two forbidden partners cannot do it, so the middle circles hold <code>1</code> and
+        <code>8</code>. That also fixes two more: <code>7</code> goes in the one circle that 8's circle
+        misses, and <code>2</code> in the one that 1's circle misses.
+      </p>
+
+      <h3>Turn the picture inside out</h3>
+      <p>
+        Now stop looking at the links that are drawn and look at the ones that are not &mdash; press
+        <b>Show safe links</b> to see them. Consecutive digits must sit in circles joined by a dashed line,
+        so reading your answer in the order <code>1, 2, 3, &hellip;, 8</code> traces a route that visits
+        every circle exactly once: a
+        <a class="wiki-term" data-wiki="Hamiltonian_path" href="https://en.wikipedia.org/wiki/Hamiltonian_path" target="_blank" rel="noopener">Hamiltonian path</a>
+        in the
+        <a class="wiki-term" data-wiki="Complement_graph" href="https://en.wikipedia.org/wiki/Complement_graph" target="_blank" rel="noopener">complementary graph</a>.
+        There are only 11 dashed links for 8 circles, so there is very little room. The middle circles have
+        exactly one dashed link each, and a route that visits a circle without stopping needs two &mdash; so
+        they have to be the two ends of the route, which is the first argument again, in one line.
+      </p>
+
+      <h3>Only one answer</h3>
+      <p>
+        Search every way of filling the circles &mdash; there are <code>8! = 40320</code> &mdash; and exactly
+        four survive. They are the same answer four times over: mirror it left to right, flip it top to
+        bottom, or do both, and you get the other three. Swapping every digit <code>d</code> for
+        <code>9 &minus; d</code> also keeps consecutive digits consecutive, and for this figure that is just
+        the same answer turned upside down. So the puzzle has, as Bogomolny puts it, one solution up to
+        reflection and rotation.
+      </p>
+      <p class="tip">
+        Try this: start by putting 1 and 8 in the two middle circles, then place 2 and 7 in the only circles
+        left for them. Four digits remain and the corners almost fill themselves.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="eight-digits-core.js"></script>
+<script src="eight-digits.js"></script>
+</body>
+</html>
