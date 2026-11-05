@@ -8,6 +8,7 @@
 <script src="../assets/games.js"></script>
 <script src="../assets/site.js"></script>
 <style>
+<<<<<<< HEAD
   #pegs {
     display: flex;
     align-items: flex-end;
@@ -47,6 +48,72 @@
   @media (prefers-reduced-motion: reduce) {
     .peg { transition: none; }
   }
+=======
+  #stage {
+    width: 100%;
+    max-width: 520px;
+    padding: 14px 10px 10px;
+  }
+  #pegs { display: flex; width: 100%; gap: 6px; }
+  .peg {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 0 8px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    min-width: 0;
+  }
+  /* the post and the floor the rings sit on */
+  .peg::before {
+    content: "";
+    position: absolute;
+    bottom: 8px;
+    width: 6px;
+    height: calc(100% - 8px);
+    border-radius: 3px;
+    background: var(--board-b);
+  }
+  .peg::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 4%;
+    right: 4%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--board-b);
+  }
+  .peg:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .peg.lifted { background: var(--accent-soft); }
+  .peg.target::after { background: var(--accent); }
+
+  .ring {
+    position: relative;
+    height: var(--rh);
+    border-radius: 999px;
+    margin-top: 2px;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.28);
+    transition: transform 120ms ease;
+  }
+  /* The two ring colours are the applet's two chip colours: the rings really
+     are red and green, so these are not theme tokens. */
+  .ring.c0 { background: #2f9e44; }
+  .ring.c1 { background: #d6452c; }
+  .ring.held { transform: translateY(-6px); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.28), 0 0 0 3px var(--accent); }
+
+  .floating { height: var(--rh); margin-bottom: 6px; display: flex; justify-content: center; }
+  #movesLine { margin-top: 10px; font-size: 0.9rem; color: var(--muted); text-align: center; }
+  #movesLine strong { color: var(--text); font-variant-numeric: tabular-nums; }
+  #sizeLabel { font-variant-numeric: tabular-nums; min-width: 1.4em; text-align: center; display: inline-block; }
+
+  @media (prefers-reduced-motion: reduce) { .ring { transition: none; } }
+>>>>>>> 7870066 (Add Bicolor Towers of Hanoi puzzle)
 </style>
 </head>
 <body data-game="bicolor-hanoi">
@@ -57,6 +124,7 @@
   </p>
 
   <div id="rules">
+<<<<<<< HEAD
     <strong>Game:</strong> two striped towers, gold and red. Win by making each tower one single colour,
     standing on the peg where the other tower started.<br>
     <strong>How to play:</strong> click a peg to lift its top disk, then click another peg to drop it there.
@@ -70,16 +138,41 @@
       <select id="sizeInput"></select>
     </label>
     <button type="button" id="undoBtn">Undo move</button>
+=======
+    <strong>Game:</strong> two striped towers, one on each of the left and middle pegs. Pile every ring
+    onto the empty peg on the right, in as few moves as you can.<br>
+    <strong>How to play:</strong> click a peg to pick up its top ring, then click another peg to drop it. A
+    ring can never go on a smaller one &mdash; but it may sit on a ring of exactly its own size.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="floating" id="floating"></div>
+    <div id="pegs"></div>
+  </div>
+
+  <div class="controls">
+    <label>Rings per tower
+      <button type="button" id="fewerBtn" aria-label="Fewer rings">&minus;</button>
+      <span id="sizeLabel">3</span>
+      <button type="button" id="moreBtn" aria-label="More rings">+</button>
+    </label>
+    <button type="button" id="undoBtn">Undo</button>
+>>>>>>> 7870066 (Add Bicolor Towers of Hanoi puzzle)
     <button type="button" id="resetBtn" class="primary">Reset</button>
   </div>
 
   <div id="status" role="status" aria-live="polite"></div>
+<<<<<<< HEAD
   <div id="scoreLine"></div>
+=======
+  <div id="movesLine"></div>
+>>>>>>> 7870066 (Add Bicolor Towers of Hanoi puzzle)
 
   <details id="math">
     <summary>Look for the math</summary>
     <div class="math-body">
       <p>
+<<<<<<< HEAD
         This is the <a class="wiki-term" data-wiki="Tower_of_Hanoi" href="https://en.wikipedia.org/wiki/Tower_of_Hanoi" target="_blank" rel="noopener">Tower of Hanoi</a>
         with every disk twinned: two of each size, one gold and one red, dealt out as two striped towers.
         It was set for 8-to-12-year-olds at the 1988 French championship of mathematical games, and the one
@@ -127,12 +220,69 @@
       <p class="tip">
         Start with one size. Three moves, and you can feel the whole puzzle in them: the only way to swap two
         disks is to park one on the spare peg. Then try two sizes, and watch where the spare peg goes.
+=======
+        The classic Tower of Hanoi is the textbook example of a
+        <a class="wiki-term" data-wiki="Recurrence_relation" href="https://en.wikipedia.org/wiki/Recurrence_relation" target="_blank" rel="noopener">recurrence relation</a>:
+        a problem that solves itself by calling on a smaller copy of itself. Doubling the rings and giving
+        them colours breaks that tidy answer in an interesting way.
+      </p>
+
+      <h3>The classic count</h3>
+      <p>
+        To shift a tower of <code>n</code> rings to another peg, move the top <code>n&minus;1</code> out of
+        the way, move the big one across, then bring the <code>n&minus;1</code> back on top. So
+      </p>
+      <blockquote><code>T(n) = 2&middot;T(n&minus;1) + 1</code>, and with <code>T(0) = 0</code> that gives <code>T(n) = 2<sup>n</sup> &minus; 1</code>.</blockquote>
+      <p>
+        Every extra ring doubles the work and adds one. The famous 64-ring legend works out at
+        <code>2<sup>64</sup> &minus; 1</code> moves, which is why the monks are taking their time.
+      </p>
+
+      <h3>Why two towers are not just twice the work</h3>
+      <p>
+        Here there are two rings of every size, starting on different pegs, and the rule that a ring may
+        rest on another of its own size. Two separate Hanois would be
+        <code>2(2<sup>n</sup> &minus; 1) = 2<sup>n+1</sup> &minus; 2</code> moves &mdash; but you cannot
+        run them separately, because each tower is in the other's way, and every size has to be reunited
+        somewhere. Searching every position of the puzzle gives the real minimums:
+      </p>
+      <blockquote>
+        <code>n</code>&nbsp;=&nbsp;1, 2, 3, 4, 5, 6, 7, 8<br>
+        least moves = 2, 7, 19, 44, 96, 201, 413, 838
+      </blockquote>
+      <p>
+        Three rings a side takes 19 moves, not the 14 that two separate towers would suggest. The numbers
+        fit their own recurrence, still doubling each time but with a bigger correction term:
+      </p>
+      <blockquote><code>a(n) = 2&middot;a(n&minus;1) + &lceil;3n/2&rceil;</code>, with <code>a(1) = 2</code>.</blockquote>
+      <p>
+        That is a pattern read off the search rather than something proved here &mdash; it holds for every
+        <code>n</code> up to 9, which is one past the largest tower this page offers.
+      </p>
+
+      <h3>A harder question</h3>
+      <p>
+        Bogomolny's page actually asks something else, and something harder: leave the rings in two towers
+        but make each tower a single colour, the big rings swapping pegs. That version was set at the 1988
+        French mathematical games championship and needs far more moves &mdash; 30 for three rings a side
+        rather than 19. The applet this page is built from asks for the pile-them-all-up version, so that
+        is the one you are playing.
+      </p>
+      <p class="tip">
+        Try three rings a side and watch the first few moves of a good solution: the two smallest rings
+        end up stacked on each other almost immediately. Pairing equal rings early is what beats doing two
+        towers one after the other.
+>>>>>>> 7870066 (Add Bicolor Towers of Hanoi puzzle)
       </p>
     </div>
   </details>
 
 <script src="../assets/wiki-hovercard.js"></script>
+<<<<<<< HEAD
 <script src="bicolor-hanoi-core.js"></script>
+=======
+<script src="hanoi-core.js"></script>
+>>>>>>> 7870066 (Add Bicolor Towers of Hanoi puzzle)
 <script src="bicolor-hanoi.js"></script>
 </body>
 </html>
