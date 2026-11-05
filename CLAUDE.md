@@ -24,7 +24,7 @@ node -e 'const src=require("fs").readFileSync("hourglass/hourglass-core.js","utf
 const H=new Function(src+"; return HourglassCore;")(); console.log(H.solve)'
 ```
 
-To check a page visually, use headless Chrome (`/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` on macOS, `chromium` or `google-chrome` on Linux, or Playwright's Chromium in cloud sessions: `<chrome> --headless=new --screenshot=... --window-size=W,H URL`). Add `--force-dark-mode` for the dark theme. Headless windows are at least 500px wide, so load the page in a 375px `<iframe>` to test phone width. In dark mode Chrome can hang after writing the screenshot, so run it with a kill timeout. Pages with a `requestAnimationFrame` loop (hourglass) need `--timeout=` rather than `--virtual-time-budget=`.
+To check a page visually, use headless Chrome (`/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` on macOS, `chromium` or `google-chrome` on Linux, or in cloud sessions `/usr/bin/google-chrome` / Playwright's `/opt/pw-browsers/chromium`, which need `--no-sandbox`: `<chrome> --headless=new --screenshot=... --window-size=W,H URL`). In cloud sessions `curl` can't reach `localhost`, but Chrome and Python can; Playwright can set a true 375px viewport, which avoids the `<iframe>` workaround. Add `--force-dark-mode` for the dark theme. Headless windows are at least 500px wide, so load the page in a 375px `<iframe>` to test phone width. In dark mode Chrome can hang after writing the screenshot, so run it with a kill timeout. Pages with a `requestAnimationFrame` loop (hourglass) need `--timeout=` rather than `--virtual-time-budget=`.
 
 ## Architecture
 
