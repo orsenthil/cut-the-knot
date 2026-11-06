@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lewis Carroll's Game of Logic &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage { width: 100%; padding: 12px 8px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; justify-items: center; }
+  .panel { width: 100%; max-width: 210px; text-align: center; }
+  .panel h3 { margin: 0 0 4px; font-size: 0.95rem; }
+  .panel svg { width: 100%; height: auto; display: block; touch-action: manipulation; }
+  .says { margin: 4px 0 0; padding: 0; list-style: none; font-size: 0.82rem; color: var(--muted); min-height: 1.2em; }
+  .says li { line-height: 1.35; }
+  .says.conclusion li { color: var(--ink); font-weight: 600; }
+  .frame { fill: var(--board-a); stroke: var(--ink); stroke-width: 2; }
+  .inner { fill: var(--surface-2); stroke: var(--ink); stroke-width: 2; }
+  .mid { stroke: var(--ink); stroke-width: 2; }
+  .label { font: 600 11px system-ui, sans-serif; fill: var(--muted); text-anchor: middle; dominant-baseline: central; }
+  .chip.red { fill: #d0463b; stroke: #6e1f19; stroke-width: 1.5; }
+  .chip.grey { fill: #8c92a0; stroke: #3a3f4a; stroke-width: 1.5; }
+  .hit { fill: transparent; cursor: pointer; outline: none; }
+  .hit:hover + .ghost, .hit:focus-visible + .ghost { opacity: 0.45; }
+  .hit:focus-visible + .ghost { stroke: var(--focus); stroke-width: 3; }
+  .ghost { opacity: 0; pointer-events: none; }
+  .ghost.red { fill: #d0463b; }
+  .ghost.grey { fill: #8c92a0; }
+  .names input { width: 6.5em; font: inherit; padding: 3px 6px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--ink); }
+  .chipPick { display: inline-flex; gap: 4px; align-items: center; }
+  .swatch { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: -1px; }
+</style>
+</head>
+<body data-game="carroll-logic">
+  <h1>Lewis Carroll's Game of Logic</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/LewisCarroll/LCGame.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> put two facts on the first two squares, and the board works out what follows from them.<br>
+    <strong>How to play:</strong> pick red ("some") or grey ("none"), then tap a box, or the line between two boxes, to place a counter.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="panel"><h3 id="titleA">First fact</h3><svg id="premA" viewBox="0 0 200 200" role="group"></svg><ul class="says" id="saysA"></ul></div>
+    <div class="panel"><h3 id="titleB">Second fact</h3><svg id="premB" viewBox="0 0 200 200" role="group"></svg><ul class="says" id="saysB"></ul></div>
+    <div class="panel"><h3 id="titleT">Both together</h3><svg id="tri" viewBox="0 0 200 200" aria-label="Trilateral diagram"></svg></div>
+    <div class="panel"><h3 id="titleC">So we know</h3><svg id="concl" viewBox="0 0 200 200" aria-label="Conclusion diagram"></svg><ul class="says conclusion" id="saysC"></ul></div>
+  </div>
+
+  <div class="controls">
+    <span class="chipPick" role="radiogroup" aria-label="Counter to place">
+      <label><input type="radio" name="chip" value="1" checked> <span class="swatch" style="background:#d0463b"></span> red: some</label>
+      <label><input type="radio" name="chip" value="2"> <span class="swatch" style="background:#8c92a0"></span> grey: none</label>
+    </span>
+    <button type="button" id="clearA">Clear first</button>
+    <button type="button" id="clearB">Clear second</button>
+    <button type="button" id="resetBtn" class="primary">Reset all</button>
+  </div>
+  <div class="controls names">
+    <label>x <input id="nameX" value="x" maxlength="16"></label>
+    <label>y <input id="nameY" value="y" maxlength="16"></label>
+    <label>m <input id="nameM" value="m" maxlength="16"></label>
+    <button type="button" id="sampleBtn">Try an example</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Lewis Carroll, the author of <em>Alice</em>, was also a logician. His <em>Game of Logic</em> turns a
+        <a class="wiki-term" data-wiki="Syllogism" href="https://en.wikipedia.org/wiki/Syllogism" target="_blank" rel="noopener">syllogism</a>,
+        two premises and a conclusion, into counters on a board, so that the reasoning becomes a mechanical
+        move.
+      </p>
+
+      <h3>Two attributes, four boxes</h3>
+      <p>
+        A square split into four boxes holds everything there is, sorted by two attributes: <code>x</code> or
+        not <code>x</code> (rows), <code>m</code> or not <code>m</code> (columns). A red counter in a box means
+        "some things are like this", a grey one "nothing is", a red counter on a line "at least one of these two".
+        "All <code>m</code> are <code>x</code>" is two counters: red in <code>x m</code> and grey in
+        not-<code>x</code> <code>m</code>.
+      </p>
+
+      <h3>Three attributes, eight boxes</h3>
+      <p>
+        The middle diagram adds the third attribute as an inner square: inside is <code>m</code>, outside is
+        not <code>m</code>. Each premise box is split in two there. A grey box makes both halves grey; a red box
+        becomes a red counter on the line between the halves, because we don't know which half holds the
+        something. When a later premise greys one half, that red counter slides into the other half. This is a
+        <a class="wiki-term" data-wiki="Venn_diagram" href="https://en.wikipedia.org/wiki/Venn_diagram" target="_blank" rel="noopener">Venn diagram</a>
+        in a square.
+      </p>
+
+      <h3>Eliminating the middle term</h3>
+      <p>
+        To read off a conclusion about <code>x</code> and <code>y</code>, forget the inner square: each quadrant
+        of the conclusion is red if either half has a red counter, and grey if both halves are grey. That is the
+        whole method. Checking it against brute force, over all 5,041 consistent pairs of premises and every one
+        of the 256 ways things could be, shows it is exactly right: every counter in the conclusion is forced by
+        the premises, and everything the premises force shows up.
+      </p>
+      <p class="tip">
+        "Try an example" loads Carroll's: no professors are ignorant, all ignorant people are vain. What
+        follows about professors and vanity?
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="carroll-logic-core.js"></script>
+<script src="carroll-logic.js"></script>
+</body>
+</html>

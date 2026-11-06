@@ -30,6 +30,7 @@ window.COOLMATHS = {
     "graph-theory": "Graph Theory",
     "series": "Infinite Series",
     "sequences": "Sequences",
+    "logic": "Logic",
   },
 
   games: [
@@ -302,6 +303,12 @@ window.COOLMATHS = {
       title: "Kayles",
       blurb: "Knock down one skittle or two neighbours; whoever knocks down the last one wins. On a full ring there is a simple trick that always wins \u2014 for the second player.",
       tags: ["game-strategy", "invariants", "algorithms"],
+    },
+    {
+      slug: "carroll-logic",
+      title: "Lewis Carroll's Game of Logic",
+      blurb: "Put two facts on Lewis Carroll's board as red and grey counters, and the board tells you what follows. Can a board really do logic?",
+      tags: ["logic", "algorithms"],
     },
   ],
 };
