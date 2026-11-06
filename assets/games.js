@@ -310,5 +310,11 @@ window.COOLMATHS = {
       blurb: "Put two facts on Lewis Carroll's board as red and grey counters, and the board tells you what follows. Can a board really do logic?",
       tags: ["logic", "algorithms"],
     },
+    {
+      slug: "vanishing-rectangles",
+      title: "Disappearing Rectangles",
+      blurb: "Cut a strip of paper through a row of rectangles and slide the halves: one rectangle vanishes. Where did it go?",
+      tags: ["paradoxes", "area"],
+    },
   ],
 };

@@ -119,6 +119,7 @@ const SLUG_TO_APPLET = {
   "euclid-game": "JEuclidGame",
   kayles: "Kayles",
   "carroll-logic": "LCGame",
+  "vanishing-rectangles": "Leprechaun",
   "gergonne": "GergonneMagic",
   "vanishing-digit": null,
   hourglass: null,

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Disappearing Rectangles &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage { width: 100%; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  #paper { width: 100%; max-width: 520px; height: auto; display: block; touch-action: none; }
+  .sheet { fill: #f4efe3; stroke: #8a7e66; stroke-width: 1.5; }
+  .strip { cursor: grab; }
+  .strip.dragging { cursor: grabbing; }
+  .piece { fill: #3d74c4; }
+  .piece.tinted { fill: #4f9a6a; }
+  .unit { stroke: #f4efe3; stroke-width: 1; opacity: 0.8; }
+  .cut { stroke: #b03a2e; stroke-width: 2; }
+  .cut.light { stroke: #d9cfb9; }
+  .nudge { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: center; font-size: 0.9rem; color: var(--muted); }
+  .nudge button { padding: 4px 12px; }
+  #countLine { font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="vanishing-rectangles">
+  <h1>Disappearing Rectangles</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/Leprechaun.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> a strip of paper with rectangles drawn on it is cut in two along the middle. Slide the halves and make a rectangle disappear.<br>
+    <strong>How to play:</strong> drag the top or bottom half sideways (or use the arrow buttons), then count the rectangles.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="paper" role="img" aria-label="A strip of paper cut along the middle, with rectangles drawn across the cut"></svg>
+    <div class="nudge">
+      <span>Top:</span><button type="button" id="topLeft" aria-label="Slide the top half one place left">&#9664;</button><button type="button" id="topRight" aria-label="Slide the top half one place right">&#9654;</button>
+      <span>Bottom:</span><button type="button" id="botLeft" aria-label="Slide the bottom half one place left">&#9664;</button><button type="button" id="botRight" aria-label="Slide the bottom half one place right">&#9654;</button>
+    </div>
+    <div id="countLine"></div>
+  </div>
+
+  <div class="controls">
+    <label>Rectangles <select id="nInput"></select></label>
+    <label><input type="checkbox" id="unitsInput"> Show units</label>
+    <label><input type="checkbox" id="lightInput"> Lighten the cut</label>
+    <button type="button" id="resetBtn" class="primary">New strip</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Sam Loyd's "Get Off the Earth" made a whole warrior vanish this way. This strip is the same trick
+        stripped down, and it is a lesson in
+        <a class="wiki-term" data-wiki="Conservation_law" href="https://en.wikipedia.org/wiki/Conservation_law" target="_blank" rel="noopener">conservation</a>:
+        nothing really disappears.
+      </p>
+
+      <h3>How the strip is made</h3>
+      <p>
+        With <code>N</code> rectangles, the top parts are <code>0, 1, 2, &hellip;, N&minus;1</code> units tall in
+        some order, and each bottom part makes its rectangle up to <code>N&minus;1</code> units. So one top part is
+        empty (its rectangle is all below the cut) and one bottom part is empty (all above). Tick "Show units" to
+        count them.
+      </p>
+
+      <h3>Where the rectangle goes</h3>
+      <p>
+        Slide the top half until its empty piece sits over the empty bottom piece. That column is now blank, and
+        you count <code>N&minus;1</code> rectangles. The amount of blue never changed: it is
+        <code>N &times; (N&minus;1)</code> units at every position of the strips. Shared among
+        <code>N&minus;1</code> rectangles instead of <code>N</code>, each one is on average a whole unit taller. The
+        missing rectangle was cut into pieces and spread over the others, and our eyes count shapes, not area.
+        Checking every possible sliding position, on thousands of random strips, finds exactly one position with
+        a rectangle missing.
+      </p>
+      <blockquote><code>N(N&minus;1) = (N&minus;1) &times; N</code>: <code>N</code> rectangles of height <code>N&minus;1</code>, or <code>N&minus;1</code> of average height <code>N</code>.</blockquote>
+      <p class="tip">
+        Try it with 3 rectangles, then 20. With many rectangles the extra unit is spread so thin that the trick
+        is very hard to see.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="vanishing-rectangles-core.js"></script>
+<script src="vanishing-rectangles.js"></script>
+</body>
+</html>
