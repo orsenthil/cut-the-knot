@@ -316,5 +316,11 @@ window.COOLMATHS = {
       blurb: "Cut a strip of paper through a row of rectangles and slide the halves: one rectangle vanishes. Where did it go?",
       tags: ["paradoxes", "area"],
     },
+    {
+      slug: "l-tromino",
+      title: "Tiling Rectangles with L-Trominoes",
+      blurb: "Cover a rectangle with L-shaped pieces of three squares. 3 by 5 has 15 squares but still can't be done \u2014 so which rectangles can?",
+      tags: ["counting", "area", "divisibility"],
+    },
   ],
 };

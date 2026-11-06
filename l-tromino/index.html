@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tiling Rectangles with L-Trominoes &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage { width: 100%; padding: 14px 8px; display: flex; justify-content: center; }
+  #board { width: 100%; max-width: 460px; height: auto; display: block; touch-action: manipulation; }
+  .sq { fill: var(--board-a); stroke: var(--border-strong); stroke-width: 1; cursor: pointer; outline: none; }
+  .sq:hover { fill: var(--highlight); }
+  .sq:focus-visible { stroke: var(--focus); stroke-width: 3; }
+  .sq.picked { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2.5; }
+  .sq.taken { cursor: default; }
+  .sq.taken:hover { fill: var(--board-a); }
+  .block { stroke: var(--ink); stroke-width: 1.5; pointer-events: none; }
+  .wire { fill: none; stroke: var(--ink); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+  .wire-dot { fill: var(--ink); pointer-events: none; }
+</style>
+</head>
+<body data-game="l-tromino">
+  <h1>Tiling Rectangles with L-Trominoes</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/LminoRect.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> cover the whole rectangle with L-shaped pieces made of three squares. Which rectangles can be covered?<br>
+    <strong>How to play:</strong> click three squares one after another to make an L: the second one is the corner. Change the size and try again.
+  </div>
+
+  <div id="stage" class="stage"><svg id="board" role="grid" aria-label="Rectangle of squares"></svg></div>
+
+  <div class="controls">
+    <label>Rows <select id="rowsInput"></select></label>
+    <label>Columns <select id="colsInput"></select></label>
+    <label><input type="radio" name="view" value="wire" checked> Wire</label>
+    <label><input type="radio" name="view" value="blocks"> Blocks</label>
+    <button type="button" id="undoBtn">Remove last</button>
+    <button type="button" id="resetBtn" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        An L-tromino is a three-square
+        <a class="wiki-term" data-wiki="Polyomino" href="https://en.wikipedia.org/wiki/Polyomino" target="_blank" rel="noopener">polyomino</a>
+        shaped like the letter L. Solomon Golomb and Alexander Soifer asked exactly which rectangles they can
+        <a class="wiki-term" data-wiki="Tessellation" href="https://en.wikipedia.org/wiki/Tessellation" target="_blank" rel="noopener">tile</a>.
+      </p>
+
+      <h3>A first condition</h3>
+      <p>
+        Each piece covers 3 squares, so the number of squares must be a multiple of 3: one side has to be divisible
+        by 3. A 4 by 5 board, with 20 squares, is hopeless. But that isn't enough: 3 by 3 and 3 by 5 have 9 and 15
+        squares, and still can't be covered. The smallest rectangle that works is 2 by 3, two Ls fitted together.
+      </p>
+
+      <h3>The whole answer</h3>
+      <p>Write the sides as <code>a &le; b</code>, both at least 2. The rectangle can be tiled exactly when</p>
+      <blockquote><code>a = 3</code> and <code>b</code> is even, or <code>a &ne; 3</code> and <code>ab</code> is divisible by 3.</blockquote>
+      <p>
+        So 3 by <code>b</code> needs an even <code>b</code>: it is built from 2 by 3 blocks. Once both sides are at
+        least 4, any area divisible by 3 works, by gluing together the 2 by 3 blocks with a few clever pieces such as
+        5 by 6 and 5 by 9. A computer search over every board from 2 by 2 to 10 by 10 finds a tiling exactly where
+        the rule says there is one.
+      </p>
+      <p class="tip">
+        Try 3 by 5: it has 15 squares, a multiple of 3, but every attempt leaves a gap. Then try 5 by 9.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="l-tromino-core.js"></script>
+<script src="l-tromino.js"></script>
+</body>
+</html>

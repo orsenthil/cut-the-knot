@@ -120,6 +120,7 @@ const SLUG_TO_APPLET = {
   kayles: "Kayles",
   "carroll-logic": "LCGame",
   "vanishing-rectangles": "Leprechaun",
+  "l-tromino": "LminoRect",
   "gergonne": "GergonneMagic",
   "vanishing-digit": null,
   hourglass: null,
