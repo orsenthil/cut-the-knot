@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kayles &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage {
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  #ring { width: 100%; max-width: 400px; height: auto; display: block; touch-action: manipulation; }
+
+  .track { fill: none; stroke: var(--border); stroke-width: 1.5; }
+  .pin { fill: var(--ink); stroke: none; transition: opacity 0.2s; }
+  .pin-hit { fill: transparent; cursor: pointer; outline: none; }
+  .pin-hit:hover + .pin, .pin-hit:focus-visible + .pin { fill: var(--accent); }
+  .pin-hit:focus-visible + .pin { stroke: var(--focus); stroke-width: 4; }
+  #ring.busy .pin-hit { pointer-events: none; cursor: default; }
+  .pin.down { fill: none; stroke: var(--border-strong); stroke-width: 2; stroke-dasharray: 3 3; }
+  .pin.fresh { animation: fall 0.3s ease-out; }
+  @keyframes fall { from { opacity: 1; } to { opacity: 1; } }
+
+  .gap-hit { fill: transparent; cursor: pointer; outline: none; }
+  .gap-dot { fill: var(--accent); opacity: 0.35; pointer-events: none; transition: opacity 0.15s, r 0.15s; }
+  .gap-hit:hover + .gap-dot,
+  .gap-hit:focus-visible + .gap-dot { opacity: 1; }
+  .gap-hit:focus-visible + .gap-dot { stroke: var(--focus); stroke-width: 4; }
+  #ring.busy .gap-hit { cursor: default; pointer-events: none; }
+  #ring.busy .gap-dot { opacity: 0.12; }
+
+  #count { font-size: 0.9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .controls { flex-direction: column; gap: 10px; }
+  .controls .row { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: center; }
+  .controls input[type="number"] { width: 4.6em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pin, .gap-dot { transition: none; }
+    .pin.fresh { animation: none; }
+  }
+</style>
+</head>
+<body data-game="kayles">
+  <h1>Kayles</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/Kayles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> skittles stand in a ring and each turn you knock down one skittle, or two that stand side by side. Knock down the last one and you win.<br>
+    <strong>How to play:</strong> click a skittle to knock it down, or the small dot between two standing skittles to knock down both.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="ring" viewBox="0 0 400 400" role="group" aria-label="A ring of skittles"></svg>
+    <div id="count"></div>
+  </div>
+
+  <div class="controls">
+    <div class="row">
+      <label>Skittles <input type="number" id="nInput" min="10" max="60" step="1" value="18"></label>
+      <label><input type="checkbox" id="fullBox"> Full circle</label>
+    </div>
+    <div class="row">
+      <button id="newBtn" type="button" class="primary">New Game</button>
+      <button id="moveBtn" type="button">Computer starts</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Kayles was introduced by Henry Dudeney and Sam Loyd. Both players have the same moves and the last to
+        move wins, so it is an <a class="wiki-term" data-wiki="Impartial_game" href="https://en.wikipedia.org/wiki/Impartial_game" target="_blank" rel="noopener">impartial game</a>,
+        and it has the same hidden arithmetic as Nim.
+      </p>
+
+      <h3>The full circle: copy your opponent</h3>
+      <p>
+        With every skittle standing in a ring, the second player always wins. The first move, of one skittle
+        or two, turns the ring into a single row. The second player knocks down the middle one or two of that
+        row, leaving two equal rows, and from then on copies every move on the other row. Whoever copies
+        always has a move, so the copier makes the last one. This
+        <a class="wiki-term" data-wiki="Strategy-stealing_argument" href="https://en.wikipedia.org/wiki/Strategy-stealing_argument" target="_blank" rel="noopener">mirror strategy</a>
+        is the one Martin Gardner describes. Tick "Full circle", press "Computer starts", and beat the computer by copying it.
+      </p>
+
+      <h3>Rows have numbers</h3>
+      <p>
+        When skittles are already missing, the ring breaks into separate rows, and they don't affect each other.
+        Each row of <code>n</code> skittles has a
+        <a class="wiki-term" data-wiki="Sprague%E2%80%93Grundy_theorem" href="https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem" target="_blank" rel="noopener">Grundy number</a>,
+        the smallest value none of its moves can reach:
+      </p>
+      <blockquote><code>G(n) = mex { G(a) XOR G(n&minus;1&minus;a), G(a) XOR G(n&minus;2&minus;a) }</code></blockquote>
+      <p>
+        The player to move is losing exactly when the rows' numbers, combined by XOR, give 0. The computer
+        uses this: if the total isn't 0 it finds a move that makes it 0, and otherwise plays at random and hopes
+        you slip. A brute-force search of every position on rings of up to 14 skittles agrees with the XOR rule.
+      </p>
+
+      <h3>A surprise in the numbers</h3>
+      <p>
+        The applet carries a table of 84 Grundy numbers, and the mex rule reproduces all of them. Look further and
+        a pattern appears: from rows of 71 skittles on, the numbers repeat every 12, forever, which Richard Guy and
+        Cedric Smith proved. So Kayles on any number of skittles is completely solved.
+      </p>
+      <p class="tip">
+        Without "Full circle", the board starts with a gap or two. Work out the rows' lengths before your first
+        move: if their XOR is already 0, press "Computer starts".
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="kayles-core.js"></script>
+<script src="kayles.js"></script>
+</body>
+</html>

@@ -117,6 +117,7 @@ const SLUG_TO_APPLET = {
   jam: "Jam",
   "changing-colors": "JChangingColors",
   "euclid-game": "JEuclidGame",
+  kayles: "Kayles",
   "gergonne": "GergonneMagic",
   "vanishing-digit": null,
   hourglass: null,

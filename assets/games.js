@@ -297,5 +297,11 @@ window.COOLMATHS = {
       blurb: "Mark a number that is the gap between two marked ones; whoever can't move loses. The winner is settled before the first move \u2014 can you see how?",
       tags: ["number-theory", "parity", "game-strategy"],
     },
+    {
+      slug: "kayles",
+      title: "Kayles",
+      blurb: "Knock down one skittle or two neighbours; whoever knocks down the last one wins. On a full ring there is a simple trick that always wins \u2014 for the second player.",
+      tags: ["game-strategy", "invariants", "algorithms"],
+    },
   ],
 };
