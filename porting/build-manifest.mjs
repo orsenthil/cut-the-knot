@@ -116,6 +116,7 @@ const SLUG_TO_APPLET = {
   ducci: "IntIter",
   jam: "Jam",
   "changing-colors": "JChangingColors",
+  "euclid-game": "JEuclidGame",
   "gergonne": "GergonneMagic",
   "vanishing-digit": null,
   hourglass: null,

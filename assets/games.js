@@ -291,5 +291,11 @@ window.COOLMATHS = {
       blurb: "One black square on a white board. Swap the colours along any row, column or slanting line. Can you ever make the board a single colour?",
       tags: ["invariants", "parity"],
     },
+    {
+      slug: "euclid-game",
+      title: "Euclid's Game",
+      blurb: "Mark a number that is the gap between two marked ones; whoever can't move loses. The winner is settled before the first move \u2014 can you see how?",
+      tags: ["number-theory", "parity", "game-strategy"],
+    },
   ],
 };
