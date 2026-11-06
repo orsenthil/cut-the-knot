@@ -285,5 +285,11 @@ window.COOLMATHS = {
       blurb: "Claim roads until you own every road into a city. It looks like a new game \u2014 but you have played it many times before. Which game is it?",
       tags: ["game-strategy", "graph-theory"],
     },
+    {
+      slug: "changing-colors",
+      title: "Changing Colors II",
+      blurb: "One black square on a white board. Swap the colours along any row, column or slanting line. Can you ever make the board a single colour?",
+      tags: ["invariants", "parity"],
+    },
   ],
 };

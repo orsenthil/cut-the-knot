@@ -115,6 +115,7 @@ const SLUG_TO_APPLET = {
   "hare-hounds": "Hounds",
   ducci: "IntIter",
   jam: "Jam",
+  "changing-colors": "JChangingColors",
   "gergonne": "GergonneMagic",
   "vanishing-digit": null,
   hourglass: null,

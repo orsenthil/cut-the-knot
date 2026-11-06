@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Changing Colors II &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #stage { width: 100%; padding: 12px 6px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  #board { width: 100%; max-width: 460px; height: auto; display: block; touch-action: manipulation; }
+  .cell { fill: #f4f2ec; stroke: var(--border-strong); stroke-width: 1; }
+  .cell.black { fill: #23252b; }
+  .cell.preview { stroke: var(--accent); stroke-width: 3; }
+  .hint { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 4 4; pointer-events: none; }
+  .num { font: 700 15px system-ui, sans-serif; text-anchor: middle; dominant-baseline: central; pointer-events: none; fill: #23252b; }
+  .num.on-black { fill: #f4f2ec; }
+  .arrow { cursor: pointer; outline: none; }
+  .arrow circle { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 1; }
+  .arrow path { fill: var(--ink); }
+  .arrow:hover circle, .arrow:focus-visible circle { fill: var(--highlight); stroke: var(--accent); }
+  .arrow:focus-visible circle { stroke: var(--focus); stroke-width: 3; }
+  #countLine { font-size: 0.9rem; color: var(--muted); font-variant-numeric: tabular-nums; min-height: 1.3em; }
+</style>
+</head>
+<body data-game="changing-colors">
+  <h1>Changing Colors II</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/JChangingColors.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> the board is all white except one black square. Try to make the whole board a single colour.<br>
+    <strong>How to play:</strong> click an arrow to swap every colour along its row, column or slanting line.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" role="group" aria-label="Board of black and white squares with arrows around it"></svg>
+    <div id="countLine"></div>
+  </div>
+
+  <div class="controls">
+    <label>Size <select id="nInput"></select></label>
+    <label>Show <select id="viewInput"><option value="colors">colours</option><option value="numbers">numbers</option></select></label>
+    <label><input type="checkbox" id="hintInput"> Show hint</label>
+    <button type="button" id="backBtn">Take back</button>
+    <button type="button" id="resetBtn" class="primary">New board</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        However long you play, you never get one colour. Proving that something can never happen is the job
+        of an <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>:
+        a quantity that no move can change.
+      </p>
+
+      <h3>The hint cells</h3>
+      <p>
+        Tick "Show hint". The marked squares are the edge squares that are not corners. A middle row or column
+        touches two of them, one at each end. The top row and bottom row, and the outside columns, touch
+        <code>N &minus; 2</code> of them, an even number on these even boards. Every slanting line touches two of
+        them at its ends, or none if it runs corner to corner or is a single corner square. So every move swaps
+        an <em>even</em> number of hint squares, and the number of black ones among them stays odd or stays
+        even, forever. It starts at one, so it is always odd, and one colour would need it to be 0 or all of them
+        (also even).
+      </p>
+
+      <h3>The same idea with numbers</h3>
+      <p>
+        Switch to "numbers": black is <code>&minus;1</code>, white is <code>1</code>, and a move multiplies a line by
+        <code>&minus;1</code>. Each move changes an even number of hint squares, so their product doesn't change.
+        It starts at <code>&minus;1</code>, while a one-colour board would make it <code>1</code>. This is
+        <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a>
+        in disguise.
+      </p>
+
+      <h3>Why only even boards?</h3>
+      <p>
+        On odd boards the top row touches an odd number of hint squares, so this argument breaks. Swaps are
+        addition mod 2 and their order doesn't matter, so a computer can decide exactly which boards are
+        reachable, by <a class="wiki-term" data-wiki="Gaussian_elimination" href="https://en.wikipedia.org/wiki/Gaussian_elimination" target="_blank" rel="noopener">Gaussian elimination</a>.
+        It shows that 5 by 5 and 7 by 7 boards are impossible too, but they need a cleverer invariant. Only on
+        a 3 by 3 board can one black edge square be cleared.
+      </p>
+      <p class="tip">
+        Watch the count of black hint squares as you play: it goes up and down, but it is always odd.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="changing-colors-core.js"></script>
+<script src="changing-colors.js"></script>
+</body>
+</html>
