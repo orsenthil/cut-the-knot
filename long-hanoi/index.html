@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tower of Hanoi, the Hard Way &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #pegs {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    width: 100%;
+    max-width: 520px;
+    padding: 16px 10px;
+  }
+  .peg {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 4px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    box-shadow: none;
+    line-height: 0;
+  }
+  .peg:hover:not(:disabled) { background: var(--surface-2); }
+  .peg:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .peg.holding { border-color: var(--accent); background: var(--accent-soft); }
+  .peg.target { border-style: dashed; border-color: var(--accent); }
+  .peg.illegal { background: var(--highlight); }
+  .peg.hinted { background: var(--highlight); }
+  .pegArt { width: 100%; height: auto; display: block; pointer-events: none; }
+
+  /* The disks have a real colour of their own: the applet's green, lightened
+     a little so it reads on the light and the dark stage. */
+  .disk { fill: #3d9a5c; stroke: var(--ink); stroke-width: 0.7; }
+  .rod, .plinth { fill: var(--border-strong); }
+
+  #scoreLine { margin-top: 10px; font-size: 0.9rem; color: var(--muted); text-align: center; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .peg { transition: background-color 140ms ease; }
+  }
+</style>
+</head>
+<body data-game="long-hanoi">
+  <h1>Tower of Hanoi, the Hard Way</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/recurrence/LongHanoi.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> move the whole tower of disks from the left peg to the right peg, taking as many moves as you can.<br>
+    <strong>How to play:</strong> click a peg to lift its top disk, then click another peg to drop it.
+    Never put a disk on a smaller one, and never go back to a picture of the pegs you have already had.
+  </div>
+
+  <div id="pegs" class="stage"></div>
+
+  <div class="controls">
+    <label>Disks <select id="nInput"></select></label>
+    <button type="button" id="slowBtn">Slow</button>
+    <button type="button" id="fastBtn">Fast</button>
+    <button type="button" id="hintBtn">Suggest move</button>
+    <button type="button" id="resetBtn" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <div id="scoreLine"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        The <a href="../hanoi/">Tower of Hanoi</a> is a race to use the fewest moves. Kai Birger Nielsen
+        asked the opposite question: wasting moves is easy if you shuffle a disk back and forth, so ban
+        that &mdash; never let the pegs look the way they have looked before &mdash; and then how long can
+        you make the job take?
+      </p>
+
+      <h3>The longest route</h3>
+      <p>
+        In the short solution the biggest disk moves once, straight from the left peg to the right one.
+        To stretch things out, send it the long way round, through the middle peg, and move the
+        <code>N&minus;1</code> disks above it three times instead of two:
+      </p>
+      <blockquote><code>Solve(N, Src, Aux, Dst) = Solve(N&minus;1, Src, Aux, Dst), Src&rarr;Aux, Solve(N&minus;1, Dst, Aux, Src), Aux&rarr;Dst, Solve(N&minus;1, Src, Aux, Dst)</code></blockquote>
+      <p>
+        The Slow and Fast buttons play exactly this. Notice that the middle peg is in every single move:
+        no disk ever hops straight from the left peg to the right one.
+      </p>
+
+      <h3>Three to the N, minus one</h3>
+      <p>
+        Let <code>T<sub>N</sub></code> be the length of that route. It moves <code>N&minus;1</code> disks
+        three times and the big one twice, so
+      </p>
+      <blockquote><code>T<sub>0</sub> = 0, T<sub>N</sub> = 3T<sub>N&minus;1</sub> + 2</code>, which gives <code>T<sub>N</sub> = 3<sup>N</sup> &minus; 1</code>.</blockquote>
+      <p>
+        That is the best anyone can do, and counting shows why. A picture of the pegs is just a list of
+        which peg each disk is on, so with three pegs there are exactly <code>3<sup>N</sup></code> pictures.
+        A route that never repeats one can visit at most all <code>3<sup>N</sup></code> of them, and
+        <code>3<sup>N</sup></code> stops need only <code>3<sup>N</sup>&minus;1</code> moves. The recursion
+        hits that ceiling: played out to ten disks, it passes through every picture exactly once.
+      </p>
+
+      <h3>A triangle of positions</h3>
+      <p>
+        Draw a dot for every picture and join two dots when one move turns one into the other, and you get
+        the Hanoi graph &mdash; the <a class="wiki-term" data-wiki="Sierpi%C5%84ski_triangle" href="https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle" target="_blank" rel="noopener">Sierpi&nacute;ski triangle</a>
+        drawn as a network, with the three all-on-one-peg pictures at its corners. The short solution runs
+        down one side of the triangle. The long one is a
+        <a class="wiki-term" data-wiki="Hamiltonian_path" href="https://en.wikipedia.org/wiki/Hamiltonian_path" target="_blank" rel="noopener">Hamiltonian path</a>:
+        a walk that touches every dot once. That is also why you can get stranded. With two disks, four
+        moves can park the tower on the middle peg with both ways out already used, and there is nothing
+        to do but start again.
+      </p>
+
+      <h3>Knowing where you are</h3>
+      <p>
+        Because the long route passes through every picture, every picture has a number: how many moves
+        along the route it is. You can read it off without replaying anything. Look at the biggest disk:
+        on the left peg it is in the first third of the route, on the middle peg the second third, on the
+        right peg the last third. Write down <code>0</code>, <code>1</code> or <code>2</code> for that,
+        then ask the same of the next disk down &mdash; swapping the left and right pegs if the digit was
+        <code>1</code>, because the middle third runs backwards. The digits spell the number in
+        <a class="wiki-term" data-wiki="Ternary_numeral_system" href="https://en.wikipedia.org/wiki/Ternary_numeral_system" target="_blank" rel="noopener">base 3</a>,
+        and "Suggest move" simply steps to the next number. The original applet's hint button and its
+        closing message were both left over from the ordinary Tower of Hanoi it was built from: they
+        pushed you towards the <em>short</em> solution, which is the wrong puzzle, so this page counts you
+        against <code>3<sup>N</sup>&minus;1</code> instead.
+      </p>
+      <p class="tip">
+        Try four disks by hand and see how close to 80 moves you get before you strand yourself. Then press
+        "Suggest move" over and over and watch the counter stop at exactly 80.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="long-hanoi-core.js"></script>
+<script src="long-hanoi.js"></script>
+</body>
+</html>

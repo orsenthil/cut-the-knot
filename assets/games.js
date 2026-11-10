@@ -251,6 +251,12 @@ window.COOLMATHS = {
       tags: ["induction", "algorithms"],
     },
     {
+      slug: "long-hanoi",
+      title: "Tower of Hanoi, the Hard Way",
+      blurb: "The usual puzzle wants the fewest moves. This one wants the most \u2014 and the pegs may never look the way they looked before. How long can you spin it out?",
+      tags: ["counting", "graph-theory", "algorithms"],
+    },
+    {
       slug: "hanoi-3c",
       title: "3-Colour Tower of Hanoi",
       blurb: "Three towers, three colours, and a disk may sit on one its own size. Can you move every tower to a different peg \u2014 and how few moves does it take?",

@@ -110,6 +110,7 @@ const SLUG_TO_APPLET = {
   "whats-next": "guess",
   hanoi: "hanoi",
   "hanoi-3c": "Hanoi3c",
+  "long-hanoi": "LongHanoi",
   hex7: "Hex7",
   "hex-draw": "HexTheory",
   "hare-hounds": "Hounds",
