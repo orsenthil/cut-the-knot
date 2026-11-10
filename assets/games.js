@@ -107,6 +107,12 @@ window.COOLMATHS = {
       tags: ["graph-theory", "game-strategy", "algorithms"],
     },
     {
+      slug: "looping",
+      title: "Looping Chips",
+      blurb: "Four chips on a loop of twelve squares; each jump skips five places. Can you reverse their order on the home squares \u2014 or prove you never can?",
+      tags: ["graph-theory", "invariants", "counting"],
+    },
+    {
       slug: "four-by-four",
       title: "Four By Four",
       blurb: "3D tic-tac-toe on a 4 by 4 by 4 cube against a computer that never looks ahead, just recognizes patterns. There are faults in its logic — can you find one?",

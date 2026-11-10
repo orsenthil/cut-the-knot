@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Looping Chips &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #boards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    justify-content: center;
+    align-items: center;
+    padding: 26px 16px;
+    width: 100%;
+  }
+  .boardWrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .boardWrap h2 {
+    font-size: 0.82rem;
+    font-weight: 650;
+    color: var(--muted);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  #leftBoard {
+    display: grid;
+    grid-template-columns: repeat(4, 52px);
+    grid-template-rows: repeat(4, 52px);
+    gap: 2px;
+    background: var(--ink);
+    padding: 2px;
+    border-radius: 8px;
+  }
+  #rightBoard {
+    position: relative;
+    width: 240px;
+    height: 240px;
+  }
+
+  .cell {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    position: relative;
+  }
+  .cell.spacer { background: var(--surface-2); cursor: default; }
+  #leftBoard .cell.dark { background: var(--board-b); }
+  #leftBoard .cell.light { background: var(--board-a); }
+  #rightBoard .cell {
+    position: absolute;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--board-a);
+    transform: translate(-50%, -50%);
+    cursor: default;
+  }
+  #rightBoard .cell:disabled { opacity: 1; color: inherit; }
+
+  .sqLabel {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 0.6rem;
+    color: var(--muted);
+    font-weight: 700;
+    pointer-events: none;
+  }
+  .cell.selectable { outline: 3px solid var(--accent); outline-offset: -3px; }
+  .cell.selected { outline: 3px solid var(--highlight); outline-offset: -3px; }
+  .cell:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  .chip {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    box-shadow: var(--shadow);
+    pointer-events: none;
+    border: 2px solid var(--ink);
+  }
+  .chip.red { background: #c0362c; }
+  .chip.yellow { background: #d4a017; }
+  .chip.blue { background: #2c5fc0; }
+  .chip.gray { background: #6b7280; }
+
+  #moveCount { font-size: 0.9rem; color: var(--muted); }
+
+  @media (max-width: 420px) {
+    #leftBoard {
+      grid-template-columns: repeat(4, 44px);
+      grid-template-rows: repeat(4, 44px);
+    }
+    .cell { width: 44px; height: 44px; }
+    .chip { width: 28px; height: 28px; }
+  }
+</style>
+</head>
+<body data-game="looping">
+  <h1>Looping Chips</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/Looping.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> four coloured chips sit on a loop of twelve squares. Put them back on those first four squares, but in reverse order &mdash; or decide that it cannot be done.<br>
+    <strong>How to play:</strong> tap a chip, then tap an empty square five places away along the loop. The ring on the right is the same board, drawn so each move is just a step to a neighbour.
+  </div>
+
+  <div id="boards" class="stage">
+    <div class="boardWrap">
+      <h2>The loop</h2>
+      <div id="leftBoard"></div>
+    </div>
+    <div class="boardWrap">
+      <h2>The same loop, unfolded</h2>
+      <div id="rightBoard"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button type="button" id="resetBtn" class="primary">Reset</button>
+    <label><input type="checkbox" id="hintInput"> Hint (show square numbers)</label>
+    <span id="moveCount">Moves: <strong id="moveNum">0</strong></span>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        The same idea that unlocks
+        <a href="../four-knights/">Four Knights</a>
+        works here. From every square there are only two legal jumps, and chaining those jumps
+        visits every square exactly once before returning &mdash; one big cycle.
+      </p>
+
+      <h3>A jump of five is a step of one</h3>
+      <p>
+        Number the squares <code>0</code> through <code>11</code> around the left-hand loop. A legal move
+        adds or subtracts <code>5</code> (mod <code>12</code>). Now list the squares in the order
+        <code>0, 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7</code> &mdash; that is
+        <code>(i&nbsp;&times;&nbsp;5) mod 12</code>, which is exactly how the applet builds its right-hand board.
+        On that list, each jump of five becomes a step to the next or previous entry. The ring you see
+        on the right <em>is</em> that list drawn in a circle.
+      </p>
+
+      <h3>Chips that cannot pass</h3>
+      <p>
+        On the right-hand ring a move is just sliding a chip into an empty neighbouring slot. Chips never
+        jump over each other, so the order of the four colours around the ring never changes &mdash; only
+        which gaps sit between them. That cyclic order is an
+        <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>
+        of the puzzle.
+      </p>
+
+      <h3>Why reverse is impossible</h3>
+      <p>
+        At the start the colours read, walking the right-hand ring from square&nbsp;1,
+        <code>red, gray, yellow, blue</code>. The reverse-order goal on the home squares would read
+        <code>gray, red, blue, yellow</code> &mdash; the same four chips walking the other way. No sequence
+        of neighbour-steps can flip the orientation of a cycle, so the goal is unreachable. Checking every
+        reachable position (there are <code>4&nbsp;&times;&nbsp;C(12,4)&nbsp;=&nbsp;1980</code> of them) confirms none
+        reverse the home squares.
+      </p>
+      <p>
+        The page also notes that when <code>gcd(N,&nbsp;L)&nbsp;&gt;&nbsp;1</code> the right-hand board splits into
+        several separate loops (for <code>L&nbsp;=&nbsp;4</code> there would be four loops of three). Here
+        <code>gcd(12,&nbsp;5)&nbsp;=&nbsp;1</code>, so there is just one loop &mdash; and that is already enough to
+        prove the puzzle cannot be solved.
+      </p>
+      <p class="tip">
+        Turn on Hint and watch a chip's number on the left match its place on the right. Once you trust
+        the two boards are the same graph, the invariant is hard to unsee.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="looping-core.js"></script>
+<script src="looping.js"></script>
+</body>
+</html>
