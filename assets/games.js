@@ -131,6 +131,12 @@ window.COOLMATHS = {
       tags: ["graph-theory", "algorithms", "counting"],
     },
     {
+      slug: "merlin-4x4",
+      title: "Mini Lights Out",
+      blurb: "A 4\u00d74 board of lights wrapped on a torus: each press flips a plus shape. Can you turn them all off \u2014 and why is there always exactly one way?",
+      tags: ["algebra", "parity", "algorithms"],
+    },
+    {
       slug: "four-by-four",
       title: "Four By Four",
       blurb: "3D tic-tac-toe on a 4 by 4 by 4 cube against a computer that never looks ahead, just recognizes patterns. There are faults in its logic — can you find one?",

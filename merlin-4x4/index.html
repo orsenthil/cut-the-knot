@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mini Lights Out &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #board {
+    display: grid;
+    grid-template-columns: repeat(var(--n, 4), minmax(56px, 72px));
+    gap: 10px;
+    padding: 18px;
+    width: max-content;
+    max-width: 100%;
+    margin: 0 auto;
+    justify-content: center;
+  }
+  .cell {
+    aspect-ratio: 1;
+    width: 100%;
+    min-width: 56px;
+    border-radius: 50%;
+    border: 3px solid var(--ink);
+    padding: 0;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: background 0.12s, transform 0.12s, box-shadow 0.12s;
+  }
+  .cell.off { background: #6b7280; }
+  .cell.on { background: #e8b84a; box-shadow: 0 0 0 3px color-mix(in srgb, #e8b84a 45%, transparent); }
+  .cell.press {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .cell:disabled { cursor: default; opacity: 1; }
+  .cell:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  .cell:not(:disabled):active { transform: scale(0.94); }
+
+  @media (max-width: 420px) {
+    #board {
+      grid-template-columns: repeat(var(--n, 4), minmax(48px, 1fr));
+      gap: 8px;
+      width: 100%;
+    }
+    .cell { min-width: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cell { transition: none; }
+  }
+</style>
+</head>
+<body data-game="merlin-4x4">
+  <h1>Mini Lights Out</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/Merlin4x4.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> turn every light off on a 4&times;4 board that wraps like a doughnut (the top row touches the bottom, and the sides wrap too).<br>
+    <strong>How to play:</strong> click a light to flip it and its four neighbours. Hint rings the cells you need to press; Undo takes back a click.
+  </div>
+
+  <div id="board" class="stage" style="--n: 4"></div>
+
+  <div class="controls">
+    <label><input type="checkbox" id="hintInput"> Hint</label>
+    <button type="button" id="undoBtn" disabled>Undo</button>
+    <button type="button" id="resetBtn" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Each press flips five cells on the torus. Over
+        <a class="wiki-term" data-wiki="GF(2)" href="https://en.wikipedia.org/wiki/GF(2)" target="_blank" rel="noopener">GF(2)</a>
+        (arithmetic mod&nbsp;2), pressing twice cancels, and the order of presses does not matter.
+        So a plan is just a 16-bit vector: press or don't, once each.
+      </p>
+
+      <h3>The move matrix squares to the identity</h3>
+      <p>
+        Line the sixteen cells up and let <code>A</code> be the 16&times;16 matrix whose
+        <code>j</code>-th column is the pattern made by pressing cell <code>j</code> alone.
+        A starting board <code>v</code> is cleared by a strategy <code>s</code> exactly when
+        <code>A s = v</code> (mod&nbsp;2). On this 4&times;4 torus one can check that
+        <code>A<sup>2</sup>&nbsp;=&nbsp;I</code>, so <code>A</code> is its own inverse and the
+        unique solution is <code>s&nbsp;=&nbsp;A v</code>.
+      </p>
+
+      <h3>Parity of the neighbourhood</h3>
+      <p>
+        Multiplying by <code>A</code> just sums each cell's five-neighbourhood mod&nbsp;2.
+        So the Hint checkbox marks exactly the cells whose current
+        <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a>
+        (count of lit neighbours, including itself) is odd — and pressing those, in any order,
+        turns the board off. Missigman and Weida proved the same rule by watching how presses
+        change those parities: only pressing a cell flips its own parity.
+      </p>
+
+      <h3>Why the intersections matter</h3>
+      <p>
+        On this board, any two distinct plus-shaped neighbourhoods share either no cells or
+        exactly two. Pressing another cell therefore changes a given cell's lit-count by an
+        even number (0 or &plusmn;2), so it cannot flip that cell's parity — which is why the
+        parity rule works so cleanly here.
+      </p>
+      <p class="tip">
+        Tick Hint, note the ringed cells, turn Hint off, and press only those. Every random
+        board clears in at most sixteen clicks.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="merlin-4x4-core.js"></script>
+<script src="merlin-4x4.js"></script>
+</body>
+</html>
