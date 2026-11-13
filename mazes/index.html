@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mazes &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    margin: 0 0 12px;
+  }
+  .tabs button {
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface-2);
+    color: var(--ink);
+    padding: 6px 12px;
+    font: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .tabs button.active {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--ink);
+  }
+  .tabs button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  #boardWrap {
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 10px;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: manipulation;
+    border-radius: 8px;
+  }
+
+  .panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    justify-content: center;
+    align-items: center;
+  }
+  .panel[hidden] { display: none; }
+  .panel label.radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+  }
+
+  #legend {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+  #legend .swatch {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin: 0 2px 0 8px;
+  }
+  #legend .swatch.start { background: #2c5fc0; }
+  #legend .swatch.end { background: #c0362c; }
+</style>
+</head>
+<body data-game="mazes">
+  <h1>Mazes</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/Mazes.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>What it shows:</strong> a rectangular grid becomes a maze when Prim's or Kruskal's algorithm grows a spanning tree of passages, then a depth-first search finds the way from start to end.<br>
+    <strong>How to play:</strong> set the grid size, optionally carve the shape, then Create a maze (step by step or all at once) and Solve it.
+  </div>
+
+  <div class="tabs" role="tablist" aria-label="Maze steps">
+    <button type="button" data-tab="grid" role="tab">Define grid</button>
+    <button type="button" data-tab="shape" role="tab">Define shape</button>
+    <button type="button" data-tab="create" role="tab" class="active" aria-selected="true">Create maze</button>
+    <button type="button" data-tab="solve" role="tab">Solve maze</button>
+  </div>
+
+  <div id="boardWrap" class="stage">
+    <canvas id="board" width="360" height="288" aria-label="Maze grid"></canvas>
+  </div>
+  <div id="legend">
+    <span class="swatch start"></span> start
+    <span class="swatch end"></span> end
+  </div>
+
+  <div class="controls">
+    <div id="panel-grid" class="panel" hidden>
+      <label>Columns <select id="nxInput"></select></label>
+      <label>Rows <select id="nyInput"></select></label>
+      <button type="button" id="resetBtn" class="primary">Reset</button>
+    </div>
+
+    <div id="panel-shape" class="panel" hidden>
+      <label class="radio"><input type="radio" name="shapeMode" value="start"> Set start</label>
+      <label class="radio"><input type="radio" name="shapeMode" value="end"> Set end</label>
+      <label class="radio"><input type="radio" name="shapeMode" value="remove" checked> Remove cell</label>
+      <label class="radio"><input type="radio" name="shapeMode" id="addMode" value="add" disabled> Add cell</label>
+      <button type="button" id="backBtn" disabled>Back</button>
+    </div>
+
+    <div id="panel-create" class="panel">
+      <label class="radio"><input type="radio" name="algo" value="prim" checked> Prim's</label>
+      <label class="radio"><input type="radio" name="algo" value="kruskal"> Kruskal's</label>
+      <button type="button" id="createBtn" class="primary">Create</button>
+      <button type="button" id="createSlowBtn">Step by step</button>
+      <button type="button" id="createStepBtn">One step</button>
+    </div>
+
+    <div id="panel-solve" class="panel" hidden>
+      <label class="radio"><input type="checkbox" id="showGraph"> Show graph</label>
+      <button type="button" id="solveBtn" class="primary">Solve</button>
+      <button type="button" id="solveSlowBtn">Solve slow</button>
+      <button type="button" id="solveStepBtn">One step</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        A maze with no loops is a
+        <a class="wiki-term" data-wiki="Tree_(graph_theory)" href="https://en.wikipedia.org/wiki/Tree_(graph_theory)" target="_blank" rel="noopener">tree</a>
+        drawn on the grid graph: every cell is reachable from every other, and there is
+        exactly one path between any pair. For any connected graph that means
+        <code>|V|&nbsp;=&nbsp;|E|&nbsp;+&nbsp;1</code>.
+      </p>
+
+      <h3>Spanning trees from greedy choices</h3>
+      <p>
+        Both
+        <a class="wiki-term" data-wiki="Prim%27s_algorithm" href="https://en.wikipedia.org/wiki/Prim%27s_algorithm" target="_blank" rel="noopener">Prim's</a>
+        and
+        <a class="wiki-term" data-wiki="Kruskal%27s_algorithm" href="https://en.wikipedia.org/wiki/Kruskal%27s_algorithm" target="_blank" rel="noopener">Kruskal's</a>
+        algorithms build a spanning tree by always taking the next edge that does not
+        create a cycle. Prim grows one connected piece from the start cell; Kruskal
+        merges many tiny trees. The applet assigns nearly-random weights to the grid
+        edges so the greedy choice has something to compare.
+      </p>
+
+      <h3>Maximum, not minimum</h3>
+      <p>
+        The classic textbook story picks the <em>lightest</em> safe edge and proves the
+        result is a minimum spanning tree. This applet's sorted edge list compares with
+        <code>weight&nbsp;&gt;&nbsp;weight</code>, so it actually grows a
+        <em>maximum</em> spanning tree. The same exchange argument works either way:
+        swapping the chosen edge for any heavier (or lighter) edge on the cycle it
+        would close cannot improve the total.
+      </p>
+
+      <h3>Solving by depth-first search</h3>
+      <p>
+        Once the passages are a tree, there is only one route from start to end.
+        <a class="wiki-term" data-wiki="Depth-first_search" href="https://en.wikipedia.org/wiki/Depth-first_search" target="_blank" rel="noopener">Depth-first search</a>
+        walks forward until it hits a dead end, then retreats to the last junction with
+        an unused passage — the maze-walking method of "keeping one hand on the wall,"
+        made precise.
+      </p>
+      <p class="tip">
+        Try Prim and Kruskal on the same grid (press Reset for new random weights). The
+        passages differ, but both leave exactly one path from the blue start to the red end.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="mazes-core.js"></script>
+<script src="mazes.js"></script>
+</body>
+</html>

@@ -125,6 +125,12 @@ window.COOLMATHS = {
       tags: ["algorithms", "counting", "logic"],
     },
     {
+      slug: "mazes",
+      title: "Mazes",
+      blurb: "Grow a maze from a grid with Prim or Kruskal, then watch depth-first search find the only path from start to end. Do the two algorithms carve the same passages?",
+      tags: ["graph-theory", "algorithms", "counting"],
+    },
+    {
       slug: "four-by-four",
       title: "Four By Four",
       blurb: "3D tic-tac-toe on a 4 by 4 by 4 cube against a computer that never looks ahead, just recognizes patterns. There are faults in its logic — can you find one?",

@@ -114,6 +114,7 @@ const SLUG_TO_APPLET = {
   looping: "Looping",
   marriage: "Marriage",
   mastermind: "Mastermind",
+  mazes: "Mazes",
   hex7: "Hex7",
   "hex-draw": "HexTheory",
   "hare-hounds": "Hounds",
