@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mastermind &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #board {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 12px;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+  }
+  .row.muted { opacity: 0.35; }
+  .peg {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--border-strong);
+    padding: 0;
+    cursor: pointer;
+    background: var(--surface-2);
+    box-shadow: var(--shadow);
+  }
+  .peg.empty { background: var(--stage); box-shadow: none; }
+  .peg:disabled { cursor: default; opacity: 1; }
+  .peg:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  .hints {
+    display: grid;
+    grid-template-columns: repeat(2, 10px);
+    gap: 4px;
+    min-width: 28px;
+    min-height: 28px;
+    align-content: center;
+    margin-left: 6px;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid var(--ink);
+  }
+  .dot.exact { background: #c0362c; }
+  .dot.near { background: #f0b7c2; }
+
+  #secret {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  #secret .peg { width: 28px; height: 28px; }
+
+  @media (max-width: 420px) {
+    .peg { width: 30px; height: 30px; }
+  }
+</style>
+</head>
+<body data-game="mastermind">
+  <h1>Mastermind</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/Mastermind.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> break a secret code of coloured pegs. After each guess you learn how many pegs are exact (right colour, right place) and how many are near (right colour, wrong place).<br>
+    <strong>How to play:</strong> click each peg to cycle its colour, then press Submit. Dark dots are exact matches; light dots are near matches.
+  </div>
+
+  <div id="board" class="stage"></div>
+  <div id="secret" hidden></div>
+
+  <div class="controls">
+    <label>Pegs <select id="pegsInput"></select></label>
+    <label>Colours <select id="colorsInput"></select></label>
+    <label><input type="checkbox" id="repeatsInput" checked> Allow repeats</label>
+    <button type="button" id="submitBtn" class="primary">Submit</button>
+    <button type="button" id="resetBtn">New code</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        With four pegs and six colours there are
+        <code>6<sup>4</sup>&nbsp;=&nbsp;1296</code> possible codes. Each guess carves that set down:
+        only codes that would have given the same answer remain possible.
+      </p>
+
+      <h3>Exact and near, without double-counting</h3>
+      <p>
+        If a colour appears more often in the guess than in the secret, you must not credit every copy.
+        Donald Knuth's clean rule: let <code>n<sub>i</sub></code> be how often colour <code>i</code> appears
+        in the code and <code>m<sub>i</sub></code> how often in the guess. Colour <code>i</code> is matched
+        <code>min(n<sub>i</sub>,&nbsp;m<sub>i</sub>)</code> times in total. Count the exact (same place) matches
+        first; the near matches are whatever is left:
+      </p>
+      <blockquote>
+        <code>near = Σ<sub>i</sub> min(n<sub>i</sub>, m<sub>i</sub>) &minus; exact</code>
+      </blockquote>
+      <p>
+        So if the secret is <code>0145</code> and you guess <code>1123</code>, there is one exact match
+        (the second peg) and no near match &mdash; the extra <code>1</code> in the guess has already been used.
+      </p>
+
+      <h3>An impossible reply</h3>
+      <p>
+        You will never see three exact dots and one near dot together. With three pegs already pinned
+        in place, the fourth peg is either exact too or a colour that is not in the secret at all &mdash;
+        there is no peg left that could be &ldquo;near.&rdquo; Checking every code/guess pair for the
+        smaller boards confirms it, and the same counting argument holds for any size.
+      </p>
+
+      <h3>How few guesses do you need?</h3>
+      <p>
+        Knuth showed that a careful strategy always finishes the classic game in at most five guesses
+        (you know the code after at most four replies). A later strategy lowers the
+        <em>average</em> number of guesses to about 4.34, at the cost of a worse worst case.
+        The page also studies
+        <a class="wiki-term" data-wiki="Mastermind_(board_game)" href="https://en.wikipedia.org/wiki/Mastermind_(board_game)" target="_blank" rel="noopener">static Mastermind</a>:
+        choosing all guesses up front, with no feedback until the end &mdash; a cousin of the
+        twelve-coin weighing puzzle.
+      </p>
+      <p class="tip">
+        Try a first guess like <code>0011</code> or <code>0012</code> (two colours, or three). Both are
+        classic openings; afterwards, only keep codes that would have scored the same reply.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="mastermind-core.js"></script>
+<script src="mastermind.js"></script>
+</body>
+</html>

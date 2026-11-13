@@ -119,6 +119,12 @@ window.COOLMATHS = {
       tags: ["algorithms", "graph-theory", "counting"],
     },
     {
+      slug: "mastermind",
+      title: "Mastermind",
+      blurb: "Guess a secret code of coloured pegs. Each reply tells you how many are exact and how many are near \u2014 can you finish in five?",
+      tags: ["algorithms", "counting", "logic"],
+    },
+    {
       slug: "four-by-four",
       title: "Four By Four",
       blurb: "3D tic-tac-toe on a 4 by 4 by 4 cube against a computer that never looks ahead, just recognizes patterns. There are faults in its logic — can you find one?",
