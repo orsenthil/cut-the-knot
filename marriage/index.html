@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Marriage Problem &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #board {
+    display: grid;
+    grid-template-columns: repeat(var(--n, 6), minmax(28px, 40px));
+    gap: 2px;
+    padding: 12px;
+    width: max-content;
+    max-width: 100%;
+    margin: 0 auto;
+    justify-content: center;
+  }
+  .corner { min-height: 28px; }
+  .hdr, .cell {
+    min-width: 28px;
+    min-height: 28px;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    background: var(--surface-2);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 650;
+    padding: 0;
+    cursor: pointer;
+  }
+  .hdr { background: var(--stage); font-size: 0.85rem; color: var(--muted); }
+  .hdr.picked { outline: 3px solid var(--accent); outline-offset: -2px; }
+  .hdr:focus-visible, .cell:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .cell.one { background: var(--accent-soft); }
+  .cell.diag { box-shadow: inset 0 0 0 2px var(--accent); }
+  .cell.happy { background: color-mix(in srgb, var(--good) 35%, var(--stage)); }
+  .cell.sad { background: color-mix(in srgb, var(--bad) 30%, var(--stage)); }
+  .cell:disabled { opacity: 1; cursor: default; }
+
+  #phase {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--muted);
+    min-height: 1.3em;
+    margin-top: 8px;
+  }
+  #logWrap { margin-top: 10px; max-width: 520px; width: 100%; }
+  #logWrap summary { cursor: pointer; font-size: 0.85rem; color: var(--muted); }
+  #log {
+    margin: 6px 0 0;
+    padding-left: 1.2em;
+    font-size: 0.82rem;
+    color: var(--muted);
+    max-height: 9em;
+    overflow: auto;
+  }
+
+  @media (max-width: 420px) {
+    #board { grid-template-columns: repeat(var(--n, 6), minmax(24px, 32px)); }
+    .hdr, .cell { min-width: 24px; min-height: 24px; font-size: 0.8rem; }
+  }
+</style>
+</head>
+<body data-game="marriage">
+  <h1>Marriage Problem</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/arithmetic/MarriageApplet.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>What it shows:</strong> a constructive proof of Hall's marriage theorem &mdash; when n girls each list some of n boys, can every girl marry a different boy from her list?<br>
+    <strong>How to play:</strong> click cells to toggle likes (1) and blanks (0). Press Step, Slow, or Fast to run the algorithm, or click row/column labels to swap them yourself.
+  </div>
+
+  <div id="board" class="stage" style="--n: 6"></div>
+  <div id="phase" aria-live="polite"></div>
+
+  <div class="controls">
+    <label>Size <select id="nInput"></select></label>
+    <label>Swap
+      <select id="swapMode">
+        <option value="columns" selected>columns</option>
+        <option value="rows">rows</option>
+        <option value="both">both</option>
+      </select>
+    </label>
+    <button type="button" id="stepBtn">Step</button>
+    <button type="button" id="slowBtn">Slow</button>
+    <button type="button" id="fastBtn">Fast</button>
+    <button type="button" id="backBtn">Back</button>
+    <button type="button" id="resetBtn" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="logWrap">
+    <summary>Algorithm log</summary>
+    <ol id="log"></ol>
+  </details>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Each column is one girl's list of boys (the rows marked 1). A matching that marries every girl
+        to a different boy from her list is a
+        <a class="wiki-term" data-wiki="System_of_distinct_representatives" href="https://en.wikipedia.org/wiki/System_of_distinct_representatives" target="_blank" rel="noopener">system of distinct representatives</a>
+        &mdash; after swapping rows and columns, a diagonal of 1s.
+      </p>
+
+      <h3>Hall's condition</h3>
+      <p>
+        <a class="wiki-term" data-wiki="Hall%27s_marriage_theorem" href="https://en.wikipedia.org/wiki/Hall%27s_marriage_theorem" target="_blank" rel="noopener">Hall's marriage theorem</a>
+        says such a matching exists if and only if every group of <code>k</code> girls, taken together,
+        lists at least <code>k</code> different boys. The algorithm on this page finds a matching whenever
+        that condition holds, and stops with a clear failure when it does not.
+      </p>
+
+      <h3>Growing a diagonal of 1s</h3>
+      <p>
+        W. McWorter's procedure keeps a block of 1s already fixed on the diagonal and looks in the
+        remaining lower-right block for another 1 to bring onto the next diagonal place (the Greedy
+        phase). When that block is all zeros it tries a careful column swap, or regroups columns, or
+        shrinks the problem &mdash; always either extending the diagonal or proving Hall's condition
+        fails.
+      </p>
+
+      <h3>A matrix that works only for even n</h3>
+      <p>
+        Put a 1 in every square next to the diagonal and 0s elsewhere (<code>a<sub>ij</sub> = 1</code>
+        exactly when <code>|i&nbsp;&minus;&nbsp;j|&nbsp;=&nbsp;1</code>). For even <code>n</code> the
+        algorithm finishes; for odd <code>n</code> it fails. That is exactly when Hall's condition holds:
+        an odd-sized board leaves one girl short of a partner among the tight pairs along the strip.
+      </p>
+      <p class="tip">
+        Reset until you get a messy board, press Fast, and watch whether you land on
+        &ldquo;Finished, all are happy&rdquo; or &ldquo;Failed, the life's hard.&rdquo; Then try the
+        even/odd strip by hand on size 4 and size 5.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="marriage-core.js"></script>
+<script src="marriage.js"></script>
+</body>
+</html>

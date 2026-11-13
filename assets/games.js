@@ -113,6 +113,12 @@ window.COOLMATHS = {
       tags: ["graph-theory", "invariants", "counting"],
     },
     {
+      slug: "marriage",
+      title: "Marriage Problem",
+      blurb: "n girls each list some of n boys. Can every girl marry a different boy from her list \u2014 and can an algorithm decide, step by step?",
+      tags: ["algorithms", "graph-theory", "counting"],
+    },
+    {
       slug: "four-by-four",
       title: "Four By Four",
       blurb: "3D tic-tac-toe on a 4 by 4 by 4 cube against a computer that never looks ahead, just recognizes patterns. There are faults in its logic — can you find one?",

@@ -112,6 +112,7 @@ const SLUG_TO_APPLET = {
   "hanoi-3c": "Hanoi3c",
   "long-hanoi": "LongHanoi",
   looping: "Looping",
+  marriage: "Marriage",
   hex7: "Hex7",
   "hex-draw": "HexTheory",
   "hare-hounds": "Hounds",
