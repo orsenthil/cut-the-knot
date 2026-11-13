@@ -116,6 +116,7 @@ const SLUG_TO_APPLET = {
   mastermind: "Mastermind",
   mazes: "Mazes",
   "merlin-4x4": "Merlin4x4",
+  "merlin-5x5": "Merlin5x5",
   hex7: "Hex7",
   "hex-draw": "HexTheory",
   "hare-hounds": "Hounds",

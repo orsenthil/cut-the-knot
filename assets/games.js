@@ -137,6 +137,12 @@ window.COOLMATHS = {
       tags: ["algebra", "parity", "algorithms"],
     },
     {
+      slug: "merlin-5x5",
+      title: "Lights Out",
+      blurb: "Classic 5\u00d75 Lights Out: flip a plus of neighbours. Chase the lights down \u2014 but can every board be cleared, and how many ways are there when one can?",
+      tags: ["algebra", "parity", "algorithms"],
+    },
+    {
       slug: "four-by-four",
       title: "Four By Four",
       blurb: "3D tic-tac-toe on a 4 by 4 by 4 cube against a computer that never looks ahead, just recognizes patterns. There are faults in its logic — can you find one?",

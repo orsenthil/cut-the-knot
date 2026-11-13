@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lights Out &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #board {
+    display: grid;
+    grid-template-columns: repeat(var(--n, 5), minmax(48px, 64px));
+    gap: 8px;
+    padding: 16px;
+    width: max-content;
+    max-width: 100%;
+    margin: 0 auto;
+    justify-content: center;
+  }
+  .cell {
+    aspect-ratio: 1;
+    width: 100%;
+    min-width: 48px;
+    border-radius: 50%;
+    border: 3px solid var(--ink);
+    padding: 0;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: background 0.12s, transform 0.12s, box-shadow 0.12s;
+  }
+  .cell.off { background: #6b7280; }
+  .cell.on {
+    background: #e8b84a;
+    box-shadow: 0 0 0 3px color-mix(in srgb, #e8b84a 45%, transparent);
+  }
+  .cell.press {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .cell:disabled { cursor: default; opacity: 1; }
+  .cell:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  .cell:not(:disabled):active { transform: scale(0.94); }
+
+  @media (max-width: 420px) {
+    #board {
+      grid-template-columns: repeat(var(--n, 5), minmax(40px, 1fr));
+      gap: 6px;
+      width: 100%;
+    }
+    .cell { min-width: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cell { transition: none; }
+  }
+</style>
+</head>
+<body data-game="merlin-5x5">
+  <h1>Lights Out</h1>
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/Merlin5x5.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> turn every light off on a 5&times;5 board. Not every pattern can be cleared.<br>
+    <strong>How to play:</strong> click a light to flip it and its neighbours. Hint rings a solution when one exists; Setup lets you flip single lights to build a board.
+  </div>
+
+  <div id="board" class="stage" style="--n: 5"></div>
+
+  <div class="controls">
+    <label><input type="checkbox" id="setupInput"> Setup</label>
+    <label><input type="checkbox" id="hintInput"> Hint</label>
+    <button type="button" id="undoBtn" disabled>Undo</button>
+    <button type="button" id="resetBtn" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        As in
+        <a href="../merlin-4x4/">Mini Lights Out</a>,
+        presses commute and cancel in pairs, so the puzzle is a linear system
+        <code>A s = v</code> over
+        <a class="wiki-term" data-wiki="GF(2)" href="https://en.wikipedia.org/wiki/GF(2)" target="_blank" rel="noopener">GF(2)</a>.
+        Here the board is flat, not a torus, and <code>A</code> is singular:
+        some boards have no solution, and solvable ones have four.
+      </p>
+
+      <h3>Chase the lights down</h3>
+      <p>
+        Whatever the starting pattern, you can always clear the top four rows:
+        walking downward, press every cell that sits under a lit neighbour above.
+        That <em>gathering</em> leaves at most the bottom row lit. The leftover
+        five bits are a complete syndrome for the puzzle.
+      </p>
+
+      <h3>First-row presses, then gather again</h3>
+      <p>
+        Pressing a few buttons in the top row and gathering once more turns that
+        syndrome into a known pattern. Experiment shows you never need the last
+        two top buttons, and the map from bottom bits 1–3 to top presses 1–3 is
+        tiny. The three-step recipe — gather, press those top cells, gather —
+        either clears the board or proves it cannot be cleared.
+      </p>
+
+      <h3>When is it solvable?</h3>
+      <p>
+        After the first gathering, look at the bottom row. The board can be
+        solved if and only if that row has even
+        <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a>
+        on columns <code>{1, 3, 5}</code> and on <code>{2, 3, 4}</code>
+        (counting from 1). Those are exactly the two conditions forced by the
+        two-dimensional nullspace of <code>A</code> (so
+        <code>rank(A)&nbsp;=&nbsp;23</code>, and a quarter of all boards work).
+        When a solution exists there are four of them, because you may add any
+        of the four “neutral” first-row sets and gather without changing the
+        outcome.
+      </p>
+      <p class="tip">
+        Tick Hint on a random board: if rings appear, press them; if you see
+        “No solution”, try Setup and change a light in the bottom row’s
+        <code>{1,3,5}</code> set, then Hint again.
+      </p>
+    </div>
+  </details>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="merlin-5x5-core.js"></script>
+<script src="merlin-5x5.js"></script>
+</body>
+</html>
