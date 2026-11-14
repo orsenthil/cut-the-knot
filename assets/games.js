@@ -364,5 +364,11 @@ window.COOLMATHS = {
       blurb: "Cover a rectangle with L-shaped pieces of three squares. 3 by 5 has 15 squares but still can't be done \u2014 so which rectangles can?",
       tags: ["counting", "area", "divisibility"],
     },
+    {
+      slug: "mixed-strategies",
+      title: "Mixed Strategies",
+      blurb: "Change the four scores in a two-player game. Is there one safe choice, or must both players mix their moves?",
+      tags: ["game-strategy", "algebra"],
+    },
   ],
 };

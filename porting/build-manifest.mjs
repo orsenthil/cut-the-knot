@@ -138,6 +138,7 @@ const SLUG_TO_APPLET = {
   aliquot: "Aliquot",
   "dawsons-kayles": "DawsonKayles",
   "fraction-game": "FractionGame",
+  "mixed-strategies": "MixedStrategies",
 };
 
 /** Pages for ported games whose applet is missing from classes.zip. */

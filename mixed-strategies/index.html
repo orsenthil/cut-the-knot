@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mixed Strategies &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  #strategy-stage { max-width: 660px; margin: 0 auto; display: grid; gap: 18px; }
+  #matrix-wrap { display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: center; }
+  .side-label { color: var(--muted); font-size: .85rem; writing-mode: vertical-rl; transform: rotate(180deg); }
+  .matrix-area { display: grid; gap: 7px; }
+  .column-labels, #matrix { display: grid; grid-template-columns: repeat(2, minmax(78px, 1fr)); gap: 7px; }
+  .column-labels { color: var(--muted); font-size: .85rem; text-align: center; }
+  .payoff { min-height: 78px; position: relative; border: 2px solid var(--border-strong); border-radius: 12px; background: var(--page); color: var(--ink); cursor: ew-resize; font: 700 clamp(1.5rem, 6vw, 2.3rem)/1 system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+  .payoff:hover, .payoff:focus-visible { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--highlight); }
+  .payoff::before, .payoff::after { position: absolute; top: 50%; transform: translateY(-50%); font: 400 1.1rem/1 system-ui, sans-serif; color: var(--muted); }
+  .payoff::before { content: "−"; left: 11px; } .payoff::after { content: "+"; right: 10px; }
+  #arrows { color: var(--muted); font-size: .93rem; text-align: center; min-height: 1.35em; }
+  #result { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; text-align: center; min-height: 2.8em; }
+  #result strong { color: var(--accent); }
+  #plot { width: 100%; height: auto; display: block; border-top: 1px solid var(--border); padding-top: 12px; }
+  .axis { stroke: var(--border-strong); stroke-width: 1.5; } .grid { stroke: var(--border); stroke-width: 1; }
+  .line-a { stroke: var(--accent); } .line-b { stroke: var(--good); } .line-a, .line-b { fill: none; stroke-width: 3; }
+  .dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; } .plot-label { fill: var(--muted); font: 12px system-ui, sans-serif; }
+  @media (min-width: 580px) { #strategy-stage { grid-template-columns: 250px 1fr; align-items: center; } }
+</style>
+</head>
+<body data-game="mixed-strategies">
+  <h1>Mixed Strategies</h1>
+  <p class="byline">
+    Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/MixedStrategies.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+  <div id="rules">
+    <strong>Game:</strong> two players choose a row and a column, and the number where they meet is the row player's score.<br>
+    <strong>How to play:</strong> click the left or right side of a number to make it smaller or bigger. Find a square that is best for both players, or see the best way to mix choices.
+  </div>
+
+  <div id="strategy-stage" class="stage">
+    <div id="matrix-wrap">
+      <div class="side-label">row player</div>
+      <div class="matrix-area">
+        <div class="column-labels"><span>column 1</span><span>column 2</span></div>
+        <div id="matrix" role="group" aria-label="Payoff matrix"></div>
+        <div id="arrows" aria-live="polite"></div>
+      </div>
+    </div>
+    <div>
+      <div id="result" role="status" aria-live="polite"></div>
+      <svg id="plot" viewBox="0 0 340 230" role="img" aria-label="Payoff lines for the two choices"></svg>
+    </div>
+  </div>
+
+  <div class="controls"><button type="button" id="resetBtn" class="primary">Reset</button></div>
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A two-person <a class="wiki-term" data-wiki="Zero-sum_game" href="https://en.wikipedia.org/wiki/Zero-sum_game" target="_blank" rel="noopener">zero-sum game</a> gives one player exactly what the other loses. The four numbers in this table are enough to show the two possible kinds of stable play.</p>
+      <h3>A square that settles everything</h3>
+      <p>The row player wants a bigger number, so they look for the smallest number in each row. The column player wants a smaller number, so they look for the biggest number in each column. A number that is both is a <a class="wiki-term" data-wiki="Saddle_point" href="https://en.wikipedia.org/wiki/Saddle_point" target="_blank" rel="noopener">saddle point</a>. Neither player needs to guess: both can choose its row or column every time.</p>
+      <h3>When no single choice is safe</h3>
+      <p>Otherwise, each player can protect themselves by mixing their two choices. If the entries are <code>a b / c d</code>, the row player chooses its first row with probability <code>(d − c)/(a − b − c + d)</code>; the column player chooses its first column with probability <code>(d − b)/(a − b − c + d)</code>. The plot shows why: at the crossing, neither choice can improve the other player's result.</p>
+      <h3>Minimax</h3>
+      <p>The <a class="wiki-term" data-wiki="Minimax_theorem" href="https://en.wikipedia.org/wiki/Minimax_theorem" target="_blank" rel="noopener">minimax theorem</a> says these two ways of protecting yourself meet at the same value. In a 2 by 2 game that value is <code>(ad − bc)/(a − b − c + d)</code>. The applet displays a mixture only when both probabilities are strictly between 0 and 1.</p>
+      <p class="tip">Make a matching-pennies table: 1 and −1 on one diagonal, −1 and 1 on the other. Both players must choose each option half the time.</p>
+    </div>
+  </details>
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="mixed-strategies-core.js"></script>
+<script src="mixed-strategies.js"></script>
+</body>
+</html>
