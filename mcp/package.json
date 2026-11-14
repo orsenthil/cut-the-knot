@@ -2,21 +2,28 @@
   "name": "coolmaths-tutor",
   "version": "1.0.0",
   "private": true,
-  "description": "Remote MCP server that serves the coolmaths games, their maths and their runnable logic as grounded tutoring material.",
+  "description": "MCP server that serves the coolmaths games, their maths and their runnable logic as grounded tutoring material.",
   "type": "module",
   "scripts": {
     "build-index": "node scripts/build-index.mjs",
     "typecheck": "tsc --noEmit",
-    "dev": "npm run build-index && wrangler dev",
-    "deploy": "npm run build-index && wrangler deploy"
+    "golden": "tsx test/golden.mjs",
+    "test": "npm run typecheck && npm run golden && tsx test/http.test.mjs",
+    "dev": "npm run build-index && tsx watch src/node.ts",
+    "build": "npm run build-index && esbuild src/node.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/server.mjs",
+    "start": "node dist/server.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.2",
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^5.20261103.1",
-    "typescript": "^5.9.3",
-    "wrangler": "^4.42.0"
+    "@types/node": "^26.6.6",
+    "esbuild": "^0.28.2",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }
