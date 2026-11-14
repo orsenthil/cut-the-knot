@@ -10,8 +10,8 @@ Tasks in [`tasks/`](../tasks/README.md) refer to sections of this file.
 ## 1. The parts
 
 ```
-game page ──Track──▶ assets/progress.js ──backend──▶ localStorage   (today)
-                                                 └──▶ Firestore      (task 010)
+game page ──Track──▶ assets/progress.js ──backend──▶ localStorage   (guests)
+                                                 └──▶ Firestore      (signed in)
 
 profile page, home ──▶ Track.progress() + assets/recommend.js
 
@@ -128,30 +128,42 @@ A catalogue entry may carry `level` (1 to 3, default 2) and `kind`
 (`"game"` or `"demo"`, default game). `assets/concepts.js` gives each tag
 its `prereqs`.
 
-## 7. Firestore (planned; tasks 007, 010, 014)
+## 7. Firestore
 
 ```
-users/{uid}                     displayName, photoURL, providers[], isAnonymous,
-                                createdAt, lastSeenAt, handle,
+users/{uid}                     displayName, providers[], createdAt, lastSeenAt,
                                 settings { mcpAccess: bool, public: bool }
 users/{uid}/progress/{slug}     a progress record (section 3)
-users/{uid}/sessions/{autoId}   a session record, expiring after 180 days
-users/{uid}/live/current        the live record
+users/{uid}/sessions/{autoId}   a session record, plus expireAt (a date 180
+                                days on, for a TTL policy to remove it)
+users/{uid}/live/current        the live record, with `state` as JSON text
+                                (Firestore cannot hold a list inside a list,
+                                and text lets the rules cap its size)
+
+# later tasks; closed to everyone until they get rules
 handles/{handle}                { uid }            uniqueness index
 publicProfiles/{uid}            opt-in, handle only, public read
 oauth/{kind}/{id}               MCP OAuth clients, codes, tokens: server only
 matches/{matchId}[/moves/{n}]   later: multiplayer, written by the server only
 ```
 
-Rules in one line each: `users/{uid}/**` is the owner's alone; counters only
-grow; `live.state` is size-capped; `publicProfiles` is public to read and
-the owner's to write when `settings.public`; clients cannot touch `oauth/**`
-or write `matches/**`.
+The rules are `firebase/firestore.rules`, tested in the emulator by
+`cd firebase && npm test`: `users/{uid}/**` is the owner's alone; while a
+progress record exists its counters only grow; a session is written once;
+`live.state` is at most 8,000 characters; everything else is closed.
 
-Guests get an anonymous Firebase account, which is *linked* to Google or
-GitHub on sign-in, so the record carries over. Anything already in
-localStorage is replayed into the account once, then the local copy is
-cleared.
+Sign-in is `assets/auth.js` (Google or GitHub, by popup), offered on the
+profile page. **A guest has no account and never loads the Firebase SDK**;
+their record stays in localStorage. On sign-in, `Track` switches to the
+Firestore backend (`assets/backends/firebase.js`) and `moveRecord` adds the
+browser's record to the account and empties the browser's copy. The same
+move runs on every later page load, so anything written before the account
+loaded, or while offline (`withFallback`), catches up. `site.js` loads
+`auth.js` on the profile page, and on every page while the
+`coolmaths-account` flag is set in localStorage.
+
+`cd firebase && npm run test:ui` drives all of this in a browser against the
+Auth and Firestore emulators.
 
 ## 8. UserStore and Authenticator (server)
 

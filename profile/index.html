@@ -56,13 +56,49 @@
   .tried .done { color: var(--good); font-weight: 600; }
   @media (max-width: 520px) { .tried .wide { display: none; } }
 
+  .account {
+    width: 100%;
+    max-width: 860px;
+    margin: 18px 0 28px;
+    padding: 16px 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    text-align: center;
+  }
+  .account p { margin: 0 0 12px; }
+  .account-buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .account .switch { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 0.92rem; }
+  .account-note { margin: 12px 0 0 !important; color: var(--muted); font-size: 0.88rem; }
+  .account-note:empty { display: none; }
+  .account-note.bad { color: var(--bad); }
+
   .empty { margin: 0; color: var(--muted); }
   .forget { align-self: center; }
 </style>
 </head>
-<body>
+<body data-page="profile">
   <h1>Your profile</h1>
-  <p class="where">What you have played, kept in this browser.</p>
+  <p class="where" id="where">What you have played, kept in this browser.</p>
+
+  <section class="account" id="account" aria-label="Your account">
+    <div id="signedOut">
+      <p>Sign in to keep your record and see it on any device.</p>
+      <div class="account-buttons">
+        <button type="button" class="primary" data-provider="google" disabled>Sign in with Google</button>
+        <button type="button" data-provider="github" disabled>Sign in with GitHub</button>
+      </div>
+    </div>
+    <div id="signedIn" hidden>
+      <p>Signed in as <strong id="who"></strong></p>
+      <label class="switch"><input type="checkbox" id="mcpAccess"> Let the coolmaths tutor see my record</label>
+      <div class="account-buttons">
+        <button type="button" id="signOut">Sign out</button>
+        <button type="button" id="deleteAccount">Delete my account</button>
+      </div>
+    </div>
+    <p id="accountNote" class="account-note" role="status" aria-live="polite"></p>
+  </section>
 
   <div class="profile">
     <section class="stats" aria-label="Summary">
@@ -223,8 +259,54 @@
   }
 
   $("forget").addEventListener("click", () => {
-    if (window.confirm("Forget everything you have played in this browser?")) Track.clear();
+    if (window.confirm("Forget everything you have played? This cannot be undone.")) Track.clear();
   });
+
+  /* ---- the account (assets/auth.js, loaded by site.js on this page) ---- */
+
+  const account = () => window.COOLMATHS_AUTH;
+  const providerButtons = document.querySelectorAll("[data-provider]");
+
+  function note(text, bad) {
+    $("accountNote").textContent = text || "";
+    $("accountNote").classList.toggle("bad", Boolean(bad));
+  }
+
+  /** Runs an account action, showing what went wrong in plain words. */
+  async function attempt(action, failed) {
+    note("");
+    try {
+      await action();
+    } catch (err) {
+      note(failed || err.message, true);
+    }
+  }
+
+  async function renderAccount() {
+    const user = account() && account().user;
+    $("signedOut").hidden = Boolean(user);
+    $("signedIn").hidden = !user;
+    $("where").textContent = user ? "What you have played, kept in your account." : "What you have played, kept in this browser.";
+    providerButtons.forEach((b) => (b.disabled = !account()));
+    if (!user) return;
+    $("who").textContent = user.displayName || "a coolmaths player";
+    $("mcpAccess").checked = (await account().getSettings()).mcpAccess;
+  }
+
+  providerButtons.forEach((button) => {
+    button.addEventListener("click", () => attempt(() => account().signIn(button.dataset.provider)));
+  });
+  $("signOut").addEventListener("click", () => attempt(() => account().signOut()));
+  $("mcpAccess").addEventListener("change", (e) =>
+    attempt(() => account().setMcpAccess(e.target.checked), "That setting could not be saved. Please try again."),
+  );
+  $("deleteAccount").addEventListener("click", () => {
+    if (!window.confirm("Delete your account and everything you have played? This cannot be undone.")) return;
+    attempt(() => account().deleteAccount(), "Your account could not be deleted. Please sign in again and retry.");
+  });
+
+  window.addEventListener("authchange", renderAccount);
+  renderAccount();
 
   window.addEventListener("progresschange", render);
   render();

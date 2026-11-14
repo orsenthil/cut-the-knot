@@ -5,7 +5,8 @@
  * so the saved theme applies before the page paints. It then adds the header
  * (logo, "All games", "Profile", theme toggle), the footer, and, on a game
  * page (<body data-game="slug">), that game's concept tags under the title
- * and the progress tracker (assets/progress.js).
+ * and the progress tracker (assets/progress.js). For a signed-in player it
+ * also loads sign-in (assets/auth.js), which moves the record to their account.
  *
  * Pages that draw with colours from CSS (like a canvas) can listen for the
  * "themechange" event on window and redraw.
@@ -120,6 +121,20 @@
     document.head.appendChild(el("script", { src: ROOT + "assets/progress.js" }));
   }
 
+  // Sign-in (assets/auth.js) brings the Firebase SDK with it, so it is only
+  // loaded where it is needed: on the profile page, which offers sign-in, and
+  // everywhere once the player has signed in on this browser.
+  function loadAccount() {
+    let signedIn = false;
+    try {
+      signedIn = localStorage.getItem("coolmaths-account") === "1";
+    } catch (e) {
+      // storage blocked: treat as a guest
+    }
+    if (!signedIn && document.body.dataset.page !== "profile") return;
+    document.head.appendChild(el("script", { type: "module", src: ROOT + "assets/auth.js" }));
+  }
+
   window.COOLMATHS_SITE = { root: ROOT, tagLabel, tagLink, currentTheme };
 
   document.addEventListener("DOMContentLoaded", () => {
@@ -127,5 +142,6 @@
     addGameTags();
     buildFooter();
     loadProgress();
+    loadAccount();
   });
 })();

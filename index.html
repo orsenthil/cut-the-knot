@@ -212,15 +212,16 @@
 "use strict";
 
 // Once the player has a record, suggest what to play next (see profile/).
-(async function () {
+async function suggestNext() {
   const { games } = window.COOLMATHS;
   const { tagLabel } = window.COOLMATHS_SITE;
+  const line = document.getElementById("forYou");
   const progress = await Track.progress();
-  if (Object.keys(progress).length === 0) return;
-  const [pick] = Recommend.next(progress, games, window.COOLMATHS_CONCEPTS, 1);
+  const [pick] = Object.keys(progress).length ? Recommend.next(progress, games, window.COOLMATHS_CONCEPTS, 1) : [];
+  line.textContent = "";
+  line.hidden = !pick;
   if (!pick) return;
 
-  const line = document.getElementById("forYou");
   const link = document.createElement("a");
   link.href = `${pick.game.slug}/index.html`;
   link.textContent = pick.game.title;
@@ -228,8 +229,11 @@
   profile.href = "profile/index.html";
   profile.textContent = "Your profile";
   line.append("Next for you: ", link, `. ${Recommend.explain(pick, tagLabel)} `, profile);
-  line.hidden = false;
-})();
+}
+
+// The record can arrive late: a signed-in player's comes from their account.
+window.addEventListener("progresschange", suggestNext);
+suggestNext();
 </script>
 </body>
 </html>
