@@ -240,7 +240,8 @@ for (const g of catalogue.games) {
 const folders = readdirSync(REPO, { withFileTypes: true })
   .filter((d) => d.isDirectory() && existsSync(join(REPO, d.name, "index.html")))
   .map((d) => d.name)
-  .filter((n) => !["assets", "porting", "mcp", "xscreensaver", "node_modules"].includes(n));
+  // Site pages that are not games (profile/ is the player's record) are not in the catalogue.
+  .filter((n) => !["assets", "porting", "mcp", "xscreensaver", "node_modules", "profile"].includes(n));
 for (const f of folders) {
   if (!catalogue.games.some((g) => g.slug === f)) {
     console.error(`FAIL site: ${f}/index.html exists but "${f}" is not in assets/games.js`);

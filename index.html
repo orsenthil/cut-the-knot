@@ -13,6 +13,9 @@
   .hero img { width: min(300px, 70vw); height: auto; }
   .hero p { margin: 14px auto 0; color: var(--muted); font-size: 1.05rem; max-width: 520px; }
 
+  .for-you { margin: -12px 0 24px; text-align: center; font-size: 0.95rem; color: var(--muted); }
+  .for-you a { font-weight: 600; }
+
   .filters {
     width: 100%;
     max-width: 1120px;
@@ -108,6 +111,7 @@
     </p>
   </section>
 
+  <p class="for-you" id="forYou" hidden></p>
   <nav class="filters" id="filters" aria-label="Filter games by concept"></nav>
   <p id="heading" aria-live="polite"></p>
   <main class="grid" id="grid"></main>
@@ -199,6 +203,32 @@
     if (activeTag()) filtersEl.scrollIntoView({ block: "nearest", behavior: "smooth" });
   });
   render();
+})();
+</script>
+<script src="assets/concepts.js"></script>
+<script src="assets/recommend.js"></script>
+<script src="assets/progress.js"></script>
+<script>
+"use strict";
+
+// Once the player has a record, suggest what to play next (see profile/).
+(async function () {
+  const { games } = window.COOLMATHS;
+  const { tagLabel } = window.COOLMATHS_SITE;
+  const progress = await Track.progress();
+  if (Object.keys(progress).length === 0) return;
+  const [pick] = Recommend.next(progress, games, window.COOLMATHS_CONCEPTS, 1);
+  if (!pick) return;
+
+  const line = document.getElementById("forYou");
+  const link = document.createElement("a");
+  link.href = `${pick.game.slug}/index.html`;
+  link.textContent = pick.game.title;
+  const profile = document.createElement("a");
+  profile.href = "profile/index.html";
+  profile.textContent = "Your profile";
+  line.append("Next for you: ", link, `. ${Recommend.explain(pick, tagLabel)} `, profile);
+  line.hidden = false;
 })();
 </script>
 </body>

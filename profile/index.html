@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Your profile &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  .profile { width: 100%; max-width: 860px; display: flex; flex-direction: column; gap: 32px; }
+  .profile h2 { margin: 0 0 12px; font-size: 1.1rem; letter-spacing: -0.01em; }
+  .where { margin: 6px 0 0; color: var(--muted); font-size: 0.92rem; text-align: center; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 10px; text-align: center; }
+  .stat b { display: block; font-size: 1.5rem; letter-spacing: -0.02em; }
+  .stat span { color: var(--muted); font-size: 0.82rem; }
+
+  .next { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+  .pick {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .pick:hover { border-color: var(--border-strong); }
+  .pick:focus-within { border-color: var(--accent); }
+  .pick img { width: 100%; aspect-ratio: 16 / 10; object-fit: contain; background: var(--surface); border-bottom: 1px solid var(--border); }
+  .pick div { padding: 12px 14px 14px; }
+  .pick h3 { margin: 0 0 4px; font-size: 1rem; }
+  .pick h3 a { color: var(--text); text-decoration: none; }
+  .pick h3 a::after { content: ""; position: absolute; inset: 0; }
+  .pick p { margin: 0; color: var(--muted); font-size: 0.86rem; line-height: 1.45; }
+
+  .concepts { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 8px 20px; }
+  .concepts li { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 10px; }
+  .concepts a { color: var(--text); text-decoration: none; font-size: 0.92rem; font-weight: 600; }
+  .concepts a:hover { color: var(--accent); }
+  .concepts .count { color: var(--muted); font-size: 0.8rem; }
+  .concepts .bar { grid-column: 1 / -1; height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+  .concepts .bar i { display: block; height: 100%; border-radius: 3px; background: var(--accent); }
+  .concepts li.practised .bar i { background: var(--good); }
+  .concepts li.waiting a, .concepts li.waiting .count { color: var(--muted); font-weight: 500; }
+
+  .tried { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  .tried th { text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; padding: 6px 8px; }
+  .tried td { padding: 8px; border-top: 1px solid var(--border); }
+  .tried td.n, .tried th.n { text-align: right; white-space: nowrap; }
+  .tried a { color: var(--text); font-weight: 600; text-decoration: none; }
+  .tried a:hover { color: var(--accent); }
+  .tried .done { color: var(--good); font-weight: 600; }
+  @media (max-width: 520px) { .tried .wide { display: none; } }
+
+  .empty { margin: 0; color: var(--muted); }
+  .forget { align-self: center; }
+</style>
+</head>
+<body>
+  <h1>Your profile</h1>
+  <p class="where">What you have played, kept in this browser.</p>
+
+  <div class="profile">
+    <section class="stats" aria-label="Summary">
+      <div class="stat"><b id="statTried">0</b><span>played</span></div>
+      <div class="stat"><b id="statDone">0</b><span>finished</span></div>
+      <div class="stat"><b id="statTime">0 min</b><span>playing</span></div>
+    </section>
+
+    <section aria-labelledby="nextHeading">
+      <h2 id="nextHeading">Play next</h2>
+      <div class="next" id="next"></div>
+    </section>
+
+    <section aria-labelledby="conceptsHeading">
+      <h2 id="conceptsHeading">Ideas you have met</h2>
+      <ul class="concepts" id="concepts"></ul>
+    </section>
+
+    <section aria-labelledby="triedHeading">
+      <h2 id="triedHeading">Games you have played</h2>
+      <div id="tried"></div>
+    </section>
+
+    <button type="button" class="forget" id="forget">Forget my record</button>
+  </div>
+
+<script src="../assets/concepts.js"></script>
+<script src="../assets/recommend.js"></script>
+<script src="../assets/progress.js"></script>
+<script>
+"use strict";
+
+/*
+ * The profile page: reads the player's record through Track (it never looks
+ * at where the record is kept) and shows it with the recommender's help.
+ */
+(function () {
+  const { games } = window.COOLMATHS;
+  const concepts = window.COOLMATHS_CONCEPTS;
+  const { tagLabel, root } = window.COOLMATHS_SITE;
+  const bySlug = new Map(games.map((g) => [g.slug, g]));
+
+  const $ = (id) => document.getElementById(id);
+
+  function node(tag, className, text) {
+    const n = document.createElement(tag);
+    if (className) n.className = className;
+    if (text !== undefined) n.textContent = text;
+    return n;
+  }
+
+  function gameLink(game) {
+    const a = node("a", "", game.title);
+    a.href = `${root}${game.slug}/index.html`;
+    return a;
+  }
+
+  function minutes(seconds) {
+    const m = Math.round(seconds / 60);
+    return m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${m % 60} min`;
+  }
+
+  function daysAgo(at) {
+    const days = Math.floor((Date.now() - at) / 86400000);
+    return days <= 0 ? "today" : days === 1 ? "yesterday" : `${days} days ago`;
+  }
+
+  function renderStats(played) {
+    $("statTried").textContent = `${played.length} of ${games.length}`;
+    $("statDone").textContent = String(played.filter(([, doc]) => doc.completed > 0).length);
+    $("statTime").textContent = minutes(played.reduce((sum, [, doc]) => sum + (doc.activeSeconds || 0), 0));
+  }
+
+  function renderNext(progress) {
+    const box = $("next");
+    box.textContent = "";
+    const picks = Recommend.next(progress, games, concepts, 3);
+    if (picks.length === 0) {
+      box.appendChild(node("p", "empty", "You have played every game here. More are on the way."));
+      return;
+    }
+    for (const pick of picks) {
+      const card = node("article", "pick");
+      const img = node("img");
+      img.src = `${root}${pick.game.slug}/thumb.svg`;
+      img.alt = "";
+      img.loading = "lazy";
+      const body = node("div");
+      const h3 = node("h3");
+      h3.appendChild(gameLink(pick.game));
+      body.append(h3, node("p", "", Recommend.explain(pick, tagLabel)));
+      card.append(img, body);
+      box.appendChild(card);
+    }
+  }
+
+  function renderConcepts(progress) {
+    const list = $("concepts");
+    list.textContent = "";
+    const mastery = Recommend.mastery(progress, games, concepts);
+    for (const name of Recommend.topoOrder(concepts)) {
+      const m = mastery[name];
+      if (m.total === 0) continue;
+      const li = node("li", m.practised ? "practised" : m.tried ? "" : "waiting");
+      const a = node("a", "", tagLabel(name));
+      a.href = `${root}index.html#${name}`;
+      const count = node("span", "count", `${m.tried} of ${m.total}`);
+      const bar = node("div", "bar");
+      const fill = node("i");
+      fill.style.width = `${Math.round((100 * m.tried) / m.total)}%`;
+      bar.appendChild(fill);
+      bar.setAttribute("role", "img");
+      bar.setAttribute("aria-label", `${m.tried} of ${m.total} games played${m.practised ? ", practised" : ""}`);
+      li.append(a, count, bar);
+      list.appendChild(li);
+    }
+  }
+
+  function renderTried(played) {
+    const box = $("tried");
+    box.textContent = "";
+    if (played.length === 0) {
+      box.appendChild(node("p", "empty", "Nothing yet. Pick a game above and it will show up here."));
+      return;
+    }
+    const table = node("table", "tried");
+    table.innerHTML =
+      '<thead><tr><th>Game</th><th class="n">Finished</th><th class="n wide">Visits</th><th class="n wide">Time</th><th class="n">Last played</th></tr></thead>';
+    const tbody = node("tbody");
+    for (const [slug, doc] of played) {
+      const tr = node("tr");
+      const name = node("td");
+      name.appendChild(gameLink(bySlug.get(slug)));
+      const finished = node("td", "n" + (doc.completed > 0 ? " done" : ""), doc.completed > 0 ? `${doc.completed}×` : "not yet");
+      tr.append(
+        name,
+        finished,
+        node("td", "n wide", String(doc.opens || 0)),
+        node("td", "n wide", minutes(doc.activeSeconds || 0)),
+        node("td", "n", daysAgo(doc.lastAt)),
+      );
+      tbody.appendChild(tr);
+    }
+    table.appendChild(tbody);
+    box.appendChild(table);
+  }
+
+  async function render() {
+    const progress = await Track.progress();
+    const played = Object.entries(progress)
+      .filter(([slug]) => bySlug.has(slug))
+      .sort((a, b) => b[1].lastAt - a[1].lastAt);
+    renderStats(played);
+    renderNext(progress);
+    renderConcepts(progress);
+    renderTried(played);
+    $("forget").hidden = played.length === 0;
+  }
+
+  $("forget").addEventListener("click", () => {
+    if (window.confirm("Forget everything you have played in this browser?")) Track.clear();
+  });
+
+  window.addEventListener("progresschange", render);
+  render();
+})();
+</script>
+</body>
+</html>

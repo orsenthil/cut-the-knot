@@ -3,7 +3,7 @@
 /*
  * Shared chrome for every coolmaths page. Load it in <head> (after games.js)
  * so the saved theme applies before the page paints. It then adds the header
- * (logo, "All games", theme toggle), the footer, and, on a game
+ * (logo, "All games", "Profile", theme toggle), the footer, and, on a game
  * page (<body data-game="slug">), that game's concept tags under the title
  * and the progress tracker (assets/progress.js).
  *
@@ -85,7 +85,7 @@
       `<img class="logo-light" src="${ROOT}assets/logo-light-sm.webp" alt="coolmaths">` +
       `<img class="logo-dark" src="${ROOT}assets/logo-dark-sm.webp" alt="coolmaths">` +
       `</a>` +
-      `<nav><a href="${ROOT}index.html">All games</a></nav>`;
+      `<nav><a href="${ROOT}index.html">All games</a><a href="${ROOT}profile/index.html">Profile</a></nav>`;
     const toggle = el("button", { class: "theme-toggle", type: "button", "aria-label": "Switch light or dark theme" }, SUN + MOON);
     toggle.addEventListener("click", toggleTheme);
     header.querySelector("nav").appendChild(toggle);
