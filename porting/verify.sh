@@ -15,6 +15,8 @@
 #   3. porting/lint-page.mjs   - the page against the CLAUDE.md rules
 #   4. porting/smoke-test.mjs  - headless Chromium, 375px and desktop, both themes
 #   5. the manifest is current, and the catalogue and folders agree
+#   6. porting/check-concepts.mjs - every tag has a place in the concept graph
+#      and every game a level, so the recommender can place a new game
 #
 # SKIP_SMOKE=1 drops step 4 for a machine with no browser. Use it only when you
 # have checked the page another way; it is the step that catches a page that
@@ -113,6 +115,13 @@ fi
 step "manifest"
 if ! node porting/build-manifest.mjs --check; then
   fail "porting/manifest.json is stale; run: node porting/build-manifest.mjs"
+fi
+
+# ------------------------------------------------------- 6. concept graph
+
+step "concept graph"
+if ! node porting/check-concepts.mjs; then
+  fail "porting/check-concepts.mjs (a new tag needs an entry in assets/concepts.js; every game needs a level)"
 fi
 
 # ------------------------------------------------------------------ verdict
