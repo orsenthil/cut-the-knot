@@ -8,6 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `classes.zip` holds the original applets (about 1,300 `.jar`/`.zip` archives under `classes/`). Only the zip is checked in: extract what you need with `unzip classes.zip 'classes/<Name>*' -d <scratch dir>`. Decompiled or extracted Java sources (`*_src/`, e.g. `classes/RFWH_src/`) were made locally for some earlier ports and are not in the repo. The applets are reference material for porting and are not part of the site. Ports aim to reproduce the original behaviour exactly (e.g. `coins/coin-game.js` mirrors `CoinGame.java`'s strategy). `porting/manifest.json` lists every applet with its porting status, and `porting/PLAN.md` describes the porting campaign.
 
+Players have a record of what they have played (`assets/progress.js`, shown on `profile/`), and an MCP server in `mcp/` serves the site as tutoring material. How those parts meet is written down in `docs/contracts.md`; the remaining work on accounts and sign-in is a queue of self-contained tasks in `tasks/` (`node tasks/next.mjs` lists what can be started; `tasks/README.md` has the routine).
+
 `xscreensaver/` similarly holds reference sources for XScreenSaver hacks (e.g. `xscreensaver/hacks/euler2d.c`, ported to `euler2d/`) and is not part of the site either. XScreenSaver's own [screenshot gallery](https://www.jwz.org/xscreensaver/screenshots/) is a good place to find more of its math-flavored demos worth porting.
 
 ## Running and checking
@@ -24,6 +26,8 @@ node -e 'const src=require("fs").readFileSync("hourglass/hourglass-core.js","utf
 const H=new Function(src+"; return HourglassCore;")(); console.log(H.solve)'
 ```
 
+The site-wide pieces have their own checks: `node porting/check-concepts.mjs` (concept graph and recommender), `node porting/check-progress.mjs` (the tracker) and `NODE_PATH=$(npm root -g) node porting/check-profile-ui.mjs` (tracker, profile and home page in a browser). The MCP server: `cd mcp && npm ci && npm run build-index && npm test`.
+
 For porting there are tools in `porting/` (see `porting/README.md`): `disasm.mjs <Applet>` prints an applet's bytecode compactly, `page.mjs <Applet|url>` prints its cut-the-knot page as text, `verify.sh <slug>` is the gate every port must pass, and `play.mjs <slug>` plays a page from a short scenario and joins the light and dark screenshots into one image. Run the browser tools with `NODE_PATH=$(npm root -g)` (Playwright is installed globally).
 
 To check a page by hand without Playwright, use headless Chrome (`chromium`/`google-chrome` on Linux, `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` on macOS; `--no-sandbox` in containers): `<chrome> --headless=new --screenshot=... --window-size=W,H URL`, plus `--force-dark-mode` for dark. Its window is at least 500px wide, so phone width needs a 375px `<iframe>`; run it with a kill timeout, since dark mode can hang after the screenshot; pages with a `requestAnimationFrame` loop (hourglass) need `--timeout=` rather than `--virtual-time-budget=`. In cloud sessions `curl` can't reach `localhost`, but browsers and Python can.
@@ -32,11 +36,17 @@ To check a page by hand without Playwright, use headless Chrome (`chromium`/`goo
 
 Each game is a folder `<slug>/` containing `index.html`, its script(s), a `thumb.svg` card image, and sometimes `images/`. Shared code lives in `assets/`:
 
-- `assets/games.js` is the catalogue (`window.COOLMATHS`): the tag vocabulary (`slug → label`) and one entry per game (`slug`, `title`, `blurb`, `tags`). The `slug` must match the folder name.
-- `assets/site.js` is loaded in `<head>` after `games.js` so the saved theme applies before paint. It injects the sticky header (logo, "All games", theme toggle), the footer, and, on game pages, the concept-tag chips under the `<h1>`, using `<body data-game="<slug>">`. It dispatches a `themechange` event on `window` when the theme flips (toggle or OS change).
+- `assets/games.js` is the catalogue (`window.COOLMATHS`): the tag vocabulary (`slug → label`) and one entry per game (`slug`, `title`, `blurb`, `tags`, `level`, and `kind: "demo"` for something with no win or loss). The `slug` must match the folder name.
+- `assets/concepts.js` is the concept graph (`window.COOLMATHS_CONCEPTS`): each tag's prerequisite tags. `assets/recommend.js` (global `Recommend`, DOM-free) turns the graph and a player's progress into "what to play next"; the profile page, the home page and the MCP server all run this one file.
+- `assets/progress.js` (global `Track`) keeps the player's record: visits, time, plays, outcomes and the position on screen. It writes through a backend (localStorage today), so pages never touch storage or a database. `site.js` loads it on every game page; with no code in the page it records visits and each time `#status` gains `.win` or `.lose`. A page that calls `Track.start/state/end` itself (see `coins/`) includes the script before its own.
+- `assets/site.js` is loaded in `<head>` after `games.js` so the saved theme applies before paint. It injects the sticky header (logo, "All games", "Profile", theme toggle), the footer, and, on game pages, the concept-tag chips under the `<h1>` and the progress tracker, using `<body data-game="<slug>">`. It dispatches a `themechange` event on `window` when the theme flips (toggle or OS change).
 - `assets/site.css` is the design system. Every colour is a CSS custom property on `:root`, redefined for dark mode both under `prefers-color-scheme: dark` (guarded by `:root:not([data-theme="light"])`) and under `:root[data-theme="dark"]`. It also styles the shared page parts: `.stage` (the play area panel), buttons (`button.primary` for the main action), `.controls`, `#status` (`.win`/`.lose`), `#rules`, `details#math`, and the Wikipedia hover cards.
 - `assets/wiki-hovercard.js` turns `<a class="wiki-term" data-wiki="Page_Title">` into hover/focus previews from Wikipedia's REST summary API.
 - `assets/logo-{light,dark}[-sm].webp` are the hand-drawn logo (by Harini Vardhan) with its background removed. The page shows the one matching the theme via `.logo-light`/`.logo-dark`.
+
+`profile/` is the player's page (games played, concepts met, suggestions). It is a site page, not a game: it has no catalogue entry and reads the record only through `Track`.
+
+`mcp/` is the MCP tutor, a Node server deployed to Fly.io (`mcp/README.md`). Its content is generated from the site at build time, so it is never edited to match a port; a game with a core gets tutor actions by adding `mcp/src/games/<slug>.ts`.
 
 The home page (`index.html`) renders the card grid and tag filter bar from `games.js`. The URL hash is the active tag (`/#number-theory`), and an unknown tag shows an empty state.
 
@@ -57,6 +67,7 @@ Follow these rules when converting another applet. The existing games are the re
 - Folder `<slug>/`, where the slug is short, lowercase and hyphenated. It contains `index.html`, `<slug>.js`, `thumb.svg`, and `images/` only when you reuse the applet's own artwork.
 - When the game has non-trivial logic (an opponent strategy, a solver, state transitions), put it in a DOM-free `<slug>-core.js` or `<name>-game.js` that defines one global (see `hourglass-core.js`, `coin-game.js`). The UI script only renders and handles input.
 - **Verify the logic in Node before calling it done**, in `porting/check-<slug>.mjs`. Where the state space is small, check it exhaustively (e.g. every possible human reply against the computer's strategy, every generated problem is correct, the solver finds the true minimum). Compare the core with a second transcription of the applet's own method over the whole parameter space.
+- Keep win and loss on the shared `#status` classes (`.win` / `.lose`): that is how the player's record sees the result with no code in the page. If the game cannot show its result that way, or has a position worth saving for the tutor, call `Track` as `coins/coins.js` does, and give the core `snapshot()`/`restore()` with a round-trip check (`docs/contracts.md`, sections 2 and 4).
 - Plain ES2017+ with `"use strict"`, no libraries, no build step. Start each script with a comment block explaining the puzzle and the key idea the code relies on.
 - Support mouse, touch and keyboard. Give interactive elements real `<button>`s or `tabindex` plus `aria-label`s, and use `aria-live` on status text. When drawing on a canvas, map pointer coordinates through `canvas.width / rect.width` so the board can shrink on phones.
 
@@ -83,7 +94,7 @@ Follow these rules when converting another applet. The existing games are the re
 
 ### 5. Register the game
 
-1. Add an entry to `assets/games.js`: `slug`, `title`, a one- or two-sentence `blurb` that poses the challenge (often ending in a question), and **at most 3 `tags`** naming the mathematical concepts from the "Look for the math" section. Reuse existing tag slugs; add a new one to `tags` only when no existing tag fits.
+1. Add an entry to `assets/games.js`: `slug`, `title`, a one- or two-sentence `blurb` that poses the challenge (often ending in a question), **at most 3 `tags`** naming the mathematical concepts from the "Look for the math" section, a `level` (1: anyone can start here; 2: the usual; 3: needs patience or earlier ideas), and `kind: "demo"` if it cannot be won or lost. Reuse existing tag slugs; add a new one to `tags` only when no existing tag fits, and then give it an entry with its prerequisites in `assets/concepts.js`.
 2. Add `<slug>/thumb.svg`: viewBox `0 0 320 200`, transparent background, a simple flat illustration of the game's key moment, using mid-tone colours that read on both white and near-black. It's loaded via `<img>`, so it can't use the page's CSS variables. Embed any raster art as a data URI.
 3. You don't need to edit `index.html`; the grid is built from `games.js`.
 4. Add the slug to `SLUG_TO_APPLET` in `porting/build-manifest.mjs`, give the applet a `"status": "ported"` entry with a one-line note in `porting/overrides.json`, and run `node porting/build-manifest.mjs`.
