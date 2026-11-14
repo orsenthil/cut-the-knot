@@ -182,4 +182,35 @@ class CoinGame {
     this.justStarted = true;
     this.selectStrategy(this.n);
   }
+
+  // The position as plain data, so it can be stored and looked at elsewhere
+  // (the progress tracker saves it; the MCP tutor reads it back). Not part of
+  // the applet: restore(snapshot()) is the same game, and nothing else changes.
+  snapshot() {
+    return {
+      values: this.coins.map((c) => c.value),
+      loop: this.loop,
+      left: this.coins.map((c) => (c.enabled ? 1 : 0)),
+      yours: this.coins.map((c) => (c.selected ? 1 : 0)),
+      first: this.first,
+      last: this.last,
+      strategy: this.strategy,
+      justStarted: this.justStarted,
+      scores: { x: this.scores.x, y: this.scores.y },
+    };
+  }
+
+  static restore(snap) {
+    const game = new CoinGame(snap.values.map((v, i) => new Coin(v, i)), Boolean(snap.loop));
+    game.coins.forEach((c, i) => {
+      c.enabled = Boolean(snap.left[i]);
+      c.selected = Boolean(snap.yours[i]);
+    });
+    game.first = snap.first;
+    game.last = snap.last;
+    game.strategy = snap.strategy;
+    game.justStarted = Boolean(snap.justStarted);
+    game.scores = { x: snap.scores.x, y: snap.scores.y };
+    return game;
+  }
 }

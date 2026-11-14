@@ -154,4 +154,40 @@ function worstMarginForComputer(values, tieTakesFirst) {
   check("computer takes the larger share on [1,100,1,100,1,100]", g.scores.y >= g.scores.x, `${g.scores.y} vs ${g.scores.x}`);
 }
 
+/* ------------------------- 5. a snapshot restores to the very same game */
+
+{
+  // Play random games, rows and loops; at every position the restored copy
+  // must snapshot identically and, where no coin-flip is involved, reply with
+  // the same coin.
+  const rand = rng(7);
+  let compared = 0;
+  for (let trial = 0; trial < 300; trial++) {
+    const n = 2 + Math.floor(rand() * 9);
+    const values = Array.from({ length: n }, () => 1 + Math.floor(rand() * 25));
+    const g = new CoinGame(values.map((v, i) => new Coin(v, i)), trial % 3 === 0);
+    if (trial % 2) g.computerPlay();
+    let guard = 0;
+    while (!g.isFinished() && guard++ < 50) {
+      const snap = JSON.parse(JSON.stringify(g.snapshot()));
+      const copy = CoinGame.restore(snap);
+      equal(`trial ${trial}: restore(snapshot) snapshots the same`, copy.snapshot(), snap);
+
+      const takeable = g.coins.filter((c) => g.isTakeable(c));
+      const pick = takeable[Math.floor(rand() * takeable.length)];
+      equal(`trial ${trial}: same reply to the human`, copy.humanTake(copy.coins[pick.index]), g.humanTake(pick));
+      if (g.isFinished()) break;
+      const tie = g.coins[g.first].value === g.coins[g.last].value;
+      if (tie) {
+        g.computerPlay(); // a coin-flip: nothing to compare
+      } else {
+        equal(`trial ${trial}: same computer move`, copy.computerPlay().index, g.computerPlay().index);
+        equal(`trial ${trial}: same position after it`, copy.snapshot(), g.snapshot());
+        compared++;
+      }
+    }
+  }
+  check("snapshots were compared on real positions", compared > 300, `only ${compared}`);
+}
+
 done("check-coins");

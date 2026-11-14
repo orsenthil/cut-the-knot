@@ -44,6 +44,18 @@ let busy = false;
 let over = false;
 let tickToken = 0;
 
+// ---- progress (assets/progress.js): each deal is a play, each move a position ----
+
+const track = window.Track || null;
+
+function trackStart(s) {
+  if (track) track.start("coins", { options: { coins: s.n, loop: s.loop, useCoins: s.useCoins }, stateVersion: 1 });
+}
+
+function trackPosition() {
+  if (track && !over) track.state(game.snapshot(), busy ? "The computer is thinking." : "Your turn.");
+}
+
 function settings() {
   const n = Math.min(20, Math.max(2, parseInt(nInput.value, 10) || 6));
   nInput.value = n;
@@ -164,6 +176,7 @@ function refresh() {
   const started = game.coins.some((c) => !c.enabled);
   moveBtn.disabled = busy || over || started;
   stage.classList.toggle("busy", busy);
+  trackPosition();
 }
 
 function newGame() {
@@ -173,6 +186,7 @@ function newGame() {
   over = false;
   game = new CoinGame(buildCoins(s), s.loop);
   hintEl.textContent = "";
+  trackStart(s);
   buildStage(s);
 }
 
@@ -182,6 +196,7 @@ function repeatGame() {
   over = false;
   game.renew();
   hintEl.textContent = "";
+  trackStart(settings());
   refresh();
 }
 
@@ -224,6 +239,10 @@ function declareWinner() {
   const caption = p.x > p.y ? "You won" : p.x < p.y ? "I won" : "It's a draw";
   setTicker(caption, TICK_STEPS);
   hintEl.textContent = `You ${p.x} – ${p.y} me. Press Reset for new coins, or Repeat to replay these.`;
+  if (track) {
+    track.state(game.snapshot(), `${caption}. ${hintEl.textContent}`);
+    track.end({ outcome: p.x > p.y ? "win" : p.x < p.y ? "loss" : "draw", best: { score: p.x - p.y } });
+  }
   refresh();
 }
 

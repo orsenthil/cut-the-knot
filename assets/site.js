@@ -3,8 +3,9 @@
 /*
  * Shared chrome for every coolmaths page. Load it in <head> (after games.js)
  * so the saved theme applies before the page paints. It then adds the header
- * (logo, "All games", theme toggle), the footer, and, on a game page
- * (<body data-game="slug">), that game's concept tags under the title.
+ * (logo, "All games", theme toggle), the footer, and, on a game
+ * page (<body data-game="slug">), that game's concept tags under the title
+ * and the progress tracker (assets/progress.js).
  *
  * Pages that draw with colours from CSS (like a canvas) can listen for the
  * "themechange" event on window and redraw.
@@ -111,11 +112,20 @@
     h1.after(row);
   }
 
+  // Every game page keeps the player's record (assets/progress.js). A page
+  // that reports its own plays includes the script itself, ahead of its game
+  // script; for every other page it is added here.
+  function loadProgress() {
+    if (!document.body.dataset.game || window.Track) return;
+    document.head.appendChild(el("script", { src: ROOT + "assets/progress.js" }));
+  }
+
   window.COOLMATHS_SITE = { root: ROOT, tagLabel, tagLink, currentTheme };
 
   document.addEventListener("DOMContentLoaded", () => {
     buildHeader();
     addGameTags();
     buildFooter();
+    loadProgress();
   });
 })();
