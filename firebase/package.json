@@ -1,0 +1,17 @@
+{
+  "name": "coolmaths-firebase",
+  "private": true,
+  "type": "module",
+  "description": "Security rules for the coolmaths database, and their emulator tests. Nothing here ships to the site.",
+  "scripts": {
+    "test": "firebase emulators:exec --only firestore --project demo-coolmaths \"node test/rules.test.mjs && node test/backend.test.mjs\"",
+    "emulators": "firebase emulators:start --only auth,firestore --project demo-coolmaths",
+    "deploy": "firebase deploy --only firestore:rules",
+    "test:ui": "firebase emulators:exec --only auth,firestore --project demo-coolmaths \"node ../porting/check-auth-ui.mjs\""
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^6.0.0",
+    "firebase": "13.3.0",
+    "firebase-tools": "^15.0.0"
+  }
+}

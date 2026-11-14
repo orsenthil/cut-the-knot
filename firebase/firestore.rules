@@ -1,0 +1,110 @@
+rules_version = '2';
+
+// Who may read and write what in the coolmaths database.
+//
+// The shapes are described in docs/contracts.md (sections 3 and 7). The whole
+// of a player's data lives under users/{uid}, and only that player may touch
+// it. Everything not named here is closed: Firestore denies by default, which
+// covers the collections later tasks will add (handles, publicProfiles,
+// oauth, matches) until they get rules of their own.
+//
+// Tested by firebase/test/ in the emulator: cd firebase && npm test
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // A whole number that is not negative.
+    function isCount(value) {
+      return value is int && value >= 0;
+    }
+
+    match /users/{uid} {
+      allow read, delete: if isOwner(uid);
+      allow create, update: if isOwner(uid) && validProfile(request.resource.data);
+
+      function validProfile(data) {
+        return data.keys().hasOnly(['displayName', 'photoURL', 'providers', 'createdAt', 'lastSeenAt', 'settings'])
+          && (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 100))
+          && (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() <= 500))
+          && (!('providers' in data) || (data.providers is list && data.providers.size() <= 5))
+          && (!('settings' in data) || (
+               data.settings.keys().hasOnly(['mcpAccess', 'public'])
+               && (!('mcpAccess' in data.settings) || data.settings.mcpAccess is bool)
+               && (!('public' in data.settings) || data.settings.public is bool)
+             ));
+      }
+
+      // One record per game the player has opened. The id is the game's slug.
+      match /progress/{slug} {
+        allow read, delete: if isOwner(uid);
+        allow create: if isOwner(uid) && validProgress(request.resource.data, slug);
+        allow update: if isOwner(uid)
+          && validProgress(request.resource.data, slug)
+          && countersGrow(resource.data, request.resource.data);
+
+        function validProgress(data, slug) {
+          return data.keys().hasAll(['slug', 'firstAt', 'lastAt', 'opens', 'activeSeconds', 'plays', 'completed', 'wins', 'losses'])
+            && data.keys().hasOnly(['slug', 'firstAt', 'lastAt', 'opens', 'activeSeconds', 'plays', 'completed', 'wins', 'losses', 'best', 'lastOptions'])
+            && data.slug == slug
+            && slug.matches('^[a-z0-9][a-z0-9-]{0,39}$')
+            && data.firstAt is number && data.lastAt is number
+            && isCount(data.opens) && isCount(data.activeSeconds) && isCount(data.plays)
+            && isCount(data.completed) && isCount(data.wins) && isCount(data.losses)
+            && (!('best' in data) || (data.best is map && data.best.size() <= 10))
+            && (!('lastOptions' in data) || (data.lastOptions is map && data.lastOptions.size() <= 20));
+        }
+
+        // A record can be deleted, but while it exists its counts never go down.
+        function countersGrow(before, after) {
+          return after.opens >= before.opens
+            && after.activeSeconds >= before.activeSeconds
+            && after.plays >= before.plays
+            && after.completed >= before.completed
+            && after.wins >= before.wins
+            && after.losses >= before.losses
+            && after.firstAt <= before.firstAt
+            && after.lastAt >= before.lastAt;
+        }
+      }
+
+      // The log of plays. Written once, never edited.
+      match /sessions/{sessionId} {
+        allow read, delete: if isOwner(uid);
+        allow create: if isOwner(uid) && validSession(request.resource.data);
+
+        function validSession(data) {
+          return data.keys().hasAll(['slug', 'startedAt', 'endedAt', 'outcome'])
+            && data.keys().hasOnly(['slug', 'startedAt', 'endedAt', 'outcome', 'moves', 'options', 'expireAt'])
+            && data.slug is string && data.slug.size() <= 40
+            && data.startedAt is number && data.endedAt is number
+            && data.outcome in ['win', 'loss', 'draw', 'quit', 'impossible', 'done']
+            && (!('moves' in data) || data.moves is number)
+            && (!('options' in data) || (data.options is map && data.options.size() <= 20))
+            && (!('expireAt' in data) || data.expireAt is timestamp);
+        }
+      }
+
+      // The game the player has open: one document, overwritten. The position
+      // is stored as JSON text, so its size can be capped here and so that
+      // positions holding lists of lists (which Firestore cannot store) work.
+      match /live/{liveId} {
+        allow read, delete: if isOwner(uid) && liveId == 'current';
+        allow create, update: if isOwner(uid) && liveId == 'current' && validLive(request.resource.data);
+
+        function validLive(data) {
+          return data.keys().hasOnly(['slug', 'sessionId', 'stateVersion', 'state', 'status', 'updatedAt'])
+            && data.slug is string && data.slug.size() <= 40
+            && data.sessionId is string && data.sessionId.size() <= 64
+            && data.stateVersion is int
+            && data.state is string && data.state.size() <= 8000
+            && data.status is string && data.status.size() <= 300
+            && data.updatedAt is number;
+        }
+      }
+    }
+  }
+}
