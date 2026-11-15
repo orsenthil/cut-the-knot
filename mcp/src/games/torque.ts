@@ -6,7 +6,7 @@
  */
 
 import { cores } from "../generated/cores.js";
-import { type GameActions } from "./_shared.js";
+import { type GameActions, type Json } from "./_shared.js";
 
 export function actions(): GameActions {
   const T = cores.torque.TorqueCore;
@@ -29,5 +29,31 @@ export function actions(): GameActions {
         };
       },
     },
+  };
+}
+
+/**
+ * What the core says about a position saved by the page: the torque so far,
+ * what is still in the tray, and which pegs are free.
+ */
+export function position(state: Json): unknown {
+  const T = cores.torque.TorqueCore;
+  const pegs = (state.pegs ?? []) as number[];
+  const items = (state.items ?? []) as { id: string; value: number; isJoker?: boolean }[];
+  const placements = (state.placements ?? {}) as Record<string, number>;
+  const result = T.evaluate(items, placements);
+  return {
+    balanced: result.balanced,
+    everythingHung: result.allPlaced,
+    torqueSoFar: result.sum,
+    tipping: result.sum === 0 ? "level" : result.sum > 0 ? "right" : "left",
+    hung: items
+      .filter((item) => placements[item.id] !== undefined && placements[item.id] !== null)
+      .map((item) => ({ id: item.id, value: item.value, peg: placements[item.id], torque: item.value * placements[item.id] })),
+    inTheTray: items
+      .filter((item) => placements[item.id] === undefined || placements[item.id] === null)
+      .map((item) => ({ id: item.id, value: item.value })),
+    freePegs: pegs.filter((pos) => T.pegIsFree(placements, pos)),
+    rule: "Each item pulls with value x peg position; pegs left of the middle are negative. The beam is level when the pulls add up to 0.",
   };
 }

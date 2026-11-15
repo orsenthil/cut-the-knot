@@ -82,6 +82,21 @@
       const who = owner === 0 ? "empty" : owner === FourByFourCore.HUMAN ? "yours (red)" : "the computer's (blue)";
       btn.setAttribute("aria-label", `Row ${y + 1}, column ${x + 1}, layer ${z + 1}: ${who}.`);
     }
+    trackPosition();
+  }
+
+  // The position, for the player's record and the tutor (assets/progress.js):
+  // which cells each side holds. Wins and losses are picked up from #status.
+  function trackPosition() {
+    if (!window.Track) return;
+    const cellsOf = (who) => B.occupied.map((owner, cell) => (owner === who ? cell : -1)).filter((cell) => cell >= 0);
+    window.Track.state({
+      human: cellsOf(FourByFourCore.HUMAN),
+      machine: cellsOf(FourByFourCore.MACHINE),
+      skill: B.skill_level,
+      moves: B.nmoves,
+      over: gameOver,
+    });
   }
 
   function onCellClick(cell) {

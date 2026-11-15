@@ -6,7 +6,7 @@
  */
 
 import { cores } from "../generated/cores.js";
-import { num, numArray, type GameActions } from "./_shared.js";
+import { num, numArray, type GameActions, type Json } from "./_shared.js";
 
 export function actions(): GameActions {
   const F = cores["four-by-four"].FourByFourCore;
@@ -48,5 +48,43 @@ export function actions(): GameActions {
         return { moves: played, gameOver: B.player === F.END };
       },
     },
+  };
+}
+
+/**
+ * What the core's table of winning lines says about a position saved by the
+ * page: lines either side can complete at once, and lines still open.
+ */
+export function position(state: Json): unknown {
+  const F = cores["four-by-four"].FourByFourCore;
+  const human = new Set(numArray(state, "human"));
+  const machine = new Set(numArray(state, "machine"));
+
+  const youCanWinAt: number[] = [];
+  const computerThreatensAt: number[] = [];
+  let openForYou = 0;
+  let openForComputer = 0;
+  for (const line of F.COMB as number[][]) {
+    const yours = line.filter((c) => human.has(c)).length;
+    const theirs = line.filter((c) => machine.has(c)).length;
+    const empty = line.filter((c) => !human.has(c) && !machine.has(c));
+    if (theirs === 0) openForYou++;
+    if (yours === 0) openForComputer++;
+    if (yours === 3 && theirs === 0) youCanWinAt.push(empty[0]);
+    if (theirs === 3 && yours === 0) computerThreatensAt.push(empty[0]);
+  }
+  const unique = (cells: number[]) => [...new Set(cells)].map((cell) => ({ cell, ...F.xyz(cell) }));
+
+  return {
+    over: state.over === true,
+    movesSoFar: Number(state.moves) || 0,
+    skill: Number(state.skill),
+    yourCells: [...human],
+    computerCells: [...machine],
+    youCanWinAt: unique(youCanWinAt),
+    computerThreatensAt: unique(computerThreatensAt),
+    linesStillOpenForYou: openForYou,
+    linesStillOpenForComputer: openForComputer,
+    note: "cell = 16z + 4y + x. Two threats at once cannot both be blocked; that is how this game is won.",
   };
 }

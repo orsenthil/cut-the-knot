@@ -86,6 +86,8 @@ function render() {
   moreBtn.disabled = n >= EyeOpener.MAX_N;
   revealBtn.setAttribute("aria-pressed", String(revealed));
   renderStatus(c);
+  // The position, for the player's record and the tutor (assets/progress.js).
+  if (window.Track) window.Track.state({ n, dx, dy, fitted, revealed });
 }
 
 function renderStatus(c) {

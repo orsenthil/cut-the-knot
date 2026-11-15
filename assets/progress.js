@@ -18,6 +18,9 @@
  *   Track.state({ values: [5, 1, 10] });       // the position, after each move
  *   Track.end({ outcome: "win", moves: 4 });   // "win" | "loss" | "draw" | "quit" | "impossible" | "done"
  *
+ * A page may also call only Track.state, to save its position, and leave
+ * the plays to the #status watching (see hourglass/hourglass.js).
+ *
  * Calling Track.start turns the #status watching off for that page, so a
  * play is never counted twice. Starting again before the play ends logs the
  * old one as "quit", but only if its position had changed: pressing Reset on
@@ -228,8 +231,15 @@ const Track = (() => {
     return closing.then(() => backend.bump(slug, delta));
   }
 
+  /** The game this page is, from <body data-game>, or null. */
+  function pageSlug() {
+    return (typeof document !== "undefined" && document.body && document.body.dataset.game) || null;
+  }
+
   /** The position changed. Written at most once every LIVE_DEBOUNCE_MS. */
   function state(stateObj, status) {
+    // A page that only reports positions has no play of its own yet.
+    if (!session && !explicit && pageSlug()) openSession(pageSlug());
     if (!session) return;
     if (!stateFits(stateObj)) {
       if (!warnedTooBig && typeof console !== "undefined") {
@@ -271,6 +281,8 @@ const Track = (() => {
     if (typeof res.moves === "number") record.moves = res.moves;
     if (finished.options) record.options = finished.options;
     const delta = { ...deltaForEnd({ ...res, outcome }), at: record.endedAt };
+    // On a page that leaves plays to the #status watching, the next begins now.
+    if (!explicit && pageSlug()) openSession(pageSlug());
     return flush()
       .then(() => backend.addSession(record))
       .then(() => backend.bump(finished.slug, delta))
@@ -299,15 +311,14 @@ const Track = (() => {
     if (!el || typeof MutationObserver !== "function") return;
     const read = () => (el.classList.contains("win") ? "win" : el.classList.contains("lose") ? "loss" : null);
     let last = read();
-    openSession(slug);
+    if (!session) openSession(slug);
     new MutationObserver(() => {
       const current = read();
       if (current === last) return;
       last = current;
       if (explicit || !current) return;
       if (!session) openSession(slug);
-      end({ outcome: current });
-      openSession(slug);
+      end({ outcome: current }); // end() starts the next play
     }).observe(el, { attributes: true, attributeFilter: ["class"] });
   }
 

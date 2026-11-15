@@ -100,6 +100,8 @@
       }
     }
     moveNumEl.textContent = String(state.moves);
+    // The position, for the player's record and the tutor (assets/progress.js).
+    if (window.Track) window.Track.state({ occupied: state.occupied, moves: state.moves });
   }
 
   function onCellClick(ring) {

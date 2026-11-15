@@ -51,3 +51,47 @@ export function actions(): GameActions {
     },
   };
 }
+
+/**
+ * What the core says about a position saved by the page: the minutes still
+ * to go, what each allowed action leads to, and the fewest flips this
+ * puzzle can be solved in from a fresh start.
+ */
+export function position(state: Json): unknown {
+  const H = cores.hourglass.HourglassCore;
+  const caps = { a: num(state, "a"), b: num(state, "b") };
+  const target = num(state, "target");
+  const now = {
+    ta: num(state, "ta"),
+    tb: num(state, "tb"),
+    egg: num(state, "egg"),
+    cooked: num(state, "cooked"),
+    flips: num(state, "flips"),
+    elapsed: num(state, "elapsed"),
+    dt: 0,
+  };
+  const eggWords = ["not in the pot yet", "cooking", "taken out"];
+  const best = H.solve(caps, target);
+
+  const actions: Record<string, unknown> = {};
+  for (const act of ["flipA", "flipB", "eggIn", "eggOut", "wait"]) {
+    const next = H.apply(now, act, caps);
+    if (next) actions[act] = { sandLeftA: next.ta, sandLeftB: next.tb, eggCooked: next.cooked, minutesElapsed: next.elapsed };
+  }
+
+  return {
+    glasses: { a: caps.a, b: caps.b },
+    target,
+    sandLeft: { a: now.ta, b: now.tb },
+    egg: eggWords[now.egg] ?? String(now.egg),
+    eggCookedMinutes: now.cooked,
+    stillToCook: Math.max(0, target - now.cooked),
+    overcooked: now.cooked > target,
+    flipsSoFar: now.flips,
+    minutesElapsed: now.elapsed,
+    clockRunning: state.running === true,
+    whatEachActionLeadsTo: actions,
+    fewestFlipsFromAFreshStart: best ? best.flips : null,
+    solvable: Boolean(best),
+  };
+}

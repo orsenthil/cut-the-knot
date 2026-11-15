@@ -150,6 +150,25 @@ function copyState(s) {
   return { ...s };
 }
 
+// The position, for the player's record and the tutor (assets/progress.js).
+// Wins and losses are picked up from #status; only the position is sent here.
+function trackPosition() {
+  if (!window.Track) return;
+  const r2 = (v) => Math.round(v * 100) / 100;
+  window.Track.state({
+    a: caps.a,
+    b: caps.b,
+    target,
+    ta: r2(L.ta),
+    tb: r2(L.tb),
+    egg: L.egg,
+    cooked: r2(L.cooked),
+    flips: L.flips,
+    elapsed: r2(L.vt),
+    running,
+  });
+}
+
 function log(text) {
   logItems.push(text);
 }
@@ -189,6 +208,7 @@ function advance(dt) {
     if (aRan || bRan) {
       anchor = { vt: L.vt, state: copyState(L) };
       running = false;
+      trackPosition();
       return;
     }
   }
@@ -225,6 +245,7 @@ function perform(mutator, startsTime) {
   else if (startsTime && runningTime() > 0) running = true;
   else if (runningTime() === 0) running = false;
   render();
+  trackPosition();
 }
 
 // ---- game flow ----
@@ -266,6 +287,7 @@ function newGame() {
   for (const n of document.querySelectorAll(".goal-t")) n.textContent = target;
   document.title = `The Hourglass Puzzle: ${caps.a} & ${caps.b} → ${target}`;
   render();
+  trackPosition();
 }
 
 function turnGlass(which) {

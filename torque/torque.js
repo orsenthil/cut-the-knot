@@ -52,6 +52,8 @@
     renderBeam();
     renderTray();
     renderTilt();
+    // The position, for the player's record and the tutor (assets/progress.js).
+    if (window.Track) window.Track.state({ pegs: round.pegs, items: round.items, placements });
   }
 
   function renderBeam() {

@@ -6,7 +6,7 @@
  */
 
 import { cores } from "../generated/cores.js";
-import { num, type GameActions } from "./_shared.js";
+import { num, type GameActions, type Json } from "./_shared.js";
 
 export function actions(): GameActions {
   const E = cores["eye-opener"].EyeOpener;
@@ -31,5 +31,31 @@ export function actions(): GameActions {
         };
       },
     },
+  };
+}
+
+/**
+ * What the core says about where the player has put the top piece: the
+ * honest area, the hidden stretch at that height, and whether it has fitted.
+ */
+export function position(state: Json): unknown {
+  const E = cores["eye-opener"].EyeOpener;
+  const n = E.clampN(num(state, "n", 10));
+  const dx = num(state, "dx", 0);
+  const dy = num(state, "dy", 0);
+  const stretch = E.cheat(n, dy);
+  const lower = E.area(E.lowerPolygon(n));
+  const upperHonest = E.area(E.upperPolygon(n, 0, 0, 0));
+  const upperNow = E.area(E.upperPolygon(n, dx, dy, stretch));
+  return {
+    n,
+    piece: { movedRight: dx, movedUp: -dy, fitted: state.fitted === true },
+    fitsAt: E.target(n),
+    honestArea: lower + upperHonest,
+    areaOnScreenNow: lower + upperNow,
+    hiddenStretchPerColumn: stretch,
+    squareItClaimsToFill: n * n,
+    explanationShownOnScreen: state.revealed === true,
+    why: `The pieces really cover ${n * n - 1} squares. While the top piece is lifted its top edge is quietly stretched by up to 1/${n} over ${n} columns, which is the one extra square.`,
   };
 }

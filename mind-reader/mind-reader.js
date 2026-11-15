@@ -64,6 +64,12 @@ function drawTable() {
   tableEl.appendChild(svg("path", { class: "gridlines", d }));
 }
 
+// The table, for the player's record and the tutor (assets/progress.js). The
+// trick has no win or loss, so each reveal is reported as a finished play.
+function trackTable() {
+  if (window.Track) window.Track.state({ figs: table.figs, special: table.special, secretShown: showSecret });
+}
+
 function setRevealing(on) {
   document.getElementById("stage").classList.toggle("revealing", on);
   checkBtn.disabled = on;
@@ -87,6 +93,7 @@ function readMind() {
     revealCaption.textContent = `Is this your shape? ${/^[aeiou]/.test(name) ? "An" : "A"} ${name}!`;
     againBtn.hidden = false;
     againBtn.focus();
+    if (window.Track) window.Track.end({ outcome: "done" });
   }, reduce ? 0 : 1800);
 }
 
@@ -96,6 +103,7 @@ function newTable() {
   table = MindReader.newTable();
   setRevealing(false);
   drawTable();
+  trackTable();
 }
 
 checkBtn.addEventListener("click", readMind);
@@ -115,6 +123,8 @@ secretBtn.addEventListener("click", () => {
     ? "Every multiple of 9 has the same shape. Whatever number you pick, your answer is always one of them."
     : "";
   drawTable();
+  trackTable();
 });
 
 drawTable();
+trackTable();

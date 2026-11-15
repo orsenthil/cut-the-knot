@@ -6,7 +6,7 @@
  */
 
 import { cores } from "../generated/cores.js";
-import { num, type GameActions } from "./_shared.js";
+import { num, type GameActions, type Json } from "./_shared.js";
 
 export function actions(): GameActions {
   const K = cores["four-knights"].KnightsCore;
@@ -38,5 +38,31 @@ export function actions(): GameActions {
         return { moves: K.legalMoves({ occupied, moves: 0 }, num(args, "ring")) };
       },
     },
+  };
+}
+
+/**
+ * What the core says about a position saved by the page: where the knights
+ * are on the ring of eight squares, which moves are open, and whether the
+ * swap is done.
+ */
+export function position(state: Json): unknown {
+  const K = cores["four-knights"].KnightsCore;
+  const board = { occupied: (state.occupied ?? {}) as Record<string, string>, moves: Number(state.moves) || 0 };
+  const knights = Object.entries(board.occupied).map(([ring, colour]) => ({
+    ring: Number(ring),
+    colour,
+    square: K.cellOf(Number(ring)),
+    canMoveToRing: K.legalMoves(board, Number(ring)),
+  }));
+  const shortest = K.shortestSolution();
+  return {
+    solved: K.isSolved(board),
+    movesSoFar: board.moves,
+    knights,
+    home: K.HOME,
+    goal: "Every red knight on a square that started blue, and every blue on one that started red.",
+    fewestMovesFromTheStart: shortest >= 0 ? shortest : null,
+    note: "Rings 1 to 8 are the eight outer squares in the order a knight can travel them; a knight only ever moves to a neighbouring ring, so the knights can never pass one another.",
   };
 }

@@ -6,7 +6,7 @@
  */
 
 import { cores } from "../generated/cores.js";
-import { num, type GameActions } from "./_shared.js";
+import { num, numArray, type GameActions, type Json } from "./_shared.js";
 
 export function actions(): GameActions {
   const M = cores["mind-reader"].MindReader;
@@ -33,5 +33,23 @@ export function actions(): GameActions {
       args: "{}",
       run: () => ({ cells: M.magicCells(), count: M.magicCells().length }),
     },
+  };
+}
+
+/**
+ * What the core says about the table on the player's screen: the shape the
+ * computer will name, and where it sits.
+ */
+export function position(state: Json): unknown {
+  const M = cores["mind-reader"].MindReader;
+  const figs = numArray(state, "figs");
+  const special = Number(state.special);
+  const magic = M.magicCells() as number[];
+  return {
+    shapeTheComputerWillName: M.SHAPES[special],
+    itSitsOnEveryOneOf: magic,
+    checksOut: magic.every((cell) => figs[cell] === special),
+    secretShownOnScreen: state.secretShown === true,
+    why: "A two-digit number minus the sum of its digits is always a multiple of 9, and every multiple of 9 in the table has the same shape.",
   };
 }

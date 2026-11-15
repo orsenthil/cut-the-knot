@@ -51,9 +51,15 @@ for demos, which have no win). A play counts as *completed* on `win` or
 `seconds`, `flips` and `steps` keep the smallest seen, anything else the
 largest.
 
+A page may also call **only `Track.state`**: its position is saved, and its
+plays are still taken from `#status`. That is the usual way for a game whose
+result already shows as `.win` or `.lose` (`hourglass/hourglass.js`). A page
+with no win or loss calls `Track.state` and `Track.end({ outcome: "done" })`
+(`mind-reader/mind-reader.js`).
+
 The page fires `progresschange` on `window` after every write.
 
-Reference adopter: `coins/coins.js`.
+Reference for a page that manages its own plays: `coins/coins.js`.
 
 ## 3. The player's record
 
@@ -78,11 +84,18 @@ Concept mastery is **not** stored. It is computed from `progress` by
 
 ## 4. A game's position (`live.state`)
 
-The game's core owns the shape: it has a method that returns the position as
-plain data and one that rebuilds the game from it, and the logic test checks
-that the round trip is exact. For coins these are `CoinGame.snapshot()` and
-`CoinGame.restore()` in `coins/coin-game.js`, tested in
-`porting/check-coins.mjs`.
+The position is the core's own state as plain data. Most cores already keep
+plain data (the hourglass's timers, the knights' squares), and the page
+passes it on. Where the core is a class, it gets a method that returns the
+position and one that rebuilds the game from it, with a round-trip check:
+`CoinGame.snapshot()` and `CoinGame.restore()` in `coins/coin-game.js`,
+tested in `porting/check-coins.mjs`.
+
+`porting/live-fixtures/<slug>.json` holds an example of each game's
+position, saved by the real page in a browser. `porting/check-positions-ui.mjs`
+fails when a page's position changes shape, and `mcp/test/positions.test.mjs`
+runs every reader on those examples, so the page and the tutor cannot drift
+apart unnoticed.
 
 `stateVersion` starts at 1 and goes up when the shape changes in a way old
 readers cannot handle.
