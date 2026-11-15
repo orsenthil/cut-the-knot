@@ -439,5 +439,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "nimble",
+      title: "Nimble",
+      blurb: "Slide coloured chips along a row of positions toward zero. You and the computer take turns — whoever moves the last chip home wins. Can you find the winning secret?",
+      tags: ["game-strategy"],
+      level: 2,
+    },
   ],
 };

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nimble &mdash; coolmaths</title>
+<meta name="description" content="Slide coloured chips along a row of positions toward zero. You and the computer take turns — whoever moves the last chip home wins. Can you find the winning secret?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/nimble/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Nimble">
+<meta property="og:description" content="Slide coloured chips along a row of positions toward zero. You and the computer take turns — whoever moves the last chip home wins. Can you find the winning secret?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/nimble/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    padding: 1rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .board {
+    display: flex;
+    gap: 0;
+    width: 100%;
+    max-width: 40rem;
+    justify-content: center;
+    position: relative;
+  }
+  .needle-col {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 2.4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    min-height: 6rem;
+    cursor: default;
+  }
+  .needle-col.target {
+    cursor: pointer;
+  }
+  .needle-col.target::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    opacity: 0.12;
+    border-radius: 6px;
+  }
+  .needle-col.target:hover::before {
+    opacity: 0.25;
+  }
+  .needle {
+    width: 3px;
+    flex: 1;
+    background: var(--border);
+    border-radius: 2px;
+    min-height: 3rem;
+  }
+  .needle-label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 0.2rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .chip {
+    position: absolute;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    z-index: 1;
+    transition: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    padding: 0;
+    outline: none;
+  }
+  .chip:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .chip.selected {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+    transform: scale(1.15);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .chip.home {
+    opacity: 0.35;
+    cursor: default;
+    pointer-events: none;
+  }
+  .chip:disabled {
+    cursor: default;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .chip { transition: bottom 150ms ease, transform 100ms ease; }
+  }
+  @media (max-width: 30rem) {
+    .needle-col { max-width: 1.6rem; }
+    .chip { width: 1.1rem; height: 1.1rem; }
+    .needle-label { font-size: 0.6rem; }
+  }
+</style>
+</head>
+<body data-game="nimble" data-kind="game">
+<main id="main">
+  <h1>Nimble</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/recurrence/Nimble.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> slide chips along a row of numbered positions toward zero. You and the computer take turns; whoever moves the last chip to zero wins.<br>
+    <strong>How to play:</strong> click a chip to select it, then click any position to its left to move it there. A chip can slide as far as you like in one move.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="board" role="group" aria-label="Game board"></div>
+  </div>
+
+  <div class="controls">
+    <label>Length <select id="lengthInput"></select></label>
+    <label>Chips <select id="chipsInput"></select></label>
+    <button id="newBtn" type="button" class="primary">New Game</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Nimble looks like a simple sliding game, but it hides a famous game inside it.
+        Once you see the connection, you can beat the computer every time — when the
+        starting position allows it.
+      </p>
+
+      <h2>Nim in disguise</h2>
+      <p>
+        Each chip's position number is the size of a
+        <a class="wiki-term" data-wiki="Nim" href="https://en.wikipedia.org/wiki/Nim" target="_blank" rel="noopener">Nim</a>
+        heap. Moving a chip left reduces its heap. Landing on zero removes the heap.
+        So Nimble with chips at positions 3 and 5 is exactly the same as Nim with heaps of
+        3 and 5. The game of
+        <a class="wiki-term" data-wiki="Sprague%E2%80%93Grundy_theorem" href="https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem" target="_blank" rel="noopener">Sprague&ndash;Grundy theory</a>
+        applies directly.
+      </p>
+
+      <h2>The XOR rule</h2>
+      <p>
+        Write all the chip positions in binary and add them without carrying &mdash; that is
+        <a class="wiki-term" data-wiki="Exclusive_or" href="https://en.wikipedia.org/wiki/Exclusive_or" target="_blank" rel="noopener">exclusive or</a>
+        (XOR). When the total is <code>0</code>, the player whose turn it is will lose if the
+        opponent plays perfectly. When it is not <code>0</code>, the player to move can always
+        find a move that makes it <code>0</code>, handing the losing position to the opponent.
+        For a single chip at position <code>p</code>, the Sprague&ndash;Grundy value is simply
+        <code>p</code> itself.
+      </p>
+
+      <h2>How the computer plays</h2>
+      <p>
+        On its turn the computer XORs all the chip positions. If the result is not <code>0</code>,
+        it finds the chip whose position shares the highest bit with the XOR and moves it to
+        make the total <code>0</code>. If the XOR is already <code>0</code> (the computer is losing),
+        it moves a random chip and hopes you slip. A starting position where all chip
+        positions XOR to <code>0</code> is unwinnable for you; otherwise you can always win
+        by moving first to a XOR of <code>0</code>.
+      </p>
+
+      <p class="tip">
+        Try one chip on a board of length 7. The chip starts somewhere between 2 and 6
+        &mdash; move it straight to 0 in one jump and you win instantly! With two chips,
+        move one so both positions become equal: equal positions XOR to 0, leaving the
+        computer in a losing spot.
+      </p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="nimble-core.js"></script>
+<script src="nimble.js"></script>
+</body>
+</html>
