@@ -120,4 +120,18 @@ export const haystack = (g: Game): string =>
     .join(" ")
     .toLowerCase();
 
+/**
+ * What to say when a slug is not a game. It names a few near misses rather
+ * than every game: with a thousand games the full list would bury the answer.
+ */
+export function unknownGame(slug: string): string {
+  const wanted = String(slug).toLowerCase();
+  const near = games
+    .filter((g) => g.slug.includes(wanted) || wanted.includes(g.slug) || g.title.toLowerCase().includes(wanted))
+    .slice(0, 5)
+    .map((g) => g.slug);
+  const hint = near.length ? ` Did you mean: ${near.join(", ")}?` : "";
+  return `No game "${slug}".${hint} Use search or list_games to find a game's slug.`;
+}
+
 export { content, manifest };

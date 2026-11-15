@@ -7,34 +7,51 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
-import { games, tags, applets, bySlug, json, fail, gameMarkdown, haystack, manifest } from "../core/content.js";
-import { ACTIONS, actionCatalogue, runGameLogic } from "../games/registry.js";
+import { games, tags, applets, bySlug, json, fail, gameMarkdown, haystack, manifest, unknownGame } from "../core/content.js";
+import { ACTIONS, runGameLogic } from "../games/registry.js";
+
+/** list_games returns this many unless asked for another number. */
+const PAGE = 25;
+const MAX_PAGE = 100;
 
 export function registerPublicTools(server: McpServer): void {
   server.registerTool(
     "list_games",
     {
       title: "List games",
-      description: "Every game on the site, optionally only those tagged with one concept.",
+      description:
+        `The games on the site, a page at a time (${PAGE} unless you ask for more), optionally only those with one concept or of one kind. ` +
+        "`total` says how many match; when `nextOffset` is not null there are more. To find one game, search is quicker.",
       inputSchema: {
         tag: z.string().optional().describe(`Concept tag. One of: ${Object.keys(tags).join(", ")}`),
+        kind: z.enum(["game", "demo"]).optional().describe('"game" can be won or lost; "demo" is something to explore.'),
+        limit: z.number().int().min(1).max(MAX_PAGE).optional().describe(`How many to return (default ${PAGE}, at most ${MAX_PAGE}).`),
+        offset: z.number().int().min(0).optional().describe("How many to skip; pass the previous answer's nextOffset."),
       },
     },
-    async ({ tag }) => {
-      const list = tag ? games.filter((g) => g.tags.includes(tag)) : games;
-      if (tag && !list.length) {
-        return fail(`No games tagged "${tag}". Known tags: ${Object.keys(tags).join(", ")}`);
+    async ({ tag, kind, limit, offset }) => {
+      if (tag && !(tag in tags)) {
+        return fail(`No tag "${tag}". Known tags: ${Object.keys(tags).join(", ")}`);
       }
-      return json(
-        list.map((g) => ({
+      const matching = games.filter((g) => (!tag || g.tags.includes(tag)) && (!kind || g.kind === kind));
+      const from = offset ?? 0;
+      const page = matching.slice(from, from + (limit ?? PAGE));
+      const end = from + page.length;
+      return json({
+        total: matching.length,
+        offset: from,
+        nextOffset: end < matching.length ? end : null,
+        games: page.map((g) => ({
           slug: g.slug,
           title: g.title,
           blurb: g.blurb,
           tags: g.tags,
+          kind: g.kind,
+          level: g.level,
           url: g.url,
           hasRunnableLogic: Boolean(ACTIONS[g.slug]),
         })),
-      );
+      });
     },
   );
 
@@ -45,13 +62,13 @@ export function registerPublicTools(server: McpServer): void {
       description:
         "The rules, the site's own 'Look for the math' explanation, the named concepts and optionally the source. Read this before explaining a puzzle.",
       inputSchema: {
-        slug: z.string().describe(`Game slug, e.g. "hourglass". One of: ${games.map((g) => g.slug).join(", ")}`),
+        slug: z.string().describe('Game slug, e.g. "hourglass". Find one with search or list_games.'),
         includeSource: z.boolean().optional().describe("Include the game's JavaScript. Defaults to false."),
       },
     },
     async ({ slug, includeSource }) => {
       const g = bySlug.get(slug);
-      if (!g) return fail(`No game "${slug}". Known: ${games.map((x) => x.slug).join(", ")}`);
+      if (!g) return fail(unknownGame(slug));
       return { content: [{ type: "text" as const, text: gameMarkdown(g, { withSource: includeSource === true }) }] };
     },
   );
@@ -166,16 +183,51 @@ export function registerPublicTools(server: McpServer): void {
   );
 
   server.registerTool(
+    "list_actions",
+    {
+      title: "List a game's runnable actions",
+      description:
+        "What run_game_logic can do. With a slug: that game's actions, each with what it does and an example of its arguments. Without: which games have runnable logic at all.",
+      inputSchema: {
+        slug: z.string().optional().describe("Game slug. Leave out to list the games that have runnable logic."),
+      },
+    },
+    async ({ slug }) => {
+      if (!slug) {
+        return json({
+          gamesWithRunnableLogic: Object.entries(ACTIONS).map(([s, actions]) => ({
+            slug: s,
+            title: bySlug.get(s)?.title ?? s,
+            actions: Object.keys(actions),
+          })),
+        });
+      }
+      if (!bySlug.has(slug)) return fail(unknownGame(slug));
+      const actions = ACTIONS[slug];
+      if (!actions) {
+        return json({ slug, actions: [], note: "This game has no runnable logic on the server. Use get_game for its rules and explanation." });
+      }
+      return json({
+        slug,
+        actions: Object.entries(actions).map(([name, spec]) => ({
+          action: name,
+          does: spec.describe,
+          exampleArgs: JSON.parse(spec.args),
+        })),
+      });
+    },
+  );
+
+  server.registerTool(
     "run_game_logic",
     {
       title: "Run a game's real logic",
       description:
-        "Calls the game's actual code — the same file the live page runs — so you can show a worked answer instead of describing one.\n\n" +
-        "Available actions:\n" +
-        actionCatalogue(),
+        "Calls the game's actual code — the same file the live page runs — so you can show a worked answer instead of describing one. " +
+        "Call list_actions first to see which games have runnable logic, and each action's arguments.",
       inputSchema: {
-        slug: z.string().describe(`Game slug. One of: ${Object.keys(ACTIONS).join(", ")}`),
-        action: z.string().describe("Action name; see the description for each game's actions."),
+        slug: z.string().describe('Game slug, e.g. "hourglass". list_actions says which games have runnable logic.'),
+        action: z.string().describe("Action name, from list_actions."),
         // passthrough() rather than z.record(z.any()): the arguments differ per
         // action, so this really is a free-form object, and passthrough says so
         // as `additionalProperties: true` instead of an empty schema that
@@ -184,7 +236,7 @@ export function registerPublicTools(server: McpServer): void {
           .object({})
           .passthrough()
           .optional()
-          .describe("Arguments for the action, as JSON. See the tool description for each action's shape."),
+          .describe("Arguments for the action, as JSON. list_actions shows an example for each action."),
       },
     },
     async ({ slug, action, args }) => {

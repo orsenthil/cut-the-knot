@@ -43,6 +43,8 @@ const STABLE = {
   "coins-play-out": call("run_game_logic", { slug: "coins", action: "play_out", args: { values: [4, 2, 9, 1], humanChoices: ["first", "last"] } }),
   "knights-shortest": call("run_game_logic", { slug: "four-knights", action: "shortest_solution", args: {} }),
   "eye-opener-areas": call("run_game_logic", { slug: "eye-opener", action: "areas", args: {} }),
+  "list-actions": call("list_actions"),
+  "list-actions-coins": call("list_actions", { slug: "coins" }),
   "unknown-game": call("run_game_logic", { slug: "nowhere", action: "solve", args: {} }),
   "unknown-action": call("run_game_logic", { slug: "coins", action: "nothing", args: {} }),
   "unknown-slug": call("get_game", { slug: "nowhere" }),

@@ -74,6 +74,53 @@ res = await handleRequest(post("/mcp", rpc("tools/call", { name: "run_game_logic
 const solved = JSON.parse((await res.json()).result.content[0].text);
 check("the 7 and 11 minute glasses boil a 15 minute egg in 3 flips", solved.flips === 3, JSON.stringify(solved.flips));
 
+/* ------------------------------------------- answers that stay small */
+
+{
+  const call = async (name, args = {}) => {
+    const r = await handleRequest(post("/mcp", rpc("tools/call", { name, arguments: args })));
+    const result = (await r.json()).result;
+    return { isError: result.isError === true, text: result.content[0].text };
+  };
+  const list = async (args) => JSON.parse((await call("list_games", args)).text);
+
+  const first = await list({ limit: 10 });
+  check("list_games returns a page, not everything", first.games.length === 10 && first.total > 10 && first.nextOffset === 10);
+  const second = await list({ limit: 10, offset: first.nextOffset });
+  check("the next page continues where the first stopped", second.offset === 10 && second.games[0].slug !== first.games[0].slug);
+
+  const seen = new Set();
+  let offset = 0;
+  for (let guard = 0; guard < 100 && offset !== null; guard++) {
+    const page = await list({ limit: 20, offset });
+    page.games.forEach((g) => seen.add(g.slug));
+    offset = page.nextOffset;
+  }
+  check("paging reaches every game exactly once", seen.size === first.total);
+
+  const demos = await list({ kind: "demo", limit: 100 });
+  check("kind filters", demos.total >= 1 && demos.games.every((g) => g.kind === "demo") && demos.nextOffset === null);
+  const both = await list({ tag: "parity", kind: "game", limit: 100 });
+  check("tag and kind combine", both.games.every((g) => g.tags.includes("parity") && g.kind === "game"));
+  check("an unknown tag is an error", (await call("list_games", { tag: "nonsense" })).isError);
+  check("past the end is an empty page", (await list({ offset: 100000 })).games.length === 0);
+
+  const overview = JSON.parse((await call("list_actions")).text);
+  check("list_actions names the games with logic", overview.gamesWithRunnableLogic.some((g) => g.slug === "hourglass"));
+  for (const { slug, actions } of overview.gamesWithRunnableLogic) {
+    const detail = JSON.parse((await call("list_actions", { slug })).text);
+    check(`list_actions(${slug}) gives every action an example`, detail.actions.length === actions.length && detail.actions.every((a) => a.does && typeof a.exampleArgs === "object"));
+  }
+  check("a game with no logic says so", JSON.parse((await call("list_actions", { slug: "hanoi" })).text).actions.length === 0);
+
+  const miss = await call("get_game", { slug: "hano" });
+  check("a near-miss slug gets a suggestion, not the whole catalogue", miss.isError && /Did you mean: .*hanoi/.test(miss.text) && miss.text.length < 300, miss.text);
+
+  const toolList = await (await handleRequest(post("/mcp", rpc("tools/list")))).json();
+  const size = JSON.stringify(toolList).length;
+  check("the tool list does not carry the catalogue", size < 8000 && !JSON.stringify(toolList).includes("vanishing-rectangles"), `${size} characters`);
+}
+
 /* -------------------------------------------------------------- /mcp/me */
 
 res = await handleRequest(post("/mcp/me", rpc("tools/list")));

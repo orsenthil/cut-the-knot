@@ -9,7 +9,7 @@
 
 import { type McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-import { content, manifest, games, tags, bySlug, gameMarkdown } from "../core/content.js";
+import { content, manifest, games, tags, bySlug, gameMarkdown, unknownGame } from "../core/content.js";
 import { ACTIONS } from "../games/registry.js";
 
 export function registerResources(server: McpServer): void {
@@ -67,7 +67,7 @@ export function registerResources(server: McpServer): void {
     },
     async (uri, { slug }) => {
       const g = bySlug.get(String(slug));
-      if (!g) throw new Error(`No game "${slug}". Known: ${games.map((x) => x.slug).join(", ")}`);
+      if (!g) throw new Error(unknownGame(String(slug)));
       return {
         contents: [{ uri: uri.href, mimeType: "text/markdown", text: gameMarkdown(g, { withSource: true }) }],
       };

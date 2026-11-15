@@ -12,7 +12,7 @@ import { games, tags, bySlug, gameMarkdown } from "../core/content.js";
 import { ACTIONS } from "../games/registry.js";
 
 export function registerPrompts(server: McpServer): void {
-  const slugEnum = z.string().describe(`Game slug. One of: ${games.map((g) => g.slug).join(", ")}`);
+  const slugEnum = z.string().describe('Game slug, e.g. "hourglass". Find one with search or list_games.');
 
   server.registerPrompt(
     "tutor",

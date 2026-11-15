@@ -28,7 +28,7 @@ const INSTRUCTIONS =
   "https://orsenthil.github.io/cut-the-knot/ — browser ports of Alexander " +
   "Bogomolny's cut-the-knot.org applets. Prefer get_game and explain_concept " +
   "over your own recollection of a puzzle: the text they return is the site's " +
-  "own explanation. Use run_game_logic to compute a real answer from the " +
+  "own explanation. Use run_game_logic (after list_actions) to compute a real answer from the " +
   "game's actual code rather than working one out in prose, and show the " +
   "result. The tutor prompt is Socratic by design: let the learner play and " +
   "guess before naming the invariant.";

@@ -18,18 +18,6 @@ export const ACTIONS: Record<string, GameActions> = Object.fromEntries(
   Object.entries(gameModules).map(([slug, mod]) => [slug, mod.actions()]),
 );
 
-/** A short catalogue of what run_game_logic can do, for the tool description. */
-export function actionCatalogue(): string {
-  return Object.entries(ACTIONS)
-    .map(([slug, actions]) => {
-      const list = Object.entries(actions)
-        .map(([name, spec]) => `    ${name} ${spec.args}\n      ${spec.describe}`)
-        .join("\n");
-      return `  ${slug}:\n${list}`;
-    })
-    .join("\n");
-}
-
 export function runGameLogic(slug: string, action: string, args: Json): unknown {
   const game = ACTIONS[slug];
   if (!game) {

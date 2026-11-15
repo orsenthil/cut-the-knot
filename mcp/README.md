@@ -39,10 +39,11 @@ where the player signs in with Google or GitHub and allows the connection
 
 | Tool | What |
 |---|---|
-| `list_games(tag?)` | The catalogue, optionally filtered by concept. |
+| `list_games(tag?, kind?, limit?, offset?)` | The catalogue a page at a time (25 by default), optionally filtered by concept or kind. |
 | `get_game(slug, includeSource?)` | One game as markdown. |
 | `search(query, limit?)` | Keyword search over titles, blurbs, rules, maths and tags. |
 | `explain_concept(concept)` | Every game using a concept, the relevant maths, the Wikipedia link. |
+| `list_actions(slug?)` | Which games have runnable logic, or one game's actions with example arguments. |
 | `run_game_logic(slug, action, args)` | Calls the game's real core. |
 | `porting_status(kind?, status?, limit?)` | How the campaign stands. |
 | `next_to_port(count?, kind?)` | What to port next, games first. |
@@ -54,17 +55,9 @@ where the player signs in with Google or GitHub and allows the connection
 ### run_game_logic
 
 The interesting one. It calls the same files the live pages run, so the tutor
-can *show* a strategy instead of describing it:
-
-| Game | Actions |
-|---|---|
-| `hourglass` | `solve`, `next_state` |
-| `coins` | `computer_reply`, `parity_split`, `play_out` |
-| `four-knights` | `shortest_solution`, `cycle`, `legal_moves` |
-| `eye-opener` | `areas` |
-| `mind-reader` | `predict`, `marked_cells` |
-| `torque` | `generate`, `evaluate` |
-| `four-by-four` | `winning_lines`, `lines_through`, `machine_reply` |
+can *show* a strategy instead of describing it. `list_actions` says which
+games have it (seven today) and what each action takes; the descriptions of
+the tools themselves stay the same size however many games there are.
 
 ```
 run_game_logic("hourglass", "solve", {"a": 7, "b": 11, "target": 15})
