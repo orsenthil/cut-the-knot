@@ -6,13 +6,73 @@
  */
 
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { completable } from "@modelcontextprotocol/sdk/server/completable.js";
 import { z } from "zod";
 
-import { games, tags, bySlug, gameMarkdown } from "../core/content.js";
+import { games, tags, findGame, findTag, nearGames, gameMarkdown } from "../core/content.js";
 import { ACTIONS } from "../games/registry.js";
 
 export function registerPrompts(server: McpServer): void {
-  const slugEnum = z.string().describe('Game slug, e.g. "hourglass". Find one with search or list_games.');
+  // A person types into these boxes, so a client that supports it offers the
+  // matching games as they type, and a title works as well as a slug.
+  // The argument may be left empty, and the SDK looks for the suggestions on
+  // the optional wrapper when asked and inside it when registering: mark both.
+  const suggest = (schema: z.ZodString, complete: (value: string | undefined) => string[]) =>
+    completable(completable(schema, complete).optional(), complete);
+
+  const slugEnum = suggest(
+    z.string().describe('A game: its slug or its title, e.g. "hourglass" or "Coins in a Row".'),
+    (value) => (value ? nearGames(value, 20) : games.slice(0, 20)).map((g) => g.slug),
+  );
+  const tagEnum = suggest(
+    z.string().describe(`A concept: its tag or its name. One of: ${Object.keys(tags).join(", ")}`),
+    (value) => {
+      const v = String(value ?? "").toLowerCase();
+      return Object.keys(tags).filter((t) => t.includes(v) || tags[t].toLowerCase().includes(v));
+    },
+  );
+
+  /**
+   * What a prompt answers when the game is not on the site. A prompt that
+   * throws leaves the person with an error and nothing to do; this hands the
+   * model the request and the nearest games, so the conversation goes on.
+   */
+  const noSuchGame = (typed: string, wanted: string) => {
+    const near = nearGames(typed);
+    if (!typed.trim()) {
+      return {
+        messages: [
+          {
+            role: "user" as const,
+            content: {
+              type: "text" as const,
+              text:
+                `I would like coolmaths to ${wanted} a game, but I have not said which one.\n\n` +
+                `Call list_games and offer me a few to choose from, or ask what kind of puzzle I like. ` +
+                `Once I have chosen, call get_game for it and carry on from its own text, not from memory.`,
+            },
+          },
+        ],
+      };
+    }
+    return {
+      messages: [
+        {
+          role: "user" as const,
+          content: {
+            type: "text" as const,
+            text:
+              `I asked coolmaths to ${wanted} the game "${typed}", but there is no game by that name on the site.\n\n` +
+              (near.length
+                ? `The closest are:\n${near.map((g) => `- ${g.title} (${g.slug}): ${g.blurb}`).join("\n")}\n\n` +
+                  `Ask me which of these I meant.`
+                : `Call search with what I typed, or list_games, and offer me a few games to choose from.`) +
+              ` Once I have chosen, call get_game for it and carry on from its own text, not from memory.`,
+          },
+        },
+      ],
+    };
+  };
 
   server.registerPrompt(
     "tutor",
@@ -22,8 +82,8 @@ export function registerPrompts(server: McpServer): void {
       argsSchema: { slug: slugEnum },
     },
     ({ slug }) => {
-      const g = bySlug.get(slug);
-      if (!g) throw new Error(`No game "${slug}".`);
+      const g = findGame(slug ?? "");
+      if (!g) return noSuchGame(slug ?? "", "tutor me on");
       return {
         messages: [
           {
@@ -52,12 +112,29 @@ export function registerPrompts(server: McpServer): void {
     {
       title: "Quiz me on a concept",
       description: "Questions drawn from the games that use a concept.",
-      argsSchema: { tag: z.string().describe(`Concept tag. One of: ${Object.keys(tags).join(", ")}`) },
+      argsSchema: { tag: tagEnum },
     },
-    ({ tag }) => {
+    ({ tag: given }) => {
+      const typed = given ?? "";
+      const tag = findTag(typed) ?? typed;
       const matching = games.filter((g) => g.tags.includes(tag));
       const label = tags[tag] ?? tag;
-      if (!matching.length) throw new Error(`No games tagged "${tag}". Known: ${Object.keys(tags).join(", ")}`);
+      if (!matching.length) {
+        return {
+          messages: [
+            {
+              role: "user" as const,
+              content: {
+                type: "text" as const,
+                text:
+                  `I asked coolmaths to quiz me on "${typed}", but no games are filed under that concept.\n\n` +
+                  `The concepts it has are: ${Object.values(tags).join(", ")}.\n\n` +
+                  `Ask me which of these is closest to what I meant, then call explain_concept for it and quiz me from that.`,
+              },
+            },
+          ],
+        };
+      }
       return {
         messages: [
           {
@@ -89,8 +166,8 @@ export function registerPrompts(server: McpServer): void {
       },
     },
     ({ slug, level }) => {
-      const g = bySlug.get(slug);
-      if (!g) throw new Error(`No game "${slug}".`);
+      const g = findGame(slug ?? "");
+      if (!g) return noSuchGame(slug ?? "", "explain");
       const guidance: Record<string, string> = {
         "10": "No algebra and no jargon. Short sentences, concrete objects, and a picture in words. One idea only.",
         "high school":
@@ -125,8 +202,8 @@ export function registerPrompts(server: McpServer): void {
       argsSchema: { slug: slugEnum },
     },
     ({ slug }) => {
-      const g = bySlug.get(slug);
-      if (!g) throw new Error(`No game "${slug}".`);
+      const g = findGame(slug ?? "");
+      if (!g) return noSuchGame(slug ?? "", "review the port of");
       return {
         messages: [
           {

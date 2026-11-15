@@ -134,4 +134,48 @@ export function unknownGame(slug: string): string {
   return `No game "${slug}".${hint} Use search or list_games to find a game's slug.`;
 }
 
+/** The games whose slug or title is close to what was typed, best first. */
+export function nearGames(input: string, limit = 5): typeof games {
+  const wanted = String(input).trim().toLowerCase();
+  const asSlug = wanted.replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  if (!asSlug) return [];
+  const words = asSlug.split("-");
+  const score = (g: (typeof games)[number]): number => {
+    const title = g.title.toLowerCase();
+    if (g.slug === asSlug || title === wanted) return 100;
+    if (g.slug.startsWith(asSlug) || title.startsWith(wanted)) return 60;
+    if (g.slug.includes(asSlug) || title.includes(wanted) || asSlug.includes(g.slug)) return 40;
+    return words.filter((w) => w.length > 2 && (g.slug.includes(w) || title.includes(w))).length * 10;
+  };
+  return games
+    .map((g) => ({ g, n: score(g) }))
+    .filter((x) => x.n > 0)
+    .sort((a, b) => b.n - a.n)
+    .slice(0, limit)
+    .map((x) => x.g);
+}
+
+/**
+ * The game someone meant: by slug, by title ("Coins in a Row"), or by the
+ * only game that comes close. People type titles into a prompt's argument
+ * box, so an exact slug is too much to ask.
+ */
+export function findGame(input: string): (typeof games)[number] | undefined {
+  const exact = bySlug.get(String(input).trim());
+  if (exact) return exact;
+  const near = nearGames(input, 2);
+  const wanted = String(input).trim().toLowerCase();
+  const asSlug = wanted.replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  const hit = near.find((g) => g.slug === asSlug || g.title.toLowerCase() === wanted);
+  if (hit) return hit;
+  return near.length === 1 ? near[0] : undefined;
+}
+
+/** The concept tag someone meant: by slug or by label ("Game Strategy"). */
+export function findTag(input: string): string | undefined {
+  const wanted = String(input).trim().toLowerCase();
+  const asSlug = wanted.replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  return Object.keys(tags).find((t) => t === asSlug || tags[t].toLowerCase() === wanted);
+}
+
 export { content, manifest };

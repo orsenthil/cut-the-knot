@@ -48,6 +48,43 @@ const STABLE = {
   "unknown-game": call("run_game_logic", { slug: "nowhere", action: "solve", args: {} }),
   "unknown-action": call("run_game_logic", { slug: "coins", action: "nothing", args: {} }),
   "unknown-slug": call("get_game", { slug: "nowhere" }),
+  // A prompt or a resource for a game that is not there answers; it does not fail.
+  "prompt-unknown-game": { method: "prompts/get", params: { name: "tutor", arguments: { slug: "nowhere" } } },
+  "prompt-unknown-tag": {
+    method: "prompts/get",
+    params: { name: "quiz_me", arguments: { tag: "nothing" } },
+    keep: (reply) => ({ error: reply.error ?? null, starts: reply.result?.messages[0].content.text.slice(0, 80) }),
+  },
+  "read-unknown-game": { method: "resources/read", params: { uri: "coolmaths://game/nowhere" } },
+  "prompt-no-game": {
+    method: "prompts/get",
+    params: { name: "tutor", arguments: {} },
+    keep: (reply) => ({ error: reply.error ?? null, starts: reply.result?.messages[0].content.text.slice(0, 60) }),
+  },
+  // A title typed into the prompt's box finds the game.
+  "prompt-by-title": {
+    method: "prompts/get",
+    params: { name: "tutor", arguments: { slug: "Coins in a Row" } },
+    keep: (reply) => ({ error: reply.error ?? null, starts: reply.result?.messages[0].content.text.slice(0, 30) }),
+  },
+  // Every listed resource has a title of its own, so a client's list is not one line repeated.
+  "resource-titles": {
+    method: "resources/list",
+    keep: (reply) => {
+      const titles = reply.result.resources.map((r) => r.title);
+      return {
+        allTitled: titles.every(Boolean),
+        allDifferent: new Set(titles).size === titles.length,
+        coins: reply.result.resources.find((r) => r.uri === "coolmaths://game/coins")?.title,
+        parity: reply.result.resources.find((r) => r.uri === "coolmaths://tag/parity")?.title,
+      };
+    },
+  },
+  "prompt-completion": {
+    method: "completion/complete",
+    params: { ref: { type: "ref/prompt", name: "tutor" }, argument: { name: "slug", value: "coins" } },
+    keep: (reply) => ({ error: reply.error ?? null, first: reply.result?.completion.values[0] }),
+  },
 };
 
 /** Answers that follow the site's content. */

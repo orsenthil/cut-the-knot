@@ -9,7 +9,7 @@
 
 import { type McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-import { content, manifest, games, tags, bySlug, gameMarkdown, unknownGame } from "../core/content.js";
+import { content, manifest, games, tags, findGame, findTag, gameMarkdown, unknownGame } from "../core/content.js";
 import { ACTIONS } from "../games/registry.js";
 
 export function registerResources(server: McpServer): void {
@@ -55,6 +55,9 @@ export function registerResources(server: McpServer): void {
         resources: games.map((g) => ({
           uri: `coolmaths://game/${g.slug}`,
           name: g.title,
+          // Each game's own title: without it a client shows the template's
+          // title on every row, and the list is one line repeated.
+          title: g.title,
           description: g.blurb,
           mimeType: "text/markdown",
         })),
@@ -66,11 +69,10 @@ export function registerResources(server: McpServer): void {
       mimeType: "text/markdown",
     },
     async (uri, { slug }) => {
-      const g = bySlug.get(String(slug));
-      if (!g) throw new Error(unknownGame(String(slug)));
-      return {
-        contents: [{ uri: uri.href, mimeType: "text/markdown", text: gameMarkdown(g, { withSource: true }) }],
-      };
+      // A client lets a person type the slug, so a miss is an answer, not an error.
+      const g = findGame(decodeURIComponent(String(slug)));
+      const text = g ? gameMarkdown(g, { withSource: true }) : `# Not found\n\n${unknownGame(decodeURIComponent(String(slug)))}`;
+      return { contents: [{ uri: uri.href, mimeType: "text/markdown", text }] };
     },
   );
 
@@ -81,6 +83,7 @@ export function registerResources(server: McpServer): void {
         resources: Object.entries(tags).map(([slug, label]) => ({
           uri: `coolmaths://tag/${slug}`,
           name: label,
+          title: `Concept: ${label}`,
           description: `Games about ${label.toLowerCase()}.`,
           mimeType: "text/markdown",
         })),
@@ -92,7 +95,8 @@ export function registerResources(server: McpServer): void {
       mimeType: "text/markdown",
     },
     async (uri, { tag }) => {
-      const t = String(tag);
+      const typed = decodeURIComponent(String(tag));
+      const t = findTag(typed) ?? typed;
       const matching = games.filter((g) => g.tags.includes(t));
       const label = tags[t] ?? t;
       const body = matching.length
