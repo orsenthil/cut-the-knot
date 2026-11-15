@@ -460,5 +460,12 @@ window.COOLMATHS = {
       tags: ["game-strategy", "parity"],
       level: 2,
     },
+    {
+      slug: "one-pile",
+      title: "One Pile",
+      blurb: "Take turns removing between Min and Max objects from a single pile. Leave the computer with a losing remainder — can you?",
+      tags: ["game-strategy", "number-theory"],
+      level: 2,
+    },
   ],
 };

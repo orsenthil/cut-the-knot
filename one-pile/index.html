@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>One Pile &mdash; coolmaths</title>
+<meta name="description" content="Take turns removing between Min and Max objects from a single pile. Leave the computer with a losing remainder — can you?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/one-pile/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="One Pile">
+<meta property="og:description" content="Take turns removing between Min and Max objects from a single pile. Leave the computer with a losing remainder — can you?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/one-pile/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 36rem;
+    margin: 0 auto;
+    padding: 1rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  #pile {
+    font-size: 3rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+    min-width: 4rem;
+    text-align: center;
+    color: var(--ink);
+  }
+  #movesScroll {
+    width: 100%;
+    overflow-x: auto;
+    padding: 0.25rem 0;
+  }
+  #moves {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.35rem;
+    min-width: min-content;
+  }
+  button.take {
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+    padding: 0.35rem 0.55rem;
+    font-variant-numeric: tabular-nums;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.4rem;
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  button.take:hover:not(:disabled) {
+    background: var(--highlight);
+  }
+  button.take:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 1px;
+  }
+  button.take:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+  button.take.just-taken {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  #score {
+    margin: 0.25rem 0 0;
+    font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+    text-align: center;
+  }
+  #status {
+    min-height: 1.5em;
+    text-align: center;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+</style>
+</head>
+<body data-game="one-pile" data-kind="game">
+<main id="main">
+  <h1>One Pile</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#number-theory">Number Theory</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/OnePile.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> you and the computer take turns removing objects from one pile. Whoever takes the last allowed handful wins.<br>
+    <strong>How to play:</strong> press a number between Min and Max to remove that many. Change Min and Max, then press New Game for a fresh pile.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="pile" aria-label="Pile size">0</div>
+    <div id="movesScroll">
+      <div id="moves" role="group" aria-label="How many to take"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label>Min <select id="minInput" aria-label="Minimum take"></select></label>
+    <label>Max <select id="maxInput" aria-label="Maximum take"></select></label>
+    <button id="backBtn" type="button">Take back</button>
+    <button id="makeBtn" type="button">Make move</button>
+    <button id="newBtn" type="button" class="primary">New Game</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <p id="score"></p>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        With no limit on how many you may take, a single pile is over in one
+        move. Bound the take from below and above, and the game suddenly has
+        a shape: some pile sizes are safe to leave, and some are not.
+      </p>
+
+      <h2>Losing piles</h2>
+      <p>
+        A pile is a losing position (a
+        <a class="wiki-term" data-wiki="Glossary_of_combinatorial_game_theory" href="https://en.wikipedia.org/wiki/Glossary_of_combinatorial_game_theory#P-position" target="_blank" rel="noopener">P-position</a>)
+        when every take leaves a winning pile for the other player. For One
+        Pile those sizes are exactly the ones whose remainder on division by
+        <code>Min + Max</code> is smaller than Min:
+      </p>
+      <blockquote>
+        <code>0 ≤ S mod (Min + Max) &lt; Min</code>
+      </blockquote>
+      <p>
+        The logic test checks this against perfect play for every Min from 1
+        to 12 and every Max from Min to 45, over three full periods. It holds
+        in every case.
+      </p>
+
+      <h2>What the computer does</h2>
+      <p>
+        Write <code>r = N mod (Min + Max)</code>. If <code>r</code> is already
+        a losing remainder, the computer shrugs and takes at random. If
+        <code>Min ≤ r ≤ Max</code>, it takes exactly <code>r</code> and leaves
+        a multiple of the period. If <code>r &gt; Max</code>, it picks a take
+        that drops the remainder into <code>[0, Min)</code>. That is the
+        applet's <code>MakeMove</code>, ported as it is — including the quirk
+        that a random take from a losing pile never rolls Max itself.
+      </p>
+
+      <h2>Grundy numbers</h2>
+      <p>
+        The same pattern shows up in the
+        <a class="wiki-term" data-wiki="Nimber" href="https://en.wikipedia.org/wiki/Nimber" target="_blank" rel="noopener">Grundy numbers</a>
+        (nimbers) of the pile. For Min = 3 and Max = 5 the page lists
+      </p>
+      <blockquote>
+        <code>0 0 0 1 1 1 2 2</code> and then it repeats.
+      </blockquote>
+      <p>
+        The zeros fall exactly on the P-positions. The logic test recomputes
+        the mex of each size up to 20 and matches the table.
+      </p>
+
+      <p class="tip">
+        Try Min = 3 and Max = 5 with a pile whose size mod 8 is 0, 1 or 2.
+        Let the computer go first (Make move): can you still win?
+      </p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="one-pile-core.js"></script>
+<script src="one-pile.js"></script>
+</body>
+</html>
