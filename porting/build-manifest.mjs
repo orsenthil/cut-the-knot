@@ -38,7 +38,7 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { readInventory } from "./lib/archives.mjs";
@@ -77,70 +77,25 @@ function readGamesJs() {
 }
 
 /**
- * Which applet each ported slug came from. Most are not guessable from the
- * name: the Eye Opener applet is called WProblem, and the hourglass, torque and
- * four-knights applets are not in classes.zip at all (null), though their pages
- * are.
+ * Which applet each ported slug came from: the "applet" field of the game's
+ * own <slug>/meta.json. Most are not guessable from the name (the Eye Opener
+ * applet is called WProblem), and a few ports have no applet in classes.zip
+ * at all, though their pages are on cut-the-knot: those say "applet": null.
  */
-const SLUG_TO_APPLET = {
-  "four-pegs": "FourPegs",
-  rfwh: "RFWH",
-  flipthem: "FlipThem",
-  coins: "CoinsGame",
-  chocolate: "chocolate",
-  "mind-reader": "MindReaderNine",
-  "eye-opener": "WProblem",
-  "four-by-four": "FourByFour",
-  "circle-solitaire": "CSolitaire",
-  "calendar-magic": "Calendar",
-  hanoing: "Hanoing",
-  "clone-escape": "CloneEscape",
-  "dawsons-chess": "DawsonChess",
-  "bicolor-hanoi": "BiColorHanoi",
-  "stones-in-cups": "BarryCipra",
-  "eight-digits": "EightDigitPuzzle",
-  "domino-faults": "DominoCovering",
-  "full-house": "FullHouse",
-  "pennies-in-boxes": "IntIter2",
-  diagonals: "Diagonals",
-  "flipping-pancakes": "Flipper",
-  "frogs-toads-2d": "FrogsAndToads2D",
-  "frogs-toads": "FrogsAndToads",
-  grundy: "Grundy",
-  "whats-next": "guess",
-  hanoi: "hanoi",
-  "hanoi-3c": "Hanoi3c",
-  "long-hanoi": "LongHanoi",
-  looping: "Looping",
-  marriage: "Marriage",
-  mastermind: "Mastermind",
-  mazes: "Mazes",
-  "merlin-4x4": "Merlin4x4",
-  "merlin-5x5": "Merlin5x5",
-  hex7: "Hex7",
-  "hex-draw": "HexTheory",
-  "hare-hounds": "Hounds",
-  ducci: "IntIter",
-  jam: "Jam",
-  "changing-colors": "JChangingColors",
-  "euclid-game": "JEuclidGame",
-  kayles: "Kayles",
-  "carroll-logic": "LCGame",
-  "vanishing-rectangles": "Leprechaun",
-  "l-tromino": "LminoRect",
-  "gergonne": "GergonneMagic",
-  "vanishing-digit": null,
-  hourglass: null,
-  torque: null,
-  "four-knights": "Horse",
-  "maths-quiz": null,
-  euler2d: null,
-  aliquot: "Aliquot",
-  "dawsons-kayles": "DawsonKayles",
-  "fraction-game": "FractionGame",
-  "mixed-strategies": "MixedStrategies",
-};
-
+function readSlugToApplet() {
+  const out = {};
+  for (const entry of readdirSync(REPO, { withFileTypes: true })) {
+    const file = join(REPO, entry.name, "meta.json");
+    if (!entry.isDirectory() || !existsSync(file)) continue;
+    const meta = JSON.parse(readFileSync(file, "utf8"));
+    if (!("applet" in meta)) {
+      throw new Error(`${entry.name}/meta.json needs an "applet" field: the applet's name in classes.zip, or null`);
+    }
+    out[entry.name] = meta.applet;
+  }
+  return out;
+}
+const SLUG_TO_APPLET = readSlugToApplet();
 /** Pages for ported games whose applet is missing from classes.zip. */
 const SLUG_FALLBACK_URL = {
   hourglass: "https://www.cut-the-knot.org/hg_solution.shtml",
@@ -295,7 +250,7 @@ for (const g of catalogue.games) {
   const applet = SLUG_TO_APPLET[g.slug];
   if (applet === undefined) {
     throw new Error(
-      `assets/games.js has slug "${g.slug}" with no entry in SLUG_TO_APPLET in ${"porting/build-manifest.mjs"}`,
+      `assets/games.js has slug "${g.slug}" but ${g.slug}/meta.json has no "applet" field`,
     );
   }
   if (applet) portedByApplet.set(applet, g.slug);

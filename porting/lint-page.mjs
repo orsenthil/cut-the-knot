@@ -81,8 +81,10 @@ function lintSlug(slug, catalogue) {
   if (/src="\.\.\/assets\/games\.js"/.test(html)) fail("a game page must not load ../assets/games.js");
   if (!/<main\b[^>]*\bid="main"/.test(html)) fail('no <main id="main"> around the page content');
   if (/<h3[\s>]/.test(html) && !/<h2[\s>]/.test(html)) fail("an <h3> with no <h2> above it skips a heading level");
-  if (/<img\b(?![^>]*\balt=)[^>]*>/.test(html)) fail("an <img> has no alt attribute (use alt=\"\" if it is decoration)");
-  if (/<canvas\b(?![^>]*(?:aria-label|aria-labelledby|role=))[^>]*>/.test(html)) {
+  // Comments may mention a tag by name; only real markup is checked below.
+  const markup = html.replace(/<!--[\s\S]*?-->/g, "");
+  if (/<img\b(?![^>]*\balt=)[^>]*>/.test(markup)) fail("an <img> has no alt attribute (use alt=\"\" if it is decoration)");
+  if (/<canvas\b(?![^>]*(?:aria-label|aria-labelledby|role=))[^>]*>/.test(markup)) {
     fail("a <canvas> needs an aria-label saying what it shows");
   }
   if (/\son(?:click|change|input|load|key\w+|pointer\w+|mouse\w+)=/.test(html)) {
@@ -198,6 +200,13 @@ function lintSlug(slug, catalogue) {
     if (tags.length > 3) fail(`games.js entry has ${tags.length} tags; at most 3 are allowed`);
     for (const t of tags) {
       if (!(t in catalogue.tags)) fail(`unknown tag "${t}"; add it to COOLMATHS.tags or reuse one`);
+    }
+
+    // A port started with porting/new-port.mjs marks what is left to write.
+    for (const f of readdirSync(dir)) {
+      if (/\.(html|js|json|svg)$/.test(f) && /TODO\(port\)|TODO_port_/.test(readFileSync(join(dir, f), "utf8"))) {
+        fail(`${f} still has lines marked TODO(port)`);
+      }
     }
 
     // The player's record must be able to tell when a play of a game has

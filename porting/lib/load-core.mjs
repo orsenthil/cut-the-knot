@@ -41,7 +41,14 @@ export function equal(label, actual, expected) {
   check(label, a === e, `expected ${e}, got ${a}`);
 }
 
+/** A logic test with fewer checks than this has not tested the logic. */
+const MIN_CHECKS = 10;
+
 export function done(name) {
+  if (checks < MIN_CHECKS) {
+    console.error(`FAIL ${name}: only ${checks} checks ran; a logic test needs at least ${MIN_CHECKS}`);
+    process.exit(1);
+  }
   if (failures) {
     console.error(`FAIL ${name}: ${failures} of ${checks} checks failed`);
     process.exit(1);

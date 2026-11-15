@@ -58,7 +58,9 @@ The home page (`index.html`, `assets/home.js`) renders the card grid from `games
 
 ## Porting a Java applet to JavaScript
 
-Follow these rules when converting another applet. The existing games are the reference implementations: copy the structure of the closest one instead of inventing a new layout.
+**The routine is `porting/PORTING-CARD.md`: ten steps, each one command and one test of "done".** `node porting/new-port.mjs <Applet>` makes the folder from `porting/template/` with everything left to write marked `TODO(port)`, `node porting/brief.mjs <Applet>` prints the applet's page and code in one compact read, and `node porting/finish-port.mjs <slug>` runs everything mechanical and the gate and lists what is still wrong. A port touches only its own folder, its `porting/check-<slug>.mjs` and its `porting/play/<slug>.mjs`; the catalogue, the manifest and each page's standard parts are generated. The card is written to be enough on its own for a small model. The sections below are the rules in full.
+
+The existing games are the reference implementations: copy the structure of the closest one instead of inventing a new layout.
 
 ### 1. Understand the original first
 
@@ -104,10 +106,10 @@ Follow these rules when converting another applet. The existing games are the re
 1. Add `<slug>/meta.json`: a `title`, a one- or two-sentence `blurb` that poses the challenge (often ending in a question), **at most 3 `tags`** naming the mathematical concepts from the "Look for the math" section, a `level` (1: anyone can start here; 2: the usual; 3: needs patience or earlier ideas), an `order` larger than any existing one (it sets the position on the home page), and `kind: "demo"` if it cannot be won or lost. Reuse existing tags; add a new one only when none fits, by giving it a label and prerequisites in `assets/concepts.js`. Then run `node porting/build-catalogue.mjs`, which writes `assets/games.js`, and `node porting/stamp-pages.mjs <slug>`, which writes the standard parts of the page.
 2. Add `<slug>/thumb.svg`: viewBox `0 0 320 200`, transparent background, a simple flat illustration of the game's key moment, using mid-tone colours that read on both white and near-black. It's loaded via `<img>`, so it can't use the page's CSS variables. Embed any raster art as a data URI.
 3. You don't need to edit `index.html` or `assets/games.js`; the grid is built from the generated catalogue.
-4. Add the slug to `SLUG_TO_APPLET` in `porting/build-manifest.mjs`, give the applet a `"status": "ported"` entry with a one-line note in `porting/overrides.json`, and run `node porting/build-manifest.mjs`.
+4. `meta.json` also names the applet: `"applet": "<its name in classes.zip>"`, or `null` if it has none. `node porting/build-manifest.mjs` then marks it ported. `porting/overrides.json` is only for corrections to an applet's kind, page address or status.
 
 ### 6. Before finishing
 
-- `porting/verify.sh <slug>` must pass: it runs `node --check`, the logic test, the page lint, a headless load at phone and desktop width in both themes and at double text size, and checks that the page is as stamped and the catalogue current.
+- `node porting/finish-port.mjs <slug>` runs the generators and then `porting/verify.sh <slug>`, which must pass: it runs `node --check`, the logic test, the page lint, a headless load at phone and desktop width in both themes and at double text size, and checks that the page is as stamped and the catalogue current.
 - Play through to a win and to a loss or impossible state with `porting/play/<slug>.mjs` and `node porting/play.mjs <slug>`, and look at the combined screenshot.
 - Commit one game per commit, titled `Add <Game Name> puzzle`. The body says what the applet was, how faithfully it was ported and how that was verified, and what the math section covers.

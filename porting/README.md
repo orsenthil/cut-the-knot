@@ -16,6 +16,13 @@ history are in [PLAN.md](PLAN.md).
 | `disasm.mjs` | Compact bytecode of one applet: fields, strings, static tables, methods without the noise. |
 | `page.mjs` | A cut-the-knot page as plain text, and which applets it embeds. |
 | `play.mjs`, `play/<slug>.mjs` | Plays a page in headless Chromium from a short scenario; one combined screenshot. |
+| `PORTING-CARD.md` | The routine in ten steps, short enough to hand to a small model. |
+| `new-port.mjs`, `template/` | Starts a port: the folder and its files, with what is left to write marked `TODO(port)`. |
+| `brief.mjs` | The applet's page and code in one compact read. |
+| `finish-port.mjs` | Runs the generators below and the gate, and lists what is still wrong. |
+| `build-catalogue.mjs` | Each game's `meta.json` → `assets/games.js`. `--check` in the gate. |
+| `stamp-pages.mjs`, `site.json` | Writes each page's standard head, `<main>` and tag links from `meta.json`. `--check` in the gate. |
+| `check-home-ui.mjs` | The home page, a made-up catalogue of 1,200, and offline use, in a browser. |
 | `verify.sh` | The gate. Must exit 0 before a port is committed. |
 | `lint-page.mjs`, `smoke-test.mjs` | Gate steps: the page against CLAUDE.md, and a headless load in both themes. |
 | `check-<slug>.mjs` | Each port's Node logic test. |
@@ -32,6 +39,12 @@ history are in [PLAN.md](PLAN.md).
 - **ImageMagick** (`magick`) is optional; with it `play.mjs` joins its screenshots.
 
 ## One porting step
+
+The short form of this routine, enough on its own for a small model, is
+[PORTING-CARD.md](PORTING-CARD.md): `new-port.mjs` starts a port from
+`template/`, `brief.mjs` prints the applet in one read, `finish-port.mjs` runs
+the generators and the gate. What follows is the same routine with the
+reasons and the edge cases.
 
 This is the whole routine for a scheduled or hand-run step. Do exactly one applet.
 
@@ -63,7 +76,7 @@ This is the whole routine for a scheduled or hand-run step. Do exactly one apple
 3. **Check it isn't done already.** `ls -d *<word>*` and grep `assets/games.js` and
    `overrides.json`: a sibling port may already cover it (FrogsAndToads2D's page also
    described the 1-D puzzle; it still needed its own page). The hand-made ports that
-   predate the manifest are mapped to `null` in `SLUG_TO_APPLET`, and one of them was
+   predate the manifest have `"applet": null` in their `meta.json`, and one of them was
    this applet all along (`four-knights` is `Horse`): run `page.mjs` on such a port's
    byline URL to see which applet it embeds, and if it is yours, map it instead of
    porting again.
@@ -87,10 +100,10 @@ This is the whole routine for a scheduled or hand-run step. Do exactly one apple
 6. **Write the core and its test first** (`<slug>/<slug>-core.js`,
    `porting/check-<slug>.mjs`), then the page. Copy the closest reference port (below).
 
-7. **Register.** `<slug>/meta.json` (then `node porting/build-catalogue.mjs`), `thumb.svg`, the slug in `SLUG_TO_APPLET` in
-   `build-manifest.mjs`, and an `overrides.json` entry with `"status": "ported"` and a
-   one-line note (what was ported, any deliberate change). Then
-   `node porting/build-manifest.mjs`.
+7. **Register.** `<slug>/meta.json`, including `"applet"` (the applet's name, or
+   `null`), and `thumb.svg`. `node porting/finish-port.mjs <slug>` then rebuilds the
+   catalogue, stamps the page and rebuilds the manifest. `overrides.json` is only for
+   correcting an applet's kind, page address or status.
 
 8. **Verify.** `NODE_PATH=$(npm root -g) porting/verify.sh <slug>`, then write
    `porting/play/<slug>.mjs` (a win and a loss or dead end) and run

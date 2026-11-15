@@ -15,6 +15,8 @@
  *     "tags": ["game-strategy", "parity"],     at most 3, from assets/concepts.js
  *     "level": 2,                              1 (start here) to 3
  *     "kind": "demo",                          only for something with no win or loss
+ *     "applet": "CoinsGame",                   the applet it was ported from (its name
+ *                                              in classes.zip), or null if it has none
  *     "order": 40                              position on the home page
  *   }
  *
@@ -33,7 +35,7 @@ import { dirname, join } from "node:path";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(REPO, "assets", "games.js");
-const KEYS = ["title", "blurb", "tags", "level", "kind", "order"];
+const KEYS = ["title", "blurb", "tags", "level", "kind", "applet", "order"];
 
 function readConcepts() {
   const window = {};
@@ -69,6 +71,9 @@ for (const entry of readdirSync(REPO, { withFileTypes: true })) {
   if (![1, 2, 3].includes(meta.level)) bad("level must be 1, 2 or 3");
   if (meta.kind !== undefined && meta.kind !== "demo") bad('kind, when given, must be "demo"');
   if (!Number.isFinite(meta.order)) bad("needs a numeric order");
+  if (!("applet" in meta) || !(meta.applet === null || typeof meta.applet === "string")) {
+    bad('needs "applet": the name of the applet in classes.zip, or null');
+  }
   if (!existsSync(join(REPO, slug, "index.html"))) bad("the folder has no index.html");
 
   games.push({ slug, ...meta });

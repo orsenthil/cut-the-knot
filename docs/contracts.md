@@ -226,3 +226,49 @@ The personal tools are read-only and must refuse when
 `profile.settings.mcpAccess === false`. Anything that would let one player
 affect another (matches, public numbers) is written by the server, never
 trusted from a browser.
+
+## 9. Apps and multiplayer: what the pages already promise
+
+Nothing here is built yet. These are the properties the site keeps so that
+both can be added without reworking the pages.
+
+**An Android or iOS app is the site in a shell**, not a second codebase: a
+Trusted Web Activity on Android and a web view on iOS, both opening the
+installed web app (`manifest.webmanifest`, `sw.js`).
+
+- Every address inside the site is relative, and a game is the folder
+  `<slug>/`. A shell can load the site from any origin, or from files
+  bundled with the app.
+- A page works with no network once it has been opened (the service worker
+  keeps it), and never needs the catalogue to run a game.
+- The layout keeps clear of notches and rounded corners
+  (`viewport-fit=cover` and `env(safe-area-inset-*)` in `site.css`), fits a
+  375px screen, and survives text at double size.
+- Play needs touch only: nothing depends on hover or a keyboard.
+- **Sign-in is the part that will need work.** It uses a pop-up window
+  (`assets/auth.js`), which a web view does not allow. An app needs the
+  platform's own Google and GitHub sign-in handed to Firebase, behind the
+  same `COOLMATHS_AUTH` interface, so no page changes.
+- A Trusted Web Activity needs `/.well-known/assetlinks.json` at the root of
+  the domain, which a `github.io` project site cannot serve. The move to a
+  domain of the site's own (`porting/site.json`, then
+  `node porting/stamp-pages.mjs`) has to come first.
+
+**Multiplayer** builds on three things that exist:
+
+- A game's position is plain data that its core can rebuild (section 4), so
+  a position can be sent to another player or checked by a server.
+- The cores run outside the browser. The tutor's server already loads them
+  (`mcp/scripts/build-index.mjs`), so the same server can referee: a move
+  goes to the server, which checks it with the game's own core and writes
+  `matches/{id}` (section 7). A browser never writes a match, because a
+  browser cannot be trusted with another player's game.
+- Every player has a verified identity (Firebase) and a place for per-player
+  data that only they can reach.
+
+What a two-player game adds to its page is small: where a one-player page
+calls `Core.move` and then asks the core for the computer's reply, a
+two-player page sends the move and waits for the other player's. Keeping
+"whose turn" and "what a move is" in the core, not in the page's script, is
+what makes that swap possible; the template's `legalMoves`, `move` and
+`result` are that seam.
