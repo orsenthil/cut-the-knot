@@ -40,7 +40,7 @@ const GAMES = {
     await page.locator(".chip:not(:disabled)").first().click();
   },
   "no-silver-dollar": async (page) => {
-    await page.locator(".spot.chip:not(:disabled)").first().click();
+    await page.locator(".cell.counter:not(:disabled)").first().click();
   },
 };
 

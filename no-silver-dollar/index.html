@@ -25,22 +25,87 @@
   #stage {
     width: 100%;
     padding: 1rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  /* A long board slides sideways in here; the page itself never does. */
+  #boardScroll {
+    width: 100%;
     overflow-x: auto;
+    padding: 0.5rem 0.25rem;
   }
-  .board { display: flex; justify-content: center; min-width: max-content; margin: auto; }
-  .space { width: clamp(1.45rem, 5vw, 2.3rem); display: flex; flex-direction: column; align-items: center; }
-  .spot { width: 100%; aspect-ratio: 1; padding: 0; border: 0; border-radius: 0.4rem; background: transparent; color: var(--ink); font-size: 1.35rem; }
-  .spot:not(:disabled) { cursor: pointer; }
-  .spot:not(:disabled):hover { background: var(--highlight); }
-  .spot:focus-visible { outline: 3px solid var(--focus); }
-  .spot.chip { color: var(--accent); font-size: 1.45rem; }
-  .spot.selected { background: var(--highlight); }
-  .space-label { color: var(--muted); font-size: 0.7rem; }
-  @media (max-width: 34rem) { .board { justify-content: flex-start; } }
-  .controls { flex-wrap: wrap; }
+  .board {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    margin: 0 auto;
+    /* every square stays wide enough to hit with a finger */
+    min-width: calc(var(--n, 25) * (1.75rem + 2px));
+    max-width: 62rem;
+  }
+  .col {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 2.4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .cell {
+    width: 100%;
+    aspect-ratio: 1;
+    min-width: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.35rem;
+    background: var(--card);
+  }
+  .cell:disabled { opacity: 1; cursor: default; }
+  .cell:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 1px;
+  }
+  /* where the picked-up counter may go */
+  .cell.target {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    cursor: pointer;
+  }
+  .cell.target:hover:not(:disabled) { background: var(--highlight); }
+  /* the computer's last move: the square it left and the counter it moved */
+  .cell.left { border-style: dashed; border-color: var(--ink); }
+  .cell.arrived { background: var(--highlight); }
+  .cell.counter:not(:disabled) { cursor: pointer; }
+  .cell.selected {
+    outline: 3px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .disc {
+    width: 72%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--ink);
+    pointer-events: none;
+  }
+  .col-label {
+    margin-top: 0.2rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  #slideHint, #score {
+    margin: 0.4rem 0 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+  }
+  #score { font-size: 1rem; font-variant-numeric: tabular-nums; }
   #status { min-height: 1.5em; text-align: center; }
-  #rules { max-width: 42rem;
-  }
 </style>
 </head>
 <body data-game="no-silver-dollar" data-kind="game">
@@ -54,12 +119,15 @@
   </p>
 
   <div id="rules">
-    <strong>Game:</strong> Move counters left along the row without jumping over another counter; the player with no move loses.<br>
-    <strong>How to play:</strong> Select a counter, then choose an empty space to its left; you may move it any distance but cannot pass or share a space. Check Set up to move counters freely, then uncheck it to play.
+    <strong>Game:</strong> you and the computer take turns sliding the same counters to the left. Whoever makes the last move wins.<br>
+    <strong>How to play:</strong> pick a counter, then pick an empty square to its left. A counter cannot jump over another counter or share its square.
   </div>
 
   <div id="stage" class="stage">
-    <p class="board-help">Choose a counter, then one of the empty spaces to its left.</p>
+    <div id="boardScroll">
+      <div class="board" role="group" aria-label="The board: square 0 on the left to the highest on the right"></div>
+    </div>
+    <p id="slideHint" hidden>Slide the board sideways to see all of it.</p>
   </div>
 
   <div class="controls">
@@ -70,22 +138,71 @@
   </div>
 
   <div id="status" role="status" aria-live="polite"></div>
+  <p id="score"></p>
 
   <details id="math">
     <summary>Look for the math</summary>
     <div class="math-body">
-      <p>The spaces between counters hide heaps that behave like a familiar take-away game. A counter move can change a gap in a surprising direction, which is why this is sometimes called Bogus Nim.</p>
+      <p>
+        The gaps between the counters hide the heaps of a famous take-away game. A move can
+        also make a gap bigger, which that game never allows. That is why this one is
+        sometimes called Bogus Nim.
+      </p>
 
       <h2>Read the gaps as heaps</h2>
-      <p>Start at the rightmost counter. The empty spaces before it form one heap. Skip the next gap, then count the next; continue alternating. If there is an odd number of counters, the spaces from the left edge to the leftmost counter form the last heap. Each legal move changes just one of these heaps.</p>
+      <p>
+        Start at the rightmost counter and count the empty squares up to the next counter.
+        That is the first heap. Skip the next gap, count the one after it, and go on
+        like this. With an odd number of counters, the last heap is the squares from the
+        left edge to the leftmost counter. With counters on 3, 7 and 10, the heaps are
+        2 (squares 8 and 9) and 3 (squares 0 to 2); the gap between 3 and 7 is skipped.
+        Every move changes exactly one heap.
+      </p>
 
-      <h2>Why some gaps grow</h2>
-      <p>A counter can move left across a gap that belongs to the other parity, making that heap larger. The opponent can undo that increase immediately, so it gives no lasting advantage. Such a reversible move does not improve a player's position.</p>
+      <h2>Why it is bogus</h2>
+      <p>
+        Sliding a counter into a skipped gap makes the heap on its right bigger. In
+        <a class="wiki-term" data-wiki="Nim" href="https://en.wikipedia.org/wiki/Nim" target="_blank" rel="noopener">Nim</a>
+        a heap can only shrink. But the other player can answer at once by sliding the next
+        counter the same distance, which puts the heap back to its old size. Such a move is
+        called reversible: it changes nothing, and since counters only ever go left, it can
+        be made only so many times. The game always ends.
+      </p>
 
-      <h2>Use the Nim sum</h2>
-      <p>For the heaps, calculate their <a class="wiki-term" data-wiki="Nim" href="https://en.wikipedia.org/wiki/Nim" target="_blank" rel="noopener">Nim</a> sum by XORing their sizes. A zero sum is losing with perfect play. Otherwise, reduce one heap so the new XOR is zero; the applet's computer uses this rule and makes a random legal move when its position is already losing.</p>
+      <h2>Use the Nim-sum</h2>
+      <p>
+        Write the heap sizes in binary and combine them with
+        <a class="wiki-term" data-wiki="Exclusive_or" href="https://en.wikipedia.org/wiki/Exclusive_or" target="_blank" rel="noopener">XOR</a>.
+        The result is the Nim-sum.
+      </p>
+      <blockquote>Nim-sum = heap<sub>1</sub> XOR heap<sub>2</sub> XOR &hellip;</blockquote>
+      <p>
+        If it is 0, the player to move loses against perfect play. If not, some heap can
+        be made smaller so that the Nim-sum becomes 0, and that move wins. For 2 and 3 the
+        Nim-sum is 1, so move the counter on 3 to 2: the heaps are then 2 and 2. The
+        <a class="wiki-term" data-wiki="Sprague%E2%80%93Grundy_theorem" href="https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem" target="_blank" rel="noopener">Sprague&ndash;Grundy theorem</a>
+        explains why so many games come down to Nim in this way. We checked the rule
+        against every position with up to 7 counters on boards of up to 16 squares,
+        by playing each one out.
+      </p>
 
-      <p class="tip">Try a few starting boards with three counters. Count alternate gaps from the right, then see whether your first move can make their XOR zero.</p>
+      <h2>How the computer plays</h2>
+      <p>
+        The computer moves second. With a Nim-sum that is not 0 it makes the move above;
+        otherwise it has no good move and moves at random. So you win exactly when the
+        starting Nim-sum is not 0 and you keep handing back a 0. With Set up you can
+        arrange a board of your own before you play.
+      </p>
+      <p>
+        This page differs from the original applet in small ways: you press a counter and
+        then a square instead of dragging, the computer says which counter it moved, and the
+        score is written out in words.
+      </p>
+
+      <p class="tip">
+        Try three counters. Work out the two heaps, then look for the one move that makes
+        them equal.
+      </p>
     </div>
   </details>
 </main>

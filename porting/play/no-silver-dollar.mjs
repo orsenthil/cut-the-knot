@@ -1,31 +1,47 @@
-// One deliberate win, one losing move, then a phone-width view of the large board.
+// No Silver Dollar: a win with one counter, played with the keyboard; then a
+// loss with one counter; then the largest board and Set up, to look at on a phone.
 export default async ({ page, first, log, shot, idle, text }) => {
+  const thinking = () => !/Thinking/.test(document.getElementById("status").textContent);
+
+  // Win: one counter, picked up and sent to square 0 with the keyboard alone.
   await page.selectOption("#chipsInput", "1");
-  const chip = page.locator(".spot.chip").first();
-  const label = await chip.getAttribute("aria-label");
-  await chip.click();
-  await page.locator(`.spot[aria-label="Space 0"]`).click();
-  log("move the single counter to the left edge:", await text("#status"));
+  await page.locator(".cell.counter:not(:disabled)").first().focus();
+  await page.keyboard.press("Enter");
+  log("focus stays on the board after a pick:", await page.evaluate(() => document.activeElement.className));
+  await page.locator('.cell.target[data-pos="0"]').focus();
+  await page.keyboard.press("Enter");
+  log("1-counter win, by keyboard:", await text("#status"), "|", await text("#score"));
   await shot("win");
+
   if (!first) return;
 
-  await page.selectOption("#chipsInput", "1");
-  const second = page.locator(".spot.chip").first();
-  const secondLabel = await second.getAttribute("aria-label");
-  const p = Number(secondLabel.match(/at (\d+)/)[1]);
-  await second.click();
-  await page.locator(`.spot[aria-label="Space ${p - 1}"]`).click();
-  await idle(() => /wins/i.test(document.getElementById("status").textContent));
-  log("leave a single move for the computer:", await text("#status"));
+  // Loss: move the one counter a single square, and the computer takes it home.
+  await page.click("#newBtn");
+  await page.locator(".cell.counter").first().click();
+  await page.locator(".cell.target").last().click();
+  await idle(thinking);
+  log("1-counter loss:", await text("#status"), "|", await text("#score"));
   await shot("loss");
 
+  // Three counters: one move each, to see how the computer's move is marked.
+  await page.selectOption("#chipsInput", "3");
+  await page.locator(".cell.counter:not(:disabled)").last().click();
+  await page.locator(".cell.target").last().click();
+  await idle(thinking);
+  log("after the computer's reply:", await text("#status"));
+  await shot("reply");
+
+  // The largest board: 30 squares and 12 counters, with one counter picked up.
   await page.selectOption("#lengthInput", "30");
   await page.selectOption("#chipsInput", "12");
+  await page.locator(".cell.counter:not(:disabled)").first().click();
   await shot("largest");
+
+  // Set up: a counter may go anywhere empty, to the right as well.
   await page.check("#setupInput");
-  await page.locator(".spot.chip").first().click();
-  await page.locator('.spot[aria-label="Space 0"]').click();
-  log("setup mode:", await text("#status"));
-  await shot("setup");
+  await page.locator(".cell.counter").first().click();
+  await page.locator('.cell.target[data-pos="29"], .cell.target[data-pos="28"]').last().click();
+  log("set up:", await text("#status"));
   await page.uncheck("#setupInput");
+  log("back to play:", await text("#status"));
 };
