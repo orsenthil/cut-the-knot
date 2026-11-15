@@ -74,7 +74,9 @@
   .account-note.bad { color: var(--bad); }
 
   .empty { margin: 0; color: var(--muted); }
-  .forget { align-self: center; }
+  .record-buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .privacy-link { margin: -14px 0 0; text-align: center; font-size: 0.88rem; }
+  .privacy-link a { color: var(--muted); }
 </style>
 </head>
 <body data-page="profile">
@@ -122,7 +124,11 @@
       <div id="tried"></div>
     </section>
 
-    <button type="button" class="forget" id="forget">Forget my record</button>
+    <div class="record-buttons">
+      <button type="button" id="download">Download my record</button>
+      <button type="button" id="forget">Forget my record</button>
+    </div>
+    <p class="privacy-link"><a href="../privacy/index.html">What coolmaths keeps about you</a></p>
   </div>
 
 <script src="../assets/concepts.js"></script>
@@ -255,11 +261,31 @@
     renderNext(progress);
     renderConcepts(progress);
     renderTried(played);
-    $("forget").hidden = played.length === 0;
+    $("forget").hidden = $("download").hidden = played.length === 0;
   }
 
   $("forget").addEventListener("click", () => {
     if (window.confirm("Forget everything you have played? This cannot be undone.")) Track.clear();
+  });
+
+  // Everything kept about the player's play, as one file they can keep.
+  $("download").addEventListener("click", async () => {
+    const [progress, sessions, live] = await Promise.all([Track.progress(), Track.sessions(), Track.live()]);
+    const user = window.COOLMATHS_AUTH && window.COOLMATHS_AUTH.user;
+    const record = {
+      site: "coolmaths",
+      savedAt: new Date().toISOString(),
+      keptIn: user ? "your coolmaths account" : "this browser",
+      account: user ? { displayName: user.displayName, signedInWith: user.providers } : null,
+      progress,
+      sessions,
+      live,
+    };
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob([JSON.stringify(record, null, 2)], { type: "application/json" }));
+    link.download = "coolmaths-record.json";
+    link.click();
+    URL.revokeObjectURL(link.href);
   });
 
   /* ---- the account (assets/auth.js, loaded by site.js on this page) ---- */

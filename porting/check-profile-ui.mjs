@@ -12,6 +12,7 @@
  * with no page errors and no sideways scrolling.
  */
 
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { serveRepo, launch } from "./lib/browser.mjs";
 
@@ -109,6 +110,20 @@ try {
   check("home: suggests a next game", /Next for you/.test(await page.textContent("#forYou")));
   check("home: no sideways scrolling at 375px", await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
   if (shots) await page.screenshot({ path: join(shots, "home.png") });
+
+  /* ---- a copy of the record ---- */
+
+  await page.goto(`${base}/profile/`);
+  const [download] = await Promise.all([page.waitForEvent("download"), page.click("#download")]);
+  const saved = JSON.parse(readFileSync(await download.path(), "utf8"));
+  check("download: the file is named for what it is", download.suggestedFilename() === "coolmaths-record.json");
+  check("download: it holds both games and the plays", saved.progress.coins && saved.progress.hanoi && saved.sessions.length >= 2 && saved.keptIn === "this browser");
+  check("profile: links to the privacy page", (await page.locator('a[href$="privacy/index.html"]').count()) >= 2);
+
+  await page.goto(`${base}/privacy/`);
+  check("privacy: the page loads with the site's header", (await page.locator(".site-header").count()) === 1 && /Privacy/.test(await page.textContent("h1")));
+  check("privacy: no sideways scrolling at 375px", await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
+  if (shots) await page.screenshot({ path: join(shots, "privacy.png"), fullPage: true });
 
   /* ---- forgetting ---- */
 

@@ -1,9 +1,9 @@
 ---
 id: "900"
 title: Create the Firebase project
-status: todo
+status: done
 owner: human
-claimedAt: 
+claimedAt: 2026-11-14
 deps: []
 offline: no
 files:
@@ -16,3 +16,7 @@ Owner setup: create the project; enable Firestore and the Anonymous, Google and 
 ## Outcome
 
 Project `coolmaths-ramanujan1729` exists and its public web config is in `assets/firebase-config.js`. Still to confirm in the console: Firestore created, Google and GitHub providers enabled, `orsenthil.github.io` authorized, rules deployed. The Anonymous provider is not needed (see task 010). The service account for the MCP server belongs to task 014.
+
+## Finished
+
+Google and GitHub sign-in work on the live site, the rules are deployed, and the service account is a Fly secret.

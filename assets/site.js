@@ -98,7 +98,8 @@
     footer.innerHTML =
       "Puzzles from <a href=\"https://www.cut-the-knot.org/\" target=\"_blank\" rel=\"noopener\">cut-the-knot.org</a> " +
       "by Alexander Bogomolny, rebuilt for the modern web.<br>" +
-      "coolmaths logo by Harini Vardhan.";
+      "coolmaths logo by Harini Vardhan.<br>" +
+      `<a href="${ROOT}privacy/index.html">Privacy</a>`;
     document.body.appendChild(footer);
   }
 

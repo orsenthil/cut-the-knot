@@ -1,9 +1,9 @@
 ---
 id: "005"
 title: Create the Fly app and deploy
-status: todo
+status: done
 owner: human
-claimedAt: 
+claimedAt: 2026-11-14
 deps: ["004"]
 offline: no
 files:
@@ -18,3 +18,7 @@ Owner setup: `fly apps create coolmaths-tutor`, add the `FLY_API_TOKEN` reposito
 ## Outcome so far
 
 The app `coolmaths-tutor` exists and is deployed: https://coolmaths-tutor.fly.dev/mcp answers. Still to do: the `FLY_API_TOKEN` repository secret so pushes deploy by themselves, the `FIREBASE_SERVICE_ACCOUNT` secret for `/mcp/me`, repointing the claude.ai connector, and deleting the old Cloudflare Worker.
+
+## Finished
+
+The app is deployed, `FLY_API_TOKEN` is a repository secret and a CI run has deployed with it, and the claude.ai connector works against Fly. One thing is left for the owner: deleting the old Cloudflare Worker, and then the two `CLOUDFLARE_*` repository secrets.
