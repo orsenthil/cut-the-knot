@@ -122,8 +122,8 @@
   }
 
   // Sign-in (assets/auth.js) brings the Firebase SDK with it, so it is only
-  // loaded where it is needed: on the profile page, which offers sign-in, and
-  // everywhere once the player has signed in on this browser.
+  // loaded where it is needed: on the pages that offer sign-in (profile/ and
+  // signin/), and everywhere once the player has signed in on this browser.
   function loadAccount() {
     let signedIn = false;
     try {
@@ -131,7 +131,8 @@
     } catch (e) {
       // storage blocked: treat as a guest
     }
-    if (!signedIn && document.body.dataset.page !== "profile") return;
+    const offersSignIn = ["profile", "signin"].includes(document.body.dataset.page);
+    if (!signedIn && !offersSignIn) return;
     document.head.appendChild(el("script", { type: "module", src: ROOT + "assets/auth.js" }));
   }
 

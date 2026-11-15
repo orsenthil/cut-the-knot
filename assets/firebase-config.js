@@ -14,6 +14,12 @@
 
 export const FIREBASE_SDK = "https://www.gstatic.com/firebasejs/13.3.0";
 
+/*
+ * The coolmaths tutor (mcp/). The sign-in page, signin/, sends the player's
+ * sign-in to this address and to no other, whatever the page's URL says.
+ */
+export const TUTOR_SERVER = "https://coolmaths-tutor.fly.dev";
+
 export const firebaseConfig = {
   apiKey: "AIzaSyB5y4ILnWT8Pj6hlZ-2CPI37XFCr2OwfvQ",
   authDomain: "coolmaths-ramanujan1729.firebaseapp.com",

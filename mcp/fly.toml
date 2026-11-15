@@ -7,6 +7,14 @@
 app = "coolmaths-tutor"
 primary_region = "sjc"
 
+# Addresses the sign-in for /mcp/me needs (see src/node.ts). They are not
+# secrets. The one secret, FIREBASE_SERVICE_ACCOUNT, is set with
+# `fly secrets set`; until it is, the server runs with the public endpoint only.
+[env]
+  PUBLIC_URL = "https://coolmaths-tutor.fly.dev"
+  SIGN_IN_URL = "https://orsenthil.github.io/cut-the-knot/signin/"
+  SIGN_IN_ORIGINS = "https://orsenthil.github.io"
+
 [http_service]
   internal_port = 8080
   force_https = true

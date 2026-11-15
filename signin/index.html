@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Connect the tutor &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/games.js"></script>
+<script src="../assets/site.js"></script>
+<style>
+  .consent {
+    width: 100%;
+    max-width: 520px;
+    margin-top: 18px;
+    padding: 22px 22px 24px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+  .consent p { margin: 0 0 14px; line-height: 1.55; }
+  .consent ul { margin: 0 0 16px; padding: 0 0 0 1.2em; text-align: left; line-height: 1.6; }
+  .consent .who { font-weight: 700; overflow-wrap: anywhere; }
+  .consent .small { color: var(--muted); font-size: 0.88rem; }
+  .consent .buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 6px; }
+  .consent .bad { color: var(--bad); }
+</style>
+</head>
+<body data-page="signin">
+  <h1>Connect the tutor</h1>
+
+  <section class="consent" aria-live="polite">
+    <p id="loading">One moment&hellip;</p>
+
+    <div id="problem" hidden>
+      <p class="bad" id="problemText"></p>
+      <p class="small">You can close this page.</p>
+    </div>
+
+    <div id="ask" hidden>
+      <p><span class="who" id="clientName"></span> wants to be your coolmaths tutor.</p>
+      <p>If you allow it, it can see:</p>
+      <ul>
+        <li>which games you have played, and how they went</li>
+        <li>the game you have open, and where the pieces are</li>
+      </ul>
+      <p class="small">It cannot change anything. You will be sent back to <span class="who" id="redirectHost"></span>. You can switch this off at any time on your profile.</p>
+
+      <div id="needSignIn" hidden>
+        <p>First, sign in to coolmaths.</p>
+        <div class="buttons">
+          <button type="button" class="primary" data-provider="google">Sign in with Google</button>
+          <button type="button" data-provider="github">Sign in with GitHub</button>
+        </div>
+      </div>
+
+      <div id="decide" hidden>
+        <p>Signed in as <strong id="who"></strong></p>
+        <div class="buttons">
+          <button type="button" class="primary" id="allow">Allow</button>
+          <button type="button" id="cancel">Cancel</button>
+        </div>
+      </div>
+
+      <p class="small bad" id="note" role="status"></p>
+    </div>
+  </section>
+
+<script>
+"use strict";
+
+/*
+ * The last step of signing the coolmaths tutor (mcp/) in to a player's
+ * account. An MCP client such as claude.ai sends the player here with
+ * ?request=<id>. The page shows who is asking, signs the player in if
+ * needed, and on Allow sends the tutor's server proof of who they are; the
+ * server answers with where to go back to.
+ *
+ * The server's address comes from assets/firebase-config.js, never from
+ * this page's URL: the proof of sign-in must not be sendable anywhere else.
+ */
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const request = new URLSearchParams(location.search).get("request") || "";
+  const account = () => window.COOLMATHS_AUTH;
+
+  function show(id) {
+    for (const part of ["loading", "problem", "ask"]) $(part).hidden = part !== id;
+  }
+
+  function problem(text) {
+    $("problemText").textContent = text;
+    show("problem");
+  }
+
+  function setBusy(busy) {
+    document.querySelectorAll(".consent button").forEach((b) => (b.disabled = busy));
+  }
+
+  async function server(path, init) {
+    const response = await fetch(account().tutorServer + path, init);
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(body.error || "The tutor could not be reached. Please try again.");
+    return body;
+  }
+
+  function renderAccount() {
+    const user = account().user;
+    $("needSignIn").hidden = Boolean(user);
+    $("decide").hidden = !user;
+    if (user) $("who").textContent = user.displayName || "a coolmaths player";
+  }
+
+  /** Tells the server the decision and follows where it sends us. */
+  async function finish(allow) {
+    $("note").textContent = "";
+    setBusy(true);
+    try {
+      const idToken = allow ? await account().idToken() : null;
+      const { redirect } = await server("/oauth/complete", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ request, idToken, allow }),
+      });
+      location.replace(redirect);
+    } catch (err) {
+      $("note").textContent = err.message;
+      setBusy(false);
+    }
+  }
+
+  async function start() {
+    if (!/^[A-Za-z0-9_-]{20,100}$/.test(request)) {
+      problem("This page is opened by an app that wants to connect to coolmaths. There is nothing to do here on its own.");
+      return;
+    }
+    await account().ready;
+    try {
+      const asking = await server(`/oauth/request/${request}`);
+      $("clientName").textContent = asking.clientName;
+      $("redirectHost").textContent = asking.redirectHost;
+    } catch (err) {
+      problem(err.message);
+      return;
+    }
+    renderAccount();
+    show("ask");
+  }
+
+  document.querySelectorAll("[data-provider]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      $("note").textContent = "";
+      try {
+        await account().signIn(button.dataset.provider);
+      } catch (err) {
+        $("note").textContent = err.message;
+      }
+    });
+  });
+  $("allow").addEventListener("click", () => finish(true));
+  $("cancel").addEventListener("click", () => finish(false));
+  window.addEventListener("authchange", renderAccount);
+
+  // assets/auth.js is a module that site.js adds; wait for it to arrive.
+  (function whenReady(tries) {
+    if (account()) start();
+    else if (tries > 0) setTimeout(() => whenReady(tries - 1), 100);
+    else problem("Sign-in could not be loaded. Check your connection and reload the page.");
+  })(150);
+})();
+</script>
+</body>
+</html>

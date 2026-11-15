@@ -47,7 +47,9 @@ Each game is a folder `<slug>/` containing `index.html`, its script(s), a `thumb
 
 `profile/` is the player's page (games played, concepts met, suggestions). It is a site page, not a game: it has no catalogue entry and reads the record only through `Track`.
 
-`mcp/` is the MCP tutor, a Node server deployed to Fly.io (`mcp/README.md`). Its content is generated from the site at build time, so it is never edited to match a port; a game with a core gets tutor actions by adding `mcp/src/games/<slug>.ts`.
+`signin/` is where a player lets the tutor see their record: an MCP client sends them there to sign in and press Allow. Like `profile/` it is a site page, not a game.
+
+`mcp/` is the MCP tutor, a Node server deployed to Fly.io (`mcp/README.md`). `/mcp` is public; `/mcp/me` adds a signed-in player's own progress and position, read from Firestore. Its content is generated from the site at build time, so it is never edited to match a port; a game with a core gets tutor actions by adding `mcp/src/games/<slug>.ts`.
 
 The home page (`index.html`) renders the card grid and tag filter bar from `games.js`. The URL hash is the active tag (`/#number-theory`), and an unknown tag shows an empty state.
 

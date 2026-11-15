@@ -21,9 +21,12 @@
  *   COOLMATHS_AUTH.getSettings()    -> { mcpAccess, public }
  *   COOLMATHS_AUTH.setMcpAccess(true | false)
  *   COOLMATHS_AUTH.deleteAccount()  the record, the profile and the sign-in
+ *   COOLMATHS_AUTH.idToken()        proof of who is signed in, for the tutor's
+ *                                   sign-in page (signin/) and nothing else
+ *   COOLMATHS_AUTH.tutorServer      the tutor's address
  */
 
-import { firebaseConfig, FIREBASE_SDK } from "./firebase-config.js";
+import { firebaseConfig, FIREBASE_SDK, TUTOR_SERVER } from "./firebase-config.js";
 import { firebaseBackend, moveRecord, withFallback } from "./backends/firebase.js";
 
 /** Set while the player is signed in on this browser; site.js reads it. */
@@ -116,6 +119,12 @@ async function useBrowser() {
 const api = {
   user: null,
   ready: null,
+  tutorServer: (emulators && emulators.tutorServer) || TUTOR_SERVER,
+
+  // A fresh token, so one that was revoked is not handed on.
+  idToken() {
+    return auth.currentUser ? auth.currentUser.getIdToken(true) : Promise.resolve(null);
+  },
 
   async signIn(providerName) {
     const provider = providerName === "github" ? new authSdk.GithubAuthProvider() : new authSdk.GoogleAuthProvider();

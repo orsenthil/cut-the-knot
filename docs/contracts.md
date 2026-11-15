@@ -15,7 +15,7 @@ game page ──Track──▶ assets/progress.js ──backend──▶ localSt
 
 profile page, home ──▶ Track.progress() + assets/recommend.js
 
-MCP server ──UserStore──▶ fixtures (today) / Firestore (task 014)
+MCP server ──UserStore──▶ Firestore (fixtures in tests)
            └─ assets/recommend.js, and each game's core, copied in at build
 ```
 
@@ -143,7 +143,8 @@ users/{uid}/live/current        the live record, with `state` as JSON text
 # later tasks; closed to everyone until they get rules
 handles/{handle}                { uid }            uniqueness index
 publicProfiles/{uid}            opt-in, handle only, public read
-oauth/{kind}/{id}               MCP OAuth clients, codes, tokens: server only
+oauth/{kind}/items/{id}         MCP OAuth clients, sign-ins in progress, codes
+                                and tokens (by hash): server only
 matches/{matchId}[/moves/{n}]   later: multiplayer, written by the server only
 ```
 
@@ -184,6 +185,12 @@ interface Authenticator {
   authenticate(authorizationHeader): Promise<User | null>
 }
 ```
+
+Implementations: `MemoryStore` and `FirestoreUserStore`; `DevAuthenticator`
+and `CoolmathsOAuthProvider`. How a client signs in is in `mcp/README.md`
+("Sign-in for /mcp/me"); the site's half is the `signin/` page, which sends
+the player's Firebase ID token to `TUTOR_SERVER` (`assets/firebase-config.js`)
+and nowhere else.
 
 The personal tools are read-only and must refuse when
 `profile.settings.mcpAccess === false`. Anything that would let one player

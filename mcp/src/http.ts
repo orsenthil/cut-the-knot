@@ -5,6 +5,8 @@
  *   GET  /          a plain-text note for a person or a health check
  *   POST /mcp       the public endpoint: no sign-in
  *   POST /mcp/me    the same server plus the personal tools: needs sign-in
+ *   GET  /oauth/request/{id}   } used by the coolmaths sign-in page to finish
+ *   POST /oauth/complete       } an OAuth sign-in (see auth/oauth-provider.ts)
  *
  * Request and Response exist in Node, Workers, Deno and Bun alike, so this
  * file is the same on any of them; src/node.ts is the only Node-specific
@@ -14,6 +16,7 @@
  */
 
 import type { Authenticator } from "./auth/authenticator.js";
+import type { CoolmathsOAuthProvider } from "./auth/oauth-provider.js";
 import { handle } from "./core/handle.js";
 import type { UserStore } from "./core/store.js";
 import type { ServerContext } from "./server/build.js";
@@ -22,6 +25,14 @@ export interface HttpDeps {
   /** Sign-in for /mcp/me. Without it, or without a store, /mcp/me answers 503. */
   authenticator?: Authenticator;
   store?: UserStore;
+  /** OAuth sign-in. When set, a 401 from /mcp/me tells the client where to start. */
+  oauth?: {
+    provider: CoolmathsOAuthProvider;
+    /** Origins the sign-in page is served from; only these may finish a sign-in. */
+    signInOrigins: string[];
+    /** Where a client finds this server's OAuth details (RFC 9728). */
+    resourceMetadataUrl: string;
+  };
 }
 
 const CORS = {
@@ -85,10 +96,64 @@ async function serveMcp(request: Request, context: ServerContext): Promise<Respo
   }
 }
 
+/**
+ * The two calls the sign-in page makes. They are answered only for the
+ * site's own origins: the page sends the player's Firebase ID token here,
+ * and no other page has any business doing that.
+ */
+async function serveSignIn(request: Request, path: string, oauth: NonNullable<HttpDeps["oauth"]>): Promise<Response> {
+  const origin = request.headers.get("origin");
+  if (!origin || !oauth.signInOrigins.includes(origin)) {
+    return new Response(JSON.stringify({ error: "forbidden" }), { status: 403, headers: { "content-type": "application/json" } });
+  }
+  const cors = {
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Max-Age": "600",
+    Vary: "Origin",
+    "Cache-Control": "no-store",
+  };
+  const reply = (body: unknown, status = 200) =>
+    new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json", ...cors } });
+
+  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
+
+  const describe = /^\/oauth\/request\/([A-Za-z0-9_-]{20,100})$/.exec(path);
+  if (describe && request.method === "GET") {
+    const found = await oauth.provider.describeRequest(describe[1]);
+    return found ? reply(found) : reply({ error: "This sign-in has expired. Go back and start again." }, 404);
+  }
+
+  if (path === "/oauth/complete" && request.method === "POST") {
+    let body: { request?: unknown; idToken?: unknown; allow?: unknown };
+    try {
+      body = ((await request.json()) ?? {}) as typeof body;
+    } catch {
+      return reply({ error: "bad request" }, 400);
+    }
+    if (typeof body !== "object" || typeof body.request !== "string") return reply({ error: "bad request" }, 400);
+    try {
+      const redirect = await oauth.provider.completeRequest(
+        body.request,
+        typeof body.idToken === "string" ? body.idToken : null,
+        body.allow === true,
+      );
+      return redirect ? reply({ redirect }) : reply({ error: "This sign-in has expired. Go back and start again." }, 404);
+    } catch {
+      return reply({ error: "Your sign-in could not be checked. Please sign in again." }, 400);
+    }
+  }
+
+  return reply({ error: "not found" }, 404);
+}
+
 export async function handleRequest(request: Request, deps: HttpDeps = {}): Promise<Response> {
   const url = new URL(request.url);
   const path = url.pathname.replace(/\/+$/, "") || "/";
   const personalReady = Boolean(deps.authenticator && deps.store);
+
+  if (deps.oauth && path.startsWith("/oauth/")) return serveSignIn(request, path, deps.oauth);
 
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
   if (path === "/") return landingPage(url.origin, personalReady);
@@ -112,7 +177,10 @@ export async function handleRequest(request: Request, deps: HttpDeps = {}): Prom
   }
   const user = await deps.authenticator.authenticate(request.headers.get("authorization"));
   if (!user) {
-    return rpcError(-32001, "Sign in to use this endpoint.", 401, null, { "WWW-Authenticate": 'Bearer realm="coolmaths"' });
+    const challenge = deps.oauth
+      ? `Bearer realm="coolmaths", resource_metadata="${deps.oauth.resourceMetadataUrl}"`
+      : 'Bearer realm="coolmaths"';
+    return rpcError(-32001, "Sign in to use this endpoint.", 401, null, { "WWW-Authenticate": challenge });
   }
   return serveMcp(request, { user, store: deps.store });
 }

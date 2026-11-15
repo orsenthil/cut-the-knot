@@ -1,85 +1,84 @@
 /*
- * The Node entry point: an HTTP listener around src/http.ts.
+ * The Node entry point: reads the environment, builds the app, listens.
  *
  * This is what runs on Fly.io (see Dockerfile and fly.toml), and what
- * `npm run dev` runs locally. Everything that matters is in src/http.ts,
- * which is platform-free; this file only turns Node's request and response
- * objects into the standard ones and back, and reads the environment.
+ * `npm run dev` runs locally. The server has three modes, chosen by what
+ * is in the environment:
  *
- * Environment:
- *   PORT                   port to listen on (default 8080)
- *   COOLMATHS_DEV_TOKEN    } set both, for local work only, to switch on
- *   COOLMATHS_DEV_USER     } /mcp/me with a fixed token and the fixture players
+ *   nothing set
+ *       Only the public endpoint, /mcp. /mcp/me answers 503.
+ *
+ *   FIREBASE_SERVICE_ACCOUNT (the service account's JSON key, a Fly secret)
+ *       The real thing: players' records come from Firestore, and /mcp/me
+ *       is signed in to with OAuth, which is kept in Firestore too.
+ *       Also needs PUBLIC_URL, SIGN_IN_URL and SIGN_IN_ORIGINS (fly.toml).
+ *
+ *   FIRESTORE_EMULATOR_HOST + FIREBASE_AUTH_EMULATOR_HOST + FIREBASE_PROJECT_ID
+ *       The same code against the Firebase emulators, with no key. For tests.
+ *
+ *   COOLMATHS_DEV_TOKEN + COOLMATHS_DEV_USER
+ *       Local work only: /mcp/me accepts one fixed token and serves the
+ *       fixture players in fixtures/users.json. No OAuth, no database.
+ *
+ *   PORT    port to listen on (default 8080)
  */
 
-import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
-
 import { DevAuthenticator } from "./auth/dev.js";
-import { handleRequest, type HttpDeps } from "./http.js";
+import { CoolmathsOAuthProvider } from "./auth/oauth-provider.js";
+import { createApp, type AppOptions } from "./app.js";
 import { MemoryStore } from "./stores/memory.js";
 import fixtures from "../fixtures/users.json";
 
-/** Requests larger than this are refused; a JSON-RPC call is a few kB. */
-const MAX_BODY_BYTES = 1_000_000;
+const port = Number(process.env.PORT) || 8080;
 
-function depsFromEnv(env: NodeJS.ProcessEnv): HttpDeps {
-  const { COOLMATHS_DEV_TOKEN: token, COOLMATHS_DEV_USER: uid } = env;
-  if (token && uid) {
-    console.warn(`dev sign-in is ON: /mcp/me serves fixture player "${uid}". Never do this in production.`);
-    return { authenticator: new DevAuthenticator(token, uid), store: new MemoryStore(fixtures) };
+async function firebaseOptions(env: NodeJS.ProcessEnv): Promise<AppOptions> {
+  // Loaded only in this mode: firebase-admin is large and slow to start.
+  const { initializeApp, cert } = await import("firebase-admin/app");
+  const { getAuth } = await import("firebase-admin/auth");
+  const { getFirestore } = await import("firebase-admin/firestore");
+  const { FirestoreUserStore, FirestoreOAuthStore } = await import("./stores/firestore.js");
+
+  const app = env.FIREBASE_SERVICE_ACCOUNT
+    ? initializeApp({ credential: cert(JSON.parse(env.FIREBASE_SERVICE_ACCOUNT)) })
+    : initializeApp({ projectId: env.FIREBASE_PROJECT_ID });
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  const publicUrl = env.PUBLIC_URL ?? `http://localhost:${port}`;
+  const signInUrl = env.SIGN_IN_URL;
+  if (!signInUrl) throw new Error("SIGN_IN_URL must be set: the address of the site's sign-in page");
+  const signInOrigins = (env.SIGN_IN_ORIGINS ?? new URL(signInUrl).origin).split(",").map((s) => s.trim());
+
+  const provider = new CoolmathsOAuthProvider({
+    store: new FirestoreOAuthStore(db),
+    signInUrl,
+    // checkRevoked: a player who has signed out everywhere, or been
+    // disabled, cannot be signed in to the tutor with an old token.
+    verifyIdToken: async (idToken) => (await auth.verifyIdToken(idToken, true)).uid,
+  });
+  return { store: new FirestoreUserStore(db), oauth: { provider, publicUrl, signInOrigins } };
+}
+
+async function optionsFromEnv(env: NodeJS.ProcessEnv): Promise<AppOptions> {
+  if (env.FIREBASE_SERVICE_ACCOUNT) {
+    console.log("players' records: Firestore; /mcp/me: OAuth");
+    return firebaseOptions(env);
   }
+  if (env.FIRESTORE_EMULATOR_HOST && env.FIREBASE_AUTH_EMULATOR_HOST && env.FIREBASE_PROJECT_ID) {
+    console.warn("using the Firebase EMULATORS. Never do this in production.");
+    return firebaseOptions(env);
+  }
+  if (env.COOLMATHS_DEV_TOKEN && env.COOLMATHS_DEV_USER) {
+    console.warn(`dev sign-in is ON: /mcp/me serves fixture player "${env.COOLMATHS_DEV_USER}". Never do this in production.`);
+    return { authenticator: new DevAuthenticator(env.COOLMATHS_DEV_TOKEN, env.COOLMATHS_DEV_USER), store: new MemoryStore(fixtures) };
+  }
+  console.log("public endpoint only: no sign-in is configured, so /mcp/me answers 503");
   return {};
 }
 
-async function readBody(req: IncomingMessage): Promise<Buffer | null> {
-  const chunks: Buffer[] = [];
-  let size = 0;
-  for await (const chunk of req) {
-    size += chunk.length;
-    if (size > MAX_BODY_BYTES) return null;
-    chunks.push(chunk);
-  }
-  return Buffer.concat(chunks);
-}
-
-async function toRequest(req: IncomingMessage): Promise<Request | null> {
-  // Behind Fly's proxy the original scheme and host arrive in these headers.
-  const proto = String(req.headers["x-forwarded-proto"] ?? "http").split(",")[0];
-  const url = `${proto}://${req.headers.host ?? "localhost"}${req.url ?? "/"}`;
-  const headers = new Headers();
-  for (const [name, value] of Object.entries(req.headers)) {
-    if (value !== undefined) headers.set(name, Array.isArray(value) ? value.join(", ") : value);
-  }
-  const hasBody = req.method !== "GET" && req.method !== "HEAD";
-  const body = hasBody ? await readBody(req) : undefined;
-  if (body === null) return null;
-  return new Request(url, { method: req.method, headers, body });
-}
-
-async function send(res: ServerResponse, response: Response): Promise<void> {
-  res.writeHead(response.status, Object.fromEntries(response.headers));
-  res.end(Buffer.from(await response.arrayBuffer()));
-}
-
-const deps = depsFromEnv(process.env);
-
-const server = createServer(async (req, res) => {
-  try {
-    const request = await toRequest(req);
-    if (!request) {
-      res.writeHead(413, { "content-type": "text/plain" }).end("Request body too large.");
-      return;
-    }
-    await send(res, await handleRequest(request, deps));
-  } catch (err) {
-    console.error(err);
-    if (!res.headersSent) res.writeHead(500, { "content-type": "text/plain" });
-    res.end("Internal error.");
-  }
+const server = createApp(await optionsFromEnv(process.env)).listen(port, () => {
+  console.log(`coolmaths tutor listening on :${port}`);
 });
-
-const port = Number(process.env.PORT) || 8080;
-server.listen(port, () => console.log(`coolmaths tutor listening on :${port}`));
 
 // Fly stops idle machines with SIGINT; finish what is in flight and leave.
 for (const signal of ["SIGINT", "SIGTERM"] as const) {
