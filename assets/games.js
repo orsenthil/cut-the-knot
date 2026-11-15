@@ -453,5 +453,12 @@ window.COOLMATHS = {
       tags: ["game-strategy"],
       level: 2,
     },
+    {
+      slug: "odd-scoring",
+      title: "Odd Scoring",
+      blurb: "Take turns moving a chip 1, 2 or 3 steps to the end of the band. Whoever has made an even number of steps wins. Can you make sure it is you?",
+      tags: ["game-strategy", "parity"],
+      level: 2,
+    },
   ],
 };

@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Odd Scoring &mdash; coolmaths</title>
+<meta name="description" content="Take turns moving a chip 1, 2 or 3 steps to the end of the band. Whoever has made an even number of steps wins. Can you make sure it is you?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/odd-scoring/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Odd Scoring">
+<meta property="og:description" content="Take turns moving a chip 1, 2 or 3 steps to the end of the band. Whoever has made an even number of steps wins. Can you make sure it is you?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/odd-scoring/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    padding: 1rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  /* A long band slides sideways in here; the page itself never does. */
+  #boardScroll {
+    width: 100%;
+    overflow-x: auto;
+    padding: 0.5rem 0.25rem;
+  }
+  .board {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    margin: 0 auto;
+    /* every cell stays wide enough to hit with a finger */
+    min-width: calc(var(--n, 12) * (1.75rem + 2px));
+    max-width: 62rem;
+  }
+  .col {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 2.6rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .cell {
+    width: 100%;
+    aspect-ratio: 1;
+    min-width: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.35rem;
+    background: var(--card);
+  }
+  /* the last cell, where the chip is headed */
+  .cell.goal { border: 2px solid var(--ink); }
+  /* the cells the chip may go to */
+  .cell.target {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    cursor: pointer;
+  }
+  .cell.target:hover { background: var(--highlight); }
+  .cell.target:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 1px;
+  }
+  /* the cell the computer's move came from */
+  .cell.left { border-style: dashed; border-color: var(--ink); }
+  .disc {
+    width: 72%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--ink);
+  }
+  .col-label {
+    margin-top: 0.2rem;
+    min-height: 1.1rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  #slideHint, #tally, #score {
+    margin: 0.4rem 0 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+  }
+  #tally, #score { font-size: 1rem; font-variant-numeric: tabular-nums; }
+  #tally { color: var(--text); }
+  #status { min-height: 1.5em; text-align: center; }
+</style>
+</head>
+<body data-game="odd-scoring" data-kind="game">
+<main id="main">
+  <h1>Odd Scoring</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#parity">Parity</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/OddScoring.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> you and the computer take turns moving one chip to the left end. Then each counts the steps they made, and the one with an even number wins.<br>
+    <strong>How to play:</strong> pick a cell 1, 2 or 3 steps to the left of the chip to move it there. You go first.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="boardScroll">
+      <div class="board" role="group" aria-label="The band"></div>
+    </div>
+    <p id="slideHint" hidden>Slide the band sideways to see all of it.</p>
+    <p id="tally"></p>
+  </div>
+
+  <div class="controls">
+    <label>Hint
+      <select id="hintInput">
+        <option value="empty">Empty</option>
+        <option value="forward">Forward</option>
+        <option value="backward">Backward</option>
+        <option value="modular">Modular</option>
+      </select>
+    </label>
+    <label>Steps <select id="stepsInput"></select></label>
+    <button id="newBtn" type="button" class="primary">New Game</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <p id="score"></p>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Reaching the end first is not the point here: the last move wins nothing by itself.
+        What counts is whether your own steps add up to an even number. The band always has
+        an odd number of steps, so one total is even and the other odd, and there is never
+        a draw.
+      </p>
+
+      <h2>Work back from the end</h2>
+      <p>
+        One step from the end you have no choice. If your total so far is even, that step
+        makes it odd and you lose; if it is odd, you win. Two steps away you may take 1
+        or 2, so pick the one that makes your total even, and so on. This way of solving a
+        game from its last move is called
+        <a class="wiki-term" data-wiki="Backward_induction" href="https://en.wikipedia.org/wiki/Backward_induction" target="_blank" rel="noopener">backward induction</a>.
+        Each position needs only two facts: how many steps are left, and the
+        <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a>
+        of your own total.
+      </p>
+
+      <h2>The pattern repeats every 8</h2>
+      <p>Carry that on and the positions where the player about to move is lost are:</p>
+      <blockquote>
+        your total is even: 1, 4, 9, 12, 17, 20, 25 steps left<br>
+        your total is odd: 5, 8, 13, 16, 21, 24 steps left
+      </blockquote>
+      <p>
+        In other words, the steps left leave a remainder of 1 or 4 when divided by 8 if
+        your total is even, and 0 or 5 if it is odd. A winning move is one that hands the
+        computer such a position. You start with a total of 0, which is even, so you can
+        win every band except those of 1, 9, 17 and 25 steps. From 11 steps the winning
+        first move is 2.
+      </p>
+
+      <h2>What the computer knows</h2>
+      <p>
+        The original page says the computer plays the simpler game of Scoring until the
+        chip is 9 cells from the left, and only then pays attention to parity. That is what
+        the applet does, and this page keeps it. Far from the end the computer leaves you
+        a multiple of 4 steps (the Modular hint marks those cells); with 7 or fewer left
+        it plays the table above without a mistake. But the Scoring rule is not the right
+        one for this game: we checked every position, and beyond 7 steps the computer
+        misses a winning move in 13 of them. So you can be sure of beating it from 17 and
+        25 steps too, where a perfect opponent would beat you. From 9 steps you win only
+        if its random move goes wrong, and from 1 step never.
+      </p>
+
+      <h2>The hints</h2>
+      <p>
+        Forward numbers each cell by the steps from the start, Backward counts the cells
+        from the left, and Modular puts a dot on every fourth cell from the end. This page
+        also shows the steps each player has made so far, which the applet left for you to
+        keep in your head, and you press a cell where the applet had you drag the chip.
+      </p>
+
+      <p class="tip">
+        Play 17 steps. A perfect opponent would win, so look for the moment the computer
+        leaves you a multiple of 4 that is not in the table of lost positions.
+      </p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="odd-scoring-core.js"></script>
+<script src="odd-scoring.js"></script>
+</body>
+</html>

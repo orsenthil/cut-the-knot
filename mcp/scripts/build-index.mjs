@@ -213,6 +213,7 @@ const CORE_GLOBALS = {
   "four-by-four/fbf-core.js": ["FourByFourCore"],
   "nimble/nimble-core.js": ["NimbleCore"],
   "no-silver-dollar/no-silver-dollar-core.js": ["NoSilverDollarCore"],
+  "odd-scoring/odd-scoring-core.js": ["OddScoringCore"],
 };
 
 const games = [];

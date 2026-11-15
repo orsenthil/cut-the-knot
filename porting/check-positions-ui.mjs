@@ -42,6 +42,10 @@ const GAMES = {
   "no-silver-dollar": async (page) => {
     await page.locator(".cell.counter:not(:disabled)").first().click();
   },
+  "odd-scoring": async (page) => {
+    await page.locator('.target[data-step="2"]').click();
+    await page.waitForFunction(() => /Your move/.test(document.getElementById("status").textContent));
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */
