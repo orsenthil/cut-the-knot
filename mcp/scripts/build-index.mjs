@@ -212,6 +212,7 @@ const CORE_GLOBALS = {
   "torque/torque-core.js": ["TorqueCore"],
   "four-by-four/fbf-core.js": ["FourByFourCore"],
   "nimble/nimble-core.js": ["NimbleCore"],
+  "no-silver-dollar/no-silver-dollar-core.js": ["NoSilverDollarCore"],
 };
 
 const games = [];

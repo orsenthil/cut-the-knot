@@ -59,6 +59,7 @@ check("torque: nothing hung yet", read.torque?.torqueSoFar === 0 && read.torque.
 check("mind-reader: the named shape is on every multiple of 9", read["mind-reader"]?.checksOut === true);
 check("eye-opener: the honest area is one short of the square", read["eye-opener"]?.honestArea === read["eye-opener"].squareItClaimsToFill - 1);
 check("nimble: three chips, your move", read.nimble?.chips.length === 3 && read.nimble.turn === "you" && read.nimble.finished === false);
+check("no-silver-dollar: three counters, your move", read["no-silver-dollar"]?.positions.length === 3 && read["no-silver-dollar"].turn === "you" && read["no-silver-dollar"].finished === false);
 
 /* ------------------------------------------------ positions with known answers */
 
@@ -119,6 +120,15 @@ const at = (slug, state) => describePosition(slug, state, 1);
   const lost = at("nimble", { length: 7, chips: [4, 4], turn: "you", over: false });
   check("nimble: equal chips are lost for the player to move", lost.nimSum === 0 && lost.youCanWinFromHere === false && lost.winningMoves.length === 0);
   check("nimble: every chip home is finished", at("nimble", { length: 7, chips: [0, 0], turn: "you", over: true }).finished === true);
+}
+
+// No Silver Dollar: alternate gaps are Nim heaps; 3, 7, 10 has heaps 3 and 2.
+{
+  const p = at("no-silver-dollar", { length: 25, positions: [3, 7, 10], turn: "you", over: false, winner: null, moves: 0 });
+  check("no-silver-dollar: alternate gaps are 2 and 3", p.heaps.join(",") === "2,3");
+  check("no-silver-dollar: Nim-sum 1 reduces the left gap", p.nimSum === 1 && p.winningMove?.counter === 1 && p.winningMove.to === 2);
+  const lost = at("no-silver-dollar", { length: 25, positions: [2, 3], turn: "you", over: false, winner: null, moves: 0 });
+  check("no-silver-dollar: zero Nim-sum has no winning move", lost.nimSum === 0 && lost.winningMove === null && lost.youCanWinFromHere === false);
 }
 
 // A game with no reader, and a position that makes no sense.

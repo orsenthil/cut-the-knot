@@ -39,6 +39,9 @@ const GAMES = {
     await page.selectOption("#chipsInput", "3");
     await page.locator(".chip:not(:disabled)").first().click();
   },
+  "no-silver-dollar": async (page) => {
+    await page.locator(".spot.chip:not(:disabled)").first().click();
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>No Silver Dollar &mdash; coolmaths</title>
+<meta name="description" content="Slide counters to the left without passing one another. Can you leave the computer with no legal move?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/no-silver-dollar/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="No Silver Dollar">
+<meta property="og:description" content="Slide counters to the left without passing one another. Can you leave the computer with no legal move?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/no-silver-dollar/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    padding: 1rem 0.5rem;
+    overflow-x: auto;
+  }
+  .board { display: flex; justify-content: center; min-width: max-content; margin: auto; }
+  .space { width: clamp(1.45rem, 5vw, 2.3rem); display: flex; flex-direction: column; align-items: center; }
+  .spot { width: 100%; aspect-ratio: 1; padding: 0; border: 0; border-radius: 0.4rem; background: transparent; color: var(--ink); font-size: 1.35rem; }
+  .spot:not(:disabled) { cursor: pointer; }
+  .spot:not(:disabled):hover { background: var(--highlight); }
+  .spot:focus-visible { outline: 3px solid var(--focus); }
+  .spot.chip { color: var(--accent); font-size: 1.45rem; }
+  .spot.selected { background: var(--highlight); }
+  .space-label { color: var(--muted); font-size: 0.7rem; }
+  @media (max-width: 34rem) { .board { justify-content: flex-start; } }
+  .controls { flex-wrap: wrap; }
+  #status { min-height: 1.5em; text-align: center; }
+  #rules { max-width: 42rem;
+  }
+</style>
+</head>
+<body data-game="no-silver-dollar" data-kind="game">
+<main id="main">
+  <h1>No Silver Dollar</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/NoSilverDollar.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Move counters left along the row without jumping over another counter; the player with no move loses.<br>
+    <strong>How to play:</strong> Select a counter, then choose an empty space to its left; you may move it any distance but cannot pass or share a space. Check Set up to move counters freely, then uncheck it to play.
+  </div>
+
+  <div id="stage" class="stage">
+    <p class="board-help">Choose a counter, then one of the empty spaces to its left.</p>
+  </div>
+
+  <div class="controls">
+    <label>Length <select id="lengthInput"></select></label>
+    <label>Counters <select id="chipsInput"></select></label>
+    <label><input id="setupInput" type="checkbox"> Set up</label>
+    <button id="newBtn" type="button" class="primary">New Game</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The spaces between counters hide heaps that behave like a familiar take-away game. A counter move can change a gap in a surprising direction, which is why this is sometimes called Bogus Nim.</p>
+
+      <h2>Read the gaps as heaps</h2>
+      <p>Start at the rightmost counter. The empty spaces before it form one heap. Skip the next gap, then count the next; continue alternating. If there is an odd number of counters, the spaces from the left edge to the leftmost counter form the last heap. Each legal move changes just one of these heaps.</p>
+
+      <h2>Why some gaps grow</h2>
+      <p>A counter can move left across a gap that belongs to the other parity, making that heap larger. The opponent can undo that increase immediately, so it gives no lasting advantage. Such a reversible move does not improve a player's position.</p>
+
+      <h2>Use the Nim sum</h2>
+      <p>For the heaps, calculate their <a class="wiki-term" data-wiki="Nim" href="https://en.wikipedia.org/wiki/Nim" target="_blank" rel="noopener">Nim</a> sum by XORing their sizes. A zero sum is losing with perfect play. Otherwise, reduce one heap so the new XOR is zero; the applet's computer uses this rule and makes a random legal move when its position is already losing.</p>
+
+      <p class="tip">Try a few starting boards with three counters. Count alternate gaps from the right, then see whether your first move can make their XOR zero.</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="no-silver-dollar-core.js"></script>
+<script src="no-silver-dollar.js"></script>
+</body>
+</html>

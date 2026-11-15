@@ -446,5 +446,12 @@ window.COOLMATHS = {
       tags: ["game-strategy"],
       level: 2,
     },
+    {
+      slug: "no-silver-dollar",
+      title: "No Silver Dollar",
+      blurb: "Slide counters to the left without passing one another. Can you leave the computer with no legal move?",
+      tags: ["game-strategy"],
+      level: 2,
+    },
   ],
 };
