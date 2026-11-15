@@ -3,7 +3,14 @@
 <head>
 <meta charset="utf-8">
 <title>Your profile &mdash; coolmaths</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="The coolmaths games you have played, the ideas you have met, and what to play next.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
 <link rel="stylesheet" href="../assets/site.css">
 <script src="../assets/games.js"></script>
 <script src="../assets/site.js"></script>
@@ -12,12 +19,12 @@
   .profile h2 { margin: 0 0 12px; font-size: 1.1rem; letter-spacing: -0.01em; }
   .where { margin: 6px 0 0; color: var(--muted); font-size: 0.92rem; text-align: center; }
 
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 7rem), 1fr)); gap: 12px; }
   .stat { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 10px; text-align: center; }
   .stat b { display: block; font-size: 1.5rem; letter-spacing: -0.02em; }
   .stat span { color: var(--muted); font-size: 0.82rem; }
 
-  .next { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+  .next { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 14.5rem), 1fr)); gap: 14px; }
   .pick {
     position: relative;
     display: flex;
@@ -37,7 +44,7 @@
   .pick h3 a::after { content: ""; position: absolute; inset: 0; }
   .pick p { margin: 0; color: var(--muted); font-size: 0.86rem; line-height: 1.45; }
 
-  .concepts { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 8px 20px; }
+  .concepts { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15.5rem), 1fr)); gap: 8px 20px; }
   .concepts li { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 10px; }
   .concepts a { color: var(--text); text-decoration: none; font-size: 0.92rem; font-weight: 600; }
   .concepts a:hover { color: var(--accent); }
@@ -50,7 +57,8 @@
   .tried { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
   .tried th { text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; padding: 6px 8px; }
   .tried td { padding: 8px; border-top: 1px solid var(--border); }
-  .tried td.n, .tried th.n { text-align: right; white-space: nowrap; }
+  .tried td.n, .tried th.n { text-align: right; }
+  .tried td:first-child { overflow-wrap: anywhere; }
   .tried a { color: var(--text); font-weight: 600; text-decoration: none; }
   .tried a:hover { color: var(--accent); }
   .tried .done { color: var(--good); font-weight: 600; }
@@ -80,6 +88,7 @@
 </style>
 </head>
 <body data-page="profile">
+<main id="main">
   <h1>Your profile</h1>
   <p class="where" id="where">What you have played, kept in this browser.</p>
 
@@ -130,6 +139,8 @@
     </div>
     <p class="privacy-link"><a href="../privacy/index.html">What coolmaths keeps about you</a></p>
   </div>
+
+</main>
 
 <script src="../assets/concepts.js"></script>
 <script src="../assets/recommend.js"></script>

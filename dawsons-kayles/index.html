@@ -1,12 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Dawson's Kayles &mdash; coolmaths</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Skittles stand in a ring and each move knocks down two that are side by side. Take the last pair to win — but the ring quietly breaks into separate games, and only their XOR tells you who is winning.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/dawsons-kayles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Dawson's Kayles">
+<meta property="og:description" content="Skittles stand in a ring and each move knocks down two that are side by side. Take the last pair to win — but the ring quietly breaks into separate games, and only their XOR tells you who is winning.">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/dawsons-kayles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
 <link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/games.js"></script>
 <script src="../assets/site.js"></script>
+<!-- /stamp:head -->
 <style>
   #stage {
     width: 100%;
@@ -46,8 +60,10 @@
   }
 </style>
 </head>
-<body data-game="dawsons-kayles">
+<body data-game="dawsons-kayles" data-kind="game">
+<main id="main">
   <h1>Dawson's Kayles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
   <p class="byline">
     Puzzle by
     <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
@@ -88,7 +104,7 @@
         cannot move has lost.
       </p>
 
-      <h3>The ring falls apart into separate games</h3>
+      <h2>The ring falls apart into separate games</h2>
       <p>
         Knock out a pair and the skittles on either side of the hole stop being neighbours. So
         after a move or two the board is a handful of separate arcs, and no move can ever involve
@@ -102,7 +118,7 @@
       <blockquote><code>G(arc&#8321;) XOR G(arc&#8322;) XOR &hellip;</code></blockquote>
       <p>You are lost exactly when that total is 0, so winning means handing it back at 0 every turn.</p>
 
-      <h3>Working the numbers out</h3>
+      <h2>Working the numbers out</h2>
       <p>
         Taking the pair that sits <code>a</code> places into a row of <code>n</code> leaves rows of
         <code>a</code> and <code>n &minus; 2 &minus; a</code>, so the values come from the
@@ -118,7 +134,7 @@
         the port's test checks that all 137 come out the same.
       </p>
 
-      <h3>A pattern that almost repeats</h3>
+      <h2>A pattern that almost repeats</h2>
       <p>
         There is no formula for <code>G(n)</code>, but the list is eventually periodic:
         <code>G(n + 34) = G(n)</code> for every <code>n</code> except six stubborn ones, namely
@@ -129,7 +145,7 @@
         extra 0 pushed on the front.
       </p>
 
-      <h3>A full ring is not a row</h3>
+      <h2>A full ring is not a row</h2>
       <p>
         An untouched ring has no ends, so every opening move does the same thing: whichever pair
         you take, what is left is one arc of <code>n &minus; 2</code>. There is no choice to get
@@ -144,6 +160,7 @@
       </p>
     </div>
   </details>
+</main>
 
 <script src="../assets/wiki-hovercard.js"></script>
 <script src="dk-core.js"></script>

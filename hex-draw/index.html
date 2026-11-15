@@ -1,12 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hex Can't End in a Draw &mdash; coolmaths</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Colour a Hex board red and blue any way you like: someone always has a winning path. Can you beat it on a board of squares?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/hex-draw/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hex Can't End in a Draw">
+<meta property="og:description" content="Colour a Hex board red and blue any way you like: someone always has a winning path. Can you beat it on a board of squares?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/hex-draw/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
 <link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/games.js"></script>
 <script src="../assets/site.js"></script>
+<!-- /stamp:head -->
 <style>
   #stage { width: 100%; padding: 14px 8px; display: flex; justify-content: center; }
   #board { width: 100%; max-width: 560px; height: auto; display: block; touch-action: manipulation; }
@@ -25,8 +39,10 @@
   .walk-end { fill: #ffd24a; stroke: #1d1f24; stroke-width: 1; pointer-events: none; }
 </style>
 </head>
-<body data-game="hex-draw">
+<body data-game="hex-draw" data-kind="demo">
+<main id="main">
   <h1>Hex Can't End in a Draw</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#graph-theory">Graph Theory</a><a class="tag" href="../index.html#game-strategy">Game Strategy</a></div><!-- /stamp:tags -->
   <p class="byline">
     Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
     (<a href="https://www.cut-the-knot.org/Curriculum/Games/HexTheory.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
@@ -64,7 +80,7 @@
         It sounds obvious. It isn't, and the square grids show why.
       </p>
 
-      <h3>Why there is always a winner</h3>
+      <h2>Why there is always a winner</h2>
       <p>
         Suppose blue has no left-to-right path. Take every blue cell that is joined to the left edge. The
         cells that border that region on its right can't be blue (they would be in it), so they are red,
@@ -75,7 +91,7 @@
         one winner each time.
       </p>
 
-      <h3>Gale's walk</h3>
+      <h2>Gale's walk</h2>
       <p>
         Tick "Separation edges" to see Gale's proof run. The walk starts at the top-left corner, where the
         red edge meets the blue one, and always follows a side with red on one hand and blue on the other.
@@ -84,7 +100,7 @@
         cells along it contain the winning path. The check confirms this on every board up to 4 by 4.
       </p>
 
-      <h3>Squares need the right neighbours</h3>
+      <h2>Squares need the right neighbours</h2>
       <p>
         With four neighbours per square, a draw <em>is</em> possible: a checkerboard pattern blocks both
         colours. With eight neighbours, a red and a blue path can cross at a diagonal and both win. These
@@ -99,6 +115,7 @@
       </p>
     </div>
   </details>
+</main>
 
 <script src="../assets/wiki-hovercard.js"></script>
 <script src="hex-draw-core.js"></script>

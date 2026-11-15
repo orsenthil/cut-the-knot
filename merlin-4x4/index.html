@@ -1,12 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mini Lights Out &mdash; coolmaths</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A 4×4 board of lights wrapped on a torus: each press flips a plus shape. Can you turn them all off — and why is there always exactly one way?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/merlin-4x4/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Mini Lights Out">
+<meta property="og:description" content="A 4×4 board of lights wrapped on a torus: each press flips a plus shape. Can you turn them all off — and why is there always exactly one way?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/merlin-4x4/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
 <link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/games.js"></script>
 <script src="../assets/site.js"></script>
+<!-- /stamp:head -->
 <style>
   #board {
     display: grid;
@@ -53,8 +67,10 @@
   }
 </style>
 </head>
-<body data-game="merlin-4x4">
+<body data-game="merlin-4x4" data-kind="game">
+<main id="main">
   <h1>Mini Lights Out</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
   <p class="byline">
     Puzzle by
     <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
@@ -86,7 +102,7 @@
         So a plan is just a 16-bit vector: press or don't, once each.
       </p>
 
-      <h3>The move matrix squares to the identity</h3>
+      <h2>The move matrix squares to the identity</h2>
       <p>
         Line the sixteen cells up and let <code>A</code> be the 16&times;16 matrix whose
         <code>j</code>-th column is the pattern made by pressing cell <code>j</code> alone.
@@ -96,7 +112,7 @@
         unique solution is <code>s&nbsp;=&nbsp;A v</code>.
       </p>
 
-      <h3>Parity of the neighbourhood</h3>
+      <h2>Parity of the neighbourhood</h2>
       <p>
         Multiplying by <code>A</code> just sums each cell's five-neighbourhood mod&nbsp;2.
         So the Hint checkbox marks exactly the cells whose current
@@ -106,7 +122,7 @@
         change those parities: only pressing a cell flips its own parity.
       </p>
 
-      <h3>Why the intersections matter</h3>
+      <h2>Why the intersections matter</h2>
       <p>
         On this board, any two distinct plus-shaped neighbourhoods share either no cells or
         exactly two. Pressing another cell therefore changes a given cell's lit-count by an
@@ -119,6 +135,7 @@
       </p>
     </div>
   </details>
+</main>
 
 <script src="../assets/wiki-hovercard.js"></script>
 <script src="merlin-4x4-core.js"></script>

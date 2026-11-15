@@ -1,12 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Grundy's Game &mdash; coolmaths</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Take turns breaking a bar of chocolate into two unequal pieces; whoever makes the last break wins. The computer knows a secret number for every bar — can you work it out?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/grundy/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Grundy's Game">
+<meta property="og:description" content="Take turns breaking a bar of chocolate into two unequal pieces; whoever makes the last break wins. The computer knows a secret number for every bar — can you work it out?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/grundy/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
 <link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/games.js"></script>
 <script src="../assets/site.js"></script>
+<!-- /stamp:head -->
 <style>
   #stage {
     width: 100%;
@@ -41,8 +55,10 @@
   }
 </style>
 </head>
-<body data-game="grundy">
+<body data-game="grundy" data-kind="game">
+<main id="main">
   <h1>Grundy's Game</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
   <p class="byline">
     Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
     (<a href="https://www.cut-the-knot.org/Curriculum/Games/Grundy.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
@@ -77,7 +93,7 @@
         arithmetic, and the computer uses it to play perfectly whenever it can.
       </p>
 
-      <h3>A number for every bar</h3>
+      <h2>A number for every bar</h2>
       <p>
         A bar of 1 or 2 squares can't be broken, so it is worth <code>0</code>. Every longer bar gets the
         smallest number that none of its breaks are worth. That rule is called the
@@ -90,7 +106,7 @@
         <code>value 1 0 2 1 0 2 1 &nbsp;0 &nbsp;2 &nbsp;1 &nbsp;3 &nbsp;2 &nbsp;1</code>
       </blockquote>
 
-      <h3>Adding bars with XOR</h3>
+      <h2>Adding bars with XOR</h2>
       <p>
         Two bars side by side are worth their numbers combined with
         <a class="wiki-term" data-wiki="Exclusive_or" href="https://en.wikipedia.org/wiki/Exclusive_or" target="_blank" rel="noopener">exclusive or</a>
@@ -102,7 +118,7 @@
         every time.
       </p>
 
-      <h3>How the computer plays</h3>
+      <h2>How the computer plays</h2>
       <p>
         On its turn the computer works out the XOR of all the bars. If it isn't <code>0</code>, it finds a
         break that makes it <code>0</code>; there always is one. If it is already <code>0</code>, it is
@@ -116,6 +132,7 @@
       </p>
     </div>
   </details>
+</main>
 
 <script src="../assets/wiki-hovercard.js"></script>
 <script src="grundy-core.js"></script>

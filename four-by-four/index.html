@@ -1,12 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Four By Four &mdash; coolmaths</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="3D tic-tac-toe on a 4 by 4 by 4 cube against a computer that never looks ahead, just recognizes patterns. There are faults in its logic — can you find one?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/four-by-four/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Four By Four">
+<meta property="og:description" content="3D tic-tac-toe on a 4 by 4 by 4 cube against a computer that never looks ahead, just recognizes patterns. There are faults in its logic — can you find one?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/four-by-four/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
 <link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/games.js"></script>
 <script src="../assets/site.js"></script>
+<!-- /stamp:head -->
 <style>
   #layers {
     display: flex;
@@ -55,8 +69,10 @@
   #bestScores[hidden] { display: none; }
 </style>
 </head>
-<body data-game="four-by-four">
+<body data-game="four-by-four" data-kind="game">
+<main id="main">
   <h1>Four By Four</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
   <p class="byline">
     A Java3D demo applet by Sun Microsystems, hosted (not authored) by
     <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
@@ -102,7 +118,7 @@
         dimension changes the counting in interesting ways.
       </p>
 
-      <h3>76 ways to win</h3>
+      <h2>76 ways to win</h2>
       <p>
         In flat 3&times;3 tic-tac-toe there are 8 winning lines. Stretch the board into a cube and let lines
         run in any of the 13 directions a <a class="wiki-term" data-wiki="Line_(geometry)" href="https://en.wikipedia.org/wiki/Line_(geometry)" target="_blank" rel="noopener">straight line</a>
@@ -114,7 +130,7 @@
         which is why both are worth grabbing early.
       </p>
 
-      <h3>An AI built from carpentry, not lookahead</h3>
+      <h2>An AI built from carpentry, not lookahead</h2>
       <p>
         This computer opponent never searches ahead the way a
         <a class="wiki-term" data-wiki="Minimax" href="https://en.wikipedia.org/wiki/Minimax" target="_blank" rel="noopener">minimax</a>
@@ -130,7 +146,7 @@
         level." A fixed list of patterns can only ever catch the shapes someone thought to name.
       </p>
 
-      <h3>Scoring a win</h3>
+      <h2>Scoring a win</h2>
       <p>
         Beating the computer scores <code>skill &times; 1311 + (66 &minus; moves) &times; 111 &minus;
         min(seconds &times; 1000, 5000)</code> &mdash; the original's own formula. Harder opponents, fewer
@@ -142,6 +158,7 @@
       </p>
     </div>
   </details>
+</main>
 
 <script src="../assets/wiki-hovercard.js"></script>
 <script src="../assets/progress.js"></script>

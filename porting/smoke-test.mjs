@@ -45,6 +45,24 @@ function isIgnorableError(text) {
   return /en\.wikipedia\.org/.test(text);
 }
 
+/*
+ * Pages that spill sideways on a phone when the text is twice its usual
+ * size, as it is for a player who has asked their device for large text or
+ * zoomed the page. Every other page passes, and a new page must. When this
+ * list is empty, porting/stamp-pages.mjs can opt the site in to following
+ * the device's text size (<meta name="text-scale" content="scale">).
+ */
+const LARGE_TEXT_EXEMPT = new Set([
+  "calendar-magic",
+  "euler2d",
+  "flipping-pancakes",
+  "four-by-four",
+  "four-knights",
+  "hourglass",
+  "looping",
+  "maths-quiz",
+]);
+
 async function checkPage(browser, slug, base, keep) {
   const problems = [];
   const dir = join(OUT, slug);
@@ -96,6 +114,19 @@ async function checkPage(browser, slug, base, keep) {
         if (!metrics.bg || metrics.bg === "rgba(0, 0, 0, 0)") {
           problems.push(`${label}: <body> has no background colour set`);
         }
+        // Once, at phone width: does the page still fit with the text doubled?
+        if (vp.name === "phone" && theme === THEMES[0] && !LARGE_TEXT_EXEMPT.has(slug)) {
+          const spill = await page.evaluate(async () => {
+            document.documentElement.style.fontSize = "200%";
+            await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+            const over = document.documentElement.scrollWidth - window.innerWidth;
+            document.documentElement.style.fontSize = "";
+            return over;
+          });
+          if (spill > 0) {
+            problems.push(`${label}: with text at 200% the page is ${spill}px too wide; let rows wrap and avoid fixed widths in px`);
+          }
+        }
         for (const e of errors) problems.push(`${label}: ${e}`);
       } catch (err) {
         problems.push(`${label}: ${err.message.split("\n")[0]}`);
@@ -109,7 +140,7 @@ async function checkPage(browser, slug, base, keep) {
   return problems;
 }
 
-/** The home grid must load and show a card for every catalogue entry. */
+/** The home grid must load and, shown in full, have a card for every catalogue entry. */
 async function checkHome(browser, base, expected) {
   const problems = [];
   const ctx = await browser.newContext({ viewport: { width: 1200, height: 900 } });
@@ -122,6 +153,12 @@ async function checkHome(browser, base, expected) {
   try {
     await page.goto(`${base}/`, { waitUntil: "load", timeout: 30000 });
     await page.waitForTimeout(500);
+    // The grid shows one page of cards at a time; ask for the rest.
+    for (let guard = 0; guard < 200; guard++) {
+      const more = page.locator("#more:not([hidden])");
+      if ((await more.count()) === 0) break;
+      await more.click();
+    }
     const cards = await page.evaluate(
       () => document.querySelectorAll('a[href$="/"], .card, article').length,
     );

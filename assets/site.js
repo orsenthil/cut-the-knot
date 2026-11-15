@@ -1,11 +1,13 @@
 "use strict";
 
 /*
- * Shared chrome for every coolmaths page. Load it in <head> (after games.js)
+ * Shared chrome for every coolmaths page. Load it in <head>
  * so the saved theme applies before the page paints. It then adds the header
- * (logo, "All games", "Profile", theme toggle), the footer, and, on a game
- * page (<body data-game="slug">), that game's concept tags under the title
- * and the progress tracker (assets/progress.js). For a signed-in player it
+ * (logo, "All games", "Profile", theme toggle), a skip link, the footer, and,
+ * on a game page (<body data-game="slug">), the progress tracker
+ * (assets/progress.js). It needs nothing but itself: a game page does not
+ * load the catalogue. Its concept tags are written into the page by
+ * porting/stamp-pages.mjs. For a signed-in player it
  * also loads sign-in (assets/auth.js), which moves the record to their account.
  *
  * Pages that draw with colours from CSS (like a canvas) can listen for the
@@ -103,15 +105,24 @@
     document.body.appendChild(footer);
   }
 
-  function addGameTags() {
-    const slug = document.body.dataset.game;
-    const games = (window.COOLMATHS && window.COOLMATHS.games) || [];
-    const game = games.find((g) => g.slug === slug);
-    const h1 = document.querySelector("h1");
-    if (!game || !h1) return;
-    const row = el("div", { class: "tags game-tags", "aria-label": "Concepts" });
-    game.tags.forEach((t) => row.appendChild(tagLink(t)));
-    h1.after(row);
+  // A keyboard or screen-reader user's first Tab lands here: straight past
+  // the header to the page's content. Every page has one <main id="main">.
+  function addSkipLink() {
+    if (!document.getElementById("main")) return;
+    const link = el("a", { class: "skip-link", href: "#main" });
+    link.textContent = document.body.dataset.game ? "Skip to the game" : "Skip to the page";
+    document.body.prepend(link);
+  }
+
+  // Offline use and installing as an app (sw.js at the site's root). Only
+  // over https: the local test server must never keep copies between runs.
+  function registerServiceWorker() {
+    if (!("serviceWorker" in navigator) || location.protocol !== "https:") return;
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register(ROOT + "sw.js").catch(() => {
+        // not installable here; the site works the same without it
+      });
+    });
   }
 
   // Every game page keeps the player's record (assets/progress.js). A page
@@ -141,9 +152,11 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     buildHeader();
-    addGameTags();
+    addSkipLink();
     buildFooter();
     loadProgress();
     loadAccount();
   });
+
+  registerServiceWorker();
 })();

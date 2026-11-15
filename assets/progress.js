@@ -351,11 +351,13 @@ const Track = (() => {
     }).observe(el, { attributes: true, attributeFilter: ["class"] });
   }
 
-  /** True when the catalogue marks this page as a demo: nothing to win or lose. */
-  function isDemo(slug) {
-    const games = (window.COOLMATHS && window.COOLMATHS.games) || [];
-    const entry = games.find((g) => g.slug === slug);
-    return Boolean(entry && entry.kind === "demo");
+  /**
+   * True when the page is a demo: nothing to win or lose. The page says so
+   * itself, in <body data-kind>, which porting/stamp-pages.mjs writes from
+   * meta.json; a game page does not load the catalogue.
+   */
+  function isDemo() {
+    return document.body.dataset.kind === "demo";
   }
 
   /**

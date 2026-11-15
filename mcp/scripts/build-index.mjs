@@ -154,16 +154,16 @@ function parseRules(html) {
   return out;
 }
 
-/** The "Look for the math" section: intro, then one entry per <h3>. */
+/** The "Look for the math" section: intro, then one entry per <h2>. */
 function parseMath(html) {
   const block = extractById(html, "math", "details");
   if (!block) return null;
   const body = block.replace(/<summary>[\s\S]*?<\/summary>/i, "");
-  const pieces = body.split(/<h3[^>]*>/i);
+  const pieces = body.split(/<h2[^>]*>/i);
   const intro = text(pieces[0]);
   const sections = [];
   for (const piece of pieces.slice(1)) {
-    const end = piece.indexOf("</h3>");
+    const end = piece.indexOf("</h2>");
     if (end < 0) continue;
     sections.push({
       heading: text(piece.slice(0, end)),

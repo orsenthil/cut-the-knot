@@ -2,19 +2,62 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>coolmaths &mdash; Math Puzzles and Games</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Math puzzles and games to play first and understand after. Classic cut-the-knot puzzles, rebuilt for the modern web.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>coolmaths &mdash; Maths Puzzles and Games</title>
+<meta name="description" content="Maths puzzles and games to play first and understand after. Classic cut-the-knot puzzles, rebuilt for the modern web.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="coolmaths: maths puzzles and games">
+<meta property="og:description" content="Maths puzzles and games to play first and understand after.">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/icons/icon-180.png">
 <link rel="stylesheet" href="assets/site.css">
-<script src="assets/games.js"></script>
 <script src="assets/site.js"></script>
+<!-- The catalogue and what reads it are deferred: nothing here needs them to paint. -->
+<script defer src="assets/games.js"></script>
+<script defer src="assets/concepts.js"></script>
+<script defer src="assets/recommend.js"></script>
+<script defer src="assets/progress.js"></script>
+<script defer src="assets/home.js"></script>
 <style>
-  .hero { text-align: center; max-width: 640px; margin: 8px 0 36px; }
+  .hero { text-align: center; max-width: 640px; margin: 8px 0 28px; }
   .hero img { width: min(300px, 70vw); height: auto; }
   .hero p { margin: 14px auto 0; color: var(--muted); font-size: 1.05rem; max-width: 520px; }
 
-  .for-you { margin: -12px 0 24px; text-align: center; font-size: 0.95rem; color: var(--muted); }
+  .for-you { margin: -8px 0 24px; text-align: center; font-size: 0.95rem; color: var(--muted); }
   .for-you a { font-weight: 600; }
+
+  /* ---- finding a game: a search box and how hard ---- */
+  .finder {
+    width: 100%;
+    max-width: 1120px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .finder input[type="search"] {
+    flex: 1 1 15rem;
+    max-width: 26rem;
+    min-width: 0;
+    font: inherit;
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: var(--card);
+    color: var(--text);
+  }
+  .levels { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .levels button { border-radius: 999px; padding: 7px 14px; font-size: 0.85rem; }
+  .levels button[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: var(--bg); }
 
   .filters {
     width: 100%;
@@ -25,7 +68,7 @@
     justify-content: center;
     margin-bottom: 18px;
   }
-  .filters a {
+  .filters a, .filters button {
     font-size: 0.85rem;
     font-weight: 600;
     padding: 6px 14px;
@@ -40,6 +83,7 @@
   .filters a .count { color: var(--muted); font-weight: 500; margin-left: 4px; }
   .filters a[aria-current="true"] { background: var(--text); border-color: var(--text); color: var(--bg); }
   .filters a[aria-current="true"] .count { color: inherit; opacity: 0.7; }
+  .filters button { color: var(--accent); border-style: dashed; }
 
   #heading {
     width: 100%;
@@ -56,11 +100,16 @@
     width: 100%;
     max-width: 1120px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    /* min(100%, ...): one column, never an overflow, when text is enlarged */
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16.25rem), 1fr));
     gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
   .card {
     position: relative;
+    height: 100%;
     display: flex;
     flex-direction: column;
     background: var(--card);
@@ -70,25 +119,43 @@
     box-shadow: var(--shadow);
     transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
   }
-  .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: var(--border-strong); }
-  .card:focus-within { border-color: var(--accent); }
-  .card .thumb {
+  .card:has(a.card-link:hover) { transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: var(--border-strong); }
+  /* the focus ring is drawn on the card, since its link covers the whole card */
+  .card a.card-link:focus-visible { outline: none; }
+  .card:has(a.card-link:focus-visible) { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .card > img {
+    width: 100%;
+    height: auto;
     aspect-ratio: 16 / 10;
+    object-fit: contain;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
-  .card .thumb img { width: 100%; height: 100%; object-fit: contain; }
-  .card .body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
-  .card h2 { margin: 0; font-size: 1.08rem; letter-spacing: -0.01em; line-height: 1.3; }
+  .card h2 { margin: 16px 18px 0; font-size: 1.08rem; letter-spacing: -0.01em; line-height: 1.3; }
   .card h2 a { color: var(--text); text-decoration: none; }
-  .card h2 a:focus-visible { outline: none; }
-  /* the title link covers the whole card; tags sit above it so they stay clickable */
-  .card h2 a::after { content: ""; position: absolute; inset: 0; }
-  .card p { margin: 0; font-size: 0.9rem; color: var(--muted); line-height: 1.5; flex: 1; }
-  .card .tags { justify-content: flex-start; position: relative; z-index: 1; margin-top: 4px; }
+  /* the title link covers the whole card */
+  .card a.card-link::after { content: ""; position: absolute; inset: 0; }
+  .card p { margin: 8px 18px 0; font-size: 0.9rem; color: var(--muted); line-height: 1.5; flex: 1; }
+  .card footer { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 12px 18px 18px; }
+  /* tag links sit above the card-wide link, so they stay clickable */
+  .card footer a { position: relative; z-index: 1; }
+  .card .badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 3px 9px;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .card .badge.start { color: var(--good); border-color: currentColor; }
+
+  /* Cards far down a long list are not laid out until they are near the
+     screen. The size is a card's usual height, so the scrollbar stays honest. */
+  .grid > li.later { content-visibility: auto; contain-intrinsic-size: auto none auto 21rem; }
+
+  .more { margin-top: 24px; }
 
   .empty {
     grid-column: 1 / -1;
@@ -100,140 +167,35 @@
   }
 </style>
 </head>
-<body class="home">
+<body class="home" data-page="home">
+<main id="main">
   <section class="hero">
     <h1 class="sr-only">coolmaths</h1>
     <img class="logo-light" src="assets/logo-light.webp" alt="coolmaths" width="607" height="437">
     <img class="logo-dark" src="assets/logo-dark.webp" alt="coolmaths" width="607" height="437">
     <p>
-      Math puzzles and games to play first and understand after.
+      Maths puzzles and games to play first and understand after.
       Classic puzzles from Alexander Bogomolny's cut-the-knot, rebuilt for today.
     </p>
   </section>
 
   <p class="for-you" id="forYou" hidden></p>
-  <nav class="filters" id="filters" aria-label="Filter games by concept"></nav>
-  <p id="heading" aria-live="polite"></p>
-  <main class="grid" id="grid"></main>
 
-<script>
-"use strict";
+  <search class="finder">
+    <label class="sr-only" for="q">Find a game by name or idea</label>
+    <input type="search" id="q" name="q" placeholder="Find a game" autocomplete="off" enterkeyhint="search">
+    <div class="levels" id="levels" role="group" aria-label="How hard">
+      <button type="button" data-level="" aria-pressed="true">Any</button>
+      <button type="button" data-level="1" aria-pressed="false">Start here</button>
+      <button type="button" data-level="2" aria-pressed="false">Next step</button>
+      <button type="button" data-level="3" aria-pressed="false">Tricky</button>
+    </div>
+  </search>
 
-(function () {
-  const { games, tags } = window.COOLMATHS;
-  const { tagLabel } = window.COOLMATHS_SITE;
-  const filtersEl = document.getElementById("filters");
-  const headingEl = document.getElementById("heading");
-  const gridEl = document.getElementById("grid");
-
-  function activeTag() {
-    return decodeURIComponent(location.hash.replace(/^#\/?/, "")).trim().toLowerCase();
-  }
-
-  function countFor(tag) {
-    return games.filter((g) => g.tags.includes(tag)).length;
-  }
-
-  function renderFilters(active) {
-    filtersEl.innerHTML = "";
-    const all = document.createElement("a");
-    all.href = "#";
-    all.textContent = "All games";
-    all.setAttribute("aria-current", String(!active));
-    filtersEl.appendChild(all);
-    Object.keys(tags)
-      .filter((t) => countFor(t) > 0)
-      .sort((a, b) => countFor(b) - countFor(a) || tagLabel(a).localeCompare(tagLabel(b)))
-      .forEach((t) => {
-        const a = document.createElement("a");
-        a.href = "#" + t;
-        a.innerHTML = `${tagLabel(t)}<span class="count">${countFor(t)}</span>`;
-        a.setAttribute("aria-current", String(active === t));
-        filtersEl.appendChild(a);
-      });
-  }
-
-  function card(game) {
-    const article = document.createElement("article");
-    article.className = "card";
-    article.innerHTML = `
-      <div class="thumb"><img src="${game.slug}/thumb.svg" alt="" loading="lazy"></div>
-      <div class="body">
-        <h2><a href="${game.slug}/index.html"></a></h2>
-        <p></p>
-        <div class="tags"></div>
-      </div>`;
-    article.querySelector("h2 a").textContent = game.title;
-    article.querySelector("p").textContent = game.blurb;
-    const tagRow = article.querySelector(".tags");
-    game.tags.forEach((t) => {
-      const a = document.createElement("a");
-      a.className = "tag";
-      a.href = "#" + t;
-      a.textContent = tagLabel(t);
-      tagRow.appendChild(a);
-    });
-    return article;
-  }
-
-  function render() {
-    const tag = activeTag();
-    const shown = tag ? games.filter((g) => g.tags.includes(tag)) : games;
-    renderFilters(tag);
-    gridEl.innerHTML = "";
-    if (!tag) {
-      headingEl.textContent = `${games.length} games`;
-    } else {
-      headingEl.innerHTML = `<strong></strong> &middot; ${shown.length} ${shown.length === 1 ? "game" : "games"}`;
-      headingEl.querySelector("strong").textContent = tagLabel(tag);
-    }
-    if (shown.length === 0) {
-      const empty = document.createElement("div");
-      empty.className = "empty";
-      empty.innerHTML = `No games about <strong></strong> yet. <a href="#">See all games</a>`;
-      empty.querySelector("strong").textContent = tagLabel(tag);
-      gridEl.appendChild(empty);
-      return;
-    }
-    shown.forEach((g) => gridEl.appendChild(card(g)));
-  }
-
-  window.addEventListener("hashchange", () => {
-    render();
-    if (activeTag()) filtersEl.scrollIntoView({ block: "nearest", behavior: "smooth" });
-  });
-  render();
-})();
-</script>
-<script src="assets/concepts.js"></script>
-<script src="assets/recommend.js"></script>
-<script src="assets/progress.js"></script>
-<script>
-"use strict";
-
-// Once the player has a record, suggest what to play next (see profile/).
-async function suggestNext() {
-  const { games } = window.COOLMATHS;
-  const { tagLabel } = window.COOLMATHS_SITE;
-  const line = document.getElementById("forYou");
-  const progress = await Track.progress();
-  const [pick] = Object.keys(progress).length ? Recommend.next(progress, games, window.COOLMATHS_CONCEPTS, 1) : [];
-  line.textContent = "";
-  line.hidden = !pick;
-  if (!pick) return;
-
-  const link = document.createElement("a");
-  link.href = `${pick.game.slug}/index.html`;
-  link.textContent = pick.game.title;
-  const profile = document.createElement("a");
-  profile.href = "profile/index.html";
-  profile.textContent = "Your profile";
-  line.append("Next for you: ", link, `. ${Recommend.explain(pick, tagLabel)} `, profile);
-}
-
-// The record can arrive late: a signed-in player's comes from their account.
-window.addEventListener("progresschange", suggestNext);
-suggestNext();
-</script>
+  <nav class="filters" id="filters" aria-label="Filter games by idea"></nav>
+  <p id="heading" role="status" aria-live="polite"></p>
+  <ul class="grid" id="grid"></ul>
+  <button type="button" class="more" id="more" hidden>Show more games</button>
+</main>
 </body>
 </html>

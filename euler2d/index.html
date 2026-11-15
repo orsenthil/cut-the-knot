@@ -1,12 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Euler 2D Fluid Flow &mdash; coolmaths</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Watch a cloud of points swirl through a perfectly incompressible fluid, stirred by a few hidden vortices. What happens if you change the power law?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/euler2d/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Euler 2D Fluid Flow">
+<meta property="og:description" content="Watch a cloud of points swirl through a perfectly incompressible fluid, stirred by a few hidden vortices. What happens if you change the power law?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/euler2d/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
 <link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/games.js"></script>
 <script src="../assets/site.js"></script>
+<!-- /stamp:head -->
 <style>
   #stageWrap { width: 100%; max-width: 760px; }
   #canvasBox {
@@ -46,8 +60,10 @@
   #liveStatus { font-size: 0.85rem; color: var(--muted); text-align: center; margin-top: 10px; }
 </style>
 </head>
-<body data-game="euler2d" data-explored-after="45,0">
+<body data-game="euler2d" data-kind="demo" data-explored-after="45,0">
+<main id="main">
   <h1>Euler 2D Fluid Flow</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#fluid-dynamics">Fluid Dynamics</a><a class="tag" href="../index.html#differential-equations">Differential Equations</a><a class="tag" href="../index.html#complex-analysis">Complex Analysis</a></div><!-- /stamp:tags -->
   <p class="byline">
     Ported from
     <a class="wiki-term" data-wiki="XScreenSaver" href="https://en.wikipedia.org/wiki/XScreenSaver" target="_blank" rel="noopener">XScreenSaver</a>'s
@@ -124,7 +140,7 @@
         method in his <code>euler2d.tex</code> write-up.
       </p>
 
-      <h3>Vorticity: the fluid's hidden scalar</h3>
+      <h2>Vorticity: the fluid's hidden scalar</h2>
       <p>
         Tracking the velocity of every point in a fluid directly is hard, because pressure
         couples every point to every other. It's easier to track the
@@ -135,7 +151,7 @@
         fluid moves, you know where the vorticity is at any later time.
       </p>
 
-      <h3>The Biot&ndash;Savart kernel: velocity from vortices</h3>
+      <h2>The Biot&ndash;Savart kernel: velocity from vortices</h2>
       <p>
         This simulation starts with vorticity concentrated at a handful of points &mdash; think of
         them as the eyes of tiny hurricanes &mdash; each carrying a fixed strength <code>w<sub>k</sub></code>.
@@ -154,7 +170,7 @@
         fades faster with distance.
       </p>
 
-      <h3>Keeping the flow inside the wall</h3>
+      <h2>Keeping the flow inside the wall</h2>
       <p>
         A real fluid can't flow through its container's wall. On the unit disk, that boundary
         condition is enforced with a classic trick: for every vortex at <code>a</code>, add a
@@ -164,7 +180,7 @@
         away, repelled by its own mirror image.
       </p>
 
-      <h3>A new boundary every run</h3>
+      <h2>A new boundary every run</h2>
       <p>
         A plain disk gets boring fast, so the "standard" power-law setting instead draws the
         domain as the image of the unit disk under a random
@@ -177,7 +193,7 @@
         evenly spread over the oddly-shaped domain rather than bunched near its corners.
       </p>
 
-      <h3>Marching forward in time</h3>
+      <h2>Marching forward in time</h2>
       <p>
         At every step the simulation adds up the pull of all the vortices on every point, then
         nudges each point along by a tiny amount. The very first step uses the midpoint method;
@@ -196,6 +212,7 @@
       </p>
     </div>
   </details>
+</main>
 
 <script src="../assets/wiki-hovercard.js"></script>
 <script src="euler2d-core.js"></script>

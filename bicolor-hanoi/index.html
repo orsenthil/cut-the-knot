@@ -1,12 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Bicolor Towers of Hanoi &mdash; coolmaths</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Two towers of disks, both striped gold and red, and one spare peg. Make each tower a single colour — and swap the two towers over. Three sizes can be done in 29 moves: can you?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/bicolor-hanoi/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Bicolor Towers of Hanoi">
+<meta property="og:description" content="Two towers of disks, both striped gold and red, and one spare peg. Make each tower a single colour — and swap the two towers over. Three sizes can be done in 29 moves: can you?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/bicolor-hanoi/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
 <link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/games.js"></script>
 <script src="../assets/site.js"></script>
+<!-- /stamp:head -->
 <style>
   #pegs {
     display: flex;
@@ -49,8 +63,10 @@
   }
 </style>
 </head>
-<body data-game="bicolor-hanoi">
+<body data-game="bicolor-hanoi" data-kind="game">
+<main id="main">
   <h1>Bicolor Towers of Hanoi</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#induction">Induction</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
   <p class="byline">
     Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
     (<a href="https://www.cut-the-knot.org/recurrence/BiColorHanoi.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
@@ -87,7 +103,7 @@
         It is really what the puzzle is built on.
       </p>
 
-      <h3>Twinning the disks only doubles the work</h3>
+      <h2>Twinning the disks only doubles the work</h2>
       <p>
         Shifting an ordinary tower of <code>k</code> disks from one peg to another takes
         <code>2<sup>k</sup> &minus; 1</code> moves. Shift a doubled pile &mdash; two disks of each of
@@ -101,7 +117,7 @@
         piled up out of the way on a single other peg.
       </p>
 
-      <h3>Separating the colours is the easy half</h3>
+      <h2>Separating the colours is the easy half</h2>
       <p>
         If all you had to do was sort the colours, you could leave the two biggest disks exactly where they
         are: the gold giant already sits at the bottom of the left peg, so bring the golds to it and the
@@ -111,7 +127,7 @@
         swap, not in the sorting.
       </p>
 
-      <h3>The shortest solution, and a published one that is a move too long</h3>
+      <h2>The shortest solution, and a published one that is a move too long</h2>
       <p>
         A <a class="wiki-term" data-wiki="Breadth-first_search" href="https://en.wikipedia.org/wiki/Breadth-first_search" target="_blank" rel="noopener">breadth-first search</a>
         over every position this game can reach settles the question for small boards. The fewest possible
@@ -130,6 +146,7 @@
       </p>
     </div>
   </details>
+</main>
 
 <script src="../assets/wiki-hovercard.js"></script>
 <script src="bicolor-hanoi-core.js"></script>

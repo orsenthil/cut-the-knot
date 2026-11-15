@@ -21,7 +21,12 @@ import { join } from "node:path";
 import { serveRepo, launch } from "./lib/browser.mjs";
 
 const shots = process.argv[2] || null;
-const EMULATORS = { projectId: "demo-coolmaths", auth: "http://127.0.0.1:9099", firestoreHost: "127.0.0.1", firestorePort: 8080 };
+// Where the emulators are: `firebase emulators:exec` says, in these variables
+// (the ports are set in firebase/firebase.json).
+const FIRESTORE = process.env.FIRESTORE_EMULATOR_HOST || "127.0.0.1:8685";
+const AUTH = process.env.FIREBASE_AUTH_EMULATOR_HOST || "127.0.0.1:9199";
+const [FIRESTORE_HOST, FIRESTORE_PORT] = [FIRESTORE.split(":")[0], Number(FIRESTORE.split(":")[1])];
+const EMULATORS = { projectId: "demo-coolmaths", auth: `http://${AUTH}`, firestoreHost: FIRESTORE_HOST, firestorePort: FIRESTORE_PORT };
 const ADA = { sub: "ada-1", email: "ada@example.com", name: "Ada L." };
 const BOB = { sub: "bob-1", email: "bob@example.com", name: "Bob" };
 

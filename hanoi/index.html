@@ -1,12 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tower of Hanoi &mdash; coolmaths</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Move a tower of disks to another peg, one at a time, never a big one on a small one. Why does every extra disk double the work?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/hanoi/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Tower of Hanoi">
+<meta property="og:description" content="Move a tower of disks to another peg, one at a time, never a big one on a small one. Why does every extra disk double the work?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/hanoi/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
 <link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/games.js"></script>
 <script src="../assets/site.js"></script>
+<!-- /stamp:head -->
 <style>
   #pegs {
     display: flex;
@@ -46,8 +60,10 @@
   }
 </style>
 </head>
-<body data-game="hanoi">
+<body data-game="hanoi" data-kind="game">
+<main id="main">
   <h1>Tower of Hanoi</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#induction">Induction</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
   <p class="byline">
     Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
     (<a href="https://www.cut-the-knot.org/recurrence/hanoi.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
@@ -81,7 +97,7 @@
         a big problem solved by solving a smaller copy of itself.
       </p>
 
-      <h3>The recursive solution</h3>
+      <h2>The recursive solution</h2>
       <p>
         Sooner or later the biggest disk has to move from the left peg to the right one. At that moment
         every other disk must be stacked on the middle peg. So: move the top <code>N&minus;1</code> disks to
@@ -90,7 +106,7 @@
       <blockquote><code>Solve(N, Src, Aux, Dst) = Solve(N&minus;1, Src, Dst, Aux), Src&rarr;Dst, Solve(N&minus;1, Aux, Src, Dst)</code></blockquote>
       <p>The Slow and Fast buttons play exactly this.</p>
 
-      <h3>How many moves</h3>
+      <h2>How many moves</h2>
       <p>
         Let <code>T<sub>N</sub></code> be the fewest moves for <code>N</code> disks. The argument above says
         you must move <code>N&minus;1</code> disks twice and the big one once, so
@@ -104,7 +120,7 @@
         take about 585 billion years.
       </p>
 
-      <h3>A hint from anywhere</h3>
+      <h2>A hint from anywhere</h2>
       <p>
         "Suggest move" doesn't replay the recursion. It works from any position, even a messy one, using
         an idea of Romek Zylla. Start with the biggest disk and the right peg as its target. If the disk is
@@ -120,6 +136,7 @@
       </p>
     </div>
   </details>
+</main>
 
 <script src="../assets/wiki-hovercard.js"></script>
 <script src="hanoi-core.js"></script>

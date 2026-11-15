@@ -1,12 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Toads and Frogs in 2D &mdash; coolmaths</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Frogs go right and down, toads go left and up, and one empty square is all the room they have. Swap the two sides — why is the square board so much easier than a single row?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/frogs-toads-2d/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Toads and Frogs in 2D">
+<meta property="og:description" content="Frogs go right and down, toads go left and up, and one empty square is all the room they have. Swap the two sides — why is the square board so much easier than a single row?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/frogs-toads-2d/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
 <link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/games.js"></script>
 <script src="../assets/site.js"></script>
+<!-- /stamp:head -->
 <style>
   #boardWrap {
     display: flex;
@@ -56,8 +70,10 @@
   }
 </style>
 </head>
-<body data-game="frogs-toads-2d">
+<body data-game="frogs-toads-2d" data-kind="game">
+<main id="main">
   <h1>Toads and Frogs in 2D</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
   <p class="byline">
     Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
     (<a href="https://www.cut-the-knot.org/SimpleGames/FrogsAndToads2D.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
@@ -93,7 +109,7 @@
         worth meeting first, because the two-dimensional one is built out of copies of it.
       </p>
 
-      <h3>The puzzle in a line, and its formula</h3>
+      <h2>The puzzle in a line, and its formula</h2>
       <p>
         Put <code>N</code> frogs on the left, <code>M</code> toads on the right, one gap between them. Every
         frog has to end up <code>M+1</code> places to the right and every toad <code>N+1</code> places to
@@ -108,7 +124,7 @@
         over every position confirms the formula for all of them: 3 moves for one of each, then 8, 15 and 24.
       </p>
 
-      <h3>Why the square board is so much cheaper</h3>
+      <h2>Why the square board is so much cheaper</h2>
       <p>
         A 3 by 3 board holds four frogs and four toads &mdash; the same eight animals as a line of nine
         squares, which needs 24 moves. The square needs 12. In a line every frog has to hop over every
@@ -116,14 +132,14 @@
         animals can walk around one another and most of those 16 hops are never needed.
       </p>
 
-      <h3>The shape of the board matters, not just its size</h3>
+      <h2>The shape of the board matters, not just its size</h2>
       <p>
         3 columns by 5 rows takes 22 moves; 5 columns by 3 rows takes 27, although both hold seven frogs and
         seven toads. The opening position is not symmetric: the middle column is frogs above the hole and
         toads below it, so turning the board on its side gives a genuinely different puzzle.
       </p>
 
-      <h3>Solving it as a stack of line puzzles</h3>
+      <h2>Solving it as a stack of line puzzles</h2>
       <p>
         Bogomolny's hint is to watch the middle column on its own. Every animal in it has to move, so the
         empty square must visit every square of that column &mdash; which is itself the one-dimensional
@@ -136,6 +152,7 @@
       </p>
     </div>
   </details>
+</main>
 
 <script src="../assets/wiki-hovercard.js"></script>
 <script src="frogs-core.js"></script>

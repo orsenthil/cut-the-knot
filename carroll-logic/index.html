@@ -1,16 +1,30 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lewis Carroll's Game of Logic &mdash; coolmaths</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Put two facts on Lewis Carroll's board as red and grey counters, and the board tells you what follows. Can a board really do logic?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/carroll-logic/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Lewis Carroll's Game of Logic">
+<meta property="og:description" content="Put two facts on Lewis Carroll's board as red and grey counters, and the board tells you what follows. Can a board really do logic?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/carroll-logic/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
 <link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/games.js"></script>
 <script src="../assets/site.js"></script>
+<!-- /stamp:head -->
 <style>
   #stage { width: 100%; padding: 12px 8px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; justify-items: center; }
   .panel { width: 100%; max-width: 210px; text-align: center; }
-  .panel h3 { margin: 0 0 4px; font-size: 0.95rem; }
+  .panel h2 { margin: 0 0 4px; font-size: 0.95rem; }
   .panel svg { width: 100%; height: auto; display: block; touch-action: manipulation; }
   .says { margin: 4px 0 0; padding: 0; list-style: none; font-size: 0.82rem; color: var(--muted); min-height: 1.2em; }
   .says li { line-height: 1.35; }
@@ -32,8 +46,10 @@
   .swatch { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: -1px; }
 </style>
 </head>
-<body data-game="carroll-logic">
+<body data-game="carroll-logic" data-kind="demo">
+<main id="main">
   <h1>Lewis Carroll's Game of Logic</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
   <p class="byline">
     Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
     (<a href="https://www.cut-the-knot.org/LewisCarroll/LCGame.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
@@ -45,10 +61,10 @@
   </div>
 
   <div id="stage" class="stage">
-    <div class="panel"><h3 id="titleA">First fact</h3><svg id="premA" viewBox="0 0 200 200" role="group"></svg><ul class="says" id="saysA"></ul></div>
-    <div class="panel"><h3 id="titleB">Second fact</h3><svg id="premB" viewBox="0 0 200 200" role="group"></svg><ul class="says" id="saysB"></ul></div>
-    <div class="panel"><h3 id="titleT">Both together</h3><svg id="tri" viewBox="0 0 200 200" aria-label="Trilateral diagram"></svg></div>
-    <div class="panel"><h3 id="titleC">So we know</h3><svg id="concl" viewBox="0 0 200 200" aria-label="Conclusion diagram"></svg><ul class="says conclusion" id="saysC"></ul></div>
+    <div class="panel"><h2 id="titleA">First fact</h2><svg id="premA" viewBox="0 0 200 200" role="group"></svg><ul class="says" id="saysA"></ul></div>
+    <div class="panel"><h2 id="titleB">Second fact</h2><svg id="premB" viewBox="0 0 200 200" role="group"></svg><ul class="says" id="saysB"></ul></div>
+    <div class="panel"><h2 id="titleT">Both together</h2><svg id="tri" viewBox="0 0 200 200" aria-label="Trilateral diagram"></svg></div>
+    <div class="panel"><h2 id="titleC">So we know</h2><svg id="concl" viewBox="0 0 200 200" aria-label="Conclusion diagram"></svg><ul class="says conclusion" id="saysC"></ul></div>
   </div>
 
   <div class="controls">
@@ -79,7 +95,7 @@
         move.
       </p>
 
-      <h3>Two attributes, four boxes</h3>
+      <h2>Two attributes, four boxes</h2>
       <p>
         A square split into four boxes holds everything there is, sorted by two attributes: <code>x</code> or
         not <code>x</code> (rows), <code>m</code> or not <code>m</code> (columns). A red counter in a box means
@@ -88,7 +104,7 @@
         not-<code>x</code> <code>m</code>.
       </p>
 
-      <h3>Three attributes, eight boxes</h3>
+      <h2>Three attributes, eight boxes</h2>
       <p>
         The middle diagram adds the third attribute as an inner square: inside is <code>m</code>, outside is
         not <code>m</code>. Each premise box is split in two there. A grey box makes both halves grey; a red box
@@ -98,7 +114,7 @@
         in a square.
       </p>
 
-      <h3>Eliminating the middle term</h3>
+      <h2>Eliminating the middle term</h2>
       <p>
         To read off a conclusion about <code>x</code> and <code>y</code>, forget the inner square: each quadrant
         of the conclusion is red if either half has a red counter, and grey if both halves are grey. That is the
@@ -112,6 +128,7 @@
       </p>
     </div>
   </details>
+</main>
 
 <script src="../assets/wiki-hovercard.js"></script>
 <script src="carroll-logic-core.js"></script>

@@ -1,12 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mixed Strategies &mdash; coolmaths</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Change the four scores in a two-player game. Is there one safe choice, or must both players mix their moves?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/mixed-strategies/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Mixed Strategies">
+<meta property="og:description" content="Change the four scores in a two-player game. Is there one safe choice, or must both players mix their moves?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/mixed-strategies/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
 <link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/games.js"></script>
 <script src="../assets/site.js"></script>
+<!-- /stamp:head -->
 <style>
   #strategy-stage { max-width: 660px; margin: 0 auto; display: grid; gap: 18px; }
   #matrix-wrap { display: grid; grid-template-columns: auto 1fr; gap: 8px; align-items: center; }
@@ -28,8 +42,10 @@
   @media (min-width: 580px) { #strategy-stage { grid-template-columns: 250px 1fr; align-items: center; } }
 </style>
 </head>
-<body data-game="mixed-strategies">
+<body data-game="mixed-strategies" data-kind="demo">
+<main id="main">
   <h1>Mixed Strategies</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
   <p class="byline">
     Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
     (<a href="https://www.cut-the-knot.org/Curriculum/Games/MixedStrategies.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
@@ -61,15 +77,17 @@
     <summary>Look for the math</summary>
     <div class="math-body">
       <p>A two-person <a class="wiki-term" data-wiki="Zero-sum_game" href="https://en.wikipedia.org/wiki/Zero-sum_game" target="_blank" rel="noopener">zero-sum game</a> gives one player exactly what the other loses. The four numbers in this table are enough to show the two possible kinds of stable play.</p>
-      <h3>A square that settles everything</h3>
+      <h2>A square that settles everything</h2>
       <p>The row player wants a bigger number, so they look for the smallest number in each row. The column player wants a smaller number, so they look for the biggest number in each column. A number that is both is a <a class="wiki-term" data-wiki="Saddle_point" href="https://en.wikipedia.org/wiki/Saddle_point" target="_blank" rel="noopener">saddle point</a>. Neither player needs to guess: both can choose its row or column every time.</p>
-      <h3>When no single choice is safe</h3>
+      <h2>When no single choice is safe</h2>
       <p>Otherwise, each player can protect themselves by mixing their two choices. If the entries are <code>a b / c d</code>, the row player chooses its first row with probability <code>(d − c)/(a − b − c + d)</code>; the column player chooses its first column with probability <code>(d − b)/(a − b − c + d)</code>. The plot shows why: at the crossing, neither choice can improve the other player's result.</p>
-      <h3>Minimax</h3>
+      <h2>Minimax</h2>
       <p>The <a class="wiki-term" data-wiki="Minimax_theorem" href="https://en.wikipedia.org/wiki/Minimax_theorem" target="_blank" rel="noopener">minimax theorem</a> says these two ways of protecting yourself meet at the same value. In a 2 by 2 game that value is <code>(ad − bc)/(a − b − c + d)</code>. The applet displays a mixture only when both probabilities are strictly between 0 and 1.</p>
       <p class="tip">Make a matching-pennies table: 1 and −1 on one diagonal, −1 and 1 on the other. Both players must choose each option half the time.</p>
     </div>
   </details>
+</main>
+
 <script src="../assets/wiki-hovercard.js"></script>
 <script src="mixed-strategies-core.js"></script>
 <script src="mixed-strategies.js"></script>

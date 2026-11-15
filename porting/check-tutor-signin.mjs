@@ -24,6 +24,11 @@ import { join } from "node:path";
 import { serveRepo, launch, REPO } from "./lib/browser.mjs";
 
 const shots = process.argv[2] || null;
+// Where the emulators are: `firebase emulators:exec` says, in these variables
+// (the ports are set in firebase/firebase.json).
+const FIRESTORE = process.env.FIRESTORE_EMULATOR_HOST || "127.0.0.1:8685";
+const AUTH = process.env.FIREBASE_AUTH_EMULATOR_HOST || "127.0.0.1:9199";
+const [FIRESTORE_HOST, FIRESTORE_PORT] = [FIRESTORE.split(":")[0], Number(FIRESTORE.split(":")[1])];
 const TUTOR_PORT = 8799;
 const TUTOR = `http://127.0.0.1:${TUTOR_PORT}`;
 const CALLBACK = "http://localhost:9911/callback";
@@ -48,8 +53,8 @@ const tutor = spawn("npx", ["tsx", "src/node.ts"], {
   env: {
     ...process.env,
     PORT: String(TUTOR_PORT),
-    FIRESTORE_EMULATOR_HOST: "127.0.0.1:8080",
-    FIREBASE_AUTH_EMULATOR_HOST: "127.0.0.1:9099",
+    FIRESTORE_EMULATOR_HOST: FIRESTORE,
+    FIREBASE_AUTH_EMULATOR_HOST: AUTH,
     FIREBASE_PROJECT_ID: "demo-coolmaths",
     PUBLIC_URL: `http://localhost:${TUTOR_PORT}`,
     SIGN_IN_URL: `${site}/signin/`,
@@ -105,7 +110,7 @@ try {
     (emulators) => {
       window.COOLMATHS_EMULATORS = emulators;
     },
-    { projectId: "demo-coolmaths", auth: "http://127.0.0.1:9099", firestoreHost: "127.0.0.1", firestorePort: 8080, tutorServer: TUTOR },
+    { projectId: "demo-coolmaths", auth: `http://${AUTH}`, firestoreHost: FIRESTORE_HOST, firestorePort: FIRESTORE_PORT, tutorServer: TUTOR },
   );
   // The client's callback address does not exist; answer it so the browser lands somewhere.
   await context.route("http://localhost:9911/**", (route) => route.fulfill({ status: 200, contentType: "text/html", body: "<title>client</title>back at the client" }));

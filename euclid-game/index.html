@@ -1,12 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Euclid's Game &mdash; coolmaths</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Mark a number that is the gap between two marked ones; whoever can't move loses. The winner is settled before the first move — can you see how?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/euclid-game/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Euclid's Game">
+<meta property="og:description" content="Mark a number that is the gap between two marked ones; whoever can't move loses. The winner is settled before the first move — can you see how?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/euclid-game/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
 <link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/games.js"></script>
 <script src="../assets/site.js"></script>
+<!-- /stamp:head -->
 <style>
   #stage { width: 100%; padding: 12px 8px; display: flex; justify-content: center; }
   #grid { display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 3px; width: 100%; max-width: 480px; }
@@ -27,8 +41,10 @@
   .chip { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
 </style>
 </head>
-<body data-game="euclid-game">
+<body data-game="euclid-game" data-kind="game">
+<main id="main">
   <h1>Euclid's Game</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#game-strategy">Game Strategy</a></div><!-- /stamp:tags -->
   <p class="byline">
     Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
     (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/JEuclidGame.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
@@ -63,7 +79,7 @@
         for the greatest common divisor. This game is that algorithm with two players.
       </p>
 
-      <h3>Where the game always ends</h3>
+      <h2>Where the game always ends</h2>
       <p>
         Call the two starting numbers <code>a</code> and <code>b</code>, and their
         <a class="wiki-term" data-wiki="Greatest_common_divisor" href="https://en.wikipedia.org/wiki/Greatest_common_divisor" target="_blank" rel="noopener">greatest common divisor</a>
@@ -74,7 +90,7 @@
       </p>
       <blockquote><code>g, 2g, 3g, &hellip;, max</code> all marked, which is <code>max / g</code> numbers.</blockquote>
 
-      <h3>The winner is decided before the first move</h3>
+      <h2>The winner is decided before the first move</h2>
       <p>
         Two numbers start marked, so every game lasts exactly <code>max / g &minus; 2</code> moves, whatever anyone
         plays. If that number is odd the first player makes the last move and wins; if it is even the second
@@ -92,6 +108,7 @@
       </p>
     </div>
   </details>
+</main>
 
 <script src="../assets/wiki-hovercard.js"></script>
 <script src="euclid-game-core.js"></script>

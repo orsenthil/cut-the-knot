@@ -70,15 +70,26 @@ function lintSlug(slug, catalogue) {
     fail(`<title> must end with "&mdash; coolmaths", got ${JSON.stringify(title)}`);
   }
 
+  // The standard head is written by porting/stamp-pages.mjs; verify.sh checks
+  // it is current. Here: it is present, and the page does not load the whole
+  // catalogue, which no game page needs and which grows with every game.
   const cssAt = at(html, /<link[^>]+href="\.\.\/assets\/site\.css"/);
-  const gamesAt = at(html, /<script[^>]+src="\.\.\/assets\/games\.js"/);
   const siteAt = at(html, /<script[^>]+src="\.\.\/assets\/site\.js"/);
+  if (!/<!-- stamp:head/.test(html)) fail("the head is not stamped; run: node porting/stamp-pages.mjs " + slug);
   if (cssAt < 0) fail("missing <link> to ../assets/site.css");
-  if (gamesAt < 0) fail("missing <script src=../assets/games.js>");
   if (siteAt < 0) fail("missing <script src=../assets/site.js>");
-  if (gamesAt >= 0 && siteAt >= 0 && gamesAt > siteAt) {
-    fail("games.js must come before site.js, so the catalogue exists when site.js runs");
+  if (/src="\.\.\/assets\/games\.js"/.test(html)) fail("a game page must not load ../assets/games.js");
+  if (!/<main\b[^>]*\bid="main"/.test(html)) fail('no <main id="main"> around the page content');
+  if (/<h3[\s>]/.test(html) && !/<h2[\s>]/.test(html)) fail("an <h3> with no <h2> above it skips a heading level");
+  if (/<img\b(?![^>]*\balt=)[^>]*>/.test(html)) fail("an <img> has no alt attribute (use alt=\"\" if it is decoration)");
+  if (/<canvas\b(?![^>]*(?:aria-label|aria-labelledby|role=))[^>]*>/.test(html)) {
+    fail("a <canvas> needs an aria-label saying what it shows");
   }
+  if (/\son(?:click|change|input|load|key\w+|pointer\w+|mouse\w+)=/.test(html)) {
+    fail("inline event handlers (onclick=...) are not allowed; use addEventListener");
+  }
+  if (/user-scalable\s*=\s*no|maximum-scale/.test(html)) fail("the page must not stop the player zooming");
+  if (/tabindex="[1-9]/.test(html)) fail('tabindex must be "0" or "-1", never a positive number');
   const headEnd = at(html, /<\/head>/);
   if (headEnd >= 0 && siteAt > headEnd) {
     fail("site.js must be in <head>, so the saved theme applies before paint");
@@ -142,10 +153,12 @@ function lintSlug(slug, catalogue) {
       const open = /<details[^>]*\bid="math"[^>]*\bopen\b/.test(html);
       if (open) fail('<details id="math"> must be closed by default (no "open" attribute)');
       const body = html.slice(mathAt).split("</details>")[0];
-      const h3 = (body.match(/<h3[\s>]/g) ?? []).length;
-      if (h3 < 2 || h3 > 5) {
-        fail(`"Look for the math" must have 2-5 <h3> sections, found ${h3}`);
+      // <h2>, not <h3>: the page's only other heading is its <h1>.
+      const sections = (body.match(/<h2[\s>]/g) ?? []).length;
+      if (sections < 2 || sections > 5) {
+        fail(`"Look for the math" must have 2-5 <h2> sections, found ${sections}`);
       }
+      if (/<h3[\s>]/.test(body) && sections === 0) fail('use <h2> for the sections of "Look for the math"');
       if (!/<summary>/.test(body)) fail('<details id="math"> needs a <summary>');
     }
   }

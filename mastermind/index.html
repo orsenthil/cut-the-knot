@@ -1,12 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mastermind &mdash; coolmaths</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Guess a secret code of coloured pegs. Each reply tells you how many are exact and how many are near — can you finish in five?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/mastermind/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Mastermind">
+<meta property="og:description" content="Guess a secret code of coloured pegs. Each reply tells you how many are exact and how many are near — can you finish in five?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/mastermind/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
 <link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/games.js"></script>
 <script src="../assets/site.js"></script>
+<!-- /stamp:head -->
 <style>
   #board {
     display: flex;
@@ -74,8 +88,10 @@
   }
 </style>
 </head>
-<body data-game="mastermind">
+<body data-game="mastermind" data-kind="game">
+<main id="main">
   <h1>Mastermind</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
   <p class="byline">
     Puzzle by
     <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
@@ -109,7 +125,7 @@
         only codes that would have given the same answer remain possible.
       </p>
 
-      <h3>Exact and near, without double-counting</h3>
+      <h2>Exact and near, without double-counting</h2>
       <p>
         If a colour appears more often in the guess than in the secret, you must not credit every copy.
         Donald Knuth's clean rule: let <code>n<sub>i</sub></code> be how often colour <code>i</code> appears
@@ -125,7 +141,7 @@
         (the second peg) and no near match &mdash; the extra <code>1</code> in the guess has already been used.
       </p>
 
-      <h3>An impossible reply</h3>
+      <h2>An impossible reply</h2>
       <p>
         You will never see three exact dots and one near dot together. With three pegs already pinned
         in place, the fourth peg is either exact too or a colour that is not in the secret at all &mdash;
@@ -133,7 +149,7 @@
         smaller boards confirms it, and the same counting argument holds for any size.
       </p>
 
-      <h3>How few guesses do you need?</h3>
+      <h2>How few guesses do you need?</h2>
       <p>
         Knuth showed that a careful strategy always finishes the classic game in at most five guesses
         (you know the code after at most four replies). A later strategy lowers the
@@ -149,6 +165,7 @@
       </p>
     </div>
   </details>
+</main>
 
 <script src="../assets/wiki-hovercard.js"></script>
 <script src="mastermind-core.js"></script>

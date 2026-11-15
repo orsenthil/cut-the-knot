@@ -1,12 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Aliquot &mdash; coolmaths</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Take turns subtracting a divisor of the number; whoever is handed 1 cannot move and loses. The winner is decided before anybody plays — can you tell who, just by looking at the number?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/aliquot/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Aliquot">
+<meta property="og:description" content="Take turns subtracting a divisor of the number; whoever is handed 1 cannot move and loses. The winner is decided before anybody plays — can you tell who, just by looking at the number?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/aliquot/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
 <link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/games.js"></script>
 <script src="../assets/site.js"></script>
+<!-- /stamp:head -->
 <style>
   #stage {
     display: flex;
@@ -83,8 +97,10 @@
   }
 </style>
 </head>
-<body data-game="aliquot">
+<body data-game="aliquot" data-kind="game">
+<main id="main">
   <h1>Aliquot</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#divisibility">Divisibility</a><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#game-strategy">Game Strategy</a></div><!-- /stamp:tags -->
   <p class="byline">
     Puzzle by
     <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
@@ -132,7 +148,7 @@
         has only 1; and 1 has none at all, which is exactly why being handed 1 loses.
       </p>
 
-      <h3>An odd number hides no even divisor</h3>
+      <h2>An odd number hides no even divisor</h2>
       <p>
         Say <code>d</code> divides an odd number <code>n</code>, so <code>n = d &times; k</code>.
         If <code>d</code> were even then <code>n</code> would be even as well. So every divisor of an
@@ -141,7 +157,7 @@
       <blockquote>From an odd number, every legal move hands your opponent an even number.</blockquote>
       <p>You have no choice in the matter. That is the half of the game you cannot escape.</p>
 
-      <h3>So the game is nothing but parity</h3>
+      <h2>So the game is nothing but parity</h2>
       <p>
         The other half is just as blunt: 1 is an aliquot part of every number above 1, so from an
         even number you can always leave <code>n &minus; 1</code>, which is odd. Now run
@@ -160,7 +176,7 @@
         backwards from 1 up to 2000, position by position, and the answer is always "even wins".
       </p>
 
-      <h3>How the computer keeps a straight face</h3>
+      <h2>How the computer keeps a straight face</h2>
       <p>
         Taking 1 every single turn would win and would also give the secret away by the second move.
         So the applet's opponent divides the twos out of the number, takes the smallest divisor of 3
@@ -186,6 +202,7 @@
       </p>
     </div>
   </details>
+</main>
 
 <script src="../assets/wiki-hovercard.js"></script>
 <script src="aliquot-core.js"></script>

@@ -94,13 +94,40 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* The page's content sits in <main>, laid out exactly as <body> lays out
+   its own children: one centred column. */
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: stretch;
+  min-width: 0;
+}
+main:focus { outline: none; }
+
+/* Hidden until a keyboard user tabs to it; then the first thing on the page. */
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -100px;
+  z-index: 600;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 650;
+  text-decoration: none;
+}
+.skip-link:focus { top: 8px; color: var(--accent-text); }
+
 body {
   margin: 0;
-  padding: 0 16px 48px;
+  /* max(): on a phone with a notch or rounded corners, stay clear of them
+     (the viewport is viewport-fit=cover, for when this runs inside an app). */
+  padding: 0 max(16px, env(safe-area-inset-right)) max(48px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
   background: var(--bg);
   color: var(--text);
   font-family: var(--font);
-  font-size: 16px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   display: flex;
@@ -114,7 +141,8 @@ a:hover { color: var(--accent-hover); }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 
 h1 {
-  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  /* a rem part as well as vw, so it grows when the player asks for bigger text */
+  font-size: clamp(1.6rem, 1.1rem + 2vw, 2.1rem);
   line-height: 1.15;
   letter-spacing: -0.02em;
   font-weight: 750;
@@ -358,7 +386,7 @@ details#math .math-body {
   line-height: 1.65;
   color: var(--text);
 }
-details#math .math-body h3 { font-size: 1rem; margin: 22px 0 4px; letter-spacing: -0.01em; }
+details#math .math-body h2 { font-size: 1rem; margin: 22px 0 4px; letter-spacing: -0.01em; }
 details#math .math-body blockquote {
   margin: 10px 0;
   padding: 6px 14px;
@@ -404,8 +432,18 @@ details#math .math-body blockquote {
 .wiki-card a.wiki-more { display: inline-block; margin-top: 8px; font-size: 0.78rem; }
 .wiki-card .wiki-loading { color: var(--muted); }
 
+/* For a player who has asked for less motion: every transition and
+   animation, here and in any page's own styles, finishes at once. They are
+   cut short rather than removed, so code waiting for one to end still hears. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition: none !important; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 details#math .tip { font-size: 0.85rem; color: var(--muted); margin-top: 18px; }

@@ -1,12 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Contorted Fractions &mdash; coolmaths</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Left may only shrink a number, Right may only grow it, and the denominator has to drop every time. Each fraction is worth a tidy number of halves and quarters — add them up and you know who wins before a move is made.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/fraction-game/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Contorted Fractions">
+<meta property="og:description" content="Left may only shrink a number, Right may only grow it, and the denominator has to drop every time. Each fraction is worth a tidy number of halves and quarters — add them up and you know who wins before a move is made.">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/fraction-game/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
 <link rel="stylesheet" href="../assets/site.css">
-<script src="../assets/games.js"></script>
 <script src="../assets/site.js"></script>
+<!-- /stamp:head -->
 <style>
   #stage {
     width: 100%;
@@ -81,8 +95,10 @@
   .controls label { display: inline-flex; align-items: center; gap: 6px; }
 </style>
 </head>
-<body data-game="fraction-game">
+<body data-game="fraction-game" data-kind="game">
+<main id="main">
   <h1>Contorted Fractions</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a></div><!-- /stamp:tags -->
   <p class="byline">
     Puzzle by
     <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
@@ -152,7 +168,7 @@
         <a class="wiki-term" data-wiki="Combinatorial_game_theory" href="https://en.wikipedia.org/wiki/Combinatorial_game_theory" target="_blank" rel="noopener">combinatorial game theory</a>.
       </p>
 
-      <h3>Your best move is always a parent</h3>
+      <h2>Your best move is always a parent</h2>
       <p>
         Left wants the number to drop as little as possible, so Left wants the <em>largest</em>
         number below <code>x</code> with a smaller denominator. That number has a name: it is
@@ -169,7 +185,7 @@
         parent, so each fraction really offers just two moves: <code>x = { left parent | right parent }</code>.
       </p>
 
-      <h3>What a fraction is worth</h3>
+      <h2>What a fraction is worth</h2>
       <p>
         Two options, one for each player, is exactly the shape of a number in game theory. Its
         worth is the <em>simplest</em> number lying strictly between what the two parents are
@@ -189,7 +205,7 @@
         whoever moves <em>second</em> wins. Tick "Show values" to watch the sum.
       </p>
 
-      <h3>Where the computer goes wrong</h3>
+      <h2>Where the computer goes wrong</h2>
       <p>
         The applet's opponent is greedy in the obvious way: of all the parents available, it plays
         the one that shifts its fraction the least. That is nearly always right, and it is wrong
@@ -214,6 +230,7 @@
       </p>
     </div>
   </details>
+</main>
 
 <script src="../assets/wiki-hovercard.js"></script>
 <script src="fraction-core.js"></script>

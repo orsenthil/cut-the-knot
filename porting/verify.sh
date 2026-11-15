@@ -119,6 +119,11 @@ if ! node porting/build-manifest.mjs --check; then
   fail "porting/manifest.json is stale; run: node porting/build-manifest.mjs"
 fi
 
+step "stamped pages"
+if ! node porting/stamp-pages.mjs --check "${SLUGS[@]}"; then
+  fail "a page's standard head, <main> or tags are out of date; run: node porting/stamp-pages.mjs"
+fi
+
 step "catalogue"
 if ! node porting/build-catalogue.mjs --check; then
   fail "assets/games.js is stale or a meta.json is wrong; run: node porting/build-catalogue.mjs"
