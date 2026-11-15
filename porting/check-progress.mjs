@@ -44,6 +44,17 @@ const loop = {};
 loop.self = loop;
 check("a circular position does not", !C.stateFits(loop));
 
+/* ----------------------------------------------- when a demo is "explored" */
+
+equal("the default rule", C.exploredRule(undefined), { seconds: 30, interactions: 3 });
+equal("a page's own rule", C.exploredRule("45,0"), { seconds: 45, interactions: 0 });
+equal("a half-written rule keeps the other default", C.exploredRule("10"), { seconds: 10, interactions: 3 });
+equal("nonsense keeps the defaults", C.exploredRule("soon,-2"), { seconds: 30, interactions: 3 });
+check("long enough and touched enough", C.exploredEnough(30, 3, C.EXPLORED));
+check("long enough but untouched is not explored", !C.exploredEnough(300, 2, C.EXPLORED));
+check("touched but only for a moment is not explored", !C.exploredEnough(5, 40, C.EXPLORED));
+check("a page may ask only for time", C.exploredEnough(45, 0, C.exploredRule("45,0")));
+
 /* ----------------------------------------------------------- a whole play */
 
 {

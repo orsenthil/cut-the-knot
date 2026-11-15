@@ -39,6 +39,9 @@ const feedbackEl = document.getElementById("feedback");
 const statsEl = document.getElementById("stats");
 const keypadEl = document.getElementById("keypad");
 
+/** How many answers make one play, for the player's record. */
+const ROUND = 10;
+
 let problem = null;
 let attempts = 0;
 let correct = 0;
@@ -82,6 +85,9 @@ function check() {
     feedbackEl.className = "wrong";
   }
   renderStats();
+  // The quiz never ends, so every ROUND answers count as one finished play,
+  // and the best streak is kept (assets/progress.js).
+  if (window.Track && attempts % ROUND === 0) window.Track.end({ outcome: "done", best: { streak: best } });
   nextProblem();
   inputEl.focus();
 }

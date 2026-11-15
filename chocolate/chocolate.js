@@ -57,6 +57,9 @@ function breakPiece(index, orientation, at) {
     finished = true;
     const total = rows * cols;
     doneEl.textContent = `Finished in ${breaks} breaks — exactly ${total} × 1 − 1 = ${total - 1}, like every ${rows}×${cols} bar.`;
+    // The bar is in single squares: a finished play, with nobody winning or
+    // losing (assets/progress.js).
+    if (window.Track) window.Track.end({ outcome: "done", moves: breaks });
   }
   render();
 }

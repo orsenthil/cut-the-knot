@@ -11,8 +11,17 @@
  *
  * A game page does not have to call anything. On every page with
  * <body data-game="slug"> this file counts the visit and the time spent, and
- * watches #status: when it gains the shared .win or .lose class, that is
- * recorded as a finished play. A game that wants more calls:
+ * works out when a play has finished, by the first of these that applies:
+ *
+ *   1. The page says so itself, with Track.start / Track.end (below).
+ *   2. #status gains the shared .win, .lose or .done class (.done is for
+ *      something finished that nobody won or lost).
+ *   3. The page is a demo (kind: "demo" in its meta.json), with nothing to
+ *      win: it counts as finished once the player has explored it, meaning
+ *      30 seconds on the page and 3 clicks or key presses in the play area.
+ *      <body data-explored-after="45,0"> sets other numbers.
+ *
+ * A game that wants more calls:
  *
  *   Track.start("coins", { options: { coins: 8 }, stateVersion: 1 });
  *   Track.state({ values: [5, 1, 10] });       // the position, after each move
@@ -92,6 +101,22 @@ const Track = (() => {
       completed: completed ? 1 : 0,
       best: result.best,
     };
+  }
+
+  /** What "explored" means for a demo, unless the page says otherwise. */
+  const EXPLORED = { seconds: 30, interactions: 3 };
+
+  /** Reads "seconds,interactions" from data-explored-after; bad or missing parts keep the defaults. */
+  function exploredRule(text) {
+    const [seconds, interactions] = String(text || "").split(",").map((part) => parseInt(part, 10));
+    return {
+      seconds: Number.isFinite(seconds) && seconds >= 0 ? seconds : EXPLORED.seconds,
+      interactions: Number.isFinite(interactions) && interactions >= 0 ? interactions : EXPLORED.interactions,
+    };
+  }
+
+  function exploredEnough(seconds, interactions, rule) {
+    return seconds >= rule.seconds && interactions >= rule.interactions;
   }
 
   /** True when a position is small enough to store. */
@@ -190,6 +215,8 @@ const Track = (() => {
   let session = null;
   /** True once the page has called Track.start itself. */
   let explicit = false;
+  /** True once a play has ended on this page, however it was detected. */
+  let endedHere = false;
 
   let pendingLive = null;
   let liveTimer = null;
@@ -275,6 +302,7 @@ const Track = (() => {
     if (!session) return Promise.resolve();
     const finished = session;
     session = null;
+    endedHere = true;
     const res = result || {};
     const outcome = OUTCOMES.includes(res.outcome) ? res.outcome : "done";
     const record = { slug: finished.slug, startedAt: finished.startedAt, endedAt: now(), outcome };
@@ -304,12 +332,13 @@ const Track = (() => {
 
   /**
    * For pages that never call Track.start: a play ends each time #status
-   * gains the .win or .lose class, and the next one starts right after.
+   * gains the .win, .lose or .done class, and the next one starts right after.
    */
   function watchStatus(slug) {
     const el = document.getElementById("status");
     if (!el || typeof MutationObserver !== "function") return;
-    const read = () => (el.classList.contains("win") ? "win" : el.classList.contains("lose") ? "loss" : null);
+    const read = () =>
+      el.classList.contains("win") ? "win" : el.classList.contains("lose") ? "loss" : el.classList.contains("done") ? "done" : null;
     let last = read();
     if (!session) openSession(slug);
     new MutationObserver(() => {
@@ -320,6 +349,49 @@ const Track = (() => {
       if (!session) openSession(slug);
       end({ outcome: current }); // end() starts the next play
     }).observe(el, { attributes: true, attributeFilter: ["class"] });
+  }
+
+  /** True when the catalogue marks this page as a demo: nothing to win or lose. */
+  function isDemo(slug) {
+    const games = (window.COOLMATHS && window.COOLMATHS.games) || [];
+    const entry = games.find((g) => g.slug === slug);
+    return Boolean(entry && entry.kind === "demo");
+  }
+
+  /**
+   * For a demo: counts it as finished, once per visit, when the player has
+   * spent long enough on the page and touched the play area often enough.
+   * Does nothing if a play has already ended here some other way.
+   */
+  function watchExploring(slug) {
+    const custom = document.body.dataset.exploredAfter;
+    if (custom === undefined && !isDemo(slug)) return;
+    const rule = exploredRule(custom);
+    let interactions = 0;
+    let visibleMs = 0;
+    let last = now();
+    let finishedExploring = false;
+
+    const look = () => {
+      const t = now();
+      if (document.visibilityState === "visible") visibleMs += t - last;
+      last = t;
+      if (finishedExploring || explicit || endedHere) return;
+      if (!exploredEnough(visibleMs / 1000, interactions, rule)) return;
+      finishedExploring = true;
+      clearInterval(timer);
+      if (!session) openSession(slug);
+      end({ outcome: "done" });
+    };
+    const touched = (event) => {
+      if (event.target instanceof Element && event.target.closest(".stage, .controls")) {
+        interactions++;
+        look();
+      }
+    };
+    const timer = setInterval(look, 1000);
+    document.addEventListener("pointerdown", touched);
+    document.addEventListener("keydown", touched);
   }
 
   /** Adds the seconds this page was visible to the game's record. */
@@ -358,7 +430,12 @@ const Track = (() => {
       if (!slug) return;
       visit(slug);
       watchTime(slug);
-      if (!explicit) watchStatus(slug);
+      if (explicit) return;
+      // A play is open from the start, so a page can end one with no more
+      // than Track.end, and the watchers below have one to end.
+      if (!session) openSession(slug);
+      watchStatus(slug);
+      watchExploring(slug);
     };
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", onReady);
     else onReady();
@@ -380,7 +457,7 @@ const Track = (() => {
     memoryBackend,
     localBackend,
     // Exposed for the logic test and for other backends.
-    core: { STORAGE_KEY, MAX_STATE_CHARS, MAX_SESSIONS, OUTCOMES, emptyProgress, applyDelta, mergeBest, deltaForEnd, stateFits },
+    core: { STORAGE_KEY, MAX_STATE_CHARS, MAX_SESSIONS, OUTCOMES, EXPLORED, emptyProgress, applyDelta, mergeBest, deltaForEnd, stateFits, exploredRule, exploredEnough },
     /** Tests only: a fixed clock. */
     _setClock(fn) {
       now = fn;

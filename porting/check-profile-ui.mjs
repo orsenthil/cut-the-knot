@@ -84,6 +84,42 @@ try {
   const hanoi = record.progress.hanoi;
   check("hanoi: a win and a loss were seen from #status", hanoi.plays === 2 && hanoi.completed === 1, JSON.stringify(hanoi));
 
+  /* ---- pages with no win or loss ---- */
+
+  const progressOf = (slug) => page.evaluate((s) => (JSON.parse(localStorage.getItem("coolmaths-profile-v1")).progress || {})[s], slug);
+
+  // A demo counts as finished once it has been explored: 30 seconds and
+  // three touches of the play area. The clock is the browser's, moved by hand.
+  await page.clock.install();
+  await page.goto(`${base}/ducci/`);
+  await page.waitForFunction(() => window.Track);
+  await page.clock.fastForward(40_000);
+  check("demo: time alone does not finish it", ((await progressOf("ducci")) || {}).completed === 0);
+  for (let i = 0; i < 3; i++) await page.locator(".stage").first().dispatchEvent("pointerdown");
+  await page.clock.fastForward(2_000);
+  await page.waitForFunction(() => JSON.parse(localStorage.getItem("coolmaths-profile-v1")).progress.ducci.completed === 1);
+  for (let i = 0; i < 5; i++) await page.locator(".stage").first().dispatchEvent("pointerdown");
+  await page.clock.fastForward(60_000);
+  check("demo: explored counts once per visit", (await progressOf("ducci")).completed === 1 && (await progressOf("ducci")).plays === 1);
+
+  // A game is never finished just by being looked at.
+  await page.goto(`${base}/kayles/`);
+  await page.waitForFunction(() => window.Track);
+  for (let i = 0; i < 5; i++) await page.locator(".stage").first().dispatchEvent("pointerdown");
+  await page.clock.fastForward(120_000);
+  check("game: poking at it for two minutes is not finishing it", (await progressOf("kayles")).completed === 0 && (await progressOf("kayles")).plays === 0);
+
+  // The quiz has no end: ten answers make a play, and the best streak is kept.
+  await page.goto(`${base}/maths-quiz/`);
+  await page.waitForFunction(() => window.Track);
+  for (let i = 0; i < 10; i++) {
+    await page.fill("#answer", String(await page.evaluate(() => problem.answer)));
+    await page.keyboard.press("Enter");
+  }
+  await page.waitForFunction(() => (JSON.parse(localStorage.getItem("coolmaths-profile-v1")).progress["maths-quiz"] || {}).completed === 1);
+  const quiz = await progressOf("maths-quiz");
+  check("quiz: ten answers are one finished play with a streak of ten", quiz.plays === 1 && quiz.best && quiz.best.streak === 10, JSON.stringify(quiz));
+
   /* ---- the profile page ---- */
 
   for (const scheme of ["light", "dark"]) {
@@ -92,8 +128,10 @@ try {
     await page.waitForSelector(".pick");
     if (shots) await page.screenshot({ path: join(shots, `profile-${scheme}.png`), fullPage: true });
   }
-  check("profile: two games played", (await page.textContent("#statTried")).startsWith("2 of "));
-  check("profile: both are listed", (await page.locator(".tried tbody tr").count()) === 2);
+  check("profile: five pages played", (await page.textContent("#statTried")).startsWith("5 of "));
+  check("profile: all are listed", (await page.locator(".tried tbody tr").count()) === 5);
+  // Hanoi, the demo and the quiz for certain; coins only if the player won it.
+  check("profile: the finished ones are counted", Number(await page.textContent("#statDone")) >= 3, await page.textContent("#statDone"));
   check("profile: three suggestions", (await page.locator(".pick").count()) === 3);
   const suggested = await page.locator(".pick h3 a").evaluateAll((as) => as.map((a) => a.getAttribute("href")));
   check("profile: nothing played is suggested", !suggested.some((h) => /\/(coins|hanoi)\//.test(h)), suggested.join(" "));

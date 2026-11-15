@@ -32,10 +32,26 @@ Defined in `assets/progress.js`; tested by `porting/check-progress.mjs` and
 `porting/check-profile-ui.mjs`.
 
 A page with `<body data-game="slug">` needs to call nothing: visits and
-visible time are counted, and a play is recorded each time `#status` gains
-`.win` or `.lose`. A page that wants its plays and positions recorded exactly
-includes `<script src="../assets/progress.js"></script>` before its own
-script and calls:
+visible time are counted, and `Track` works out when a play has finished by
+the first of these that applies:
+
+1. **The page says so**, with the calls below.
+2. **`#status` gains `.win`, `.lose` or `.done`.** `.done` is for something
+   finished that nobody won or lost.
+3. **The page is a demo** (`kind: "demo"` in `meta.json`): it counts as
+   finished, once per visit, when it has been explored, meaning 30 seconds on
+   the page and 3 clicks or key presses inside `.stage` or `.controls`.
+   `<body data-explored-after="45,0">` sets other numbers (`euler2d/`, which
+   is only watched).
+
+A page marked as a game must use 1 or 2; `porting/lint-page.mjs` fails it
+otherwise, so a new port cannot silently record nothing. The thresholds in 3
+are a first guess and are free to change: mastery is computed from the
+record, not stored.
+
+A page that wants its plays and positions recorded exactly includes
+`<script src="../assets/progress.js"></script>` before its own script and
+calls:
 
 | Call | Meaning |
 |---|---|
@@ -54,8 +70,9 @@ largest.
 A page may also call **only `Track.state`**: its position is saved, and its
 plays are still taken from `#status`. That is the usual way for a game whose
 result already shows as `.win` or `.lose` (`hourglass/hourglass.js`). A page
-with no win or loss calls `Track.state` and `Track.end({ outcome: "done" })`
-(`mind-reader/mind-reader.js`).
+whose round ends without a win or a loss calls `Track.end({ outcome: "done" })`
+there (`mind-reader/`, `vanishing-digit/`, `chocolate/`), and one that never
+ends picks a round: the quiz counts every ten answers as a play.
 
 The page fires `progresschange` on `window` after every write.
 

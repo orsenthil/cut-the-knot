@@ -436,6 +436,7 @@ window.COOLMATHS = {
       title: "Mixed Strategies",
       blurb: "Change the four scores in a two-player game. Is there one safe choice, or must both players mix their moves?",
       tags: ["game-strategy", "algebra"],
+      kind: "demo",
       level: 3,
     },
   ],

@@ -29,4 +29,4 @@ Hourglass, four knights, four by four, torque, the mind reader and the eye opene
 
 It turned out lighter than planned. These cores already keep plain data, so no snapshot/restore was needed, and the pages call only `Track.state`: `Track` now lets a page report positions while its plays are still taken from `#status`. `porting/live-fixtures/` holds a position saved by each real page, which both the browser check and the readers' test use.
 
-Not done: chocolate, maths-quiz, mixed-strategies, vanishing-digit and euler2d still record visits and time only, because their result does not show as `#status.win` or `.lose`. Each needs a `Track.end` call where its round finishes.
+Followed up afterwards: chocolate, vanishing-digit and the quiz now call `Track.end`, mixed-strategies is marked as a demo, and demos count as finished once explored (contracts, section 2). The page lint now fails a game whose plays cannot be detected.

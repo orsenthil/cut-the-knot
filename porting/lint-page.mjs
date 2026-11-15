@@ -186,6 +186,25 @@ function lintSlug(slug, catalogue) {
     for (const t of tags) {
       if (!(t in catalogue.tags)) fail(`unknown tag "${t}"; add it to COOLMATHS.tags or reuse one`);
     }
+
+    // The player's record must be able to tell when a play of a game has
+    // finished (assets/progress.js): either the page's scripts set the
+    // shared #status classes, or they tell Track themselves. A demo needs
+    // neither; it counts as finished once it has been explored.
+    if (entry.kind !== "demo") {
+      const scripts = readdirSync(dir)
+        .filter((f) => f.endsWith(".js"))
+        .map((f) => readFileSync(join(dir, f), "utf8"))
+        .join("\n");
+      const setsStatus = /["'`](?:win|lose|done)["'`]/.test(scripts);
+      const tellsTrack = /Track\.(?:end|start)\(/.test(scripts);
+      if (!setsStatus && !tellsTrack) {
+        fail(
+          'nothing tells the player\'s record when a play ends: give #status the "win", "lose" or "done" class, ' +
+            'call Track.end, or mark it kind: "demo" in meta.json if it cannot be finished',
+        );
+      }
+    }
   }
 
   /* --------------------------------------------------------- 10. thumb.svg */

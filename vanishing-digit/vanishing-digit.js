@@ -58,6 +58,8 @@ function confirmAnswer(isRight) {
   if (isRight) correct++;
   history.push({ d1: digits[0], d2: digits[1], guess, right: isRight });
   phase = "confirmed";
+  // One round of the trick is a finished play (assets/progress.js).
+  if (window.Track) window.Track.end({ outcome: "done" });
   render();
 }
 
