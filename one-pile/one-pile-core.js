@@ -12,6 +12,12 @@
  *   0 ≤ S mod (Min + Max) < Min.
  * The computer leaves such a remainder whenever it can.
  *
+ * Changed on purpose: the applet lets a player take more than is in the pile,
+ * and the pile then shows a negative number. Here a take can be no bigger than
+ * the pile. Nothing else changes: with n >= Min, taking exactly n already ends
+ * the game, so who wins from every pile is the same either way (the logic test
+ * checks that for every Min, Max and pile size).
+ *
  * The position is plain data:
  *   { n, min, max, turn: "you" | "computer", over, winner, history }
  * `n` is the pile size; `history` is the takes so far (for take-back).
@@ -45,6 +51,21 @@ const OnePileCore = (() => {
   }
 
   /**
+   * The applet's NumberChange handler for Min: Min takes the new value, and
+   * if that is above Max, Max is pushed up to it.
+   */
+  function setMin(pair, value) {
+    const min = clampMin(value);
+    return { min, max: Math.max(clampMax(pair.max), min) };
+  }
+
+  /** ...and for Max: if the new Max is below Min, Min is pulled down to it. */
+  function setMax(pair, value) {
+    const max = clampMax(value);
+    return { min: Math.min(clampMin(pair.min), max), max };
+  }
+
+  /**
    * The applet's Reset pile size:
    *   N = Min + Max + (int)(Math.random() * Max * 4)
    */
@@ -67,18 +88,18 @@ const OnePileCore = (() => {
     };
   }
 
-  /** Takes allowed now: every integer from min to max (the applet does not cap at n). */
+  /** Takes allowed now: every integer from Min to Max, and no more than the pile. */
   function legalMoves(s) {
     if (s.over || s.n < s.min) return [];
     const out = [];
-    for (let t = s.min; t <= s.max; t++) out.push(t);
+    for (let t = s.min; t <= Math.min(s.max, s.n); t++) out.push(t);
     return out;
   }
 
   function apply(s, take, turn) {
     if (s.over || s.turn !== turn) return null;
     take = Number(take);
-    if (!Number.isInteger(take) || take < s.min || take > s.max) return null;
+    if (!Number.isInteger(take) || take < s.min || take > s.max || take > s.n) return null;
     const n = s.n - take;
     const over = n < s.min;
     return {
@@ -92,6 +113,12 @@ const OnePileCore = (() => {
 
   function move(s, take) {
     return apply(s, take, "you");
+  }
+
+  /** "Make move": the player passes the turn, so the computer can go first. */
+  function skip(s) {
+    if (s.over || s.turn !== "you") return null;
+    return { ...s, turn: "computer" };
   }
 
   /** S mod (Min + Max); for the page's P-position test. */
@@ -112,6 +139,8 @@ const OnePileCore = (() => {
    *   else if r ≤ Max: take = r
    *   else:            random take in [Min, Max] that leaves a P-remainder;
    *                    if somehow none, take Min
+   * The computer never takes more than the pile: every take it makes is r
+   * or below, or leaves a remainder of at least 0, and the pile is at least r.
    */
   function computerChoice(s, rnd = Math.random) {
     if (s.over || s.turn !== "computer") return null;
@@ -190,24 +219,21 @@ const OnePileCore = (() => {
   }
 
   function restore(d) {
-    if (!d || !Number.isInteger(d.n) || !Number.isInteger(d.min) || !Number.isInteger(d.max) ||
-        !["you", "computer"].includes(d.turn) || !Array.isArray(d.history)) {
+    const whole = (x) => Number.isInteger(x);
+    if (!d || !whole(d.n) || d.n < 0 || !whole(d.min) || !whole(d.max) ||
+        d.min < MIN_MIN || d.min > MAX_MIN || d.max < Math.max(MIN_MAX, d.min) || d.max > ABSOLUTE_MAX ||
+        !["you", "computer"].includes(d.turn) || !Array.isArray(d.history) || !d.history.every(whole)) {
       throw new Error("not a One Pile position");
     }
-    const { min, max } = clampPair(d.min, d.max);
-    if (min !== d.min || max !== d.max) throw new Error("not a One Pile position");
-    const over = d.n < min;
-    return {
-      n: d.n, min, max, turn: d.turn,
-      over,
-      winner: over ? (d.winner === "you" || d.winner === "computer" ? d.winner : null) : null,
-      history: d.history.map((t) => Math.trunc(t)),
-    };
+    const over = d.n < d.min;
+    // When a game is over, `turn` is the player who took last, who is the winner.
+    const winner = over ? (d.winner === "you" || d.winner === "computer" ? d.winner : d.turn) : null;
+    return { n: d.n, min: d.min, max: d.max, turn: d.turn, over, winner, history: d.history.slice() };
   }
 
   return {
     ABSOLUTE_MAX, MIN_MIN, MAX_MIN, MIN_MAX, DEFAULT_MIN, DEFAULT_MAX,
-    clampPair, randomPile, start, legalMoves, move, apply,
+    clampPair, setMin, setMax, randomPile, start, legalMoves, move, apply, skip,
     remainder, isPPosition, computerChoice, computerMove,
     takeBack, grundy, winningMoves, result, snapshot, restore,
   };

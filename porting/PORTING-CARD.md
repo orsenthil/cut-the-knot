@@ -69,12 +69,25 @@ Fix what it lists and run it again. Done when it prints `Ready.` After three
 failed rounds, stop: set `"status": "failed"` with a one-line reason for the
 applet in `porting/overrides.json`, and move on.
 
-**10. Look, then commit.** `node porting/play.mjs <slug>` and look at the
+**10. Look.** `node porting/play.mjs <slug>` and look at the
 screenshot. The gate only loads the page as it first opens, so the scenario
 must also set every option to its largest value and take a screenshot: at
 phone width nothing may overlap, and everything to press must stay as wide as
 a fingertip (let a big board slide sideways inside `.stage` before you shrink
-its parts). Make one move with the keyboard alone. Then the two `git` commands that step 9 printed.
+its parts). Make two moves with the keyboard alone and check that the focus is still on
+the board after the computer replies. Press every button the page has (Take
+back, Make move, and so on) in the order a player would, and change every option
+in both directions (a Max below Min, a Min above Max): the page must follow
+the applet, and a button the status asks you to press must not be switched
+off. Say in words what the computer did; a tint is not enough. Then the two
+`git` commands that step 9 printed.
+
+**11. Tell the tutor.** If the page calls `Track.state(...)` (it should, when it
+has a core), add the core to `mcp/scripts/build-index.mjs`, an example with
+`node porting/check-positions-ui.mjs --update` (keep only your own game's file:
+`git checkout` the others), a reader in `mcp/src/games/<slug>.ts`, a test in
+`mcp/test/positions.test.mjs`, and run `cd mcp && npm run golden -- --update`
+(two answers change by listing your game) and `npm test`.
 
 ## Rules that the gate cannot check
 

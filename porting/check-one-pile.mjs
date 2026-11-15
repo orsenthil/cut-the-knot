@@ -42,6 +42,36 @@ const C = loadCore("one-pile/one-pile-core.js", "OnePileCore");
   check("take-back restores the pile and whose turn", back.n === 100 && back.turn === "you" && back.history.length === 0);
   equal("take-back with an empty history is null", C.takeBack(s), null);
 
+  // A take can be no bigger than the pile (a deliberate change: the applet showed a negative pile).
+  const small = C.start({ min: 3, max: 12, n: 5 });
+  equal("with a pile of 5 the takes are 3, 4 and 5", C.legalMoves(small).join(","), "3,4,5");
+  equal("a take of 12 from a pile of 5 is refused", C.move(small, 12), null);
+  equal("taking exactly the pile wins", C.move(small, 5).winner, "you");
+  equal("from a pile of 3 only 3 can be taken", C.legalMoves(C.start({ min: 3, max: 12, n: 3 })).join(","), "3");
+
+  // "Make move": the turn passes to the computer, once, and never after the end.
+  const passed = C.skip(s);
+  check("skip passes the turn and nothing else", passed.turn === "computer" && passed.n === s.n && passed.history.length === 0);
+  equal("skip on the computer's turn does nothing", C.skip(passed), null);
+  equal("skip after the end does nothing", C.skip(win), null);
+  const reply = C.computerMove(passed, () => 0.5);
+  check("after skip the computer moves and the turn comes back", reply && reply.turn === "you" && reply.history.length === 1);
+  const undone = C.takeBack(reply);
+  check("Take back after the computer's reply returns to the pile and the computer's turn", undone.n === s.n && undone.turn === "computer" && undone.history.length === 0);
+  equal("and there is nothing more to take back", C.takeBack(undone), null);
+
+  // The applet's NumberChange handler: Min above Max lifts Max, Max below Min lowers Min.
+  equal("Max 5 with Min 8 lowers Min to 5", JSON.stringify(C.setMax({ min: 8, max: 40 }, 5)), JSON.stringify({ min: 5, max: 5 }));
+  equal("Max 4 with Min 12 lowers Min to 4", JSON.stringify(C.setMax({ min: 12, max: 40 }, 4)), JSON.stringify({ min: 4, max: 4 }));
+  equal("Min 9 with Max 5 lifts Max to 9", JSON.stringify(C.setMin({ min: 3, max: 5 }, 9)), JSON.stringify({ min: 9, max: 9 }));
+  equal("Min below Max leaves Max alone", JSON.stringify(C.setMin({ min: 8, max: 40 }, 3)), JSON.stringify({ min: 3, max: 40 }));
+  equal("Max above Min leaves Min alone", JSON.stringify(C.setMax({ min: 8, max: 40 }, 20)), JSON.stringify({ min: 8, max: 20 }));
+
+  let refused = 0;
+  for (const bad of [{ n: -1, min: 3, max: 5 }, { n: 10, min: 0, max: 5 }, { n: 10, min: 6, max: 5 }, { n: 10, min: 3, max: 46 }]) {
+    try { C.restore({ ...bad, turn: "you", history: [] }); } catch { refused++; }
+  }
+  equal("positions outside the applet's ranges are refused", refused, 4);
   equal("Min is clamped to 1..12", C.clampPair(0, 40).min, 1);
   equal("Max is clamped to 4..45", C.clampPair(3, 99).max, 45);
   equal("Min above Max bumps Max up", C.clampPair(10, 5).max, 10);
@@ -108,6 +138,46 @@ const C = loadCore("one-pile/one-pile-core.js", "OnePileCore");
     }
   }
   check(`perfect play follows the P-formula (${games} starts)`, upset === 0);
+}
+
+// The deliberate change: capping a take at the pile does not change who wins.
+// Played out with the applet's rules (a take may overshoot, leaving a pile
+// below Min) and with ours, for every Min, Max and pile size up to three periods.
+{
+  let differ = 0, formulaWrong = 0, positions = 0;
+  for (let min = C.MIN_MIN; min <= C.MAX_MIN; min++) {
+    for (let max = Math.max(C.MIN_MAX, min); max <= C.ABSOLUTE_MAX; max++) {
+      const top = (min + max) * 3;
+      const capped = [], uncapped = [];   // true: the player to move wins
+      for (let n = 0; n <= top; n++) {
+        let c = false, u = false;
+        if (n >= min) {
+          for (let t = min; t <= max; t++) {
+            if (t <= n && (n - t < min || !capped[n - t])) c = true;
+            if (n - t < min || !uncapped[n - t]) u = true;   // applet: n - t may be negative
+          }
+        }
+        capped[n] = c; uncapped[n] = u;
+        positions++;
+        if (c !== u) differ++;
+        if (u === C.isPPosition(n, min, max)) formulaWrong++;
+      }
+    }
+  }
+  check(`capped and uncapped takes give the same winner (${positions} piles)`, differ === 0, `${differ} differ`);
+  check("the P-position formula also holds with the applet's uncapped takes", formulaWrong === 0, `${formulaWrong} wrong`);
+
+  // The computer, which never overshoots: its take is always at most the pile.
+  let over = 0, tried = 0;
+  for (let min = 1; min <= 12; min++) for (let max = Math.max(4, min); max <= 45; max++) {
+    for (let n = min; n <= (min + max) * 2; n++) for (const r of [0, 0.3, 0.6, 0.99]) {
+      tried++;
+      const next = C.computerMove({ n, min, max, turn: "computer", over: false, winner: null, history: [] }, () => r);
+      if (!next) { over++; continue; }
+      if (next.n < 0) over++;
+    }
+  }
+  check(`the computer never takes more than the pile (${tried} positions)`, over === 0, `${over} did`);
 }
 
 /* ----------------------------- 3. the same answers as the applet's method */

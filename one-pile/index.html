@@ -108,12 +108,12 @@
   </p>
 
   <div id="rules">
-    <strong>Game:</strong> you and the computer take turns removing objects from one pile. Whoever takes the last allowed handful wins.<br>
-    <strong>How to play:</strong> press a number between Min and Max to remove that many. Change Min and Max, then press New Game for a fresh pile.
+    <strong>Game:</strong> you and the computer take turns taking objects from one pile; when nobody can take any more, whoever took last wins.<br>
+    <strong>How to play:</strong> press a number to take that many. It can be no smaller than Min and no bigger than Max. Changing Min or Max deals a new pile.
   </div>
 
   <div id="stage" class="stage">
-    <div id="pile" aria-label="Pile size">0</div>
+    <div id="pile" role="img" aria-label="Pile size">0</div>
     <div id="movesScroll">
       <div id="moves" role="group" aria-label="How many to take"></div>
     </div>
@@ -122,8 +122,8 @@
   <div class="controls">
     <label>Min <select id="minInput" aria-label="Minimum take"></select></label>
     <label>Max <select id="maxInput" aria-label="Maximum take"></select></label>
-    <button id="backBtn" type="button">Take back</button>
-    <button id="makeBtn" type="button">Make move</button>
+    <button id="backBtn" type="button" title="Undo the last take">Take back</button>
+    <button id="makeBtn" type="button" title="Let the computer take now">Make move</button>
     <button id="newBtn" type="button" class="primary">New Game</button>
   </div>
 
@@ -153,7 +153,8 @@
       <p>
         The logic test checks this against perfect play for every Min from 1
         to 12 and every Max from Min to 45, over three full periods. It holds
-        in every case.
+        in every case, and it also holds in the applet's version, where a take
+        may be bigger than the pile.
       </p>
 
       <h2>What the computer does</h2>
@@ -179,6 +180,18 @@
       <p>
         The zeros fall exactly on the P-positions. The logic test recomputes
         the mex of each size up to 20 and matches the table.
+      </p>
+
+      <h2>What differs from the applet</h2>
+      <p>
+        The applet let a player take more than the pile held, and the pile then showed a
+        negative number. Here a take can be no bigger than the pile. It changes nothing
+        about who wins: when at least Min are left, taking exactly what is left already ends
+        the game, and the logic test confirms that the winner from every pile is the same
+        with or without the extra takes. You press a number where the applet had buttons
+        round the edge of its picture. A finished game cannot be taken back, because the
+        score has counted it, and the running score is new: the applet had none. Make move
+        passes your turn, so the computer can go first, and works after Take back too.
       </p>
 
       <p class="tip">

@@ -3,11 +3,15 @@
 /*
  * UI for One Pile. The rules and the computer live in one-pile-core.js.
  *
- * The pile size is a big number in the middle. Around it (below, in a wrapping
- * row) are buttons for every legal take from Min to Max. Min and Max are set
- * with the two number controls; Reset deals a new pile the applet's way.
- * "Make move" lets the computer play (so it can go first); "Take back" undoes
- * the last take.
+ * The pile size is a big number in the middle. Below it, in a wrapping row,
+ * is a button for every take from Min to Max; a take bigger than the pile is
+ * switched off. Min and Max are set with the two number controls and dealing
+ * a new pile is what changing them does, as in the applet. "Make move" lets
+ * the computer play (so it can go first); "Take back" undoes the last take.
+ *
+ * The computer says how many it removed, in words, because the applet did
+ * ("I have removed N") and a tint on a button is not enough for everyone.
+ * The score is not the applet's: it has none; it is kept here across games.
  */
 
 (() => {
@@ -25,7 +29,6 @@
 
   const THINK_MS = 550;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const YOUR_MOVE = "Your move. Take between Min and Max.";
 
   let state = null;
   let busy = false;
@@ -59,7 +62,11 @@
     fillOptionRange(maxInput, C.MIN_MAX, C.ABSOLUTE_MAX, state.max);
   }
 
-  function render() {
+  /** What to say when it is the player's turn. */
+  const yourMove = () => `Your move: take from ${state.min} to ${Math.min(state.max, state.n)}.`;
+
+  /** Redraws everything; with `focus`, the take to hold the keyboard focus. */
+  function render(focus) {
     pileEl.textContent = String(state.n);
     pileEl.setAttribute("aria-label", `Pile of ${state.n}`);
 
@@ -72,58 +79,66 @@
       btn.textContent = String(t);
       btn.dataset.take = String(t);
       btn.setAttribute("aria-label", `Take ${t}`);
-      btn.disabled = !canPlay;
+      btn.disabled = !canPlay || t > state.n;
       if (lastComputerTake === t) btn.classList.add("just-taken");
       btn.addEventListener("click", () => play(t));
       movesEl.append(btn);
     }
 
-    backBtn.disabled = busy || state.history.length === 0;
-    makeBtn.disabled = busy || state.over || state.turn !== "you";
+    // Take back is for a game in progress: a finished game is scored, so it
+    // is not reopened. Make move works on either turn, as in the applet.
+    backBtn.disabled = busy || state.over || state.history.length === 0;
+    makeBtn.disabled = busy || state.over;
     minInput.disabled = busy;
     maxInput.disabled = busy;
     newBtn.disabled = busy;
 
+    if (focus !== undefined) {
+      const el = movesEl.querySelector(`.take[data-take="${focus}"]:not(:disabled)`) ||
+        movesEl.querySelector(".take:not(:disabled)");
+      if (el) el.focus();
+    }
+
     if (window.Track) window.Track.state(C.snapshot(state));
   }
 
-  function finish(s) {
-    const kind = C.result(s);
-    if (kind === "win") {
+  /** The game has ended: the last player to take wins. */
+  function finish(prefix) {
+    if (state.winner === "you") {
       score.you++;
-      say("You won!", "win");
-    } else if (kind === "lose") {
+      say(`${prefix}You won!`, "win");
+    } else {
       score.computer++;
-      say("I won", "lose");
+      say(`${prefix}I won`, "lose");
     }
     showScore();
-  }
-
-  function afterComputer(prevTake) {
-    lastComputerTake = prevTake;
     render();
-    if (state.over) finish(state);
-    else say(YOUR_MOVE);
+    newBtn.focus();
   }
 
   function thinkThenComputer() {
+    // Pressing a take switches every take off, so the focus would be lost.
+    const hadFocus = document.activeElement === document.body || movesEl.contains(document.activeElement) ||
+      document.activeElement === makeBtn;
     busy = true;
     lastComputerTake = null;
     say("Thinking …");
     render();
-    const wait = reduceMotion.matches ? 0 : THINK_MS;
     timer = setTimeout(() => {
       timer = null;
       const before = state.n;
       const next = C.computerMove(state);
       busy = false;
-      if (!next) {
-        render();
-        return;
-      }
+      if (!next) { render(); return; }
       state = next;
-      afterComputer(before - state.n);
-    }, wait);
+      const took = before - state.n;
+      lastComputerTake = took;
+      const removed = `I have removed ${took}. `;
+      if (state.over) { finish(removed); return; }
+      say(`${removed}The pile is ${state.n}. ${yourMove()}`);
+      // Redrawing dropped the focus: give it back to a take the player can use.
+      render(hadFocus ? took : undefined);
+    }, reduceMotion.matches ? 0 : THINK_MS);
   }
 
   function play(take) {
@@ -132,32 +147,27 @@
     if (!next) return;
     lastComputerTake = null;
     state = next;
-    render();
-    if (state.over) {
-      finish(state);
-      return;
-    }
+    if (state.over) { finish(""); return; }
     thinkThenComputer();
   }
 
-  function newGame() {
+  function newGame(pair) {
     if (timer) {
       clearTimeout(timer);
       timer = null;
     }
     busy = false;
     lastComputerTake = null;
-    const pair = C.clampPair(minInput.value, maxInput.value);
-    state = C.start({ min: pair.min, max: pair.max });
+    state = C.start(pair || { min: Number(minInput.value), max: Number(maxInput.value) });
     syncControls();
-    say(YOUR_MOVE);
+    say(yourMove());
     render();
   }
 
+  /** "Make move": the computer plays now, from wherever the game stands. */
   function makeMove() {
-    if (busy || state.over || state.turn !== "you") return;
-    // The applet's "Make move": the computer plays now (you skip).
-    state = { ...state, turn: "computer" };
+    if (busy || state.over) return;
+    state = C.skip(state) || state;
     thinkThenComputer();
   }
 
@@ -167,54 +177,34 @@
     if (!prev) return;
     lastComputerTake = null;
     state = prev;
-    // Undoing one take often leaves the computer's reply; undo again so the
-    // player is back on their own move, matching how the stack is used after
-    // a full exchange. One press undoes one take, as the applet does.
-    statusEl.classList.remove("win", "lose", "done");
-    say(state.turn === "you" ? YOUR_MOVE : "Computer to move. Press Make move, or Take back again.");
+    say(state.turn === "you" ? yourMove() : "Computer to move. Press Make move, or Take back again.");
     render();
   }
 
-  minInput.addEventListener("change", () => {
-    const pair = C.clampPair(minInput.value, maxInput.value);
-    fillOptionRange(minInput, C.MIN_MIN, C.MAX_MIN, pair.min);
-    fillOptionRange(maxInput, C.MIN_MAX, C.ABSOLUTE_MAX, pair.max);
-    newGame();
-  });
-  maxInput.addEventListener("change", () => {
-    const pair = C.clampPair(minInput.value, maxInput.value);
-    fillOptionRange(minInput, C.MIN_MIN, C.MAX_MIN, pair.min);
-    fillOptionRange(maxInput, C.MIN_MAX, C.ABSOLUTE_MAX, pair.max);
-    newGame();
-  });
-
-  newBtn.addEventListener("click", newGame);
+  // Changing Min or Max deals a new pile, and keeps Min no more than Max the
+  // way the applet does: a Min above Max lifts Max, a Max below Min lowers Min.
+  minInput.addEventListener("change", () => newGame(C.setMin(state, Number(minInput.value))));
+  maxInput.addEventListener("change", () => newGame(C.setMax(state, Number(maxInput.value))));
+  newBtn.addEventListener("click", () => newGame());
   makeBtn.addEventListener("click", makeMove);
   backBtn.addEventListener("click", takeBack);
 
-  // Number keys and arrows while a take button is focused: Enter already
-  // activates the button; digits jump to that take when it is on offer.
+  // Arrow keys move along the takes; Enter or Space takes the one in focus.
   movesEl.addEventListener("keydown", (e) => {
     if (busy || state.over || state.turn !== "you") return;
-    if (e.key >= "0" && e.key <= "9") {
-      // Build a two-digit take from typed digits when Max ≥ 10.
-      return; // leave native button activation alone for single keys
-    }
     const buttons = [...movesEl.querySelectorAll(".take:not(:disabled)")];
     if (!buttons.length) return;
     const i = buttons.indexOf(document.activeElement);
     if (e.key === "ArrowRight" || e.key === "ArrowDown") {
       e.preventDefault();
-      buttons[(i + 1 + buttons.length) % buttons.length].focus();
+      buttons[(i + 1) % buttons.length].focus();
     } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
       e.preventDefault();
       buttons[(i - 1 + buttons.length) % buttons.length].focus();
     }
   });
 
-  // Seed the selects, then deal.
-  fillOptionRange(minInput, C.MIN_MIN, C.MAX_MIN, C.DEFAULT_MIN);
-  fillOptionRange(maxInput, C.MIN_MAX, C.ABSOLUTE_MAX, C.DEFAULT_MAX);
+  state = C.start({ min: C.DEFAULT_MIN, max: C.DEFAULT_MAX });
   showScore();
-  newGame();
+  newGame({ min: C.DEFAULT_MIN, max: C.DEFAULT_MAX });
 })();
