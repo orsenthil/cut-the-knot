@@ -40,6 +40,7 @@ equal("every concept is in the order", order.length, Object.keys(concepts).lengt
 const position = new Map(order.map((name, i) => [name, i]));
 for (const [name, c] of Object.entries(concepts)) {
   check(`${name} has a prereqs array`, Array.isArray(c.prereqs));
+  check(`${name} has a label`, typeof c.label === "string" && c.label.length > 0);
   for (const pre of c.prereqs) {
     check(`${pre} comes before ${name}`, position.get(pre) < position.get(name));
   }

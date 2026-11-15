@@ -14,7 +14,9 @@
 #      (required whenever the folder has a DOM-free core)
 #   3. porting/lint-page.mjs   - the page against the CLAUDE.md rules
 #   4. porting/smoke-test.mjs  - headless Chromium, 375px and desktop, both themes
-#   5. the manifest is current, and the catalogue and folders agree
+#   5. the manifest is current, the catalogue (assets/games.js) is what
+#      porting/build-catalogue.mjs makes from the meta.json files, and the
+#      catalogue and folders agree
 #   6. porting/check-concepts.mjs - every tag has a place in the concept graph
 #      and every game a level, so the recommender can place a new game
 #
@@ -115,6 +117,11 @@ fi
 step "manifest"
 if ! node porting/build-manifest.mjs --check; then
   fail "porting/manifest.json is stale; run: node porting/build-manifest.mjs"
+fi
+
+step "catalogue"
+if ! node porting/build-catalogue.mjs --check; then
+  fail "assets/games.js is stale or a meta.json is wrong; run: node porting/build-catalogue.mjs"
 fi
 
 # ------------------------------------------------------- 6. concept graph

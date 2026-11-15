@@ -87,7 +87,7 @@ This is the whole routine for a scheduled or hand-run step. Do exactly one apple
 6. **Write the core and its test first** (`<slug>/<slug>-core.js`,
    `porting/check-<slug>.mjs`), then the page. Copy the closest reference port (below).
 
-7. **Register.** `assets/games.js` entry, `thumb.svg`, the slug in `SLUG_TO_APPLET` in
+7. **Register.** `<slug>/meta.json` (then `node porting/build-catalogue.mjs`), `thumb.svg`, the slug in `SLUG_TO_APPLET` in
    `build-manifest.mjs`, and an `overrides.json` entry with `"status": "ported"` and a
    one-line note (what was ported, any deliberate change). Then
    `node porting/build-manifest.mjs`.
