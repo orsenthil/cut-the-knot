@@ -70,7 +70,11 @@ failed rounds, stop: set `"status": "failed"` with a one-line reason for the
 applet in `porting/overrides.json`, and move on.
 
 **10. Look, then commit.** `node porting/play.mjs <slug>` and look at the
-screenshot. Then the two `git` commands that step 9 printed.
+screenshot. The gate only loads the page as it first opens, so the scenario
+must also set every option to its largest value and take a screenshot: at
+phone width nothing may overlap, and everything to press must stay as wide as
+a fingertip (let a big board slide sideways inside `.stage` before you shrink
+its parts). Make one move with the keyboard alone. Then the two `git` commands that step 9 printed.
 
 ## Rules that the gate cannot check
 

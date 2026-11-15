@@ -19,6 +19,10 @@
  * move it to position XOR position; if it is 0, pick a random chip not at 0
  * and move it to a random lower position (or 0).
  *
+ * The applet keeps a running score (its wins, its losses) that Reset does not
+ * clear; here `wins` and `losses` are the computer's, and the page carries
+ * them from one game to the next.
+ *
  * Options: Length (5-30, default 7) and # Chips (1-12, default 1).
  * The applet places chips at random positions 2 .. length-1.
  */
@@ -139,9 +143,45 @@ const NimbleCore = (() => {
     return { chipId: m.chip.id, from, dest: m.dest };
   }
 
+  /** The position as plain data, for the player's record and the tutor. */
+  function snapshot(s) {
+    return { length: s.length, chips: s.chips.map((c) => c.pos), turn: s.turn, over: s.over };
+  }
+
+  /** Rebuilds a game from snapshot(). Throws on anything that is not one. */
+  function restore(data) {
+    const ok = data && Number.isInteger(data.length) && Array.isArray(data.chips) &&
+      data.chips.every((p) => Number.isInteger(p) && p >= 0 && p < data.length);
+    if (!ok) throw new Error("not a Nimble position");
+    const s = {
+      length: data.length,
+      chips: data.chips.map((pos, id) => ({ id, pos })),
+      turn: data.turn === "computer" ? "computer" : "you",
+      over: false,
+      winner: null,
+      wins: 0,
+      losses: 0,
+    };
+    s.over = finished(s);
+    return s;
+  }
+
+  /** Every move that leaves the other player a Nim-sum of 0. */
+  function winningMoves(s) {
+    const x = nimSum(s);
+    const moves = [];
+    if (x === 0) return moves;
+    for (const c of s.chips) {
+      const dest = c.pos ^ x;
+      if (dest < c.pos) moves.push({ chipId: c.id, from: c.pos, dest });
+    }
+    return moves;
+  }
+
   return {
     MIN_LENGTH, MAX_LENGTH, DEFAULT_LENGTH,
     MIN_CHIPS, MAX_CHIPS, DEFAULT_CHIPS,
+    snapshot, restore, winningMoves,
     start, nimSum, finished, playerMove, rightMove, randomMove, computerMove,
   };
 })();

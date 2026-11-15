@@ -58,6 +58,7 @@ check("four-by-four: one cell each", read["four-by-four"]?.yourCells.length === 
 check("torque: nothing hung yet", read.torque?.torqueSoFar === 0 && read.torque.hung.length === 0 && read.torque.inTheTray.length >= 2);
 check("mind-reader: the named shape is on every multiple of 9", read["mind-reader"]?.checksOut === true);
 check("eye-opener: the honest area is one short of the square", read["eye-opener"]?.honestArea === read["eye-opener"].squareItClaimsToFill - 1);
+check("nimble: three chips, your move", read.nimble?.chips.length === 3 && read.nimble.turn === "you" && read.nimble.finished === false);
 
 /* ------------------------------------------------ positions with known answers */
 
@@ -108,6 +109,16 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("eye-opener: at rest the area is honest", rest.areaOnScreenNow === 99 && rest.hiddenStretchPerColumn === 0);
   const fitted = at("eye-opener", { n: 10, dx: rest.fitsAt.dx, dy: rest.fitsAt.dy, fitted: true, revealed: false });
   check("eye-opener: fitted, the screen shows a whole extra square", Math.abs(fitted.areaOnScreenNow - 100) < 1e-9, String(fitted.areaOnScreenNow));
+}
+
+// Nimble: 3 and 5 can be won by making them equal; 4 and 4 cannot be won.
+{
+  const p = at("nimble", { length: 7, chips: [3, 5], turn: "you", over: false });
+  check("nimble: 3 and 5 have a Nim-sum of 6", p.nimSum === 6 && p.youCanWinFromHere === true);
+  check("nimble: the winning move takes 5 down to 3", p.winningMoves.length === 1 && p.winningMoves[0].from === 5 && p.winningMoves[0].to === 3, JSON.stringify(p.winningMoves));
+  const lost = at("nimble", { length: 7, chips: [4, 4], turn: "you", over: false });
+  check("nimble: equal chips are lost for the player to move", lost.nimSum === 0 && lost.youCanWinFromHere === false && lost.winningMoves.length === 0);
+  check("nimble: every chip home is finished", at("nimble", { length: 7, chips: [0, 0], turn: "you", over: true }).finished === true);
 }
 
 // A game with no reader, and a position that makes no sense.

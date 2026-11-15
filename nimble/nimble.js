@@ -5,25 +5,40 @@
  * draws the board and handles turns.
  *
  * The board is a row of numbered positions (0 to length-1) drawn as vertical
- * needles. Chips sit on the needles and can be clicked to select, then click
- * a needle to the left to move there. On phones, tapping works the same way.
+ * needles. A chip is a button: press it to pick it up, then press one of the
+ * positions to its left, which become buttons while a chip is picked up.
+ * The applet dragged the chip instead; pressing works the same with a mouse,
+ * a finger or the keyboard (Tab, Enter, and Escape to put the chip back).
+ *
+ * Every position keeps a width a finger can hit, so a long board does not
+ * squeeze: it slides sideways inside the play area instead. Chips on the same
+ * position stack and overlap; they are interchangeable, so any of them will do.
+ *
+ * The score is the applet's: it counts the computer's wins and losses and
+ * survives New Game and a change of options.
  */
 (() => {
   const Core = NimbleCore;
 
-  const stageEl = document.getElementById("stage");
+  const scrollEl = document.getElementById("boardScroll");
+  const boardEl = scrollEl.querySelector(".board");
+  const hintEl = document.getElementById("slideHint");
   const statusEl = document.getElementById("status");
+  const scoreEl = document.getElementById("score");
   const lengthInput = document.getElementById("lengthInput");
   const chipsInput = document.getElementById("chipsInput");
   const newBtn = document.getElementById("newBtn");
 
   const THINK_MS = 600;
+  const STACK_STEP = 0.9; // rem between chips stacked on one position
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const YOUR_MOVE = "Your move. Pick a chip.";
 
   let state = null;
-  let selected = null; // chip id currently selected
+  let selected = null; // chip id currently picked up
   let busy = false;
   let timer = null;
+  const score = { you: 0, computer: 0 };
 
   /* chip colours: distinct, readable on both light and dark backgrounds */
   const CHIP_COLORS = [
@@ -38,98 +53,119 @@
     if (kind) statusEl.classList.add(kind);
   }
 
+  function showScore() {
+    scoreEl.textContent = `Score: you ${score.you}, computer ${score.computer}`;
+  }
+
   /* ------------------------------------------------------------ drawing */
 
-  function render() {
-    stageEl.querySelector(".board").innerHTML = "";
-    const board = stageEl.querySelector(".board");
-
+  /**
+   * Redraws the board. `focus` names what should hold the keyboard focus
+   * afterwards ({ chip: id } or { spot: position }), because redrawing
+   * replaces the buttons the player was on.
+   */
+  function render(focus) {
+    boardEl.innerHTML = "";
     const len = state.length;
+    const canPlay = !state.over && !busy && state.turn === "you";
+    const selChip = selected === null ? null : state.chips.find((c) => c.id === selected);
 
-    // Count chips at each position for stacking
     const stacks = new Array(len).fill(0);
     for (const c of state.chips) stacks[c.pos]++;
+    boardEl.style.setProperty("--n", String(len));
+    boardEl.style.setProperty("--stack", String(Math.max(...stacks)));
 
-    // Build needles
+    const cols = [];
     for (let p = 0; p < len; p++) {
       const col = document.createElement("div");
       col.className = "needle-col";
-      if (!state.over && !busy && selected !== null) {
-        const selChip = state.chips.find((c) => c.id === selected);
-        if (selChip && p < selChip.pos) {
-          col.classList.add("target");
-          col.addEventListener("click", () => moveChip(p));
-        }
+
+      if (canPlay && selChip && p < selChip.pos) {
+        col.classList.add("target");
+        const spot = document.createElement("button");
+        spot.type = "button";
+        spot.className = "spot";
+        spot.dataset.pos = String(p);
+        spot.setAttribute("aria-label", p === 0 ? "Move the chip home, to position 0" : `Move the chip to position ${p}`);
+        spot.addEventListener("click", () => moveChip(p));
+        col.appendChild(spot);
       }
 
       const needle = document.createElement("div");
       needle.className = "needle";
       col.appendChild(needle);
 
-      // Label
       const label = document.createElement("span");
       label.className = "needle-label";
       label.textContent = String(p);
       col.appendChild(label);
 
-      board.appendChild(col);
+      boardEl.appendChild(col);
+      cols.push(col);
     }
 
-    // Place chips on their needles
-    const posCount = new Array(len).fill(0);
-    const sortedChips = state.chips.slice().sort((a, b) => a.id - b.id);
-    for (const c of sortedChips) {
-      const col = board.children[c.pos];
-      if (!col) continue;
+    const height = new Array(len).fill(0);
+    for (const c of state.chips) {
       const chip = document.createElement("button");
+      chip.type = "button";
       chip.className = "chip";
+      chip.dataset.id = String(c.id);
       if (c.pos === 0) chip.classList.add("home");
       if (selected === c.id) chip.classList.add("selected");
       chip.style.backgroundColor = CHIP_COLORS[c.id % CHIP_COLORS.length];
-      chip.style.bottom = (posCount[c.pos] * 1.6 + 2.2) + "rem";
+      chip.style.bottom = (height[c.pos] * STACK_STEP + 2.2) + "rem";
       chip.setAttribute("aria-label",
-        c.pos === 0 ? `Chip ${c.id + 1} (home)` : `Chip ${c.id + 1} at position ${c.pos}`
-      );
-      if (!state.over && !busy && c.pos > 0 && state.turn === "you") {
-        chip.addEventListener("click", (e) => {
-          e.stopPropagation();
-          selectChip(c.id);
-        });
-      } else {
-        chip.disabled = true;
-      }
-      posCount[c.pos]++;
-      col.appendChild(chip);
+        c.pos === 0 ? `Chip ${c.id + 1}, home` : `Chip ${c.id + 1} at position ${c.pos}`);
+      chip.setAttribute("aria-pressed", selected === c.id ? "true" : "false");
+      if (canPlay && c.pos > 0) chip.addEventListener("click", () => selectChip(c.id));
+      else chip.disabled = true;
+      height[c.pos]++;
+      cols[c.pos].appendChild(chip);
     }
 
-    if (window.Track) window.Track.state({ chips: state.chips.map((c) => c.pos), turn: state.turn });
+    hintEl.hidden = scrollEl.scrollWidth <= scrollEl.clientWidth + 1;
+
+    if (focus) {
+      const el = focus.chip !== undefined
+        ? boardEl.querySelector(`.chip[data-id="${focus.chip}"]:not(:disabled)`)
+        : boardEl.querySelector(`.spot[data-pos="${focus.spot}"]`);
+      if (el) el.focus();
+    }
+
+    if (window.Track) window.Track.state(Core.snapshot(state));
+  }
+
+  /** Brings a chip into view when the board is wider than the play area. */
+  function reveal(chipId) {
+    const el = boardEl.querySelector(`.chip[data-id="${chipId}"]`);
+    if (el) el.scrollIntoView({ block: "nearest", inline: "center" });
   }
 
   function selectChip(id) {
     if (busy || state.over) return;
     selected = selected === id ? null : id;
-    render();
-    if (selected !== null) {
-      say("Now click a position to the left to move the chip there.", "");
-    } else {
-      say("Your move. Click a chip to select it.", "");
-    }
+    render({ chip: id });
+    say(selected !== null ? "Now pick a position to its left." : YOUR_MOVE, "");
   }
 
   function moveChip(dest) {
     if (busy || state.over || selected === null) return;
+    const moved = selected;
     const res = Core.playerMove(state, selected, dest);
     selected = null;
     if (res === "illegal") {
       say("You can only move a chip to the left!", "");
-      render();
+      render({ chip: moved });
       return;
     }
     if (res !== "ok") return;
 
     if (state.over) {
+      score.you++;
+      showScore();
       say("Congratulations! You won!", "win");
       render();
+      newBtn.focus();
       return;
     }
 
@@ -139,14 +175,21 @@
 
     timer = window.setTimeout(() => {
       timer = null;
-      Core.computerMove(state);
+      const reply = Core.computerMove(state);
       busy = false;
       if (state.over) {
+        score.computer++;
+        showScore();
         say("I won!", "lose");
-      } else {
-        say("Your move. Click a chip to select it.", "");
+        render();
+        newBtn.focus();
+        return;
       }
-      render();
+      say(`I moved a chip from ${reply.from} to ${reply.dest}. ` + YOUR_MOVE, "");
+      // Redrawing dropped the focus; give it back to a chip the player can use.
+      const next = state.chips.find((c) => c.id === moved && c.pos > 0) || state.chips.find((c) => c.pos > 0);
+      render(document.activeElement === document.body && next ? { chip: next.id } : undefined);
+      reveal(reply.chipId);
     }, reduceMotion.matches ? 120 : THINK_MS);
   }
 
@@ -157,11 +200,10 @@
     timer = null;
     busy = false;
     selected = null;
-    const len = Number(lengthInput.value);
-    const chips = Number(chipsInput.value);
-    state = Core.start(len, chips);
-    say("Your move. Click a chip to select it.", "");
+    state = Core.start(Number(lengthInput.value), Number(chipsInput.value));
+    say(YOUR_MOVE, "");
     render();
+    scrollEl.scrollLeft = 0;
   }
 
   function fill(select, from, to, value) {
@@ -180,7 +222,19 @@
   chipsInput.addEventListener("change", newGame);
   newBtn.addEventListener("click", newGame);
 
-  window.addEventListener("themechange", () => render());
+  boardEl.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && selected !== null) {
+      const id = selected;
+      selected = null;
+      render({ chip: id });
+      say(YOUR_MOVE, "");
+    }
+  });
 
+  window.addEventListener("resize", () => {
+    hintEl.hidden = scrollEl.scrollWidth <= scrollEl.clientWidth + 1;
+  });
+
+  showScore();
   newGame();
 })();

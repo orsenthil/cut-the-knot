@@ -281,4 +281,42 @@ const random = rng(20261115);
   check(`perfect first player wins all ${wins} games from XOR≠0`, firstLost === 0, `${firstLost} lost`);
 }
 
+/* ------------------------- 7. the applet's choice of chip, written again */
+
+// MakeRightMove keeps the first chip whose (position AND xor) is strictly
+// the largest so far, starting from 0, and sends it to (position XOR xor).
+{
+  let differ = 0;
+  let cases = 0;
+  for (let a = 0; a < 16; a++) for (let b = 0; b < 16; b++) for (let c = 0; c < 16; c++) {
+    const x = a ^ b ^ c;
+    if (x === 0) continue;
+    const pos = [a, b, c];
+    let best = 0, pick = 0;
+    for (let i = 0; i < 3; i++) if (pos[i] !== 0 && best < (pos[i] & x)) { best = pos[i] & x; pick = i; }
+    const s = N.restore({ length: 16, chips: pos, turn: "computer" });
+    const m = N.computerMove(s, random);
+    cases++;
+    if (m.chipId !== pick || m.dest !== Math.max(0, pos[pick] ^ x)) differ++;
+  }
+  check(`the computer picks the applet's chip in all ${cases} positions of three chips`, differ === 0, `${differ} differ`);
+}
+
+/* ------------------------------------------- 8. the saved position */
+
+{
+  const s = N.start(12, 5, random);
+  N.playerMove(s, 0, 0);
+  const back = N.restore(JSON.parse(JSON.stringify(N.snapshot(s))));
+  check("a position survives being saved and read back",
+    JSON.stringify(N.snapshot(back)) === JSON.stringify(N.snapshot(s)));
+  let threw = false;
+  try { N.restore({ nonsense: true }); } catch { threw = true; }
+  check("a nonsense position is refused", threw);
+  const w = N.winningMoves(N.restore({ length: 8, chips: [3, 5, 1], turn: "you" }));
+  check("winning moves from 3,5,1 all leave a Nim-sum of 0",
+    w.length > 0 && w.every((m) => { const p = [3, 5, 1]; p[m.chipId] = m.dest; return (p[0] ^ p[1] ^ p[2]) === 0; }));
+  equal("no winning move when the Nim-sum is 0", N.winningMoves(N.restore({ length: 8, chips: [4, 4], turn: "you" })).length, 0);
+}
+
 done("nimble");

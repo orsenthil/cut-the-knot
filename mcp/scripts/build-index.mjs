@@ -211,6 +211,7 @@ const CORE_GLOBALS = {
   "mind-reader/mind-reader-core.js": ["MindReader"],
   "torque/torque-core.js": ["TorqueCore"],
   "four-by-four/fbf-core.js": ["FourByFourCore"],
+  "nimble/nimble-core.js": ["NimbleCore"],
 };
 
 const games = [];

@@ -35,6 +35,10 @@ const GAMES = {
   torque: null,
   "mind-reader": null,
   "eye-opener": null,
+  nimble: async (page) => {
+    await page.selectOption("#chipsInput", "3");
+    await page.locator(".chip:not(:disabled)").first().click();
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

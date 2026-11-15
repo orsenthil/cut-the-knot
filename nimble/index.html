@@ -29,38 +29,46 @@
     flex-direction: column;
     align-items: center;
   }
+  /* A long board slides sideways in here; the page itself never does. */
+  #boardScroll {
+    width: 100%;
+    overflow-x: auto;
+    padding: 0.5rem 0.25rem;
+  }
   .board {
     display: flex;
-    gap: 0;
-    width: 100%;
-    max-width: 40rem;
     justify-content: center;
-    position: relative;
+    margin: 0 auto;
+    /* every position stays wide enough to hit with a finger */
+    min-width: calc(var(--n, 7) * 1.75rem);
+    max-width: 44rem;
   }
   .needle-col {
     flex: 1 1 0;
     min-width: 0;
-    max-width: 2.4rem;
+    max-width: 2.6rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
-    min-height: 6rem;
-    cursor: default;
+    /* room for the tallest stack of chips */
+    min-height: max(6rem, calc(4.2rem + var(--stack, 1) * 0.9rem));
   }
-  .needle-col.target {
-    cursor: pointer;
-  }
-  .needle-col.target::before {
-    content: "";
+  .spot {
     position: absolute;
     inset: 0;
-    background: var(--accent);
-    opacity: 0.12;
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    border: 0;
     border-radius: 6px;
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    cursor: pointer;
   }
-  .needle-col.target:hover::before {
-    opacity: 0.25;
+  .needle-col .spot:hover { background: color-mix(in srgb, var(--accent) 28%, transparent); }
+  .spot:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: -3px;
   }
   .needle {
     width: 3px;
@@ -68,53 +76,52 @@
     background: var(--border);
     border-radius: 2px;
     min-height: 3rem;
+    pointer-events: none;
+    position: relative;
   }
   .needle-label {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     color: var(--muted);
     margin-top: 0.2rem;
     font-variant-numeric: tabular-nums;
+    pointer-events: none;
+    position: relative;
   }
   .chip {
     position: absolute;
-    width: 1.4rem;
-    height: 1.4rem;
+    left: 50%;
+    width: 1.5rem;
+    height: 1.5rem;
+    min-width: 0;
+    margin-left: -0.75rem;
     border-radius: 50%;
     border: 2px solid rgba(0, 0, 0, 0.25);
     cursor: pointer;
     z-index: 1;
-    transition: none;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     padding: 0;
-    outline: none;
   }
   .chip:focus-visible {
     outline: 3px solid var(--focus);
     outline-offset: 2px;
+    z-index: 2;
   }
   .chip.selected {
     outline: 3px solid var(--accent);
     outline-offset: 2px;
     transform: scale(1.15);
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    z-index: 2;
   }
-  .chip.home {
-    opacity: 0.35;
-    cursor: default;
-    pointer-events: none;
+  .chip:disabled { cursor: default; opacity: 1; }
+  .chip.home { opacity: 0.35; }
+  #slideHint, #score {
+    margin: 0.4rem 0 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
   }
-  .chip:disabled {
-    cursor: default;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .chip { transition: bottom 150ms ease, transform 100ms ease; }
-  }
-  @media (max-width: 30rem) {
-    .needle-col { max-width: 1.6rem; }
-    .chip { width: 1.1rem; height: 1.1rem; }
-    .needle-label { font-size: 0.6rem; }
-  }
+  #score { font-size: 1rem; font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body data-game="nimble" data-kind="game">
@@ -129,11 +136,14 @@
 
   <div id="rules">
     <strong>Game:</strong> slide chips along a row of numbered positions toward zero. You and the computer take turns; whoever moves the last chip to zero wins.<br>
-    <strong>How to play:</strong> click a chip to select it, then click any position to its left to move it there. A chip can slide as far as you like in one move.
+    <strong>How to play:</strong> pick a chip, then pick any position to its left to move it there. A chip can slide as far as you like in one move.
   </div>
 
   <div id="stage" class="stage">
-    <div class="board" role="group" aria-label="Game board"></div>
+    <div id="boardScroll">
+      <div class="board" role="group" aria-label="The board: positions 0 on the left to the highest on the right"></div>
+    </div>
+    <p id="slideHint" hidden>Slide the board sideways to see all of it.</p>
   </div>
 
   <div class="controls">
@@ -143,6 +153,7 @@
   </div>
 
   <div id="status" role="status" aria-live="polite"></div>
+  <p id="score"></p>
 
   <details id="math">
     <summary>Look for the math</summary>
