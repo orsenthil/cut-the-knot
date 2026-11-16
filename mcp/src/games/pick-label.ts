@@ -15,7 +15,7 @@ export function actions(): GameActions {
         let state = P.start({});
         const wb = state.labels.indexOf(P.WB);
         state = P.pickBox(state, wb);
-        const revealed = state.revealed;
+        const revealed = state.revealed as { box: number; color: number; which: number } | null;
         if (!revealed) throw new Error("expected a revealed ball after opening a box");
         const mustBe = revealed.color === 0 ? P.WW : P.BB;
         const otherSame = mustBe === P.WW ? P.BB : P.WW;
