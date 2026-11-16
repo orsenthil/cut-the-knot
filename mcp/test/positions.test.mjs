@@ -70,6 +70,7 @@ check("plainim: mid-game, your move", read.plainim?.finished === false && read.p
 check("pm: mid-game on N=5", read.pm?.finished === false && read.pm.n === 5 && read.pm.turn === "you" && read.pm.youShouldWinThisLength === true);
 check("proizvolov-game: finished N=3 sum is 9", read["proizvolov-game"]?.finished === true && read["proizvolov-game"].sum === 9 && read["proizvolov-game"].holds === true);
 check("raisin-game: mid-game after a cut", read["raisin-game"]?.finished === false && read["raisin-game"].heaps?.length === 2);
+check("reverse-desert: after one jump", read["reverse-desert"]?.finished === false && read["reverse-desert"].scouts === 2 && read["reverse-desert"].movesSoFar === 1);
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -331,6 +332,31 @@ const at = (slug, state) => describePosition(slug, state, 1);
     losses: 0,
   });
   check("raisin-game: 5 and 5 is losing", lose.youCanWinFromHere === false && lose.winningCuts.length === 0);
+}
+
+
+// Reverse Desert: after the known 3-move win the desert is clear.
+{
+  const p = at("reverse-desert", {
+    cols: 4,
+    habitable: 3,
+    level: 2,
+    board: [
+      [0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 1, 0],
+      [0, 0, 0, 0, 0],
+    ],
+    starting: [
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ],
+    historyLength: 3,
+    won: true,
+  });
+  check("reverse-desert: finished win", p.finished === true && p.desertClear === true && p.scouts === 2);
 }
 
 // A game with no reader, and a position that makes no sense.

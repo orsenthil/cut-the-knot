@@ -127,6 +127,13 @@ const GAMES = {
       return /Your move|won/i.test(t) && !/Thinking/i.test(t);
     });
   },
+  "reverse-desert": async (page) => {
+    await page.selectOption("#colsInput", "4");
+    await page.selectOption("#habInput", "3");
+    await page.selectOption("#levelInput", "2");
+    await page.locator('.cell[data-x="2"][data-y="0"]').click();
+    await page.locator('.cell[data-x="2"][data-y="2"]').click();
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

@@ -223,6 +223,7 @@ const CORE_GLOBALS = {
   "pm/pm-core.js": ["PmCore"],
   "proizvolov-game/proizvolov-game-core.js": ["ProizvolovGameCore"],
   "raisin-game/raisin-game-core.js": ["RaisinGameCore"],
+  "reverse-desert/reverse-desert-core.js": ["ReverseDesertCore"],
 };
 
 const games = [];

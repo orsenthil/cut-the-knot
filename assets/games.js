@@ -526,5 +526,12 @@ window.COOLMATHS = {
       tags: ["game-strategy", "parity"],
       level: 2,
     },
+    {
+      slug: "reverse-desert",
+      title: "Scout out of Desert",
+      blurb: "Reverse-jump scouts until the sandy top strip is empty. Can you clear the desert?",
+      tags: ["algorithms", "sequences"],
+      level: 3,
+    },
   ],
 };

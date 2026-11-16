@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scout out of Desert &mdash; coolmaths</title>
+<meta name="description" content="Reverse-jump scouts until the sandy top strip is empty. Can you clear the desert?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/reverse-desert/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Scout out of Desert">
+<meta property="og:description" content="Reverse-jump scouts until the sandy top strip is empty. Can you clear the desert?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/reverse-desert/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    padding: 0.75rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  #boardScroll {
+    width: 100%;
+    overflow-x: auto;
+  }
+  #board {
+    display: grid;
+    gap: 2px;
+    margin: 0 auto;
+    width: max-content;
+    max-width: 100%;
+    padding: 2px;
+    background: var(--border);
+    border-radius: 10px;
+  }
+  .cell {
+    width: 2.1rem;
+    height: 2.1rem;
+    min-width: 2.1rem;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+  }
+  .cell.desert { background: #c4a574; }
+  .cell.land { background: #7a9e6a; }
+  :root[data-theme="dark"] .cell.desert,
+  :root:not([data-theme="light"]) .cell.desert {
+    background: #6a5538;
+  }
+  :root[data-theme="dark"] .cell.land,
+  :root:not([data-theme="light"]) .cell.land {
+    background: #3d5c38;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .cell.desert { background: #6a5538; }
+    :root:not([data-theme="light"]) .cell.land { background: #3d5c38; }
+  }
+  .cell:hover:not(:disabled) { filter: brightness(1.08); }
+  .cell:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: -2px;
+    z-index: 1;
+  }
+  .scout {
+    width: 1.15rem;
+    height: 1.15rem;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #f07070, #c03030);
+    border: 1px solid color-mix(in srgb, var(--ink) 40%, transparent);
+    pointer-events: none;
+  }
+  .cell.selected .scout {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .cell.target {
+    box-shadow: inset 0 0 0 3px var(--highlight);
+  }
+  .legend {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+</style>
+</head>
+<body data-game="reverse-desert" data-kind="game">
+<main id="main">
+  <h1>Scout out of Desert</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#sequences">Sequences</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/ReverseDesert.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Clear every scout out of the sandy desert strip at the top of the board.<br>
+    <strong>How to play:</strong> Press a scout, then an empty cell two steps away (over another empty cell). A new scout appears in the middle.
+  </div>
+
+  <div id="stage" class="stage">
+    <p class="legend">Top rows = desert · bottom rows = land</p>
+    <div id="boardScroll">
+      <div id="board" role="grid" aria-label="Desert board"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label>X <select id="colsInput" aria-label="Columns X"></select></label>
+    <label>Y <select id="habInput" aria-label="Habitable rows Y"></select></label>
+    <label>Level <select id="levelInput" aria-label="Desert level"></select></label>
+    <label><input id="setPosInput" type="checkbox"> Set position</label>
+    <button id="backBtn" type="button" disabled>Take Back</button>
+    <button id="newBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        This is the reverse of
+        <a class="wiki-term" data-wiki="Peg_solitaire" href="https://en.wikipedia.org/wiki/Peg_solitaire" target="_blank" rel="noopener">peg solitaire</a>
+        jumping, used the way Leibniz liked: run the movie backwards to get scouts
+        out of the desert.
+      </p>
+
+      <h2>A jump that creates a scout</h2>
+      <p>
+        In ordinary jumping you leap over a neighbour onto empty land and remove the
+        neighbour. Here the mid cell must be empty too: after the leap a scout
+        appears there. So each move increases the number of scouts by one, while
+        shifting one scout two steps.
+      </p>
+
+      <h2>Clearing the desert strip</h2>
+      <p>
+        Rows above the Level line are desert; the rest is habitable land. You win
+        when every desert cell is empty — scouts may remain on land. The logic test
+        finds a three-move solution on a 4×5 board, so the goal is reachable.
+      </p>
+
+      <h2>Why reverse helps</h2>
+      <p>
+        The sibling puzzle “Sending Scouts into the Desert” asks how far a party can
+        push into the sand with limited supplies; its answers involve
+        <a class="wiki-term" data-wiki="Fibonacci_number" href="https://en.wikipedia.org/wiki/Fibonacci_number" target="_blank" rel="noopener">Fibonacci numbers</a>.
+        Working backwards from a cleared desert turns a hard placement question into
+        a sequence of reverse jumps you can try by hand.
+      </p>
+
+      <p class="tip">
+        Set X=4, Y=3, Level=2 and try to clear the desert in three jumps. Take Back
+        if a branch goes wrong.
+      </p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="reverse-desert-core.js"></script>
+<script src="reverse-desert.js"></script>
+</body>
+</html>
