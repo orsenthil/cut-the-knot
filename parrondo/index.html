@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Parrondo's Paradox &mdash; coolmaths</title>
+<meta name="description" content="Two losing coin games, mixed by a pattern like ABBAB. Can the mix make your capital climb when each game alone sinks?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/parrondo/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Parrondo's Paradox">
+<meta property="og:description" content="Two losing coin games, mixed by a pattern like ABBAB. Can the mix make your capital climb when each game alone sinks?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/parrondo/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #params {
+    display: grid;
+    grid-template-columns: auto minmax(2.5rem, auto) 1fr;
+    gap: 0.35rem 0.6rem;
+    align-items: center;
+    margin-bottom: 0.85rem;
+    font-size: 0.92rem;
+  }
+  #params label { color: var(--muted); text-align: right; }
+  #params output {
+    font-variant-numeric: tabular-nums;
+    min-width: 2.5rem;
+  }
+  #params input[type="range"] { width: 100%; min-width: 0; }
+  #codes-row {
+    display: grid;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+  }
+  #codes-row label { color: var(--muted); font-size: 0.92rem; }
+  #codes {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    font: 0.95rem/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    background: var(--page);
+    color: var(--ink);
+  }
+  #codes:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--highlight);
+    border-color: var(--accent);
+  }
+  #chart {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--stage);
+  }
+  #legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem 0.85rem;
+    margin-top: 0.65rem;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .legend-item { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .swatch {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 2px;
+    border: 1px solid var(--border-strong);
+    flex: 0 0 auto;
+  }
+  .controls { flex-wrap: wrap; }
+  @media (max-width: 420px) {
+    #params { grid-template-columns: auto minmax(2rem, auto) 1fr; font-size: 0.85rem; }
+  }
+</style>
+</head>
+<body data-game="parrondo" data-kind="demo">
+<main id="main">
+  <h1>Parrondo's Paradox</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#game-strategy">Game Strategy</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/Parrondo.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> watch your money go up or down in two bad games, then mix them and see if the mix can win.<br>
+    <strong>How to play:</strong> set the sliders, type letter patterns like AB or ABBAB (or a chance like .4), and press Go. The chart shows the average money after many tries.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="params" role="group" aria-label="Game parameters">
+      <label for="epsilon">Epsilon</label>
+      <output id="epsilonVal" for="epsilon">0.005</output>
+      <input id="epsilon" type="range" min="0" max="100" value="5" aria-label="Epsilon">
+
+      <label for="pA">P</label>
+      <output id="pAVal" for="pA">0.5</output>
+      <input id="pA" type="range" min="0" max="100" value="50" aria-label="Probability P for game A">
+
+      <label for="pB1">P1</label>
+      <output id="pB1Val" for="pB1">0.1</output>
+      <input id="pB1" type="range" min="0" max="100" value="10" aria-label="Probability P1 for game B when capital is a multiple of M">
+
+      <label for="pB2">P2</label>
+      <output id="pB2Val" for="pB2">0.75</output>
+      <input id="pB2" type="range" min="0" max="100" value="75" aria-label="Probability P2 for game B otherwise">
+
+      <label for="games"># Games</label>
+      <output id="gamesVal" for="games">100</output>
+      <input id="games" type="range" min="0" max="100" value="10" aria-label="Number of games per trial">
+
+      <label for="trials"># Trials</label>
+      <output id="trialsVal" for="trials">500</output>
+      <input id="trials" type="range" min="0" max="100" value="5" aria-label="Number of trials">
+
+      <label for="modulus">Modulus</label>
+      <output id="modulusVal" for="modulus">3</output>
+      <input id="modulus" type="range" min="2" max="9" value="3" aria-label="Modulus M for game B">
+    </div>
+
+    <div id="codes-row">
+      <label for="codes">Mixes (A/B patterns or chances, separated by spaces)</label>
+      <input id="codes" type="text" value="AB ABBAB" spellcheck="false" autocomplete="off" aria-label="Mix codes: patterns of A and B, or probabilities">
+    </div>
+
+    <canvas id="chart" width="640" height="400" aria-label="Average capital over games for each strategy"></canvas>
+    <div id="legend" aria-live="polite"></div>
+  </div>
+
+  <div class="controls">
+    <button id="goBtn" type="button" class="primary" aria-label="Run the trials">Go</button>
+    <button id="repeatBtn" type="button" aria-label="Add another batch of trials" disabled>Repeat</button>
+    <button id="resetBtn" type="button" aria-label="Reset parameters to defaults">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        <a class="wiki-term" data-wiki="Parrondo%27s_paradox" href="https://en.wikipedia.org/wiki/Parrondo%27s_paradox" target="_blank" rel="noopener">Parrondo's paradox</a>
+        says two losing games can be combined into a winning one. The chart averages many random walks of capital, just as the cut-the-knot applet did.
+      </p>
+
+      <h2>Game A and game B</h2>
+      <p>
+        Game A is a single coin: you win $1 with probability <code>P</code> and lose $1 otherwise.
+        At the applet's defaults, <code>P = 0.5 − ε</code> with <code>ε = 0.005</code>, so A drifts down.
+        Game B switches between two coins by your current capital: if capital is a multiple of
+        <code>M</code>, use the poor coin <code>P1</code>; otherwise use the rich coin <code>P2</code>.
+        With <code>P1 = 0.1 − ε</code> and <code>P2 = 0.75 − ε</code>, B alone still loses for
+        <code>M = 2</code> or <code>3</code>, and wins for <code>M &gt; 3</code> — the logic test
+        confirmed that split with Monte Carlo trials.
+      </p>
+
+      <h2>Mixing the losers</h2>
+      <p>
+        A mix plays A or B on each step. A string such as <code>AB</code> or <code>ABBAB</code>
+        repeats that pattern; a number such as <code>.4</code> picks A with that probability
+        (and B otherwise). The applet compares A, B and up to seven mixes on one chart.
+        For the default probabilities, <code>ABBAB</code> is the strongest among the usual
+        patterns when <code>M = 3</code>, while <code>AB</code> leads when <code>M = 2</code>
+        or <code>M = 4</code> — matching the page's claim and Zeilberger's results, again
+        checked by the logic test.
+      </p>
+
+      <h2>Why the ratchet works</h2>
+      <p>
+        Game B is a capital-dependent ratchet: the poor coin is played only on a sparse set of
+        capitals (multiples of <code>M</code>). Playing A in between shakes the capital off those
+        bad residues often enough that the rich coin is used more, and the mixture can climb
+        even though each pure game falls. Changing <code>ε</code> alone in the applet only
+        updates the label — the live probabilities stay until you move P, P1 or P2 — and this
+        port keeps that quirk.
+      </p>
+
+      <p class="tip">Try M = 3 with codes <code>AB ABBAB .4145</code>. The periodic ABBAB usually beats the random mix, even near the reported best random chance.</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="parrondo-core.js"></script>
+<script src="parrondo.js"></script>
+</body>
+</html>

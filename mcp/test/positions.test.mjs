@@ -62,6 +62,7 @@ check("nimble: three chips, your move", read.nimble?.chips.length === 3 && read.
 check("no-silver-dollar: three counters, your move", read["no-silver-dollar"]?.positions.length === 3 && read["no-silver-dollar"].turn === "you" && read["no-silver-dollar"].finished === false);
 check("one-pile: a take each, your move", read["one-pile"]?.takesSoFar.length === 2 && read["one-pile"].turn === "you" && read["one-pile"].finished === false);
 check("odd-scoring: 11 steps, a move each, your move", read["odd-scoring"]?.bandSteps === 11 && read["odd-scoring"].turn === "you" && read["odd-scoring"].yourSteps === 2 && read["odd-scoring"].finished === false);
+check("parrondo: a finished run names a best series", read.parrondo?.ready === true && typeof read.parrondo.best?.name === "string");
 
 /* ------------------------------------------------ positions with known answers */
 
@@ -159,6 +160,22 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("odd-scoring: after taking 2 the computer is the one who is lost", theirs.youCanWinFromHere === true && theirs.winningMoves.length === 0);
   const done = at("odd-scoring", { steps: 3, left: 0, you: 2, computer: 1, turn: "you", over: true, winner: "you" });
   check("odd-scoring: an even total wins a finished game", done.finished === true && done.winner === "you");
+
+  const idle = at("parrondo", { ready: false });
+  check("parrondo: before Go the reader says not ready", idle.ready === false);
+  const ran = at("parrondo", {
+    ready: true,
+    trials: 100,
+    games: 50,
+    options: { modulus: 3, codes: "AB ABBAB", pA: 0.495, pB1: 0.095, pB2: 0.745, games: 50, trials: 100, epsilon: 0.005 },
+    finals: [
+      { name: "A", average: -2 },
+      { name: "B", average: -1 },
+      { name: "ABBAB", average: 4 },
+      { name: "AB", average: 1 },
+    ],
+  });
+  check("parrondo: ranks ABBAB first from the saved finals", ran.best?.name === "ABBAB" && ran.ranked[0].average === 4);
 }
 
 // A game with no reader, and a position that makes no sense.

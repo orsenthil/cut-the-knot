@@ -467,5 +467,13 @@ window.COOLMATHS = {
       tags: ["game-strategy", "number-theory"],
       level: 2,
     },
+    {
+      slug: "parrondo",
+      title: "Parrondo's Paradox",
+      blurb: "Two losing coin games, mixed by a pattern like ABBAB. Can the mix make your capital climb when each game alone sinks?",
+      tags: ["paradoxes", "game-strategy"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

@@ -215,6 +215,7 @@ const CORE_GLOBALS = {
   "no-silver-dollar/no-silver-dollar-core.js": ["NoSilverDollarCore"],
   "one-pile/one-pile-core.js": ["OnePileCore"],
   "odd-scoring/odd-scoring-core.js": ["OddScoringCore"],
+  "parrondo/parrondo-core.js": ["ParrondoCore"],
 };
 
 const games = [];

@@ -50,6 +50,18 @@ const GAMES = {
     await page.locator('.target[data-step="2"]').click();
     await page.waitForFunction(() => /Your move/.test(document.getElementById("status").textContent));
   },
+  parrondo: async (page) => {
+    await page.locator("#trials").evaluate((el) => {
+      el.value = "1";
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await page.locator("#games").evaluate((el) => {
+      el.value = "3";
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await page.click("#goBtn");
+    await page.waitForFunction(() => /Done|Stopped/.test(document.getElementById("status").textContent || ""));
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */
