@@ -76,6 +76,7 @@ check("rsolitaire: after one reverse jump on Cross", read.rsolitaire?.pegs === 2
 check("scoring-misere: after a slide", read["scoring-misere"]?.finished === false && Array.isArray(read["scoring-misere"]?.positions));
 check("scoring-misere-2: after a take", read["scoring-misere-2"]?.finished === false && Array.isArray(read["scoring-misere-2"]?.heaps));
 check("sct: after a merge", read.sct?.counts && read.sct.movesSoFar >= 1);
+check("sticky-problem: after a break", read["sticky-problem"]?.finished === false && Array.isArray(read["sticky-problem"]?.sticks));
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -475,6 +476,20 @@ const at = (slug, state) => describePosition(slug, state, 1);
     historyLength: 1,
   });
   check("sct: counts after merge", p.counts.s === 1 && p.counts.c === 1 && p.counts.t === 1 && p.finished === false);
+}
+
+// Sticky Problem: after breaking a four into 1+3 from the standard start.
+{
+  const p = at("sticky-problem", {
+    sticks: [1, 1, 3, 4, 4, 4],
+    turn: "computer",
+    over: false,
+    mode: "break",
+  });
+  check(
+    "sticky-problem: mid-game N-position",
+    p.finished === false && p.isP === false && p.counts.k === 2 && p.counts.m === 1,
+  );
 }
 
 // A game with no reader, and a position that makes no sense.

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sticky Problem &mdash; coolmaths</title>
+<meta name="description" content="Break sticks or remove matching lengths — last move wins. Can you beat the computer from the classic 1+4×4 start?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/sticky-problem/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Sticky Problem">
+<meta property="og:description" content="Break sticks or remove matching lengths — last move wins. Can you beat the computer from the classic 1+4×4 start?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/sticky-problem/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 28rem;
+    padding: 1rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .sticks {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    width: 100%;
+  }
+  .stick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem;
+  }
+  .cell {
+    width: 1.65rem;
+    height: 1.65rem;
+    min-width: 0;
+    padding: 0;
+    border-radius: 4px;
+    border: 1px solid color-mix(in srgb, var(--ink) 40%, transparent);
+    background: linear-gradient(
+      160deg,
+      color-mix(in srgb, #c4a574 85%, white),
+      #8b5a2b 70%
+    );
+    cursor: pointer;
+  }
+  .cell:hover:not(:disabled) {
+    outline: 2px solid var(--highlight);
+    outline-offset: 1px;
+  }
+  .cell:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .cell:disabled {
+    opacity: 0.7;
+    cursor: default;
+  }
+  .empty-board {
+    color: var(--muted);
+    margin: 0.5rem 0;
+  }
+  .controls fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.95rem;
+  }
+</style>
+</head>
+<body data-game="sticky-problem" data-kind="game">
+<main id="main">
+  <h1>Sticky Problem</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#parity">Parity</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/StickyProblem.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Break sticks or clear matching lengths until none remain — the player who takes the last piece wins.<br>
+    <strong>How to play:</strong> Choose Break or Remove. For Break, click a square to the right of where you want to snap. For Remove, click a stick when you have n sticks of length n. Use Make move to let the computer go first.
+  </div>
+
+  <div id="stage" class="stage" aria-label="Sticks made of unit squares"></div>
+
+  <div class="controls">
+    <fieldset>
+      <legend class="sr-only">Move type</legend>
+      <label><input type="radio" name="mode" id="modeBreak" value="break" checked> Break one stick</label>
+      <label><input type="radio" name="mode" id="modeRemove" value="remove"> Remove n of length n</label>
+    </fieldset>
+    <button id="standard" type="button" class="primary">1 + 4×4 game</button>
+    <button id="reset" type="button">Random</button>
+    <button id="makeMove" type="button">Make move</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        This is American Mathematical Monthly problem 10967 (styled here after
+        Sung Soo Kim’s sticky-bar game). Every position is a count of sticks of
+        each length: write it as a quadruple <code>(k, l, m, n)</code> for lengths
+        1, 2, 3 and 4.
+      </p>
+
+      <h2>Two kinds of move</h2>
+      <p>
+        You may break a stick of length at least 2 into two shorter positive
+        lengths, or remove <code>n</code> sticks that each have length
+        <code>n</code>. The player who makes the last move wins — ordinary
+        <a class="wiki-term" data-wiki="Normal_play_convention" href="https://en.wikipedia.org/wiki/Normal_play_convention" target="_blank" rel="noopener">normal play</a>.
+      </p>
+
+      <h2>A parity filter</h2>
+      <p>
+        Let <code>r = (k + m) mod 2</code> and <code>s = (l + n) mod 3</code>.
+        Li Zhou’s solution shows that the
+        <a class="wiki-term" data-wiki="Winning_way" href="https://en.wikipedia.org/wiki/Winning_way" target="_blank" rel="noopener">P-positions</a>
+        (previous-player wins with perfect play) are exactly those with
+        <code>r = s</code>. The empty board is one of them. The classic start
+        <code>(1, 0, 0, 4)</code> — one singleton and four fours — also satisfies
+        <code>r = s</code>, so the second player can force a win.
+      </p>
+
+      <h2>Checking the claim</h2>
+      <p>
+        The logic test walks every count tuple with each coordinate at most 5
+        (1 296 positions). From every P-position every legal move lands in an
+        N-position, and from every N-position some move returns to a P-position —
+        matching the page’s proof outline. The computer’s replies copy the
+        applet’s <code>Play()</code> branches on <code>s − r</code>.
+      </p>
+
+      <p class="tip">
+        Start from 1 + 4×4 and press Make move so the computer opens. Can you
+        still steal a win if it slips off the P-set?
+      </p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="sticky-problem-core.js"></script>
+<script src="sticky-problem.js"></script>
+</body>
+</html>

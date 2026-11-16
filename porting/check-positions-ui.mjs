@@ -168,6 +168,12 @@ const GAMES = {
     await page.locator(".shape:not(.empty)").nth(0).click();
     await page.locator(".shape:not(.empty)").nth(1).click();
   },
+  "sticky-problem": async (page) => {
+    await page.click("#standard");
+    await page.check("#modeBreak");
+    await page.locator(".stick").nth(1).locator(".cell").nth(1).click();
+    await page.waitForTimeout(450);
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

@@ -569,5 +569,12 @@ window.COOLMATHS = {
       tags: ["invariants", "logic"],
       level: 2,
     },
+    {
+      slug: "sticky-problem",
+      title: "Sticky Problem",
+      blurb: "Break sticks or remove matching lengths — last move wins. Can you beat the computer from the classic 1+4×4 start?",
+      tags: ["game-strategy", "parity"],
+      level: 2,
+    },
   ],
 };
