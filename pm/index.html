@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plus or Minus &mdash; coolmaths</title>
+<meta name="description" content="Fill the gaps with + and −. You win when the total is odd — but does the length of the row already decide who wins?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/pm/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Plus or Minus">
+<meta property="og:description" content="Fill the gaps with + and −. You win when the total is odd — but does the length of the row already decide who wins?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/pm/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    padding: 1rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  #exprScroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.35rem 0;
+  }
+  #expr {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.15rem;
+    width: max-content;
+    min-width: 100%;
+    margin: 0 auto;
+    font-size: 1.35rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .num {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.75rem;
+    padding: 0.35rem 0.2rem;
+    font-weight: 600;
+  }
+  .gap {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    padding: 0;
+    margin: 0;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--accent) 8%, var(--stage));
+    color: var(--ink);
+    font-size: 1.25rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .gap:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--highlight) 40%, var(--stage));
+  }
+  .gap:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .gap.filled {
+    border-style: solid;
+    background: var(--stage);
+    cursor: default;
+  }
+  .gap.just {
+    background: color-mix(in srgb, var(--highlight) 50%, var(--stage));
+  }
+  .gap:disabled { opacity: 1; }
+  #score {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .sign-group {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+</style>
+</head>
+<body data-game="pm" data-kind="game">
+<main id="main">
+  <h1>Plus or Minus</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#game-strategy">Game Strategy</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/pm.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Take turns putting + or − between the numbers. When every gap is filled, you win if the total is odd.<br>
+    <strong>How to play:</strong> Choose + or −, then press an empty gap. The computer answers in another gap.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="exprScroll">
+      <div id="expr" role="group" aria-label="Plus or minus expression"></div>
+    </div>
+    <p id="score"></p>
+  </div>
+
+  <div class="controls">
+    <label><input id="randomInput" type="checkbox" checked> Random size</label>
+    <label>N
+      <select id="nInput" aria-label="Sequence length N" disabled></select>
+    </label>
+    <span class="sign-group" role="group" aria-label="Sign to place">
+      <label><input type="radio" name="sign" id="plusInput" value="1" checked> +</label>
+      <label><input type="radio" name="sign" id="minusInput" value="2"> −</label>
+    </span>
+    <button id="newBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        You and the computer argue over plus and minus signs, yet for any fixed length
+        <code>N</code> the winner never changes. The secret is
+        <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a>:
+        odd versus even.
+      </p>
+
+      <h2>Negating never flips parity</h2>
+      <p>
+        The expression is always <code>1 ± 2 ± 3 ± … ± N</code>. Replacing a plus in
+        front of <code>k</code> with a minus replaces <code>+k</code> by <code>−k</code>.
+        An even number stays even when you change its sign; an odd number stays odd.
+        So every choice of signs leaves the same odd/even answer as plain addition
+        <code>1 + 2 + … + N</code>.
+      </p>
+
+      <h2>The triangular number decides</h2>
+      <p>
+        That sum is the triangular number <code>N(N + 1) / 2</code>. It is odd exactly
+        when <code>N</code> leaves a remainder of 1 or 2 on division by 4
+        (<code>N ≡ 1</code> or <code>2 (mod 4)</code>). The logic test checks every
+        possible signing for every <code>N</code> from 2 to 12: each one matches that
+        parity. For <code>N</code> up to 20 it also checks that filling the last gap
+        always names the winner the triangular number predicts.
+      </p>
+
+      <h2>The computer’s randomness is a red herring</h2>
+      <p>
+        The applet’s computer picks a random empty gap and a random sign. That looks
+        like a fight, but it cannot change who wins. Try a short sequence first, as
+        the page suggests: for <code>N = 2</code> you always win; for <code>N = 3</code>
+        the computer always does.
+      </p>
+
+      <p class="tip">
+        Turn Random size off, set <code>N</code> to 5 (you should win) and then to 6
+        (the computer should win), and play both out. The signs you choose never save
+        a lost length.
+      </p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="pm-core.js"></script>
+<script src="pm.js"></script>
+</body>
+</html>

@@ -67,6 +67,7 @@ check("pegsolitaire: one jump from central", read.pegsolitaire?.pegs === 31 && r
 check("pick-label: after opening a box", read["pick-label"]?.phase === "label" && read["pick-label"].revealed !== null);
 check("pigeon-checkers: one jump on N=3", read["pigeon-checkers"]?.n === 3 && read["pigeon-checkers"].movesSoFar === 1 && read["pigeon-checkers"].invariant?.impossible === true);
 check("plainim: mid-game, your move", read.plainim?.finished === false && read.plainim.turn === "you" && read.plainim.heaps.length === 3);
+check("pm: mid-game on N=5", read.pm?.finished === false && read.pm.n === 5 && read.pm.turn === "you" && read.pm.youShouldWinThisLength === true);
 
 /* ------------------------------------------------ positions with known answers */
 
@@ -262,6 +263,36 @@ const at = (slug, state) => describePosition(slug, state, 1);
       losses: 1,
     }).finished === true,
   );
+}
+
+// Plus or Minus: N=5 is always odd; N=3 is always even.
+{
+  const five = at("pm", {
+    n: 5,
+    signs: [1, 2, 1, 2],
+    turn: "you",
+    over: false,
+    winner: null,
+    total: null,
+    wins: 0,
+    losses: 0,
+    random: false,
+    pendingSign: 1,
+  });
+  check("pm: N=5 is a win for you", five.youShouldWinThisLength === true && five.triangular === 15);
+  const three = at("pm", {
+    n: 3,
+    signs: [1, 1],
+    turn: "you",
+    over: true,
+    winner: "computer",
+    total: 6,
+    wins: 1,
+    losses: 0,
+    random: false,
+    pendingSign: 1,
+  });
+  check("pm: finished N=3 names the computer", three.finished === true && three.winner === "computer" && three.youShouldWinThisLength === false);
 }
 
 // A game with no reader, and a position that makes no sense.

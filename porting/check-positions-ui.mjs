@@ -103,6 +103,15 @@ const GAMES = {
       return /Your move/i.test(t) && !/won/i.test(t);
     });
   },
+  pm: async (page) => {
+    await page.uncheck("#randomInput");
+    await page.selectOption("#nInput", "5");
+    await page.locator(".gap:not(:disabled)").first().click();
+    await page.waitForFunction(() => {
+      const t = document.getElementById("status").textContent || "";
+      return /Your move/i.test(t) && !/Thinking/i.test(t);
+    });
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

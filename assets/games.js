@@ -504,5 +504,12 @@ window.COOLMATHS = {
       tags: ["game-strategy", "place-value"],
       level: 2,
     },
+    {
+      slug: "pm",
+      title: "Plus or Minus",
+      blurb: "Fill the gaps with + and −. You win when the total is odd — but does the length of the row already decide who wins?",
+      tags: ["parity", "game-strategy"],
+      level: 1,
+    },
   ],
 };
