@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trans Example &mdash; coolmaths</title>
+<meta name="description" content="Draw shuttles between the lines, then follow each line from the top. Can two lines ever come out at the same bottom?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/trans-example/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Trans Example">
+<meta property="og:description" content="Draw shuttles between the lines, then follow each line from the top. Can two lines ever come out at the same bottom?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/trans-example/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { padding: 1rem; }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 40rem;
+    height: auto;
+    margin: 0 auto;
+    touch-action: none;
+    cursor: crosshair;
+  }
+  #board:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .modes { display: inline-flex; gap: 0.25rem; }
+  .modes button[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-text);
+  }
+</style>
+</head>
+<body data-game="trans-example" data-kind="game">
+<main id="main">
+  <h1>Trans Example</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/TransExample.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Draw bridges between the tall lines, then follow each line from the top to see where it comes out.<br>
+    <strong>How to play:</strong> Drag from one line to another to draw a bridge. Choose Verify, then click each line to follow it down.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="800" height="600" tabindex="0"
+      aria-label="Shuttle board. Arrow keys move the cursor between lines and heights; Enter draws a shuttle or follows a line; Escape cancels."></canvas>
+  </div>
+
+  <div class="controls">
+    <span class="modes" role="group" aria-label="Mode">
+      <button id="drawBtn" type="button" aria-pressed="true">Draw</button>
+      <button id="verifyBtn" type="button" aria-pressed="false">Verify</button>
+    </span>
+    <label for="polesInput"># Poles
+      <input id="polesInput" type="number" min="2" max="20" step="1" value="5">
+    </label>
+    <button id="removeBtn" type="button" disabled>Remove last</button>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This puzzle comes from Martin Gardner's Mathematical Games column
+        (Scientific American, December 1959). Draw as many shuttles as you
+        like, in any places: when you follow the lines from the top, two
+        different lines <em>never</em> come out at the same bottom. The logic
+        test for this page checked that claim for every arrangement of up to
+        three shuttle heights on 2 to 5 lines, and it always holds.</p>
+
+      <h2>Walking the lines</h2>
+      <p>Start at the top of a line and go down. Whenever you meet the end of
+        a shuttle, cross it to the other line and keep going down. The path
+        you trace is called an <em>itinerary</em>. In Verify mode the applet
+        draws each itinerary and writes the starting number at the bottom it
+        reaches, so you can read off where every line ends up. A line cannot
+        hold two shuttles at exactly the same height — the applet refuses
+        with “This location is occupied! Select another.”</p>
+
+      <h2>Every shuttle is a swap</h2>
+      <p>Imagine each line carrying its own number downwards. Read the
+        shuttles from top to bottom: each one exchanges the numbers on the
+        two lines it joins, and leaves all the others alone. Such a swap of
+        two things is called a
+        <a class="wiki-term" data-wiki="Transposition_(mathematics)" href="https://en.wikipedia.org/wiki/Transposition_(mathematics)" target="_blank" rel="noopener">transposition</a>,
+        and the final arrangement of numbers is a
+        <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">permutation</a>
+        of the starting one: doing several swaps in a row, one after another,
+        is the <em>product</em> of those transpositions. Every permutation can
+        be built this way.</p>
+
+      <h2>Why two lines never meet</h2>
+      <p>Think of the lines as ropes and each shuttle as a place where two
+        ropes cross. Ropes can cross but they cannot merge, so the number of
+        rope ends at the bottom equals the number at the top. One shuttle
+        keeps the matching between tops and bottoms one-to-one — a
+        <a class="wiki-term" data-wiki="Bijection" href="https://en.wikipedia.org/wiki/Bijection" target="_blank" rel="noopener">bijection</a>
+        — and adding one more shuttle keeps it one-to-one again. By
+        induction, any number of shuttles does: different tops always reach
+        different bottoms. That is also why the puzzle can share out jobs or
+        snacks fairly: everybody's line ends somewhere, and nobody shares a
+        bottom.</p>
+
+      <h2>Two walks through every shuttle</h2>
+      <p>The original page ends with a question: prove that every shuttle is
+        used by exactly two itineraries, one crossing it left to right and
+        one right to left. The logic test counted crossings on all those
+        boards and confirmed it. Here is one way to see it: stand at one end
+        of a shuttle and walk backwards (upwards, crossing shuttles in
+        reverse) until you reach a top — that top's itinerary crosses the
+        shuttle in one direction. Do the same from the other end, and you
+        get a second, different top crossing it the other way. No third walk
+        can use the shuttle, because a walk meets it only by coming down one
+        of its two lines, and each line delivers exactly one walk to that
+        height.</p>
+
+      <p class="tip">Try to send line 1 all the way to the last bottom using
+        as few shuttles as possible — then predict where every other line
+        ends before you press Verify.</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="trans-example-core.js"></script>
+<script src="trans-example.js"></script>
+</body>
+</html>

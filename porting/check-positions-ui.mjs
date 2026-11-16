@@ -185,6 +185,15 @@ const GAMES = {
     await page.click("#resetBtn");
     await page.locator(".col-actions .axis").first().click();
   },
+  "trans-example": async (page) => {
+    const box = await page.locator("#board").boundingBox();
+    const x = (p) => box.x + ((p + 1) * box.width) / 6;
+    const y = box.y + (box.height * 290) / 600;
+    await page.mouse.move(x(0), y);
+    await page.mouse.down();
+    await page.mouse.move(x(2), y, { steps: 4 });
+    await page.mouse.up();
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

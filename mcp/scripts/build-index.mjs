@@ -232,6 +232,7 @@ const CORE_GLOBALS = {
   "sticky-problem/sticky-problem-core.js": ["StickyProblemCore"],
   "soup-fish/soup-fish-core.js": ["SoupFishCore"],
   "table-to-zero-game/table-to-zero-game-core.js": ["TableToZeroGameCore"],
+  "trans-example/trans-example-core.js": ["TransExampleCore"],
 };
 
 const games = [];

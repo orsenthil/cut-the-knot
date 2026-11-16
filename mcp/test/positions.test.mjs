@@ -79,6 +79,7 @@ check("sct: after a merge", read.sct?.counts && read.sct.movesSoFar >= 1);
 check("sticky-problem: after a break", read["sticky-problem"]?.finished === false && Array.isArray(read["sticky-problem"]?.sticks));
 check("soup-fish: after a pick", read["soup-fish"]?.finished === false && typeof read["soup-fish"]?.you === "number");
 check("table-to-zero-game: after a subtract", read["table-to-zero-game"]?.finished === false && Array.isArray(read["table-to-zero-game"]?.grid));
+check("trans-example: one shuttle drawn", read["trans-example"]?.finished === false && read["trans-example"]?.shuttles === 1);
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -517,6 +518,16 @@ const at = (slug, state) => describePosition(slug, state, 1);
     historyLength: 1,
   });
   check("table-to-zero-game: mid 1×2", p.finished === false && p.grid[0][0] === 0);
+}
+
+// Trans Example: one shuttle swaps two bottoms; a full verify ends the play.
+{
+  const bars = [{ a: 0, b: 2, h: 0.5 }];
+  const p = at("trans-example", { n: 5, mode: "draw", bars, labels: [0, 0, 0, 0, 0], itinerary: null });
+  check("trans-example: one shuttle swaps bottoms 1 and 3",
+    p.finished === false && JSON.stringify(p.topToBottom) === JSON.stringify([3, 2, 1, 4, 5]));
+  const done = at("trans-example", { n: 5, mode: "verify", bars, labels: [3, 2, 1, 4, 5], itinerary: null });
+  check("trans-example: all bottoms labelled is done", done.finished === true && done.traced === 5);
 }
 
 // A game with no reader, and a position that makes no sense.
