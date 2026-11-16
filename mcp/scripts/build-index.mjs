@@ -225,6 +225,7 @@ const CORE_GLOBALS = {
   "raisin-game/raisin-game-core.js": ["RaisinGameCore"],
   "reverse-desert/reverse-desert-core.js": ["ReverseDesertCore"],
   "row-column-swap/row-column-swap-core.js": ["RowColumnSwapCore"],
+  "rsolitaire/rsolitaire-core.js": ["RsolitaireCore"],
 };
 
 const games = [];

@@ -541,5 +541,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "rsolitaire",
+      title: "Reverse Solitaire",
+      blurb: "Start from one peg and rebuild the board by jumping backwards. Can you recover the Cross in five moves?",
+      tags: ["game-strategy", "invariants"],
+      level: 2,
+    },
   ],
 };

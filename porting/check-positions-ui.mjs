@@ -139,6 +139,11 @@ const GAMES = {
     await page.locator("#rowArrows .arrow").nth(0).click();
     await page.locator("#rowArrows .arrow").nth(1).click();
   },
+  "rsolitaire": async (page) => {
+    await page.selectOption("#puzzleSelect", "0");
+    await page.click('.cell[data-i="3"][data-j="3"]');
+    await page.click('.cell[data-i="3"][data-j="1"]');
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

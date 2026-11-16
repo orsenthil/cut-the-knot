@@ -72,6 +72,7 @@ check("proizvolov-game: finished N=3 sum is 9", read["proizvolov-game"]?.finishe
 check("raisin-game: mid-game after a cut", read["raisin-game"]?.finished === false && read["raisin-game"].heaps?.length === 2);
 check("reverse-desert: after one jump", read["reverse-desert"]?.finished === false && read["reverse-desert"].scouts === 2 && read["reverse-desert"].movesSoFar === 1);
 check("row-column-swap: after one row swap", read["row-column-swap"]?.finished === true && read["row-column-swap"].n === 3 && read["row-column-swap"].movesSoFar === 1);
+check("rsolitaire: after one reverse jump on Cross", read.rsolitaire?.pegs === 2 && read.rsolitaire.movesSoFar === 1 && read.rsolitaire.won === false);
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -384,6 +385,42 @@ const at = (slug, state) => describePosition(slug, state, 1);
     explored: false,
   });
   check("row-column-swap: fresh start not finished", start.finished === false && start.matchesTarget === false);
+}
+
+// Reverse Solitaire: mid Cross after the first dual jump.
+{
+  const p = at("rsolitaire", {
+    gameNo: 0,
+    name: "Cross",
+    board: [
+      [0, 0, 2, 2, 2, 0, 0],
+      [0, 0, 2, 2, 2, 0, 0],
+      [2, 2, 2, 2, 2, 2, 2],
+      [2, 1, 1, 2, 2, 2, 2],
+      [2, 2, 2, 2, 2, 2, 2],
+      [0, 0, 2, 2, 2, 0, 0],
+      [0, 0, 2, 2, 2, 0, 0],
+    ],
+    historyLength: 1,
+    won: false,
+  });
+  check("rsolitaire: two pegs after first jump", p.pegs === 2 && p.won === false && p.legalJumps > 0);
+  const start = at("rsolitaire", {
+    gameNo: 0,
+    name: "Cross",
+    board: [
+      [0, 0, 2, 2, 2, 0, 0],
+      [0, 0, 2, 2, 2, 0, 0],
+      [2, 2, 2, 2, 2, 2, 2],
+      [2, 2, 2, 1, 2, 2, 2],
+      [2, 2, 2, 2, 2, 2, 2],
+      [0, 0, 2, 2, 2, 0, 0],
+      [0, 0, 2, 2, 2, 0, 0],
+    ],
+    historyLength: 0,
+    won: false,
+  });
+  check("rsolitaire: fresh Cross has four opening jumps", start.pegs === 1 && start.legalJumps === 4);
 }
 
 // A game with no reader, and a position that makes no sense.

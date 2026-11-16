@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reverse Solitaire &mdash; coolmaths</title>
+<meta name="description" content="Start from one peg and rebuild the board by jumping backwards. Can you recover the Cross in five moves?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/rsolitaire/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Reverse Solitaire">
+<meta property="og:description" content="Start from one peg and rebuild the board by jumping backwards. Can you recover the Cross in five moves?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/rsolitaire/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #board-wrap { max-width: min(100%, 22rem); margin: 0 auto; }
+  #board {
+    display: grid;
+    grid-template-columns: repeat(var(--n, 7), 1fr);
+    gap: 0.25rem;
+    aspect-ratio: 1;
+  }
+  .cell {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 2px solid var(--border-strong);
+    background: var(--page);
+    padding: 0;
+    cursor: pointer;
+    min-width: 0;
+    min-height: 0;
+  }
+  .cell.out {
+    visibility: hidden;
+    pointer-events: none;
+    border: none;
+    background: transparent;
+  }
+  .cell.hole { background: var(--stage); }
+  .cell.peg::before {
+    content: "";
+    position: absolute;
+    inset: 18%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #60a5fa, #1d4ed8 70%);
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,.25);
+  }
+  .cell.selected {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--highlight);
+  }
+  .cell.focus:focus-visible, .cell:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--highlight);
+    border-color: var(--accent);
+  }
+  .cell.peg:hover:not(:disabled) { border-color: var(--accent); }
+  #pegLine { text-align: center; color: var(--muted); font-size: 0.92rem; margin-top: 0.6rem; }
+  .controls label[for="puzzleSelect"] { color: var(--muted); }
+</style>
+</head>
+<body data-game="rsolitaire" data-kind="game">
+<main id="main">
+  <h1>Reverse Solitaire</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/proofs/rsolitaire.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> start from a Peg Solitaire ending and rebuild the starting pattern by jumping backwards.<br>
+    <strong>How to play:</strong> click a peg, then an empty hole two steps away over another empty hole — the middle fills in.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="board-wrap">
+      <div id="board" role="grid" aria-label="Reverse solitaire board"></div>
+      <div id="pegLine" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label for="puzzleSelect">Puzzle</label>
+    <select id="puzzleSelect" aria-label="Choose a goal puzzle"></select>
+    <button id="undoBtn" type="button" aria-label="Undo last jump" disabled>Undo</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the puzzle">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        <a class="wiki-term" data-wiki="Peg_solitaire" href="https://en.wikipedia.org/wiki/Peg_solitaire" target="_blank" rel="noopener">Peg solitaire</a>
+        played backwards feels different, yet Winning Ways shows it is the same game:
+        jumping a peg over a hole is jumping a hole over a hole into a peg.
+      </p>
+
+      <h2>Reverse jumps</h2>
+      <p>
+        On the English board a reverse move is an orthogonal jump of length two from a
+        peg into an empty hole over another empty hole; the middle hole fills. Each jump
+        adds one peg. The nine puzzles reuse the layouts from the forward Peg Solitaire
+        applet: you begin at a finished position (one centre peg, or the skewed / double
+        openings) and rebuild that layout. The logic test solves Cross in five reverse
+        jumps — the dual of the five-jump forward solution.
+      </p>
+
+      <h2>Holes as pegs</h2>
+      <p>
+        Leibniz preferred reverse play; Berlekamp, Conway and Guy answer that a reverse
+        jump is ordinary solitaire on the complementary board where empty holes are the
+        “pieces.” Visualising full packages is often easier than visualising empties —
+        that is why the page offers reverse as its own applet.
+      </p>
+
+      <h2>Same packages, flipped</h2>
+      <p>
+        Any forward solution read backwards is a reverse solution. The
+        <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariants</a>
+        that rule out some forward goals rule out the same reverse goals, because the
+        reachable positions are the same set.
+      </p>
+
+      <p class="tip">Try Cross first — six pegs to rebuild, five reverse jumps.</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="rsolitaire-core.js"></script>
+<script src="rsolitaire.js"></script>
+</body>
+</html>
