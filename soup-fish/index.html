@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fish Soup &mdash; coolmaths</title>
+<meta name="description" content="Pick words that share a letter — three of yours wins. Why does this feel like a game you already know?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/soup-fish/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Fish Soup">
+<meta property="og:description" content="Pick words that share a letter — three of yours wins. Why does this feel like a game you already know?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/soup-fish/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 36rem;
+    padding: 1rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  #board {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
+    width: 100%;
+  }
+  .card {
+    min-height: 3rem;
+    padding: 0.55rem 0.35rem;
+    font-size: 1rem;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    border-radius: 10px;
+    border: 2px solid color-mix(in srgb, var(--ink) 28%, transparent);
+    background: var(--stage);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .card:hover:not(:disabled) {
+    outline: 2px solid var(--highlight);
+    outline-offset: 1px;
+  }
+  .card:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .card.you {
+    background: color-mix(in srgb, #3b82f6 35%, var(--stage));
+    border-color: #2563eb;
+    color: var(--ink);
+  }
+  .card.computer {
+    background: color-mix(in srgb, #ef4444 35%, var(--stage));
+    border-color: #dc2626;
+    color: var(--ink);
+  }
+  .card:disabled { cursor: default; opacity: 0.95; }
+  #score { color: var(--muted); font-size: 0.95rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+</style>
+</head>
+<body data-game="soup-fish" data-kind="game">
+<main id="main">
+  <h1>Fish Soup</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/SoupFish.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Take turns claiming words. First to own three words that share one letter wins.<br>
+    <strong>How to play:</strong> Click a free word (yours turn blue, computer’s red). Tick “Computer moves first” and press So, go! to let it open.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="board" role="grid" aria-label="Nine words"></div>
+    <div id="score" aria-live="polite"></div>
+  </div>
+
+  <div class="controls">
+    <label><input type="checkbox" id="computerFirst"> Computer moves first</label>
+    <button id="goBtn" type="button">So, go!</button>
+    <button id="newBtn" type="button" class="primary">New game</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Nine words, a shared-letter goal — yet the game is one you already know.
+        Layout the words in a square and each winning triple is a row, column or
+        diagonal.
+      </p>
+
+      <h2>The secret board</h2>
+      <p>
+        Arrange them like this:
+      </p>
+      <blockquote>
+        <code>FISH&nbsp; SOUP&nbsp; SWAN</code><br>
+        <code>GIRL&nbsp; HORN&nbsp; ARMY</code><br>
+        <code>KNIT&nbsp; VOTE&nbsp; CHAT</code>
+      </blockquote>
+      <p>
+        The first row shares <code>S</code>, the second <code>R</code>, the third
+        <code>T</code>; columns share <code>I</code>, <code>O</code>, <code>A</code>;
+        diagonals share <code>H</code> and <code>N</code>. Claiming three words with
+        a common letter is exactly claiming three squares in a line —
+        <a class="wiki-term" data-wiki="Tic-tac-toe" href="https://en.wikipedia.org/wiki/Tic-tac-toe" target="_blank" rel="noopener">tic-tac-toe</a>.
+        The same idea appears in the Game of Fif and in
+        <a href="../jam/">The Game of Jam</a> on this site.
+      </p>
+
+      <h2>How the computer plays</h2>
+      <p>
+        Positions are 9-bit masks. The applet (after Arthur van Hoff’s demo) tries
+        squares in the order centre, corners, edges; takes a winning move; otherwise
+        prefers a move after which you have no immediate win; and with chance
+        1&nbsp;in&nbsp;10 picks at random — “benevolent mistakes”. With perfect play
+        tic-tac-toe is a draw, so a careful game ends in stalemate.
+      </p>
+
+      <p class="tip">
+        Play with Computer moves first unchecked, open in the centre, and answer
+        every threat. Can you force the draw?
+      </p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="soup-fish-core.js"></script>
+<script src="soup-fish.js"></script>
+</body>
+</html>

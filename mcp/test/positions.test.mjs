@@ -77,6 +77,7 @@ check("scoring-misere: after a slide", read["scoring-misere"]?.finished === fals
 check("scoring-misere-2: after a take", read["scoring-misere-2"]?.finished === false && Array.isArray(read["scoring-misere-2"]?.heaps));
 check("sct: after a merge", read.sct?.counts && read.sct.movesSoFar >= 1);
 check("sticky-problem: after a break", read["sticky-problem"]?.finished === false && Array.isArray(read["sticky-problem"]?.sticks));
+check("soup-fish: after a pick", read["soup-fish"]?.finished === false && typeof read["soup-fish"]?.you === "number");
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -490,6 +491,19 @@ const at = (slug, state) => describePosition(slug, state, 1);
     "sticky-problem: mid-game N-position",
     p.finished === false && p.isP === false && p.counts.k === 2 && p.counts.m === 1,
   );
+}
+
+// Fish Soup: human owns FISH+SOUP+SWAN (mask 7).
+{
+  const p = at("soup-fish", {
+    you: 7,
+    computer: 0,
+    over: true,
+    result: "you",
+    winLetter: "S",
+    perm: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+  });
+  check("soup-fish: S-line win", p.finished === true && p.winLetter === "S" && p.result === "you");
 }
 
 // A game with no reader, and a position that makes no sense.

@@ -576,5 +576,12 @@ window.COOLMATHS = {
       tags: ["game-strategy", "parity"],
       level: 2,
     },
+    {
+      slug: "soup-fish",
+      title: "Fish Soup",
+      blurb: "Pick words that share a letter — three of yours wins. Why does this feel like a game you already know?",
+      tags: ["game-strategy"],
+      level: 2,
+    },
   ],
 };

@@ -174,6 +174,11 @@ const GAMES = {
     await page.locator(".stick").nth(1).locator(".cell").nth(1).click();
     await page.waitForTimeout(450);
   },
+  "soup-fish": async (page) => {
+    await page.uncheck("#computerFirst");
+    await page.click("#newBtn");
+    await page.locator(".card:not(:disabled)").first().click();
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */
