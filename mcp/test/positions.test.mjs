@@ -66,6 +66,7 @@ check("parrondo: a finished run names a best series", read.parrondo?.ready === t
 check("pegsolitaire: one jump from central", read.pegsolitaire?.pegs === 31 && read.pegsolitaire.movesSoFar === 1 && read.pegsolitaire.won === false);
 check("pick-label: after opening a box", read["pick-label"]?.phase === "label" && read["pick-label"].revealed !== null);
 check("pigeon-checkers: one jump on N=3", read["pigeon-checkers"]?.n === 3 && read["pigeon-checkers"].movesSoFar === 1 && read["pigeon-checkers"].invariant?.impossible === true);
+check("plainim: mid-game, your move", read.plainim?.finished === false && read.plainim.turn === "you" && read.plainim.heaps.length === 3);
 
 /* ------------------------------------------------ positions with known answers */
 
@@ -210,6 +211,57 @@ const at = (slug, state) => describePosition(slug, state, 1);
     pegs: 31,
   });
   check("pegsolitaire: after one central jump, 31 pegs and not won", peg.pegs === 31 && peg.movesSoFar === 1 && peg.won === false && peg.legalJumps > 0);
+}
+
+// Plainim: heaps 6 and 4 on 4 columns have Nim-sum 2; equal heaps are lost.
+{
+  const p = at("plainim", {
+    cols: 4,
+    rows: 2,
+    misere: false,
+    heaps: [6, 4],
+    turn: "you",
+    over: false,
+    winner: null,
+    wins: 0,
+    losses: 0,
+  });
+  check("plainim: 6 and 4 have Nim-sum 2", p.nimSum === 2 && p.youCanWinFromHere === true);
+  check(
+    "plainim: a winning move leaves Nim-sum 0",
+    p.winningMoves.length > 0 &&
+      p.winningMoves.every((m) => {
+        const heaps = [6, 4];
+        heaps[m.row - 1] ^= m.mask;
+        return (heaps[0] ^ heaps[1]) === 0;
+      }),
+  );
+  const lost = at("plainim", {
+    cols: 4,
+    rows: 2,
+    misere: false,
+    heaps: [5, 5],
+    turn: "you",
+    over: false,
+    winner: null,
+    wins: 0,
+    losses: 0,
+  });
+  check("plainim: equal heaps are lost for the player to move", lost.nimSum === 0 && lost.youCanWinFromHere === false && lost.winningMoves.length === 0);
+  check(
+    "plainim: empty board is finished",
+    at("plainim", {
+      cols: 4,
+      rows: 2,
+      misere: false,
+      heaps: [0, 0],
+      turn: "you",
+      over: true,
+      winner: "you",
+      wins: 0,
+      losses: 1,
+    }).finished === true,
+  );
 }
 
 // A game with no reader, and a position that makes no sense.

@@ -219,6 +219,7 @@ const CORE_GLOBALS = {
   "pegsolitaire/pegsolitaire-core.js": ["PegsolitaireCore"],
   "pick-label/pick-label-core.js": ["PickLabelCore"],
   "pigeon-checkers/pigeon-checkers-core.js": ["PigeonCheckersCore"],
+  "plainim/plainim-core.js": ["PlainimCore"],
 };
 
 const games = [];

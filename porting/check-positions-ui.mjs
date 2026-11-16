@@ -74,6 +74,35 @@ const GAMES = {
     await page.click('.cell[data-x="0"][data-y="1"]');
     await page.click('.cell[data-x="2"][data-y="1"]');
   },
+  plainim: async (page) => {
+    await page.selectOption("#colsInput", "5");
+    await page.selectOption("#rowsInput", "3");
+    for (let i = 0; i < 40; i++) {
+      await page.click("#newBtn");
+      const ok = await page.evaluate(() => {
+        let chips = 0;
+        let rowsWith = 0;
+        for (let r = 0; r < 3; r++) {
+          let rowChips = 0;
+          for (let c = 0; c < 5; c++) {
+            if (document.querySelector(`.cell[data-row="${r}"][data-col="${c}"]`)?.classList.contains("has-chip")) {
+              chips++;
+              rowChips++;
+            }
+          }
+          if (rowChips) rowsWith++;
+        }
+        return chips >= 5 && rowsWith >= 2;
+      });
+      if (ok) break;
+    }
+    await page.locator(".cell.has-chip:not(:disabled)").first().click();
+    await page.click("#moveBtn");
+    await page.waitForFunction(() => {
+      const t = document.getElementById("status").textContent || "";
+      return /Your move/i.test(t) && !/won/i.test(t);
+    });
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

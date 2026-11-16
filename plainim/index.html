@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plainim &mdash; coolmaths</title>
+<meta name="description" content="Chips on a grid are really Nim heaps written in binary. Can you leave every column balanced so the computer takes the last chip?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/plainim/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Plainim">
+<meta property="og:description" content="Chips on a grid are really Nim heaps written in binary. Can you leave every column balanced so the computer takes the last chip?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/plainim/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    padding: 0.75rem 0.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  #boardScroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(var(--cols, 5), minmax(2rem, 2.6rem));
+    grid-template-rows: repeat(var(--rows, 5), minmax(2rem, 2.6rem));
+    gap: 1px;
+    margin: 0 auto;
+    padding: 1px;
+    background: var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    width: max-content;
+    max-width: none;
+  }
+  .cell {
+    width: 100%;
+    min-width: 2rem;
+    min-height: 2rem;
+    aspect-ratio: 1;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: var(--stage);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    position: relative;
+  }
+  .cell.dark { background: color-mix(in srgb, var(--ink) 6%, var(--stage)); }
+  .cell:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--highlight) 35%, var(--stage));
+  }
+  .cell:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: -3px;
+    z-index: 1;
+  }
+  .cell:disabled { cursor: default; }
+  .cell.pending {
+    box-shadow: inset 0 0 0 3px var(--accent);
+  }
+  .chip {
+    width: 1.15rem;
+    height: 1.15rem;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #f0d090, #c9a04a 55%, #8a6a28);
+    border: 1px solid color-mix(in srgb, var(--ink) 35%, transparent);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--ink) 25%, transparent);
+    pointer-events: none;
+  }
+  .cell.pending .chip {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .cell.pending:not(.has-chip)::after {
+    content: "";
+    width: 1.15rem;
+    height: 1.15rem;
+    border-radius: 50%;
+    border: 2px dashed var(--accent);
+    opacity: 0.85;
+  }
+  .computer-flash {
+    animation: plainim-flash 0.45s ease;
+  }
+  @keyframes plainim-flash {
+    from { background: color-mix(in srgb, var(--highlight) 55%, var(--stage)); }
+    to { background: var(--stage); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .computer-flash { animation: none; }
+  }
+  #score {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .bit-hint {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    display: flex;
+    gap: 0;
+    justify-content: center;
+    width: max-content;
+    margin: 0 auto;
+  }
+  .bit-hint span {
+    min-width: 2rem;
+    max-width: 2.6rem;
+    flex: 1 1 2rem;
+    text-align: center;
+  }
+</style>
+</head>
+<body data-game="plainim" data-kind="game">
+<main id="main">
+  <h1>Plainim</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#place-value">Place Value</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/recurrence/Plainim.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Take turns changing chips on one row of the board. Whoever takes the last chip wins.<br>
+    <strong>How to play:</strong> Click squares in a single row to mark chips to remove or empty squares to fill (only to the right of a chip you remove). Then press Make move.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="boardScroll">
+      <div id="bitHint" class="bit-hint" aria-hidden="true"></div>
+      <div id="board" class="board" role="grid" aria-label="Plainim board"></div>
+    </div>
+    <p id="score"></p>
+  </div>
+
+  <div class="controls">
+    <label>Columns
+      <select id="colsInput" aria-label="Columns"></select>
+    </label>
+    <label>Rows
+      <select id="rowsInput" aria-label="Rows"></select>
+    </label>
+    <label><input id="misereInput" type="checkbox"> Misère</label>
+    <button id="moveBtn" type="button" class="primary" disabled>Make move</button>
+    <button id="newBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Plainim looks like a board game with chips, but each row is really a number
+        written in binary. Once you see that, the winning plan is the same secret
+        that runs through every form of
+        <a class="wiki-term" data-wiki="Nim" href="https://en.wikipedia.org/wiki/Nim" target="_blank" rel="noopener">Nim</a>.
+      </p>
+
+      <h2>Rows are heaps, columns are bits</h2>
+      <p>
+        Read a row from left to right as a binary number: the leftmost column is the
+        highest place value. A chip means <code>1</code>, an empty square means
+        <code>0</code>. So a row of five cells with chips only in the first and last
+        squares is the number <code>10001</code> in binary — seventeen in ordinary counting.
+        The numbers under the board are those place values.
+      </p>
+
+      <h2>Every legal move lowers a heap</h2>
+      <p>
+        The rules force your leftmost mark to remove a chip. That means the highest
+        bit you change always goes from 1 to 0, so the row’s number always gets
+        smaller. You may flip any bits to its right — adding or removing — and that
+        is exactly choosing any smaller non-negative value for that heap. The logic
+        test checks every legal mask on boards up to six columns: each one strictly
+        lowers its heap.
+      </p>
+
+      <h2>Balance the binary digits</h2>
+      <p>
+        XOR every row’s number together. That combined value is the
+        <a class="wiki-term" data-wiki="Nimber" href="https://en.wikipedia.org/wiki/Nimber" target="_blank" rel="noopener">Nim-sum</a>.
+        If it is already zero, every move leaves a non-zero sum and a careful opponent
+        can always answer. If it is not zero, there is a move that makes it zero —
+        change one row so that, bit by bit, every column has an even number of chips
+        across the whole board. The page’s tip is the same advice: after your move,
+        only matched digits should be left over.
+      </p>
+
+      <h2>Misère is almost the same</h2>
+      <p>
+        With Misère checked, the player who takes the last chip loses. The usual
+        Nim-sum plan still works until every heap has size at most one, with at most
+        one bigger heap left — then the applet’s endgame kicks in and leaves that
+        big heap as 0 or 1 so you are the one stuck with the last chip.
+      </p>
+
+      <p class="tip">
+        Turn on a small board (3 columns, 2 rows) and after every move check whether
+        each column has an even number of chips. When you can keep that true, the
+        computer is the one who faces the empty board.
+      </p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="plainim-core.js"></script>
+<script src="plainim.js"></script>
+</body>
+</html>

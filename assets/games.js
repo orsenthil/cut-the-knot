@@ -497,5 +497,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "plainim",
+      title: "Plainim",
+      blurb: "Chips on a grid are really Nim heaps written in binary. Can you leave every column balanced so the computer takes the last chip?",
+      tags: ["game-strategy", "place-value"],
+      level: 2,
+    },
   ],
 };
