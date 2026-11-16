@@ -69,6 +69,8 @@ check("pigeon-checkers: one jump on N=3", read["pigeon-checkers"]?.n === 3 && re
 check("plainim: mid-game, your move", read.plainim?.finished === false && read.plainim.turn === "you" && read.plainim.heaps.length === 3);
 check("pm: mid-game on N=5", read.pm?.finished === false && read.pm.n === 5 && read.pm.turn === "you" && read.pm.youShouldWinThisLength === true);
 check("proizvolov-game: finished N=3 sum is 9", read["proizvolov-game"]?.finished === true && read["proizvolov-game"].sum === 9 && read["proizvolov-game"].holds === true);
+check("raisin-game: mid-game after a cut", read["raisin-game"]?.finished === false && read["raisin-game"].heaps?.length === 2);
+
 
 /* ------------------------------------------------ positions with known answers */
 
@@ -303,6 +305,32 @@ const at = (slug, state) => describePosition(slug, state, 1);
     "proizvolov-game: left 6,4,1 and sum 9",
     JSON.stringify(p.left) === "[6,4,1]" && p.sum === 9 && p.holds === true,
   );
+}
+
+// Candy Squares: (6,5) is winning; (5,5) is losing.
+{
+  const win = at("raisin-game", {
+    max: 15,
+    random: false,
+    heaps: [6, 5],
+    turn: "you",
+    over: false,
+    winner: null,
+    wins: 0,
+    losses: 0,
+  });
+  check("raisin-game: 6 and 5 is winning", win.youCanWinFromHere === true && win.winningCuts.length > 0);
+  const lose = at("raisin-game", {
+    max: 15,
+    random: false,
+    heaps: [5, 5],
+    turn: "you",
+    over: false,
+    winner: null,
+    wins: 0,
+    losses: 0,
+  });
+  check("raisin-game: 5 and 5 is losing", lose.youCanWinFromHere === false && lose.winningCuts.length === 0);
 }
 
 // A game with no reader, and a position that makes no sense.

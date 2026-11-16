@@ -118,6 +118,15 @@ const GAMES = {
     await page.locator('.num[data-value="1"]').click();
     await page.locator('.num[data-value="4"]').click();
   },
+  "raisin-game": async (page) => {
+    await page.uncheck("#randomInput");
+    await page.selectOption("#maxInput", "8");
+    await page.locator(".cut:not(:disabled)").first().click();
+    await page.waitForFunction(() => {
+      const t = document.getElementById("status").textContent || "";
+      return /Your move|won/i.test(t) && !/Thinking/i.test(t);
+    });
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

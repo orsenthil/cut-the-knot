@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Candy Squares &mdash; coolmaths</title>
+<meta name="description" content="Eat one heap of candy and split the other. When both heaps are odd, can you still find a way to win?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/raisin-game/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Candy Squares">
+<meta property="og:description" content="Eat one heap of candy and split the other. When both heaps are odd, can you still find a way to win?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/raisin-game/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    padding: 0.75rem 0.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  .heaps {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    width: 100%;
+  }
+  .heap {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.5rem;
+    background: color-mix(in srgb, var(--ink) 3%, var(--stage));
+    min-width: 0;
+  }
+  .heap-label {
+    margin: 0 0 0.35rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .squares {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0;
+    max-width: 100%;
+  }
+  .sq {
+    width: 1.35rem;
+    height: 1.35rem;
+    margin: 0.1rem;
+    border-radius: 4px;
+    background: linear-gradient(145deg, #e8b45a, #c4842e);
+    border: 1px solid color-mix(in srgb, var(--ink) 30%, transparent);
+    box-sizing: border-box;
+    flex: 0 0 auto;
+  }
+  .cut {
+    min-width: 1.1rem;
+    min-height: 1.6rem;
+    padding: 0;
+    margin: 0 0.05rem;
+    border: 0;
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--accent) 18%, transparent);
+    cursor: pointer;
+    flex: 0 0 auto;
+  }
+  .cut:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--highlight) 55%, transparent);
+  }
+  .cut:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 1px;
+  }
+  .cut:disabled { opacity: 0.35; cursor: default; }
+  .cut.just {
+    background: color-mix(in srgb, var(--highlight) 70%, transparent);
+  }
+  #score {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+    text-align: center;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+</style>
+</head>
+<body data-game="raisin-game" data-kind="game">
+<main id="main">
+  <h1>Candy Squares</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#parity">Parity</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/RaisinGame.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Eat one heap and split the other into two. The player who cannot split loses.<br>
+    <strong>How to play:</strong> Press between two squares in a heap to cut it. The other heap vanishes.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="heaps" class="heaps"></div>
+    <p id="score"></p>
+  </div>
+
+  <div class="controls">
+    <label>Max heap size
+      <select id="maxInput" aria-label="Max heap size"></select>
+    </label>
+    <label><input id="randomInput" type="checkbox" checked> Random sizes</label>
+    <button id="startBtn" type="button">You start</button>
+    <button id="newBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Only the heap you cut matters — the other is eaten. The winning secret is
+        <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a>:
+        even versus odd lengths.
+      </p>
+
+      <h2>Even means you can win</h2>
+      <p>
+        If at least one heap has even length, you have a winning plan: cut that even
+        heap into two odd pieces. Your opponent then faces two odd heaps. The logic
+        test checks every pair of lengths up to 20: from any position with an even
+        heap there is a cut to both-odd, and from both-odd every cut leaves an even.
+      </p>
+
+      <h2>Odd plus odd always leaves an even</h2>
+      <p>
+        Splitting an odd number always produces one even piece and one odd piece
+        (odd = even + odd). So after you face two odds, whatever you do hands the
+        opponent an even heap — and they can answer back to two odds again.
+      </p>
+
+      <h2>The end is (1, 1)</h2>
+      <p>
+        Ones cannot be split. Perfect play from both-odd ends with you staring at
+        <code>(1, 1)</code>. The test checks that “both odd” matches the true
+        loser-to-move for every pair of heaps up to 12 under perfect replies.
+      </p>
+
+      <p class="tip">
+        Deal a position with an even heap and always cut it into two odds. Watch the
+        computer’s answers — they should keep leaving you an even heap until you can
+        finish.
+      </p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="raisin-game-core.js"></script>
+<script src="raisin-game.js"></script>
+</body>
+</html>

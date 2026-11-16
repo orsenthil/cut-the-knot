@@ -222,6 +222,7 @@ const CORE_GLOBALS = {
   "plainim/plainim-core.js": ["PlainimCore"],
   "pm/pm-core.js": ["PmCore"],
   "proizvolov-game/proizvolov-game-core.js": ["ProizvolovGameCore"],
+  "raisin-game/raisin-game-core.js": ["RaisinGameCore"],
 };
 
 const games = [];

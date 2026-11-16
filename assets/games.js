@@ -519,5 +519,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "raisin-game",
+      title: "Candy Squares",
+      blurb: "Eat one heap of candy and split the other. When both heaps are odd, can you still find a way to win?",
+      tags: ["game-strategy", "parity"],
+      level: 2,
+    },
   ],
 };
