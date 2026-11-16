@@ -511,5 +511,13 @@ window.COOLMATHS = {
       tags: ["parity", "game-strategy"],
       level: 1,
     },
+    {
+      slug: "proizvolov-game",
+      title: "Proizvolov's Identity",
+      blurb: "Split 1…2N into two sorted halves. Why do the absolute differences always add up to N²?",
+      tags: ["invariants", "counting"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

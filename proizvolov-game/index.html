@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Proizvolov's Identity &mdash; coolmaths</title>
+<meta name="description" content="Split 1…2N into two sorted halves. Why do the absolute differences always add up to N²?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/proizvolov-game/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Proizvolov's Identity">
+<meta property="og:description" content="Split 1…2N into two sorted halves. Why do the absolute differences always add up to N²?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/proizvolov-game/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    padding: 0.75rem 0.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    justify-content: center;
+    max-width: 100%;
+  }
+  .num {
+    min-width: 2rem;
+    min-height: 2rem;
+    padding: 0.2rem 0.3rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--stage);
+    color: var(--ink);
+    font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .num:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--highlight) 40%, var(--stage));
+  }
+  .num:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .num:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+  .columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  .col {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.45rem 0.5rem 0.55rem;
+    background: color-mix(in srgb, var(--ink) 3%, var(--stage));
+    min-height: 5rem;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .col-title {
+    margin: 0 0 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .col ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .col li {
+    font-variant-numeric: tabular-nums;
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding: 0.15rem 0.25rem;
+    border-radius: 4px;
+  }
+  .col li.low {
+    color: var(--good);
+  }
+  .col li.high {
+    color: var(--accent);
+  }
+  #sumBox {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.9rem;
+    overflow-x: auto;
+  }
+  #sumBox table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  #sumBox th, #sumBox td {
+    text-align: left;
+    padding: 0.2rem 0.3rem;
+    border-bottom: 1px solid var(--border);
+    overflow-wrap: anywhere;
+  }
+  #sumBox .total {
+    font-weight: 700;
+    margin-top: 0.4rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+</style>
+</head>
+<body data-game="proizvolov-game" data-kind="demo">
+<main id="main">
+  <h1>Proizvolov's Identity</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/ProizvolovGame.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Pick half of the numbers. Sorted one way and the other, their absolute differences always add up to the same total.<br>
+    <strong>How to play:</strong> Press N numbers from the pool. Watch the two columns fill, then read the sum.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="pool" class="pool" role="group" aria-label="Numbers to pick"></div>
+    <div class="columns">
+      <div class="col" aria-label="Selected, decreasing">
+        <p class="col-title">Selected ↓</p>
+        <ol id="leftCol"></ol>
+      </div>
+      <div class="col" aria-label="Remaining, increasing">
+        <p class="col-title">Remaining ↑</p>
+        <ol id="rightCol"></ol>
+      </div>
+    </div>
+    <div id="sumBox" hidden></div>
+  </div>
+
+  <div class="controls">
+    <label>N
+      <select id="nInput" aria-label="N"></select>
+    </label>
+    <label><input id="clueInput" type="checkbox" disabled> Clue</label>
+    <button id="backBtn" type="button" disabled>Take back last</button>
+    <button id="newBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        No matter which half of <code>{1, 2, …, 2N}</code> you pick, the same total appears.
+        That constant is <code>N²</code> — Proizvolov's identity.
+      </p>
+
+      <h2>One small, one large in every pair</h2>
+      <p>
+        Write the chosen numbers decreasing as <code>a₁ &gt; a₂ &gt; … &gt; aₙ</code> and the
+        rest increasing as <code>b₁ &lt; b₂ &lt; … &lt; bₙ</code>. For every index
+        <code>i</code>, one of <code>aᵢ, bᵢ</code> lies in <code>{1, …, N}</code> and the
+        other in <code>{N+1, …, 2N}</code>. If both were small, you would have more than
+        <code>N</code> distinct values below <code>N+1</code>; both large gives the same
+        contradiction above <code>N</code>. Turn Clue on after a finish to see each pair
+        rewritten with the larger first.
+      </p>
+
+      <h2>Why the sum is N²</h2>
+      <p>
+        Each absolute difference is then a large number minus a small one, so the whole
+        sum is
+        <code>[(N+1) + … + 2N] − [1 + … + N]</code>.
+        That simplifies to <code>N(2N+1) − N(N+1) = N²</code>. The logic test checks every
+        N-subset of <code>{1…2N}</code> for every <code>N</code> from 2 to 8: the sum is
+        always <code>N²</code>, and every pair splits low/high.
+      </p>
+
+      <h2>An invariant of the split</h2>
+      <p>
+        The page notes a wider fact: for any set of <code>2N</code> distinct numbers, if
+        you sort one N-subset up and the complement down (or the other way around), the
+        sum of absolute paired differences does not depend on which subset you chose.
+        Here the set is just the first <code>2N</code> naturals, so that invariant equals
+        <code>N²</code>.
+      </p>
+
+      <p class="tip">
+        Set <code>N = 4</code> and try two very different picks (the four largest, then
+        four mixed). Both finished sums should read 16.
+      </p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="proizvolov-game-core.js"></script>
+<script src="proizvolov-game.js"></script>
+</body>
+</html>

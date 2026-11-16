@@ -221,6 +221,7 @@ const CORE_GLOBALS = {
   "pigeon-checkers/pigeon-checkers-core.js": ["PigeonCheckersCore"],
   "plainim/plainim-core.js": ["PlainimCore"],
   "pm/pm-core.js": ["PmCore"],
+  "proizvolov-game/proizvolov-game-core.js": ["ProizvolovGameCore"],
 };
 
 const games = [];

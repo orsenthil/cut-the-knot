@@ -112,6 +112,12 @@ const GAMES = {
       return /Your move/i.test(t) && !/Thinking/i.test(t);
     });
   },
+  "proizvolov-game": async (page) => {
+    await page.selectOption("#nInput", "3");
+    await page.locator('.num[data-value="6"]').click();
+    await page.locator('.num[data-value="1"]').click();
+    await page.locator('.num[data-value="4"]').click();
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

@@ -68,6 +68,7 @@ check("pick-label: after opening a box", read["pick-label"]?.phase === "label" &
 check("pigeon-checkers: one jump on N=3", read["pigeon-checkers"]?.n === 3 && read["pigeon-checkers"].movesSoFar === 1 && read["pigeon-checkers"].invariant?.impossible === true);
 check("plainim: mid-game, your move", read.plainim?.finished === false && read.plainim.turn === "you" && read.plainim.heaps.length === 3);
 check("pm: mid-game on N=5", read.pm?.finished === false && read.pm.n === 5 && read.pm.turn === "you" && read.pm.youShouldWinThisLength === true);
+check("proizvolov-game: finished N=3 sum is 9", read["proizvolov-game"]?.finished === true && read["proizvolov-game"].sum === 9 && read["proizvolov-game"].holds === true);
 
 /* ------------------------------------------------ positions with known answers */
 
@@ -293,6 +294,15 @@ const at = (slug, state) => describePosition(slug, state, 1);
     pendingSign: 1,
   });
   check("pm: finished N=3 names the computer", three.finished === true && three.winner === "computer" && three.youShouldWinThisLength === false);
+}
+
+// Proizvolov: pick 6,1,4 from N=3 → sum 9.
+{
+  const p = at("proizvolov-game", { n: 3, picked: [6, 1, 4], clue: false, showAll: true });
+  check(
+    "proizvolov-game: left 6,4,1 and sum 9",
+    JSON.stringify(p.left) === "[6,4,1]" && p.sum === 9 && p.holds === true,
+  );
 }
 
 // A game with no reader, and a position that makes no sense.
