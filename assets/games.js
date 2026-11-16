@@ -555,5 +555,12 @@ window.COOLMATHS = {
       tags: ["game-strategy"],
       level: 2,
     },
+    {
+      slug: "scoring-misere-2",
+      title: "Scoring Misère: Two Heaps",
+      blurb: "Two heaps, take up to M chips, last move loses. When does the second player win?",
+      tags: ["game-strategy"],
+      level: 2,
+    },
   ],
 };

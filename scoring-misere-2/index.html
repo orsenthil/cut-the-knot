@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scoring Misère: Two Heaps &mdash; coolmaths</title>
+<meta name="description" content="Two heaps, take up to M chips, last move loses. When does the second player win?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/scoring-misere-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Scoring Misère: Two Heaps">
+<meta property="og:description" content="Two heaps, take up to M chips, last move loses. When does the second player win?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/scoring-misere-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; padding: 0.75rem 0.5rem; }
+  #heaps { display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-start; max-width: 100%; overflow-x: auto; }
+  .heap { display: flex; flex-wrap: nowrap; gap: 2px; min-height: 2rem; align-items: center; }
+  .square {
+    width: 1.6rem; height: 1.6rem; min-width: 1.6rem; padding: 0;
+    border: 1px solid var(--border-strong);
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--accent) 35%, var(--stage));
+    cursor: pointer;
+  }
+  .square:hover:not(:disabled) { background: var(--accent); }
+  .square:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .square:disabled { opacity: 0.45; cursor: default; }
+  .empty { color: var(--muted); font-size: 0.85rem; padding-left: 0.35rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+</style>
+</head>
+<body data-game="scoring-misere-2" data-kind="game">
+<main id="main">
+  <h1>Scoring Misère: Two Heaps</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/ScoringMisere2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> two heaps of chips. Take 1 up to Max move from one heap. Whoever takes the last chip loses.<br>
+    <strong>How to play:</strong> click the leftmost chip you want to remove — that chip and everything to its right come off.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="heaps"></div>
+  </div>
+
+  <div class="controls">
+    <label>Max heap size <select id="heapInput" aria-label="Maximum heap size for a new deal"></select></label>
+    <label>Max move <select id="moveInput" aria-label="Maximum chips per turn"></select></label>
+    <button id="backBtn" type="button" disabled>Back</button>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        With exactly two heaps, misère Scoring has a perfect strategy — Kalman and Keynes’s
+        “Double Take” in Math Horizons, extended on the page to any Max move
+        <code>M ≥ 2</code>.
+      </p>
+
+      <h2>When the second player wins</h2>
+      <p>
+        Write residues mod <code>M+1</code>. Second player wins with best play precisely when
+        the sizes are congruent to <code>(0,1)</code> or <code>(1,0)</code>, or both congruent
+        to the same <code>k</code> with <code>2 ≤ k ≤ M</code>. The logic test checks this
+        formula against an exhaustive search on every pair up to size 12 for
+        <code>M = 2…5</code>.
+      </p>
+
+      <h2>Why packages of M+1</h2>
+      <p>
+        After a take of <code>t</code> from a tall heap, the opponent can answer with
+        <code>M+1−t</code> from the same heap, removing a full package. So only the
+        residues matter — until the endgame where one heap is empty and the other has a
+        single chip, forcing the next player to take the last.
+      </p>
+
+      <h2>The computer</h2>
+      <p>
+        The applet’s <code>MakeMoveFromEqual</code> / <code>MakeMoveFromDifferent</code>
+        implement that pairing strategy (with a few random choices among equally good
+        replies). Play from a second-player-win opening and try to catch it out.
+      </p>
+
+      <p class="tip">With Max move 3, try heaps 4 and 1 — that is a second-player win.</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="scoring-misere-2-core.js"></script>
+<script src="scoring-misere-2.js"></script>
+</body>
+</html>

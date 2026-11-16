@@ -74,6 +74,7 @@ check("reverse-desert: after one jump", read["reverse-desert"]?.finished === fal
 check("row-column-swap: after one row swap", read["row-column-swap"]?.finished === true && read["row-column-swap"].n === 3 && read["row-column-swap"].movesSoFar === 1);
 check("rsolitaire: after one reverse jump on Cross", read.rsolitaire?.pegs === 2 && read.rsolitaire.movesSoFar === 1 && read.rsolitaire.won === false);
 check("scoring-misere: after a slide", read["scoring-misere"]?.finished === false && Array.isArray(read["scoring-misere"]?.positions));
+check("scoring-misere-2: after a take", read["scoring-misere-2"]?.finished === false && Array.isArray(read["scoring-misere-2"]?.heaps));
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -449,6 +450,19 @@ const at = (slug, state) => describePosition(slug, state, 1);
     losses: 1,
   });
   check("scoring-misere: finished loss", lost.finished === true && lost.winner === "computer");
+}
+
+// Scoring Misère 2: (4,1) is a second-player win for M=3.
+{
+  const p = at("scoring-misere-2", {
+    heaps: [4, 1],
+    maxMove: 3,
+    maxHeap: 15,
+    turn: "you",
+    over: false,
+    historyLength: 0,
+  });
+  check("scoring-misere-2: (4,1) second wins", p.finished === false && p.heaps[0] === 4);
 }
 
 // A game with no reader, and a position that makes no sense.

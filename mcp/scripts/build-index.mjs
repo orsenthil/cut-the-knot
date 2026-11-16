@@ -227,6 +227,7 @@ const CORE_GLOBALS = {
   "row-column-swap/row-column-swap-core.js": ["RowColumnSwapCore"],
   "rsolitaire/rsolitaire-core.js": ["RsolitaireCore"],
   "scoring-misere/scoring-misere-core.js": ["ScoringMisereCore"],
+  "scoring-misere-2/scoring-misere-2-core.js": ["ScoringMisere2Core"],
 };
 
 const games = [];

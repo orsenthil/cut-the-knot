@@ -154,6 +154,13 @@ const GAMES = {
     if (await target.count()) await target.click();
     await page.waitForTimeout(400);
   },
+  "scoring-misere-2": async (page) => {
+    await page.selectOption("#moveInput", "3");
+    await page.selectOption("#heapInput", "15");
+    await page.click("#resetBtn");
+    await page.locator(".square:not(:disabled)").first().click();
+    await page.waitForTimeout(400);
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */
