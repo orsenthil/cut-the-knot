@@ -482,5 +482,12 @@ window.COOLMATHS = {
       tags: ["game-strategy", "invariants"],
       level: 2,
     },
+    {
+      slug: "pick-label",
+      title: "Box Labels",
+      blurb: "Three boxes, three wrong labels, one peek at a ball. Can you put every label in the right place?",
+      tags: ["logic", "game-strategy"],
+      level: 2,
+    },
   ],
 };

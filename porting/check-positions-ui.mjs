@@ -66,6 +66,9 @@ const GAMES = {
     await page.click('.cell[data-i="3"][data-j="1"]');
     await page.click('.cell[data-i="3"][data-j="3"]');
   },
+  "pick-label": async (page) => {
+    await page.locator(".box").nth(0).click();
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

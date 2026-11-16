@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Box Labels &mdash; coolmaths</title>
+<meta name="description" content="Three boxes, three wrong labels, one peek at a ball. Can you put every label in the right place?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/pick-label/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Box Labels">
+<meta property="og:description" content="Three boxes, three wrong labels, one peek at a ball. Can you put every label in the right place?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/pick-label/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #boxes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 100%;
+  }
+  .box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    align-items: center;
+    padding: 0.65rem 0.35rem;
+    min-height: 8.5rem;
+    min-width: 0;
+    border: 2px solid var(--border-strong);
+    border-radius: 12px;
+    background: var(--page);
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  .box.selectable:hover, .box:focus-visible { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--highlight); }
+  .box.picked { border-color: var(--accent); }
+  .balls { display: flex; gap: 0.35rem; min-height: 1.6rem; align-items: center; }
+  .balls.pop { min-height: 2rem; }
+  .ball, .dot {
+    width: 1.1rem; height: 1.1rem; border-radius: 50%;
+    border: 1px solid var(--ink); display: inline-block;
+  }
+  .ball.white, .dot.white { background: #f5f5f4; }
+  .ball.black, .dot.black { background: #1c1917; }
+  .printed {
+    font-size: 0.8rem; color: var(--muted);
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.25rem;
+  }
+  .label { display: inline-flex; gap: 0.2rem; align-items: center; }
+  .label.empty { color: var(--muted); }
+  .guess-slot {
+    min-height: 2.4rem; width: 100%;
+    border: 1px dashed var(--border-strong);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; color: var(--muted);
+  }
+  .guess-slot.filled { border-style: solid; border-color: var(--accent); background: var(--stage); }
+  #chips { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 1rem; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.4rem 0.7rem; border-radius: 999px;
+    border: 2px solid var(--border-strong); background: var(--page); color: var(--ink);
+  }
+  .chip.holding { border-color: var(--accent); box-shadow: 0 0 0 3px var(--highlight); }
+  .chip.used { opacity: 0.45; }
+  #scoreLine { text-align: center; color: var(--muted); font-size: 0.9rem; margin-top: 0.5rem; }
+  @media (max-width: 420px) {
+    #boxes { gap: 0.45rem; }
+    .box { padding: 0.55rem 0.3rem; min-height: 8.5rem; }
+  }
+</style>
+</head>
+<body data-game="pick-label" data-kind="game">
+<main id="main">
+  <h1>Box Labels</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#game-strategy">Game Strategy</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/PickLabel.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> three boxes hold two white, two black, and one of each — but every label is wrong. Fix the labels after peeking at one ball.<br>
+    <strong>How to play:</strong> click a box to see one ball. Click a label chip, then a box to place it. When all three are placed, press Verify.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="boxes" role="group" aria-label="Three labelled boxes"></div>
+    <div id="chips" role="group" aria-label="Labels to place"></div>
+    <div id="scoreLine" aria-live="polite"></div>
+  </div>
+
+  <div class="controls">
+    <button id="verifyBtn" type="button" class="primary" aria-label="Verify the labels" disabled>Verify</button>
+    <button id="newBtn" type="button" aria-label="New puzzle">New</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Every label is wrong, so the assignment of labels to boxes is a
+        <a class="wiki-term" data-wiki="Derangement" href="https://en.wikipedia.org/wiki/Derangement" target="_blank" rel="noopener">derangement</a>
+        of the true contents. With three boxes there are only two derangements — both 3-cycles —
+        and the applet picks one of them at random after shuffling the contents.
+      </p>
+
+      <h2>Open the mixed label</h2>
+      <p>
+        The box labelled white-and-black cannot really be mixed (that label would be right).
+        So it holds two balls of one colour. The ball you see tells you which colour, and that
+        box gets the matching same-colour label. The logic test checks that this always works
+        for every deal the applet can make.
+      </p>
+
+      <h2>The rest follows</h2>
+      <p>
+        Of the two boxes left, one still wears the other same-colour label — which must also
+        be wrong — so that box is the mixed one. The last label goes on the last box. One peek
+        is enough; opening a same-colour box first may leave you unsure, just as the page says.
+      </p>
+
+      <h2>More boxes</h2>
+      <p>
+        With four boxes labelled WWW, WWB, WBB and BBB there are nine derangements, and two
+        peeks never suffice. Three peeks can work with luck; four always can. That growth is
+        why the three-box puzzle is the sweet spot.
+      </p>
+
+      <p class="tip">Always open the box labelled WB first — then place the three labels without guessing.</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="pick-label-core.js"></script>
+<script src="pick-label.js"></script>
+</body>
+</html>
