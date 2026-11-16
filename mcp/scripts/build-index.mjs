@@ -228,6 +228,7 @@ const CORE_GLOBALS = {
   "rsolitaire/rsolitaire-core.js": ["RsolitaireCore"],
   "scoring-misere/scoring-misere-core.js": ["ScoringMisereCore"],
   "scoring-misere-2/scoring-misere-2-core.js": ["ScoringMisere2Core"],
+  "sct/sct-core.js": ["SctCore"],
 };
 
 const games = [];

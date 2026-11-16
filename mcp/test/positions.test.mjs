@@ -75,6 +75,7 @@ check("row-column-swap: after one row swap", read["row-column-swap"]?.finished =
 check("rsolitaire: after one reverse jump on Cross", read.rsolitaire?.pegs === 2 && read.rsolitaire.movesSoFar === 1 && read.rsolitaire.won === false);
 check("scoring-misere: after a slide", read["scoring-misere"]?.finished === false && Array.isArray(read["scoring-misere"]?.positions));
 check("scoring-misere-2: after a take", read["scoring-misere-2"]?.finished === false && Array.isArray(read["scoring-misere-2"]?.heaps));
+check("sct: after a merge", read.sct?.counts && read.sct.movesSoFar >= 1);
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -463,6 +464,17 @@ const at = (slug, state) => describePosition(slug, state, 1);
     historyLength: 0,
   });
   check("scoring-misere-2: (4,1) second wins", p.finished === false && p.heaps[0] === 4);
+}
+
+// SCT: mid-game after one elimination merge.
+{
+  const p = at("sct", {
+    shapes: [3, 0, 1, 2],
+    eliminate: true,
+    over: false,
+    historyLength: 1,
+  });
+  check("sct: counts after merge", p.counts.s === 1 && p.counts.c === 1 && p.counts.t === 1 && p.finished === false);
 }
 
 // A game with no reader, and a position that makes no sense.

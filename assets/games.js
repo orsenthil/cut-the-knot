@@ -562,5 +562,12 @@ window.COOLMATHS = {
       tags: ["game-strategy"],
       level: 2,
     },
+    {
+      slug: "sct",
+      title: "Squares, Circles, and Triangles",
+      blurb: "Merge two different shapes into the third kind. Which single shape can you reach?",
+      tags: ["invariants", "logic"],
+      level: 2,
+    },
   ],
 };

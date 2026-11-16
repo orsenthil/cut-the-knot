@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Squares, Circles, and Triangles &mdash; coolmaths</title>
+<meta name="description" content="Merge two different shapes into the third kind. Which single shape can you reach?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/sct/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Squares, Circles, and Triangles">
+<meta property="og:description" content="Merge two different shapes into the third kind. Which single shape can you reach?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/sct/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; padding: 0.75rem 0.5rem; overflow-x: auto; }
+  #row {
+    display: flex; flex-wrap: wrap; gap: 0.45rem; justify-content: center;
+    min-height: 3.5rem; align-items: center;
+  }
+  .shape {
+    width: 2.6rem; height: 2.6rem; min-width: 2.6rem; padding: 0;
+    border: 2px solid var(--border-strong); border-radius: 8px;
+    background: var(--stage); cursor: pointer; position: relative;
+  }
+  .shape.square { background: color-mix(in srgb, var(--accent) 40%, var(--stage)); border-radius: 6px; }
+  .shape.circle { background: color-mix(in srgb, var(--good) 45%, var(--stage)); border-radius: 50%; }
+  .shape.triangle {
+    background: transparent; border: none;
+    clip-path: polygon(50% 8%, 92% 88%, 8% 88%);
+    background: color-mix(in srgb, #eab308 55%, var(--stage));
+  }
+  .shape.selected { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .shape:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .shape.empty { visibility: hidden; pointer-events: none; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+</style>
+</head>
+<body data-game="sct" data-kind="game">
+<main id="main">
+  <h1>Squares, Circles, and Triangles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/SimpleGames/sct.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> pick two different shapes. With elimination they become one of the third kind; without, both become the third kind. Aim for one shape (or all the same).<br>
+    <strong>How to play:</strong> tap two different shapes. Use Reset for a new row, Repeat for the same start.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="row" role="group" aria-label="Row of shapes"></div>
+  </div>
+
+  <div class="controls">
+    <label><input id="randomInput" type="checkbox" checked> Random</label>
+    <label><input id="elimInput" type="checkbox"> With Elimination</label>
+    <label># Shapes <select id="nInput" aria-label="Number of shapes"></select></label>
+    <button id="repeatBtn" type="button">Repeat</button>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Only the counts of each shape matter. Write them as a triple
+        <code>(s, c, t)</code>. Every move changes that triple in a tight way, and an
+        <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>
+        decides which endings are possible.
+      </p>
+
+      <h2>With elimination</h2>
+      <p>
+        A move turns two different shapes into one of the third kind, so the counts
+        change by <code>(−1,−1,+1)</code> in some order. Differences of any two counts
+        stay the same modulo 2, and each count flips parity every move. A lone
+        triangle therefore needs <code>s ≡ c (mod 2)</code> — the page’s necessary
+        condition — but that is not always enough (two squares already match a
+        parity filter for a lone circle, yet no move exists). The logic test checks
+        the mod-2 invariant on every small board and that every reachable finish
+        satisfies the full parity filter.
+      </p>
+
+      <h2>Without elimination</h2>
+      <p>
+        Both chosen shapes become the third kind: counts change by
+        <code>(−1,−1,+2)</code>. Differences are invariant modulo 3. A row of only
+        triangles needs <code>s ≡ c (mod 3)</code>. The same idea is the three-colour
+        chameleon puzzle (Kvant / Tournament of Towns).
+      </p>
+
+      <h2>Getting there</h2>
+      <p>
+        When the invariant allows an ending, a short search usually finds a path —
+        try a small Random deal with Elimination on, and watch which counts keep
+        the same parity.
+      </p>
+
+      <p class="tip">Start with 4 shapes and Elimination. Can you finish on a triangle?</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="sct-core.js"></script>
+<script src="sct.js"></script>
+</body>
+</html>

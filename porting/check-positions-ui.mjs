@@ -161,6 +161,13 @@ const GAMES = {
     await page.locator(".square:not(:disabled)").first().click();
     await page.waitForTimeout(400);
   },
+  "sct": async (page) => {
+    await page.check("#elimInput");
+    await page.selectOption("#nInput", "5");
+    await page.click("#resetBtn");
+    await page.locator(".shape:not(.empty)").nth(0).click();
+    await page.locator(".shape:not(.empty)").nth(1).click();
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */
