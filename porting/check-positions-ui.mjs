@@ -144,6 +144,16 @@ const GAMES = {
     await page.click('.cell[data-i="3"][data-j="3"]');
     await page.click('.cell[data-i="3"][data-j="1"]');
   },
+  "scoring-misere": async (page) => {
+    await page.selectOption("#countersInput", "1");
+    await page.selectOption("#stepInput", "3");
+    await page.selectOption("#lengthInput", "8");
+    await page.click("#resetBtn");
+    await page.locator(".chip:not(:disabled)").first().click();
+    const target = page.locator(".col.target").first();
+    if (await target.count()) await target.click();
+    await page.waitForTimeout(400);
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

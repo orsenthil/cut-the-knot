@@ -73,6 +73,7 @@ check("raisin-game: mid-game after a cut", read["raisin-game"]?.finished === fal
 check("reverse-desert: after one jump", read["reverse-desert"]?.finished === false && read["reverse-desert"].scouts === 2 && read["reverse-desert"].movesSoFar === 1);
 check("row-column-swap: after one row swap", read["row-column-swap"]?.finished === true && read["row-column-swap"].n === 3 && read["row-column-swap"].movesSoFar === 1);
 check("rsolitaire: after one reverse jump on Cross", read.rsolitaire?.pegs === 2 && read.rsolitaire.movesSoFar === 1 && read.rsolitaire.won === false);
+check("scoring-misere: after a slide", read["scoring-misere"]?.finished === false && Array.isArray(read["scoring-misere"]?.positions));
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -421,6 +422,33 @@ const at = (slug, state) => describePosition(slug, state, 1);
     won: false,
   });
   check("rsolitaire: fresh Cross has four opening jumps", start.pegs === 1 && start.legalJumps === 4);
+}
+
+// Scoring Misère: leaving a single counter at 1 is a forced loss if you must move.
+{
+  const mid = at("scoring-misere", {
+    positions: [4],
+    maxStep: 3,
+    length: 8,
+    turn: "you",
+    over: false,
+    historyLength: 1,
+    wins: 0,
+    losses: 0,
+  });
+  check("scoring-misere: mid-game has moves", mid.finished === false && mid.legalMoves > 0);
+  const lost = at("scoring-misere", {
+    positions: [0],
+    maxStep: 3,
+    length: 8,
+    turn: "you",
+    over: true,
+    winner: "computer",
+    historyLength: 2,
+    wins: 0,
+    losses: 1,
+  });
+  check("scoring-misere: finished loss", lost.finished === true && lost.winner === "computer");
 }
 
 // A game with no reader, and a position that makes no sense.

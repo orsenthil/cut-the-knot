@@ -226,6 +226,7 @@ const CORE_GLOBALS = {
   "reverse-desert/reverse-desert-core.js": ["ReverseDesertCore"],
   "row-column-swap/row-column-swap-core.js": ["RowColumnSwapCore"],
   "rsolitaire/rsolitaire-core.js": ["RsolitaireCore"],
+  "scoring-misere/scoring-misere-core.js": ["ScoringMisereCore"],
 };
 
 const games = [];

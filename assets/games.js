@@ -548,5 +548,12 @@ window.COOLMATHS = {
       tags: ["game-strategy", "invariants"],
       level: 2,
     },
+    {
+      slug: "scoring-misere",
+      title: "Scoring Misère",
+      blurb: "Slide counters left toward zero — but the player who moves the last one home loses. Can you beat the computer’s mixed strategy?",
+      tags: ["game-strategy"],
+      level: 2,
+    },
   ],
 };
