@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pigeon Checkers &mdash; coolmaths</title>
+<meta name="description" content="Jump counters to the right half of the board — without taking any off. Why does a colouring prove you never can?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/pigeon-checkers/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Pigeon Checkers">
+<meta property="og:description" content="Jump counters to the right half of the board — without taking any off. Why does a colouring prove you never can?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/pigeon-checkers/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #board-wrap {
+    width: 100%;
+    max-width: 28rem;
+    margin: 0 auto;
+    overflow-x: auto;
+  }
+  #board {
+    display: grid;
+    grid-template-columns: repeat(var(--cols, 6), minmax(1.6rem, 1fr));
+    grid-template-rows: repeat(var(--rows, 5), minmax(1.6rem, 1fr));
+    gap: 0.2rem;
+    min-width: min(100%, calc(var(--cols, 6) * 1.75rem));
+  }
+  .cell {
+    aspect-ratio: 1;
+    min-width: 0;
+    min-height: 0;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--stage);
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+  }
+  .cell.seam { border-left-color: var(--accent); }
+  .cell.hint { box-shadow: inset 0 0 0 3px var(--highlight); }
+  .cell.peg::before {
+    content: "";
+    position: absolute;
+    inset: 18%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #60a5fa, #1d4ed8 70%);
+  }
+  .cell.selected { border-color: var(--accent); box-shadow: 0 0 0 3px var(--highlight); }
+  .cell:focus-visible, .cell.focus:focus-visible {
+    outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--highlight);
+  }
+  #pegLine { text-align: center; color: var(--muted); font-size: 0.9rem; margin-top: 0.55rem; }
+  .controls label { color: var(--muted); display: inline-flex; align-items: center; gap: 0.35rem; }
+</style>
+</head>
+<body data-game="pigeon-checkers" data-kind="demo">
+<main id="main">
+  <h1>Pigeon Checkers</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#parity">Parity</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pigeonhole/PigeonCheckers.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> jump counters from the left half of the board to the right. Jumped counters stay — they are not taken off.<br>
+    <strong>How to play:</strong> click a counter, then an empty cell two steps away (straight or diagonal). Try the Hint shading if you get stuck.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="board-wrap">
+      <div id="board" role="grid" aria-label="Pigeon checkers board"></div>
+      <div id="pegLine" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label for="nInput">N</label>
+    <select id="nInput" aria-label="Board size N"></select>
+    <label><input id="hintChk" type="checkbox"> Hint</label>
+    <button id="undoBtn" type="button" aria-label="Take back last jump" disabled>Take Back</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the board">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        The board is N rows by N+1 columns. Counters start in a triangle on the left.
+        Every jump preserves the parity of a counter's coordinates — so some shaded cells
+        can never receive a counter that did not begin on that shade. That is a
+        <a class="wiki-term" data-wiki="Pigeonhole_principle" href="https://en.wikipedia.org/wiki/Pigeonhole_principle" target="_blank" rel="noopener">pigeonhole</a>
+        argument: too many counters want seats that the right half does not have.
+      </p>
+
+      <h2>What a jump keeps fixed</h2>
+      <p>
+        A legal jump moves by (±2, 0), (0, ±2) or (±2, ±2). In every case both
+        <code>x mod 2</code> and <code>y mod 2</code> stay the same, so a counter on an
+        even–even cell (the Hint's filled dots) never leaves that lattice. The jumped
+        counter is not removed — only the jumper moves.
+      </p>
+
+      <h2>Odd N and even N</h2>
+      <p>
+        For every N from 2 to 20, the starting triangle puts a different number of
+        even–even counters on the left half than the right half can hold. The logic test
+        checks that mismatch, and exhaustively searches N = 2 and N = 3 to confirm the
+        right half is unreachable. The page's odd-N diagram and even-N checkerboard
+        colouring are two ways of seeing the same obstruction.
+      </p>
+
+      <h2>Removing a few does not help</h2>
+      <p>
+        The page notes that taking one or two counters off the left at the start still
+        leaves the colouring unbalanced. The invariant cares about how many counters sit
+        on each shade, not only the total count.
+      </p>
+
+      <p class="tip">Turn on Hint and watch which counters can never cross the midline.</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="pigeon-checkers-core.js"></script>
+<script src="pigeon-checkers.js"></script>
+</body>
+</html>

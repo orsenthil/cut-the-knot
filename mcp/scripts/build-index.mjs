@@ -218,6 +218,7 @@ const CORE_GLOBALS = {
   "parrondo/parrondo-core.js": ["ParrondoCore"],
   "pegsolitaire/pegsolitaire-core.js": ["PegsolitaireCore"],
   "pick-label/pick-label-core.js": ["PickLabelCore"],
+  "pigeon-checkers/pigeon-checkers-core.js": ["PigeonCheckersCore"],
 };
 
 const games = [];

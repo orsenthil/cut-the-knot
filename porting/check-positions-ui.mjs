@@ -69,6 +69,11 @@ const GAMES = {
   "pick-label": async (page) => {
     await page.locator(".box").nth(0).click();
   },
+  "pigeon-checkers": async (page) => {
+    await page.selectOption("#nInput", "3");
+    await page.click('.cell[data-x="0"][data-y="1"]');
+    await page.click('.cell[data-x="2"][data-y="1"]');
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

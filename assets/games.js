@@ -489,5 +489,13 @@ window.COOLMATHS = {
       tags: ["logic", "game-strategy"],
       level: 2,
     },
+    {
+      slug: "pigeon-checkers",
+      title: "Pigeon Checkers",
+      blurb: "Jump counters to the right half of the board — without taking any off. Why does a colouring prove you never can?",
+      tags: ["invariants", "parity"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
