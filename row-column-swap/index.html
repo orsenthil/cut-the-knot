@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Row &amp; Column Swaps &mdash; coolmaths</title>
+<meta name="description" content="Swap rows and columns of 1…9. Why can you never reach the target pattern?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/row-column-swap/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Row &amp; Column Swaps">
+<meta property="og:description" content="Swap rows and columns of 1…9. Why can you never reach the target pattern?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/row-column-swap/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    padding: 0.75rem 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .board-wrap {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: 1fr auto;
+    gap: 0.35rem;
+    align-items: center;
+  }
+  .row-arrows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .col-arrows {
+    display: flex;
+    flex-direction: row;
+    gap: 0.25rem;
+    grid-column: 2;
+  }
+  .arrow {
+    min-width: 2.4rem;
+    min-height: 2.4rem;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--stage);
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  .arrow.selected {
+    background: color-mix(in srgb, var(--accent) 25%, var(--stage));
+    outline: 2px solid var(--accent);
+  }
+  .arrow:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  #grid {
+    display: grid;
+    gap: 2px;
+    background: var(--border);
+    padding: 2px;
+    border-radius: 8px;
+  }
+  .cell {
+    width: 2.4rem;
+    height: 2.4rem;
+    display: grid;
+    place-items: center;
+    background: var(--stage);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .target-wrap h2, .board-label {
+    margin: 0 0 0.35rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .target-wrap .cell { opacity: 0.95; }
+  .target-wrap .mismatch {
+    background: color-mix(in srgb, var(--bad) 18%, var(--stage));
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+</style>
+</head>
+<body data-game="row-column-swap" data-kind="demo">
+<main id="main">
+  <h1>Row &amp; Column Swaps</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/RowColumnSwap.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Swap rows and columns of the grid. For N=3, try to match the target — it cannot be done.<br>
+    <strong>How to play:</strong> Press a row or column arrow, then another arrow of the same kind to swap them.
+  </div>
+
+  <div id="stage" class="stage">
+    <div>
+      <p class="board-label">Your grid</p>
+      <div class="board-wrap">
+        <div id="rowArrows" class="row-arrows"></div>
+        <div id="grid" role="grid" aria-label="Number grid"></div>
+        <div id="colArrows" class="col-arrows"></div>
+      </div>
+    </div>
+    <div id="targetWrap" class="target-wrap" hidden>
+      <p class="board-label">Target (unreachable)</p>
+      <div id="targetGrid" role="grid" aria-label="Target grid"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label>N <select id="nInput" aria-label="Grid size N"></select></label>
+    <button id="backBtn" type="button" disabled>Take back</button>
+    <button id="newBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Swapping rows and columns feels like it reshuffles everything, yet a simple
+        <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>
+        shows why some patterns can never appear.
+      </p>
+
+      <h2>Columns are bags</h2>
+      <p>
+        Start with numbers <code>1 … N²</code> written in order across each row.
+        For <code>N = 3</code> the columns are the sets
+        <code>{1,4,7}</code>, <code>{2,5,8}</code>, <code>{3,6,9}</code>. A column swap
+        only moves whole bags around. A row swap reorders numbers inside every bag
+        but never changes which numbers share a column.
+      </p>
+
+      <h2>The target breaks the bags</h2>
+      <p>
+        The olympiad target flips the middle row to <code>6 5 4</code>, so the
+        columns become <code>{1,6,7}</code>, <code>{2,5,8}</code>, <code>{3,4,9}</code>
+        — not a rearrangement of the three bags. The logic test checks that every
+        sequence of swaps keeps the column sets, that the target’s sets differ, and
+        that a full search of the <code>(3!)² = 36</code> reachable grids never hits
+        the target. (The original applet’s Reset filled the grid column-major; this
+        port follows the page’s olympiad left pattern instead.)
+      </p>
+
+      <h2>Rows tell the same story</h2>
+      <p>
+        The same argument works with rows as bags. Either view is enough: if a
+        pattern’s row sets or column sets are wrong, no amount of swapping will
+        produce it.
+      </p>
+
+      <p class="tip">
+        With N=3, swap freely and watch which numbers stay together in a column.
+        Then look at the target’s middle column — a stranger has joined the bag.
+      </p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="row-column-swap-core.js"></script>
+<script src="row-column-swap.js"></script>
+</body>
+</html>

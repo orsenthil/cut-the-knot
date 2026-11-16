@@ -533,5 +533,13 @@ window.COOLMATHS = {
       tags: ["algorithms", "sequences"],
       level: 3,
     },
+    {
+      slug: "row-column-swap",
+      title: "Row & Column Swaps",
+      blurb: "Swap rows and columns of 1…9. Why can you never reach the target pattern?",
+      tags: ["invariants", "logic"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

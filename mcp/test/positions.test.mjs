@@ -71,6 +71,7 @@ check("pm: mid-game on N=5", read.pm?.finished === false && read.pm.n === 5 && r
 check("proizvolov-game: finished N=3 sum is 9", read["proizvolov-game"]?.finished === true && read["proizvolov-game"].sum === 9 && read["proizvolov-game"].holds === true);
 check("raisin-game: mid-game after a cut", read["raisin-game"]?.finished === false && read["raisin-game"].heaps?.length === 2);
 check("reverse-desert: after one jump", read["reverse-desert"]?.finished === false && read["reverse-desert"].scouts === 2 && read["reverse-desert"].movesSoFar === 1);
+check("row-column-swap: after one row swap", read["row-column-swap"]?.finished === true && read["row-column-swap"].n === 3 && read["row-column-swap"].movesSoFar === 1);
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -357,6 +358,32 @@ const at = (slug, state) => describePosition(slug, state, 1);
     won: true,
   });
   check("reverse-desert: finished win", p.finished === true && p.desertClear === true && p.scouts === 2);
+}
+
+// Row & Column Swaps: olympiad target stays unmatched after a swap.
+{
+  const p = at("row-column-swap", {
+    n: 3,
+    grid: [
+      [3, 4, 5],
+      [0, 1, 2],
+      [6, 7, 8],
+    ],
+    historyLength: 1,
+    explored: true,
+  });
+  check("row-column-swap: explored after a swap", p.finished === true && p.matchesTarget === false && p.hasOlympiadTarget === true);
+  const start = at("row-column-swap", {
+    n: 3,
+    grid: [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+    ],
+    historyLength: 0,
+    explored: false,
+  });
+  check("row-column-swap: fresh start not finished", start.finished === false && start.matchesTarget === false);
 }
 
 // A game with no reader, and a position that makes no sense.

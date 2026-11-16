@@ -224,6 +224,7 @@ const CORE_GLOBALS = {
   "proizvolov-game/proizvolov-game-core.js": ["ProizvolovGameCore"],
   "raisin-game/raisin-game-core.js": ["RaisinGameCore"],
   "reverse-desert/reverse-desert-core.js": ["ReverseDesertCore"],
+  "row-column-swap/row-column-swap-core.js": ["RowColumnSwapCore"],
 };
 
 const games = [];

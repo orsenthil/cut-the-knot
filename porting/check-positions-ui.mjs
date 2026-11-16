@@ -134,6 +134,11 @@ const GAMES = {
     await page.locator('.cell[data-x="2"][data-y="0"]').click();
     await page.locator('.cell[data-x="2"][data-y="2"]').click();
   },
+  "row-column-swap": async (page) => {
+    await page.selectOption("#nInput", "3");
+    await page.locator("#rowArrows .arrow").nth(0).click();
+    await page.locator("#rowArrows .arrow").nth(1).click();
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */
