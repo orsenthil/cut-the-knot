@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Peg Solitaire &mdash; coolmaths</title>
+<meta name="description" content="Jump pegs over each other on the English board. Can you finish the classic start with a single peg in the centre?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/pegsolitaire/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Peg Solitaire">
+<meta property="og:description" content="Jump pegs over each other on the English board. Can you finish the classic start with a single peg in the centre?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/pegsolitaire/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #board-wrap { max-width: min(100%, 22rem); margin: 0 auto; }
+  #board {
+    display: grid;
+    grid-template-columns: repeat(var(--n, 7), 1fr);
+    gap: 0.25rem;
+    aspect-ratio: 1;
+  }
+  .cell {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 2px solid var(--border-strong);
+    background: var(--page);
+    padding: 0;
+    cursor: pointer;
+    min-width: 0;
+    min-height: 0;
+  }
+  .cell.out {
+    visibility: hidden;
+    pointer-events: none;
+    border: none;
+    background: transparent;
+  }
+  .cell.hole { background: var(--stage); }
+  .cell.peg::before {
+    content: "";
+    position: absolute;
+    inset: 18%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #f87171, #b91c1c 70%);
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,.25);
+  }
+  .cell.selected {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--highlight);
+  }
+  .cell.focus:focus-visible, .cell:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--highlight);
+    border-color: var(--accent);
+  }
+  .cell.peg:hover:not(:disabled) { border-color: var(--accent); }
+  #pegLine { text-align: center; color: var(--muted); font-size: 0.92rem; margin-top: 0.6rem; }
+  #designWrap { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; align-items: center; }
+  #designWrap[hidden] { display: none; }
+  #designWrap label { display: inline-flex; gap: 0.4rem; align-items: center; font-size: 0.95rem; }
+  .controls label[for="puzzleSelect"] { color: var(--muted); }
+</style>
+</head>
+<body data-game="pegsolitaire" data-kind="game">
+<main id="main">
+  <h1>Peg Solitaire</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/proofs/pegsolitaire.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> jump a peg over a neighbour into an empty hole; the jumped peg comes off. Clear the board down to one peg in the middle (or reverse the start).<br>
+    <strong>How to play:</strong> click a peg, then the hole it should land in. Use Undo to take back a jump.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="board-wrap">
+      <div id="board" role="grid" aria-label="Peg solitaire board"></div>
+      <div id="pegLine" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label for="puzzleSelect">Puzzle</label>
+    <select id="puzzleSelect" aria-label="Choose a starting puzzle"></select>
+    <button id="undoBtn" type="button" aria-label="Undo last jump" disabled>Undo</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the puzzle">Reset</button>
+    <div id="designWrap" hidden>
+      <label><input id="designChk" type="checkbox"> Set position</label>
+      <label><input id="centerChk" type="checkbox" checked> Center</label>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        <a class="wiki-term" data-wiki="Peg_solitaire" href="https://en.wikipedia.org/wiki/Peg_solitaire" target="_blank" rel="noopener">Peg solitaire</a>
+        on the English board looks like a long search, but whole runs of jumps can be
+        packed into short recipes. Winning Ways sells them as packages and purges.
+      </p>
+
+      <h2>Jumps and the English board</h2>
+      <p>
+        The board is a 7×7 square with the four corner 2×2 blocks cut away — thirty-three
+        holes. A move is an orthogonal jump of length two over a peg into an empty hole;
+        the jumped peg is removed. Each jump lowers the peg count by one, so the usual
+        central start (thirty-two pegs, empty centre) needs thirty-one jumps to finish
+        with a single peg. The logic test rebuilds every applet layout from the bytecode
+        and checks that Cross, the smallest centre-goal puzzle, really is solvable.
+      </p>
+
+      <h2>Packages and purges</h2>
+      <p>
+        Berlekamp, Conway and Guy's <em>3-purge</em> clears three pegs in a line when a
+        catalyst peg and hole sit beside the head: one jump borrows the catalyst, a second
+        clears the line, and a third restores the catalyst. Larger purges (6-purge, L-purge)
+        are built from the same idea. The page's packaged solution of the central puzzle is
+        two 3-purges, three 6-purges, an L-purge, and a final jump — each with its catalyst
+        in place.
+      </p>
+
+      <h2>Centre or reverse</h2>
+      <p>
+        Most of the applet's layouts ask for a single peg at the centre. Skewed and Double
+        goal instead use the applet's reverse test: every hole that began with a peg must
+        be empty. (The bytecode does not also demand that former holes become pegs.) Design
+        your own lets you place pegs and pick the Centre goal with the checkbox, as in the
+        applet.
+      </p>
+
+      <p class="tip">Try Cross first — six pegs, and the same jump rule as the full board.</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="pegsolitaire-core.js"></script>
+<script src="pegsolitaire.js"></script>
+</body>
+</html>

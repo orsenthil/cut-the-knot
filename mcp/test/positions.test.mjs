@@ -63,6 +63,7 @@ check("no-silver-dollar: three counters, your move", read["no-silver-dollar"]?.p
 check("one-pile: a take each, your move", read["one-pile"]?.takesSoFar.length === 2 && read["one-pile"].turn === "you" && read["one-pile"].finished === false);
 check("odd-scoring: 11 steps, a move each, your move", read["odd-scoring"]?.bandSteps === 11 && read["odd-scoring"].turn === "you" && read["odd-scoring"].yourSteps === 2 && read["odd-scoring"].finished === false);
 check("parrondo: a finished run names a best series", read.parrondo?.ready === true && typeof read.parrondo.best?.name === "string");
+check("pegsolitaire: one jump from central", read.pegsolitaire?.pegs === 31 && read.pegsolitaire.movesSoFar === 1 && read.pegsolitaire.won === false);
 
 /* ------------------------------------------------ positions with known answers */
 
@@ -176,6 +177,37 @@ const at = (slug, state) => describePosition(slug, state, 1);
     ],
   });
   check("parrondo: ranks ABBAB first from the saved finals", ran.best?.name === "ABBAB" && ran.ranked[0].average === 4);
+
+  // Central solitaire after (3,1)→(3,3): EMPTY is 2, not 0 (0 is outside).
+  const peg = at("pegsolitaire", {
+    gameNo: 6,
+    name: "Central solitaire",
+    centerGoal: true,
+    board: [
+      [0, 0, 1, 1, 1, 0, 0],
+      [0, 0, 1, 1, 1, 0, 0],
+      [1, 1, 1, 1, 1, 1, 1],
+      [1, 2, 2, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1],
+      [0, 0, 1, 1, 1, 0, 0],
+      [0, 0, 1, 1, 1, 0, 0],
+    ],
+    starting: [
+      [0, 0, 1, 1, 1, 0, 0],
+      [0, 0, 1, 1, 1, 0, 0],
+      [1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 2, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1],
+      [0, 0, 1, 1, 1, 0, 0],
+      [0, 0, 1, 1, 1, 0, 0],
+    ],
+    selected: null,
+    historyLength: 1,
+    designing: false,
+    won: false,
+    pegs: 31,
+  });
+  check("pegsolitaire: after one central jump, 31 pegs and not won", peg.pegs === 31 && peg.movesSoFar === 1 && peg.won === false && peg.legalJumps > 0);
 }
 
 // A game with no reader, and a position that makes no sense.

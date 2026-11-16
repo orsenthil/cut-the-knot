@@ -475,5 +475,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "pegsolitaire",
+      title: "Peg Solitaire",
+      blurb: "Jump pegs over each other on the English board. Can you finish the classic start with a single peg in the centre?",
+      tags: ["game-strategy", "invariants"],
+      level: 2,
+    },
   ],
 };
