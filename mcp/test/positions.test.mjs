@@ -78,6 +78,7 @@ check("scoring-misere-2: after a take", read["scoring-misere-2"]?.finished === f
 check("sct: after a merge", read.sct?.counts && read.sct.movesSoFar >= 1);
 check("sticky-problem: after a break", read["sticky-problem"]?.finished === false && Array.isArray(read["sticky-problem"]?.sticks));
 check("soup-fish: after a pick", read["soup-fish"]?.finished === false && typeof read["soup-fish"]?.you === "number");
+check("table-to-zero-game: after a subtract", read["table-to-zero-game"]?.finished === false && Array.isArray(read["table-to-zero-game"]?.grid));
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -504,6 +505,18 @@ const at = (slug, state) => describePosition(slug, state, 1);
     perm: [0, 1, 2, 3, 4, 5, 6, 7, 8],
   });
   check("soup-fish: S-line win", p.finished === true && p.winLetter === "S" && p.result === "you");
+}
+
+// Make It All Zeros: mid-game after one column subtract.
+{
+  const p = at("table-to-zero-game", {
+    grid: [[0, 2]],
+    nx: 2,
+    ny: 1,
+    over: false,
+    historyLength: 1,
+  });
+  check("table-to-zero-game: mid 1×2", p.finished === false && p.grid[0][0] === 0);
 }
 
 // A game with no reader, and a position that makes no sense.

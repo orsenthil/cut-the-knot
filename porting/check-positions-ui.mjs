@@ -179,6 +179,12 @@ const GAMES = {
     await page.click("#newBtn");
     await page.locator(".card:not(:disabled)").first().click();
   },
+  "table-to-zero-game": async (page) => {
+    await page.selectOption("#nxInput", "2");
+    await page.selectOption("#nyInput", "1");
+    await page.click("#resetBtn");
+    await page.locator(".col-actions .axis").first().click();
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

@@ -583,5 +583,12 @@ window.COOLMATHS = {
       tags: ["game-strategy"],
       level: 2,
     },
+    {
+      slug: "table-to-zero-game",
+      title: "Make It All Zeros",
+      blurb: "Double whole rows or chip away at columns until every number is zero. Can you always finish?",
+      tags: ["algorithms", "place-value"],
+      level: 2,
+    },
   ],
 };

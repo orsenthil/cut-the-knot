@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Make It All Zeros &mdash; coolmaths</title>
+<meta name="description" content="Double whole rows or chip away at columns until every number is zero. Can you always finish?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/table-to-zero-game/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Make It All Zeros">
+<meta property="og:description" content="Double whole rows or chip away at columns until every number is zero. Can you always finish?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/table-to-zero-game/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 1rem 0.5rem;
+    overflow-x: auto;
+  }
+  #grid {
+    display: grid;
+    grid-template-columns: auto repeat(var(--nx, 5), minmax(2.4rem, 1fr));
+    gap: 0.35rem;
+    align-items: stretch;
+    justify-items: stretch;
+    min-width: min(100%, 20rem);
+  }
+  .col-actions {
+    display: grid;
+    grid-template-columns: repeat(var(--nx, 5), minmax(2.4rem, 1fr));
+    gap: 0.35rem;
+  }
+  .cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.4rem;
+    border-radius: 8px;
+    border: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
+    background: var(--stage);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+  .axis {
+    min-height: 2.2rem;
+    padding: 0.2rem;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    border: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .axis:hover:not(:disabled) { outline: 2px solid var(--highlight); }
+  .axis:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .axis:disabled { opacity: 0.5; cursor: default; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+</style>
+</head>
+<body data-game="table-to-zero-game" data-kind="game">
+<main id="main">
+  <h1>Make It All Zeros</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#place-value">Place Value</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algorithms/TableToZeroGame.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Clear the table — every number must become zero.<br>
+    <strong>How to play:</strong> Press ×2 beside a row to double it, or −1 above/below a column to subtract (Speed up subtracts down to a column minimum of 1). Take back undoes.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="grid" aria-label="Number table with row and column moves"></div>
+  </div>
+
+  <div class="controls">
+    <label>Columns
+      <select id="nxInput" aria-label="Number of columns">
+        <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+        <option value="4">4</option><option value="5" selected>5</option>
+        <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+        <option value="9">9</option><option value="10">10</option>
+      </select>
+    </label>
+    <label>Rows
+      <select id="nyInput" aria-label="Number of rows">
+        <option value="1">1</option><option value="2">2</option><option value="3" selected>3</option>
+        <option value="4">4</option><option value="5">5</option>
+        <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+        <option value="9">9</option><option value="10">10</option>
+      </select>
+    </label>
+    <label><input type="checkbox" id="speedUp"> Speed up</label>
+    <button id="undoBtn" type="button">Take back</button>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Engel asks you to prove that every table of positive integers can be
+        cleared with these two moves. Doubling looks like it makes things worse —
+        yet it is essential.
+      </p>
+
+      <h2>Why doubling helps</h2>
+      <p>
+        Subtracting from a column decreases every entry there by the same amount.
+        If one cell in the column is already smaller than another, you cannot clear
+        both by subtracts alone. Doubling a row scales that row’s contribution so
+        the column differences can line up. In the language of
+        <a class="wiki-term" data-wiki="Binary_number" href="https://en.wikipedia.org/wiki/Binary_number" target="_blank" rel="noopener">binary place value</a>,
+        row doubles correspond to shifting bits; column subtracts peel off units.
+      </p>
+
+      <h2>Always possible</h2>
+      <p>
+        The theorem (Engel, <em>Problem-Solving Strategies</em>) says a finite
+        sequence always exists. The applet’s Speed up only compresses many
+        identical column subtracts into one click when the column’s minimum is
+        greater than 1. Numbers may go negative if you overshoot — the win is
+        still exactly the all-zero table. Tiny boards in the logic test clear by
+        hand; the general proof is the page’s claim.
+      </p>
+
+      <p class="tip">
+        Try a 1×2 table with Speed up off. Clear it, then turn Speed up on for a
+        taller column and watch several −1s become one click.
+      </p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="table-to-zero-game-core.js"></script>
+<script src="table-to-zero-game.js"></script>
+</body>
+</html>
