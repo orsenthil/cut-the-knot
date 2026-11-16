@@ -15,7 +15,9 @@ export function actions(): GameActions {
         let state = P.start({});
         const wb = state.labels.indexOf(P.WB);
         state = P.pickBox(state, wb);
-        const mustBe = state.revealed.color === 0 ? P.WW : P.BB;
+        const revealed = state.revealed;
+        if (!revealed) throw new Error("expected a revealed ball after opening a box");
+        const mustBe = revealed.color === 0 ? P.WW : P.BB;
         const otherSame = mustBe === P.WW ? P.BB : P.WW;
         const boxes = [0, 1, 2].filter((i) => i !== wb);
         const labelledOther = boxes.find((i) => state.labels[i] === otherSame)!;
@@ -26,7 +28,7 @@ export function actions(): GameActions {
         const verified = P.verify(state);
         return {
           openedBox: wb,
-          revealed: state.revealed.color === 0 ? "white" : "black",
+          revealed: revealed.color === 0 ? "white" : "black",
           guesses: verified.guesses.map((g: number) => P.NAMES[g]),
           won: verified.won,
         };
