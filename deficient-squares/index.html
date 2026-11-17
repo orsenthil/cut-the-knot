@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deficient Squares &mdash; coolmaths</title>
+<meta name="description" content="One square is missing from a square board of any size. When can the rest be covered with L-shaped trominoes — and why do some boards refuse, however hard you try?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/deficient-squares/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Deficient Squares">
+<meta property="og:description" content="One square is missing from a square board of any size. When can the rest be covered with L-shaped trominoes — and why do some boards refuse, however hard you try?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/deficient-squares/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 26rem;
+    height: auto;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    touch-action: manipulation;
+  }
+  #board:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  .canvas { fill: var(--board-a); }
+  .grid line { stroke: var(--border-strong); stroke-width: 0.03; opacity: 0.7; }
+  .dots circle { fill: var(--muted); opacity: 0.55; }
+
+  .pieces.wire polyline {
+    fill: none;
+    stroke-width: 0.36;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .pieces.wire .c0 { stroke: #4e79a7; }
+  .pieces.wire .c1 { stroke: #f28e2b; }
+  .pieces.wire .c2 { stroke: #59a14f; }
+  .pieces.wire .c3 { stroke: #b07aa1; }
+
+  .blocks .block { stroke: var(--ink); stroke-width: 0.07; stroke-linejoin: round; }
+  .blocks .c0 { fill: #4e79a7; }
+  .blocks .c1 { fill: #f28e2b; }
+  .blocks .c2 { fill: #59a14f; }
+  .blocks .c3 { fill: #b07aa1; }
+
+  .hole { fill: var(--ink); }
+  .pending-cell { fill: var(--accent); opacity: 0.3; }
+  .pending-line { stroke: var(--accent); stroke-width: 0.16; stroke-linecap: round; }
+  .cursor { fill: none; stroke: var(--accent); stroke-width: 0.16; opacity: 0; }
+  #board:focus-visible .cursor { opacity: 1; }
+  .hit { fill: transparent; cursor: pointer; }
+
+  #line {
+    margin: 0.6rem 0 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .seg {
+    font-size: 0.85rem;
+    padding: 6px 12px;
+  }
+  .seg[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-text);
+  }
+  .seg[aria-pressed="true"]:hover { background: var(--accent-hover); }
+  .seg-group { display: inline-flex; gap: 0.35rem; }
+  .controls { flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+  .controls label { font-size: 0.9rem; color: var(--muted); }
+  #status { min-height: 2.6em; }
+</style>
+</head>
+<body data-game="deficient-squares" data-kind="game">
+<main id="main">
+  <h1>Deficient Squares</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#divisibility">Divisibility</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#induction">Induction</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/TrominoPuzzleN.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> One square of the board is missing. Cover every other square with L-shaped pieces of three squares.<br>
+    <strong>How to play:</strong> Pick any size from 2 × 2 to 24 × 24, then click three free squares in an L, each next to the one before. Use Remove last when you trap yourself.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 5 5" tabindex="0" role="application"
+         aria-label="Square board with one missing square. Use arrow keys to move the cursor and Enter to click the square under it."></svg>
+  </div>
+  <p id="line" aria-live="polite"></p>
+
+  <div class="controls">
+    <label for="nInput">Size</label>
+    <select id="nInput" aria-label="Board size, from 2 by 2 up to 24 by 24"></select>
+    <span class="seg-group" role="group" aria-label="Mode">
+      <button id="playBtn" class="seg" type="button" data-mode="play" aria-pressed="true">Play</button>
+      <button id="blankBtn" class="seg" type="button" data-mode="blank" aria-pressed="false">Set blank</button>
+    </span>
+    <span class="seg-group" role="group" aria-label="Piece style">
+      <button id="wireBtn" class="seg" type="button" data-style="wire" aria-pressed="true">Wire</button>
+      <button id="blocksBtn" class="seg" type="button" data-style="blocks" aria-pressed="false">Blocks</button>
+    </span>
+    <button id="undoBtn" type="button" disabled>Remove last</button>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Golomb's theorem covers boards of side 2, 4, 8, 16 and so on. This page asks
+        the same question for a square board of <em>any</em> side, from 2 to 24, with one
+        square removed. Some sizes and some gaps cannot be covered at all, and this page
+        lets you see why. A board with one square missing is called
+        <em>deficient</em>; the pieces are
+        <a class="wiki-term" data-wiki="Tromino" href="https://en.wikipedia.org/wiki/Tromino" target="_blank" rel="noopener">L-trominoes</a>.</p>
+
+      <h2>Three squares at a time</h2>
+      <p>Every L covers exactly 3 squares, so a tiling can only exist when the number of
+        squares left is a multiple of 3. An <code>n × n</code> board has <code>n²</code>
+        squares, so the gap leaves <code>n² − 1</code>. When <code>n</code> is a multiple
+        of 3, <code>n²</code> is too, and <code>n² − 1</code> is one less: it leaves
+        remainder 2, never 0. Sizes 3, 6, 9, 12, 15, 18, 21 and 24 are therefore
+        impossible, whatever square is missing. When <code>n</code> is not a multiple of
+        3, <code>n² − 1</code> is a multiple of 3, and the count alone no longer
+        forbids a tiling. This is
+        <a class="wiki-term" data-wiki="Modular_arithmetic" href="https://en.wikipedia.org/wiki/Modular_arithmetic" target="_blank" rel="noopener">arithmetic modulo 3</a>.</p>
+
+      <h2>The 5 × 5 surprise</h2>
+      <p>Counting is necessary but not sufficient. On a 5 × 5 board, 24 squares are
+        left, enough for 8 pieces, yet only 9 of the 25 possible gaps work: the four
+        corners and the centre, the squares whose row and column are both even. Every
+        other gap leaves a shape that no set of Ls can cover. The logic test searches
+        all 25 gaps and confirms exactly those 9.</p>
+      <p>The cut-the-knot page states the theorem as "if <code>n ≥ 5</code>, a deficient
+        <code>n × n</code> board tiles if and only if <code>n</code> is not a multiple of
+        3". The 5 × 5 board shows that this is not quite right as written. From 7 × 7
+        upward the statement does hold: the test searches every gap up to 7 × 7, and the
+        theorem of I-Ping Chu and Richard Johnsonbaugh covers the rest. A 5 × 5 board is
+        the one exception, and its corner case is what the general proof starts from.</p>
+
+      <h2>Why every larger board works</h2>
+      <p>For sides that are powers of 2 the proof is Golomb's: split the board into
+        four quarters, put one L round the centre covering the three quarters without the
+        gap, and repeat inside each quarter. For a general side the proof is again
+        <a class="wiki-term" data-wiki="Mathematical_induction" href="https://en.wikipedia.org/wiki/Mathematical_induction" target="_blank" rel="noopener">induction</a>,
+        but on <code>n</code> rather than on the exponent. The small cases are checked by
+        hand — the 5 × 5 corner tiling is one essential brick — and a board of side
+        <code>n</code> is then reduced to one of side <code>n − 3</code>, so that all the
+        sides with the same remainder modulo 3 follow together.</p>
+
+      <h2>Pockets</h2>
+      <p>During play the same counting argument is your warning. An L takes 3 squares,
+        so the number still to cover always has the same remainder modulo 3 as when you
+        started. A pocket of one or two squares can never be filled: no L fits, and the
+        count will not come out right. That is what the page means by "1 and 2 squares
+        pockets". Remove last takes pieces back until the pocket merges with free space.</p>
+
+      <p class="tip">Try a 5 × 5 board and move the gap with Set blank. Only the four
+        corners and the centre can be tiled, and the centre is much harder than a
+        corner. Then try 7 × 7: every gap works, but a bad first piece can still strand
+        the rest.</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="deficient-squares-core.js"></script>
+<script src="deficient-squares.js"></script>
+</body>
+</html>

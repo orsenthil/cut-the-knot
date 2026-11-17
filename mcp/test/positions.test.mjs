@@ -85,6 +85,7 @@ check("trigg-tromino: one square picked", read["trigg-tromino"]?.finished === fa
 check("tromino: one step shown on an 8x8 board", read.tromino?.finished === false && read.tromino.boardSize === 8 && read.tromino.step === 1 && read.tromino.piecesPlaced === 1 && read.tromino.piecesNeeded === 21 && read.tromino.placedByStep[0] === 1);
 check("tromino-rep-tile: one split on an 8x8 board", read["tromino-rep-tile"]?.finished === false && read["tromino-rep-tile"].boardSize === 8 && read["tromino-rep-tile"].step === 1 && read["tromino-rep-tile"].piecesPlaced === 6 && read["tromino-rep-tile"].piecesNeeded === 21 && read["tromino-rep-tile"].biggestPiece === 2);
 check("tromino-puzzle: one L on a 4x4 board", read["tromino-puzzle"]?.finished === false && read["tromino-puzzle"].boardSize === 4 && read["tromino-puzzle"].piecesPlaced === 1 && read["tromino-puzzle"].piecesNeeded === 5 && read["tromino-puzzle"].squaresLeft === 12 && read["tromino-puzzle"].canPlaceAnother === true);
+check("deficient-squares: one L on a 5x5 board", read["deficient-squares"]?.finished === false && read["deficient-squares"].boardSize === 5 && read["deficient-squares"].piecesPlaced === 1 && read["deficient-squares"].piecesNeeded === 8 && read["deficient-squares"].squaresLeft === 21 && read["deficient-squares"].tileable === true && read["deficient-squares"].canPlaceAnother === true);
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -596,6 +597,31 @@ const at = (slug, state) => describePosition(slug, state, 1);
     } catch {
       return true;
     }
+  })());
+}
+
+// Deficient Squares: a full 5x5 tiling wins, a 5x5 bad gap is not tileable,
+// and a 6x6 board can never be won.
+{
+  const tiling = [
+    [[0, 1], [0, 2], [1, 2]],
+    [[0, 3], [0, 4], [1, 4]],
+    [[1, 1], [1, 0], [2, 0]],
+    [[1, 3], [2, 3], [2, 4]],
+    [[2, 2], [2, 1], [3, 1]],
+    [[3, 0], [4, 0], [4, 1]],
+    [[3, 2], [4, 2], [4, 3]],
+    [[3, 3], [3, 4], [4, 4]],
+  ];
+  const done = at("deficient-squares", { n: 5, blank: { row: 0, col: 0 }, pieces: tiling });
+  check("deficient-squares: the eight Ls cover the 5x5 board", done.finished === true && done.piecesPlaced === 8 && done.piecesNeeded === 8 && done.squaresLeft === 0 && done.gap.row === 1 && done.gap.col === 1 && done.tileable === true);
+  const badGap = at("deficient-squares", { n: 5, blank: { row: 0, col: 1 }, pieces: [] });
+  check("deficient-squares: a 5x5 odd gap is not tileable", badGap.finished === false && badGap.tileable === false && typeof badGap.note === "string" && /corner/.test(badGap.note));
+  const six = at("deficient-squares", { n: 6, blank: { row: 2, col: 3 }, pieces: [] });
+  check("deficient-squares: a 6x6 board is not tileable", six.finished === false && six.tileable === false && six.piecesNeeded === null && /multiple of 3/.test(six.note));
+  check("deficient-squares: a wasted piece on a 6x6 is still not a win", (() => {
+    const wasted = at("deficient-squares", { n: 6, blank: { row: 2, col: 3 }, pieces: [[[0, 0], [0, 1], [1, 1]]] });
+    return wasted.finished === false && wasted.piecesPlaced === 1 && wasted.tileable === false;
   })());
 }
 

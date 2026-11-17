@@ -627,5 +627,12 @@ window.COOLMATHS = {
       tags: ["induction", "counting", "area"],
       level: 2,
     },
+    {
+      slug: "deficient-squares",
+      title: "Deficient Squares",
+      blurb: "One square is missing from a square board of any size. When can the rest be covered with L-shaped trominoes — and why do some boards refuse, however hard you try?",
+      tags: ["divisibility", "area", "induction"],
+      level: 2,
+    },
   ],
 };

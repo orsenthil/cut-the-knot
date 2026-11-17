@@ -228,6 +228,22 @@ const GAMES = {
     await clickCell(2, 3);
     await clickCell(3, 3);
   },
+  "deficient-squares": async (page) => {
+    await page.selectOption("#nInput", "5");
+    await page.click("#blankBtn");
+    const box = await page.locator("#board").boundingBox();
+    const clickCell = async (row, col) => {
+      await page.mouse.click(
+        box.x + ((col + 0.5) * box.width) / 5,
+        box.y + ((row + 0.5) * box.height) / 5,
+      );
+    };
+    await clickCell(0, 0); // the gap
+    await page.click("#playBtn");
+    await clickCell(0, 1); // one L beside the gap
+    await clickCell(0, 2);
+    await clickCell(1, 2);
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

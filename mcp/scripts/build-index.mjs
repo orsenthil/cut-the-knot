@@ -234,6 +234,7 @@ const CORE_GLOBALS = {
   "table-to-zero-game/table-to-zero-game-core.js": ["TableToZeroGameCore"],
   "trans-example/trans-example-core.js": ["TransExampleCore"],
   "trigg-tromino/trigg-tromino-core.js": ["TriggTrominoCore"],
+  "deficient-squares/deficient-squares-core.js": ["DeficientSquaresCore"],
   "tromino/tromino-core.js": ["TrominoCore"],
   "tromino-rep-tile/tromino-rep-tile-core.js": ["TrominoRepTileCore"],
   "tromino-puzzle/tromino-puzzle-core.js": ["TrominoPuzzleCore"],
