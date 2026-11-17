@@ -604,5 +604,13 @@ window.COOLMATHS = {
       tags: ["counting", "area", "invariants"],
       level: 2,
     },
+    {
+      slug: "tromino",
+      title: "Golomb's Tromino Theorem",
+      blurb: "A square board has one square missing. Can L-shaped pieces of three squares really cover all the rest — and can you see why, one step at a time?",
+      tags: ["induction", "counting", "area"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
