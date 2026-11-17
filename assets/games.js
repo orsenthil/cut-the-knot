@@ -612,5 +612,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "tromino-rep-tile",
+      title: "Tromino as a Rep-tile",
+      blurb: "One square is missing from a square board, and L-shaped pieces must cover all the rest. Split every big L into four smaller copies and watch the gap move to the middle — why does the picture always fit?",
+      tags: ["induction", "counting", "area"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

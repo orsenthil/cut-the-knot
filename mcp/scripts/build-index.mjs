@@ -235,6 +235,7 @@ const CORE_GLOBALS = {
   "trans-example/trans-example-core.js": ["TransExampleCore"],
   "trigg-tromino/trigg-tromino-core.js": ["TriggTrominoCore"],
   "tromino/tromino-core.js": ["TrominoCore"],
+  "tromino-rep-tile/tromino-rep-tile-core.js": ["TrominoRepTileCore"],
 };
 
 const games = [];

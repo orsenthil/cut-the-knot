@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tromino as a Rep-tile &mdash; coolmaths</title>
+<meta name="description" content="One square is missing from a square board, and L-shaped pieces must cover all the rest. Split every big L into four smaller copies and watch the gap move to the middle — why does the picture always fit?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/tromino-rep-tile/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Tromino as a Rep-tile">
+<meta property="og:description" content="One square is missing from a square board, and L-shaped pieces must cover all the rest. Split every big L into four smaller copies and watch the gap move to the middle — why does the picture always fit?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/tromino-rep-tile/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 26rem;
+    height: auto;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    overflow: visible;
+    touch-action: manipulation;
+  }
+  #board:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  .canvas { fill: var(--board-a); }
+  .grid line { stroke: var(--border-strong); stroke-width: 0.03; opacity: 0.7; }
+  .piece { stroke: var(--ink); stroke-width: 0.07; stroke-linejoin: round; }
+  .piece.c0 { fill: #4e79a7; }
+  .piece.c1 { fill: #f28e2b; }
+  .piece.c2 { fill: #e15759; }
+  .piece.c3 { fill: #76b7b2; }
+  .piece.c4 { fill: #59a14f; }
+  .piece.c5 { fill: #edc948; }
+  .piece.c6 { fill: #b07aa1; }
+  .hole { fill: var(--ink); }
+  .cursor { fill: none; stroke: var(--accent); stroke-width: 0.14; opacity: 0.45; }
+  #board:focus .cursor { stroke-width: 0.2; opacity: 1; }
+  .hit { fill: transparent; cursor: pointer; }
+
+  #line {
+    margin: 0.6rem 0 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+  }
+  .controls { flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+  .controls label { font-size: 0.9rem; color: var(--muted); }
+  .controls select {
+    font: inherit;
+    font-size: 0.95rem;
+    padding: 0.4rem 0.5rem;
+    color: var(--text);
+    background: var(--card);
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+  }
+  #status { min-height: 1.4em; }
+</style>
+</head>
+<body data-game="tromino-rep-tile" data-kind="demo">
+<main id="main">
+  <h1>Tromino as a Rep-tile</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#induction">Induction</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Tromino2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>What it shows:</strong> One square is missing from a square board, and L-shaped pieces of three squares can fill every other square.<br>
+    <strong>How to play:</strong> Click a square to move the gap, then press One step to break the biggest Ls into four smaller ones. Pick a larger board to watch the same picture repeat.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 16 16" tabindex="0" role="application"
+         aria-label="Square board with one missing square, tiled by L-shaped pieces. Use arrow keys to move the outlined cursor and Enter to place the missing square."></svg>
+  </div>
+  <p id="line" aria-live="polite"></p>
+
+  <div class="controls">
+    <label for="expInput">Size</label>
+    <select id="expInput" aria-label="Board size, from 2 by 2 up to 128 by 128"></select>
+    <button id="stepBtn" type="button" class="primary" aria-label="Break the biggest L-trominoes into four smaller ones">One step</button>
+    <button id="resetBtn" type="button" aria-label="Start again with a new missing square">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A square board of size 2<sup>n</sup> × 2<sup>n</sup> has one square taken away.
+        However big the board and wherever the gap, the rest can be covered exactly by
+        L-trominoes — three unit squares in an L. This applet shows
+        <a class="wiki-term" data-wiki="Solomon_Golomb" href="https://en.wikipedia.org/wiki/Solomon_Golomb" target="_blank" rel="noopener">Solomon Golomb</a>'s
+        proof by cutting the board into four and repeating the trick.</p>
+
+      <h2>Cut the board into four</h2>
+      <p>Draw the two middle lines. The gap lies in exactly one of the four equal
+        quarters. Put one L around the middle so that it covers one square in each of
+        the <em>other</em> three quarters. Now all four quarters have a gap: the real
+        one in its own quarter, and the square taken by the middle L in the other
+        three. Each quarter is a smaller copy of the same problem.</p>
+
+      <h2>An L is four smaller Ls</h2>
+      <p>An L of side <code>s</code> (three squares of side <code>s</code>) can be built
+        from four Ls of side <code>s/2</code>. Their areas match:
+        <code>4 × 3 × (s/2)² = 3s²</code>. The applet places them exactly; the logic
+        test splits every L of side 2, 4, 8, 16 and 32 in all four orientations and
+        checks that the four children cover the parent with no overlap and no gap.
+        A shape made of smaller copies of itself like this is a
+        <a class="wiki-term" data-wiki="Rep-tile" href="https://en.wikipedia.org/wiki/Rep-tile" target="_blank" rel="noopener">rep-tile</a>.</p>
+
+      <h2>Why it never fails</h2>
+      <p>Start with the gap in one quarter: the middle L fills the other three, and
+        the quarter with the gap is the same puzzle at half the size. Repeat. This is
+        <a class="wiki-term" data-wiki="Mathematical_induction" href="https://en.wikipedia.org/wiki/Mathematical_induction" target="_blank" rel="noopener">mathematical induction</a>.
+        The process stops at a 2 × 2 board, where one square gone leaves exactly one
+        L-tromino. So every size works, for every position of the gap. The applet's
+        opening picture already uses that: one L at each size, nested around the gap.
+        Each press of One step replaces every L bigger than the new size by its four
+        copies; on a board of 2<sup>e</sup> × 2<sup>e</sup>, a further 2<sup>e</sup> − 1
+        presses turn every piece into a single L.</p>
+
+      <h2>How many pieces?</h2>
+      <p>A 2<sup>n</sup> × 2<sup>n</sup> board has 4<sup>n</sup> squares. One is missing,
+        so there are 4<sup>n</sup> − 1 left, and each L uses 3. The finished picture
+        therefore has <code>(4<sup>n</sup> − 1) / 3</code> pieces. The logic test checks
+        every gap on boards up to 16 × 16, step by step: the pieces never overlap, the
+        gap is never covered, every other square is covered once, and the final count
+        always matches. For the default 16 × 16 board that is
+        <code>(256 − 1) / 3 = 85</code> pieces after three presses.</p>
+
+      <p class="tip">Compare a 4 × 4 board with an 8 × 8 one: the first press always
+        splits the biggest L, and the rest of the picture is the old picture with
+        smaller copies inside it. On the 2 × 2 board there is nothing to split, so the
+        first press begins again — that is what the original applet does too.</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="tromino-rep-tile-core.js"></script>
+<script src="tromino-rep-tile.js"></script>
+</body>
+</html>

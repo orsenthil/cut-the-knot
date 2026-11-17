@@ -206,6 +206,12 @@ const GAMES = {
     await page.mouse.click(box.x + box.width * 0.25, box.y + box.height * 0.25);
     await page.click("#stepBtn");
   },
+  "tromino-rep-tile": async (page) => {
+    await page.selectOption("#expInput", "3");
+    const box = await page.locator("#board").boundingBox();
+    await page.mouse.click(box.x + box.width * 0.25, box.y + box.height * 0.25);
+    await page.click("#stepBtn");
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */
