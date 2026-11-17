@@ -25,7 +25,7 @@ export interface ServerContext {
 
 const INSTRUCTIONS =
   "Grounded material for tutoring the coolmaths puzzles at " +
-  "https://orsenthil.github.io/cut-the-knot/ — browser ports of Alexander " +
+  "https://coolmaths.ai/ — browser ports of Alexander " +
   "Bogomolny's cut-the-knot.org applets. Prefer get_game and explain_concept " +
   "over your own recollection of a puzzle: the text they return is the site's " +
   "own explanation. Use run_game_logic (after list_actions) to compute a real answer from the " +

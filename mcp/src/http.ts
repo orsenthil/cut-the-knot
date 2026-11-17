@@ -57,7 +57,7 @@ const rpcError = (code: number, message: string, status: number, id: unknown = n
 
 function landingPage(origin: string, personal: boolean): Response {
   const text = [
-    "coolmaths tutor — an MCP server for https://orsenthil.github.io/cut-the-knot/",
+    "coolmaths tutor — an MCP server for https://coolmaths.ai/",
     "",
     `Endpoint: ${origin}/mcp  (Streamable HTTP, stateless, no sign-in)`,
     personal ? `Signed in: ${origin}/mcp/me  (the same, plus your own progress and position)` : "",

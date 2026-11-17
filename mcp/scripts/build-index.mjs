@@ -268,7 +268,7 @@ for (const entry of catalogue.games) {
     tags: entry.tags ?? [],
     level: entry.level ?? 2,
     kind: entry.kind ?? "game",
-    url: `https://orsenthil.github.io/cut-the-knot/${slug}/`,
+    url: `https://coolmaths.ai/${slug}/`,
     ctkUrl: parseCtkUrl(html) ?? manifestEntry?.ctkUrl ?? null,
     applet: manifestEntry?.archive ?? null,
     rules: parseRules(html),
@@ -349,7 +349,7 @@ writeFileSync(
 /* ------------------------------------------------------------------ output */
 
 const content = {
-  site: "https://orsenthil.github.io/cut-the-knot/",
+  site: "https://coolmaths.ai/",
   repo: "https://github.com/orsenthil/cut-the-knot",
   tags: catalogue.tags,
   concepts: readWindowGlobal("concepts.js", "COOLMATHS_CONCEPTS"),

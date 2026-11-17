@@ -49,7 +49,7 @@ export const SCOPE = "record:read";
 
 export interface OAuthProviderOptions {
   store: OAuthStore;
-  /** The sign-in page on the site, e.g. https://orsenthil.github.io/cut-the-knot/signin/ */
+  /** The sign-in page on the site, e.g. https://coolmaths.ai/signin/ */
   signInUrl: string;
   /** Checks a Firebase ID token and returns the player's uid; throws if it is not valid. */
   verifyIdToken: (idToken: string) => Promise<string>;
