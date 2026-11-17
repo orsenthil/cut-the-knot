@@ -212,6 +212,22 @@ const GAMES = {
     await page.mouse.click(box.x + box.width * 0.25, box.y + box.height * 0.25);
     await page.click("#stepBtn");
   },
+  "tromino-puzzle": async (page) => {
+    await page.selectOption("#expInput", "2");
+    await page.click("#blankBtn");
+    const box = await page.locator("#board").boundingBox();
+    const clickCell = async (row, col) => {
+      await page.mouse.click(
+        box.x + ((col + 0.5) * box.width) / 4,
+        box.y + ((row + 0.5) * box.height) / 4,
+      );
+    };
+    await clickCell(1, 1); // the gap
+    await page.click("#playBtn");
+    await clickCell(2, 2); // one L in the lower-right corner
+    await clickCell(2, 3);
+    await clickCell(3, 3);
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

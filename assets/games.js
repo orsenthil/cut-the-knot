@@ -620,5 +620,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "tromino-puzzle",
+      title: "Tromino Puzzle",
+      blurb: "One square is missing from a square board. Can you cover all the rest with L-shaped pieces of three squares — or will a careless move leave a pocket too small to fill?",
+      tags: ["induction", "counting", "area"],
+      level: 2,
+    },
   ],
 };

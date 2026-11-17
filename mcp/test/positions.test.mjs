@@ -84,6 +84,7 @@ check("trans-example: one shuttle drawn", read["trans-example"]?.finished === fa
 check("trigg-tromino: one square picked", read["trigg-tromino"]?.finished === false && read["trigg-tromino"].building === 1 && read["trigg-tromino"].piecesPlaced === 0);
 check("tromino: one step shown on an 8x8 board", read.tromino?.finished === false && read.tromino.boardSize === 8 && read.tromino.step === 1 && read.tromino.piecesPlaced === 1 && read.tromino.piecesNeeded === 21 && read.tromino.placedByStep[0] === 1);
 check("tromino-rep-tile: one split on an 8x8 board", read["tromino-rep-tile"]?.finished === false && read["tromino-rep-tile"].boardSize === 8 && read["tromino-rep-tile"].step === 1 && read["tromino-rep-tile"].piecesPlaced === 6 && read["tromino-rep-tile"].piecesNeeded === 21 && read["tromino-rep-tile"].biggestPiece === 2);
+check("tromino-puzzle: one L on a 4x4 board", read["tromino-puzzle"]?.finished === false && read["tromino-puzzle"].boardSize === 4 && read["tromino-puzzle"].piecesPlaced === 1 && read["tromino-puzzle"].piecesNeeded === 5 && read["tromino-puzzle"].squaresLeft === 12 && read["tromino-puzzle"].canPlaceAnother === true);
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -567,6 +568,35 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("tromino-rep-tile: the second press finishes the tiling", done.finished === true && done.piecesPlaced === 21 && done.biggestPiece === 1);
   const tiny = at("tromino-rep-tile", { exp: 1, n: 2, hole: { col: 0, row: 0 }, level: 0, pieces: 1 });
   check("tromino-rep-tile: the 2x2 board is already one L", tiny.finished === true && tiny.totalSteps === 0 && tiny.piecesPlaced === 1);
+}
+
+// Tromino Puzzle: a full 4x4 tiling wins, and four careless pieces get stuck.
+{
+  const tiling = [
+    [[0, 1], [1, 1], [1, 0]],
+    [[1, 2], [2, 2], [2, 1]],
+    [[0, 2], [0, 3], [1, 3]],
+    [[2, 3], [3, 3], [3, 2]],
+    [[3, 1], [3, 0], [2, 0]],
+  ];
+  const done = at("tromino-puzzle", { exp: 2, n: 4, blank: { row: 0, col: 0 }, pieces: tiling });
+  check("tromino-puzzle: the five Ls cover the 4x4 board", done.finished === true && done.piecesPlaced === 5 && done.piecesNeeded === 5 && done.squaresLeft === 0 && done.gap.col === 1 && done.gap.row === 1);
+  const pocketPieces = [
+    [[0, 1], [1, 1], [1, 0]],
+    [[0, 2], [0, 3], [1, 3]],
+    [[1, 2], [2, 2], [2, 3]],
+    [[2, 0], [2, 1], [3, 1]],
+  ];
+  const pocket = at("tromino-puzzle", { exp: 2, n: 4, blank: { row: 0, col: 0 }, pieces: pocketPieces });
+  check("tromino-puzzle: four pieces leave a three-square pocket", pocket.finished === false && pocket.piecesPlaced === 4 && pocket.squaresLeft === 3 && pocket.canPlaceAnother === false);
+  check("tromino-puzzle: a bad piece throws", (() => {
+    try {
+      at("tromino-puzzle", { exp: 2, n: 4, blank: { row: 0, col: 0 }, pieces: [[[1, 0], [1, 1], [1, 2]]] });
+      return false;
+    } catch {
+      return true;
+    }
+  })());
 }
 
 // A game with no reader, and a position that makes no sense.
