@@ -78,6 +78,7 @@ check("scoring-misere: after a slide", read["scoring-misere"]?.finished === fals
 check("scoring-misere-2: after a take", read["scoring-misere-2"]?.finished === false && Array.isArray(read["scoring-misere-2"]?.heaps));
 check("sct: after a merge", read.sct?.counts && read.sct.movesSoFar >= 1);
 check("sticky-problem: after a break", read["sticky-problem"]?.finished === false && Array.isArray(read["sticky-problem"]?.sticks));
+check("another-sticky-problem: after a break and the reply, a set-A position", read["another-sticky-problem"]?.finished === false && read["another-sticky-problem"].set === "A" && read["another-sticky-problem"].totalLength === 21 && read["another-sticky-problem"].legalMoves > 0);
 check("soup-fish: after a pick", read["soup-fish"]?.finished === false && typeof read["soup-fish"]?.you === "number");
 check("table-to-zero-game: after a subtract", read["table-to-zero-game"]?.finished === false && Array.isArray(read["table-to-zero-game"]?.grid));
 check("trans-example: one shuttle drawn", read["trans-example"]?.finished === false && read["trans-example"]?.shuttles === 1);
@@ -500,6 +501,30 @@ const at = (slug, state) => describePosition(slug, state, 1);
     "sticky-problem: mid-game N-position",
     p.finished === false && p.isP === false && p.counts.k === 2 && p.counts.m === 1,
   );
+}
+
+// Another Sticky Problem: the start is A, a B position has a reply to A, and a
+// position outside both sets is named as such.
+{
+  const start = at("another-sticky-problem", { n: 10, sticks: [10, 11] });
+  check(
+    "another-sticky-problem: the start is set A with 19 breaks and no removal",
+    start.finished === false && start.set === "A" && start.totalSticks === 2 && start.evenSticks === 1 && start.legalMoves === 19 && start.removableLengths.length === 0,
+  );
+  const b = at("another-sticky-problem", { n: 3, sticks: [3, 3, 1] });
+  check(
+    "another-sticky-problem: three sticks with no even one is B, and has a reply to A",
+    b.set === "B" && b.winningReply?.type === "break" && b.winningReply.length === 3 && b.winningReply.at === 1,
+  );
+  const neither = at("another-sticky-problem", { n: 2, sticks: [2, 2] });
+  check("another-sticky-problem: two even sticks are outside A and B", neither.set === null && neither.legalMoves === 3);
+  const removal = at("another-sticky-problem", { n: 2, sticks: [1, 1, 2] });
+  check(
+    "another-sticky-problem: 1, 1, 2 offers removing one length-1 stick",
+    removal.set === "B" && JSON.stringify(removal.removableLengths) === "[1]" && removal.counts["1"] === 2,
+  );
+  const over = at("another-sticky-problem", { n: 3, sticks: [] });
+  check("another-sticky-problem: an empty board is finished", over.finished === true && over.set === "A" && over.legalMoves === 0);
 }
 
 // Fish Soup: human owns FISH+SOUP+SWAN (mask 7).

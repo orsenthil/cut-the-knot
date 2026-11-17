@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Another Sticky Problem &mdash; coolmaths</title>
+<meta name="description" content="Break sticks or remove k sticks of length k, starting from sticks N and N+1. The second player can always answer — but can you find the reply when the computer starts?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/another-sticky-problem/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Another Sticky Problem">
+<meta property="og:description" content="Break sticks or remove k sticks of length k, starting from sticks N and N+1. The second player can always answer — but can you find the reply when the computer starts?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/another-sticky-problem/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 1rem 0.75rem;
+  }
+  .sticks {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .stick-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+  .len {
+    flex: 0 0 2.2rem;
+    text-align: right;
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .stick {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: calc(var(--len) * 2.1rem);
+    display: grid;
+    grid-template-columns: repeat(var(--len), minmax(0, 1fr));
+    gap: 2px;
+  }
+  .cell {
+    height: 1.65rem;
+    min-width: 0;
+    padding: 0;
+    border-radius: 4px;
+    border: 1px solid color-mix(in srgb, var(--ink) 40%, transparent);
+    background: linear-gradient(
+      160deg,
+      color-mix(in srgb, #c4a574 85%, white),
+      #8b5a2b 70%
+    );
+    cursor: pointer;
+  }
+  .cell:hover:not(:disabled) {
+    outline: 2px solid var(--highlight);
+    outline-offset: 1px;
+  }
+  .cell:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .cell:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+  .cell.first {
+    cursor: help;
+    background:
+      repeating-linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--ink) 16%, transparent) 0 3px,
+        transparent 3px 7px
+      ),
+      linear-gradient(
+        160deg,
+        color-mix(in srgb, #c4a574 55%, white),
+        #8b5a2b 55%
+      );
+  }
+  .cell.single {
+    background: linear-gradient(160deg, #d9b07a, #9a6636);
+  }
+  .empty-board {
+    margin: 0.5rem 0;
+    color: var(--muted);
+  }
+  .removals {
+    width: 100%;
+    max-width: 32rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+  .remove-label {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body data-game="another-sticky-problem" data-kind="game">
+<main id="main">
+  <h1>Another Sticky Problem</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/TwoStickStart.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Two players take turns breaking a stick in two or removing k sticks of length k; the player who makes the last move wins.<br>
+    <strong>How to play:</strong> Click a square to the right of a break line to split its stick, or press a Remove button. The computer replies at once.
+  </div>
+
+  <div id="stage" class="stage" aria-label="Sticks made of unit squares"></div>
+
+  <div id="removals" class="removals" aria-label="Removal moves"></div>
+
+  <div class="controls">
+    <label>Starting N
+      <input type="number" id="nInput" min="1" max="30" step="1" value="10">
+    </label>
+    <button id="newBtn" type="button" class="primary">New game</button>
+    <button id="computerStarts" type="button">Computer starts</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Two sticks, of lengths N and N+1, are enough to hide a perfect
+        strategy. The winning play only ever visits two kinds of position, and
+        the second player can always answer in the other kind.
+      </p>
+
+      <h2>Breaks, removals and the last move</h2>
+      <p>
+        Start with sticks N and N+1. A move either breaks one stick into two
+        shorter positive lengths, or removes <code>k</code> sticks that each
+        have length <code>k</code>. The player who makes the last move wins:
+        ordinary
+        <a class="wiki-term" data-wiki="Normal_play_convention" href="https://en.wikipedia.org/wiki/Normal_play_convention" target="_blank" rel="noopener">normal play</a>.
+        The game was published in 2004 as Mathematics Magazine problem #1687
+        (Sung Soo Kim); the two sets below are Li Zhou&rsquo;s solution.
+      </p>
+      <p>
+        The applet offers Break and Remove as two radio modes. This page shows
+        both at once: a click breaks, and the buttons remove. The applet&rsquo;s
+        Remove mode can take one stick fewer than <code>k</code> when more than
+        <code>k</code> are present; this page follows the stated rule and always
+        removes exactly <code>k</code>.
+      </p>
+
+      <h2>The two sets</h2>
+      <p>
+        Call a position <strong>A</strong> when it has an even number of sticks
+        and at most one even-length stick. Call it <strong>B</strong> when it
+        has an odd number of sticks and at most two even-length sticks.
+      </p>
+      <p>
+        The start is in A: it has two sticks, and exactly one of N and N+1 is
+        even. The empty board is in A too: zero sticks, none of them even. A and
+        B do not cover every possible position, but the strategy never leaves
+        them. The two sets are really a test of
+        <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a>:
+        the number of sticks and the number of even sticks.
+      </p>
+
+      <h2>From A you can only reach B</h2>
+      <p>
+        <strong>Break.</strong> A break adds one stick, so the number of sticks
+        changes from even to odd. If the broken stick was odd, its two pieces
+        are one even and one odd (an odd number is an even plus an odd), so A&rsquo;s
+        at most one even stick becomes at most two. If it was the single even
+        stick, its pieces are either both even (two even sticks) or both odd
+        (none). Either way the new position has an odd number of sticks and at
+        most two even sticks: it is in B.
+      </p>
+      <p>
+        <strong>Remove k sticks of length k.</strong> If <code>k</code> is odd,
+        an odd number of sticks leaves, so the count flips from even to odd;
+        only odd-length sticks leave, so the even-stick count stays at most one.
+        If <code>k</code> is even, removing <code>k</code> even sticks would
+        need at least <code>k &ge; 2</code> even sticks, but A has at most one
+        even stick. No such removal exists from A. Every legal move from A
+        therefore lands in B.
+      </p>
+
+      <h2>From B there is always a way back</h2>
+      <p>
+        B has an odd number of sticks and 0, 1 or 2 even sticks.
+      </p>
+      <p>
+        <strong>0 even.</strong> Every stick is odd. If some stick is longer
+        than 1, break it: it becomes one even and one odd piece, so the count is
+        even and there is exactly one even stick &mdash; A. If every stick is 1,
+        remove one 1-stick (the <code>k = 1</code> removal): the count is even
+        and no even stick is left &mdash; A.
+      </p>
+      <p>
+        <strong>1 even.</strong> Split the even stick into two odd pieces
+        (<code>2 = 1 + 1</code>, <code>4 = 1 + 3</code>,
+        <code>6 = 3 + 3</code>, and so on). The count becomes even and the even
+        stick is gone &mdash; A.
+      </p>
+      <p>
+        <strong>2 even.</strong> Split one of them into two odd pieces. The
+        count becomes even and one even stick remains &mdash; A.
+      </p>
+      <p>So B is never a dead end.</p>
+
+      <h2>Why the second player wins</h2>
+      <p>
+        The first player starts in A and must move to B. The second player
+        replies from B to A. The empty board is in A, so the second player is
+        the one who moves into it and makes the last move. This is an
+        <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>
+        argument: A is the losing side of the two-set split, also called the set
+        of
+        <a class="wiki-term" data-wiki="Winning_way" href="https://en.wikipedia.org/wiki/Winning_way" target="_blank" rel="noopener">P-positions</a>.
+      </p>
+      <p>
+        The logic test checks it as a fact, not just as the page&rsquo;s claim.
+        It looks at every position with total length at most 21 and no stick
+        longer than 11 &mdash; 3,222 positions, 594 in A and 989 in B. From every
+        A position every legal move lands in B, and from every B position some
+        legal move lands back in A. Solving the game independently agrees that A
+        is exactly the losing set and B exactly the winning set. The start is
+        losing for N = 1 to 12, and in 240 played-out games a human making any
+        random legal move loses to the computer from every N = 1 to 30.
+      </p>
+      <p>
+        The computer is the applet&rsquo;s own <code>Play</code> method, written
+        a second time from the bytecode. The two versions are compared with the
+        same random draws on all 3,222 positions, on every start N = 1 to 30 and
+        on all 2,315 positions reachable from the starts for N = 1 to 8; the
+        resulting position, the kind of move and the number of random draws
+        agree.
+      </p>
+
+      <p class="tip">
+        Press <strong>Computer starts</strong> with N = 1. After the
+        computer&rsquo;s first move you are the second player: find a move back
+        to A, and keep finding one. Then try N = 10. If you move anywhere else,
+        the computer can take the second-player role for itself.
+      </p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="another-sticky-problem-core.js"></script>
+<script src="another-sticky-problem.js"></script>
+</body>
+</html>

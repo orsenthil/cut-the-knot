@@ -174,6 +174,15 @@ const GAMES = {
     await page.locator(".stick").nth(1).locator(".cell").nth(1).click();
     await page.waitForTimeout(450);
   },
+  "another-sticky-problem": async (page) => {
+    // Break the length 10 stick after one square, then wait for the computer.
+    await page.locator('#stage .cell[data-index="0"][data-cell="1"]').click();
+    await page.waitForFunction(
+      () => /Your turn/.test(document.getElementById("status").textContent),
+      null,
+      { timeout: 20000 },
+    );
+  },
   "soup-fish": async (page) => {
     await page.uncheck("#computerFirst");
     await page.click("#newBtn");

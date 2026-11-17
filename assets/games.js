@@ -641,5 +641,12 @@ window.COOLMATHS = {
       tags: ["parity", "invariants", "logic"],
       level: 2,
     },
+    {
+      slug: "another-sticky-problem",
+      title: "Another Sticky Problem",
+      blurb: "Break sticks or remove k sticks of length k, starting from sticks N and N+1. The second player can always answer — but can you find the reply when the computer starts?",
+      tags: ["game-strategy", "parity", "invariants"],
+      level: 2,
+    },
   ],
 };
