@@ -244,6 +244,18 @@ const GAMES = {
     await clickCell(0, 2);
     await clickCell(1, 2);
   },
+  "two-color-solitaire": async (page) => {
+    await page.selectOption("#nInput", "8");
+    const gap = await page.evaluate(() => {
+      const values = [...document.querySelectorAll("#board .cards text")].map((t) => Number(t.textContent));
+      for (let i = 0; i < values.length; i++) {
+        if (values[i] % 2 === values[(i + 1) % values.length] % 2) return i;
+      }
+      return -1;
+    });
+    if (gap < 0) throw new Error("no legal pair was dealt");
+    await page.locator(`#board .gap[data-index="${gap}"]`).click();
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

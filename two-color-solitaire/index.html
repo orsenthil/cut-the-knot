@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Solitaire in Two Colors &mdash; coolmaths</title>
+<meta name="description" content="Two shuffled halves of a deck are dealt alternately round a circle. Remove neighbouring cards of the same parity until none are left — why can the right deck size never get stuck?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/two-color-solitaire/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Solitaire in Two Colors">
+<meta property="og:description" content="Two shuffled halves of a deck are dealt alternately round a circle. Remove neighbouring cards of the same parity until none are left — why can the right deck size never get stuck?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/two-color-solitaire/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 28rem;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 24rem;
+    height: auto;
+    touch-action: manipulation;
+  }
+  #board:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 50%; }
+
+  .rail { fill: none; stroke: var(--border-strong); stroke-width: 0.7; opacity: 0.65; }
+
+  .gap-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 0.7; }
+  .gap-hit { fill: transparent; cursor: pointer; }
+  .gap:hover .gap-dot { fill: var(--accent-hover); }
+  .cursor { fill: none; stroke: var(--accent); stroke-width: 1.6; opacity: 0; }
+  #board:focus-visible .cursor { opacity: 1; }
+
+  .card { stroke: rgba(255, 255, 255, 0.82); stroke-width: 0.8; }
+  .card.red { fill: #cf4a4a; }
+  .card.blue { fill: #3f6fd1; }
+  .num {
+    fill: #ffffff;
+    font-weight: 650;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+  }
+
+  #line {
+    margin: 0.6rem 0 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .controls { flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+  .controls label { font-size: 0.9rem; color: var(--muted); }
+  #status { min-height: 2.6em; }
+</style>
+</head>
+<body data-game="two-color-solitaire" data-kind="game">
+<main id="main">
+  <h1>Solitaire in Two Colors</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/TwoColorSolitaire.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Remove neighbouring cards of the same parity — two odds or two evens — until the circle is empty.<br>
+    <strong>How to play:</strong> Click the pink dot between two neighbours. Red cards come from one half of the deck and blue cards from the other.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 200 200" tabindex="0" role="application"
+         aria-label="Circle of numbered red and blue cards. Use the arrow keys to choose a gap and Enter to remove the pair."></svg>
+  </div>
+  <p id="line" aria-live="polite"></p>
+
+  <div class="controls">
+    <label for="nInput">Deck</label>
+    <select id="nInput" aria-label="Number of cards, from 4 to 40 in steps of 2"></select>
+    <button id="newBtn" type="button" class="primary">New deal</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This game is a magic trick. Two spectators each take half a deck, shuffle it,
+        and the halves are dealt alternately round a circle — red cards from one half,
+        blue from the other. Remove neighbouring cards of the same
+        <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a>,
+        and the circle closes up. The trick is that for the right deck size you cannot
+        lose, no matter which legal pair you take.</p>
+
+      <h2>The deal</h2>
+      <p>The numbers 1 to N are split in half: red cards are 1 to N/2, blue cards are
+        N/2 + 1 to N. Each half is shuffled on its own, then the halves are interleaved,
+        so every red card has blue cards on both sides. N is even and between 4 and 40.
+        Every pair you can click is therefore one red card and one blue card.</p>
+
+      <h2>Two numbers that never move</h2>
+      <p>Count four kinds of card: odd red, odd blue, even red, even blue. Removing two
+        odd neighbours takes one odd red and one odd blue, so the difference</p>
+      <blockquote><code>OrOb = (odd red) − (odd blue)</code></blockquote>
+      <p>does not change. The same is true of the evens:</p>
+      <blockquote><code>ErEb = (even red) − (even blue)</code></blockquote>
+      <p>These two differences are the game's
+        <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>.
+        Removing a pair also keeps red and blue alternating: the two cards on the far
+        side of the removed pair were one red and one blue, and they become neighbours.</p>
+
+      <h2>Why the trick cannot fail</h2>
+      <p>When N is a multiple of 4, each half contains equally many odds and evens. So
+        <code>OrOb = 0</code> and <code>ErEb = 0</code> before play, and they stay 0.
+        Now suppose the game got stuck with cards left. Every neighbour would then have
+        the opposite parity, so the parities would alternate all the way round, and the
+        colours would too. That puts every odd card in one colour and every even card in
+        the other, so <code>|OrOb| + |ErEb|</code> would equal the number of cards left —
+        not 0. That contradicts the invariant. A stuck position is impossible, so every
+        line of play ends with an empty circle.</p>
+
+      <h2>When the magic needs the right choice</h2>
+      <p>If N is even but not a multiple of 4, the two halves are not balanced. With 6
+        cards, red is 1, 2, 3 and blue is 4, 5, 6: there are two odd reds but only one
+        odd blue, and one even red but two even blues. So <code>OrOb = 1</code> and
+        <code>ErEb = −1</code>. A stuck position is now possible, and some sequences
+        lose. The game becomes a real puzzle: choose pairs that do not leave the circle
+        alternating in both colour and parity.</p>
+      <p>The logic test checks the claim by brute force: every shuffle of 4, 6, 8 and 10
+        cards, and every line of play from it. The sides divisible by 4 always win; every
+        shuffle of 6 or 10 cards has a losing line. For 12, 16, 20 and 40 cards it plays
+        sampled shuffles and confirms each can be won. So the small cases support exactly
+        what the invariant proves.</p>
+
+      <p class="tip">Try 16 cards and remove any pair you like: the magic trick holds.
+        Then try 6 or 10 and look for the pair that strands the circle — the status line
+        will tell you when there is no legal pair left.</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="two-color-solitaire-core.js"></script>
+<script src="two-color-solitaire.js"></script>
+</body>
+</html>

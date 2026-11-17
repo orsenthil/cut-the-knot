@@ -634,5 +634,12 @@ window.COOLMATHS = {
       tags: ["divisibility", "area", "induction"],
       level: 2,
     },
+    {
+      slug: "two-color-solitaire",
+      title: "Solitaire in Two Colors",
+      blurb: "Two shuffled halves of a deck are dealt alternately round a circle. Remove neighbouring cards of the same parity until none are left — why can the right deck size never get stuck?",
+      tags: ["parity", "invariants", "logic"],
+      level: 2,
+    },
   ],
 };
