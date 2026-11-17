@@ -597,5 +597,12 @@ window.COOLMATHS = {
       tags: ["invariants", "algorithms"],
       level: 1,
     },
+    {
+      slug: "trigg-tromino",
+      title: "Trigg Tromino",
+      blurb: "Cover an 8 by 8 board with a hole using L-trominoes. Can you finish with no fault lines — or with two, or three, but never four?",
+      tags: ["counting", "area", "invariants"],
+      level: 2,
+    },
   ],
 };

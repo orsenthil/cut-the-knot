@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trigg Tromino &mdash; coolmaths</title>
+<meta name="description" content="Cover an 8 by 8 board with a hole using L-trominoes. Can you finish with no fault lines — or with two, or three, but never four?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://orsenthil.github.io/cut-the-knot/trigg-tromino/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Trigg Tromino">
+<meta property="og:description" content="Cover an 8 by 8 board with a hole using L-trominoes. Can you finish with no fault lines — or with two, or three, but never four?">
+<meta property="og:url" content="https://orsenthil.github.io/cut-the-knot/trigg-tromino/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; padding: 14px 8px; display: flex; justify-content: center; }
+  #board { width: 100%; max-width: 460px; height: auto; display: block; touch-action: manipulation; }
+  .sq { fill: var(--board-a); stroke: var(--border-strong); stroke-width: 1; cursor: pointer; outline: none; }
+  .sq:hover { fill: var(--highlight); }
+  .sq:focus-visible { stroke: var(--focus); stroke-width: 3; }
+  .sq.picked { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2.5; }
+  .sq.taken { cursor: default; }
+  .sq.taken:hover { fill: var(--board-a); }
+  .sq.hole { fill: var(--stage); stroke: var(--border); stroke-dasharray: 4 3; cursor: default; }
+  .block { stroke: var(--ink); stroke-width: 1.5; pointer-events: none; }
+  .wire { fill: none; stroke: var(--ink); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+  .wire-dot { fill: var(--ink); pointer-events: none; }
+  .fault { stroke: var(--bad); stroke-width: 3; pointer-events: none; }
+</style>
+</head>
+<body data-game="trigg-tromino" data-kind="game">
+<main id="main">
+  <h1>Trigg Tromino</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/TriggTromino.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> cover the board around the hole with L-shaped pieces of three squares. Can you finish with no red fault lines, or with exactly two, or three?<br>
+    <strong>How to play:</strong> click three squares in a row to make an L — the second click is the corner. A red line across a finished board is a fault: no piece crosses it.
+  </div>
+
+  <div id="stage" class="stage"><svg id="board" role="grid" aria-label="Chessboard with a hole in the middle"></svg></div>
+
+  <div class="controls">
+    <label><input type="radio" name="view" value="wire" checked> Wire</label>
+    <label><input type="radio" name="view" value="blocks"> Blocks</label>
+    <button type="button" id="undoBtn">Remove last</button>
+    <button type="button" id="resetBtn" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Charles W. Trigg asked this about an 8 by 8 board with its centre four squares cut out:
+        cover what is left with
+        <a class="wiki-term" data-wiki="Polyomino" href="https://en.wikipedia.org/wiki/Polyomino" target="_blank" rel="noopener">L-trominoes</a>
+        so that the covering has no fault line, or exactly two, or exactly three — and show that
+        four is impossible. A fault line is a straight grid line from one side of the board to the
+        other that no piece crosses, so one half of the tiling could slide past the other.
+      </p>
+
+      <h2>Why a covering exists at all</h2>
+      <p>
+        Sixty squares remain, a multiple of three.
+        <a class="wiki-term" data-wiki="Solomon_Golomb" href="https://en.wikipedia.org/wiki/Solomon_Golomb" target="_blank" rel="noopener">Golomb</a>'s
+        theorem says an 8 by 8 with any one square missing can be tiled with L-trominoes. Put one
+        tromino into the cut-out 2 by 2 so that a single square is left missing, and the theorem
+        finishes the board. So the real question is about counting seams, not about existence.
+      </p>
+
+      <h2>Which lines can be faults</h2>
+      <p>
+        Label rows A–H and columns 1–8. Benjamin Schwartz proved a few short lemmas: a 2 by
+        <code>n</code> strip tiles with L-trominoes only when <code>n</code> is a multiple of 3;
+        two neighbouring lines cannot both be faults; a 3 by 3 cannot be tiled with L-trominoes;
+        and a fault cannot sit next to the outer edge. Together those cut the candidates down to
+        the three middle horizontal lines (CD, DE, EF) and the three middle vertical ones (34, 45, 56).
+      </p>
+
+      <h2>Zero to three, never four</h2>
+      <p>
+        Searching every L-tromino covering of this board finds 3,427 tilings. Their fault counts
+        are 0 (1,250 of them), 1 (128), 2 (just 1), and 3 (2,048) — and none with four or more.
+        Trigg asked for 0, 2 and 3; Schwartz also exhibited a covering with exactly one. Four is
+        impossible for a sharper reason than the search: the only candidate set of four lines is
+        CD, EF, 34 and 56, and that would force each corner 3 by 3 to be tiled on its own, which
+        lemma III forbids.
+      </p>
+
+      <p class="tip">
+        Try for a covering with no red lines, then one with three. The only covering with exactly
+        two faults (in the exhaustive search) uses the centre cross: lines DE and 45.
+      </p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="trigg-tromino-core.js"></script>
+<script src="trigg-tromino.js"></script>
+</body>
+</html>

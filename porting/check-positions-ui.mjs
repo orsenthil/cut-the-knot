@@ -194,6 +194,12 @@ const GAMES = {
     await page.mouse.move(x(2), y, { steps: 4 });
     await page.mouse.up();
   },
+  "trigg-tromino": async (page) => {
+    await page.evaluate(() => {
+      const cell = document.querySelector("#board rect.sq:not(.hole)");
+      if (cell) cell.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    });
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

@@ -12,6 +12,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 
 import { describePosition } from "../src/games/registry.ts";
+import { cores } from "../src/generated/cores.js";
 import { gameModules } from "../src/generated/games.ts";
 
 let failures = 0;
@@ -80,6 +81,7 @@ check("sticky-problem: after a break", read["sticky-problem"]?.finished === fals
 check("soup-fish: after a pick", read["soup-fish"]?.finished === false && typeof read["soup-fish"]?.you === "number");
 check("table-to-zero-game: after a subtract", read["table-to-zero-game"]?.finished === false && Array.isArray(read["table-to-zero-game"]?.grid));
 check("trans-example: one shuttle drawn", read["trans-example"]?.finished === false && read["trans-example"]?.shuttles === 1);
+check("trigg-tromino: one square picked", read["trigg-tromino"]?.finished === false && read["trigg-tromino"].building === 1 && read["trigg-tromino"].piecesPlaced === 0);
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -528,6 +530,19 @@ const at = (slug, state) => describePosition(slug, state, 1);
     p.finished === false && JSON.stringify(p.topToBottom) === JSON.stringify([3, 2, 1, 4, 5]));
   const done = at("trans-example", { n: 5, mode: "verify", bars, labels: [3, 2, 1, 4, 5], itinerary: null });
   check("trans-example: all bottoms labelled is done", done.finished === true && done.traced === 5);
+}
+
+// Trigg Tromino: empty board, one pick, and a finished covering.
+{
+  const empty = at("trigg-tromino", { size: 8, owner: [], pieces: [], building: [] });
+  check("trigg-tromino: empty board has 60 free squares", empty.emptySquares === 60 && empty.finished === false);
+  const picking = at("trigg-tromino", { size: 8, pieces: [], building: [[0, 0]] });
+  check("trigg-tromino: one square in the building piece", picking.building === 1 && picking.piecesPlaced === 0);
+  const T = cores["trigg-tromino"].TriggTrominoCore;
+  const pieces = T.findCovering(0);
+  const covered = at("trigg-tromino", { size: 8, pieces, building: [] });
+  check("trigg-tromino: a fault-free covering reads as finished with 0 faults",
+    covered.finished === true && covered.faultCount === 0 && covered.piecesPlaced === 20);
 }
 
 // A game with no reader, and a position that makes no sense.
