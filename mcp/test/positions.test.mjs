@@ -100,6 +100,7 @@ check("addition-law-of-change: the first addend was nudged", read["addition-law-
 check("affirmative-action: a node was flipped on the grid", read["affirmative-action"]?.nodes === 20 && read["affirmative-action"].edges === 31 && Array.isArray(read["affirmative-action"].nonIntegrated));
 check("hamilton-apportionment: a population was edited", read["hamilton-apportionment"]?.seats === 23 && read["hamilton-apportionment"].final.length === 3 && read["hamilton-apportionment"].finalTotal === 23);
 check("all-combinations: the choose step changed M", read["all-combinations"]?.n === 5 && read["all-combinations"].m === 4 && read["all-combinations"].total === "5");
+check("all-permutations: the Heap generator was selected", read["all-permutations"]?.n === 3 && read["all-permutations"].algorithm === "heap" && read["all-permutations"].count === 6);
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -829,6 +830,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("all-combinations", { n: 5, m: 3 });
   check("all-combinations: C(5,3) is ten and the first row is 1 2 3", board.total === "10" && JSON.stringify(board.firstRow) === "[1,2,3]");
+}
+
+// All Permutations: factorial counts and cycle notation.
+{
+  const board = at("all-permutations", { n: 3, algorithm: "recursive" });
+  check("all-permutations: six rows and identity cycles", board.count === 6 && board.firstRow.cycles === "(1)(2)(3)");
 }
 
 // A game with no reader, and a position that makes no sense.

@@ -739,5 +739,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "all-permutations",
+      title: "All Permutations",
+      blurb: "List every ordering of the numbers 1 to N three different ways, and read each one as the cycles of a shuffle.",
+      tags: ["counting", "algorithms", "sequences"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };

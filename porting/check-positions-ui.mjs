@@ -297,6 +297,9 @@ const GAMES = {
   "all-combinations": async (page) => {
     await page.click("#mMore");
   },
+  "all-permutations": async (page) => {
+    await page.click('input[value="heap"]');
+  },
   "two-color-solitaire": async (page) => {
     await page.selectOption("#nInput", "8");
     const gap = await page.evaluate(() => {

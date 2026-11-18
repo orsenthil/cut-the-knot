@@ -252,6 +252,7 @@ const CORE_GLOBALS = {
   "affirmative-action/affirmative-action-core.js": ["AffirmativeActionCore"],
   "hamilton-apportionment/hamilton-apportionment-core.js": ["HamiltonApportionmentCore"],
   "all-combinations/all-combinations-core.js": ["AllCombinationsCore"],
+  "all-permutations/all-permutations-core.js": ["AllPermutationsCore"],
 };
 
 const games = [];

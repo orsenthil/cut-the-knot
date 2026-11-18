@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>All Permutations &mdash; coolmaths</title>
+<meta name="description" content="List every ordering of the numbers 1 to N three different ways, and read each one as the cycles of a shuffle.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/all-permutations/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="All Permutations">
+<meta property="og:description" content="List every ordering of the numbers 1 to N three different ways, and read each one as the cycles of a shuffle.">
+<meta property="og:url" content="https://coolmaths.ai/all-permutations/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.8rem;
+  }
+  #permutations {
+    height: 18rem;
+    overflow-y: auto;
+    padding: 0.4rem;
+    border: 1px solid var(--border);
+    border-radius: 0.7rem;
+    background: var(--card);
+  }
+  .perm {
+    padding: 0.15rem 0.4rem;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .perm:nth-child(odd) { background: var(--surface); }
+  .perm-more {
+    padding: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .count {
+    margin: 0.6rem 0 0;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .control-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+  }
+  .stepper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .stepper output {
+    min-width: 2rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+  .control-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    cursor: pointer;
+  }
+  button:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="all-permutations" data-kind="demo">
+<main id="main">
+  <h1>All Permutations</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#sequences">Sequences</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/do_you_know/AllPerm.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Explore all the ways to order the numbers 1 to N, written also as cycles.<br>
+    <strong>How to play:</strong> Change N or pick one of the three generators, R, L or H, and watch the rows change order.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="permutations" role="list" aria-label="All permutations with their cycles"></div>
+    <p id="count" class="count"></p>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <span class="control-label">Numbers N</span>
+      <span class="stepper"><button id="nLess" type="button" aria-label="Fewer numbers">&minus;</button><output id="nOut">3</output><button id="nMore" type="button" aria-label="More numbers">+</button></span>
+      <label><input type="radio" name="algorithm" value="recursive" checked> R</label>
+      <label><input type="radio" name="algorithm" value="lexicographic"> L</label>
+      <label><input type="radio" name="algorithm" value="heap"> H</label>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>There are <code>n!</code> ways to order <code>n</code> objects. Three different algorithms can list them all, and each gives the same set of rows in a different order.</p>
+
+      <h2>Three generators</h2>
+      <p><strong>R</strong> is a short recursion: put the next unused number in each position and try again. <strong>L</strong> starts at <code>1, 2, &hellip;, n</code> and repeatedly finds the first position from the right that can be increased, then reverses the tail — this is Dijkstra's next-permutation step. <strong>H</strong> is <a class="wiki-term" data-wiki="Heap%27s_algorithm" href="https://en.wikipedia.org/wiki/Heap%27s_algorithm" target="_blank" rel="noopener">Heap's algorithm</a>, which recurses and swaps either the first or the last element depending on the parity of the current size. The logic test transcribes all three and compares them row for row on every <code>n</code> up to 7.</p>
+
+      <h2>Cycles and derangements</h2>
+      <p>Each row is also written as a product of <a class="wiki-term" data-wiki="Permutation_cycle" href="https://en.wikipedia.org/wiki/Permutation_cycle" target="_blank" rel="noopener">cycles</a>: follow 1 to its image, then that number to its image, until it returns. For <code>n = 3</code> the six rows are the rigid motions of a triangle — two rotations and three reflections plus the identity. A permutation with no fixed point is a derangement; the number of them satisfies <code>D(n) = (n&minus;1)(D(n&minus;1) + D(n&minus;2))</code>, which the logic test checks against the listed rows.</p>
+
+      <h2>What the check found</h2>
+      <p>All three generators produce exactly <code>n!</code> distinct rows, in their own characteristic order, for every <code>n</code> up to 8. The recursion in the original applet prints the numbers 2 to N+1 (an off-by-one); this port keeps its exact order but shows 1 to N, as the page states. The browser draws at most a thousand rows and reports the true count.</p>
+
+      <p class="tip">Set N to 4 and compare the first ten rows under R, L and H. Does any row appear twice?</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="all-permutations-core.js"></script>
+<script src="all-permutations.js"></script>
+</body>
+</html>
