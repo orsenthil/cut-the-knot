@@ -91,6 +91,7 @@ check("two-color-solitaire: one pair removed from 8 cards", read["two-color-soli
 check("up-and-down-game: one number placed in box 1", read["up-and-down-game"]?.filled === 1 && read["up-and-down-game"].boxes[0] === 3 && read["up-and-down-game"].finished === false && read["up-and-down-game"].canStillBeCompleted === true);
 check("wythoff-nim: one move made from two heaps of 3", read["wythoff-nim"]?.finished === false && read["wythoff-nim"].heaps.length === 2 && read["wythoff-nim"].movesSoFar >= 1);
 check("y-theory: a clicked cell on a board of seven", read["y-theory"]?.n === 7 && read["y-theory"].cellCount === 28 && read["y-theory"].winner !== null && read["y-theory"].reducedWinner === read["y-theory"].winner);
+check("date-game: a January date after two month clicks", read["date-game"]?.month === 2 && read["date-game"].day >= 0 && read["date-game"].valid === true && read["date-game"].finished === false);
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -728,6 +729,21 @@ const at = (slug, state) => describePosition(slug, state, 1);
 
   const single = at("y-theory", board(1, ["red"]));
   check("y-theory: one red cell is a red win with no reduction", single.winner === "red" && single.n === 1 && single.reducedWinner === null);
+}
+
+// The Date Game: the losing diagonal and the finished dates.
+{
+  const jan5 = at("date-game", { month: 0, day: 4, leap: false, turn: "you", last: null });
+  check("date-game: January 5 is a valid, non-losing date", jan5.valid === true && jan5.losing === false && jan5.difference === 4 && JSON.stringify(jan5.target) === "{\"month\":0,\"day\":19}");
+
+  const jan20 = at("date-game", { month: 0, day: 19, leap: false, turn: "computer", last: null });
+  check("date-game: January 20 is the losing diagonal", jan20.losing === true && jan20.difference === 19 && jan20.target === null);
+
+  const dec31 = at("date-game", { month: 11, day: 30, leap: false, turn: "you", winner: "you" });
+  check("date-game: December 31 is a win for the player who got there", dec31.finished === true && dec31.result === "win" && dec31.losing === true);
+
+  const feb29 = at("date-game", { month: 1, day: 29, leap: false, turn: "you", last: "day" });
+  check("date-game: February 30 is not a real date in an ordinary year", feb29.valid === false && feb29.wordsYouMayStillMove.length === 1);
 }
 
 // A game with no reader, and a position that makes no sense.

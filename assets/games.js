@@ -670,5 +670,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "date-game",
+      title: "The Date Game",
+      blurb: "Two numbers on a calendar hide a Nim heap. Can you reach December 31 before the computer by finding the losing diagonal?",
+      tags: ["game-strategy", "logic", "counting"],
+      level: 2,
+    },
   ],
 };

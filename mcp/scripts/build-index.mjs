@@ -243,6 +243,7 @@ const CORE_GLOBALS = {
   "up-and-down-game/up-and-down-game-core.js": ["UpAndDownGameCore"],
   "wythoff-nim/wythoff-nim-core.js": ["WythoffNimCore"],
   "y-theory/y-theory-core.js": ["YTheoryCore"],
+  "date-game/date-game-core.js": ["DateGameCore"],
 };
 
 const games = [];

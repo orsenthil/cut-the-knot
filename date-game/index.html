@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Date Game &mdash; coolmaths</title>
+<meta name="description" content="Two numbers on a calendar hide a Nim heap. Can you reach December 31 before the computer by finding the losing diagonal?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/date-game/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Date Game">
+<meta property="og:description" content="Two numbers on a calendar hide a Nim heap. Can you reach December 31 before the computer by finding the losing diagonal?">
+<meta property="og:url" content="https://coolmaths.ai/date-game/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  .date-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: center;
+    gap: 0.5rem 1rem;
+  }
+  .date-part {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .date-part > span {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .date-btn {
+    min-width: 5.5rem;
+    min-height: 3.5rem;
+    padding: 0.4rem 0.8rem;
+    font: inherit;
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.1;
+    border: 2px solid var(--border-strong);
+    border-radius: 0.8rem;
+    background: var(--card);
+    color: var(--text);
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .date-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .date-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+  .date-btn:focus-visible, button:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  #readOut {
+    margin: 0.9rem 0 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+</style>
+</head>
+<body data-game="date-game" data-kind="game">
+<main id="main">
+  <h1>The Date Game</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/Date.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Move a calendar date forward to December 31. You and the computer take turns, and whoever gets there first wins.<br>
+    <strong>How to play:</strong> Click the month or the day to move it forward, then press Move. Once you start with one, keep clicking that one until you press Move.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="date-card" role="group" aria-label="The current date">
+      <div class="date-part"><button id="monthBtn" class="date-btn" type="button">Jan</button><span>Month</span></div>
+      <div class="date-part"><button id="dayBtn" class="date-btn" type="button">01</button><span>Day</span></div>
+    </div>
+    <p id="readOut"></p>
+  </div>
+
+  <div class="controls">
+    <button id="moveBtn" type="button" class="primary" aria-label="Finish this turn and let the computer play">Move</button>
+    <button id="resetBtn" type="button" aria-label="Start a new game with a new random date">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A calendar date looks like two ordinary numbers. But this game is an impartial game in disguise, and there is a short diagonal of losing dates hiding in the calendar.</p>
+
+      <h2>A date is two numbers</h2>
+      <p>Count months and days from zero: January is <code>0</code> and the 1st is <code>0</code>, so December 31 is <code>(11, 30)</code>. A move adds to one of the two numbers, and a real date must have its day inside that month — February 30 is not allowed. The player who reaches <code>(11, 30)</code> wins. This is an <a class="wiki-term" data-wiki="Impartial_game" href="https://en.wikipedia.org/wiki/Impartial_game" target="_blank" rel="noopener">impartial game</a>, the same family as <a class="wiki-term" data-wiki="Nim" href="https://en.wikipedia.org/wiki/Nim" target="_blank" rel="noopener">Nim</a>.</p>
+
+      <h2>The losing diagonal</h2>
+      <p>The twelve losing dates are <code>Jan 20, Feb 21, Mar 22, Apr 23, May 24, Jun 25, Jul 26, Aug 27, Sep 28, Oct 29, Nov 30, Dec 31</code>. In every one of them, <code>day &minus; month = 19</code>, which is <code>30 &minus; 11</code>. From any other date, one move can put you back on that line: if the difference is too small, move the day up to <code>month + 19</code>; if it is too big, move the month up to <code>day &minus; 19</code>. From the line, every move leaves it. So the line is exactly the set of losing positions, and the computer in the applet aims for it.</p>
+
+      <h2>What the check found</h2>
+      <p>The logic test searches the whole game tree of every valid date and finds exactly those twelve losing dates — the diagonal the cut-the-knot page describes. It repeats the search with a leap-year February and gets the same twelve, so the shorter months really do not shift the line. It also transcribes the applet's own computer move from the bytecode and compares the two on every playable date: they agree everywhere. One harmless quirk stays: the applet first checks whether <code>day &minus; month + 19 = 0</code>, which can never happen, before using the real test. A second quirk is the date undo: change to a month with too few days and the whole turn is rolled back with an apology.</p>
+
+      <p class="tip">Start on January 20 and press Move without changing it. That is a losing date — can you see why every reply lets the computer take the diagonal?</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="date-game-core.js"></script>
+<script src="date-game.js"></script>
+</body>
+</html>

@@ -267,6 +267,10 @@ const GAMES = {
     await page.locator('.ycell[data-id="0"]').click();
     await page.check("#subgameCheck");
   },
+  "date-game": async (page) => {
+    await page.click("#monthBtn");
+    await page.click("#monthBtn");
+  },
   "two-color-solitaire": async (page) => {
     await page.selectOption("#nInput", "8");
     const gap = await page.evaluate(() => {
