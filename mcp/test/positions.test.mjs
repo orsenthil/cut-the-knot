@@ -95,6 +95,7 @@ check("date-game: a January date after two month clicks", read["date-game"]?.mon
 check("goat-cabbage-wolf: the goat was ferried across", read["goat-cabbage-wolf"]?.right.length === 1 && read["goat-cabbage-wolf"].farmerShore === "right" && read["goat-cabbage-wolf"].nextCrossing === "cross alone");
 check("subtraction-game: one move made on a board of twelve", read["subtraction-game"]?.nums.length === 12 && read["subtraction-game"].movesSoFar >= 1);
 check("abacus: counters moved on the units wire", read["abacus"]?.radix === 10 && read["abacus"].wires === 7 && read["abacus"].abaci[0].digits[6] > 0);
+check("adams-apportionment: a population was edited", read["adams-apportionment"]?.seats === 23 && read["adams-apportionment"].populations.length === 3 && read["adams-apportionment"].totalPopulation > 0);
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -784,6 +785,16 @@ const at = (slug, state) => describePosition(slug, state, 1);
 
   const hex = at("abacus", { radix: 16, wires: 4, count: 1, sync: false, abaci: [{ digits: [11, 14, 14, 15] }] });
   check("abacus: BEEF in base sixteen is 48879", hex.abaci[0].written === "BEEF" && hex.abaci[0].value === 48879);
+}
+
+// Adams' method: the divisor and the four quota columns.
+{
+  const board = at("adams-apportionment", { seats: 23, states: 3, populations: [100, 200, 300], divisor: 600 / 23 });
+  check("adams-apportionment: the standard divisor rounds up to too many seats",
+    board.fits === false && board.standardDivisor > 26 && board.upwardTotal === 24);
+
+  const fitted = at("adams-apportionment", { seats: 23, states: 3, populations: [100, 200, 300], divisor: 28 });
+  check("adams-apportionment: divisor 28 fits exactly", fitted.fits === true && fitted.upwardTotal === 23);
 }
 
 // A game with no reader, and a position that makes no sense.

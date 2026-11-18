@@ -247,6 +247,7 @@ const CORE_GLOBALS = {
   "goat-cabbage-wolf/goat-cabbage-wolf-core.js": ["GoatCabbageWolfCore"],
   "subtraction-game/subtraction-game-core.js": ["SubtractionGameCore"],
   "abacus/abacus-core.js": ["AbacusCore"],
+  "adams-apportionment/adams-apportionment-core.js": ["AdamsApportionmentCore"],
 };
 
 const games = [];

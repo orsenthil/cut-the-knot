@@ -699,5 +699,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "adams-apportionment",
+      title: "Adams' Apportionment Method",
+      blurb: "Twenty-three seats, three states and a divisor you must tune: can you round every quota up and still land on exactly the right total?",
+      tags: ["arithmetic", "counting", "logic"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };

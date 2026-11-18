@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Adams' Apportionment Method &mdash; coolmaths</title>
+<meta name="description" content="Twenty-three seats, three states and a divisor you must tune: can you round every quota up and still land on exactly the right total?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/adams-apportionment/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Adams' Apportionment Method">
+<meta property="og:description" content="Twenty-three seats, three states and a divisor you must tune: can you round every quota up and still land on exactly the right total?">
+<meta property="og:url" content="https://coolmaths.ai/adams-apportionment/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.6rem;
+    overflow-x: auto;
+  }
+  .apportion-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .apportion-table th, .apportion-table td {
+    padding: 0.35rem 0.4rem;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+  }
+  .apportion-table th:first-child, .apportion-table td:first-child {
+    text-align: left;
+    font-weight: 700;
+  }
+  .apportion-table th {
+    color: var(--muted);
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+  .apportion-table .totals {
+    border-top: 2px solid var(--border-strong);
+    font-weight: 700;
+  }
+  .apportion-table input {
+    width: 4.5rem;
+    max-width: 100%;
+    font: inherit;
+    padding: 0.15rem 0.3rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.35rem;
+    background: var(--card);
+    color: var(--text);
+  }
+  .apportion-table input:focus-visible, button:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .control-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+  }
+  .control-label {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .stepper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .stepper output {
+    min-width: 2.5rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+  #divisorInput {
+    width: 5rem;
+    font: inherit;
+    padding: 0.2rem 0.35rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.35rem;
+    background: var(--card);
+    color: var(--text);
+  }
+</style>
+</head>
+<body data-game="adams-apportionment" data-kind="demo">
+<main id="main">
+  <h1>Adams' Apportionment Method</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/SocialScience/Adams.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Share a fixed number of seats between states so that each state's share matches its population.<br>
+    <strong>How to play:</strong> Change the populations, seats or divisor. Press "Find divisor" to make the rounded-up shares add up exactly.
+  </div>
+
+  <div id="stage" class="stage">
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <span class="control-label">Number of seats</span>
+      <span class="stepper"><button id="seatsLess" type="button" aria-label="Fewer seats">&minus;</button><output id="seatsOut">23</output><button id="seatsMore" type="button" aria-label="More seats">+</button></span>
+      <span class="control-label">States</span>
+      <span class="stepper"><button id="statesLess" type="button" aria-label="Fewer states">&minus;</button><output id="statesOut">3</output><button id="statesMore" type="button" aria-label="More states">+</button></span>
+      <label class="control-label">Divisor <input id="divisorInput" type="number" min="1" max="1000" step="0.01" aria-label="Modified divisor"></label>
+      <button id="findBtn" type="button">Find divisor</button>
+      <button id="resetBtn" type="button" class="primary">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Dividing 23 seats among three states seems easy until the shares are not whole numbers. Different rounding rules give different parliaments, and one of them was proposed by a future president.</p>
+
+      <h2>Quotas, up and down</h2>
+      <p>The <em>standard divisor</em> is the total population divided by the number of seats. A state's standard quota is its population divided by that divisor, and the standard quotas always add up to the seat count exactly. <a class="wiki-term" data-wiki="Largest_remainder_method" href="https://en.wikipedia.org/wiki/Largest_remainder_method" target="_blank" rel="noopener">Hamilton's method</a> rounds those quotas and then adjusts. John Quincy Adams proposed instead to round every quota <em>up</em>, using a slightly larger divisor so the rounded totals still fit — a <a class="wiki-term" data-wiki="Divisor_method" href="https://en.wikipedia.org/wiki/Divisor_method" target="_blank" rel="noopener">divisor method</a>. The table shows the lower quota (rounded down at the standard divisor) beside the modified and upward ones.</p>
+
+      <h2>Finding the divisor</h2>
+      <p>As the divisor grows, every upward quota falls, so the total falls too. That makes it easy to hunt for a divisor whose total is exactly the number of seats: keep halving the search interval around the crossing. The logic test does this on thousands of random countries and checks the two quota columns against the applet's own floor and ceiling operations.</p>
+
+      <h2>What the check found</h2>
+      <p>The method has a genuine flaw. Several states can lose a seat at the very same divisor, making the upward total jump over the seat count — for about one country in a hundred tried by the logic test, no divisor gives an exact total, and the page says "no divisor fits". Adams' method was never adopted by the US Congress. When a divisor is found, though, the test confirms that its upward quotas always add to exactly the number of seats, and that the lower and upward quotas bracket the standard one.</p>
+
+      <p class="tip">Set three states and twenty-three seats. Can you make the upward total land on 23 by hand before pressing Find divisor?</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="adams-apportionment-core.js"></script>
+<script src="adams-apportionment.js"></script>
+</body>
+</html>

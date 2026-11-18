@@ -282,6 +282,9 @@ const GAMES = {
   "abacus": async (page) => {
     await page.click('.counter[data-abacus="0"][data-wire="6"][data-part="upper"][data-index="3"]');
   },
+  "adams-apportionment": async (page) => {
+    await page.click('input[data-part="population"][data-index="0"]');
+  },
   "two-color-solitaire": async (page) => {
     await page.selectOption("#nInput", "8");
     const gap = await page.evaluate(() => {
