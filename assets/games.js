@@ -648,5 +648,12 @@ window.COOLMATHS = {
       tags: ["game-strategy", "parity", "invariants"],
       level: 2,
     },
+    {
+      slug: "up-and-down-game",
+      title: "Monotone Number Sequences",
+      blurb: "Place nine or ten numbers in the boxes so that no four, read left to right, keep going up or keep going down. Can you do it with ten?",
+      tags: ["sequences", "counting", "logic"],
+      level: 2,
+    },
   ],
 };

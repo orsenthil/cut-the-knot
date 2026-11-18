@@ -240,6 +240,7 @@ const CORE_GLOBALS = {
   "tromino-rep-tile/tromino-rep-tile-core.js": ["TrominoRepTileCore"],
   "tromino-puzzle/tromino-puzzle-core.js": ["TrominoPuzzleCore"],
   "two-color-solitaire/two-color-solitaire-core.js": ["TwoColorSolitaireCore"],
+  "up-and-down-game/up-and-down-game-core.js": ["UpAndDownGameCore"],
 };
 
 const games = [];

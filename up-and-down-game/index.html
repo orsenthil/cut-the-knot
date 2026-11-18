@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Monotone Number Sequences &mdash; coolmaths</title>
+<meta name="description" content="Place nine or ten numbers in the boxes so that no four, read left to right, keep going up or keep going down. Can you do it with ten?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/up-and-down-game/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Monotone Number Sequences">
+<meta property="og:description" content="Place nine or ten numbers in the boxes so that no four, read left to right, keep going up or keep going down. Can you do it with ten?">
+<meta property="og:url" content="https://coolmaths.ai/up-and-down-game/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 1rem;
+    overflow: hidden;
+  }
+  .board-label {
+    margin: 0 0 0.35rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .rail + .board-label {
+    margin-top: 0.9rem;
+  }
+  .rail {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding: 0.25rem 0 0.5rem;
+    scrollbar-width: thin;
+  }
+  .box, .tile {
+    flex: 0 0 auto;
+    min-width: 2.5rem;
+    height: 2.75rem;
+    padding: 0 0.4rem;
+    font: inherit;
+    font-size: 1.1rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    border: 2px solid var(--border-strong);
+    border-radius: 0.6rem;
+    background: var(--card);
+    color: var(--text);
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .box {
+    background: var(--board-a);
+    border-style: dashed;
+  }
+  .box.filled {
+    background: var(--card);
+    border-style: solid;
+  }
+  .box.faulty {
+    background: var(--bad);
+    border-color: var(--bad);
+    color: var(--card);
+  }
+  .box.over {
+    outline: 3px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .tile {
+    background: var(--surface);
+  }
+  .tile.selected {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+  .tile.placed {
+    opacity: 0.55;
+  }
+  .box:focus-visible, .tile:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .length-options {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .length-options legend {
+    padding: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .length-options label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body data-game="up-and-down-game" data-kind="game">
+<main id="main">
+  <h1>Monotone Number Sequences</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/UpAndDownGame.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Fill every box with a number so that no four numbers, read from left to right, keep going up or keep going down.<br>
+    <strong>How to play:</strong> Click a number and then a box to put it there, or drag the number into a box. Click a number in a box to pick it up again.
+  </div>
+
+  <div id="stage" class="stage">
+  </div>
+
+  <div class="controls">
+    <fieldset class="length-options">
+      <legend>Length of sequence</legend>
+      <label><input type="radio" name="length" value="9" checked> 9 numbers</label>
+      <label><input type="radio" name="length" value="10"> 10 numbers</label>
+    </fieldset>
+    <button id="newBtn" type="button" class="primary">New Game</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>You have as many boxes as numbers. It sounds easy to spread them out so that no four form a steady run — but with ten numbers it cannot be done at all. With nine it can.</p>
+
+      <h2>What counts as a run</h2>
+      <p>A run is a <a class="wiki-term" data-wiki="Subsequence" href="https://en.wikipedia.org/wiki/Subsequence" target="_blank" rel="noopener">subsequence</a>: pick any four boxes in order, not necessarily touching, and read their numbers. If those four keep getting bigger (<code>2, 4, 7, 9</code>) or keep getting smaller (<code>9, 7, 4, 2</code>), the board has a fault and those boxes light up. For example, <code>3, 2, 1, 6, 5, 4, 9, 8, 7</code> has no such run: each group of three falls, and the groups rise from one to the next.</p>
+
+      <h2>Why ten always fails</h2>
+      <p>Give every number two labels: how long its longest rising run ending there is, and how long its longest falling run ending there is. If no four ever make a run, each label can only be 1, 2 or 3, so there are just <code>3 &times; 3 = 9</code> different label pairs. With ten numbers, two must share the same pair by the <a class="wiki-term" data-wiki="Pigeonhole_principle" href="https://en.wikipedia.org/wiki/Pigeonhole_principle" target="_blank" rel="noopener">pigeonhole principle</a> — and the later one then gets a longer run than the earlier one, a contradiction. This is the <a class="wiki-term" data-wiki="Erdős–Szekeres_theorem" href="https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93Szekeres_theorem" target="_blank" rel="noopener">Erdős–Szekeres theorem</a>: any <code>(r&minus;1)(s&minus;1)+1</code> distinct numbers contain a rising run of length <code>r</code> or a falling one of length <code>s</code>; with <code>r = s = 4</code> that is ten.</p>
+
+      <h2>What the check found</h2>
+      <p>The logic test looks at every way to fill the boxes. All <code>9! = 362,880</code> arrangements of nine numbers are checked and exactly <code>1,764</code> of them work. All <code>10! = 3,628,800</code> arrangements of ten are checked and not one works — so the applet's claim is confirmed, not just assumed.</p>
+
+      <p class="tip">Try the nine-number board above, then swap two neighbours. Can you find a second arrangement that works?</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="up-and-down-game-core.js"></script>
+<script src="up-and-down-game.js"></script>
+</body>
+</html>

@@ -253,6 +253,10 @@ const GAMES = {
     await clickCell(0, 2);
     await clickCell(1, 2);
   },
+  "up-and-down-game": async (page) => {
+    await page.click('.tile[data-value="3"]');
+    await page.click('.box[data-box="0"]');
+  },
   "two-color-solitaire": async (page) => {
     await page.selectOption("#nInput", "8");
     const gap = await page.evaluate(() => {
