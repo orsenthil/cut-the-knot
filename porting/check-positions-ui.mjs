@@ -303,6 +303,9 @@ const GAMES = {
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },
+  "apportionment-methods": async (page) => {
+    await page.selectOption("#methodSelect", "webster");
+  },
   "two-color-solitaire": async (page) => {
     await page.selectOption("#nInput", "8");
     const gap = await page.evaluate(() => {

@@ -102,6 +102,7 @@ check("hamilton-apportionment: a population was edited", read["hamilton-apportio
 check("all-combinations: the choose step changed M", read["all-combinations"]?.n === 5 && read["all-combinations"].m === 4 && read["all-combinations"].total === "5");
 check("all-permutations: the Heap generator was selected", read["all-permutations"]?.n === 3 && read["all-permutations"].algorithm === "heap" && read["all-permutations"].count === 6);
 check("isosceles-fallacy: switched to the honest drawing", read["isosceles-fallacy"]?.mode === "right" && read["isosceles-fallacy"].pOnCircumcircle === true && read["isosceles-fallacy"].uOnSide !== read["isosceles-fallacy"].vOnSide);
+check("apportionment-methods: Webster was highlighted", read["apportionment-methods"]?.seats === 23 && read["apportionment-methods"].method === "webster" && Object.keys(read["apportionment-methods"].allocations).length === 5);
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -843,6 +844,13 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("isosceles-fallacy", { A: { x: 80, y: 250 }, B: { x: 320, y: 250 }, C: { x: 215, y: 70 }, mode: "right" });
   check("isosceles-fallacy: P lies on the circle and one foot is outside", board.pOnCircumcircle === true && board.uOnSide !== board.vOnSide);
+}
+
+// Five apportionment methods: every column fills the house.
+{
+  const country = at("apportionment-methods", { seats: 23, populations: [100, 200, 300], method: "hamilton" });
+  check("apportionment-methods: all five columns add to 23",
+    Object.values(country.allocations).every((a) => a.reduce((x, y) => x + y, 0) === 23));
 }
 
 // A game with no reader, and a position that makes no sense.

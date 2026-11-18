@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Five Methods of Apportionment &mdash; coolmaths</title>
+<meta name="description" content="Hamilton, Jefferson, Adams, Webster and Huntington-Hill share the same seats in five different ways. Who gets the extra seat?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/apportionment-methods/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Five Methods of Apportionment">
+<meta property="og:description" content="Hamilton, Jefferson, Adams, Webster and Huntington-Hill share the same seats in five different ways. Who gets the extra seat?">
+<meta property="og:url" content="https://coolmaths.ai/apportionment-methods/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+    overflow-x: auto;
+  }
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.65rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .compare-table th, .compare-table td {
+    padding: 0.25rem 0.1rem;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+  }
+  .compare-table th:first-child, .compare-table td:first-child {
+    text-align: left;
+    font-weight: 700;
+  }
+  .compare-table th {
+    color: var(--muted);
+    font-size: 0.56rem;
+    white-space: nowrap;
+  }
+  .compare-table .chosen {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .compare-table .totals {
+    border-top: 2px solid var(--border-strong);
+    font-weight: 700;
+  }
+  .compare-table input {
+    width: 2.6rem;
+    max-width: 100%;
+    font: inherit;
+    padding: 0.1rem 0.2rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.3rem;
+    background: var(--card);
+    color: var(--text);
+  }
+  .detail {
+    margin: 0.6rem 0 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+  }
+  .control-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+  }
+  .control-label {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .stepper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .stepper output {
+    min-width: 2rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+  select {
+    font: inherit;
+    padding: 0.2rem 0.3rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.4rem;
+    background: var(--card);
+    color: var(--text);
+  }
+  .compare-table input:focus-visible, button:focus-visible, select:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="apportionment-methods" data-kind="demo">
+<main id="main">
+  <h1>Five Methods of Apportionment</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/SocialScience/ApportionmentApplet.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> The original calculator was created for Peter Tannenbaum's <em>Excursions in Modern Mathematics</em> and reproduced with permission; this is an independent implementation of the same five methods.<br>
+    <strong>How to play:</strong> Change the seat count, state count or a population, then compare the five allocations side by side.
+  </div>
+
+  <div id="stage" class="stage">
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <span class="control-label">Seats</span>
+      <span class="stepper"><button id="seatsLess" type="button" aria-label="Fewer seats">&minus;</button><output id="seatsOut">23</output><button id="seatsMore" type="button" aria-label="More seats">+</button></span>
+      <span class="control-label">States</span>
+      <span class="stepper"><button id="statesLess" type="button" aria-label="Fewer states">&minus;</button><output id="statesOut">3</output><button id="statesMore" type="button" aria-label="More states">+</button></span>
+      <label class="control-label">Method
+        <select id="methodSelect" aria-label="Method to highlight">
+          <option value="hamilton">Hamilton</option>
+          <option value="jefferson">Jefferson</option>
+          <option value="adams">Adams</option>
+          <option value="webster">Webster</option>
+          <option value="huntington-hill">Huntington-Hill</option>
+        </select>
+      </label>
+      <button id="resetBtn" type="button" class="primary">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Five ways to share seats in proportion to population, and five different answers. Each method chooses a rounding rule, then either adjusts the divisor or hands out the leftovers.</p>
+
+      <h2>Two families of methods</h2>
+      <p><a class="wiki-term" data-wiki="Largest_remainder_method" href="https://en.wikipedia.org/wiki/Largest_remainder_method" target="_blank" rel="noopener">Hamilton</a> rounds every standard quota down and gives the leftover seats to the largest fractional parts. The other four are <a class="wiki-term" data-wiki="Divisor_method" href="https://en.wikipedia.org/wiki/Divisor_method" target="_blank" rel="noopener">divisor methods</a>: Jefferson rounds down, Adams rounds up, Webster rounds to the nearest whole number, and Huntington-Hill rounds up only past the geometric mean of <code>n</code> and <code>n+1</code>. They can be computed by giving each seat in turn to the state with the largest priority under the method's rule.</p>
+
+      <h2>Why the choices differ</h2>
+      <p>Small changes in population can move seats between states in surprising ways. Hamilton suffers the famous paradoxes: adding seats to the house can cost a state a seat, and a faster-growing state can lose one to a slower-growing rival. The divisor methods avoid those paradoxes but can violate the quota rule — giving a state a seat outside its exact quota. There is no method that avoids every problem.</p>
+
+      <h2>What the check found</h2>
+      <p>The logic test checks two thousand random countries. All five methods always allocate exactly the number of seats, the four divisor methods follow their own priority rules, and Hamilton and Adams agree with the separate dedicated ports on this site. It also pins down a concrete Alabama paradox. Try a state with zero population: no method should give it a seat.</p>
+
+      <p class="tip">Set three states and twenty-three seats. Which methods agree, and which single state do they disagree about?</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="apportionment-methods-core.js"></script>
+<script src="apportionment-methods.js"></script>
+</body>
+</html>

@@ -755,5 +755,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "apportionment-methods",
+      title: "Five Methods of Apportionment",
+      blurb: "Hamilton, Jefferson, Adams, Webster and Huntington-Hill share the same seats in five different ways. Who gets the extra seat?",
+      tags: ["counting", "arithmetic", "paradoxes"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };
