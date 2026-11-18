@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>All Triangles Are Isosceles? &mdash; coolmaths</title>
+<meta name="description" content="A proof says every triangle is isosceles. Drag the corners and switch to the honest drawing to find the one line where the picture lies.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/isosceles-fallacy/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="All Triangles Are Isosceles?">
+<meta property="og:description" content="A proof says every triangle is isosceles. Drag the corners and switch to the honest drawing to find the one line where the picture lies.">
+<meta property="og:url" content="https://coolmaths.ai/isosceles-fallacy/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  .triangle { fill: var(--accent-soft); stroke: none; }
+  .aux { stroke: var(--border-strong); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  .bisector { stroke: var(--accent); stroke-width: 2; }
+  .perp { stroke: #c2653a; stroke-width: 2; }
+  .circumcircle { fill: none; stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  .pt { stroke: var(--ink); stroke-width: 1.5; }
+  .pt.vertex { fill: var(--accent); }
+  .pt.m { fill: var(--muted); }
+  .pt.p { fill: #c2653a; }
+  .pt.u, .pt.v { fill: var(--good); }
+  .pt-label { fill: var(--text); font-size: 13px; font-family: var(--font); }
+  .hint { fill: var(--text); font-size: 12px; font-family: var(--font); }
+  .hit { fill: transparent; }
+  .handle { cursor: grab; }
+  .handle:focus-visible { outline: none; }
+  .handle:focus-visible .pt.vertex { stroke: var(--accent); stroke-width: 4; }
+  .control-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+  }
+  .control-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+  }
+  button:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="isosceles-fallacy" data-kind="demo">
+<main id="main">
+  <h1>All Triangles Are Isosceles?</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Fallacies/AllTrianglesIsosceles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Find the mistake in a proof that every triangle is isosceles.<br>
+    <strong>How to play:</strong> Drag the corners A, B and C, then tick "Honest drawing" to see where the picture was cheating.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 320" role="group" aria-label="A triangle with its angle bisector, perpendicular bisector and perpendicular feet"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label><input id="modeCheck" type="checkbox"> Honest drawing</label>
+      <label><input id="namesCheck" type="checkbox" checked> Show names</label>
+      <label><input id="hintCheck" type="checkbox"> More info</label>
+      <button id="resetBtn" type="button" class="primary">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The argument looks solid: build P from the angle bisector and perpendicular bisector, drop two perpendiculars, match three pairs of congruent triangles, and conclude that two sides are equal. Yet all triangles are not isosceles. Where does it break?</p>
+
+      <h2>The chain of congruences</h2>
+      <p>Triangles AMP and BMP are congruent by SAS, so <code>AP = BP</code>. Right triangles CPU and CPV are congruent by ASA, so <code>CU = CV</code> and <code>PU = PV</code>. Then right triangles APU and BPV are congruent by SSS, giving <code>AU = BV</code>. Adding, the proof claims <code>AC = AU + CU = BV + CV = BC</code>. Every congruence is correct — the addition is not.</p>
+
+      <h2>Where the picture lies</h2>
+      <p>The angle bisector from C and the perpendicular bisector of AB always meet on the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of ABC: the bisector cuts arc AB in half, and so does the perpendicular bisector through the circumcenter. When P is on the circle, one of the feet U, V lies <em>outside</em> its side, so one of the two "additions" is really a subtraction. The applet's original diagram quietly shifts P inside to hide this.</p>
+
+      <h2>What the check found</h2>
+      <p>The logic test builds hundreds of random acute, scalene triangles. In the honest construction P lies on the circumcircle in every case, exactly one foot falls outside its side, and the three congruent pairs really are equal while the two sides are not. The misleading construction always puts both feet on the segments, which is why the fake proof looks convincing. Try dragging C until the triangle is nearly isosceles — the trick becomes harder to see.</p>
+
+      <p class="tip">Tick "More info" and switch between the two drawings. Which of the two additions, AC = AU + CU or BC = BV + CV, is wrong in your triangle?</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="isosceles-fallacy-core.js"></script>
+<script src="isosceles-fallacy.js"></script>
+</body>
+</html>

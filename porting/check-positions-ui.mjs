@@ -300,6 +300,9 @@ const GAMES = {
   "all-permutations": async (page) => {
     await page.click('input[value="heap"]');
   },
+  "isosceles-fallacy": async (page) => {
+    await page.click("#modeCheck");
+  },
   "two-color-solitaire": async (page) => {
     await page.selectOption("#nInput", "8");
     const gap = await page.evaluate(() => {

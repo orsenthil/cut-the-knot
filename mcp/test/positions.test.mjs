@@ -101,6 +101,7 @@ check("affirmative-action: a node was flipped on the grid", read["affirmative-ac
 check("hamilton-apportionment: a population was edited", read["hamilton-apportionment"]?.seats === 23 && read["hamilton-apportionment"].final.length === 3 && read["hamilton-apportionment"].finalTotal === 23);
 check("all-combinations: the choose step changed M", read["all-combinations"]?.n === 5 && read["all-combinations"].m === 4 && read["all-combinations"].total === "5");
 check("all-permutations: the Heap generator was selected", read["all-permutations"]?.n === 3 && read["all-permutations"].algorithm === "heap" && read["all-permutations"].count === 6);
+check("isosceles-fallacy: switched to the honest drawing", read["isosceles-fallacy"]?.mode === "right" && read["isosceles-fallacy"].pOnCircumcircle === true && read["isosceles-fallacy"].uOnSide !== read["isosceles-fallacy"].vOnSide);
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -836,6 +837,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("all-permutations", { n: 3, algorithm: "recursive" });
   check("all-permutations: six rows and identity cycles", board.count === 6 && board.firstRow.cycles === "(1)(2)(3)");
+}
+
+// The isosceles fallacy: the circumcircle and the misplaced foot.
+{
+  const board = at("isosceles-fallacy", { A: { x: 80, y: 250 }, B: { x: 320, y: 250 }, C: { x: 215, y: 70 }, mode: "right" });
+  check("isosceles-fallacy: P lies on the circle and one foot is outside", board.pOnCircumcircle === true && board.uOnSide !== board.vOnSide);
 }
 
 // A game with no reader, and a position that makes no sense.

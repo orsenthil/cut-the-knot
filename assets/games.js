@@ -747,5 +747,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "isosceles-fallacy",
+      title: "All Triangles Are Isosceles?",
+      blurb: "A proof says every triangle is isosceles. Drag the corners and switch to the honest drawing to find the one line where the picture lies.",
+      tags: ["paradoxes", "logic", "invariants"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };
