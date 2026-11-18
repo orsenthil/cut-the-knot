@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Affirmative Action Problem &mdash; coolmaths</title>
+<meta name="description" content="Colour the dots black and white so that none is outnumbered by neighbours of its own colour. Is that always possible?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/affirmative-action/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Affirmative Action Problem">
+<meta property="og:description" content="Colour the dots black and white so that none is outnumbered by neighbours of its own colour. Is that always possible?">
+<meta property="og:url" content="https://coolmaths.ai/affirmative-action/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  .edge {
+    stroke: var(--border-strong);
+    stroke-width: 2;
+  }
+  .edge.balanced {
+    stroke: var(--accent);
+    stroke-width: 3;
+  }
+  .node {
+    stroke: var(--ink);
+    stroke-width: 2;
+    cursor: pointer;
+  }
+  .node.black { fill: #2f3542; }
+  .node.white { fill: #e9eef6; }
+  .node-group:hover .node, .node-group:focus-visible .node {
+    stroke: var(--accent);
+    stroke-width: 4;
+  }
+  .node-group:focus-visible { outline: none; }
+  .degree-text {
+    fill: var(--accent-text);
+    font-size: 10px;
+    font-family: var(--mono);
+    text-anchor: middle;
+    pointer-events: none;
+  }
+  .control-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+  }
+  .control-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+  }
+  button:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="affirmative-action" data-kind="demo">
+<main id="main">
+  <h1>The Affirmative Action Problem</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#graph-theory">Graph Theory</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/AffirmativeAction.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Colour the dots so that each one touches at least as many opposite-colour dots as same-colour dots.<br>
+    <strong>How to play:</strong> Click a dot to switch black and white. Drag between dots to join them, or press "Find colouring" to let the rule do the work.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 340 280" role="group" aria-label="A graph of black and white nodes with edges between them"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <button id="resetBtn" type="button" aria-label="Start with a new twenty-node grid">Reset</button>
+      <button id="popBtn" type="button" aria-label="Remove the last node or edge added">Remove last</button>
+      <button id="clearBtn" type="button" aria-label="Remove every node and edge">Clear</button>
+      <button id="maxBtn" type="button" class="primary">Find colouring</button>
+      <label><input id="addCheck" type="checkbox"> Add element</label>
+      <label><input id="degreesCheck" type="checkbox"> Show degrees</label>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Can every graph be coloured black and white so that no dot is outnumbered by its own kind? The surprising answer is yes, and the proof fits in one line: make as many edges join different colours as possible.</p>
+
+      <h2>Integrated dots</h2>
+      <p>A dot is <em>integrated</em> when at least half of its neighbours have the other colour — a white dot needs at least as many black neighbours as white ones, and a black dot needs at least as many white ones as black. Colour the whole graph this way and every dot is content. Loops are not allowed: a dot is not its own neighbour.</p>
+
+      <h2>Maximise balanced edges</h2>
+      <p>Call an edge <em>balanced</em> when its two ends have different colours. There are finitely many colourings, so one of them has the most balanced edges. Suppose a dot in such a colouring were not integrated. More of its edges would join same colours than different ones. Flipping just that dot would turn all those same-colour edges balanced and the previously balanced ones same — so the total would go up, contradicting maximality. Hence every dot is integrated. This proof is due to Jim Propp.</p>
+
+      <h2>What the check found</h2>
+      <p>The logic test examines every simple graph with at most five nodes and every one of its colourings — 1,099 graphs in all. Every graph has an integrated colouring, every colouring with the most balanced edges is integrated, and flipping any non-integrated dot gains exactly the predicted number of balanced edges. The board here starts as a twenty-node grid with horizontal and vertical edges, close to the applet's opening picture; the applet also draws three families of diagonals.</p>
+
+      <p class="tip">Press "Find colouring" and watch the highlighted balanced edges. Can you then flip one dot without lowering their count?</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="affirmative-action-core.js"></script>
+<script src="affirmative-action.js"></script>
+</body>
+</html>

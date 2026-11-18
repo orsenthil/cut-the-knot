@@ -715,5 +715,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "affirmative-action",
+      title: "The Affirmative Action Problem",
+      blurb: "Colour the dots black and white so that none is outnumbered by neighbours of its own colour. Is that always possible?",
+      tags: ["graph-theory", "logic", "invariants"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };

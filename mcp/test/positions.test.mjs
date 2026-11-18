@@ -97,6 +97,7 @@ check("subtraction-game: one move made on a board of twelve", read["subtraction-
 check("abacus: counters moved on the units wire", read["abacus"]?.radix === 10 && read["abacus"].wires === 7 && read["abacus"].abaci[0].digits[6] > 0);
 check("adams-apportionment: a population was edited", read["adams-apportionment"]?.seats === 23 && read["adams-apportionment"].populations.length === 3 && read["adams-apportionment"].totalPopulation > 0);
 check("addition-law-of-change: the first addend was nudged", read["addition-law-of-change"]?.a === 2 && read["addition-law-of-change"].b === 1 && read["addition-law-of-change"].sum === 3);
+check("affirmative-action: a node was flipped on the grid", read["affirmative-action"]?.nodes === 20 && read["affirmative-action"].edges === 31 && Array.isArray(read["affirmative-action"].nonIntegrated));
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -805,6 +806,15 @@ const at = (slug, state) => describePosition(slug, state, 1);
 
   const edge = at("addition-law-of-change", { a: 100, b: 100, maxNum: 10 });
   check("addition-law-of-change: the total can reach 200", edge.sum === 200 && edge.dots.sum === 200);
+}
+
+// The Affirmative Action problem: integrated nodes and balanced edges.
+{
+  const triangle = at("affirmative-action", { nodes: [{ color: 0 }, { color: 1 }, { color: 0 }], edges: [[0, 1], [1, 2]] });
+  check("affirmative-action: the middle node sees two opposite colours", triangle.integrated === true && triangle.balancedEdges === 2);
+
+  const bad = at("affirmative-action", { nodes: [{ color: 0 }, { color: 0 }, { color: 1 }], edges: [[0, 1], [0, 2]] });
+  check("affirmative-action: a white node with only a white neighbour is not integrated", bad.integrated === false && bad.nonIntegrated.length === 1);
 }
 
 // A game with no reader, and a position that makes no sense.

@@ -288,6 +288,9 @@ const GAMES = {
   "addition-law-of-change": async (page) => {
     await page.click('.nudge[data-part="a"][data-side="right"]');
   },
+  "affirmative-action": async (page) => {
+    await page.click('.node-group[data-index="0"]');
+  },
   "two-color-solitaire": async (page) => {
     await page.selectOption("#nInput", "8");
     const gap = await page.evaluate(() => {
