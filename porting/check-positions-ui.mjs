@@ -291,6 +291,9 @@ const GAMES = {
   "affirmative-action": async (page) => {
     await page.click('.node-group[data-index="0"]');
   },
+  "hamilton-apportionment": async (page) => {
+    await page.click('input[data-part="population"][data-index="0"]');
+  },
   "two-color-solitaire": async (page) => {
     await page.selectOption("#nInput", "8");
     const gap = await page.evaluate(() => {

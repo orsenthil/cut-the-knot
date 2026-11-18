@@ -250,6 +250,7 @@ const CORE_GLOBALS = {
   "adams-apportionment/adams-apportionment-core.js": ["AdamsApportionmentCore"],
   "addition-law-of-change/addition-law-of-change-core.js": ["AdditionLawOfChangeCore"],
   "affirmative-action/affirmative-action-core.js": ["AffirmativeActionCore"],
+  "hamilton-apportionment/hamilton-apportionment-core.js": ["HamiltonApportionmentCore"],
 };
 
 const games = [];

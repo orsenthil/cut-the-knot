@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hamilton's Apportionment Method &mdash; coolmaths</title>
+<meta name="description" content="Round the quotas down, then give the leftover seats to the largest fractions. Sounds fair — until adding a seat makes a state lose one.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hamilton-apportionment/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hamilton's Apportionment Method">
+<meta property="og:description" content="Round the quotas down, then give the leftover seats to the largest fractions. Sounds fair — until adding a seat makes a state lose one.">
+<meta property="og:url" content="https://coolmaths.ai/hamilton-apportionment/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.4rem;
+    overflow-x: auto;
+  }
+  .apportion-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .apportion-table th, .apportion-table td {
+    padding: 0.25rem 0.15rem;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+  }
+  .apportion-table th:first-child, .apportion-table td:first-child {
+    text-align: left;
+    font-weight: 700;
+  }
+  .apportion-table th {
+    color: var(--muted);
+    font-size: 0.65rem;
+    white-space: nowrap;
+  }
+  .apportion-table .totals {
+    border-top: 2px solid var(--border-strong);
+    font-weight: 700;
+  }
+  .apportion-table input {
+    width: 3.2rem;
+    max-width: 100%;
+    font: inherit;
+    padding: 0.15rem 0.3rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.35rem;
+    background: var(--card);
+    color: var(--text);
+  }
+  .apportion-table input:focus-visible, button:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .control-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+  }
+  .control-label {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .stepper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .stepper output {
+    min-width: 2.5rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body data-game="hamilton-apportionment" data-kind="demo">
+<main id="main">
+  <h1>Hamilton's Apportionment Method</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/SocialScience/AHamilton.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Share seats between states fairly, then give the leftover seats to whoever has the largest fractional claim.<br>
+    <strong>How to play:</strong> Change a population or the seat and state counts. Watch the "Surplus" column decide who gains a seat.
+  </div>
+
+  <div id="stage" class="stage">
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <span class="control-label">Number of seats</span>
+      <span class="stepper"><button id="seatsLess" type="button" aria-label="Fewer seats">&minus;</button><output id="seatsOut">23</output><button id="seatsMore" type="button" aria-label="More seats">+</button></span>
+      <span class="control-label">States</span>
+      <span class="stepper"><button id="statesLess" type="button" aria-label="Fewer states">&minus;</button><output id="statesOut">3</output><button id="statesMore" type="button" aria-label="More states">+</button></span>
+      <button id="resetBtn" type="button" class="primary">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Hamilton's method sounds perfectly fair: give everyone their whole quota, then hand the leftover seats to the largest fractions. It was vetoed in 1791, adopted in 1852, and abandoned in 1911 — because fairness here has unexpected consequences.</p>
+
+      <h2>Largest remainders</h2>
+      <p>The standard divisor is total population divided by the number of seats. Each state's quota is its population over that divisor; the quotas add to the seat count exactly. Round each one down and the missing seats are the <em>surplus</em>. Because the fractional parts also add to a whole number, there are exactly enough surplus seats to give one to each of the largest remainders. Ties go to the state listed first, as in the applet's scan.</p>
+
+      <h2>Three paradoxes</h2>
+      <p>Add a seat to the house and a state can <em>lose</em> one — the Alabama paradox. A state whose population grows faster than another's can still lose a seat to it — the population paradox. And admitting a new state can cost every old state a seat — the new-states paradox. None of these is a bug in the arithmetic; they follow from re-rounding the remainders.</p>
+
+      <h2>What the check found</h2>
+      <p>The logic test checks three thousand random countries. The leftovers always add to the surplus, the final seats always add to the house, and every state ends within one seat of its exact quota. It also pins down concrete examples of all three paradoxes, so the page's warning is not just a story. Try nudging the seat count by one and watching a "Final" number go down.</p>
+
+      <p class="tip">With three states, can you find a population change where the fastest-growing state is the one that loses a seat?</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="hamilton-apportionment-core.js"></script>
+<script src="hamilton-apportionment.js"></script>
+</body>
+</html>
