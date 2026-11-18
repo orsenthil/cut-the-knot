@@ -691,5 +691,13 @@ window.COOLMATHS = {
       tags: ["game-strategy", "logic", "algorithms"],
       level: 3,
     },
+    {
+      slug: "abacus",
+      title: "Abacus",
+      blurb: "An ancient counting device in your browser: build numbers in any base from 2 to 16, or link two abaci so one counts up as the other counts down.",
+      tags: ["counting", "place-value", "algorithms"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

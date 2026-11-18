@@ -246,6 +246,7 @@ const CORE_GLOBALS = {
   "date-game/date-game-core.js": ["DateGameCore"],
   "goat-cabbage-wolf/goat-cabbage-wolf-core.js": ["GoatCabbageWolfCore"],
   "subtraction-game/subtraction-game-core.js": ["SubtractionGameCore"],
+  "abacus/abacus-core.js": ["AbacusCore"],
 };
 
 const games = [];

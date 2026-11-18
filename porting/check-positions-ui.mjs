@@ -279,6 +279,9 @@ const GAMES = {
     await page.click('.sub[data-index="0"]');
     await page.waitForTimeout(500);
   },
+  "abacus": async (page) => {
+    await page.click('.counter[data-abacus="0"][data-wire="6"][data-part="upper"][data-index="3"]');
+  },
   "two-color-solitaire": async (page) => {
     await page.selectOption("#nInput", "8");
     const gap = await page.evaluate(() => {

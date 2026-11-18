@@ -94,6 +94,7 @@ check("y-theory: a clicked cell on a board of seven", read["y-theory"]?.n === 7 
 check("date-game: a January date after two month clicks", read["date-game"]?.month === 2 && read["date-game"].day >= 0 && read["date-game"].valid === true && read["date-game"].finished === false);
 check("goat-cabbage-wolf: the goat was ferried across", read["goat-cabbage-wolf"]?.right.length === 1 && read["goat-cabbage-wolf"].farmerShore === "right" && read["goat-cabbage-wolf"].nextCrossing === "cross alone");
 check("subtraction-game: one move made on a board of twelve", read["subtraction-game"]?.nums.length === 12 && read["subtraction-game"].movesSoFar >= 1);
+check("abacus: counters moved on the units wire", read["abacus"]?.radix === 10 && read["abacus"].wires === 7 && read["abacus"].abaci[0].digits[6] > 0);
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -774,6 +775,15 @@ const at = (slug, state) => describePosition(slug, state, 1);
 
   const done = at("subtraction-game", { nums: [0, 0], subs: [1, 2], max: 20, winner: "you" });
   check("subtraction-game: an empty board is finished", done.finished === true && done.result === "win");
+}
+
+// The Abacus demo: place value, base notation and carries.
+{
+  const board = at("abacus", { radix: 10, wires: 4, count: 1, sync: false, abaci: [{ digits: [1, 2, 3, 4] }] });
+  check("abacus: digits 1234 are worth 1234 in base ten", board.abaci[0].value === 1234 && board.abaci[0].written === "1234");
+
+  const hex = at("abacus", { radix: 16, wires: 4, count: 1, sync: false, abaci: [{ digits: [11, 14, 14, 15] }] });
+  check("abacus: BEEF in base sixteen is 48879", hex.abaci[0].written === "BEEF" && hex.abaci[0].value === 48879);
 }
 
 // A game with no reader, and a position that makes no sense.

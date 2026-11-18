@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Abacus &mdash; coolmaths</title>
+<meta name="description" content="An ancient counting device in your browser: build numbers in any base from 2 to 16, or link two abaci so one counts up as the other counts down.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/abacus/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Abacus">
+<meta property="og:description" content="An ancient counting device in your browser: build numbers in any base from 2 to 16, or link two abaci so one counts up as the other counts down.">
+<meta property="og:url" content="https://coolmaths.ai/abacus/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.8rem;
+    overflow: hidden;
+  }
+  .abacus-board {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .abacus {
+    flex: 1 1 12rem;
+    min-width: 0;
+    padding: 0.5rem;
+    border-radius: 0.8rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .readout {
+    margin: 0 0 0.5rem;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+  .wires {
+    display: flex;
+    gap: 0.2rem;
+    overflow-x: auto;
+    padding-bottom: 0.3rem;
+  }
+  .wire {
+    flex: 1 0 1.7rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 1.7rem;
+  }
+  .upper, .lower {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    align-items: center;
+    min-height: 1.1rem;
+    justify-content: flex-end;
+  }
+  .lower {
+    justify-content: flex-start;
+  }
+  .counter {
+    width: 1.4rem;
+    height: 0.55rem;
+    padding: 0;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.25rem;
+    background: var(--board-a);
+    cursor: pointer;
+  }
+  .counter.upper {
+    background: var(--surface-2);
+  }
+  .counter:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .counter:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .bar {
+    width: 100%;
+    height: 3px;
+    margin: 0.15rem 0;
+    background: var(--ink);
+    border-radius: 2px;
+  }
+  .wire-label {
+    margin-top: 0.2rem;
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+  .control-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+  }
+  .control-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    cursor: pointer;
+  }
+  select {
+    font: inherit;
+    padding: 0.2rem 0.3rem;
+    border-radius: 0.4rem;
+    border: 1px solid var(--border-strong);
+    background: var(--card);
+    color: var(--text);
+  }
+</style>
+</head>
+<body data-game="abacus" data-kind="demo">
+<main id="main">
+  <h1>Abacus</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#place-value">Place Value</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/blue/Abacus.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Explore an <a class="wiki-term" data-wiki="Abacus" href="https://en.wikipedia.org/wiki/Abacus" target="_blank" rel="noopener">abacus</a>: move counters to build numbers in any base from 2 to 16.<br>
+    <strong>How to play:</strong> Click a counter to move it towards or away from the bar. Add a second abacus and tick Sync to make one count up as the other counts down.
+  </div>
+
+  <div id="stage" class="stage">
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label>Radix <select id="radixInput" aria-label="Number base">
+        <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+        <option>7</option><option>8</option><option>9</option><option selected>10</option>
+        <option>11</option><option>12</option><option>13</option><option>14</option><option>15</option><option>16</option>
+      </select></label>
+      <label>Wires <select id="wiresInput" aria-label="Number of wires">
+        <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+        <option>6</option><option selected>7</option><option>8</option><option>9</option><option>10</option>
+      </select></label>
+      <label>Abaci <select id="countInput" aria-label="Number of abaci">
+        <option value="1" selected>1 Abacus</option><option value="2">2 Abaci</option>
+      </select></label>
+      <label><input id="syncCheck" type="checkbox" disabled> Sync</label>
+      <button id="resetBtn" type="button" class="primary" aria-label="Reset both abaci to zero">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>For centuries an abacus was a calculator made of pebbles, grooves and rods. Its cleverness is not the counting but the <a class="wiki-term" data-wiki="Positional_notation" href="https://en.wikipedia.org/wiki/Positional_notation" target="_blank" rel="noopener">place value</a>: the same counter means different amounts on different wires.</p>
+
+      <h2>Wires are places</h2>
+      <p>The leftmost wire is the most significant one. A wire shows a digit from 0 to one less than the <a class="wiki-term" data-wiki="Radix" href="https://en.wikipedia.org/wiki/Radix" target="_blank" rel="noopener">radix</a>, counted by the chips pushed towards the bar. Reading the wires left to right gives a number in that base — the display uses 0 to 9 and then A to Z for digits above nine. An empty wire is a zero: the ancient devices had no written zero symbol for centuries even though an empty groove represented it perfectly.</p>
+
+      <h2>Carrying and borrowing</h2>
+      <p>When a wire would pass its highest digit, one is carried to the wire on its left; the applet does this for you. Taking away more than a wire holds borrows from the left. The original has a small quirk: a wire holding exactly one counter is treated like an empty one during a borrow, so a long borrow can give a surprising result. The logic test compares the arithmetic with a second transcription of the applet's rules over every base from 2 to 16.</p>
+
+      <h2>Two abaci and Sync</h2>
+      <p>With Sync checked, taking counters from one abacus adds the same amount to the other at the matching wire, so the two numbers change in opposite directions. When neither side carries or borrows past an edge, their combined value stays the same — the logic test checks that on hundreds of two-abacus positions. Try it with two bases at once by switching the radix and watching how the same moves write different numbers.</p>
+
+      <p class="tip">Set the radix to 2 and try to make 10101. Then switch to base 16 and see what the very same counters say.</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="abacus-core.js"></script>
+<script src="abacus.js"></script>
+</body>
+</html>
