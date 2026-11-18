@@ -655,5 +655,12 @@ window.COOLMATHS = {
       tags: ["sequences", "counting", "logic"],
       level: 2,
     },
+    {
+      slug: "wythoff-nim",
+      title: "Wythoff's Nim",
+      blurb: "Two heaps of counters: take from one heap or the same number from both. Can you take the last counter before the computer does?",
+      tags: ["game-strategy", "sequences", "logic"],
+      level: 2,
+    },
   ],
 };

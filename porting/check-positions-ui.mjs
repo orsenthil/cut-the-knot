@@ -257,6 +257,12 @@ const GAMES = {
     await page.click('.tile[data-value="3"]');
     await page.click('.box[data-box="0"]');
   },
+  "wythoff-nim": async (page) => {
+    await page.click('#lessBtn');
+    await page.click('#lessBtn');
+    await page.click('.square[data-heap="0"][data-index="2"]');
+    await page.waitForTimeout(500);
+  },
   "two-color-solitaire": async (page) => {
     await page.selectOption("#nInput", "8");
     const gap = await page.evaluate(() => {

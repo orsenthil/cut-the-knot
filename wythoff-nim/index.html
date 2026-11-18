@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wythoff's Nim &mdash; coolmaths</title>
+<meta name="description" content="Two heaps of counters: take from one heap or the same number from both. Can you take the last counter before the computer does?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/wythoff-nim/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Wythoff's Nim">
+<meta property="og:description" content="Two heaps of counters: take from one heap or the same number from both. Can you take the last counter before the computer does?">
+<meta property="og:url" content="https://coolmaths.ai/wythoff-nim/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 1rem;
+    overflow: hidden;
+  }
+  .board-label {
+    margin: 0 0 0.35rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .rail {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    overflow-x: auto;
+    padding: 0.2rem 0 0.6rem;
+    scrollbar-width: thin;
+  }
+  .rail + .board-label {
+    margin-top: 0.7rem;
+  }
+  .square {
+    flex: 0 0 auto;
+    min-width: 2rem;
+    height: 2.5rem;
+    padding: 0 0.2rem;
+    font: inherit;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    border: 2px solid var(--border-strong);
+    border-radius: 0.45rem;
+    background: var(--board-a);
+    color: var(--text);
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .square:hover:not(:disabled) {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+  .square:focus-visible, button:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .empty-heap {
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .control-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.8rem;
+  }
+  .control-row + .control-row {
+    margin-top: 0.6rem;
+  }
+  .control-label {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  #maxOut {
+    min-width: 2.5rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+  .control-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    cursor: pointer;
+  }
+  #goBtn {
+    min-width: 5rem;
+  }
+</style>
+</head>
+<body data-game="wythoff-nim" data-kind="game">
+<main id="main">
+  <h1>Wythoff's Nim</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/WythoffNim.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Take counters from the two heaps; the player who takes the very last counter wins.<br>
+    <strong>How to play:</strong> Click a square to remove it and every square to its right. Choose "two heaps" to take the same number from both at once.
+  </div>
+
+  <div id="stage" class="stage">
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <span class="control-label">Max heap size</span>
+      <button id="lessBtn" type="button" aria-label="Make the first heap one counter smaller">&lt;</button>
+      <output id="maxOut" aria-label="Current maximum heap size">15</output>
+      <button id="moreBtn" type="button" aria-label="Make the first heap one counter larger">&gt;</button>
+    </div>
+    <div class="control-row">
+      <span class="control-label">Remove from</span>
+      <label><input id="oneHeap" type="radio" name="removeFrom" value="one" checked> one heap</label>
+      <label><input id="twoHeap" type="radio" name="removeFrom" value="two"> two heaps</label>
+      <button id="goBtn" type="button">Go</button>
+      <button id="resetBtn" type="button" class="primary">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two heaps and a simple rule hide a surprising pattern. Some pairs of heap sizes are safe to leave for the next player: whatever they take, you can answer. The computer is trying to leave exactly those pairs.</p>
+
+      <h2>The pairs to leave behind</h2>
+      <p>Starting at zero, the safe pairs are <code>(1, 2)</code>, <code>(3, 5)</code>, <code>(4, 7)</code>, <code>(6, 10)</code>, <code>(8, 13)</code> and so on. Their smaller number is <code>floor(k &times; &phi;)</code> and their larger number is that plus <code>k</code>, where <code>&phi; &asymp; 1.618</code> is the <a class="wiki-term" data-wiki="Golden_ratio" href="https://en.wikipedia.org/wiki/Golden_ratio" target="_blank" rel="noopener">golden ratio</a>. The difference between the two heaps is always <code>k</code>, so a pair is named by that difference. This is <a class="wiki-term" data-wiki="Wythoff%27s_game" href="https://en.wikipedia.org/wiki/Wythoff%27s_game" target="_blank" rel="noopener">Wythoff's game</a>, a cousin of <a class="wiki-term" data-wiki="Nim" href="https://en.wikipedia.org/wiki/Nim" target="_blank" rel="noopener">Nim</a>.</p>
+
+      <h2>Why the pairs are safe</h2>
+      <p>From a pair <code>(a, a + k)</code>, taking from just one heap changes the difference, and taking the same number from both leaves the difference <code>k</code> but makes the smaller heap less than <code>a</code>: either way the pair is broken. From any other position there is a move back to a pair, which is why the computer keeps finding one. The two sequences of smaller and larger numbers fit together without gaps — a <a class="wiki-term" data-wiki="Beatty_sequence" href="https://en.wikipedia.org/wiki/Beatty_sequence" target="_blank" rel="noopener">Beatty sequence</a> pair — so every heap size belongs to exactly one pair.</p>
+
+      <h2>What the applet really plays</h2>
+      <p>The "one heap" and "two heaps" buttons limit which moves <em>you</em> may make, but the computer always uses the full-game pair table. Its table has four mistakes at the end: it lists <code>(32, 53), (33, 56), (35, 60), (37, 63)</code> where the correct pairs are <code>(32, 52), (33, 54), (35, 57), (37, 60)</code>. The logic test computes the true pairs from scratch, checks them against the formula, and compares this port's computer with a second transcription of the applet's own code on every board up to 40 counters. It also confirms the applet's odd habit of giving the second heap 3 counters even when the maximum is 1 or 2.</p>
+
+      <p class="tip">Try a heap of 3 and a heap of 5. Can you find any first move that leaves the computer with no good answer?</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="wythoff-nim-core.js"></script>
+<script src="wythoff-nim.js"></script>
+</body>
+</html>
