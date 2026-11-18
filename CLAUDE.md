@@ -83,11 +83,11 @@ The existing games are the reference implementations: copy the structure of the 
 
 1. `<head>`: write only the page's own `<style>`. Everything else in it (title, metadata, the `../assets/` includes) is stamped by `node porting/stamp-pages.mjs <slug>`.
 2. `<body>`, then `<main id="main">` around all the page's content, starting with the `<h1>` with the game name. The stamp adds `data-game`, `data-kind`, the `<main>` if it is missing, and the tag links below the `<h1>`.
-3. Byline: `Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" …>Alexander Bogomolny</a> (<a href="…original cut-the-knot page…">cut-the-knot.org</a>)`.
-4. `<div id="rules">`, directly after the byline so players read it before the game: exactly two lines, **Game:** one sentence saying what the game is or what winning means, and **How to play:** one or two short sentences. Write for a young player: plain words, no jargon, no maths.
-5. The play area, marked `class="stage"` (controls that set up the puzzle, like the hourglass's puzzle picker, may sit just above it).
-6. `.controls` for options (sizes, modes) and buttons: `Reset`/`New Game`, with `class="primary"` on at most one main action. Status line in `#status` (`.win` / `.lose`).
-7. `<details id="math"><summary>Look for the math</summary><div class="math-body">…`, closed by default. Start with a short intro paragraph. Then use 2–5 `<h2>` sections (not `<h3>`: the only heading above them is the `<h1>`) that build the explanation (the invariant, parity, formula or strategy behind the puzzle), with formulas in `<code>` or a `<blockquote>`. Link each named concept once with a `wiki-term` Wikipedia link. End with an optional `<p class="tip">` suggesting something to try.
+3. `<div id="rules">`, directly after the `<h1>` and its tag links so players read it before the game: exactly two lines, **Game:** one sentence saying what the game is or what winning means, and **How to play:** one or two short sentences. Write for a young player: plain words, no jargon, no maths.
+4. The play area, marked `class="stage"` (controls that set up the puzzle, like the hourglass's puzzle picker, may sit just above it).
+5. `.controls` for options (sizes, modes) and buttons: `Reset`/`New Game`, with `class="primary"` on at most one main action. Status line in `#status` (`.win` / `.lose`).
+6. `<details id="math"><summary>Look for the math</summary><div class="math-body">…`, closed by default. Start with a short intro paragraph. Then use 2–5 `<h2>` sections (not `<h3>`: the only heading above them is the `<h1>`) that build the explanation (the invariant, parity, formula or strategy behind the puzzle), with formulas in `<code>` or a `<blockquote>`. Link each named concept once with a `wiki-term` Wikipedia link. End with an optional `<p class="tip">` suggesting something to try.
+7. Byline, **last in `<main>`, after "Look for the math"** (not inside it): `Puzzle by <a class="wiki-term" data-wiki="Alexander_Bogomolny" …>Alexander Bogomolny</a> (<a href="…original cut-the-knot page…">cut-the-knot.org</a>)`.
 8. Scripts after `</main>`, at the end of `<body>`: `../assets/wiki-hovercard.js`, then the core script, then the UI script.
 
 ### 4. Look and feel

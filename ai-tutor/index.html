@@ -63,20 +63,32 @@
   <h1>AI Tutor</h1>
 
   <div class="tutor">
-    <p class="lead">Connect an AI assistant to coolmaths and ask it about any game.</p>
+    <p class="lead">Talk, and play the game out loud.</p>
+    <p>Use your assistant&rsquo;s voice mode to play interactively. The AI teacher has infinite patience. It asks questions, not answers, and guides you until the concept clicks with an &ldquo;Aha!&rdquo; moment.</p>
 
     <div class="book">
       <p><code>https://coolmaths-tutor.fly.dev/mcp</code></p>
     </div>
 
-    <h2>Connect</h2>
-    <p><strong>Claude Code:</strong></p>
-    <pre><code>claude mcp add --transport http coolmaths https://coolmaths-tutor.fly.dev/mcp</code></pre>
-    <p><strong>claude.ai or Claude Desktop:</strong> Settings &rarr; Connectors &rarr; Add custom connector, and paste the address.</p>
-    <p><strong>Other clients:</strong> add an HTTP MCP server with the same address.</p>
+    <h2>ChatGPT</h2>
+    <p>Settings &rarr; Connectors &rarr; Advanced, turn on Developer mode. Then Create, paste the address, choose no authentication, and enable it in a chat.</p>
 
-    <h2>Then ask</h2>
-    <p>&ldquo;Tutor me on the hourglass puzzle, but don&rsquo;t give the answer yet.&rdquo;</p>
+    <h2>Qwen</h2>
+    <pre><code>qwen mcp add --transport http coolmaths https://coolmaths-tutor.fly.dev/mcp</code></pre>
+
+    <h2>Kimi</h2>
+    <pre><code>kimi mcp add --transport http coolmaths https://coolmaths-tutor.fly.dev/mcp</code></pre>
+
+    <h2>OpenCode, with open models</h2>
+    <p>Add this to <code>opencode.json</code>, and pick any open model you have set up, such as one running in Ollama.</p>
+    <pre><code>{
+  "mcp": {
+    "coolmaths": {
+      "type": "remote",
+      "url": "https://coolmaths-tutor.fly.dev/mcp"
+    }
+  }
+}</code></pre>
   </div>
 </main>
 </body>

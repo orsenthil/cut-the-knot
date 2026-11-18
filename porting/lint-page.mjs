@@ -112,9 +112,15 @@ function lintSlug(slug, catalogue) {
   if (rulesAt < 0) fail('no <div id="rules">');
 
   if (!skip.has("byline")) {
-    const byline = h1At >= 0 && rulesAt > h1At ? html.slice(h1At, rulesAt) : "";
+    const bylineAt = at(html, /<p[^>]+class="byline"/);
+    const mainEnd = html.indexOf("</main>");
+    const byline = bylineAt >= 0 && mainEnd > bylineAt ? html.slice(bylineAt, mainEnd) : "";
+    if (bylineAt < 0) fail('no <p class="byline">');
+    else if (rulesAt >= 0 && bylineAt < rulesAt) {
+      fail("the byline belongs at the bottom of <main>, after the rules, the game and Look for the math");
+    }
     if (!/cut-the-knot\.org/.test(byline)) {
-      fail("byline between <h1> and #rules must link to the original cut-the-knot.org page");
+      fail("the byline must link to the original cut-the-knot.org page");
     }
     if (!/data-wiki="Alexander_Bogomolny"/.test(byline)) {
       fail('byline must credit Alexander Bogomolny with a wiki-term link (data-wiki="Alexander_Bogomolny")');
