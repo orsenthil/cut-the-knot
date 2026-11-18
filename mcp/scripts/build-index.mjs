@@ -244,6 +244,7 @@ const CORE_GLOBALS = {
   "wythoff-nim/wythoff-nim-core.js": ["WythoffNimCore"],
   "y-theory/y-theory-core.js": ["YTheoryCore"],
   "date-game/date-game-core.js": ["DateGameCore"],
+  "goat-cabbage-wolf/goat-cabbage-wolf-core.js": ["GoatCabbageWolfCore"],
 };
 
 const games = [];

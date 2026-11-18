@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Goat, Cabbage and Wolf &mdash; coolmaths</title>
+<meta name="description" content="Can you ferry a goat, a cabbage and a wolf across the river in seven crossings, without ever leaving the wrong pair alone?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/goat-cabbage-wolf/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Goat, Cabbage and Wolf">
+<meta property="og:description" content="Can you ferry a goat, a cabbage and a wolf across the river in seven crossings, without ever leaving the wrong pair alone?">
+<meta property="og:url" content="https://coolmaths.ai/goat-cabbage-wolf/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.9rem;
+  }
+  .board {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 2.6rem minmax(0, 1fr);
+    gap: 0.4rem;
+    align-items: stretch;
+  }
+  .shore {
+    min-width: 0;
+    padding: 0.6rem;
+    border-radius: 0.8rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .shore h2 {
+    margin: 0 0 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .item-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    width: 100%;
+    min-height: 2.5rem;
+    margin-bottom: 0.35rem;
+    padding: 0.3rem 0.4rem;
+    font: inherit;
+    font-size: 0.9rem;
+    text-align: left;
+    border: 2px solid var(--border-strong);
+    border-radius: 0.6rem;
+    background: var(--card);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .item-btn:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+  .item-btn:not(:disabled):hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .item-btn .icon {
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+  .empty-shore {
+    margin: 0;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--muted);
+  }
+  .river {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.8rem;
+    background: var(--board-b);
+  }
+  .cross-btn {
+    width: 2.2rem;
+    height: 2.8rem;
+    font-size: 1.4rem;
+    line-height: 1;
+    border: 2px solid var(--accent);
+    border-radius: 0.7rem;
+    background: var(--card);
+    color: var(--accent);
+    cursor: pointer;
+  }
+  .cross-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .move-count {
+    margin: 0.7rem 0 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+  }
+  .item-btn:focus-visible, .cross-btn:focus-visible, button:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .control-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+  }
+  .control-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body data-game="goat-cabbage-wolf" data-kind="game">
+<main id="main">
+  <h1>Goat, Cabbage and Wolf</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/GoatCabbageWolf.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Get the goat, the cabbage and the wolf across the river. Never leave the goat alone with the cabbage, or the wolf alone with the goat.<br>
+    <strong>How to play:</strong> Click an animal on the farmer's shore to take it across, or press the boat to cross alone. Tick Hint for the next move.
+  </div>
+
+  <div id="stage" class="stage">
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label><input id="hintCheck" type="checkbox"> Hint</label>
+      <button id="resetBtn" type="button" class="primary" aria-label="Start the puzzle again">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This old <a class="wiki-term" data-wiki="River_crossing_puzzle" href="https://en.wikipedia.org/wiki/River_crossing_puzzle" target="_blank" rel="noopener">river-crossing puzzle</a> looks like a juggling act, but only sixteen possible positions exist. Checking them all tells us the shortest route and why no shorter one can work.</p>
+
+      <h2>Why the order matters</h2>
+      <p>The boat holds the farmer and just one passenger. The goat must never be left with the cabbage without the farmer, and neither must the wolf be left with the goat. So after taking the goat across, the farmer must bring it back before fetching the cabbage or the wolf. Returning with the wrong passenger undo all the progress.</p>
+
+      <h2>Seven crossings</h2>
+      <p>One winning route is: take the goat over, come back alone, take the cabbage over, bring the goat back, take the wolf over, come back alone, take the goat over. That is seven crossings, and there are exactly two routes of that length. The logic test searches every position — three yes/no animal locations and two possible shores for the farmer, <code>2<sup>3</sup> &times; 2 = 16</code> in all — using <a class="wiki-term" data-wiki="Breadth-first_search" href="https://en.wikipedia.org/wiki/Breadth-first_search" target="_blank" rel="noopener">breadth-first search</a>, and confirms that seven is the minimum and that every safe position has a route home.</p>
+
+      <h2>What the applet really checks</h2>
+      <p>The applet's own "finished" flag has a quirk: after the very first correct move (goat across, farmer back alone) it would report both animals eaten, even though the goat is alone on the far shore and the farmer is with the cabbage and wolf. The logic test compares that flag with the stated rules on all sixteen positions and finds this one wrong call; this port follows the rules on the page. The original loaded little GIF pictures of the animals; here they are simple icons, and Hint names the next crossing instead of drawing a cube of alternatives.</p>
+
+      <p class="tip">Use Hint once, then try to finish without it. Can you find the second seven-crossing route?</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="goat-cabbage-wolf-core.js"></script>
+<script src="goat-cabbage-wolf.js"></script>
+</body>
+</html>

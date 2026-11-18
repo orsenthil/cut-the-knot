@@ -271,6 +271,9 @@ const GAMES = {
     await page.click("#monthBtn");
     await page.click("#monthBtn");
   },
+  "goat-cabbage-wolf": async (page) => {
+    await page.click('.item-btn[data-item="0"]');
+  },
   "two-color-solitaire": async (page) => {
     await page.selectOption("#nInput", "8");
     const gap = await page.evaluate(() => {

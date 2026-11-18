@@ -677,5 +677,12 @@ window.COOLMATHS = {
       tags: ["game-strategy", "logic", "counting"],
       level: 2,
     },
+    {
+      slug: "goat-cabbage-wolf",
+      title: "Goat, Cabbage and Wolf",
+      blurb: "Can you ferry a goat, a cabbage and a wolf across the river in seven crossings, without ever leaving the wrong pair alone?",
+      tags: ["logic", "game-strategy", "counting"],
+      level: 2,
+    },
   ],
 };

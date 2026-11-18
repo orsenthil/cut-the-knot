@@ -92,6 +92,7 @@ check("up-and-down-game: one number placed in box 1", read["up-and-down-game"]?.
 check("wythoff-nim: one move made from two heaps of 3", read["wythoff-nim"]?.finished === false && read["wythoff-nim"].heaps.length === 2 && read["wythoff-nim"].movesSoFar >= 1);
 check("y-theory: a clicked cell on a board of seven", read["y-theory"]?.n === 7 && read["y-theory"].cellCount === 28 && read["y-theory"].winner !== null && read["y-theory"].reducedWinner === read["y-theory"].winner);
 check("date-game: a January date after two month clicks", read["date-game"]?.month === 2 && read["date-game"].day >= 0 && read["date-game"].valid === true && read["date-game"].finished === false);
+check("goat-cabbage-wolf: the goat was ferried across", read["goat-cabbage-wolf"]?.right.length === 1 && read["goat-cabbage-wolf"].farmerShore === "right" && read["goat-cabbage-wolf"].nextCrossing === "cross alone");
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -744,6 +745,21 @@ const at = (slug, state) => describePosition(slug, state, 1);
 
   const feb29 = at("date-game", { month: 1, day: 29, leap: false, turn: "you", last: "day" });
   check("date-game: February 30 is not a real date in an ordinary year", feb29.valid === false && feb29.wordsYouMayStillMove.length === 1);
+}
+
+// Goat, Cabbage and Wolf: the 16-state search and the seven-crossing route.
+{
+  const start = at("goat-cabbage-wolf", { right: [false, false, false], boat: "left", moves: 0 });
+  check("goat-cabbage-wolf: the start has a seven-crossing route", start.danger === null && start.crossingsLeftInShortestRoute === 7 && start.nextCrossing === "take the goat across");
+
+  const unsafe = at("goat-cabbage-wolf", { right: [true, false, false], boat: "left", moves: 2 });
+  check("goat-cabbage-wolf: goat alone on the far shore is safe in the stated rules", unsafe.danger === null && unsafe.farmerShore === "left");
+
+  const bad = at("goat-cabbage-wolf", { right: [false, true, false], boat: "right", moves: 1, outcome: "lose" });
+  check("goat-cabbage-wolf: the wolf eats the goat on the near shore", bad.danger === "The wolf ate the goat!" && bad.nextCrossing === null);
+
+  const won = at("goat-cabbage-wolf", { right: [true, true, true], boat: "right", moves: 7, outcome: "win" });
+  check("goat-cabbage-wolf: all three across is a win", won.result === "win" && won.danger === null && won.crossingsSoFar === 7);
 }
 
 // A game with no reader, and a position that makes no sense.
