@@ -251,6 +251,7 @@ const CORE_GLOBALS = {
   "addition-law-of-change/addition-law-of-change-core.js": ["AdditionLawOfChangeCore"],
   "affirmative-action/affirmative-action-core.js": ["AffirmativeActionCore"],
   "hamilton-apportionment/hamilton-apportionment-core.js": ["HamiltonApportionmentCore"],
+  "all-combinations/all-combinations-core.js": ["AllCombinationsCore"],
 };
 
 const games = [];

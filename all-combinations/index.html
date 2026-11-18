@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>All Combinations &mdash; coolmaths</title>
+<meta name="description" content="How many ways can you choose M objects from N? List them all, then watch the count explode as the numbers grow.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/all-combinations/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="All Combinations">
+<meta property="og:description" content="How many ways can you choose M objects from N? List them all, then watch the count explode as the numbers grow.">
+<meta property="og:url" content="https://coolmaths.ai/all-combinations/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.8rem;
+  }
+  #combinations {
+    height: 18rem;
+    overflow-y: auto;
+    padding: 0.4rem;
+    border: 1px solid var(--border);
+    border-radius: 0.7rem;
+    background: var(--card);
+  }
+  .combo {
+    padding: 0.15rem 0.4rem;
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+  .combo:nth-child(odd) { background: var(--surface); }
+  .combo-more {
+    padding: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .count {
+    margin: 0.6rem 0 0;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .control-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+  }
+  .stepper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .stepper output {
+    min-width: 2rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+  button:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="all-combinations" data-kind="demo">
+<main id="main">
+  <h1>All Combinations</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/AllCombinations.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Explore every way of choosing M objects from a set of N.<br>
+    <strong>How to play:</strong> Change N and M with the steppers and watch how many rows the list has.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="combinations" role="list" aria-label="All combinations"></div>
+    <p id="count" class="count"></p>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <span class="control-label">Objects N</span>
+      <span class="stepper"><button id="nLess" type="button" aria-label="Fewer objects">&minus;</button><output id="nOut">5</output><button id="nMore" type="button" aria-label="More objects">+</button></span>
+      <span class="control-label">Choose M</span>
+      <span class="stepper"><button id="mLess" type="button" aria-label="Choose fewer">&minus;</button><output id="mOut">3</output><button id="mMore" type="button" aria-label="Choose more">+</button></span>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Choosing three of five objects feels manageable. Choosing ten of twenty produces over a hundred and eighty thousand rows — and the counting rule explains exactly why.</p>
+
+      <h2>The binomial coefficient</h2>
+      <p>The number of ways to choose <code>m</code> objects from <code>n</code> is <code>C(n, m) = n! / (m! (n &minus; m)!)</code>. It is symmetric, <code>C(n, m) = C(n, n &minus; m)</code>, because choosing which to take is the same as choosing which to leave. It also obeys <a class="wiki-term" data-wiki="Pascal%27s_triangle" href="https://en.wikipedia.org/wiki/Pascal%27s_triangle" target="_blank" rel="noopener">Pascal's rule</a>: <code>C(n, m) + C(n, m+1) = C(n+1, m+1)</code>. The logic test checks both identities across the whole option range.</p>
+
+      <h2>Listing in order</h2>
+      <p>The applet's list is in lexicographic order: it starts at <code>0, 1, &hellip;, m&minus;1</code> internally, then repeatedly pushes the rightmost entry that still has room and resets the entries after it. A BigInteger countdown keeps track of how many rows are left. This port uses the same step, and the logic test compares every row with an independent recursive generator for all <code>n &le; 8</code>, over 300 rows in all. The longest list here, <code>C(20, 10) = 184,756</code>, is counted and started but only its first thousand rows are drawn.</p>
+
+      <h2>What the check found</h2>
+      <p>Every generated row is distinct, sorted, inside <code>1..n</code>, and in the same order as the independent generator; the countdown lands exactly on zero after <code>C(n, m)</code> rows. The applet's own about-box calls it a "Permutation Explorer", a leftover from a sibling applet — the rows here are combinations, where order does not matter.</p>
+
+      <p class="tip">Set N to 8 and M to 4. How many rows are there, and what happens if you set M to 5 instead?</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="all-combinations-core.js"></script>
+<script src="all-combinations.js"></script>
+</body>
+</html>

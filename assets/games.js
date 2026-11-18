@@ -731,5 +731,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "all-combinations",
+      title: "All Combinations",
+      blurb: "How many ways can you choose M objects from N? List them all, then watch the count explode as the numbers grow.",
+      tags: ["counting", "algorithms", "arithmetic"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

@@ -99,6 +99,7 @@ check("adams-apportionment: a population was edited", read["adams-apportionment"
 check("addition-law-of-change: the first addend was nudged", read["addition-law-of-change"]?.a === 2 && read["addition-law-of-change"].b === 1 && read["addition-law-of-change"].sum === 3);
 check("affirmative-action: a node was flipped on the grid", read["affirmative-action"]?.nodes === 20 && read["affirmative-action"].edges === 31 && Array.isArray(read["affirmative-action"].nonIntegrated));
 check("hamilton-apportionment: a population was edited", read["hamilton-apportionment"]?.seats === 23 && read["hamilton-apportionment"].final.length === 3 && read["hamilton-apportionment"].finalTotal === 23);
+check("all-combinations: the choose step changed M", read["all-combinations"]?.n === 5 && read["all-combinations"].m === 4 && read["all-combinations"].total === "5");
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -822,6 +823,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const country = at("hamilton-apportionment", { seats: 23, populations: [100, 200, 300] });
   check("hamilton-apportionment: two surplus seats go to A and B", country.surplus === 2 && JSON.stringify(country.surplusWinners) === '["A","B"]' && JSON.stringify(country.final) === "[4,8,11]");
+}
+
+// All Combinations: binomial counts and the first lexicographic rows.
+{
+  const board = at("all-combinations", { n: 5, m: 3 });
+  check("all-combinations: C(5,3) is ten and the first row is 1 2 3", board.total === "10" && JSON.stringify(board.firstRow) === "[1,2,3]");
 }
 
 // A game with no reader, and a position that makes no sense.
