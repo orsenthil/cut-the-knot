@@ -96,6 +96,7 @@ check("goat-cabbage-wolf: the goat was ferried across", read["goat-cabbage-wolf"
 check("subtraction-game: one move made on a board of twelve", read["subtraction-game"]?.nums.length === 12 && read["subtraction-game"].movesSoFar >= 1);
 check("abacus: counters moved on the units wire", read["abacus"]?.radix === 10 && read["abacus"].wires === 7 && read["abacus"].abaci[0].digits[6] > 0);
 check("adams-apportionment: a population was edited", read["adams-apportionment"]?.seats === 23 && read["adams-apportionment"].populations.length === 3 && read["adams-apportionment"].totalPopulation > 0);
+check("addition-law-of-change: the first addend was nudged", read["addition-law-of-change"]?.a === 2 && read["addition-law-of-change"].b === 1 && read["addition-law-of-change"].sum === 3);
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -795,6 +796,15 @@ const at = (slug, state) => describePosition(slug, state, 1);
 
   const fitted = at("adams-apportionment", { seats: 23, states: 3, populations: [100, 200, 300], divisor: 28 });
   check("adams-apportionment: divisor 28 fits exactly", fitted.fits === true && fitted.upwardTotal === 23);
+}
+
+// The change-of-addends demo: the sum is recomputed, and dots match.
+{
+  const board = at("addition-law-of-change", { a: 7, b: 4, maxNum: 10 });
+  check("addition-law-of-change: 7 + 4 makes 11 dots in the union", board.sum === 11 && board.dots.sum === 11 && board.dots.a === 7 && board.dots.b === 4);
+
+  const edge = at("addition-law-of-change", { a: 100, b: 100, maxNum: 10 });
+  check("addition-law-of-change: the total can reach 200", edge.sum === 200 && edge.dots.sum === 200);
 }
 
 // A game with no reader, and a position that makes no sense.

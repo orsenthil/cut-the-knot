@@ -248,6 +248,7 @@ const CORE_GLOBALS = {
   "subtraction-game/subtraction-game-core.js": ["SubtractionGameCore"],
   "abacus/abacus-core.js": ["AbacusCore"],
   "adams-apportionment/adams-apportionment-core.js": ["AdamsApportionmentCore"],
+  "addition-law-of-change/addition-law-of-change-core.js": ["AdditionLawOfChangeCore"],
 };
 
 const games = [];

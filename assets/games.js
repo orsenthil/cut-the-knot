@@ -707,5 +707,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "addition-law-of-change",
+      title: "The Rule of Change of Addends",
+      blurb: "Nudge one number in a sum and watch the total follow. Why must changing an addend by so much change the answer by exactly so much?",
+      tags: ["arithmetic", "invariants", "logic"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };

@@ -285,6 +285,9 @@ const GAMES = {
   "adams-apportionment": async (page) => {
     await page.click('input[data-part="population"][data-index="0"]');
   },
+  "addition-law-of-change": async (page) => {
+    await page.click('.nudge[data-part="a"][data-side="right"]');
+  },
   "two-color-solitaire": async (page) => {
     await page.selectOption("#nInput", "8");
     const gap = await page.evaluate(() => {

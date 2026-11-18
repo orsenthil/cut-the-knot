@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Rule of Change of Addends &mdash; coolmaths</title>
+<meta name="description" content="Nudge one number in a sum and watch the total follow. Why must changing an addend by so much change the answer by exactly so much?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/addition-law-of-change/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Rule of Change of Addends">
+<meta property="og:description" content="Nudge one number in a sum and watch the total follow. Why must changing an addend by so much change the answer by exactly so much?">
+<meta property="og:url" content="https://coolmaths.ai/addition-law-of-change/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 1rem;
+  }
+  .equation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+  .addend {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .nudge {
+    width: 2rem;
+    height: 2rem;
+    font: inherit;
+    font-size: 1.1rem;
+    border: 2px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--card);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .nudge:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .nudge:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .value {
+    min-width: 2.4rem;
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .value.total {
+    color: var(--accent);
+  }
+  .operator {
+    font-size: 1.5rem;
+    color: var(--muted);
+  }
+  .nudge:focus-visible, button:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .dots-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.4rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .dots-label {
+    flex: 0 0 6rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .dots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    min-height: 1rem;
+  }
+  .dot {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .dot.blue { background: var(--accent); }
+  .dot.warm { background: #c2653a; }
+  .dot.total { background: var(--ink); }
+  .dots-more {
+    font-size: 0.8rem;
+    color: var(--muted);
+    align-self: center;
+  }
+  .control-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+  }
+  .control-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  #maxInput {
+    width: 4rem;
+    font: inherit;
+    padding: 0.2rem 0.3rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.35rem;
+    background: var(--card);
+    color: var(--text);
+  }
+</style>
+</head>
+<body data-game="addition-law-of-change" data-kind="demo">
+<main id="main">
+  <h1>The Rule of Change of Addends</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/AdditionLawOfChange.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Explore why changing one number in a sum changes the answer by exactly the same amount.<br>
+    <strong>How to play:</strong> Press + or − beside either addend. Watch the dots and the total change together.
+  </div>
+
+  <div id="stage" class="stage">
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label>Dots shown <input id="maxInput" type="number" min="1" max="20" step="1" aria-label="Maximum dots per row"></label>
+      <button id="resetBtn" type="button" class="primary" aria-label="Start again at one plus one">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Starting from <code>1 + 1 = 2</code>, nudge one of the ones. The total moves by the very same step — every time, for every starting pair.</p>
+
+      <h2>What the dots show</h2>
+      <p>The first row of dots is the first addend, the second row is the second addend, and the last row puts them together. Moving a dot from the first row to the second leaves the last row untouched; adding a dot to either row adds exactly one dot to the last row. This is what <a class="wiki-term" data-wiki="Addition" href="https://en.wikipedia.org/wiki/Addition" target="_blank" rel="noopener">addition</a> means for groups of objects.</p>
+
+      <h2>Why the total follows</h2>
+      <p>If the first addend grows by <code>k</code>, the new sum is <code>(a + k) + b</code>. By <a class="wiki-term" data-wiki="Associative_property" href="https://en.wikipedia.org/wiki/Associative_property" target="_blank" rel="noopener">associativity</a> this equals <code>(a + b) + k</code>: the old sum plus <code>k</code>. The same argument works for the second addend. That is the entire rule of change of addends, and it is why the applet never needs to store the answer — it recomputes it from the two numbers each time.</p>
+
+      <h2>What the check found</h2>
+      <p>The logic test tries every pair of addends from 0 to 100 and every allowed nudge, confirming that the total moves by exactly the amount the chosen addend moved, that the three dot rows count to the three numbers, and that the sum agrees with an independent calculation. The applet's own about-box calls itself "Dot patterns &amp; modular arithmetic", a leftover from another applet; this page is about the change of addends.</p>
+
+      <p class="tip">Can you change one addend and keep the total fixed? What would the other addend have to do?</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="addition-law-of-change-core.js"></script>
+<script src="addition-law-of-change.js"></script>
+</body>
+</html>
