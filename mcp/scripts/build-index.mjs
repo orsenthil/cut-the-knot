@@ -242,6 +242,7 @@ const CORE_GLOBALS = {
   "two-color-solitaire/two-color-solitaire-core.js": ["TwoColorSolitaireCore"],
   "up-and-down-game/up-and-down-game-core.js": ["UpAndDownGameCore"],
   "wythoff-nim/wythoff-nim-core.js": ["WythoffNimCore"],
+  "y-theory/y-theory-core.js": ["YTheoryCore"],
 };
 
 const games = [];

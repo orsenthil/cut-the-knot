@@ -90,6 +90,7 @@ check("deficient-squares: one L on a 5x5 board", read["deficient-squares"]?.fini
 check("two-color-solitaire: one pair removed from 8 cards", read["two-color-solitaire"]?.finished === false && read["two-color-solitaire"].deckSize === 8 && read["two-color-solitaire"].cardsLeft === 6 && read["two-color-solitaire"].pairsRemoved === 1 && read["two-color-solitaire"].magicTrickApplies === true && read["two-color-solitaire"].coloursAlternate === true && read["two-color-solitaire"].legalGapCount > 0);
 check("up-and-down-game: one number placed in box 1", read["up-and-down-game"]?.filled === 1 && read["up-and-down-game"].boxes[0] === 3 && read["up-and-down-game"].finished === false && read["up-and-down-game"].canStillBeCompleted === true);
 check("wythoff-nim: one move made from two heaps of 3", read["wythoff-nim"]?.finished === false && read["wythoff-nim"].heaps.length === 2 && read["wythoff-nim"].movesSoFar >= 1);
+check("y-theory: a clicked cell on a board of seven", read["y-theory"]?.n === 7 && read["y-theory"].cellCount === 28 && read["y-theory"].winner !== null && read["y-theory"].reducedWinner === read["y-theory"].winner);
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -706,6 +707,27 @@ const at = (slug, state) => describePosition(slug, state, 1);
 
   const bad = at("wythoff-nim", { max: 15, heaps: [1, 4], mode: "one", turn: "you", moves: 1 });
   check("wythoff-nim: the true pair for difference 3 is 4 and 7", bad.cold === false && bad.difference === 3 && JSON.stringify(bad.truePairForThisDifference) === "[4,7]");
+}
+
+// The game of Y: the winner, the chain and the reduction.
+{
+  const board = (n, colors) => {
+    const cells = Array(n * n).fill(null);
+    let k = 0;
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n - i; j++) cells[i * n + j] = colors[k++];
+    }
+    return { n, cells };
+  };
+  const allBlue3 = board(3, ["blue", "blue", "blue", "blue", "blue", "blue"]);
+  const blue = at("y-theory", allBlue3);
+  check("y-theory: an all-blue Y_3 board has a six-cell blue chain", blue.winner === "blue" && blue.chainLength === 6 && blue.redCells === 0 && blue.reducedWinner === "blue");
+
+  const split = at("y-theory", board(2, ["blue", "red", "blue"]));
+  check("y-theory: a two-blue one-red triangle is a blue win", split.winner === "blue" && split.n === 2 && split.cellCount === 3);
+
+  const single = at("y-theory", board(1, ["red"]));
+  check("y-theory: one red cell is a red win with no reduction", single.winner === "red" && single.n === 1 && single.reducedWinner === null);
 }
 
 // A game with no reader, and a position that makes no sense.

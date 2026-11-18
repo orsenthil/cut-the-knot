@@ -263,6 +263,10 @@ const GAMES = {
     await page.click('.square[data-heap="0"][data-index="2"]');
     await page.waitForTimeout(500);
   },
+  "y-theory": async (page) => {
+    await page.locator('.ycell[data-id="0"]').click();
+    await page.check("#subgameCheck");
+  },
   "two-color-solitaire": async (page) => {
     await page.selectOption("#nInput", "8");
     const gap = await page.evaluate(() => {

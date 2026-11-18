@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Game of Y &mdash; coolmaths</title>
+<meta name="description" content="Can a board of Y ever end in a draw? Shrink the triangle and watch a majority vote turn it into a smaller board with the very same winner.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/y-theory/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Game of Y">
+<meta property="og:description" content="Can a board of Y ever end in a draw? Shrink the triangle and watch a majority vote turn it into a smaller board with the very same winner.">
+<meta property="og:url" content="https://coolmaths.ai/y-theory/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+    overflow: hidden;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .ycell {
+    cursor: pointer;
+  }
+  .ycell .hex {
+    fill: var(--board-a);
+    stroke: var(--border-strong);
+    stroke-width: 1.5;
+  }
+  .ycell .chip {
+    fill: var(--surface);
+    stroke: var(--ink);
+    stroke-width: 1;
+  }
+  .ycell.blue .chip {
+    fill: var(--accent);
+    stroke: var(--accent);
+  }
+  .ycell.red .chip {
+    fill: #c2653a;
+    stroke: #c2653a;
+  }
+  .ycell.chain .hex {
+    stroke: var(--highlight);
+    stroke-width: 4;
+  }
+  .ycell:hover .hex {
+    stroke: var(--accent);
+  }
+  .ycell:focus-visible {
+    outline: none;
+  }
+  .ycell:focus-visible .hex {
+    stroke: var(--accent);
+    stroke-width: 4;
+  }
+  .dot.blue { fill: var(--accent); }
+  .dot.red { fill: #c2653a; }
+  .control-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.9rem;
+  }
+  .control-label {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  #nOut {
+    min-width: 2rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+  .control-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+  }
+  button:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="y-theory" data-kind="demo">
+<main id="main">
+  <h1>The Game of Y</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#induction">Induction</a><a class="tag" href="../index.html#game-strategy">Game Strategy</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Games/YTheory.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Explore the game of Y: every cell gets a blue or red chip, and a player wins by joining all three sides of the triangle.<br>
+    <strong>How to play:</strong> Click a cell to switch its colour. Tick "Show subgame" to see the smaller board hidden inside, then press Shrink to play with it.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" role="group" aria-label="Triangular board of hexagonal cells"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <span class="control-label">Board size N</span>
+      <button id="lessBtn" type="button" aria-label="Make the board one cell smaller on a side">&minus;</button>
+      <output id="nOut" aria-label="Current board size">7</output>
+      <button id="moreBtn" type="button" aria-label="Make the board one cell larger on a side">+</button>
+    </div>
+    <div class="control-row">
+      <label><input id="subgameCheck" type="checkbox"> Show subgame</label>
+      <button id="shrinkBtn" type="button">Shrink</button>
+      <button id="resetBtn" type="button" class="primary">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A board of Y is a triangle of hexagonal cells. No matter how the chips are placed, one of the two colours will always join all three sides — and never both. This page is the applet that walks through the proof.</p>
+
+      <h2>Chains and sides</h2>
+      <p>Neighbouring cells share an edge. A <em>chain</em> is a string of touching cells of one colour. Give a cell three numbers <code>(i, j, k)</code> that add up to <code>n &minus; 1</code>: the three sides of the board are where <code>i = 0</code>, <code>j = 0</code> or <code>k = 0</code>. A player wins when one of their chains touches all three. The game <a class="wiki-term" data-wiki="Hex_(board_game)" href="https://en.wikipedia.org/wiki/Hex_(board_game)" target="_blank" rel="noopener">Hex</a> is Y with two corners already filled: colour them with opposite chips and the two vacant corners become the extra sides.</p>
+
+      <h2>Shrinking the board</h2>
+      <p>Look at any upward-pointing triangle of three cells. Give the new cell at its centre the colour that appears at least twice — a majority vote. Doing this for every such triangle turns a board of size <code>n</code> into one of size <code>n &minus; 1</code>. A chain in the big board still shows up as a chain in the small one, so a winning chain survives each shrink. Keep going until the board is a single cell: that cell has a colour, so somebody won, and only one player can win at a time. This is <a class="wiki-term" data-wiki="Mathematical_induction" href="https://en.wikipedia.org/wiki/Mathematical_induction" target="_blank" rel="noopener">induction</a> on the size of the board.</p>
+
+      <h2>What the check found</h2>
+      <p>The easy proof above has a gap: it does not show that a winning chain in the <em>small</em> board must have come from a winning chain in the big one. Jack van Rijswijck supplied the missing argument, which is why the original applet's claim needed care. This port's logic test checks every colouring of the boards of sizes 1 to 5 (and 20,000 colourings of size 6): each has exactly one winner, shrinking never changes who won, and Steve Meyers's short cut also holds — a board is a win exactly when at least two of its three edge-removed subboards are. The applet's own about-box says "Shapes of Constant Width", a leftover from a different applet; the board and the argument here are Y.</p>
+
+      <p class="tip">Tick "Show subgame" and shrink a few times. Can you spot a board where the small board has a chain but the big one does not?</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="y-theory-core.js"></script>
+<script src="y-theory.js"></script>
+</body>
+</html>

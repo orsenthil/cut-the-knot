@@ -662,5 +662,13 @@ window.COOLMATHS = {
       tags: ["game-strategy", "sequences", "logic"],
       level: 2,
     },
+    {
+      slug: "y-theory",
+      title: "The Game of Y",
+      blurb: "Can a board of Y ever end in a draw? Shrink the triangle and watch a majority vote turn it into a smaller board with the very same winner.",
+      tags: ["logic", "induction", "game-strategy"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };
