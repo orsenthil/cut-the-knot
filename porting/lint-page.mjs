@@ -284,7 +284,7 @@ const folders = readdirSync(REPO, { withFileTypes: true })
   // Site pages that are not games are not in the catalogue: profile/ is the
   // player's record, signin/ is where they let the tutor see it, privacy/
   // says what is kept, tutor/ and ai-tutor/ say how to get help.
-  .filter((n) => !["assets", "porting", "mcp", "xscreensaver", "node_modules", "profile", "signin", "privacy", "tutor", "ai-tutor"].includes(n));
+  .filter((n) => !["assets", "porting", "mcp", "xscreensaver", "node_modules", "profile", "signin", "privacy", "tutor", "ai-tutor", "about"].includes(n));
 for (const f of folders) {
   if (!catalogue.games.some((g) => g.slug === f)) {
     console.error(`FAIL site: ${f}/index.html exists but "${f}" is not in assets/games.js`);

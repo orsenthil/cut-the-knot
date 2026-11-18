@@ -88,21 +88,11 @@
       `<img class="logo-light" src="${ROOT}assets/logo-light-sm.webp" alt="coolmaths">` +
       `<img class="logo-dark" src="${ROOT}assets/logo-dark-sm.webp" alt="coolmaths">` +
       `</a>` +
-      `<nav><a href="${ROOT}tutor/index.html">Human Tutor</a><a href="${ROOT}ai-tutor/index.html">AI Tutor</a><a href="${ROOT}index.html">All games</a><a href="${ROOT}profile/index.html">Profile</a></nav>`;
+      `<nav><a href="${ROOT}tutor/index.html">Human Tutor</a><a href="${ROOT}ai-tutor/index.html">AI Tutor</a><a href="${ROOT}index.html">All games</a><a href="${ROOT}profile/index.html">Profile</a><a href="${ROOT}about/index.html">About</a></nav>`;
     const toggle = el("button", { class: "theme-toggle", type: "button", "aria-label": "Switch light or dark theme" }, SUN + MOON);
     toggle.addEventListener("click", toggleTheme);
     header.querySelector("nav").appendChild(toggle);
     document.body.prepend(header);
-  }
-
-  function buildFooter() {
-    const footer = el("footer", { class: "site-footer" });
-    footer.innerHTML =
-      "Puzzles from <a href=\"https://www.cut-the-knot.org/\" target=\"_blank\" rel=\"noopener\">cut-the-knot.org</a> " +
-      "by Alexander Bogomolny, rebuilt for the modern web.<br>" +
-      "coolmaths logo by Harini Vardhan.<br>" +
-      `<a href="${ROOT}privacy/index.html">Privacy</a>`;
-    document.body.appendChild(footer);
   }
 
   // A keyboard or screen-reader user's first Tab lands here: straight past
@@ -153,7 +143,6 @@
   document.addEventListener("DOMContentLoaded", () => {
     buildHeader();
     addSkipLink();
-    buildFooter();
     loadProgress();
     loadAccount();
   });

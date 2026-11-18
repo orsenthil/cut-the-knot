@@ -156,7 +156,7 @@ try {
   const saved = JSON.parse(readFileSync(await download.path(), "utf8"));
   check("download: the file is named for what it is", download.suggestedFilename() === "coolmaths-record.json");
   check("download: it holds both games and the plays", saved.progress.coins && saved.progress.hanoi && saved.sessions.length >= 2 && saved.keptIn === "this browser");
-  check("profile: links to the privacy page", (await page.locator('a[href$="privacy/index.html"]').count()) >= 2);
+  check("profile: links to the privacy page", (await page.locator('a[href$="privacy/index.html"]').count()) >= 1);
 
   await page.goto(`${base}/privacy/`);
   check("privacy: the page loads with the site's header", (await page.locator(".site-header").count()) === 1 && /Privacy/.test(await page.textContent("h1")));

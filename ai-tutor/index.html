@@ -63,67 +63,21 @@
   <h1>AI Tutor</h1>
 
   <div class="tutor">
-    <p class="lead">coolmaths has a tutor that AI assistants can connect to. Once connected, you can ask your assistant about any game here and it will answer from the site&rsquo;s own explanations and code, not from memory.</p>
+    <p class="lead">Connect an AI assistant to coolmaths and ask it about any game.</p>
 
     <div class="book">
-      <p><strong>The address of the tutor</strong></p>
       <p><code>https://coolmaths-tutor.fly.dev/mcp</code></p>
-      <p>It is a remote <a class="wiki-term" data-wiki="Model_Context_Protocol" href="https://en.wikipedia.org/wiki/Model_Context_Protocol" target="_blank" rel="noopener">MCP</a> server. It is free, read-only, and needs no sign-in.</p>
     </div>
 
-    <h2>Connect your assistant</h2>
-
-    <p><strong>Claude Code</strong> (in a terminal):</p>
+    <h2>Connect</h2>
+    <p><strong>Claude Code:</strong></p>
     <pre><code>claude mcp add --transport http coolmaths https://coolmaths-tutor.fly.dev/mcp</code></pre>
+    <p><strong>claude.ai or Claude Desktop:</strong> Settings &rarr; Connectors &rarr; Add custom connector, and paste the address.</p>
+    <p><strong>Other clients:</strong> add an HTTP MCP server with the same address.</p>
 
-    <p><strong>Claude on claude.ai or Claude Desktop:</strong></p>
-    <ol>
-      <li>Open <strong>Settings &rarr; Connectors</strong>.</li>
-      <li>Choose <strong>Add custom connector</strong>.</li>
-      <li>Name it <code>coolmaths</code> and paste the address above.</li>
-      <li>Save, then switch the connector on in a new chat.</li>
-    </ol>
-
-    <p><strong>Any other MCP client</strong> (an editor, another assistant, your own program): add a server of type <em>streamable HTTP</em> with the same address. For example, in a client that reads a JSON settings file:</p>
-    <pre><code>{
-  "mcpServers": {
-    "coolmaths": {
-      "type": "http",
-      "url": "https://coolmaths-tutor.fly.dev/mcp"
-    }
-  }
-}</code></pre>
-
-    <h2>Talk about a game</h2>
-    <p>Once it is connected, ask in plain words. For example:</p>
-    <ul>
-      <li>&ldquo;Tutor me on the hourglass puzzle, but don&rsquo;t tell me the answer yet.&rdquo;</li>
-      <li>&ldquo;Which games here are about parity?&rdquo;</li>
-      <li>&ldquo;Explain the idea of an invariant using the games on coolmaths.&rdquo;</li>
-      <li>&ldquo;Quiz me on recursion.&rdquo;</li>
-      <li>&ldquo;Use the real game logic to solve the 7 and 11 minute hourglass for 15 minutes.&rdquo;</li>
-    </ul>
-
-    <h2>What the assistant can do</h2>
-    <ul>
-      <li><strong>Search and browse</strong> every game by name, idea or difficulty.</li>
-      <li><strong>Read the rules and the maths</strong> of a game, the same text you see under <em>Look for the math</em>.</li>
-      <li><strong>Explain a concept</strong> by pulling together every game that uses it.</li>
-      <li><strong>Run the game&rsquo;s real code</strong> for games that have it, to show a strategy at work.</li>
-      <li><strong>Teach step by step.</strong> Built-in prompts (<code>tutor</code>, <code>quiz_me</code>, <code>explain_like_im</code>) have it let you play and guess first, give hints, and only then name the idea.</li>
-    </ul>
-
-    <h2>Let it see your own progress (optional)</h2>
-    <p>For a tutor that knows what you have played and which game is open on your screen, add a second connector with this address:</p>
-    <pre><code>https://coolmaths-tutor.fly.dev/mcp/me</code></pre>
-    <p>Your assistant will send you to coolmaths to sign in with Google or GitHub and press <strong>Allow</strong>. After that it can suggest what to play next and help with the position you are looking at. It can only read, only your own record, and you can switch it off any time on your <a href="../profile/index.html">profile</a>. Details are on the <a href="../privacy/index.html">privacy page</a>.</p>
-
-    <h2>Want a person instead?</h2>
-    <p>A teacher can work with you one to one for 30 minutes. See the <a href="../tutor/index.html">Human Tutor</a> page.</p>
-
-    <p class="updated" style="color:var(--muted);font-size:0.88rem">The server&rsquo;s code and a full list of its tools are in the <a href="https://github.com/orsenthil/cut-the-knot/tree/web/mcp" target="_blank" rel="noopener">mcp folder on GitHub</a>.</p>
+    <h2>Then ask</h2>
+    <p>&ldquo;Tutor me on the hourglass puzzle, but don&rsquo;t give the answer yet.&rdquo;</p>
   </div>
-  <script src="../assets/wiki-hovercard.js"></script>
 </main>
 </body>
 </html>
