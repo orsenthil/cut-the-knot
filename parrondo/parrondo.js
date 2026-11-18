@@ -21,7 +21,7 @@
     "var(--bad)",
     "var(--accent)",
     "var(--good)",
-    "var(--highlight)",
+    "#d9910a",
     "#c45c26",
     "#2a9d8f",
     "#6c5ce7",
