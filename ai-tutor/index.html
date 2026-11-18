@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AI Tutor &mdash; coolmaths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Connect an AI assistant to the coolmaths tutor (an MCP server) so it can talk about the games, run their real logic and explain the concepts.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<style>
+  .tutor { width: 100%; max-width: 680px; line-height: 1.65; }
+  .tutor h2 { margin: 30px 0 8px; font-size: 1.15rem; letter-spacing: -0.01em; }
+  .tutor p, .tutor ul, .tutor ol { margin: 0 0 12px; }
+  .tutor ul, .tutor ol { padding-left: 1.3em; }
+  .tutor li { margin-bottom: 6px; }
+  .tutor .lead { color: var(--muted); font-size: 1.05rem; }
+  .tutor .book {
+    padding: 16px 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+  }
+  .tutor .book p:last-child { margin-bottom: 0; }
+  .tutor .book .price { font-size: 1.1rem; font-weight: 650; }
+  .tutor a.button {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .tutor a.button:hover { filter: brightness(1.08); }
+  .tutor pre {
+    margin: 0 0 12px;
+    padding: 12px 14px;
+    overflow-x: auto;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.88rem;
+  }
+  .tutor code { overflow-wrap: anywhere; }
+  .tutor pre code { overflow-wrap: normal; }
+  .tutor .say {
+    margin: 0 0 12px;
+    padding: 4px 14px;
+    border-left: 3px solid var(--accent);
+    color: var(--muted);
+  }
+  .tutor .say p { margin: 6px 0; }
+</style>
+</head>
+<body data-page="ai-tutor">
+<main id="main">
+  <h1>AI Tutor</h1>
+
+  <div class="tutor">
+    <p class="lead">coolmaths has a tutor that AI assistants can connect to. Once connected, you can ask your assistant about any game here and it will answer from the site&rsquo;s own explanations and code, not from memory.</p>
+
+    <div class="book">
+      <p><strong>The address of the tutor</strong></p>
+      <p><code>https://coolmaths-tutor.fly.dev/mcp</code></p>
+      <p>It is a remote <a class="wiki-term" data-wiki="Model_Context_Protocol" href="https://en.wikipedia.org/wiki/Model_Context_Protocol" target="_blank" rel="noopener">MCP</a> server. It is free, read-only, and needs no sign-in.</p>
+    </div>
+
+    <h2>Connect your assistant</h2>
+
+    <p><strong>Claude Code</strong> (in a terminal):</p>
+    <pre><code>claude mcp add --transport http coolmaths https://coolmaths-tutor.fly.dev/mcp</code></pre>
+
+    <p><strong>Claude on claude.ai or Claude Desktop:</strong></p>
+    <ol>
+      <li>Open <strong>Settings &rarr; Connectors</strong>.</li>
+      <li>Choose <strong>Add custom connector</strong>.</li>
+      <li>Name it <code>coolmaths</code> and paste the address above.</li>
+      <li>Save, then switch the connector on in a new chat.</li>
+    </ol>
+
+    <p><strong>Any other MCP client</strong> (an editor, another assistant, your own program): add a server of type <em>streamable HTTP</em> with the same address. For example, in a client that reads a JSON settings file:</p>
+    <pre><code>{
+  "mcpServers": {
+    "coolmaths": {
+      "type": "http",
+      "url": "https://coolmaths-tutor.fly.dev/mcp"
+    }
+  }
+}</code></pre>
+
+    <h2>Talk about a game</h2>
+    <p>Once it is connected, ask in plain words. For example:</p>
+    <ul>
+      <li>&ldquo;Tutor me on the hourglass puzzle, but don&rsquo;t tell me the answer yet.&rdquo;</li>
+      <li>&ldquo;Which games here are about parity?&rdquo;</li>
+      <li>&ldquo;Explain the idea of an invariant using the games on coolmaths.&rdquo;</li>
+      <li>&ldquo;Quiz me on recursion.&rdquo;</li>
+      <li>&ldquo;Use the real game logic to solve the 7 and 11 minute hourglass for 15 minutes.&rdquo;</li>
+    </ul>
+
+    <h2>What the assistant can do</h2>
+    <ul>
+      <li><strong>Search and browse</strong> every game by name, idea or difficulty.</li>
+      <li><strong>Read the rules and the maths</strong> of a game, the same text you see under <em>Look for the math</em>.</li>
+      <li><strong>Explain a concept</strong> by pulling together every game that uses it.</li>
+      <li><strong>Run the game&rsquo;s real code</strong> for games that have it, to show a strategy at work.</li>
+      <li><strong>Teach step by step.</strong> Built-in prompts (<code>tutor</code>, <code>quiz_me</code>, <code>explain_like_im</code>) have it let you play and guess first, give hints, and only then name the idea.</li>
+    </ul>
+
+    <h2>Let it see your own progress (optional)</h2>
+    <p>For a tutor that knows what you have played and which game is open on your screen, add a second connector with this address:</p>
+    <pre><code>https://coolmaths-tutor.fly.dev/mcp/me</code></pre>
+    <p>Your assistant will send you to coolmaths to sign in with Google or GitHub and press <strong>Allow</strong>. After that it can suggest what to play next and help with the position you are looking at. It can only read, only your own record, and you can switch it off any time on your <a href="../profile/index.html">profile</a>. Details are on the <a href="../privacy/index.html">privacy page</a>.</p>
+
+    <h2>Want a person instead?</h2>
+    <p>A teacher can work with you one to one for 30 minutes. See the <a href="../tutor/index.html">Human Tutor</a> page.</p>
+
+    <p class="updated" style="color:var(--muted);font-size:0.88rem">The server&rsquo;s code and a full list of its tools are in the <a href="https://github.com/orsenthil/cut-the-knot/tree/web/mcp" target="_blank" rel="noopener">mcp folder on GitHub</a>.</p>
+  </div>
+  <script src="../assets/wiki-hovercard.js"></script>
+</main>
+</body>
+</html>

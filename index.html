@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>coolmaths &mdash; Maths Puzzles and Games</title>
-<meta name="description" content="Maths puzzles and games to play first and understand after. Classic cut-the-knot puzzles, rebuilt for the modern web.">
+<title>coolmaths &mdash; Maths Tutoring Through Puzzles and Games</title>
+<meta name="description" content="One-to-one maths tutoring where a teacher leads you through puzzles and games to the ideas behind them. Book 30 minutes, or practise on your own with a library of classic cut-the-knot puzzles.">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="https://coolmaths.ai/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="coolmaths">
-<meta property="og:title" content="coolmaths: maths puzzles and games">
-<meta property="og:description" content="Maths puzzles and games to play first and understand after.">
+<meta property="og:title" content="coolmaths: maths tutoring through puzzles and games">
+<meta property="og:description" content="A teacher leads you through maths puzzles and games to the ideas behind them. 30 minutes, one to one.">
 <meta property="og:url" content="https://coolmaths.ai/">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="assets/icons/icon-48.png" type="image/png">
@@ -29,6 +29,61 @@
   .hero { text-align: center; max-width: 640px; margin: 8px 0 28px; }
   .hero img { width: min(300px, 70vw); height: auto; }
   .hero p { margin: 14px auto 0; color: var(--muted); font-size: 1.05rem; max-width: 520px; }
+
+  .hero .cta { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
+  .hero .cta a {
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: var(--card);
+    color: var(--text);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .hero .cta a:hover { background: var(--surface-2); }
+  .hero .cta a.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .hero .cta a.primary:hover { filter: brightness(1.08); }
+  .hero .price { margin-top: 10px; font-size: 0.9rem; }
+
+  .how {
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 0 32px;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: 14px;
+    counter-reset: step;
+  }
+  .how li {
+    counter-increment: step;
+    padding: 16px 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    font-size: 0.92rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .how li::before {
+    content: counter(step);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.7rem;
+    height: 1.7rem;
+    margin-bottom: 8px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    color: var(--text);
+    font-weight: 700;
+  }
+  .how strong { display: block; color: var(--text); font-size: 1rem; margin-bottom: 2px; }
+
+  .library { width: 100%; max-width: 1120px; margin: 0 0 14px; text-align: center; }
+  .library h2 { margin: 0 0 4px; font-size: 1.25rem; letter-spacing: -0.01em; }
+  .library p { margin: 0; color: var(--muted); font-size: 0.95rem; }
 
   .for-you { margin: -8px 0 24px; text-align: center; font-size: 0.95rem; color: var(--muted); }
   .for-you a { font-weight: 600; }
@@ -174,9 +229,26 @@
     <img class="logo-light" src="assets/logo-light.webp" alt="coolmaths" width="607" height="437">
     <img class="logo-dark" src="assets/logo-dark.webp" alt="coolmaths" width="607" height="437">
     <p>
-      Maths puzzles and games to play first and understand after.
-      Classic puzzles from Alexander Bogomolny's cut-the-knot, rebuilt for today.
+      Maths is best learned by playing first and understanding after.
+      A human tutor sits beside you, leads you through the games,
+      and helps you find the idea hiding inside each one.
     </p>
+    <div class="cta">
+      <a class="primary" href="tutor/index.html">Book a human tutor</a>
+      <a href="ai-tutor/index.html">Try the AI tutor</a>
+    </div>
+    <p class="price">30 minutes, one to one, $30.</p>
+  </section>
+
+  <ol class="how" aria-label="How a tutoring session works">
+    <li><strong>Play</strong>Open a game and try it. The tutor lets you find your own way in.</li>
+    <li><strong>Wonder</strong>Guess, test, and notice what stays the same each time.</li>
+    <li><strong>Understand</strong>Name the idea behind it, and see it work on a new puzzle.</li>
+  </ol>
+
+  <section class="library">
+    <h2>The games</h2>
+    <p>Classic puzzles from Alexander Bogomolny's cut-the-knot, rebuilt for today. Play them on your own, or with your tutor.</p>
   </section>
 
   <p class="for-you" id="forYou" hidden></p>

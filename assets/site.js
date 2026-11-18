@@ -88,7 +88,7 @@
       `<img class="logo-light" src="${ROOT}assets/logo-light-sm.webp" alt="coolmaths">` +
       `<img class="logo-dark" src="${ROOT}assets/logo-dark-sm.webp" alt="coolmaths">` +
       `</a>` +
-      `<nav><a href="${ROOT}index.html">All games</a><a href="${ROOT}profile/index.html">Profile</a></nav>`;
+      `<nav><a href="${ROOT}tutor/index.html">Human Tutor</a><a href="${ROOT}ai-tutor/index.html">AI Tutor</a><a href="${ROOT}index.html">All games</a><a href="${ROOT}profile/index.html">Profile</a></nav>`;
     const toggle = el("button", { class: "theme-toggle", type: "button", "aria-label": "Switch light or dark theme" }, SUN + MOON);
     toggle.addEventListener("click", toggleTheme);
     header.querySelector("nav").appendChild(toggle);
