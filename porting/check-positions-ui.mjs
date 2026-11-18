@@ -274,6 +274,11 @@ const GAMES = {
   "goat-cabbage-wolf": async (page) => {
     await page.click('.item-btn[data-item="0"]');
   },
+  "subtraction-game": async (page) => {
+    await page.click('.num[data-index="0"]');
+    await page.click('.sub[data-index="0"]');
+    await page.waitForTimeout(500);
+  },
   "two-color-solitaire": async (page) => {
     await page.selectOption("#nInput", "8");
     const gap = await page.evaluate(() => {

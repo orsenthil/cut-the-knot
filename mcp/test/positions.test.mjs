@@ -93,6 +93,7 @@ check("wythoff-nim: one move made from two heaps of 3", read["wythoff-nim"]?.fin
 check("y-theory: a clicked cell on a board of seven", read["y-theory"]?.n === 7 && read["y-theory"].cellCount === 28 && read["y-theory"].winner !== null && read["y-theory"].reducedWinner === read["y-theory"].winner);
 check("date-game: a January date after two month clicks", read["date-game"]?.month === 2 && read["date-game"].day >= 0 && read["date-game"].valid === true && read["date-game"].finished === false);
 check("goat-cabbage-wolf: the goat was ferried across", read["goat-cabbage-wolf"]?.right.length === 1 && read["goat-cabbage-wolf"].farmerShore === "right" && read["goat-cabbage-wolf"].nextCrossing === "cross alone");
+check("subtraction-game: one move made on a board of twelve", read["subtraction-game"]?.nums.length === 12 && read["subtraction-game"].movesSoFar >= 1);
 
 
 /* ------------------------------------------------ positions with known answers */
@@ -760,6 +761,19 @@ const at = (slug, state) => describePosition(slug, state, 1);
 
   const won = at("goat-cabbage-wolf", { right: [true, true, true], boat: "right", moves: 7, outcome: "win" });
   check("goat-cabbage-wolf: all three across is a win", won.result === "win" && won.danger === null && won.crossingsSoFar === 7);
+}
+
+// The Subtraction Game: Grundy values, the Nim-sum and the Scoring claim.
+{
+  const board = at("subtraction-game", { nums: [9, 4, 11], subs: [1, 2, 3], max: 20, turn: "you" });
+  check("subtraction-game: values are n mod 4 and the sum is non-zero",
+    JSON.stringify(board.grundyValues) === "[1,0,3]" && board.nimSum === 2 && board.nextGoodMove !== null);
+
+  const cold = at("subtraction-game", { nums: [4, 8, 12], subs: [1, 2, 3], max: 20, turn: "you" });
+  check("subtraction-game: multiples of four have a zero Nim-sum", cold.nimSum === 0 && cold.nextGoodMove === null);
+
+  const done = at("subtraction-game", { nums: [0, 0], subs: [1, 2], max: 20, winner: "you" });
+  check("subtraction-game: an empty board is finished", done.finished === true && done.result === "win");
 }
 
 // A game with no reader, and a position that makes no sense.

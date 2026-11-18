@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Subtraction Game &mdash; coolmaths</title>
+<meta name="description" content="A board of numbers and a set of allowed subtractions: can you leave the computer with no move, or does it always know the trick?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/subtraction-game/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Subtraction Game">
+<meta property="og:description" content="A board of numbers and a set of allowed subtractions: can you leave the computer with no move, or does it always know the trick?">
+<meta property="og:url" content="https://coolmaths.ai/subtraction-game/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.9rem;
+  }
+  .num-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    justify-content: center;
+  }
+  .choice {
+    font: inherit;
+    font-variant-numeric: tabular-nums;
+    border: 2px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--card);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .choice:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .choice:not(:disabled):hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .num {
+    min-width: 2.6rem;
+    min-height: 2.6rem;
+    font-size: 1.1rem;
+  }
+  .num.selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .num.empty {
+    background: var(--surface);
+    color: var(--muted);
+  }
+  .divider {
+    height: 3px;
+    margin: 0.8rem 0;
+    background: var(--border-strong);
+    border-radius: 2px;
+  }
+  .sub-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    justify-content: center;
+  }
+  .sub-wrap {
+    display: flex;
+    gap: 0.2rem;
+    align-items: center;
+  }
+  .sub {
+    min-width: 2.6rem;
+    min-height: 2.6rem;
+    font-size: 1.1rem;
+    border-color: var(--accent);
+  }
+  .tiny {
+    min-width: 2rem;
+    min-height: 2.6rem;
+    font-size: 1rem;
+  }
+  .choice:focus-visible, button:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .control-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+  }
+  .control-label {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .stepper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .stepper output {
+    min-width: 2rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+  .control-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body data-game="subtraction-game" data-kind="game">
+<main id="main">
+  <h1>Subtraction Game</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/SubtractionGame.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+
+  <div id="rules">
+    <strong>Game:</strong> Take turns subtracting a lower number from one of the numbers above the line. The player with no move left loses.<br>
+    <strong>How to play:</strong> Click a number above the line, then click a number below it to subtract. Tick Define to change those lower numbers.
+  </div>
+
+  <div id="stage" class="stage">
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <span class="control-label">How many numbers</span>
+      <span class="stepper"><button id="numsLess" type="button" aria-label="Fewer minuends">&minus;</button><output id="numsOut">20</output><button id="numsMore" type="button" aria-label="More minuends">+</button></span>
+      <span class="control-label">Subtrahends</span>
+      <span class="stepper"><button id="subsLess" type="button" aria-label="Fewer subtrahends">&minus;</button><output id="subsOut">3</output><button id="subsMore" type="button" aria-label="More subtrahends">+</button></span>
+      <span class="control-label">Max</span>
+      <span class="stepper"><button id="maxLess" type="button" aria-label="Smaller maximum">&minus;</button><output id="maxOut">20</output><button id="maxMore" type="button" aria-label="Larger maximum">+</button></span>
+    </div>
+    <div class="control-row">
+      <label><input id="defineCheck" type="checkbox"> Define</label>
+      <button id="moveBtn" type="button">You start</button>
+      <button id="resetBtn" type="button" class="primary">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Here is a whole board of little subtraction games at once. The surprising part is that each number has a hidden value, and adding those values with XOR tells the computer exactly what to do.</p>
+
+      <h2>One heap, then many</h2>
+      <p>With just one number and the subtractions <code>1, 2, &hellip;, s</code>, the losing numbers are the multiples of <code>s + 1</code>: whatever you subtract, your opponent can bring it back to a multiple. So the heap's value is its remainder <code>n mod (s+1)</code>. The cut-the-knot page says this makes the game the same as Scoring; the logic test checks that formula for every <code>s</code> from 1 to 8 and every heap size up to 100, and it holds exactly.</p>
+
+      <h2>Grundy values and the XOR</h2>
+      <p>For an arbitrary set of subtractions, a number's value is the smallest non-negative number not among the values it can move to — its <a class="wiki-term" data-wiki="Sprague%E2%80%93Grundy_theorem" href="https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem" target="_blank" rel="noopener">Grundy number</a>. A board is losing when the <a class="wiki-term" data-wiki="Nim-sum" href="https://en.wikipedia.org/wiki/Nim-sum" target="_blank" rel="noopener">Nim-sum</a> (the XOR) of all its values is zero. From a non-zero sum there is always a subtraction that makes it zero, and the computer looks for exactly that move; from zero it has to move at random. This is the same idea that solves <a class="wiki-term" data-wiki="Nim" href="https://en.wikipedia.org/wiki/Nim" target="_blank" rel="noopener">Nim</a>.</p>
+
+      <h2>What the check found</h2>
+      <p>The logic test recomputes every Grundy value with an independent recursion and compares it with the table the port uses. It checks the Scoring claim above, confirms that a restoring move exists from every non-zero board it tries, and compares a second transcription of the applet's computer with this one on 3,000 random boards across the whole option range. One quirk stays on the applet's side: it prints "Illegal Move" for subtracting more than a number, but still goes ahead and makes the number negative. This port follows the page's rule that only non-negative results are legal.</p>
+
+      <p class="tip">Try the default board with Define unchecked. Does the computer ever let you leave it with a zero Nim-sum?</p>
+    </div>
+  </details>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="subtraction-game-core.js"></script>
+<script src="subtraction-game.js"></script>
+</body>
+</html>

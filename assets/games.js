@@ -684,5 +684,12 @@ window.COOLMATHS = {
       tags: ["logic", "game-strategy", "counting"],
       level: 2,
     },
+    {
+      slug: "subtraction-game",
+      title: "Subtraction Game",
+      blurb: "A board of numbers and a set of allowed subtractions: can you leave the computer with no move, or does it always know the trick?",
+      tags: ["game-strategy", "logic", "algorithms"],
+      level: 3,
+    },
   ],
 };
