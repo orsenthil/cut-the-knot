@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brides' Chair &mdash; coolmaths</title>
+<meta name="description" content="Build a square on each side of a triangle and watch what happens when you move a corner or turn the flap. Why do a median, an altitude and three square areas line up so neatly?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/brides-chair/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Brides' Chair">
+<meta property="og:description" content="Build a square on each side of a triangle and watch what happens when you move a corner or turn the flap. Why do a median, an altitude and three square areas line up so neatly?">
+<meta property="og:url" content="https://coolmaths.ai/brides-chair/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.75rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    touch-action: none;
+    cursor: grab;
+  }
+  #board:active { cursor: grabbing; }
+  #board:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  .controls {
+    width: 100%;
+    max-width: 30rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: center;
+  }
+  .controls label.check {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    cursor: pointer;
+  }
+  .controls input[type="checkbox"] { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+  .slider-row {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .slider-row label { display: inline-flex; align-items: center; gap: 0.4rem; }
+  #rotationRange { flex: 1 1 10rem; min-height: 2.75rem; accent-color: var(--accent); }
+  #rangeValue { min-width: 3ch; font-variant-numeric: tabular-nums; font-weight: 700; }
+
+  #status { width: 100%; max-width: 30rem; min-height: 3.5em; }
+  #status strong { color: var(--accent); }
+  .math-body code { font-family: var(--mono); }
+</style>
+</head>
+<body data-game="brides-chair" data-kind="demo">
+<main id="main">
+  <h1>Brides' Chair</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Change the triangle and rebuild the squares on its three sides; this picture hides a surprising equality.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus the picture, press 1 to 3 and use the arrow keys. Tick the boxes and slide the turn slider to see what stays the same.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="400" height="300" tabindex="0" role="application"
+      aria-label="A triangle ABC with a square on each side and three flanks. Drag corner A, B or C, or press 1, 2 or 3 and use the arrow keys to move the chosen corner."></canvas>
+  </div>
+
+  <div class="controls">
+    <button id="rightBtn" type="button" class="primary" aria-label="Make the angle at C a right angle">Make a right angle</button>
+    <button id="resetBtn" type="button" aria-label="Restore the starting triangle and switch every option off">Reset</button>
+    <label class="check"><input id="namesCheck" type="checkbox"> Show names</label>
+    <label class="check"><input id="linesCheck" type="checkbox"> Show lines</label>
+    <label class="check"><input id="fillCheck" type="checkbox"> Fill triangles</label>
+    <label class="check"><input id="mediansCheck" type="checkbox"> Show medians/altitudes</label>
+    <div class="slider-row">
+      <label for="rotationRange">Turn the A-flank <output id="rangeValue" for="rotationRange">0&deg;</output></label>
+      <input id="rotationRange" type="range" min="0" max="95" step="1" value="0"
+        aria-label="Turn a copy of the A-flank from 0 to 95 degrees clockwise">
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Put a square on each side of a triangle and join the corners. The shape is called the Bride's Chair when the triangle has a right angle, but the surprises below work for every triangle.</p>
+
+      <h2>The two little squares fill the big one</h2>
+      <p>In a right triangle the square on the longest side has exactly the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">same area</a> as the two squares on the other sides: <code>AB&sup2; = AC&sup2; + BC&sup2;</code> when the right angle is at C. Press "Make a right angle" to see it. This is the theorem the applet was built to show.</p>
+
+      <h2>Three flanks of the same size</h2>
+      <p>The triangles between the squares and the original triangle are called <em>flanks</em>. Move any corner: each flank keeps exactly the <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> of ABC, even though its shape changes. The logic test checks this on every triangle of a grid covering the drawing area.</p>
+
+      <h2>A line with two jobs</h2>
+      <p>The line from A to the middle of the far side of its flank is both a <a class="wiki-term" data-wiki="Median_(geometry)" href="https://en.wikipedia.org/wiki/Median_(geometry)" target="_blank" rel="noopener">median</a> of that flank and an <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a> of ABC. It is perpendicular to BC and just half as long: <code>AM_a = BC / 2</code>. To see why, set the turn slider to 90&deg;: the blue corner B&prime; lands on C, and CA cuts the new triangle B C C&prime; into two equal halves while AM_a becomes a line parallel to BC.</p>
+
+      <h2>More hidden sums</h2>
+      <p>The far sides of the three flanks satisfy <code>A_cB_c&sup2; + B_aC_a&sup2; + A_bC_b&sup2; = 3(AB&sup2; + BC&sup2; + AC&sup2;)</code>, and the lines from the corners to the <a class="wiki-term" data-wiki="Vecten_point" href="https://en.wikipedia.org/wiki/Vecten_point" target="_blank" rel="noopener">square centres</a> meet at one point. The column also says that if A_cB_c is parallel to AB then <code>AC = BC</code>. All three claims were checked over the whole grid; none failed.</p>
+
+      <p class="tip">Try this: press "Make a right angle", set the slider to 90&deg;, then tick "Show medians/altitudes" and watch B&prime; meet C.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BridesChair.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="brides-chair-core.js"></script>
+<script src="brides-chair.js"></script>
+</body>
+</html>
