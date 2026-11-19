@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arithmetic Sequence &mdash; coolmaths</title>
+<meta name="description" content="Colour the numbers 1 to 9 with two colours. Can you always find three evenly spaced numbers in the same group — and what changes when you drop to eight?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/arithmetic-sequence/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Arithmetic Sequence">
+<meta property="og:description" content="Colour the numbers 1 to 9 with two colours. Can you always find three evenly spaced numbers in the same group — and what changes when you drop to eight?">
+<meta property="og:url" content="https://coolmaths.ai/arithmetic-sequence/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    padding: 0.9rem 0.6rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    gap: 0.3rem;
+    width: 100%;
+    max-width: 34rem;
+    margin: 0 auto;
+  }
+  .cell {
+    min-width: 0;
+    width: 100%;
+    min-height: 3.4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.1rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--stage);
+    color: var(--ink);
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .cell:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--highlight) 45%, var(--stage));
+  }
+  .cell:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .cell.out {
+    opacity: 0.28;
+    cursor: default;
+  }
+  .cell .num {
+    font-size: 1rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .cell .dot {
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    background: var(--surface-2);
+  }
+  .cell[aria-pressed="true"] .dot {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .cell.special {
+    background: color-mix(in srgb, var(--highlight) 65%, var(--stage));
+    border-color: var(--accent);
+  }
+  .cell.special .num {
+    color: var(--accent);
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+    justify-content: center;
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .swatch {
+    display: inline-block;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    vertical-align: -1px;
+    margin-right: 0.3rem;
+  }
+  .swatch.on {
+    background: var(--accent);
+  }
+  .swatch.off {
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+  }
+  #groups {
+    margin: 0;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+  .seg {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+  }
+  .seg button {
+    min-height: 2.4rem;
+    padding: 0.35rem 0.65rem;
+    /* No fade here: the label must never be white on a still-white button. */
+    transition: none;
+  }
+  .seg button[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-text);
+  }
+  .seg button[aria-pressed="true"]:hover:not(:disabled) {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+  }
+</style>
+</head>
+<body data-game="arithmetic-sequence" data-kind="demo">
+<main id="main">
+  <h1>Arithmetic Sequence</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Split the numbers into two groups and look for three evenly spaced numbers that land in the same group.<br>
+    <strong>How to play:</strong> Press the small box under a number to switch it between On and Off. Choose 8 or 9 numbers to see what changes.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="board" class="board" role="group" aria-label="Numbers with an on/off box under each"></div>
+    <p class="legend"><span><span class="swatch on" aria-hidden="true"></span>On — one group</span><span><span class="swatch off" aria-hidden="true"></span>Off — the other group</span></p>
+    <p id="groups"></p>
+  </div>
+
+  <div class="controls">
+    <span class="seg" role="group" aria-label="How many numbers to play with">
+      <span>Play with</span>
+      <button id="btn8" type="button" aria-pressed="true" aria-label="Play with 8 numbers">8 numbers</button>
+      <button id="btn9" type="button" aria-pressed="false" aria-label="Play with 9 numbers">9 numbers</button>
+    </span>
+    <button id="newBtn" type="button" class="primary" aria-label="Clear all boxes and start again">Clear all</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Colour nine numbers with two colours and you cannot avoid making a neat
+        three-step pattern. Drop to eight numbers and suddenly you can. This
+        applet lets you hunt for both.
+      </p>
+
+      <h2>Three numbers with the same gap</h2>
+      <p>
+        Three numbers form an
+        <a class="wiki-term" data-wiki="Arithmetic_progression" href="https://en.wikipedia.org/wiki/Arithmetic_progression" target="_blank" rel="noopener">arithmetic progression</a>
+        when the gap between the first two equals the gap between the last two:
+        <code>1, 5, 9</code> has gap 4, and <code>3, 6, 9</code> has gap 3. Inside
+        <code>1…9</code> there are exactly <code>16</code> such triples. The logic
+        test lists every one of them and checks that the applet's table has no
+        more and no fewer.
+      </p>
+
+      <h2>With nine, one always appears</h2>
+      <p>
+        There are <code>2^9 = 512</code> ways to switch nine boxes. Every one of
+        them makes at least one of the 16 triples one-coloured, and the applet
+        lights up the first one it finds. The closest any split comes is a
+        single triple. This is the smallest case of
+        <a class="wiki-term" data-wiki="Ramsey_theory" href="https://en.wikipedia.org/wiki/Ramsey_theory" target="_blank" rel="noopener">Ramsey theory</a>:
+        enough objects force a pattern. The page argues this by cases; the logic
+        test checks the conclusion directly against all 512 splits.
+      </p>
+
+      <h2>With eight, you can escape</h2>
+      <p>
+        Drop to eight numbers and the promise breaks. Of the <code>2^8 = 256</code>
+        splits, exactly <code>6</code> contain no one-coloured triple. One of
+        them is <code>0 0 1 1 0 0 1 1</code> — Off, Off, On, On, Off, Off, On, On.
+        Try it. While eight numbers are in play the applet ignores any triple
+        that would need number 9, and so does the core. This is why the
+        <a class="wiki-term" data-wiki="Van_der_Waerden_number" href="https://en.wikipedia.org/wiki/Van_der_Waerden_number" target="_blank" rel="noopener">van der Waerden number</a>
+        W(2, 3) is 9.
+      </p>
+
+      <h2>Any nine equally spaced points</h2>
+      <p>
+        The numbers 1 to 9 are only labels. Take any nine equally spaced points
+        <code>a, a+d, …, a+8d</code> and give them the same two colours: the
+        argument still forces a one-coloured triple. That is why the page says a
+        nine-term progression split in two always has a three-term progression
+        in one part. It also answers the colour-of-the-line puzzle: if
+        <code>a</code>, <code>a+d</code> and <code>a+2d</code> share a colour,
+        then <code>a+d = [a + (a+2d)]/2</code>, so two numbers and their average
+        match. The shorter proof of that fact uses the
+        <a class="wiki-term" data-wiki="Pigeonhole_principle" href="https://en.wikipedia.org/wiki/Pigeonhole_principle" target="_blank" rel="noopener">pigeonhole principle</a>.
+      </p>
+
+      <p class="tip">
+        Set 9 numbers and try to keep every triple mixed. Then switch to 8 and
+        see which splits finally let you do it.
+      </p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/ArithmeticSequence.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="arithmetic-sequence-core.js"></script>
+<script src="arithmetic-sequence.js"></script>
+</body>
+</html>
