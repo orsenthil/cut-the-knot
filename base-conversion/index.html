@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Base Converter &mdash; coolmaths</title>
+<meta name="description" content="Type one number in any base from 2 to 36 and watch the very same value appear in three other bases. What really changes when only the digits change?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/base-conversion/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Base Converter">
+<meta property="og:description" content="Type one number in any base from 2 to 36 and watch the very same value appear in three other bases. What really changes when only the digits change?">
+<meta property="og:url" content="https://coolmaths.ai/base-conversion/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.8rem;
+  }
+  .conv-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+  }
+  .conv-row:last-child { margin-bottom: 0; }
+  .base-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex: 0 0 auto;
+  }
+  .step {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0.25rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .step:hover { background: var(--accent-soft); border-color: var(--accent); }
+  .base-input, .num-input {
+    min-height: 2.75rem;
+    padding: 0.3rem 0.5rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--card);
+    color: var(--text);
+    font: inherit;
+    font-size: 1rem;
+  }
+  .base-input { width: 3.75rem; text-align: center; }
+  .num-input {
+    flex: 1 1 8rem;
+    min-width: 0;
+    font-family: var(--mono);
+  }
+  .step:focus-visible, .base-input:focus-visible, .num-input:focus-visible,
+  button:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .controls .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+</style>
+</head>
+<body data-game="base-conversion" data-kind="demo">
+<main id="main">
+  <h1>Base Converter</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#place-value">Place Value</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#number-theory">Number Theory</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Four boxes show one number written in four different counting systems, such as binary. There is nothing to win &mdash; just explore.<br>
+    <strong>How to play:</strong> Type a number in a box and press Enter, or press Convert. Use the plus and minus buttons to change a box's counting system.
+  </div>
+
+  <div id="stage" class="stage">
+    <!-- Four rows are built here by base-conversion.js: a base spinner and a
+         text box for each of the four bases. -->
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <button id="convertBtn" type="button" class="primary" aria-label="Convert the active box into all four bases">Convert</button>
+      <button id="resetBtn" type="button" aria-label="Reset all four boxes to the starting bases and zero">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A number is not the same thing as the digits we write for it. One amount can be written in many ways, and this device shows four of them side by side.</p>
+
+      <h2>Places are worth powers</h2>
+      <p>In ordinary <a class="wiki-term" data-wiki="Decimal" href="https://en.wikipedia.org/wiki/Decimal" target="_blank" rel="noopener">base ten</a>, 365 means 3 hundreds, 6 tens and 5 ones. In any <a class="wiki-term" data-wiki="Positional_notation" href="https://en.wikipedia.org/wiki/Positional_notation" target="_blank" rel="noopener">positional system</a> each place is worth a power of the <a class="wiki-term" data-wiki="Radix" href="https://en.wikipedia.org/wiki/Radix" target="_blank" rel="noopener">base</a>: in base two the places are ones, twos, fours, eights and so on. The number does not move when you change its base &mdash; only its name does. That is why the converter can fill all four boxes from one entry.</p>
+
+      <h2>Digits up to Z</h2>
+      <p>After the digits 0 to 9 we use the letters A to Z, so the largest digit in base sixteen is F and the largest in base thirty-six is Z. The applet prints capital letters, and so does this page. For example <code>10</code> in <a class="wiki-term" data-wiki="Binary_number" href="https://en.wikipedia.org/wiki/Binary_number" target="_blank" rel="noopener">binary</a> is two, and <code>FF</code> in <a class="wiki-term" data-wiki="Hexadecimal" href="https://en.wikipedia.org/wiki/Hexadecimal" target="_blank" rel="noopener">hexadecimal</a> is 255. The four bases start at 10, 2, 8 and 16, and each one can be set to any whole number from 2 to 36.</p>
+
+      <h2>Fractions that do not end</h2>
+      <p>The part after the dot is counted the same way, with each place worth a fraction of the one before. Some fractions stop: half is <code>0.1</code> in binary. Some never stop, like a third in base ten. The original applet worked these out with ordinary double-precision numbers and stopped after 36 digits, adding <code>...</code> for a tail that had not ended. This port does the same, so what you see matches the applet digit for digit. One small quirk comes from the original: a negative fraction smaller than one, such as <code>-0.5</code>, loses its minus sign, because the applet reads the whole part from <code>-0</code>.</p>
+
+      <h2>What was checked</h2>
+      <p>The page says the bases run from 2 to 36, that negative numbers and fractions are accepted, and that four bases are shown at once. All three are true. The logic test tries every one of the 35 input bases against every one of the 35 output bases (1,225 pairs), checks negatives and fractions, and compares every answer with a second transcription of the applet's own method. One small difference: the page says the number appears in the <em>three remaining</em> boxes, but the applet also rewrites the box you typed in, tidying it into capital digits; this port follows the applet.</p>
+
+      <p class="tip">Type <code>0.1</code> in the base-3 box and watch what appears in base 10. Then try <code>-0.5</code> and see the quirk for yourself.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algorithms/BaseConversion.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="base-conversion-core.js"></script>
+<script src="base-conversion.js"></script>
+</body>
+</html>
