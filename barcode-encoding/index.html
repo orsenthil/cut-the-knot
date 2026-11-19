@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Barcode Encoding &mdash; coolmaths</title>
+<meta name="description" content="How can every digit of a product code be written with just seven black and white bars? Step through a UPC-A or EAN-13 code and watch the bars, the parity table and the guard bars change.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/barcode-encoding/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Barcode Encoding">
+<meta property="og:description" content="How can every digit of a product code be written with just seven black and white bars? Step through a UPC-A or EAN-13 code and watch the bars, the parity table and the guard bars change.">
+<meta property="og:url" content="https://coolmaths.ai/barcode-encoding/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* Layout and the demo's own objects. All colours come from the shared tokens. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 1rem;
+  }
+  .stage-label {
+    margin: 0 0 0.6rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+  }
+  #codeText { font-family: var(--mono); color: var(--text); letter-spacing: 0.08em; }
+  .digit-strip-wrap {
+    width: 100%;
+    overflow-x: auto;
+    padding: 0.2rem 0 0.5rem;
+  }
+  .digit-strip { display: flex; gap: 0.35rem; width: max-content; }
+  .digit-cell {
+    min-width: 2.25rem;
+    min-height: 2.5rem;
+    padding: 0.2rem 0.4rem;
+    font-family: var(--mono);
+    font-size: 1rem;
+  }
+  .digit-cell.selected {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .canvas-box { width: 100%; overflow: hidden; margin-top: 0.5rem; }
+  #barcodeCanvas, #zoomCanvas { display: block; width: 100%; height: auto; }
+  #zoomCanvas { border-radius: 8px; }
+  #patternText {
+    margin: 0.4rem 0 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+  }
+  .control-row { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+</style>
+</head>
+<body data-game="barcode-encoding" data-kind="demo">
+<main id="main">
+  <h1>Barcode Encoding</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#parity">Parity</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Explore how a product code turns into the black and white bars a scanner reads.<br>
+    <strong>How to play:</strong> Change the highlighted digit with the arrows or the + and &minus; buttons, switch between the two code types, or make a new code. The bars and the note below them say what changed.
+  </div>
+
+  <div id="stage" class="stage">
+    <p class="stage-label">Code: <span id="codeText"></span></p>
+    <div class="digit-strip-wrap">
+      <div id="digitStrip" class="digit-strip" role="group" aria-label="Digits of the code. Left and right arrows choose a digit, up and down arrows change it."></div>
+    </div>
+    <div id="barcodeBox" class="canvas-box">
+      <canvas id="barcodeCanvas" aria-label="The complete barcode, drawn as black and white bars with guard bars at both ends and in the middle."></canvas>
+    </div>
+    <div id="zoomBox" class="canvas-box">
+      <canvas id="zoomCanvas" aria-label="A magnified view of the seven bars for the highlighted digit."></canvas>
+      <p id="patternText"></p>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <button id="modeUpc" type="button" aria-pressed="true" aria-label="Use UPC-A encoding">UPC-A</button>
+      <button id="modeEan" type="button" aria-pressed="false" aria-label="Use EAN-13 encoding">EAN-13</button>
+    </div>
+    <div class="control-row">
+      <button id="prevBtn" type="button" aria-label="Select the previous digit">&lsaquo; Previous</button>
+      <button id="decBtn" type="button" aria-label="Decrease the highlighted digit">&minus;</button>
+      <button id="incBtn" type="button" aria-label="Increase the highlighted digit">+</button>
+      <button id="nextBtn" type="button" aria-label="Select the next digit">Next &rsaquo;</button>
+    </div>
+    <div class="control-row">
+      <button id="newBtn" type="button" class="primary" aria-label="Make a new random code">New code</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A <a class="wiki-term" data-wiki="Barcode" href="https://en.wikipedia.org/wiki/Barcode" target="_blank" rel="noopener">barcode</a> looks like a random picket fence, but every digit is written with the same seven equal bars. The pattern is chosen so that a scanner only has to measure how long each black and white stretch is.</p>
+
+      <h2>Seven bars, four stretches</h2>
+      <p>Each digit uses seven bars, written below as 1 for black and 0 for white. Adjacent bars of the same colour merge into one wide stretch, called a generalized bar. Every digit becomes exactly four stretches that alternate colour. For example, the left-side code for 0 is <code>0001101</code>: white 3, black 2, white 1, black 1. We checked all ten digits: every one of them has four stretches, and none is wider than four single bars, just as the cut-the-knot page says.</p>
+
+      <h2>Odd, even and mirror</h2>
+      <p>Write a digit's left-side bars and flip every colour: white becomes black and black becomes white. That is the right-side code, used for the last six digits of a UPC-A <a class="wiki-term" data-wiki="Universal_Product_Code" href="https://en.wikipedia.org/wiki/Universal_Product_Code" target="_blank" rel="noopener">UPC-A</a> code. Flip it back end-to-end and you get the left-side code with <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a> called even. All left-side codes end in a black bar; all right-side codes end in a space. Those two facts and the four-stretch rule were verified for all ten digits.</p>
+
+      <h2>The first digit that has no bars</h2>
+      <p>In an EAN-13 <a class="wiki-term" data-wiki="International_Article_Number" href="https://en.wikipedia.org/wiki/International_Article_Number" target="_blank" rel="noopener">EAN-13</a> code, the first digit is not drawn at all. It is a key into a table of six parities: a 1 means use the odd code and a 0 means use the even code. So 4 selects <code>odd, odd, even, odd, even, even</code>. We compared the whole table with the one printed on the page and found the same ten rows. Putting a 0 in front of a UPC-A code makes its left six digits all odd, so the bars are identical to UPC-A; we checked this on 200 randomly generated codes.</p>
+
+      <h2>Guards and a final check</h2>
+      <p>Every code opens and closes with the same three bars, black-white-black (<code>101</code>), and both halves meet at white-black-white-black-white (<code>01010</code>). That is 3 + 42 + 5 + 42 + 3 = 95 bars in total. The page also notes that barcodes date from 1973; that is history, not something a logic test can check. The last digit of a real code is a <a class="wiki-term" data-wiki="Check_digit" href="https://en.wikipedia.org/wiki/Check_digit" target="_blank" rel="noopener">check digit</a>, worked out from the others; the "New code" button uses that rule so every example it makes is valid.</p>
+
+      <p class="tip">Try setting the EAN-13 system digit to 0 and then to 4: watch which half of the bars changes, and which half stays put.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/do_you_know/BarcodeEncoding.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="barcode-encoding-core.js"></script>
+<script src="barcode-encoding.js"></script>
+</body>
+</html>
