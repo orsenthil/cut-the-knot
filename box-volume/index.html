@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Box Volume &mdash; coolmaths</title>
+<meta name="description" content="Cut equal squares from the corners of a sheet and fold it into a box. Which cut gives the biggest box?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/box-volume/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Box Volume">
+<meta property="og:description" content="Cut equal squares from the corners of a sheet and fold it into a box. Which cut gives the biggest box?">
+<meta property="og:url" content="https://coolmaths.ai/box-volume/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 44rem;
+    padding: 0.5rem;
+  }
+  #canvasBox {
+    width: 100%;
+  }
+  #boxCanvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+  }
+  .control-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.9rem;
+  }
+  .control-label {
+    color: var(--muted);
+    font-size: 0.9rem;
+    min-width: 5.5rem;
+  }
+  .controls input[type="range"] {
+    flex: 1 1 8rem;
+    min-width: 6rem;
+    max-width: 22rem;
+    accent-color: var(--accent);
+  }
+  .controls output {
+    min-width: 3rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+  .controls button {
+    min-height: 2.6rem;
+  }
+  button:focus-visible, input:focus-visible, canvas:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="box-volume" data-kind="demo">
+<main id="main">
+  <h1>Box Volume</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#limits">Limits</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Cut the same little square from each corner of a flat sheet and fold up the sides to make a box.<br>
+    <strong>How to play:</strong> Slide the sliders to change the sheet and the cut. Watch the graph: the high point is the cut that makes the biggest box.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="canvasBox">
+      <canvas id="boxCanvas" tabindex="0" role="img"
+        aria-label="On the left, a flat sheet with a square marked at each corner; on the right, a graph of the box's volume against the cut length. Use the left and right arrow keys to change the cut."></canvas>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label class="control-label" for="aInput">Length (a)</label>
+      <input id="aInput" type="range" min="2" max="20" step="0.5" value="11" aria-label="Horizontal size of the sheet">
+      <output id="aOut" for="aInput" aria-label="Horizontal size">11.0</output>
+    </div>
+    <div class="control-row">
+      <label class="control-label" for="bInput">Width (b)</label>
+      <input id="bInput" type="range" min="2" max="20" step="0.5" value="8.5" aria-label="Vertical size of the sheet">
+      <output id="bOut" for="bInput" aria-label="Vertical size">8.5</output>
+    </div>
+    <div class="control-row">
+      <label class="control-label" for="xInput">Cut (x)</label>
+      <input id="xInput" type="range" min="0" max="10" step="0.05" value="1" aria-label="Side length of the square cut from each corner">
+      <output id="xOut" for="xInput" aria-label="Cut length">1.00</output>
+    </div>
+    <div class="control-row">
+      <button id="findBtn" type="button" class="primary" aria-label="Find the cut that makes the biggest box">Find the best cut</button>
+      <button id="resetBtn" type="button" aria-label="Reset the sheet and the cut">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A bigger cut makes the walls taller but leaves a smaller base. Somewhere between no cut at all and cutting away half the sheet, the box is as big as it can be. The graph and a little calculus tell us exactly where.</p>
+
+      <h2>The volume is a cubic</h2>
+      <p>Call the sheet's sides <code>a</code> and <code>b</code>, and the cut <code>x</code>. After the cuts the base is <code>(a − 2x)</code> by <code>(b − 2x)</code> and the height is <code>x</code>, so the <a class="wiki-term" data-wiki="Volume" href="https://en.wikipedia.org/wiki/Volume" target="_blank" rel="noopener">volume</a> is</p>
+      <blockquote><code>v(x) = x(a − 2x)(b − 2x) = 4x³ − 2(a + b)x² + abx</code></blockquote>
+      <p>That is a <a class="wiki-term" data-wiki="Cubic_function" href="https://en.wikipedia.org/wiki/Cubic_function" target="_blank" rel="noopener">cubic polynomial</a> with a positive leading coefficient <code>4</code> and roots at <code>0</code>, <code>a/2</code> and <code>b/2</code>. Those last two roots are where the base shrinks to nothing, so only <code>0 ≤ x ≤ min(a/2, b/2)</code> makes a real box. The logic test checks the expansion and all three roots for every pair of slider sizes.</p>
+
+      <h2>Where the graph turns</h2>
+      <p>To find the high point, set the <a class="wiki-term" data-wiki="Derivative" href="https://en.wikipedia.org/wiki/Derivative" target="_blank" rel="noopener">derivative</a> to zero:</p>
+      <blockquote><code>v'(x) = 12x² − 4(a + b)x + ab = 0</code></blockquote>
+      <p>This <a class="wiki-term" data-wiki="Quadratic_equation" href="https://en.wikipedia.org/wiki/Quadratic_equation" target="_blank" rel="noopener">quadratic</a> has two roots. The bigger one is the low dip of the graph; the smaller one is the peak we want. Using the minus sign in the formula gives</p>
+      <blockquote><code>x = ((a + b) − √(a² − ab + b²)) / 6</code></blockquote>
+      <p>The logic test checks this against a fine sweep of every possible cut and confirms it is always the largest volume, and that the cut always lies strictly between <code>0</code> and <code>min(a/2, b/2)</code>.</p>
+
+      <h2>A square sheet</h2>
+      <p>When <code>a = b</code>, the two positive roots merge into one double root at <code>a/2</code>: the graph just touches the axis there instead of crossing it. The formula then becomes <code>x = a/6</code> and the largest box has volume <code>2a³/27</code>. Try setting both sliders to the same value and pressing Find the best cut — the green dot moves to one sixth of the side.</p>
+
+      <h2>Exact and approximate answers</h2>
+      <p>The original page uses <code>a = 11</code>, <code>b = 8.5</code> and notes that dragging in the applet reaches about <code>x = 1.60</code>, while the true answer is the irrational number <code>1.5854…</code>. The slider and the button here can show only two decimals, so they give an approximation too — but the green dot is placed at the exact value. As Bogomolny points out, an approximation is not the same as an exact solution, and for a real sheet of card it is often all we need.</p>
+
+      <p class="tip">Keep the sheet fixed and slide only the cut. Does the graph's high point move when you make the sheet longer?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Calculus/BoxVolume.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="box-volume-core.js"></script>
+<script src="box-volume.js"></script>
+</body>
+</html>
