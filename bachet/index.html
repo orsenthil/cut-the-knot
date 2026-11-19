@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bachet's Magic Trick &mdash; coolmaths</title>
+<meta name="description" content="Pick a pair of numbers from a list, then watch the computer name your pair after you tell it only which two rows hold them. How can two row choices say so much?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bachet/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Bachet's Magic Trick">
+<meta property="og:description" content="Pick a pair of numbers from a list, then watch the computer name your pair after you tell it only which two rows hold them. How can two row choices say so much?">
+<meta property="og:url" content="https://coolmaths.ai/bachet/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  [hidden] { display: none !important; }
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.9rem;
+  }
+  .stage-heading {
+    margin: 0 0 0.7rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .pair-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .pair-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .pair-card {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 2.6rem;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.7rem;
+    background: var(--card);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 1rem;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+  }
+  .pair-card:hover { background: var(--surface); }
+  .pair-card.picked {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  .card-num {
+    display: inline-block;
+    min-width: 1.4rem;
+    text-align: center;
+  }
+  .grid-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+  }
+  .grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: max-content;
+  }
+  .grid-row {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .row-btn {
+    min-width: 2.6rem;
+    min-height: 2.4rem;
+    padding: 0.2rem 0.35rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.6rem;
+    background: var(--card);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .row-btn:disabled { opacity: 0.55; cursor: default; }
+  .row-btn.picked {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-text);
+  }
+  .grid-cell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.3rem;
+    height: 2.4rem;
+    padding: 0 0.25rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .grid-cell.revealed {
+    border-color: var(--accent);
+    background: var(--highlight);
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .stage-hint {
+    margin: 0.8rem 0 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .control-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1rem;
+  }
+  .control-label { font-size: 0.9rem; color: var(--muted); }
+  .stepper { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .stepper output {
+    min-width: 1.6rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+  .check-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    color: var(--text);
+    cursor: pointer;
+  }
+  button:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="bachet" data-kind="demo">
+<main id="main">
+  <h1>Bachet's Magic Trick</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Pick a pair of numbers from a list, then watch the computer guess your pair from just two row choices.<br>
+    <strong>How to play:</strong> Click a pair and press Proceed. Find your two numbers in the grid, click the row each one is in, and see what the computer says.
+  </div>
+
+  <div id="stage" class="stage">
+    <p id="stageHeading" class="stage-heading">Stage 1 · the list of pairs</p>
+    <div id="pairList" class="pair-list" aria-label="The list of pairs"></div>
+    <div id="gridWrap" class="grid-wrap" hidden>
+      <div id="grid" class="grid" role="grid" aria-label="The grid of numbers"></div>
+    </div>
+    <p id="stageHint" class="stage-hint" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <span class="control-label">How many numbers</span>
+      <span class="stepper"><button id="nLess" type="button" aria-label="Fewer numbers">&minus;</button><output id="nOut">4</output><button id="nMore" type="button" aria-label="More numbers">+</button></span>
+      <label class="check-label"><input id="straightChk" type="checkbox"> Straight list</label>
+      <label class="check-label"><input id="randomChk" type="checkbox" checked> Randomize</label>
+    </div>
+    <div class="control-row">
+      <button id="proceedBtn" type="button" class="primary">Proceed</button>
+      <button id="resetBtn" type="button">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A spectator thinks of a pair of numbers, and the computer names it after being told only which two rows hold them. Nothing is memorised: the whole trick is the way the cards are laid out.</p>
+
+      <h2>Counting the pairs</h2>
+      <p>With <code>N</code> numbers, the <a class="wiki-term" data-wiki="Combinatorics" href="https://en.wikipedia.org/wiki/Combinatorics" target="_blank" rel="noopener">pairs</a> you can make (letting a number pair with itself) number <code>N(N+1)/2</code>. For <code>N = 4</code> that is ten pairs, from <code>{1,1}</code> through <code>{4,4}</code>. Each number turns up in exactly <code>N + 1</code> of those pairs, counting a doubled pair like <code>{1,1}</code> twice. The logic test checks both counts for every <code>N</code> from 3 to 6.</p>
+
+      <h2>The hidden pattern</h2>
+      <p>The applet actually prints <code>N(N+1)</code> cards — two for every pair — in a grid with <code>N</code> rows and <code>N + 1</code> columns. The two cards of the pair <code>{a, b}</code> are put in rows <code>a</code> and <code>b</code> (twice in the same row when <code>a = b</code>). With <code>N = 4</code> and a straight, unshuffled list the grid is:</p>
+      <blockquote><code>1  2  3  5  7<br>4  9 10 11 13<br>6 12 15 16 17<br>8 14 18 19 20</code></blockquote>
+      <p>Notice that the doubled pair <code>{a, a}</code> sits in columns <code>a</code> and <code>a + 1</code>: its companion is exactly one column to the right of its row number. The logic test reproduces this whole table from the applet's own layout rules.</p>
+
+      <h2>Why two rows are enough</h2>
+      <p>Because of that layout, the two rows a pair occupies identify the pair and no other pair shares them. Naming the rows <code>a</code> and <code>b</code> therefore recovers the two card numbers. <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">Permuting</a> the cards within rows, or swapping which of the two a pair's cards goes to which row, never changes the rows involved. The test checks this for every pair, at every size, with Straight and Randomize both on and off — the computer always names the right pair.</p>
+
+      <p class="tip">Turn on Straight list and turn off Randomize to see the pattern clearly, then switch Randomize back on and watch the trick still work.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Magic/Bachet.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="bachet-core.js"></script>
+<script src="bachet.js"></script>
+</body>
+</html>
