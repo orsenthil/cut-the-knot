@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cavalieri's Principle &mdash; coolmaths</title>
+<meta name="description" content="Drag the bars on one stack of strips and slide the strips on the other. Why do the two stacks always cover exactly the same space?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cavalieri/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cavalieri's Principle">
+<meta property="og:description" content="Drag the bars on one stack of strips and slide the strips on the other. Why do the two stacks always cover exactly the same space?">
+<meta property="og:url" content="https://coolmaths.ai/cavalieri/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 40rem;
+    padding: 0.6rem;
+    overflow-x: auto;
+  }
+  #canvasBox { width: 100%; }
+  #cavalieriCanvas {
+    display: block;
+    width: 100%;
+    min-width: 300px;
+    height: 20rem;
+    touch-action: none;
+  }
+  .hint {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .control-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.9rem;
+  }
+  .option-group {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.9rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .option-group legend {
+    color: var(--muted);
+    font-size: 0.9rem;
+    padding: 0;
+  }
+  .control-label {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  #nInput {
+    flex: 1 1 10rem;
+    min-width: 8rem;
+    max-width: 18rem;
+    accent-color: var(--accent);
+  }
+  #nOut { font-variant-numeric: tabular-nums; font-weight: 700; min-width: 2rem; }
+  .controls button { min-width: 2.6rem; min-height: 2.6rem; }
+  button:focus-visible, input:focus-visible, canvas:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="cavalieri" data-kind="demo">
+<main id="main">
+  <h1>Cavalieri's Principle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#limits">Limits</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two stacks of coloured strips sit between the same two lines; drag them and see that both stacks always cover the same space.<br>
+    <strong>How to play:</strong> Drag the dots on the right to change a strip, or slide a strip on the left. Use the buttons to pick a strip and the arrow keys to nudge it; change the options to see what stays the same.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="canvasBox">
+      <canvas id="cavalieriCanvas" role="img" tabindex="0" width="600" height="320"
+        aria-label="Two stacks of matching coloured strips between parallel lines: one stack has draggable bars, the other has strips you can slide"></canvas>
+    </div>
+    <p class="hint">Drag a dot, or click the board then press the arrow keys. Press the square-bracket keys to pick another strip.</p>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label class="control-label" for="nInput">Strips</label>
+      <input id="nInput" type="range" min="5" max="100" step="1" value="20" aria-label="Number of strips">
+      <output id="nOut" for="nInput" aria-label="Number of strips">20</output>
+    </div>
+    <div class="control-row">
+      <fieldset class="option-group">
+        <legend>Stack direction</legend>
+        <label><input id="horizontalRadio" type="radio" name="orientation" checked> Side by side</label>
+        <label><input id="verticalRadio" type="radio" name="orientation"> One above the other</label>
+      </fieldset>
+      <label class="control-label"><input id="linesInput" type="checkbox"> Show parallel lines</label>
+    </div>
+    <div class="control-row">
+      <button id="prevBtn" type="button" aria-label="Select the previous bar or strip">&#9664; Previous</button>
+      <button id="nextBtn" type="button" aria-label="Select the next bar or strip">Next &#9654;</button>
+      <button id="backBtn" type="button" aria-label="Move the selected bar or strip back">Shift back</button>
+      <button id="fwdBtn" type="button" aria-label="Move the selected bar or strip forward">Shift on</button>
+      <button id="resetBtn" type="button" class="primary" aria-label="Reset the stacks to the start">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Nothing here is added or taken away. Every strip in one stack has a partner of exactly the same length in the other stack. Move them as you like and the two stacks still cover the same space — that surprising fact is the whole idea.</p>
+
+      <h2>Same height, same slices</h2>
+      <p><a class="wiki-term" data-wiki="Cavalieri%27s_principle" href="https://en.wikipedia.org/wiki/Cavalieri%27s_principle" target="_blank" rel="noopener">Cavalieri's principle</a> says that two figures between the same parallel lines are equal in <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> if every line drawn across them at the same distance from the parallels cuts equal lengths. Our stacks have a strip at each height, and each pair of strips is the same length, so the principle applies strip by strip. The logic test checks this for every number of strips from 5 to 100, in both directions, for thousands of drags: the two areas always match.</p>
+
+      <h2>Moving pieces does not change area</h2>
+      <p>Dragging a dot on the right changes one strip's length, and the matching strip on the left is given that same length. Sliding a strip on the left only moves it sideways — its length stays put. A stack's area is just the sum of its strip lengths (their height is shared), so if every pair agrees, the totals must agree too. Changing the number of strips, flipping the direction and showing the guide lines never break this; the test verified each of those options as well.</p>
+
+      <h2>From strips to the sphere</h2>
+      <p>The page's grand example puts a cone inside a cylinder of height and radius <code>r</code>. At height <code>y</code> the cone's slice has area <code>&pi;y&sup2;</code>, the cylinder's is <code>&pi;r&sup2;</code>, so the ring left over is <code>&pi;(r&sup2; &minus; y&sup2;)</code>. By the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a> a hemisphere's slice there has radius <code>&radic;(r&sup2; &minus; y&sup2;)</code> and area <code>&pi;(r&sup2; &minus; y&sup2;)</code> — identical. Equal slices at every height give equal <a class="wiki-term" data-wiki="Volume" href="https://en.wikipedia.org/wiki/Volume" target="_blank" rel="noopener">volumes</a>: cylinder minus cone equals hemisphere. Since the cone is <code>1/3</code> of the cylinder, the hemisphere is <code>2/3</code> of it and the sphere is <code>4/3</code> of it, namely <code>4/3 &pi;r&sup3;</code>. The logic test checked every one of these formulas and added up the slices numerically: the page's claims are correct. This slicing idea grew into <a class="wiki-term" data-wiki="Integral_calculus" href="https://en.wikipedia.org/wiki/Integral_calculus" target="_blank" rel="noopener">integral calculus</a>.</p>
+
+      <p class="tip">Try dragging one bar far to one side, then raise the strip count to 100. Can you still find the odd strip out?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Calculus/Cavalieri.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="cavalieri-core.js"></script>
+<script src="cavalieri.js"></script>
+</body>
+</html>
