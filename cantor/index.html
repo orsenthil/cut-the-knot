@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cantor Set &mdash; coolmaths</title>
+<meta name="description" content="Drag the peak of a tent map and press Iterate: where do the marks gather, and how can a set have no length yet infinitely many points?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cantor/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cantor Set">
+<meta property="og:description" content="Drag the peak of a tent map and press Iterate: where do the marks gather, and how can a set have no length yet infinitely many points?">
+<meta property="og:url" content="https://coolmaths.ai/cantor/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.6rem;
+  }
+  #plot {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    border-radius: 8px;
+    touch-action: none;
+  }
+  #plot:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  #aInput { flex: 1 1 9rem; min-width: 7rem; max-width: 15rem; }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0 0; }
+  .step-count { white-space: nowrap; }
+</style>
+</head>
+<body data-game="cantor" data-kind="demo">
+<main id="main">
+  <h1>Cantor Set</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#limits">Limits</a><a class="tag" href="../index.html#series">Infinite Series</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This shows a tent and the marks an orbit leaves behind; there is no winning or losing.<br>
+    <strong>How to play:</strong> Drag the blue spot on the peak, or use the slider, to change the number a. Press Iterate or One step to watch where the marks land.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="plot" width="640" height="400" tabindex="0" aria-label="A tent graph with a draggable blue peak and vertical marks showing a backwards orbit"></canvas>
+    <p class="hint">Drag the blue spot, or focus the picture and use the arrow keys. Enter starts and stops Iterate.</p>
+  </div>
+
+  <div class="controls">
+    <label for="aInput">Peak height a</label>
+    <input id="aInput" type="range" min="0.05" max="3" step="0.01" value="3" aria-label="Peak height a">
+    <output id="aReadout" for="aInput">3.00</output>
+    <label class="check"><input id="iterateCheck" type="checkbox"> Iterate</label>
+    <button id="stepBtn" type="button" aria-label="Advance the orbit one step">One step</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the tent to its starting state">Reset</button>
+    <span class="step-count">Step <output id="stepReadout">0</output></span>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The marks in the picture are not random dots. They slowly pile up on a set that has no length at all, yet has just as many points as the whole number line. The article behind this applet tells that story by cutting an interval into thirds; the applet tells it with a tent.</p>
+
+      <h2>Cut out the middle third</h2>
+      <p>Start with the interval <code>[0, 1]</code>. Split it into three equal pieces and throw away the open middle one, <code>(1/3, 2/3)</code>. Do the same to each piece that is left, and keep going. At step <code>p</code> you remove <code>2^(p-1)</code> gaps and <code>2^p</code> closed pieces remain, with total length <code>(2/3)^p</code>. That length goes to zero, but the pieces never disappear. What survives is the <a class="wiki-term" data-wiki="Cantor_set" href="https://en.wikipedia.org/wiki/Cantor_set" target="_blank" rel="noopener">Cantor set</a>. The logic test checked the counts and the length formula for steps 1 through 10, including the first gaps <code>(1/9, 2/9)</code> and <code>(7/9, 8/9)</code>.</p>
+
+      <h2>Read the digits</h2>
+      <p>Write numbers in <a class="wiki-term" data-wiki="Ternary_numeral_system" href="https://en.wikipedia.org/wiki/Ternary_numeral_system" target="_blank" rel="noopener">ternary</a>, using only the digits 0, 1 and 2. The first gap is exactly the numbers whose first digit is 1; the next gaps are those whose second digit is 1, and so on. A number survives exactly when its digits are all 0 or 2 — with one wrinkle: <code>1/3 = 0.1₃ = 0.0222…₃</code>, and we agree to write the second form. This puts <code>1/4 = 0.020202…₃</code>, <code>3/4</code> and <code>1/13 = 0.002002…₃</code> in the set. It also has no isolated points: however closely you look at one of its points, there are always others nearby. The test confirmed these digits and memberships. One sentence on the article is too strong, though: it says 1/3 is the <em>only</em> other point whose first digit can be 1, but <code>2/3 = 0.1222…₃</code> is another.</p>
+
+      <h2>The staircase</h2>
+      <p>Now turn every surviving ternary digit into a binary one: 0 stays 0 and 2 becomes 1. That gives the <a class="wiki-term" data-wiki="Cantor_function" href="https://en.wikipedia.org/wiki/Cantor_function" target="_blank" rel="noopener">Cantor function</a>. Both ends of the first gap get the same value: <code>f(1/3) = 0.0111…₂ = 1/2 = f(2/3)</code>. The same happens at every gap, so we can fill each gap in with that constant value. The result climbs from 0 to 1 while being flat on gaps whose total length is exactly 1 — a function that grows without ever rising on any of those intervals. The test checked the constant value on every gap through step 6.</p>
+
+      <h2>Why the tent draws the set</h2>
+      <p>The tent line is the map <code>T(x) = a·x</code> up to <code>x = 1/2</code> and <code>a·(1−x)</code> after it. Going backwards asks where a value could have come from: the two answers are <code>y/a</code> and <code>(a−y)/a</code>, and the applet picks one at random each time. At the opening value <code>a = 3</code> these are the two "keep a ternary digit 0 or 2" moves, so the marks crowd onto the Cantor set. In the original applet the peak can only be dragged to <code>a &lt; 2</code>; the slider here also returns to the opening <code>a = 3</code>, and One step lets you advance without waiting. For <code>a = 3</code> the test followed 200 backwards steps from several starts and every value stayed in <code>[0, 1]</code>.</p>
+
+      <p class="tip">Try a = 3, press Iterate, then slide a below 1 — notice how the marks stop hugging the Cantor set and begin to wander.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/do_you_know/cantor.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="cantor-core.js"></script>
+<script src="cantor.js"></script>
+</body>
+</html>
