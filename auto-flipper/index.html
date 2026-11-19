@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Auto Flipper &mdash; coolmaths</title>
+<meta name="description" content="A machine flips the top of a stack of pancakes, always using the number on the top pancake. Will the pile ever settle down, and why must it stop?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/auto-flipper/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Auto Flipper">
+<meta property="og:description" content="A machine flips the top of a stack of pancakes, always using the number on the top pancake. Will the pile ever settle down, and why must it stop?">
+<meta property="og:url" content="https://coolmaths.ai/auto-flipper/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The play area: a column of pancake buttons, top first. Widths are
+     percentages of the stage so the stack shrinks to fit a phone. */
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .stack-heading {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  #stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    width: 100%;
+    padding: 0.5rem 0;
+  }
+  .pancake {
+    box-sizing: border-box;
+    width: var(--pw, 60%);
+    max-width: 100%;
+    min-height: 2.75rem;
+    border: 2px solid var(--pf-ink, var(--ink));
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--pf-ink, var(--ink));
+    font: inherit;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 0 var(--pf-ink, var(--ink));
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  .pancake.top {
+    border-color: var(--pf-accent, var(--accent));
+    box-shadow: 0 2px 0 var(--pf-accent, var(--accent));
+    background: var(--accent-soft);
+  }
+  .pancake.just {
+    background: var(--pf-highlight, var(--highlight));
+  }
+  .pancake:hover,
+  .pancake:focus-visible {
+    transform: translateY(-2px);
+  }
+  .pancake:active {
+    transform: translateY(1px);
+    box-shadow: none;
+  }
+  .stack-hint {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+  }
+  .controls {
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 0.5rem;
+  }
+  .n-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .n-field input {
+    width: 5rem;
+    font: inherit;
+    font-size: 1rem;
+    padding: 0.45rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--card);
+    color: var(--text);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pancake { transition: none; }
+  }
+</style>
+</head>
+<body data-game="auto-flipper" data-kind="demo">
+<main id="main">
+  <h1>Auto Flipper</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A stack of numbered pancakes keeps turning over until pancake 1 ends up on top, and then it stops.<br>
+    <strong>How to play:</strong> Press <em>One flip</em> to turn over as many top pancakes as the number on the top one. You can also press a pancake to flip a stack, or choose a different number of pancakes.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="stack-heading">The stack, from the top down</div>
+    <div id="stack" role="group" aria-label="Pancake stack, top pancake first"></div>
+    <div class="stack-hint">Press F to flip once, R to start again, or use the arrow keys to move between pancakes.</div>
+  </div>
+
+  <div class="controls">
+    <label class="n-field" for="nInput">Pancakes (3 to 16)
+      <input id="nInput" type="number" min="3" max="16" step="1" value="5" aria-label="Number of pancakes, from 3 to 16">
+    </label>
+    <button id="oneFlip" type="button" class="primary" aria-label="Turn over as many top pancakes as the number on the top pancake">One flip</button>
+    <button id="resetBtn" type="button" aria-label="Mix the pancakes and start again">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The surprising thing is that nobody chooses anything: the top pancake tells the machine how many to flip, yet the pile always comes to rest. Why can it not go on forever?</p>
+
+      <h2>Only finitely many piles</h2>
+      <p>A stack is just an ordering of the numbers 1 to N: a <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">permutation</a>. There are <code>N!</code> of them, which is huge but finite. The logic test checks this count for N up to 8 — 6, 24, 120, 720, 5040, 40320 stacks — and it matches the <a class="wiki-term" data-wiki="Factorial" href="https://en.wikipedia.org/wiki/Factorial" target="_blank" rel="noopener">factorial</a>. If the flipping never stopped, some pile would have to appear a second time.</p>
+
+      <h2>Where the top pancake lands</h2>
+      <p>If M is on top, the machine flips M pancakes. The top spot travels to the far end of that prefix, so pancake M ends up <code>M</code> places from the top. This was checked for <em>every</em> stack of 3 to 8 pancakes, not just a few examples. To move a pancake sitting M-th from the top, you would have to flip at least M pancakes, and the flip length is always the number on the top pancake.</p>
+
+      <h2>Why it stops</h2>
+      <p>Each pile has exactly one next pile, so the piles form paths that can only end at a <a class="wiki-term" data-wiki="Fixed_point_(mathematics)" href="https://en.wikipedia.org/wiki/Fixed_point_(mathematics)" target="_blank" rel="noopener">fixed point</a>: a stack with 1 on top, because flipping one pancake changes nothing. The original page argues that a repeating loop is impossible: in a loop, take the largest-numbered pancake that changes place. Once it reaches its own spot it cannot be moved again, since moving it would need a larger number on top — but no larger number ever moves in that loop. The logic test followed all 40,000-plus stacks of 3 to 8 pancakes to their end: every one stops, and none repeats a pile on the way.</p>
+
+      <h2>A careful reading of "once in place"</h2>
+      <p>That last step is about the <em>largest</em> pancake that moves in the hypothetical loop; it is not true of every pancake in an ordinary run. Starting from <code>3, 4, 2, 1</code>, pancake 3 reaches its own place after the first flip, then is pushed out by a later flip of 4. The largest mover here is 4, and it does settle at the bottom and stay. So the page's claim is honest for the pancake its proof picks out, but a smaller pancake can be displaced by a bigger flip.</p>
+
+      <p class="tip">Try each number of pancakes from 3 to 16 and watch the last few flips. Does the stack have to be sorted when it stops, or is 1 on top enough?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/AutoFlipper.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="auto-flipper-core.js"></script>
+<script src="auto-flipper.js"></script>
+</body>
+</html>
