@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Emergence of Chaos &mdash; coolmaths</title>
+<meta name="description" content="Feed a number back into the same simple rule and watch what it does. When does one resting spot split into two, then four, then chaos?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/chaos/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Emergence of Chaos">
+<meta property="og:description" content="Feed a number back into the same simple rule and watch what it does. When does one resting spot split into two, then four, then chaos?">
+<meta property="og:url" content="https://coolmaths.ai/chaos/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 44rem;
+    padding: 0.75rem;
+  }
+  #canvasWrap {
+    width: 100%;
+    aspect-ratio: 5 / 3;
+  }
+  #chaosCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 0.5rem;
+    touch-action: manipulation;
+  }
+  #chaosCanvas:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .panelLabels {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .controls {
+    max-width: 44rem;
+  }
+  .controls label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .controls input[type="range"] {
+    width: min(16rem, 55vw);
+    accent-color: var(--accent);
+  }
+  .controls output {
+    color: var(--accent);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.75rem;
+  }
+</style>
+</head>
+<body data-game="chaos" data-kind="demo">
+<main id="main">
+  <h1>Emergence of Chaos</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#limits">Limits</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This shows what happens when a number is fed back into the same rule again and again: sometimes it settles, sometimes it loops, sometimes it wanders.<br>
+    <strong>How to play:</strong> Drag the slider or tap the right-hand picture to pick the number a. Press "New starting point" to send the dot off again; the arrow keys work on the picture too.
+  </div>
+
+  <div class="panelLabels" aria-hidden="true">
+    <span>The rule, drawn as a web</span>
+    <span>Where the dots end up, for each a</span>
+  </div>
+  <div id="stage" class="stage">
+    <canvas id="chaosCanvas" tabindex="0" aria-label="Two graphs: on the left, the cobweb of the rule y equals 4 a x times 1 minus x with the diagonal; on the right, the bifurcation diagram for a from 0.7 to 1. Use the arrow keys to change a, Space to play or pause, and Enter for a new starting point."></canvas>
+  </div>
+
+  <div class="controls">
+    <label for="lambda">The number a (0.7 to 1)
+      <input type="range" id="lambda" min="0.7" max="1" step="0.001" value="0.7" aria-label="The parameter a, from 0.7 to 1">
+      <output id="lambdaVal" for="lambda">0.700</output>
+    </label>
+    <div class="actions">
+      <button id="newBtn" type="button" class="primary" aria-label="Start again from a new random starting point">New starting point</button>
+      <button id="playBtn" type="button" aria-label="Play the cobweb animation">Play web</button>
+      <button id="stepBtn" type="button" aria-label="Advance the cobweb by one step">Take one step</button>
+      <button id="resetBtn" type="button" aria-label="Reset to a equals 0.7">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Nothing on this page is random once you have chosen <code>a</code> and the starting
+        number <code>x</code>. The very same rule is followed at every step, yet for some
+        values of <code>a</code> the result looks completely unpredictable. That is the
+        surprise called <a class="wiki-term" data-wiki="Chaos_theory" href="https://en.wikipedia.org/wiki/Chaos_theory" target="_blank" rel="noopener">chaos</a>:
+        random-looking behaviour with a perfectly deterministic cause.
+      </p>
+
+      <h2>A rule that eats its own answer</h2>
+      <p>
+        The rule is the <a class="wiki-term" data-wiki="Logistic_map" href="https://en.wikipedia.org/wiki/Logistic_map" target="_blank" rel="noopener">logistic map</a>,
+        written here with <code>k = 4a</code> so that the highest point of its graph is always
+        exactly <code>a</code> (put <code>x = 1/2</code> and you get <code>4a &middot; 1/2 &middot; 1/2 = a</code>):
+      </p>
+      <blockquote><code>x<sub>n+1</sub> = f(x<sub>n</sub>) = 4a x<sub>n</sub> (1 &minus; x<sub>n</sub>)</code></blockquote>
+      <p>
+        The <a class="wiki-term" data-wiki="Iterated_function" href="https://en.wikipedia.org/wiki/Iterated_function" target="_blank" rel="noopener">iteration</a>
+        is drawn on the left as a cobweb: go straight up to the curve, then sideways to the
+        diagonal <code>y = x</code>, and do it again. Starting near zero, the first steps move
+        <em>away</em> from zero, because the slope there is <code>4a &gt; 1</code>.
+      </p>
+
+      <h2>One resting spot becomes two</h2>
+      <p>
+        A <a class="wiki-term" data-wiki="Fixed_point_(mathematics)" href="https://en.wikipedia.org/wiki/Fixed_point_(mathematics)" target="_blank" rel="noopener">fixed point</a>
+        solves <code>x = f(x)</code>. Besides <code>x = 0</code> there is
+        <code>x = 1 &minus; 1/(4a)</code>. Its slope is
+        <code>f&prime;(x) = 2 &minus; 4a</code>, so it attracts while
+        <code>|2 &minus; 4a| &lt; 1</code>. At <code>a = 0.75</code> that size is exactly 1 —
+        the spot stops attracting, and the dot begins to alternate between two places.
+        The two spots remain attractive until
+        <code>a = (1 + &radic;6)/4 = 0.86237...</code>, the page's 0.86237 threshold, which
+        our logic test confirms.
+      </p>
+
+      <h2>Doublings, faster and faster</h2>
+      <p>
+        After that the two spots become four, then eight, then sixteen. The
+        <a class="wiki-term" data-wiki="Bifurcation_diagram" href="https://en.wikipedia.org/wiki/Bifurcation_diagram" target="_blank" rel="noopener">bifurcation diagram</a>
+        on the right shows each of these splits: one strand turns into two, two into four,
+        and the gaps between splits get smaller each time. They pile up at
+        <code>a &asymp; 0.8925</code> — the page says "a = .892", which is right to three
+        decimal places — and beyond it the dot races around the whole interval. Our test
+        checks the periods 1, 2, 4, 8 and 16 directly by iterating the rule.
+      </p>
+
+      <h2>Windows of order, and what the applet actually draws</h2>
+      <p>
+        Order returns in small windows even after the cascade: near <code>a = 0.957</code>
+        there is a three-step cycle, which then doubles to six, twelve and twenty-four;
+        the test finds all four. At <code>a = 0.8</code>, the graph of <code>f(f(x))</code>
+        crosses the diagonal in four places: zero (a repeller), the old fixed point (a
+        repeller), and the two spots of the attractive two-cycle. In general a spot is
+        attractive when <code>|f&prime;(x)| &lt; 1</code> and repelling when it is greater
+        than 1.
+      </p>
+      <p>
+        One honest caveat: the original applet draws only 4, 8 or 24 points per column
+        below <code>a = 0.872</code>, then <code>height/4</code> or <code>height/2</code>
+        above it, and throws away <code>round(100/a + 20)</code> starting values. Those
+        are drawing choices, not facts about the map; we kept them so the right-hand
+        picture looks the same. The page itself notes that twenty-four steps are about
+        all the old program can resolve, and our double-precision version agrees.
+      </p>
+      <p class="tip">Try moving the slider slowly from 0.86 to 0.90 and watch one strand of the right-hand picture split into two, then four, then eight.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/blue/chaos.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="chaos-core.js"></script>
+<script src="chaos.js"></script>
+</body>
+</html>
