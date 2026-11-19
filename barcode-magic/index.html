@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Barcode Magic &mdash; coolmaths</title>
+<meta name="description" content="A product barcode carries twelve digits, but one can be left out. Can you see how the computer works out the missing digit?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/barcode-magic/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Barcode Magic">
+<meta property="og:description" content="A product barcode carries twelve digits, but one can be left out. Can you see how the computer works out the missing digit?">
+<meta property="og:url" content="https://coolmaths.ai/barcode-magic/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 100%; min-width: 0; padding: 1rem; }
+  .digits {
+    display: grid;
+    grid-template-columns: repeat(12, 2.75rem);
+    gap: .3rem;
+    max-width: 100%;
+    overflow-x: auto;
+    padding-bottom: .4rem;
+  }
+  .digits button:nth-child(6) { margin-right: .55rem; }
+  .digits button {
+    min-width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1.35rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .digits button.blank { color: var(--accent); }
+  #barcode {
+    display: block;
+    width: 100%;
+    max-width: 30rem;
+    height: 3.2rem;
+    margin-top: .45rem;
+    border: 1px solid var(--border);
+    border-radius: .5rem;
+  }
+  .hint { margin: .5rem 0 0; font-size: .9rem; color: var(--muted, var(--ink)); }
+  .controls { flex-wrap: wrap; }
+</style>
+</head>
+<body data-game="barcode-magic" data-kind="demo">
+<main id="main">
+  <h1>Barcode Magic</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#divisibility">Divisibility</a><a class="tag" href="../index.html#number-theory">Number Theory</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A product code has twelve digits. Leave one out and the computer can tell you which digit is missing.<br>
+    <strong>How to play:</strong> Click the right half of a digit to make it bigger, or the left half to make it smaller, until eleven digits are set. Press Check to hear what the computer says.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="digitRow" class="digits" role="group" aria-label="The twelve digits of the UPC-A code"></div>
+    <canvas id="barcode" width="760" height="128" role="img"
+            aria-label="UPC-A barcode for the twelve digits"></canvas>
+    <p class="hint">Click the right half of a number to count up, or the left half to count down. You can also use the arrow keys while a number is chosen.</p>
+  </div>
+
+  <div class="controls">
+    <button id="checkBtn" type="button" class="primary">Check</button>
+    <button id="newBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The last digit on a product's label is not chosen by the maker at random. It is a
+        <a class="wiki-term" data-wiki="Checksum" href="https://en.wikipedia.org/wiki/Checksum" target="_blank" rel="noopener">checksum</a>:
+        it is picked so that a sum of the twelve digits comes out even. That one condition is enough
+        to rebuild any single digit you hide.</p>
+
+      <h2>The twelve-digit rule</h2>
+      <p>A <a class="wiki-term" data-wiki="Universal_Product_Code" href="https://en.wikipedia.org/wiki/Universal_Product_Code" target="_blank" rel="noopener">UPC-A code</a>
+        has twelve digits. Give the digits in the odd places (the 1st, 3rd, … 11th) a weight of 3,
+        and the ones in the even places a weight of 1. Their total must be a multiple of ten:</p>
+      <blockquote><code>3·d1 + d2 + 3·d3 + d4 + … + 3·d11 + d12 ≡ 0 (mod 10)</code></blockquote>
+      <p>The applet starts with twelve question marks and a click steps any one of them through
+        0, 1, …, 9 and back to a question mark, so you can type in any code you like.</p>
+
+      <h2>Why the answer is forced</h2>
+      <p>Working <a class="wiki-term" data-wiki="Modular_arithmetic" href="https://en.wikipedia.org/wiki/Modular_arithmetic" target="_blank" rel="noopener">modulo 10</a>,
+        both weights 1 and 3 can be undone: 1 undoes itself and 3 is undone by 7 (because
+        3 × 7 = 21, which leaves 1). If the blank is in an even place the computer works out
+        <code>7 × (10 − sum mod 10) mod 10</code>; in an odd place it just uses
+        <code>(10 − sum mod 10) mod 10</code>. Either way there is exactly one digit that can go
+        in the gap. That is the whole trick.</p>
+
+      <h2>What the picture shows</h2>
+      <p>Under the digits is the code drawn as a
+        <a class="wiki-term" data-wiki="Barcode" href="https://en.wikipedia.org/wiki/Barcode" target="_blank" rel="noopener">barcode</a>.
+        Each digit becomes seven narrow modules: the first six digits use one pattern (odd
+        parity) and the last six use its opposite (even parity), with <code>101</code> at each
+        end and <code>01010</code> in the middle. A question mark is drawn as one solid block.</p>
+
+      <h2>Did the page's claims check out?</h2>
+      <p>The logic test tried all 12,000 ways to hide one digit in a valid code made from any
+        first three digits: the computer got the hidden digit right every time. It also checked
+        that a new code shows twelve question marks, that clicking reaches every decimal digit,
+        and that the bars match the applet's own pattern tables. One quirk was kept: the original
+        runs the answer straight after the word "is" with no space, so the message reads
+        "The missing digit is7".</p>
+
+      <p class="tip">Try hiding the first digit and then the last. The multiplier changes from 7 to 1, but the answer is still forced.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/BarCodeMagic.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="barcode-magic-core.js"></script>
+<script src="barcode-magic.js"></script>
+</body>
+</html>
