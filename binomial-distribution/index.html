@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Binomial Distribution &mdash; coolmaths</title>
+<meta name="description" content="Repeat a chancy try again and again: how likely is each possible number of successes? Slide the chance and the number of tries to watch the answer take shape.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/binomial-distribution/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Binomial Distribution">
+<meta property="og:description" content="Repeat a chancy try again and again: how likely is each possible number of successes? Slide the chance and the number of tries to watch the answer take shape.">
+<meta property="og:url" content="https://coolmaths.ai/binomial-distribution/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 42rem;
+    padding: 0.75rem;
+  }
+  #chart {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    touch-action: pan-y;
+  }
+  #chart:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .readout {
+    margin: 0.6rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  .controls .option {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    flex: 1 1 11rem;
+    min-width: 0;
+  }
+  .controls .option label {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+  }
+  .controls button {
+    flex: 0 0 auto;
+  }
+</style>
+</head>
+<body data-game="binomial-distribution" data-kind="demo">
+<main id="main">
+  <h1>Binomial Distribution</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> See how the chances spread out when you repeat a yes-or-no try again and again — there is no winner here, just a picture to explore.<br>
+    <strong>How to play:</strong> Slide p to change the chance of yes and n to change how many tries. Click a bar or use the arrow keys to read its chance.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="chart" width="960" height="480" tabindex="0" aria-label="Bar chart of the chances of each number of successes. Use the left and right arrow keys to move the selection."></canvas>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <div class="option">
+      <label for="pSlider">Chance of yes (p): <output id="pValue" for="pSlider">.55</output></label>
+      <input id="pSlider" type="range" min="0" max="110" step="1" value="55" aria-label="Chance of success p">
+    </div>
+    <div class="option">
+      <label for="nSlider">Number of tries (n): <output id="nValue" for="nSlider">10</output></label>
+      <input id="nSlider" type="range" min="2" max="105" step="1" value="10" aria-label="Number of trials n">
+    </div>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset to the starting values">Reset</button>
+    <button id="modeBtn" type="button" aria-label="Jump to the most likely number of successes">Most likely k</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Repeat a yes-or-no trial <code>n</code> times, with the same chance <code>p</code> of yes each time. How likely is each possible number of yeses? The bars answer that, and their shape hides a small surprise about the "most likely" answer.</p>
+
+      <h2>The formula for one bar</h2>
+      <p>Each repeat is a <a class="wiki-term" data-wiki="Bernoulli_trial" href="https://en.wikipedia.org/wiki/Bernoulli_trial" target="_blank" rel="noopener">Bernoulli trial</a>. To get exactly <code>k</code> yeses, choose which <code>k</code> of the <code>n</code> trials they were, then multiply the chances. The number of ways is a <a class="wiki-term" data-wiki="Binomial_coefficient" href="https://en.wikipedia.org/wiki/Binomial_coefficient" target="_blank" rel="noopener">binomial coefficient</a>, written <code>C(n, k)</code>, so</p>
+      <blockquote><code>b(k; n, p) = C(n, k) · p<sup>k</sup> · (1 − p)<sup>n − k</sup></code></blockquote>
+      <p>The page states this formula, and the logic test checks it against the applet's own step-by-step calculation for all 11,544 slider settings and every <code>k</code>. They agree.</p>
+
+      <h2>Why there is one hump</h2>
+      <p>Compare a bar with the one before it. Dividing the formula for <code>b(k)</code> by the formula for <code>b(k−1)</code> gives</p>
+      <blockquote><code>b(k) / b(k−1) = (n − k + 1)·p / (k·(1 − p)) = 1 + ((n + 1)p − k) / (k·(1 − p))</code></blockquote>
+      <p>For a real chance <code>0 &lt; p &lt; 1</code> this ratio is greater than 1 while <code>k &lt; (n + 1)p</code> and less than 1 afterwards. So the bars rise, peak, and fall — the shape of a binomial <a class="wiki-term" data-wiki="Probability_distribution" href="https://en.wikipedia.org/wiki/Probability_distribution" target="_blank" rel="noopener">probability distribution</a>. The peak is at the integer <code>m</code> with <code>(n + 1)p − 1 &lt; m ≤ (n + 1)p</code>, that is <code>m = floor((n + 1)p)</code>. When <code>(n + 1)p</code> is a whole number, the two bars at <code>m</code> and <code>m − 1</code> are equally tall. The test confirmed both statements in every case.</p>
+
+      <h2>Most likely is not the same as average</h2>
+      <p>Add up <code>k · b(k)</code> over all <code>k</code> and the answer simplifies to <code>n·p</code>, the <a class="wiki-term" data-wiki="Expected_value" href="https://en.wikipedia.org/wiki/Expected_value" target="_blank" rel="noopener">expected value</a>. The page notes that <code>(n + 1)p</code> and <code>n·p</code> differ by exactly <code>p</code>, so they are never equal when <code>p ≠ 0</code> — true, and the test agrees.</p>
+      <p>But the page also calls the whole-number <code>m</code> "always different" from the average. That claim is <strong>not</strong> true: with <code>n = 10</code> and <code>p = 0.5</code>, the most likely result is <code>m = 5</code>, which is exactly the average <code>10 × 0.5 = 5</code>. The test counts these cases rather than repeating the claim.</p>
+
+      <h2>A quirk of the slider</h2>
+      <p>The original applet's p slider goes up to 1.10, which is more than a chance can be. We kept that range. Above <code>p = 1</code> the bars alternate above and below zero, because the same algebraic formula is being evaluated outside the probability range; the bars still add to 1. The page's remark that the tallest bar gets small for large <code>n</code> is confirmed: at <code>p = 0.5</code> it falls below 0.1 by <code>n = 100</code>.</p>
+
+      <p class="tip">Set p to 0.5 and slide n: watch the peak stay near the middle while the bars get shorter and shorter.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Probability/BinomialDistribution.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="binomial-distribution-core.js"></script>
+<script src="binomial-distribution.js"></script>
+</body>
+</html>
