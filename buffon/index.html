@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Buffon's Needle &mdash; coolmaths</title>
+<meta name="description" content="Throw a needle onto a floor with evenly spaced cracks, then bend it into a noodle of the same length. Can the chance of crossing a crack really stay the same, and can you use it to find pi?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/buffon/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Buffon's Needle">
+<meta property="og:description" content="Throw a needle onto a floor with evenly spaced cracks, then bend it into a noodle of the same length. Can the chance of crossing a crack really stay the same, and can you use it to find pi?">
+<meta property="og:url" content="https://coolmaths.ai/buffon/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* Layout only; every colour comes from the shared design tokens. */
+  #stage { max-width: 40rem; }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+  .reading { margin: 0.6rem 0 0; font-size: 0.9rem; color: var(--muted); }
+  .draw-panel {
+    margin-top: 0.8rem;
+    padding: 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .draw-hint { margin: 0 0 0.6rem; font-size: 0.9rem; color: var(--muted); }
+  #drawCanvas {
+    display: block;
+    width: 100%;
+    max-width: 20rem;
+    height: auto;
+    border-radius: var(--radius);
+    touch-action: none;
+  }
+  .draw-controls, .controls { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .option { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; font-size: 0.9rem; }
+  .option input[type="range"] { width: min(11rem, 100%); }
+  .option output { color: var(--muted); }
+  button:focus-visible, input:focus-visible, canvas:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="buffon" data-kind="demo">
+<main id="main">
+  <h1>Buffon's Needle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#limits">Limits</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This shows what happens when a needle, or a bent noodle of the same length, is thrown over and over onto a floor with evenly spaced cracks.<br>
+    <strong>How to play:</strong> Press Start to throw needles and watch the count, then draw a noodle and save it to see if the answer changes.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="640" height="300" tabindex="0" role="img"
+      aria-label="A floor with two horizontal cracks and the last needle or noodle thrown. Press Space to throw one more, or the arrow keys to change the settings."></canvas>
+    <p class="reading"><strong>Crossings / throws:</strong> <span id="readout">0 / 0</span></p>
+
+    <div id="drawPanel" class="draw-panel" hidden>
+      <p class="draw-hint">Drag on the pad to place the corners of a broken line, or focus it and press Enter for each corner. Press Save noodle when it looks right.</p>
+      <canvas id="drawCanvas" width="320" height="220" tabindex="0" role="img"
+        aria-label="Drawing pad for a broken line. Use the arrow keys to move and Enter to place a point."></canvas>
+      <div class="draw-controls">
+        <button id="clearShapeBtn" type="button" aria-label="Clear the drawing">Clear</button>
+        <button id="saveShapeBtn" type="button" aria-label="Save the drawing as a noodle">Save noodle</button>
+        <button id="cancelShapeBtn" type="button" aria-label="Close the drawing pad without saving">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="startBtn" type="button" class="primary" aria-label="Start throwing needles">Start</button>
+    <button id="repeatBtn" type="button" aria-label="Throw another batch of needles">Repeat</button>
+    <button id="singleBtn" type="button" aria-label="Throw one needle">Throw one</button>
+    <button id="resetBtn" type="button" aria-label="Clear the counters">Reset</button>
+    <label class="option"><input type="checkbox" id="drawToggle" aria-label="Draw a noodle"> Draw a noodle</label>
+    <label class="option"><input type="checkbox" id="showPi" aria-label="Show the pi estimate"> Show &pi; estimate</label>
+    <label class="option"><span>Number of throws</span>
+      <input type="range" id="trials" min="0" max="100" step="1" value="5" aria-label="Number of throws, from 0 to 10000">
+      <output id="trialsVal">500 throws</output>
+    </label>
+    <label class="option"><span>Skip</span>
+      <input type="range" id="skip" min="0" max="1000" step="1" value="0" aria-label="Redraw the floor only every few throws, from 0 to 1000">
+      <output id="skipVal">redraw every throw</output>
+    </label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A needle dropped on a ruled floor can tell you something about &pi;. The surprise is that the needle need not be straight: a bent wire of the same length gives the same answer.</p>
+
+      <h2>The chance of crossing a crack</h2>
+      <p>The floor here has two cracks, exactly one needle-length apart. The needle's middle lands equally anywhere between them, and it points in any direction with equal chance. It crosses a crack when its low end reaches the lower crack or its high end reaches the upper one. Working that out gives a chance of <code>2L / (&pi; D)</code>, and since here <code>L = D</code>, the chance is just <code>2 / &pi;</code>, about 0.637. This is the first problem of <a class="wiki-term" data-wiki="Geometric_probability" href="https://en.wikipedia.org/wiki/Geometric_probability" target="_blank" rel="noopener">geometric probability</a>. The logic test checks the formula by trying every angle and position on a fine grid, and confirms the value 2/&pi;.</p>
+
+      <h2>Why the shape does not matter</h2>
+      <p>Think of a bent noodle as many short straight needles joined end to end. Each short piece has the same chance of crossing as any other piece of its length, no matter which way it points or where it hangs. The <a class="wiki-term" data-wiki="Expected_value" href="https://en.wikipedia.org/wiki/Expected_value" target="_blank" rel="noopener">expected value</a> of a sum is the sum of the expected values, so the whole noodle's expected crossings depend only on its total length. The test confirms this for a straight needle, a right angle, a zigzag and an arc: all four give 2/&pi; crossings per throw. Because a noodle can cross a crack more than once in one throw, the count on the floor is the number of crossings, not the number of throws that crossed.</p>
+
+      <h2>Turning counts into &pi;</h2>
+      <p>If <code>T</code> throws make <code>C</code> crossings, then <code>C / T</code> is about <code>2 / &pi;</code>, so <code>&pi; &asymp; 2T / C</code>. The reading in the corner shows <code>C / T</code>; tick <em>Show &pi; estimate</em> to see the second number too, cut short to six characters just as the old applet did (the original page left this option off). A longer run steadies the answer: the test uses 200,000 throws and lands close to 3.14159. The page's claim that Buffon posed the first problem of geometric probability in the 18th century is history, not a formula we can check here.</p>
+
+      <p class="tip">Try saving a wild zigzag and a nearly straight noodle. Can you tell their crossing counts apart after only 500 throws? What about after 10,000?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Probability/Buffon.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="buffon-core.js"></script>
+<script src="buffon.js"></script>
+</body>
+</html>
