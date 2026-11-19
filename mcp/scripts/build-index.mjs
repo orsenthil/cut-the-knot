@@ -266,6 +266,16 @@ const CORE_GLOBALS = {
   "bachet/bachet-core.js": ["BachetCore"],
   "birds-on-wire/birds-on-wire-core.js": ["BirdsOnWireCore"],
   "bicentric-quadrilateral/bicentric-quadrilateral-core.js": ["BicentricQuadrilateralCore"],
+  "cards/cards-core.js": ["CardsCore"],
+  "box-volume/box-volume-core.js": ["BoxVolumeCore"],
+  "brides-chair/brides-chair-core.js": ["BridesChairCore"],
+  "chaos/chaos-core.js": ["ChaosCore"],
+  "btree-testing/btree-testing-core.js": ["BTreeTestingCore"],
+  "calculator/calculator-core.js": ["CalculatorCore"],
+  "chess-tournament/chess-tournament-core.js": ["ChessTournamentCore"],
+  "buffon/buffon-core.js": ["BuffonCore"],
+  "cavalieri/cavalieri-core.js": ["CavalieriCore"],
+  "cantor/cantor-core.js": ["CantorCore"],
 };
 
 const games = [];

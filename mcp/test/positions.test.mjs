@@ -937,6 +937,80 @@ const at = (slug, state) => describePosition(slug, state, 1);
     quad.drawable === true && quad.tangential === true && quad.feetInscriptible === true);
 }
 
+// Number Guessing Cards: seven binary digits recover any number below 100.
+{
+  const deck = at("cards", { cardNo: 2, bit: 1, result: 0, done: false });
+  check("cards: a card lists the numbers with that binary digit",
+    deck.cardNo === 2 && deck.numbers.length > 0 &&
+    deck.numbers.every((n) => ((n >> 2) & 1) === 1));
+}
+
+// Box Volume: the maximum is strictly inside the cut's domain.
+{
+  const box = at("box-volume", { a: 11, b: 8.5, x: 1 });
+  check("box-volume: the best cut beats the current one",
+    box.bestCut > 1 && box.bestCut < 8.5 / 2 && box.bestVolume > box.volume);
+}
+
+// Brides' Chair: every flank has the triangle's area.
+{
+  const vecten = at("brides-chair", { rotation: 45 });
+  check("brides-chair: the flanks keep the triangle's area",
+    vecten.rotation === 45 && vecten.triangleArea > 0 &&
+    Object.keys(vecten.centers).join(",") === "AB,BC,CA");
+}
+
+// Chaos: the behaviour changes with the growth rate.
+{
+  const logistic = at("chaos", { lambda: 0.892, x0: 0.7, steps: 8 });
+  check("chaos: the logistic map's orbit is bounded",
+    logistic.lambda === 0.892 && logistic.recentOrbit.length === 9 &&
+    logistic.recentOrbit.every((x) => x >= 0 && x <= 1));
+}
+
+// Factor Tree: the prime factors multiply back to the root.
+{
+  const tree = at("btree-testing", { n: 108 });
+  check("btree-testing: prime factors reconstruct the number",
+    tree.n === 108 && tree.product === 108 && tree.primes.join(",") === "2,2,3,3,3");
+}
+
+// Broken Calculator: the 1 key never works.
+{
+  const calc = at("calculator", { seed: 1 });
+  check("calculator: the broken set never enables 1",
+    calc.oneEnabled === false && calc.digits.length === 4 && calc.enabled.includes("0"));
+}
+
+// Chess Truel: B's chances from the two opening pairs.
+{
+  const truel = at("chess-tournament", { p: 0.55, q: 0.6, r: 0.75 });
+  check("chess-tournament: the three openings have probabilities",
+    Math.abs(truel.pAB - truel.table.AB.B) < 1e-12 &&
+    Math.abs(truel.pBC - truel.table.BC.B) < 1e-12);
+}
+
+// Buffon's Needle: the reading counts crossings over throws.
+{
+  const needle = at("buffon", { trials: 500, throws: 100, crossings: 60 });
+  check("buffon: the estimate is twice throws over crossings",
+    needle.reading.startsWith("60 / 100") && Math.abs(Number(needle.piEstimate) - 3.33) < 0.01);
+}
+
+// Cavalieri: the two stacks stay equal in area.
+{
+  const stacks = at("cavalieri", { n: 5 });
+  check("cavalieri: both figures have equal area",
+    stacks.n === 5 && stacks.equal === true && stacks.areas.left > 0);
+}
+
+// Cantor: the tent map keeps its orbit in [0,1].
+{
+  const tent = at("cantor", { a: 3, step: 5, y: 0.5 });
+  check("cantor: the slope and the current value are read",
+    tent.a === 3 && tent.step === 5 && tent.y === 0.5);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chess Tournament &mdash; coolmaths</title>
+<meta name="description" content="Three players, one series: A is strongest and C is weakest. B gets to choose which pair plays first — which choice gives B the best chance of winning two games first?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/chess-tournament/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Chess Tournament">
+<meta property="og:description" content="Three players, one series: A is strongest and C is weakest. B gets to choose which pair plays first — which choice gives B the best chance of winning two games first?">
+<meta property="og:url" content="https://coolmaths.ai/chess-tournament/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 42rem;
+    padding: 0.75rem;
+  }
+  .tablewrap {
+    width: 100%;
+    overflow-x: auto;
+  }
+  #chances {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+  }
+  #chances caption {
+    margin-bottom: 0.4rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: left;
+  }
+  #chances th, #chances td {
+    padding: 0.35rem 0.3rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  #chances thead th {
+    color: var(--muted);
+    font-weight: 600;
+  }
+  #chances tbody th {
+    color: var(--ink);
+    text-align: left;
+  }
+  #chances td[data-player="B"] {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  #chances[data-focus="AB"] [data-pair="AB"],
+  #chances[data-focus="BC"] [data-pair="BC"],
+  #chances[data-focus="AC"] [data-pair="AC"] {
+    background: var(--accent-soft);
+  }
+  #chart {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin-top: 0.75rem;
+    border-radius: 0.5rem;
+    touch-action: manipulation;
+  }
+  #chart:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .hint {
+    margin: 0.4rem 0 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  .controls .option {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    flex: 1 1 10rem;
+    min-width: 0;
+  }
+  .controls .option label {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+  }
+  .controls button {
+    flex: 0 0 auto;
+  }
+</style>
+</head>
+<body data-game="chess-tournament" data-kind="demo">
+<main id="main">
+  <h1>Chess Tournament</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Three chess players take turns: the winner of each game plays the one who sat out, and the first to win two games takes the series.<br>
+    <strong>How to play:</strong> Slide p, q and r to change how often the stronger player wins. Read the table or the bars to see who is likely to win, then pick a first game with the buttons or the arrow keys.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="tablewrap">
+      <table id="chances" data-focus="BC">
+        <caption>Chance of winning the whole series</caption>
+        <thead>
+          <tr>
+            <th scope="col">Winner</th>
+            <th scope="col">A vs B first</th>
+            <th scope="col">B vs C first</th>
+            <th scope="col">A vs C first</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">A</th><td data-player="A" data-pair="AB">0.000</td><td data-player="A" data-pair="BC">0.000</td><td data-player="A" data-pair="AC">0.000</td></tr>
+          <tr><th scope="row">B</th><td data-player="B" data-pair="AB">0.000</td><td data-player="B" data-pair="BC">0.000</td><td data-player="B" data-pair="AC">0.000</td></tr>
+          <tr><th scope="row">C</th><td data-player="C" data-pair="AB">0.000</td><td data-player="C" data-pair="BC">0.000</td><td data-player="C" data-pair="AC">0.000</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <canvas id="chart" width="600" height="200" tabindex="0" aria-label="Bars showing B's chance of winning from each starting game. Use the left and right arrow keys to choose a game."></canvas>
+    <p class="hint">The bars show B's row of the table. B chooses which game comes first.</p>
+  </div>
+
+  <div class="controls">
+    <div class="option">
+      <label for="pSlider">p — A beats B <output id="pValue" for="pSlider">.55</output></label>
+      <input id="pSlider" type="range" min="50" max="100" step="1" value="55" aria-label="Chance that A beats B, from 0.50 to 1.00">
+    </div>
+    <div class="option">
+      <label for="qSlider">q — B beats C <output id="qValue" for="qSlider">.60</output></label>
+      <input id="qSlider" type="range" min="50" max="100" step="1" value="60" aria-label="Chance that B beats C, from 0.50 to 1.00">
+    </div>
+    <div class="option">
+      <label for="rSlider">r — A beats C <output id="rValue" for="rSlider">.75</output></label>
+      <input id="rSlider" type="range" min="50" max="100" step="1" value="75" aria-label="Chance that A beats C, from 0.50 to 1.00">
+    </div>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset to the starting values">Reset</button>
+    <button id="abBtn" type="button" aria-label="Highlight A versus B as the first game" aria-pressed="false">A vs B first</button>
+    <button id="bcBtn" type="button" aria-label="Highlight B versus C as the first game" aria-pressed="true">B vs C first</button>
+    <button id="acBtn" type="button" aria-label="Highlight A versus C as the first game" aria-pressed="false">A vs C first</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three players, one series, and a choice that feels backwards. Before a single game is played, how likely is each player to be the one who collects two wins first? The table answers that question for every starting pair.</p>
+
+      <h2>Following an event tree</h2>
+      <p>There are no draws, and the winner of a game plays the player who sat it out. Someone reaches two wins in at most four games, so the whole series is a small <a class="wiki-term" data-wiki="Event_tree" href="https://en.wikipedia.org/wiki/Event_tree" target="_blank" rel="noopener">event tree</a>: follow a branch, multiply the chances along it, and add the branches that end the same way. We assume the games are <a class="wiki-term" data-wiki="Independence_(probability_theory)" href="https://en.wikipedia.org/wiki/Independence_(probability_theory)" target="_blank" rel="noopener">independent events</a>, just as the applet's page does. Starting A vs B, B vs C, or A vs C gives three different trees and the three columns of the table.</p>
+
+      <h2>B's two chances</h2>
+      <p>Write <code>p</code> for A's chance against B, <code>q</code> for B's chance against C, and <code>r</code> for A's chance against C. Adding the branches gives the two chances the page asks us to compare:</p>
+      <blockquote><code>P<sub>AB</sub> = p(1 − r)q(1 − p) + (1 − p)q + (1 − p)(1 − q)r(1 − p)</code><br><code>P<sub>BC</sub> = q(1 − p) + qp(1 − r)q + (1 − q)r(1 − p)q</code></blockquote>
+      <p>The logic test checked both formulas, and a separate walk of every branch of the game tree, at all 51 × 51 × 51 = 132,651 settings of the three sliders. They agree, and each column of the table adds to 1.</p>
+
+      <h2>Why starting against C is best</h2>
+      <p>The term <code>(1 − p)q</code> appears in both chances and cancels. What is left factors neatly:</p>
+      <blockquote><code>P<sub>BC</sub> − P<sub>AB</sub> = [pq(1 − r) + (1 − p)(1 − q)r] (p + q − 1)</code></blockquote>
+      <p>Because both <code>p</code> and <code>q</code> exceed 0.5, the last bracket is positive, so B does at least as well by starting against the weak C. The page says "always &lt;", but that is a little too strong: there are 49 boundary settings with <code>q = r = 1</code> where the two chances are exactly equal. The test also confirms the page's note that <code>r &gt; p</code> is not needed for the comparison; without it the only ties are at <code>p = r = 1</code>. A full search shows B vs C is never worse than either other start.</p>
+
+      <h2>A typo in the old applet</h2>
+      <p>The original bytecode computes one branch of <code>P<sub>AB</sub></code> with <code>p</code> where the game tree needs <code>1 − p</code>. At the starting values this makes its AB column add to 1.0135 instead of 1. This page follows the <a class="wiki-term" data-wiki="Probability" href="https://en.wikipedia.org/wiki/Probability" target="_blank" rel="noopener">probability</a> formula printed on cut-the-knot, which the branch-by-branch count confirms; the test pins the old applet's exact error so the difference is not hidden. It is a small <a class="wiki-term" data-wiki="Game_theory" href="https://en.wikipedia.org/wiki/Game_theory" target="_blank" rel="noopener">game theory</a> puzzle: B gets to choose the first pairing, and the choice matters.</p>
+
+      <p class="tip">Try q = 1.00 and r = 1.00: A always beats C and B always beats C, so starting A vs B and starting B vs C give B exactly the same chance. Can you see why from the tree?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Probability/ChessTournament.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="chess-tournament-core.js"></script>
+<script src="chess-tournament.js"></script>
+</body>
+</html>

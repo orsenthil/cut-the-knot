@@ -343,6 +343,36 @@ const GAMES = {
   "bicentric-quadrilateral": async (page) => {
     await page.click("#bicentricBtn");
   },
+  "cards": async (page) => {
+    await page.click("#yesBtn");
+  },
+  "box-volume": async (page) => {
+    await page.locator("#xInput").fill("2.5");
+  },
+  "brides-chair": async (page) => {
+    await page.locator("#rotationRange").fill("45");
+  },
+  "chaos": async (page) => {
+    await page.locator("#lambda").fill("0.892");
+  },
+  "btree-testing": async (page) => {
+    await page.click("#newBtn");
+  },
+  "calculator": async (page) => {
+    await page.locator('#keypad button').nth(8).click();
+  },
+  "chess-tournament": async (page) => {
+    await page.locator("#pSlider").fill("0.8");
+  },
+  "buffon": async (page) => {
+    await page.locator("#trials").fill("100");
+  },
+  "cavalieri": async (page) => {
+    await page.locator("#nInput").fill("40");
+  },
+  "cantor": async (page) => {
+    await page.locator("#aInput").fill("1.5");
+  },
   "two-color-solitaire": async (page) => {
     await page.selectOption("#nInput", "8");
     const gap = await page.evaluate(() => {
