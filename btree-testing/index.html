@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Factor Tree &mdash; coolmaths</title>
+<meta name="description" content="Can you break a number into prime factors by splitting it one factor at a time? Different trees may look different, but they all end with the same primes.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/btree-testing/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Factor Tree">
+<meta property="og:description" content="Can you break a number into prime factors by splitting it one factor at a time? Different trees may look different, but they all end with the same primes.">
+<meta property="og:url" content="https://coolmaths.ai/btree-testing/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* Only layout and the look of the tree's own boxes live here; every colour
+     comes from the tokens in assets/site.css. */
+  #stage { overflow: hidden; }
+  #treeCanvas {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 10px;
+    touch-action: manipulation;
+  }
+  #treeCanvas:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .hint {
+    margin: 0.55rem 0 0;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .controls label { white-space: normal; flex-wrap: wrap; }
+  .controls select { max-width: 100%; }
+  .controls input[type="text"] { width: 4em; min-width: 0; max-width: 100%; }
+</style>
+</head>
+<body data-game="btree-testing" data-kind="demo">
+<main id="main">
+  <h1>Factor Tree</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#divisibility">Divisibility</a><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This tool splits a number into factors until every box holds a prime number.<br>
+    <strong>How to play:</strong> Press New problem, click an empty box, type one factor of the number above it and press Enter. Keep splitting until no empty boxes are left.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="treeCanvas" tabindex="0" width="320" height="130" aria-label="Factor tree board. Use the left and right arrow keys to choose an empty box, type digits for a factor and press Enter to split it. Clicking a box also selects it."></canvas>
+    <p id="boxLabel" class="hint"></p>
+  </div>
+
+  <div class="controls">
+    <label for="countSelect">How many factors
+      <select id="countSelect" aria-label="How many prime factors the number should have">
+        <option value="random">Random</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+      </select>
+    </label>
+    <button id="newBtn" type="button" class="primary" aria-label="Start a new problem">New problem</button>
+    <button id="repeatBtn" type="button" aria-label="Repeat the same number with empty boxes">Repeat problem</button>
+  </div>
+
+  <div class="controls">
+    <label for="factorInput">Factor
+      <input id="factorInput" type="text" inputmode="numeric" autocomplete="off" aria-label="The factor to enter" placeholder="e.g. 6">
+    </label>
+    <button id="checkBtn" type="button" aria-label="Enter the factor for the highlighted box">Enter factor</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A factor tree can look different every time you factor the same number, but the
+        primes at its ends never change. The original applet chose between 2 and 6 prime
+        factors at random; the picker above lets you fix that number, or leave it on
+        <em>Random</em> for the original behaviour.</p>
+
+      <h2>Every split keeps the product</h2>
+      <p>When a box holds <code>N</code> and you enter a factor <code>a</code>, the box
+        beside it is filled with <code>b = N / a</code>. The applet only accepts that
+        entry when <code>a &times; b = N</code> exactly. So the two new boxes always
+        multiply back to the number above them, and the number at the very top never
+        changes. A number like 12 may be split as <code>2 &times; 6</code> or as
+        <code>3 &times; 4</code> — both are allowed, and neither needs to be prime yet.</p>
+
+      <h2>The primes you end with are forced</h2>
+      <p>A box that holds a <a class="wiki-term" data-wiki="Prime_number" href="https://en.wikipedia.org/wiki/Prime_number" target="_blank" rel="noopener">prime number</a>
+        is finished; a composite one grows two more boxes. The
+        <a class="wiki-term" data-wiki="Fundamental_theorem_of_arithmetic" href="https://en.wikipedia.org/wiki/Fundamental_theorem_of_arithmetic" target="_blank" rel="noopener">unique factorization</a>
+        theorem says that however you choose your splits, the same primes must appear at
+        the end, only maybe in a different order. The logic test checks every valid
+        first factor of 12, 18, 24, 30, 36 and 60: all the finished trees print the same
+        sorted primes, but their shapes differ. So the page is right that the tree is
+        not unique. The closing line sorts the primes for exactly that reason.</p>
+
+      <h2>Quick ways to spot a factor</h2>
+      <p>The page suggests four <a class="wiki-term" data-wiki="Divisibility_rule" href="https://en.wikipedia.org/wiki/Divisibility_rule" target="_blank" rel="noopener">divisibility rules</a>:
+        an even number divides by 2; if the digits add to a multiple of 3, the number
+        divides by 3; a number ending in 5 divides by 5, and one ending in 0 divides by
+        10 (the page says "ends in 10"). The logic test checks all four against ordinary
+        division for every number from 1 to 300, and they hold. They only help you find
+        a factor — a factor that is not on these lists can still work.</p>
+
+      <h2>GCD and LCM from the same list</h2>
+      <p>Once both numbers are written as primes, the
+        <a class="wiki-term" data-wiki="Greatest_common_divisor" href="https://en.wikipedia.org/wiki/Greatest_common_divisor" target="_blank" rel="noopener">greatest common divisor</a>
+        takes the smaller count of each shared prime and the
+        <a class="wiki-term" data-wiki="Least_common_multiple" href="https://en.wikipedia.org/wiki/Least_common_multiple" target="_blank" rel="noopener">least common multiple</a>
+        takes the larger count. The test confirms this against ordinary gcd and lcm for
+        many pairs: the page's "product of the common factors" means those shared copies,
+        counted with repetition. One limit is worth knowing: the applet calls a number
+        prime only if it is in its own table of primes up to 59. Its generated numbers
+        never need a larger prime, so that never changes an answer here.</p>
+
+      <p class="tip">Try factoring 108 three different ways and watch the closing sentence stay the same.
+        Then set the picker to 6 and see how much taller the tree can grow.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/BTreeTesting.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="btree-testing-core.js"></script>
+<script src="btree-testing.js"></script>
+</body>
+</html>
