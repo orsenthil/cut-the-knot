@@ -34,6 +34,7 @@ window.COOLMATHS = {
     "graph-theory": "Graph Theory",
     "area": "Area",
     "paradoxes": "Paradoxes",
+    "limits": "Limits",
     "physics": "Physics",
     "complex-analysis": "Complex Analysis",
     "differential-equations": "Differential Equations",
@@ -762,6 +763,14 @@ window.COOLMATHS = {
       tags: ["counting", "arithmetic", "paradoxes"],
       kind: "demo",
       level: 3,
+    },
+    {
+      slug: "area-of-circle",
+      title: "Area of a Circle",
+      blurb: "Cut a circle into equal slices and slide them into a row. The row is almost a rectangle — how does that tell you the circle's area?",
+      tags: ["area", "limits"],
+      kind: "demo",
+      level: 2,
     },
   ],
 };

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Area of a Circle &mdash; coolmaths</title>
+<meta name="description" content="Cut a circle into equal slices and slide them into a row. The row is almost a rectangle — how does that tell you the circle's area?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/area-of-circle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Area of a Circle">
+<meta property="og:description" content="Cut a circle into equal slices and slide them into a row. The row is almost a rectangle — how does that tell you the circle's area?">
+<meta property="og:url" content="https://coolmaths.ai/area-of-circle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 40rem;
+    padding: 0.6rem;
+    overflow: hidden;
+  }
+  #canvasBox {
+    width: 100%;
+  }
+  #aocCanvas {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .control-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.9rem;
+  }
+  .control-label {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .stepper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .stepper button {
+    min-width: 2.6rem;
+    min-height: 2.6rem;
+    font-size: 1.1rem;
+  }
+  #sectorsInput {
+    flex: 1 1 10rem;
+    min-width: 8rem;
+    max-width: 18rem;
+    accent-color: var(--accent);
+  }
+  #sectorsOut {
+    min-width: 2rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+  button:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="area-of-circle" data-kind="demo">
+<main id="main">
+  <h1>Area of a Circle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#limits">Limits</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A circle is cut into equal slices and the slices are slid into a long row.<br>
+    <strong>How to play:</strong> Change the number of slices and watch the row. What shape does it begin to look like?
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="canvasBox">
+      <canvas id="aocCanvas" role="img" aria-label="A circle cut into equal slices, with the same slices rearranged into a long row below it"></canvas>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label class="control-label" for="sectorsInput">Slices</label>
+      <button id="lessBtn" type="button" aria-label="Fewer slices">&minus;</button>
+      <input id="sectorsInput" type="range" min="3" max="100" step="1" value="6" aria-label="Number of slices">
+      <button id="moreBtn" type="button" aria-label="More slices">+</button>
+      <output id="sectorsOut" for="sectorsInput" aria-label="Number of slices">6</output>
+      <button id="resetBtn" type="button" class="primary">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This is Leonardo da Vinci's picture proof. Nothing is added or taken away: the same pieces are just moved, so the row has exactly the same area as the circle. Make the slices thin enough and the row becomes a rectangle we can measure.</p>
+
+      <h2>Two wavy edges make one circumference</h2>
+      <p>Each slice has one curved side, an arc of <code>2πr / N</code>. In the row the slices point up, then down, then up again. Every upward slice puts its arc along the top edge and every downward slice puts its arc along the bottom edge. Together the two edges use all <code>N</code> arcs, so their lengths add to exactly <code>2πr</code> — one trip around the <a class="wiki-term" data-wiki="Circumference" href="https://en.wikipedia.org/wiki/Circumference" target="_blank" rel="noopener">circumference</a>. With an even number of slices the two edges are equal, each <code>πr</code>. With an odd number one edge has an extra slice, so the row is a curvy trapezoid instead of a parallelogram. The logic test checks this for every count from 3 to 100.</p>
+
+      <h2>The height becomes the radius</h2>
+      <p>The pointed tips sit in two rows. A slice's sharp point is <code>r · cos(π/N)</code> above the flat rim of its neighbour, and the curved top rises almost a full radius above its own point. The whole row is therefore <code>r(2 − cos(π/N))</code> tall. As <code>N</code> grows, <code>cos(π/N)</code> approaches 1 and the height approaches <code>r</code>. At 100 slices it is already within one percent — the logic test confirms this for every count.</p>
+
+      <h2>Where πr² comes from</h2>
+      <p>The row is about <code>πr</code> wide and about <code>r</code> tall, so its area tends to <code>πr · r = πr²</code>. That is the <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> of the original circle, because rearranging pieces never changes their total area. This is a <a class="wiki-term" data-wiki="Limit_(mathematics)" href="https://en.wikipedia.org/wiki/Limit_(mathematics)" target="_blank" rel="noopener">limit</a>: no finite number of slices makes a perfect rectangle, but the more you use, the closer it gets. Try 6 slices, then 12, then 100, and watch the two wavy edges straighten out.</p>
+
+      <p class="tip">Try 5 slices and then 6. Why does the shape change from a lopsided trapezoid to a balanced parallelogram?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AreaOfCircle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="area-of-circle-core.js"></script>
+<script src="area-of-circle.js"></script>
+</body>
+</html>

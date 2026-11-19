@@ -853,6 +853,17 @@ const at = (slug, state) => describePosition(slug, state, 1);
     Object.values(country.allocations).every((a) => a.reduce((x, y) => x + y, 0) === 23));
 }
 
+// Area of a Circle: the two curved bases are one circumference in radius units.
+{
+  const row = at("area-of-circle", { sectors: 12 });
+  check("area-of-circle: two curved bases make one circumference",
+    row.sectors === 12 && row.topSlices === 6 && row.bottomSlices === 6 &&
+    Math.abs(row.basesTotalInRadii - row.circumferenceInRadii) < 1e-9 &&
+    Math.abs(row.basesTotalInRadii - 2 * Math.PI) < 1e-9 &&
+    Math.abs(row.widthInRadii - 12 * Math.sin(Math.PI / 12)) < 1e-9 &&
+    Math.abs(row.widthInRadii - Math.PI) < 0.05);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

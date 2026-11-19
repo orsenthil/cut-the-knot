@@ -306,6 +306,9 @@ const GAMES = {
   "apportionment-methods": async (page) => {
     await page.selectOption("#methodSelect", "webster");
   },
+  "area-of-circle": async (page) => {
+    await page.locator("#sectorsInput").fill("12");
+  },
   "two-color-solitaire": async (page) => {
     await page.selectOption("#nInput", "8");
     const gap = await page.evaluate(() => {

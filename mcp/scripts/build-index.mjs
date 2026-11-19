@@ -255,6 +255,7 @@ const CORE_GLOBALS = {
   "all-permutations/all-permutations-core.js": ["AllPermutationsCore"],
   "isosceles-fallacy/isosceles-fallacy-core.js": ["IsoscelesFallacyCore"],
   "apportionment-methods/apportionment-methods-core.js": ["ApportionmentMethodsCore"],
+  "area-of-circle/area-of-circle-core.js": ["AreaOfCircleCore"],
 };
 
 const games = [];

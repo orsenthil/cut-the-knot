@@ -44,6 +44,7 @@ window.COOLMATHS_CONCEPTS = {
   "paradoxes": { label: "Paradoxes", prereqs: ["area"] },
 
   // Continuous mathematics.
+  "limits": { label: "Limits", prereqs: ["area", "series"] },
   "physics": { label: "Physics", prereqs: ["algebra"] },
   "complex-analysis": { label: "Complex Analysis", prereqs: ["algebra"] },
   "differential-equations": { label: "Differential Equations", prereqs: ["algebra", "series"] },
