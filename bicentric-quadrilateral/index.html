@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bicentric Quadrilateral &mdash; coolmaths</title>
+<meta name="description" content="Four dots sit on a circle and their tangents make an outside shape. Can you make that shape have a circle both inside and around it — and will three special points then line up?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bicentric-quadrilateral/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Bicentric Quadrilateral">
+<meta property="og:description" content="Four dots sit on a circle and their tangents make an outside shape. Can you make that shape have a circle both inside and around it — and will three special points then line up?">
+<meta property="og:url" content="https://coolmaths.ai/bicentric-quadrilateral/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* Layout and the drawing itself; all colours come from the site's tokens. */
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 30rem;
+    height: auto;
+    aspect-ratio: 400 / 260;
+    border-radius: 10px;
+    touch-action: none;
+    cursor: grab;
+  }
+  #board:active { cursor: grabbing; }
+  #board:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .controls { gap: 8px 12px; }
+</style>
+</head>
+<body data-game="bicentric-quadrilateral" data-kind="demo">
+<main id="main">
+  <h1>Bicentric Quadrilateral</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the four dots around the circle and try to make the outside shape fit a circle inside it and a circle around it at the same time.<br>
+    <strong>How to play:</strong> Drag a dot with your finger or mouse, or focus the picture, press 1 to 4 and use the arrow keys. Use the button to see the special shape straight away.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" tabindex="0" role="application"
+      aria-label="Four dots on a circle with an outer quadrilateral. Drag a dot to move it. With the picture focused, press 1 to 4 to choose a dot and the arrow keys to turn it; press B for the right-angle case and N for names."></canvas>
+  </div>
+
+  <div class="controls">
+    <button id="bicentricBtn" type="button" class="primary" aria-label="Make the diagonals cross at right angles">Make it bicentric</button>
+    <button id="resetBtn" type="button" aria-label="Start again from the original picture">Reset</button>
+    <label><input id="namesCheck" type="checkbox"> Show names</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Draw four dots on a circle, then draw the tangents where they sit. The four tangents meet in a second, outer quadrilateral. Move the dots: the outer shape changes, but one thing about it never does.</p>
+
+      <h2>A quadrilateral with two circles</h2>
+      <p>The circle you start with touches all four sides of the outer quadrilateral, so it is an <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a>. If the four outer corners also lie on a circle, that is a <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>, and the shape is a <a class="wiki-term" data-wiki="Bicentric_quadrilateral" href="https://en.wikipedia.org/wiki/Bicentric_quadrilateral" target="_blank" rel="noopener">bicentric quadrilateral</a>. The tangents guarantee the inner circle for every position of the dots.</p>
+
+      <h2>When does the outer circle appear?</h2>
+      <p>Write the angles of A, B, C, D as <code>a, b, c, d</code>. A dot-product calculation shows the two diagonals AC and BD are perpendicular exactly when <code>a + c - b - d = 180°</code> (mod 360°). In that case the four outer corners are all the same distance from one point, so one circle passes through them all. The logic test checks this over the whole grid of angle choices: the outer shape has a circumcircle precisely in the perpendicular cases, and never otherwise.</p>
+
+      <h2>Why three points line up</h2>
+      <p>Let I be the centre of the inner circle, E the crossing of the two diagonals (which is also the crossing of AC and BD), and O the centre of the outer circle. When the shape is bicentric these three points are <a class="wiki-term" data-wiki="Collinearity" href="https://en.wikipedia.org/wiki/Collinearity" target="_blank" rel="noopener">collinear</a>: they lie on one straight line. The column calls the statement projective. The logic test checks it on a large family of right-angle configurations and confirms it; a few symmetric non-right-angle shapes also happen to line up, which the column does not claim against.</p>
+
+      <h2>The feet of the perpendiculars</h2>
+      <p>Drop perpendiculars from E to AB, BC, CD and DA. Their feet make another quadrilateral KLMN. E is always its <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a>: its distance to each of the four sides of KLMN is the same. KLMN becomes a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a> exactly when ABCD is orthodiagonal — the very same condition as for the outer shape. Both directions were checked exhaustively over the grid of angles.</p>
+
+      <p class="tip">Press "Make it bicentric", then drag just one dot a little. Watch the outer circle disappear the moment the diagonals stop crossing at right angles.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/BicentricQuadri.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="bicentric-quadrilateral-core.js"></script>
+<script src="bicentric-quadrilateral.js"></script>
+</body>
+</html>
