@@ -256,6 +256,16 @@ const CORE_GLOBALS = {
   "isosceles-fallacy/isosceles-fallacy-core.js": ["IsoscelesFallacyCore"],
   "apportionment-methods/apportionment-methods-core.js": ["ApportionmentMethodsCore"],
   "area-of-circle/area-of-circle-core.js": ["AreaOfCircleCore"],
+  "bad-limit/bad-limit-core.js": ["BadLimitCore"],
+  "arithmetic-sequence/arithmetic-sequence-core.js": ["ArithmeticSequenceCore"],
+  "auto-flipper/auto-flipper-core.js": ["AutoFlipperCore"],
+  "barcode-encoding/barcode-encoding-core.js": ["BarcodeEncodingCore"],
+  "binomial-distribution/binomial-distribution-core.js": ["BinomialDistributionCore"],
+  "base-conversion/base-conversion-core.js": ["BaseConversionCore"],
+  "barcode-magic/barcode-magic-core.js": ["BarcodeMagicCore"],
+  "bachet/bachet-core.js": ["BachetCore"],
+  "birds-on-wire/birds-on-wire-core.js": ["BirdsOnWireCore"],
+  "bicentric-quadrilateral/bicentric-quadrilateral-core.js": ["BicentricQuadrilateralCore"],
 };
 
 const games = [];

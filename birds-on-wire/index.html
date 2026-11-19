@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Birds on a Wire &mdash; coolmaths</title>
+<meta name="description" content="Birds land at random along a wire and each claims the gap to its nearest neighbour. Run thousands of trials: what share of the wire do those gaps cover in the end?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/birds-on-wire/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Birds on a Wire">
+<meta property="og:description" content="Birds land at random along a wire and each claims the gap to its nearest neighbour. Run thousands of trials: what share of the wire do those gaps cover in the end?">
+<meta property="og:url" content="https://coolmaths.ai/birds-on-wire/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 40rem;
+    padding: 0.6rem;
+  }
+  #wire {
+    display: block;
+    width: 100%;
+    height: 250px;
+    max-width: 100%;
+    border-radius: 0.6rem;
+    touch-action: manipulation;
+  }
+  #wire:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  #readout {
+    margin: 0.4rem 0 0;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+  }
+  .controls {
+    width: 100%;
+    max-width: 40rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem 1rem;
+  }
+  .opt {
+    display: flex;
+    flex: 1 1 13rem;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.6rem;
+    min-width: 0;
+  }
+  .opt label {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .opt input[type="range"] {
+    flex: 1 1 8rem;
+    min-width: 7rem;
+    accent-color: var(--accent);
+  }
+  .opt output {
+    min-width: 4.5rem;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    text-align: right;
+  }
+</style>
+</head>
+<body data-game="birds-on-wire" data-kind="demo">
+<main id="main">
+  <h1>Birds on a Wire</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#limits">Limits</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Birds land at random on a wire, and we run many trials to see how much of the wire the gaps to their closest neighbours cover on average.<br>
+    <strong>How to play:</strong> Set the number of birds and trials, then press Go. Press Stop to pause, Repeat for more trials, or press Enter on the wire to add one trial at a time.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="wire" tabindex="0" role="img" aria-label="Wire showing the latest trial. Press Enter or Space to run one more trial. The scatter plot below shows the average covered length for each bird count." width="600" height="250">
+      A wire with birds and highlighted gaps, and a plot of the average covered length against the number of birds.
+    </canvas>
+    <p id="readout"></p>
+  </div>
+
+  <div class="controls">
+    <div class="opt">
+      <label for="trials">Trials per bird count</label>
+      <input id="trials" type="range" min="0" max="110" step="1" value="5" aria-label="Number of trials, in steps of ten">
+      <output id="trialsOut" for="trials">50 trials</output>
+    </div>
+    <div class="opt">
+      <label for="minBirds">Fewest birds</label>
+      <input id="minBirds" type="range" min="2" max="202" step="1" value="2" aria-label="Minimum number of birds">
+      <output id="minOut" for="minBirds">2</output>
+    </div>
+    <div class="opt">
+      <label for="maxBirds">Most birds</label>
+      <input id="maxBirds" type="range" min="2" max="202" step="1" value="2" aria-label="Maximum number of birds">
+      <output id="maxOut" for="maxBirds">2</output>
+    </div>
+    <button id="goBtn" type="button" class="primary" aria-label="Run the simulation">Go</button>
+    <button id="repeatBtn" type="button" aria-label="Add more trials to this run" disabled>Repeat</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Here is a question about chance on a line. Drop birds at random on a wire and
+        look at the spaces between neighbouring birds. If you keep doing it, does the
+        covered length settle down to a number you can predict? This is a
+        <a class="wiki-term" data-wiki="Geometric_probability" href="https://en.wikipedia.org/wiki/Geometric_probability" target="_blank" rel="noopener">geometric probability</a>
+        question, and the answer is surprisingly steady.</p>
+
+      <h2>Which gaps get a highlight</h2>
+      <p>Each bird looks at the two gaps beside it and claims the smaller one - the gap
+        towards its closest neighbour. A gap is highlighted when at least one of its two
+        birds claims it. That happens unless the gap is <em>bigger than both</em> of its
+        neighbours: only such a
+        <a class="wiki-term" data-wiki="Maxima_and_minima_(mathematics)" href="https://en.wikipedia.org/wiki/Maxima_and_minima_(mathematics)" target="_blank" rel="noopener">local maximum</a>
+        is left unmarked. The two gaps at the very ends of the line are always marked,
+        because there is no gap beyond them to compare with.</p>
+
+      <h2>Two and three birds, checked exactly</h2>
+      <p>With two birds there are only two end gaps, so the marked length is just the
+        distance between them. With three birds there are again only end gaps, so the
+        marked length is the span from the first bird to the last. The average span of
+        two or three random points on a unit wire is <code>1/3</code> and <code>1/2</code>.
+        The logic test checks every possible ordering on a small grid, including equal
+        gaps, and confirms both numbers.</p>
+
+      <h2>Larger flocks: a steady constant</h2>
+      <p>With a handful of birds the covered fraction sits near one half; as the flock
+        grows it eases down. The untouched gaps are the local maxima, which tend to be
+        the longer ones. In the long run the fraction approaches
+        <code>7/18</code>, about <code>0.389</code>. One way to see it: for evenly spread
+        random gaps the chance that a gap of length <code>x</code> beats both neighbours
+        is <code>(1 - e^-x)^2</code>, and integrating <code>x (1 - e^-x)^2 e^-x</code>
+        gives <code>11/18</code> of the wire left out, hence <code>7/18</code> covered.
+        This is an
+        <a class="wiki-term" data-wiki="Expected_value" href="https://en.wikipedia.org/wiki/Expected_value" target="_blank" rel="noopener">expected value</a>,
+        and the
+        <a class="wiki-term" data-wiki="Law_of_large_numbers" href="https://en.wikipedia.org/wiki/Law_of_large_numbers" target="_blank" rel="noopener">law of large numbers</a>
+        is why the plotted average stops jumping around when trials are added. The
+        logic test checks the simulated value against <code>7/18</code>.</p>
+
+      <h2>A small quirk in the original applet</h2>
+      <p>The page says the applet runs "a specified number of trials for every number of
+        birds between the specified minimum and maximum values". Almost: when it moves
+        to the next bird count it draws that trial too, without the counter change the
+        other trials get. So the first bird count runs the chosen number of trials and
+        every later count runs one extra. The applet then divides by the chosen number
+        when it shows the average. This harmless off-by-one is kept here, and the logic
+        test records the true counts rather than hiding the quirk.</p>
+
+      <p class="tip">Try 2 to 2 birds first, then raise the maximum a little at a time and
+        watch where the dots settle. Does the last average move much when you press
+        Repeat?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Probability/BirdsOnWire.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="birds-on-wire-core.js"></script>
+<script src="birds-on-wire.js"></script>
+</body>
+</html>

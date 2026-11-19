@@ -5,154 +5,125 @@
     "set here always wins. Add an entry whenever you open an applet and find the",
     "classifier got it wrong, in the same commit as the port."
   ],
-
   "Aliquot": {
     "status": "ported",
     "slug": "aliquot",
     "notes": "Ported to aliquot/. Opponent is AliquotCanvas.FindFactor verbatim; moves are buttons instead of a typed divisor."
   },
-
   "LminoRect": {
     "status": "ported",
     "notes": "Ported as l-tromino. Three-click pieces (TroBlock.IsConsistent: neighbours, no straight line, corner in the middle), Wire/Blocks, Remove last, 2..10 sizes from the bytecode. Theorem 2.3 checked against exact search on every board 2x2..10x10."
   },
-
   "Leprechauns": {
     "status": "skip",
     "notes": "Not ported: the applet only slides two pictures, which are not in the archive (loaded from the server's Images/), and the leprechaun picture is third-party (David Balaban's site). Its trick is the one already ported as vanishing-rectangles, which the page calls its simplified version."
   },
-
   "Leprechaun": {
     "status": "ported",
     "kind": "demo",
     "notes": "Ported as vanishing-rectangles. MoveableLep heights (random permutation, top h, bottom N-1-h), wrap-around strips, units and light-cut options from the bytecode; halves snap to slots on release. Checked: exactly one shift shows N-1, area N(N-1) conserved."
   },
-
   "LCGame": {
     "status": "ported",
     "kind": "demo",
     "notes": "Ported as carroll-logic. BSmartDiagram placement rules, TDumbDiagram Received/superfluity/CheckReturn from the bytecode; one syllogism instead of the 12-diagram sorites chain; contradictions reported. Method verified sound and complete on all 5,041 consistent cell premise pairs."
   },
-
   "Kayles": {
     "status": "ported",
     "notes": "Ported as kayles (from the dawsons-kayles page). KaylesGame heaps/Play/GoodMove/MakeRandomMove and Reset from the bytecode; mex reproduces the 84-value table; period 12 from 71 checked to 400; full circle is a second-player win for 3..60."
   },
-
   "JEuclidGame": {
     "status": "ported",
     "notes": "Ported as euclid-game. RecordMove/Play/IsOver from the bytecode (the computer has no strategy). Checked on all 10,296 pairs from 1..144: every game ends with the multiples of gcd up to max, in max/gcd - 2 moves."
   },
-
   "JChangingColors": {
     "status": "ported",
     "notes": "Ported as changing-colors. Reset, the four arrow families, Take back, numbers view and the hint cells from the bytecode. Checked by GF(2) elimination: one colour is unreachable for N=4,6,8 (hint invariant) and also 5,7 (other invariants); only 3x3 is solvable."
   },
-
   "Jam": {
     "status": "ported",
     "notes": "Ported as jam. Map, masks, bestMove (with its 1-in-10 mistakes) from the bytecode. Checked: cities = tic-tac-toe lines, magic table = Lo Shu (Fif). The mistake-free computer is still beatable (forks): always moving first, and after its openings on roads 1 and 3."
   },
-
   "IntIter": {
     "status": "ported",
     "kind": "demo",
     "notes": "Ported as ducci. Compute/Undo/Reset/Random and the +/-1 halves from the bytecode; starts with Random ticked. Checked: N=4 and powers of 2 die out; N=5 '3 or 6' holds (exact 15); N=6 'loops of 2 and 3' is really 6 and 3 (2 and 1 up to turns)."
   },
-
   "Hounds": {
     "status": "ported",
     "notes": "Ported as hare-hounds. Rules from the applet's Board class; the applet is Robert Kirkland's Hare and Hounds 2.0, all rights reserved, so the opponent is an original exact solver (hounds win with best play, within 23 moves)."
   },
-
   "Horse": {
     "status": "ported",
     "notes": "Already ported as four-knights (hand-made original): both SimpleGames/Horse.shtml and Curriculum/Games/FourKnights.shtml embed this applet. The port has the applet's unfolded ring and its Hint (square numbers)."
   },
-
   "HexTheory": {
     "status": "ported",
     "kind": "demo",
     "notes": "Ported as hex-draw. CellCell's chain search and neighbour tables from the bytecode (same chain shown); 8-grid shows both chains. Gale's walk written from the page. Checked: no draws on hex/6-grid, 4-grid draws = 8-grid double wins (duality)."
   },
-
   "Hex7": {
     "status": "ported",
     "notes": "Ported as hex7. Rules from the applet (7x7, White first, centre blocked on move 1, Basic/Advanced). The applet is Robert Kirkland's Hex 2.0, all rights reserved, so its AI is not transcribed: the opponent is an original Monte Carlo player."
   },
-
   "Hanoi3c": {
     "status": "ported",
     "notes": "Ported as hanoi-3c. Anderson's GATHER/SHIFT/SPREAD from the bytecode. Goal is the page's (three whole single-colour towers, deranged); the applet's CompleteDerangement accepted mixed piles. BFS: fewest 5/22/62 vs algorithm 10/38/102; all six PERMUTE orders work, contrary to the page's guess."
   },
-
   "LongHanoi": {
     "status": "ported",
     "notes": "Ported as long-hanoi. Solution(N,Src,Aux,Dst) from the bytecode, matching the page's 26-move N=3 list and visiting all 3^N positions once. Two leftovers from the plain hanoi applet dropped for the page's puzzle: Approve() praised fewer than 2^N moves, and Help() played the shortest solution; the hint now steps along the long route, and the no-repeat rule the page states is enforced."
   },
-
   "Looping": {
     "status": "ported",
     "notes": "Ported as looping. N=12,M=4,L=5 from the bytecode; CanSettle is ±5 mod 12 onto an empty square. Right board is (i*5) mod 12. Page goal (reverse home order) is unreachable: cyclic order on the right board is invariant; BFS of all 1980 reachable states confirms. Applet has no win announcement."
   },
-
   "Marriage": {
     "status": "ported",
     "ctkUrl": "https://www.cut-the-knot.org/arithmetic/MarriageApplet.shtml",
     "notes": "Ported as marriage. McWorter's constructive Hall algorithm from the bytecode (Greedy/Zeros/Assemble/Relabel). Sitemap URL pointed at marriage.shtml (article only); applet page is MarriageApplet.shtml. Checked: succeeds iff Hall; tridiag |i-j|=1 works iff n even; permutation matrices stay in Greedy."
   },
-
   "Mastermind": {
     "status": "ported",
     "notes": "Ported as mastermind (MastermindGame from the zip: human as codebreaker). MMCode ExactMatches/ColorMatches scoring; near = colorMatches - exact. Classic defaults 4 pegs / 6 colours; rows = P+C-1. Static explorer and computer-as-breaker applets in the same zip left for later. Checked: page 1123/0145 example; 3 exact+1 near impossible; 1296 codes."
   },
-
   "Mazes": {
     "status": "ported",
     "notes": "Ported as mazes. Prim/Kruskal spanning-tree maze generation and DFS solve from the bytecode. SortedVectorCI is heaviest-first, so the applet grows a maximum spanning tree (page describes the minimum case; math section notes the symmetry). Checked: second transcription of Prim/Kruskal; |V|=|E|+1; DFS reaches end; no horizontal wrap."
   },
-
   "Merlin4x4": {
     "status": "ported",
     "notes": "Ported as merlin-4x4 (Mini Lights Out). Torus plus-move, Hint = A v neighbourhood parity, A² = I. Checked all 65536 boards solvable uniquely via hint; neighbourhoods intersect in 0 or 2."
   },
-
   "Merlin5x5": {
     "status": "ported",
     "notes": "Ported as merlin-5x5 (Lights Out). Classic 5×5 plus-move from Neighbor table; Hint = chase-lights solve (ThreadDown + GetTopFromBottom). Setup toggles single cells. Checked rank(A)=23, bottom-row parities {1,3,5}/{2,3,4}, ~1/4 solvable, 4 neutral first-row sets."
   },
-
   "hanoi": {
     "status": "ported",
     "ctkUrl": "https://www.cut-the-knot.org/recurrence/hanoi.shtml",
     "notes": "Ported as hanoi. The sitemap match pointed at exchange/hanoi.shtml, a reader's letter; the applet page is recurrence/hanoi.shtml. Solution() and Help() (Zylla) from the bytecode; Help is optimal from all 3^n positions up to n=8."
   },
-
   "guess": {
     "status": "ported",
     "notes": "Ported as whats-next. All nine guesscanvas rules match the bytecode for every parameter; quirks kept: AP start and difference in -11..0, 'Shifted powers' shift always 0. Census: 2,673 distinct sequences, none with two answers."
   },
-
   "Grundy": {
     "status": "ported",
     "notes": "Ported as grundy. Computer is GrundyCanvas.Play/MakeGoodMove/MakeRandomMove verbatim, heap order included; the hard-coded NimValue table (0-39) and the page's table (0-59) both match the mex rule."
   },
-
   "FrogsAndToads": {
     "status": "ported",
     "notes": "Ported as frogs-toads. Frogs on the left as on the cut-the-knot page (the applet drew toad.gif there). Exhaustive check: two solutions only when both sides have 2+ animals (Fibonacci many with a lone animal); hole string palindromic iff N+M even, not only M=N as the page says."
   },
-
   "FrogsAndToads2D": {
     "status": "ported",
     "notes": "Ported as frogs-toads-2d. The jar also carries the 1-D puzzle's rules as its single-row and single-column cases."
   },
-
   "DominoCovering": {
     "status": "ported",
     "notes": "Ported as domino-faults. The page is about fault lines, and the applet checks exactly that: CheckFinished() wants N*M/2 dominoes and every interior line crossed."
   },
-
   "BiColorHanoi": {
     "status": "ported",
     "notes": "Ported as bicolor-hanoi. The applet sets up the bicolor position but its win test and par (2^N-1) are leftovers from the single-tower Hanoi applet it was built from, so the goal comes from the cut-the-knot page instead: both towers monochrome and swapped."
@@ -161,30 +132,25 @@
     "status": "ported",
     "notes": "Ported as diagonals. The page is titled \"Diagonal Count\"; it is a counting experiment, but it has a win condition (n-3 diagonals drawn) so the classifier's \"game\" stands."
   },
-
   "BarryCipra": {
     "status": "ported",
     "notes": "Ported as stones-in-cups. The page calls it \"Stones in Cups\"; the applet is named after Barry Cipra, who set the problem."
   },
-
   "DawsonKayles": {
     "status": "ported",
     "slug": "dawsons-kayles",
     "notes": "Ported to dawsons-kayles/. Grundy values recomputed with the mex rule and checked against the applet's hard-coded 137; heaps() joins a wrap-around run before dropping lone skittles, which the applet did the other way round."
   },
-
   "Hanoing": {
     "status": "ported",
     "slug": "hanoing",
     "notes": "Ported as hanoing. The Tower of Hanoi disguised as a row of coloured squares."
   },
-
   "FractionGame": {
     "status": "ported",
     "slug": "fraction-game",
     "notes": "Ported to fraction-game/ as Contorted Fractions. Opponent is the applet's greedy SuggestMove/IsThereWorthyMove; Legal() forgot to require an integer replacement for an integer, which is fixed so the game terminates."
   },
-
   "Tromino": {
     "kind": "demo",
     "notes": "Ported as tromino. It is Golomb's induction proof visualiser, not a puzzle you win: TrominoBoard.GetType/Split and TrominoCanvas.Go drive an exponent of 1..7 (2..128 board), a clicked or random missing square, One step and Reset. Core compared with a literal bytecode transcription and the tiling checked on every hole up to 16x16."
@@ -213,122 +179,139 @@
     "status": "ported",
     "notes": "Ported as four-pegs. The applet's 30x30 grid and side range 1..20 are scaled to 12x12 and 1..4 so the points are tappable; the puzzle is scale-invariant."
   },
-
   "Coin": {
     "kind": "helper",
     "status": "skip",
     "notes": "A single Coin.class shared widget, not a standalone applet."
   },
-
   "MixedStrategies": {
     "status": "ported",
     "notes": "Ported as mixed-strategies. The applet's zero reset, left/right CTKNumber changes, saddle arrows and P/Q fractions are reproduced; every 2x2 matrix with entries -2..2 is checked against a second transcription."
   },
-
   "Romb3dPuzzle": {
     "status": "failed",
     "notes": "Triangular-hexagon hit-testing depends on DoubPoint/DoubLine geometry and CTK helpers not worth reimplementing overnight; combinatorial claim (equal rhombus counts) is clear but a faithful port needs the full grid geometry. Deferred."
   },
-
   "SeeSaw": {
     "status": "failed",
     "kind": "illustration",
     "notes": "Geometry demo of incircle pairs in a quadrilateral (DoubPoint/DoubCircle); sitemap blurb mismatches. Deferred with other DoubPoint illustrations."
   },
-
   "ShuttlePuzzle": {
     "status": "failed",
     "notes": "Practice shuttle itinerary on poles with MoveableVector arrows and TransBar hit-testing; faithful port needs the full ShuttleLib geometry. Deferred."
   },
-
   "Skyscrapers": {
     "status": "failed",
     "notes": "Latin-square skyscraper visibility puzzle with generator, store/restore and dual display modes; deferred as a large solver/UI port."
   },
-
   "sliders": {
     "status": "failed",
     "notes": "ctk-urls maps to an unrelated 15-puzzle email thread, not an embed page; applet needs its own brief before porting. Deferred."
   },
-
   "SilverDollar": {
     "status": "failed",
     "notes": "Extends NoSilverDollar with one-step and two-step silver-coin win rules and a modified gap nim-sum; deferred for a careful Conway transcription after the morning check."
   },
-
   "TacTix": {
     "status": "failed",
     "notes": "Third-party Mazeworks applet (Robert Kirkland); would need an original misère computer player written from the rules only. Deferred."
   },
-
   "ApportionmentApplet": {
     "kind": "demo",
     "notes": "Ported as apportionment-methods. Combined calculator for Hamilton, Jefferson, Adams, Webster and Huntington-Hill. The original applet was written for Peter Tannenbaum's textbook and reproduced with permission, so the methods were implemented independently from their published definitions and the attribution is on the page. Logic test cross-checks Hamilton and Adams against the dedicated ports and verifies all methods fill the house on 2000 countries."
   },
-
   "AllTrianglesIsosceles": {
     "kind": "demo",
     "notes": "Ported as isosceles-fallacy. Interactive geometric fallacy: draggable triangle, angle bisector, perpendicular bisector, circumcircle and perpendicular feet, with a misleading and an honest drawing mode as in the applet. Verified on hundreds of random acute scalene triangles that P lies on the circumcircle and one foot leaves its side. The applet's about-box mentions incircles in a quadrilateral, a sibling leftover."
   },
-
   "AllPerm": {
     "kind": "demo",
     "notes": "Ported as all-permutations. Lists all n! permutations with cycles, n 1..8, with the applet's Recursive, Lexicographic and Heap generators transcribed from bytecode and checked row-for-row on every n<=7. The applet's recursion prints 2..N+1; the port keeps its order but uses the page's 1..N."
   },
-
   "AllCombinations": {
     "kind": "demo",
     "notes": "Ported as all-combinations. Interactive list of all M-combinations of N with N 2..20 and M 1..20. Lexicographic step and BigInteger countdown transcribed from CTKAlgebra's Combination class; checked against an independent recursive generator on every board up to n=8 and both binomial identities across the range. The applet's about-box is a sibling leftover about permutations."
   },
-
   "AHamilton": {
     "kind": "demo",
     "notes": "Ported as hamilton-apportionment. Largest-remainder apportionment demo with editable populations, seats and states. Logic test checks surplus/quota properties on 3000 countries and pins concrete Alabama, population and new-states paradox examples."
   },
-
   "AffirmativeAction": {
     "kind": "demo",
     "notes": "Ported as affirmative-action. Interactive graph-colouring proof, not a game. Nodes flip colour, edges can be added, Clear/Remove last/Reset and Find colouring mirror the applet's controls (Show degrees too). Propp's maximality argument checked on all 1099 simple graphs with at most five nodes and every colouring."
   },
-
   "AdditionLawOfChange": {
     "kind": "demo",
     "notes": "Ported as addition-law-of-change. Interactive illustration of the change-of-addends rule, not a game. Addends 0..100 with +/- controls and dot patterns; the rule checked exhaustively on all pairs and legal edits. The applet's about-box is a sibling-applet leftover about dot patterns and modular arithmetic."
   },
-
   "Adams": {
     "kind": "demo",
     "notes": "Ported as adams-apportionment. Interactive demonstration of Adams' divisor method with no win condition: editable populations, seats/states steppers and divisor search. Logic test confirms the quota arithmetic on thousands of countries and finds that Adams can genuinely fail when several states cross a threshold together."
   },
-
   "Abacus": {
     "kind": "demo",
     "notes": "Ported as abacus. Interactive calculator with no win condition; bases 2..16, 1..10 wires and two abaci with Sync. Carry/borrow, place value and Sync checked over all bases and hundreds of two-abacus positions. The applet's borrow treats a wire with exactly one counter like an empty one; that quirk is reproduced."
   },
-
   "Subtraction": {
     "ctkUrl": "https://www.cut-the-knot.org/Curriculum/Arithmetic/SubtractionGame.shtml",
     "notes": "Ported as subtraction-game. The manifest had no page URL; the applet is Moore's Nim on /Curriculum/Arithmetic/SubtractionGame.shtml. Grundy table by mex, zero-Nim-sum good move and random fallback from the bytecode; option ranges 1..12 heaps, 1..8 subtrahends, max 10..100. Verified the page's Scoring claim (g(n)=n mod (s+1)), the mex table against an independent recursion and the computer on 3000 random boards. The applet's Illegal Move still subtracts into negatives; the port follows the page and refuses it."
   },
-
   "OldPuzzle": {
     "ctkUrl": "https://www.cut-the-knot.org/ctk/GoatCabbageWolf.shtml",
     "notes": "Ported as goat-cabbage-wolf. The manifest had no page URL; the applet is the Goat, Cabbage and Wolf river-crossing puzzle at /ctk/GoatCabbageWolf.shtml. Standard rules from the page (goat/cabbage and wolf/goat cannot be left unattended); the applet's own CheckFinished flag wrongly fires after the first correct move, which the logic test shows on all 16 states. Breadth-first hint confirms the seven-crossing minimum and two shortest routes."
   },
-
   "DateGame": {
     "ctkUrl": "https://www.cut-the-knot.org/Curriculum/Games/Date.shtml",
     "notes": "Ported as date-game. Found the applet's page at Curriculum/Games/Date.shtml (not DateGame.shtml). The one-word-per-turn click rule, invalid-date undo, month lengths and the computer's day - month = 19 diagonal strategy follow the bytecode; a full game-tree search confirms the page's twelve P-positions on that diagonal."
   },
-
   "YTheory": {
     "kind": "demo",
     "notes": "Ported as y-theory. Not a game: it is an interactive proof that Y cannot end in a draw. Reduction by majority of each upward triangle, Show subgame dots, Shrink and the 1..12 size spin from the bytecode; every colouring of Y_1..Y_5 (and 20,000 of Y_6) checked for exactly one winner, winner-preserving reduction and Meyers's two-of-three rule."
   },
-
   "AreaOfCircle": {
     "kind": "demo",
     "ctkUrl": "https://www.cut-the-knot.org/Curriculum/Geometry/AreaOfCircle.shtml",
     "notes": "Ported as area-of-circle. The manifest URL pointed at the general 'Circle, Its Perimeter and Area' article; the applet is embedded on the Leonardo da Vinci page at Curriculum/Geometry/AreaOfCircle.shtml with NSectors=6. Sectors 3..100 from the spinner, da Vinci/Sato rearrangement from DrawSectors and DrawOneSector; the page's claims (two curved bases = one circumference, odd N gives a trapezoid, height tends to r, area to pi*r^2) checked for every N and four radii, against a second transcription of the applet's alpha/side/k arithmetic. The layout follows the page's screenshot (circle above, strip below) rather than the applet's side-by-side canvas; the applet's getAppletInfo 'Pythagorean Theorem, Proof #36' is a sibling leftover and is not reproduced."
+  },
+  "ArithmeticSequence": {
+    "kind": "demo",
+    "notes": "Ported. Ported as arithmetic-sequence. FindSpecial and the 16-entry Seqs table from the bytecode, the 8-or-9 option and the S[2]==8 guard. Logic test: all 512 colourings of nine numbers contain a one-coloured triple (W(2,3)=9), exactly 6 of 256 for eight, and a second transcription of FindSpecial agrees everywhere."
+  },
+  "AutoFlipper": {
+    "kind": "demo",
+    "notes": "Ported. Ported as auto-flipper. Flip(int), FlipNew, CheckFinished and Shuffle from the bytecode; N=3..16 spinner, the 0-based mouse-flip quirk kept. Logic test: every stack of 3..8 pancakes terminates at 1-on-top with no repeated configuration, and the top-M-lands-M-th rule holds for all of them."
+  },
+  "Bachet": {
+    "kind": "demo",
+    "notes": "Ported. Ported as bachet. BachetOb.Reset's exact N by (N+1) card grid (including its double j++), N=3..6, Straight/Randomize and the row-pair table. Logic test: the pair count and the two-rows-determine-the-pair rule hold for every pair, N, option and four seeds, against a second literal transcription."
+  },
+  "BadLimit": {
+    "kind": "demo",
+    "notes": "Ported. Ported as bad-limit. CollectPoints/Reset staircase, N=1..105 scrollbar, canvas 400x300. The page's s=S/2 is false (the midpoint square is S/sqrt(2)); the staircase length stays S while the curves converge. Logic test checks all 105 values at three sizes against a second transcription."
+  },
+  "BarCodeEncoding": {
+    "kind": "demo",
+    "notes": "Ported. Ported as barcode-encoding. This applet is a shared data class (the Odds/Evens/Mirrors/LeftSideParity tables and three Get* methods), embedded by the UPC, EAN13, ISBN and BarCodeMagic applets rather than on its own page; the manifest URL is the explanatory article and is kept. The page's tables and all four-run/module claims are checked exhaustively; UPC-A with a leading 0 is the same bars as EAN-13."
+  },
+  "BarCodeMagic": {
+    "kind": "demo",
+    "notes": "Ported. Ported as barcode-magic. IsCorrect, GetMissingDigit, NumOfBlanks, Check, UpdateSlow and the barcode tables from the bytecode; the 12 cycling digit cells and the single Check button. Logic test checks all 12,000 one-blank codes and keeps the original message's missing space."
+  },
+  "BaseConversion": {
+    "kind": "demo",
+    "notes": "Ported. Ported as base-conversion. BigRational parsing/formatting, RemoveEllipses, the 36-digit cap and four 2..36 base spinners from the bytecode. Logic test covers all 35x35 input/output base pairs plus negatives, fractions and BAD NUMBER. Two quirks kept and documented: -0.5 loses its sign, and the typed box is rewritten although the page says only the other three."
+  },
+  "BicentricQuadri": {
+    "kind": "demo",
+    "notes": "Ported. Ported as bicentric-quadrilateral. AreOrtho's absolute 100 px^2 tolerance and the tangent/intersection construction from the bytecode; draggable points, centre and radius, Show names. Logic test (84k checks) verifies the incircle always, the circumcircle and cyclic feet exactly in the orthodiagonal case, and I-E-O collinearity; Prop. 3 is a continuous theorem and is not machine-checked."
+  },
+  "BinomialDistribution": {
+    "kind": "demo",
+    "notes": "Ported. Ported as binomial-distribution. Compute's recurrence and its p==1 case from the bytecode; p raw 0..110 (so p can exceed 1, a quirk kept) and n raw 2..105. Logic test checks all 11,544 slider combinations and every k against a BigInt closed form; the page's 'mode always differs from the mean' is false (n=10, p=0.5) and the maths section says so."
+  },
+  "BirdsOnWire": {
+    "kind": "demo",
+    "notes": "Ported. Ported as birds-on-wire. Perform(double[]) transcribed literally; trials 0..1100 in steps of 10, Min/Max birds 2..202. The page's trial count is off by one after the first bird count (NTrials reset without incrementing); the quirk is kept, asserted and documented. Mean marked length is 1/3 for two birds, 1/2 for three and tends to 7/18."
   }
 }

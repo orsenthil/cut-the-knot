@@ -864,6 +864,79 @@ const at = (slug, state) => describePosition(slug, state, 1);
     Math.abs(row.widthInRadii - Math.PI) < 0.05);
 }
 
+// Bad Limit: the staircase length never changes, though the curves converge.
+{
+  const stair = at("bad-limit", { n: 20 });
+  check("bad-limit: staircase equals the big square, not the diamond",
+    stair.n === 20 && Math.abs(stair.staircaseLength - stair.bigSquarePerimeter) < 1e-6 &&
+    Math.abs(stair.ratio - 1 / Math.SQRT2) < 1e-9 &&
+    stair.staircaseLength > stair.midpointSquarePerimeter && stair.maxDeviation > 0);
+}
+
+// 3-Term Arithmetic Progression: van der Waerden W(2,3) = 9.
+{
+  const board = at("arithmetic-sequence", { n: 9, colors: [1, 0, 1, 0, 0, 1, 1, 0, 0] });
+  check("arithmetic-sequence: nine numbers always contain a triple",
+    board.n === 9 && Array.isArray(board.firstTriple) && board.firstTriple.length === 3);
+}
+
+// Auto Flipper: the top number decides how many pancakes turn over.
+{
+  const flip = at("auto-flipper", { stack: [3, 1, 4, 2] });
+  check("auto-flipper: the top pancake decides the next flip",
+    flip.top === 3 && flip.stack.join(",") === "3,1,4,2" && flip.n === 4 && typeof flip.lastFlip === "string");
+}
+
+// Barcode Encoding: UPC-A uses 95 modules, every digit four runs.
+{
+  const code = at("barcode-encoding", { mode: "UPC-A" });
+  check("barcode-encoding: a UPC-A code has 95 modules",
+    code.mode === "UPC-A" && code.modules === 95 && code.digits.length === 12);
+}
+
+// Binomial Distribution: the mode equals the mean at n=10, p=0.5.
+{
+  const chart = at("binomial-distribution", { p: 0.5, n: 10, k: 5 });
+  check("binomial-distribution: mode can equal the mean",
+    chart.mode === 5 && chart.mean === 5 && Math.abs(chart.total - 1) < 1e-9 &&
+    Math.abs(chart.probabilityAtK - 252 / 1024) < 1e-12);
+}
+
+// Base Conversion: one number, four bases at once.
+{
+  const converted = at("base-conversion", { bases: [10, 2, 8, 16], texts: ["255", "255", "255", "255"] });
+  check("base-conversion: four bases are shown together",
+    converted.bases.join(",") === "10,2,8,16" && converted.texts.length === 4);
+}
+
+// Barcode Magic: one hidden digit is forced by the other eleven.
+{
+  const magic = at("barcode-magic", { digits: [0, 3, 6, 0, 0, 0, 2, 9, 1, 4, 5, -1] });
+  check("barcode-magic: the missing check digit is found",
+    magic.blanks === 1 && magic.outcome === "missing" && magic.missingDigit === 2);
+}
+
+// Bachet's trick: two rows identify the remembered pair.
+{
+  const trick = at("bachet", { n: 4, straight: true, randomized: false, seed: 1, stage: 1 });
+  check("bachet: a grid is built for every pair",
+    trick.n === 4 && Array.isArray(trick.message) && trick.message.length === 2);
+}
+
+// Birds on a Wire: the marked length has a long-run average near 7/18.
+{
+  const wire = at("birds-on-wire", { trials: 50, min: 2, max: 3, values: [0.34, 0.5], birds: 3, count: 50, runs: 100 });
+  check("birds-on-wire: two birds mark one third on average",
+    Math.abs(wire.averages[0].y - 0.34 / 50) < 1e-9 && wire.min === 2 && wire.trials === 50);
+}
+
+// Bicentric Quadrilateral: the incircle is always there; the circumcircle is not.
+{
+  const quad = at("bicentric-quadrilateral", {});
+  check("bicentric-quadrilateral: tangential but not always cyclic",
+    quad.drawable === true && quad.tangential === true && quad.feetInscriptible === true);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

@@ -309,6 +309,40 @@ const GAMES = {
   "area-of-circle": async (page) => {
     await page.locator("#sectorsInput").fill("12");
   },
+  "bad-limit": async (page) => {
+    await page.locator("#nRange").fill("20");
+  },
+  "arithmetic-sequence": async (page) => {
+    await page.locator('#btn9').click();
+    await page.locator('#board .cell[data-index="4"]').click();
+  },
+  "auto-flipper": async (page) => {
+    await page.click("#oneFlip");
+  },
+  "barcode-encoding": async (page) => {
+    await page.click("#incBtn");
+  },
+  "binomial-distribution": async (page) => {
+    await page.locator("#nSlider").fill("20");
+  },
+  "base-conversion": async (page) => {
+    await page.locator("#text0").fill("255");
+    await page.locator("#text0").press("Enter");
+  },
+  "barcode-magic": async (page) => {
+    await page.locator('#digitRow button').nth(3).click();
+    await page.click("#checkBtn");
+  },
+  "bachet": async (page) => {
+    await page.locator('#pairList button').nth(0).click();
+    await page.click("#proceedBtn");
+  },
+  "birds-on-wire": async (page) => {
+    await page.locator("#trials").fill("200");
+  },
+  "bicentric-quadrilateral": async (page) => {
+    await page.click("#bicentricBtn");
+  },
   "two-color-solitaire": async (page) => {
     await page.selectOption("#nInput", "8");
     const gap = await page.evaluate(() => {
