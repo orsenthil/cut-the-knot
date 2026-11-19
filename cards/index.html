@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Number Guessing &mdash; coolmaths</title>
+<meta name="description" content="The computer shows you a card of numbers and guesses which number from 1 to 99 you are thinking of. Can you work out how seven cards are enough?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cards/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Number Guessing">
+<meta property="og:description" content="The computer shows you a card of numbers and guesses which number from 1 to 99 you are thinking of. Can you work out how seven cards are enough?">
+<meta property="og:url" content="https://coolmaths.ai/cards/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  .card-head {
+    text-align: center;
+    margin-bottom: 0.6rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  #cardCanvas {
+    display: block;
+    width: 100%;
+    max-width: 26rem;
+    height: auto;
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body data-game="cards" data-kind="demo">
+<main id="main">
+  <h1>Number Guessing</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#place-value">Place Value</a><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> The computer shows you a card full of numbers and works out the number you are thinking of.<br>
+    <strong>How to play:</strong> Think of a number from 1 to 99. Press Yes if you can see it on the card, or No if you cannot, and keep answering until the computer says your number.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="card-head" id="cardLabel">Card 1 of 7</div>
+    <canvas id="cardCanvas" width="400" height="320" aria-label="Card of numbers for the current question"></canvas>
+    <p id="cardText" class="sr-only" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset and think of a new number">Reset</button>
+    <button id="yesBtn" type="button" aria-label="Yes, my number is on the card">Yes</button>
+    <button id="noBtn" type="button" aria-label="No, my number is not on the card">No</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The trick looks like mind reading, but the computer is simply writing your number in <a class="wiki-term" data-wiki="Binary_number" href="https://en.wikipedia.org/wiki/Binary_number" target="_blank" rel="noopener">binary</a>, one digit at a time. Each card asks about one digit.</p>
+
+      <h2>Seven cards are enough</h2>
+      <p>Every number below 100 fits in seven binary digits, because
+        <code>(1111111)<sub>2</sub> = 2<sup>7</sup> &minus; 1 = 127</code>, which is bigger than 100. Six digits only reach 63, so seven is the smallest number of cards that can cover 1 to 99. The logic test checked all 99 numbers: each one needs at most seven digits, and the applet never prints 0 or 100 on a card.</p>
+
+      <h2>One answer, one digit</h2>
+      <p>Card <code>k</code> shows exactly the numbers whose <a class="wiki-term" data-wiki="Positional_notation" href="https://en.wikipedia.org/wiki/Positional_notation" target="_blank" rel="noopener">place value</a> <code>2<sup>k</sup></code> is switched on, or exactly those with it switched off — the computer picks which at random. The rightmost card is about <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a>: odd numbers have a 1 there. Yes keeps the digit on the card; No takes the other one. Either way, one answer fixes one digit. After seven answers the digits add up to your number: for instance 54 is <code>110110</code>, with 0 in the ones place and 1 in the third place from the right.</p>
+
+      <h2>What the test confirmed</h2>
+      <p>The logic test replayed the applet's own card-drawing and answer code, then played all 99 possible secrets against all 128 possible runs of random cards — 12,672 games — and the computer guessed correctly every time. The page's two example groups (1, 2, 3, 8, 9, 10, 11, 16, 17 with a 0 in the third place, and 4, 5, 6, 7, 12, 13, 14, 15, 20 with a 1) were verified too. One quirk stays: if you answer inconsistently, the computer can announce 0 or a number up to 127, because it only adds the bits you gave it and never checks your number was really on the cards.</p>
+
+      <p class="tip">Try pressing No to every card. The computer announces the opposite of every card it showed, which can be a number that never appeared on any card — even 0 if all seven cards showed a 1. Can you work out why?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/blue/Cards.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="cards-core.js"></script>
+<script src="cards.js"></script>
+</body>
+</html>
