@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Broken Calculator &mdash; coolmaths</title>
+<meta name="description" content="This calculator has most of its keys broken. Can you make every number from 1 to 15 with the keys that still work?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/calculator/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Broken Calculator">
+<meta property="og:description" content="This calculator has most of its keys broken. Can you make every number from 1 to 15 with the keys that still work?">
+<meta property="og:url" content="https://coolmaths.ai/calculator/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    margin: 0 auto;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+  .calc-progress {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.6rem;
+    align-items: baseline;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+  #progress {
+    color: var(--calc-accent, var(--accent));
+    font-weight: 650;
+    overflow-wrap: anywhere;
+  }
+  .calc-display {
+    min-height: 2.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0.25rem 0.7rem;
+    box-sizing: border-box;
+    border: 2px solid var(--border-strong);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--calc-ink, var(--ink));
+    font-family: var(--mono);
+    font-size: 1.8rem;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+    margin-bottom: 0.7rem;
+  }
+  .calc-display.empty { color: var(--muted); }
+  .calc-display:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .calc-keypad { display: grid; gap: 0.4rem; }
+  .calc-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.4rem; }
+  .calc-key {
+    min-width: 0;
+    min-height: 3rem;
+    padding: 0.2rem;
+    font-size: 1rem;
+    border-radius: 9px;
+  }
+  .calc-key.broken { opacity: 0.28; text-decoration: line-through; }
+  .calc-key:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .calc-hint {
+    margin: 0.7rem 0 0;
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-align: center;
+  }
+  @media (max-width: 24rem) {
+    .calc-key { font-size: 0.85rem; min-height: 2.75rem; }
+  }
+</style>
+</head>
+<body data-game="calculator" data-kind="demo">
+<main id="main">
+  <h1>Broken Calculator</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#mental-math">Mental Math</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This calculator has most of its keys broken. Can you make every number from 1 to 15 with the keys that still work?<br>
+    <strong>How to play:</strong> Press the lit keys to type a calculation, then press equals. A number you make gets ticked off above the calculator; you can find them in any order.
+  </div>
+
+  <div class="controls">
+    <label for="useMemory"><input type="checkbox" id="useMemory"> Use memory keys</label>
+    <button id="resetBtn" type="button">Reset</button>
+    <button id="newBtn" type="button" class="primary">New Calculator</button>
+  </div>
+
+  <div id="stage" class="stage" tabindex="0" aria-label="Broken calculator keypad. Type digits and operators on your keyboard.">
+    <p class="calc-progress"><span>Numbers found:</span> <span id="progress" aria-live="polite">none yet</span> <span id="memIndicator" aria-label="Memory indicator"></span></p>
+    <div id="display" class="calc-display empty" tabindex="0" aria-label="Calculator display" aria-live="polite">0</div>
+    <div id="keypad" class="calc-keypad" role="group" aria-label="Calculator keys"></div>
+    <p class="calc-hint">The crossed-out keys are broken this round. You can also type on the keyboard; Enter means equals.</p>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A broken tool can still teach you something. Each round of this calculator switches off most of its keys, so getting to a number is a small puzzle in <a class="wiki-term" data-wiki="Mental_calculation" href="https://en.wikipedia.org/wiki/Mental_calculation" target="_blank" rel="noopener">mental calculation</a> rather than a job for a machine.</p>
+
+      <h2>Which keys survive</h2>
+      <p>Every round keeps the <code>0</code> key and chooses four different digits from 2 to 9. The <code>1</code> key never works, so to make 1 you have to build it from other digits, for example <code>2 / 2</code>. One of <code>×</code> and <code>÷</code> works, one of <code>+</code> and <code>−</code> works, and the decimal point comes with <code>×</code>. The page says only a few buttons are functional at any time, and the logic test confirms this for 2,000 generated rounds: at most 16 keys work, including the optional memory keys.</p>
+
+      <h2>Fractions, not rounding</h2>
+      <p>The calculator keeps numbers as exact <a class="wiki-term" data-wiki="Fraction_(mathematics)" href="https://en.wikipedia.org/wiki/Fraction_(mathematics)" target="_blank" rel="noopener">fractions</a>: <code>3 / 2</code> stays three halves and only becomes <code>1.5</code> when shown on the display. Dividing by zero gives the applet's message <code>Bad number</code>. A total is ticked off only when the answer is a whole number from 1 to 15; <code>2 / 2</code> counts as 1, but <code>3 / 2</code> does not.</p>
+
+      <h2>Checking the words on the page</h2>
+      <p>The fifteen numbers may be found in any order: the logic test tries all 720 orders of 1 to 6 and the list comes out the same each time. When all fifteen are found, the list ends with <code>!</code>. The essay also repeats two stray claims: that a drop of 60% followed by a rise of 70% leaves scores 10% higher, and that two 50% chances of rain add to 100%. Neither is right. The first is <code>0.4 × 1.7 = 0.68</code>, which is 32% lower; the second adds chances for different days as though they could not both happen. That is the point of <a class="wiki-term" data-wiki="Percentage" href="https://en.wikipedia.org/wiki/Percentage" target="_blank" rel="noopener">percentages</a>: the arithmetic is easy, but the meaning needs care.</p>
+
+      <p class="tip">Try to make 1 without a 1 key, then see how many numbers you can reach before the list ends with an exclamation mark.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/arithmetic/Calculator.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="calculator-core.js"></script>
+<script src="calculator.js"></script>
+</body>
+</html>
