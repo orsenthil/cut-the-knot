@@ -381,6 +381,9 @@ const GAMES = {
     await page.fill("#redsInput", "5");
     await page.locator("#redsInput").dispatchEvent("input");
   },
+  "critical-path-scheduling": async (page) => {
+    await page.selectOption("#procSel", "4");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

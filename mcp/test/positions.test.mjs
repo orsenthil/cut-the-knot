@@ -126,6 +126,7 @@ check("sums-products-invariant: a pair was merged without changing the invariant
 check("isbn-encoding: a cell was cycled", read["isbn-encoding"]?.symbols.length === 13 && read["isbn-encoding"].valid === false);
 check("item-parity: a swap was made", read["item-parity"]?.moves === 1 && read["item-parity"].red === read["item-parity"].blue);
 check("item-parity-generalized: five reds were set on top", read["item-parity-generalized"]?.redTop === 5 && read["item-parity-generalized"].equal === true);
+check("critical-path-scheduling: four processors were chosen", read["critical-path-scheduling"]?.processors === 4 && read["critical-path-scheduling"].makespan >= read["critical-path-scheduling"].criticalLength);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1544,6 +1545,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
     ["R", "R", "R", "R", "B", "B", "B"],
   ] });
   check("item-parity-generalized: an odd setup still balances", board.setupValid === true && board.equal === true);
+}
+
+// Scheduling and critical path.
+{
+  const board = at("critical-path-scheduling", { preset: "merge", processors: 2, priority: ["A", "B", "C"] });
+  check("critical-path-scheduling: the merge path is 7", board.criticalLength === 7 && board.criticalPath.join("-") === "Start-A-C-End");
 }
 
 // A game with no reader, and a position that makes no sense.

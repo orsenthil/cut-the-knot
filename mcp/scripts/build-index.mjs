@@ -342,6 +342,7 @@ const CORE_GLOBALS = {
   "isbn-encoding/isbn-encoding-core.js": ["IsbnEncodingCore"],
   "item-parity/item-parity-core.js": ["ItemParityCore"],
   "item-parity-generalized/item-parity-generalized-core.js": ["ItemParityGeneralizedCore"],
+  "critical-path-scheduling/critical-path-scheduling-core.js": ["CriticalPathSchedulingCore"],
 };
 
 const games = [];

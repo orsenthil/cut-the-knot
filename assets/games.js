@@ -1280,6 +1280,14 @@ window.COOLMATHS = {
       level: 2,
     },
     {
+      slug: "critical-path-scheduling",
+      title: "Scheduling and Critical Path",
+      blurb: "Find the longest chain of tasks, then see whether a priority list and a team of processors can match it.",
+      tags: ["algorithms", "graph-theory", "logic"],
+      kind: "demo",
+      level: 3,
+    },
+    {
       slug: "distance-to-line",
       title: "Distance from a Point to a Line",
       blurb: "Drag a line and a point and watch the distance between them. Why is it |Au + Bv + C| divided by the length of the normal, and what does normalizing the equation do?",
