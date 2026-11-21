@@ -413,6 +413,7 @@ const GAMES = {
   delian: (page) => page.click("#nMore"),
   "curry-paradox": (page) => page.locator('[data-piece="0"]').focus().then(() => page.keyboard.press("Enter")),
   "distance-to-line": (page) => page.check("#normBox"),
+  "distributive-law": (page) => page.click("#cutCol"),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

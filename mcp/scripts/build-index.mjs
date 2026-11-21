@@ -297,6 +297,7 @@ const CORE_GLOBALS = {
   "cycloids/cycloids-core.js": ["CycloidsCore"],
   "delian/delian-core.js": ["DelianCore"],
   "distance-to-line/distance-to-line-core.js": ["DistanceToLineCore"],
+  "distributive-law/distributive-law-core.js": ["DistributiveLawCore"],
 };
 
 const games = [];

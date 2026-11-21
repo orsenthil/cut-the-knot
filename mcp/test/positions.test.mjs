@@ -1195,6 +1195,13 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("distance-to-line: a point on the line is at distance 0 and the equation is normalized", q.distance === 0 && q.equationNormalized === true);
 }
 
+// Distributive law: a cut rewrites a product as a sum.
+{
+  const tree = { x: 0, y: 0, w: 5, h: 4, first: { x: 0, y: 0, w: 2, h: 4, first: null, second: null }, second: { x: 2, y: 0, w: 3, h: 4, first: null, second: null } };
+  const p = at("distributive-law", { nx: 5, ny: 4, tree, parentheses: false, history: ["4*2+4*3", "4*5"], moves: 1, explored: true });
+  check("distributive-law: 4*5 cut after two columns reads 4*2+4*3", p.written === "4*2+4*3" && p.value === 20 && p.pieces === 2 && p.cutsToGo === 18 && p.finished === false);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

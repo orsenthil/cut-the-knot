@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Distributive Law &mdash; coolmaths</title>
+<meta name="description" content="Cut a block of squares in a gap and watch a product turn into a sum: 4×5 becomes 4×2 + 4×3. How many cuts does it take to reach single squares, and does the order matter?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/distributive-law/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Distributive Law">
+<meta property="og:description" content="Cut a block of squares in a gap and watch a product turn into a sum: 4×5 becomes 4×2 + 4×3. How many cuts does it take to reach single squares, and does the order matter?">
+<meta property="og:url" content="https://coolmaths.ai/distributive-law/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 8px; cursor: crosshair; }
+  #board:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0 0; }
+  #expr { font-size: 1.15rem; font-weight: 700; margin: 0.6rem 0 0; overflow-wrap: anywhere; }
+  #history { margin: 0.4rem 0 0; padding-left: 1.4rem; max-height: 9rem; overflow: auto; font-size: 0.95rem; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 4.5rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="distributive-law" data-kind="demo">
+<main id="main">
+  <h1>The Distributive Law</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A block of squares is cut into smaller blocks until only single squares are left, and each cut rewrites the multiplication as an addition; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Press in a gap between two columns or two rows to cut there. With the keyboard, move the marked square with the arrow keys and press C or R.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="420" height="340" tabindex="0" aria-label="A block of squares. Press in a gap between squares to cut the block there. Arrow keys move the marked square; C cuts to the right of it and R below it."></canvas>
+    <p class="hint">Press in a gap to cut. Arrow keys move the marked square; C cuts after its column, R below its row.</p>
+    <p id="expr" aria-live="polite"></p>
+    <ol id="history" aria-label="Everything written so far, newest first"></ol>
+  </div>
+
+  <div class="controls">
+    <label>Width <input id="nxIn" type="number" min="1" max="12" step="1" aria-label="Number of columns"></label>
+    <label>Height <input id="nyIn" type="number" min="1" max="12" step="1" aria-label="Number of rows"></label>
+    <label><input id="parBox" type="checkbox"> Use parentheses</label>
+    <button id="cutCol" type="button">Cut after this column</button>
+    <button id="cutRow" type="button">Cut below this row</button>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <<details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Multiplying counting numbers is counting in equal groups: <code>4×5</code> is four groups of five. The <a class="wiki-term" data-wiki="Distributive_property" href="https://en.wikipedia.org/wiki/Distributive_property" target="_blank" rel="noopener">distributive law</a> says that if you split each group of five into two and three, you have four twos and four threes.</p>
+
+      <h2>One cut, one identity</h2>
+      <p>A cut between two columns turns <code>a×(b+c)</code> into <code>a×b + a×c</code>, because the <code>b+c</code> columns of the block become two blocks of <code>b</code> and <code>c</code> columns, each still <code>a</code> rows high. A cut between rows does the same to the other factor: <code>(a+b)×c = a×c + b×c</code>.</p>
+
+      <h2>Cut it all the way</h2>
+      <p>Keep cutting and every piece ends as a single square, written <code>1</code>. Whatever the order of the cuts, the block of <code>N×M</code> squares takes exactly <code>N×M − 1</code> cuts, because each cut adds one piece and you start with one. The logic test tried every cutting order on every board up to 3 by 3 and 400 random orders on boards up to 12 by 12; the written sum always added up to the right product.</p>
+
+      <h2>Not a proof</h2>
+      <p>The page says plainly that counting squares is no proof: whether the law holds depends on the axioms for numbers you start from (Landau&rsquo;s <i>Foundations of Analysis</i> derives it for whole, rational, real and complex numbers). It is a picture of why the law is believable for counting numbers.</p>
+
+      <p class="tip">Cut a 4 by 5 block once after the second column, then cut the pieces again below the second row. How many products are in the sum, and what do they add to?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/DistributiveLaw.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="distributive-law-core.js"></script>
+<script src="distributive-law.js"></script>
+</body>
+</html>

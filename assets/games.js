@@ -1103,5 +1103,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "distributive-law",
+      title: "The Distributive Law",
+      blurb: "Cut a block of squares in a gap and watch a product turn into a sum: 4×5 becomes 4×2 + 4×3. How many cuts does it take to reach single squares, and does the order matter?",
+      tags: ["arithmetic", "counting"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };
