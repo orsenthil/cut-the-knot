@@ -1046,5 +1046,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "counting-squares-in-square",
+      title: "Counting Squares in a Square",
+      blurb: "How many squares of every size hide inside an N by N grid? Slide a small square around, paint the places it fits, and find the pattern.",
+      tags: ["counting", "algebra", "area"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };

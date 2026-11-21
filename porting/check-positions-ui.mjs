@@ -406,6 +406,7 @@ const GAMES = {
   "complex-numbers": (page) => page.check("input[name=mode][value=sum]"),
   coordinates: (page) => page.check("#gridBox"),
   counting: (page) => page.locator("#dots .dot").first().click(),
+  "counting-squares-in-square": (page) => page.locator("#nIn").fill("5"),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

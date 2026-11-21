@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Counting Squares in a Square &mdash; coolmaths</title>
+<meta name="description" content="How many squares of every size hide inside an N by N grid? Slide a small square around, paint the places it fits, and find the pattern.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/counting-squares-in-square/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Counting Squares in a Square">
+<meta property="og:description" content="How many squares of every size hide inside an N by N grid? Slide a small square around, paint the places it fits, and find the pattern.">
+<meta property="og:url" content="https://coolmaths.ai/counting-squares-in-square/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    touch-action: none;
+    cursor: grab;
+  }
+  #board:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  #readout {
+    margin: 0.5rem 0 0;
+    font-weight: 600;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.3rem 0 0;
+  }
+  .controls label {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+  .controls input[type="number"] {
+    width: 5rem;
+  }
+</style>
+</head>
+<body data-game="counting-squares-in-square" data-kind="demo">
+<main id="main">
+  <h1>Counting Squares in a Square</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A small square slides around inside a big one, painting the spots it can sit on; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the blue square around the grid, or use the arrow keys. Every spot where the whole blue square fits turns orange. Change the sizes to see how many spots there are.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="400" height="400" tabindex="0" aria-label="An N by N grid square with a draggable M by M square. Cells its upper left corner has visited are painted orange."></canvas>
+    <p id="readout" aria-live="off"></p>
+    <p class="hint">Drag the blue square, or focus the picture and press the arrow keys.</p>
+  </div>
+
+  <div class="controls">
+    <label>N (big square) <input id="nIn" type="number" min="1" max="40" step="1" aria-label="N, the side of the big square"></label>
+    <label>M (small square) <input id="mIn" type="number" min="1" max="40" step="1" aria-label="M, the side of the moving square"></label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>How many squares are there in a 5 by 5 grid? Not just 25: there are also 2 by 2, 3 by 3, 4 by 4 and 5 by 5 squares. The moving square counts them for you.</p>
+
+      <h2>One size at a time</h2>
+      <p>An M × M square is fixed by its upper left cell. That cell can sit anywhere in a smaller square of side N − M + 1 (in the upper left corner of the big one, not the upper right as the original page says), so there are <code>(N − M + 1)²</code> squares of that size. The logic test dragged the square to every position for each N up to 12 and each M, and the painted cells came to exactly this number every time, matching a brute-force count.</p>
+
+      <h2>All sizes together</h2>
+      <p>Adding over M = 1, 2, …, N gives <code>N² + (N−1)² + … + 1²</code>, the sum of the first N squares. The page writes the sum with a typo, but the closed form is right: <code>T = N(N + 1)(2N + 1) / 6</code>, a <a class="wiki-term" data-wiki="Square_pyramidal_number" href="https://en.wikipedia.org/wiki/Square_pyramidal_number" target="_blank" rel="noopener">square pyramidal number</a>. For N = 5 that is 55 = 25 + 16 + 9 + 4 + 1. The test checked this for every N up to 40, by adding and by brute force up to 12. Compare with the <a class="wiki-term" data-wiki="Triangular_number" href="https://en.wikipedia.org/wiki/Triangular_number" target="_blank" rel="noopener">triangular numbers</a> you get from counting pairs.</p>
+
+      <h2>When the square is too big</h2>
+      <p>The applet lets you type an M larger than N. Then nothing fits and nothing can be painted, even though the formula <code>(N − M + 1)²</code> would give a positive number for M = N + 2 (for example 1). The formula is only valid for M ≤ N.</p>
+
+      <p class="tip">Set N = 6 and M = 3. How many places are there? Then try to guess how many squares of all sizes the 6 by 6 grid holds before checking: 91.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/CountingSquaresInSquare.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="counting-squares-in-square-core.js"></script>
+<script src="counting-squares-in-square.js"></script>
+</body>
+</html>

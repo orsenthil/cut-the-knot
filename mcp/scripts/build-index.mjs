@@ -290,6 +290,7 @@ const CORE_GLOBALS = {
   "complex-numbers/complex-numbers-core.js": ["ComplexNumbersCore"],
   "coordinates/coordinates-core.js": ["CoordinatesCore"],
   "counting/counting-core.js": ["CountingCore"],
+  "counting-squares-in-square/counting-squares-in-square-core.js": ["CountingSquaresInSquareCore"],
 };
 
 const games = [];

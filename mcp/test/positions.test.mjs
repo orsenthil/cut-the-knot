@@ -1130,6 +1130,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("counting: three of eight counted is not finished", q.finished === false && q.remaining === 5 && q.equation === null);
 }
 
+// Counting squares in a square: (N-M+1)^2 places and the square pyramidal total.
+{
+  const p = at("counting-squares-in-square", { n: 5, m: 2, painted: [true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false], pos: { x: 0, y: 0 }, moves: 1, explored: true });
+  check("counting-squares-in-square: 2 x 2 squares in a 5 x 5 square have 16 places", p.places === 16 && p.painted === 2 && p.totalOfAllSizes === 55 && p.squareFits === true);
+  const q = at("counting-squares-in-square", { n: 3, m: 6, painted: [], pos: { x: 0, y: 0 }, moves: 0, explored: false });
+  check("counting-squares-in-square: a square bigger than the grid has no places", q.places === 0 && q.squareFits === false);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;
