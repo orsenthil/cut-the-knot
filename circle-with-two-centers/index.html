@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circle With Two Centers &mdash; coolmaths</title>
+<meta name="description" content="A circle appears to have two centres. Drag the points of the angle and turn the cheat on and off to find out which drawing is lying.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circle-with-two-centers/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circle With Two Centers">
+<meta property="og:description" content="A circle appears to have two centres. Drag the points of the angle and turn the cheat on and off to find out which drawing is lying.">
+<meta property="og:url" content="https://coolmaths.ai/circle-with-two-centers/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.7rem;
+    overflow: hidden;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    touch-action: none;
+    border-radius: 10px;
+  }
+  #board .ray { stroke: var(--ink); stroke-width: 2; }
+  #board .circumcircle { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .perp { stroke: var(--accent); stroke-width: 2; }
+  #board .perp.cheat { stroke: var(--bad); stroke-width: 2.5; stroke-dasharray: 7 5; }
+  #board .diameter { stroke: var(--good); stroke-width: 2; }
+  #board .diameter.false { stroke: var(--bad); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .hint { fill: none; stroke: var(--bad); stroke-width: 2.5; }
+  #board .handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .handle:active { cursor: grabbing; }
+  #board .handle:focus-visible { stroke: var(--good); stroke-width: 4.5; }
+  #board .fixed { fill: var(--ink); }
+  #board .secondary { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  #board .centre { stroke: var(--stage); stroke-width: 1.5; }
+  #board .centre.true { fill: var(--good); }
+  #board .centre.false { fill: var(--bad); }
+  #board .label { fill: var(--text); font: 20px var(--font); pointer-events: none; }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+  }
+  .option-group {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .option-group legend { color: var(--muted); font-size: 0.9rem; padding: 0; }
+  .controls label { font-size: 0.95rem; }
+  .controls input { accent-color: var(--accent); width: 1.1rem; height: 1.1rem; }
+  .controls button { min-height: 2.6rem; padding: 0.5rem 0.9rem; }
+  button:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="circle-with-two-centers" data-kind="demo">
+<main id="main">
+  <h1>Circle With Two Centers</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture puzzle: one circle looks as if it has two different centres, and you get to find out why.<br>
+    <strong>How to play:</strong> Drag the points A, B and C, or focus one of them and press the arrow keys. Tick or untick the cheat box to compare the two drawings, and use the other boxes to show names and right-angle marks.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 400" role="img"
+      aria-label="An angle at point A, with points B and C on its two rays, a circle through B, C and D, and the midpoints of DE and DF shown as two possible centres"></svg>
+    <p class="hint-line">Drag a point, or focus one and use the arrow keys (hold Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <fieldset class="option-group">
+        <legend>Drawing options</legend>
+        <label><input id="cheatCheck" type="checkbox" checked> Cheat the drawing</label>
+        <label><input id="namesCheck" type="checkbox" checked> Show names</label>
+        <label><input id="hintCheck" type="checkbox"> Show right-angle marks</label>
+      </fieldset>
+      <button id="resetBtn" type="button" class="primary" aria-label="Put points A, B and C back where they started">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The picture looks convincing: here is one circle, and two clearly different centres marked on it. Both cannot be right, so one step in the drawing must be false. The trick turns out to be in the picture, not in the ideas.</p>
+
+      <h2>What the picture claims</h2>
+      <p>Start with an angle at A. At B and at C put up lines meant to be at right angles to the two rays; they meet at D. Draw the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circle</a> through B, C and D. It crosses the ray AB again at E and the ray AC again at F. Because the angle DBE looks like a right angle, the segment DE looks like a <a class="wiki-term" data-wiki="Diameter" href="https://en.wikipedia.org/wiki/Diameter" target="_blank" rel="noopener">diameter</a>, so the midpoint of DE should be the centre. The same story makes the midpoint of DF another centre. Two different centres for one circle is a <a class="wiki-term" data-wiki="Fallacy" href="https://en.wikipedia.org/wiki/Fallacy" target="_blank" rel="noopener">fallacy</a> — the argument only works if the marked angles really are right angles.</p>
+
+      <h2>Where the trick hides</h2>
+      <p>The original applet has two versions. The first uses <code>cheat = 1</code> and quietly tilts both perpendiculars: it multiplies the sideways part of each line by <code>shift = 1 + (1 &minus; eps)(2 eps)/&pi; &times; &ang;BAC</code> with <code>eps = 0.4</code>. That factor is bigger than 1 whenever the angle is bigger than zero, so the lines at B and C are <em>not</em> perpendicular, even though the little right-angle marks say they are. E and F move away from A, and the two midpoints separate. The logic test checks this for every position it draws: both tilts are nonzero and the two supposed centres are different. The page says plainly that the applet cheats by drawing BD and CD not quite perpendicular; the test confirms that description.</p>
+
+      <h2>The one true centre</h2>
+      <p>Switch the cheat off and the lines really are perpendicular. <a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a> says an <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angle</a> of 90&deg; subtends a diameter. Since &ang;ABD and &ang;ACD are right angles, AD is a diameter of the circle, so the circle's second crossing with AB is A itself: <code>E = A</code>, and likewise <code>F = A</code>. The midpoint of AD is then the centre, and both constructions name that same point. The page's claim that E and F coincide with A in every such drawing was checked on all 162 drawable honest configurations; its other claim, that D fails to exist only when the rays form a 0&deg; or 180&deg; angle, was checked too.</p>
+
+      <p class="tip">Turn the right-angle marks on with the cheat off: the marks stay, but this time the lines really are perpendicular and there is only one centre.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Fallacies/CircleWithTwoCenters.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="circle-with-two-centers-core.js"></script>
+<script src="circle-with-two-centers.js"></script>
+</body>
+</html>

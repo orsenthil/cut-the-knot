@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Coin Change &mdash; coolmaths</title>
+<meta name="description" content="How many different ways can you make a certain amount using just a few kinds of coins? Pick your coins and an amount to find out.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/coin-change/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Coin Change">
+<meta property="og:description" content="How many different ways can you make a certain amount using just a few kinds of coins? Pick your coins and an amount to find out.">
+<meta property="og:url" content="https://coolmaths.ai/coin-change/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 44rem;
+    padding: 0.75rem;
+  }
+  #chart {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: 15rem;
+    border-radius: 0.5rem;
+    touch-action: pan-y;
+  }
+  #chart:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .readout {
+    margin: 0.6rem 0 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+  .coin-picker {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    flex: 1 1 100%;
+  }
+  .coin-picker legend {
+    color: var(--muted);
+    font-size: 0.9rem;
+    padding: 0 0 0.3rem;
+  }
+  .coins {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.9rem;
+    list-style: none;
+    margin: 0 0 0.2rem;
+    padding: 0;
+  }
+  .coins label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.95rem;
+  }
+  .coins input {
+    width: 1.05rem;
+    height: 1.05rem;
+    margin: 0;
+    accent-color: var(--accent);
+  }
+  .controls {
+    flex-wrap: wrap;
+    gap: 0.7rem 1rem;
+    align-items: flex-end;
+  }
+  .amount-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    flex: 0 1 10rem;
+    min-width: 0;
+  }
+  .amount-field label {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls .amount-field input {
+    width: 100%;
+    font: inherit;
+    font-size: 1rem;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--stage);
+    color: var(--ink);
+  }
+  .controls button {
+    flex: 0 0 auto;
+  }
+</style>
+</head>
+<body data-game="coin-change" data-kind="demo">
+<main id="main">
+  <h1>Coin Change</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> There is no winner here: discover how many different ways a pile of money can be made from the coins you pick.<br>
+    <strong>How to play:</strong> Tick the coins you want, type an amount, and press Compute. Click a bar or use the arrow keys to read any amount.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="chart" width="960" height="360" tabindex="0" aria-label="Bar chart of the number of ways to change each amount. Use the left and right arrow keys to read the amounts."></canvas>
+    <p id="readout" class="readout" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <fieldset class="coin-picker">
+      <legend>Coins you may use</legend>
+      <div class="coins">
+        <label><input type="checkbox" class="denom" value="1" checked aria-label="Use 1 coins"> 1</label>
+        <label><input type="checkbox" class="denom" value="2" aria-label="Use 2 coins"> 2</label>
+        <label><input type="checkbox" class="denom" value="5" checked aria-label="Use 5 coins"> 5</label>
+        <label><input type="checkbox" class="denom" value="10" checked aria-label="Use 10 coins"> 10</label>
+        <label><input type="checkbox" class="denom" value="20" aria-label="Use 20 coins"> 20</label>
+        <label><input type="checkbox" class="denom" value="25" checked aria-label="Use 25 coins"> 25</label>
+        <label><input type="checkbox" class="denom" value="50" checked aria-label="Use 50 coins"> 50</label>
+        <label><input type="checkbox" class="denom" value="100" aria-label="Use 100 coins"> 100</label>
+      </div>
+    </fieldset>
+    <div class="amount-field">
+      <label for="amount">Amount (1 to 30000)</label>
+      <input id="amount" type="number" min="1" max="30000" step="1" value="100" aria-label="Amount to change, from 1 to 30000">
+    </div>
+    <button id="computeBtn" type="button" class="primary" aria-label="Compute the number of ways">Compute</button>
+    <button id="newBtn" type="button" aria-label="Reset to the default coins and amount">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Hand someone a handful of coins and ask them to make a certain amount. There can be far more ways than you expect, and the trick that counts them all is surprisingly small.</p>
+
+      <h2>What counts as a way</h2>
+      <p>Only the coins matter, not the order you hand them over. Making 6 from a 5 and a 1 is the same as making it from a 1 and a 5, so it counts once. This is a <a class="wiki-term" data-wiki="Combination" href="https://en.wikipedia.org/wiki/Combination" target="_blank" rel="noopener">combination</a>, and it is why we may use each kind of coin as many times as we like without worrying about the sequence.</p>
+
+      <h2>A polynomial that counts</h2>
+      <p>A coin of value <code>d</code> can be used 0, 1, 2, ... times, which contributes the factor <code>1 + x<sup>d</sup> + x<sup>2d</sup> + ⋯</code>. Multiply one such factor for every coin you chose. In the product, the coefficient of <code>x<sup>n</sup></code> is exactly the number of ways to change <code>n</code>. That product is called a <a class="wiki-term" data-wiki="Generating_function" href="https://en.wikipedia.org/wiki/Generating_function" target="_blank" rel="noopener">generating function</a>:</p>
+      <blockquote><code>(1 + x<sup>d₁</sup> + x<sup>2d₁</sup> + ⋯)(1 + x<sup>d₂</sup> + ⋯) = ⋯ + w<sub>n</sub> x<sup>n</sup> + ⋯</code></blockquote>
+      <p>Each time you take a term <code>x<sup>kd</sup></code> from a factor you are saying "use <code>k</code> coins of value <code>d</code>", and the exponents add up to the amount you are making.</p>
+
+      <h2>How the applet multiplies</h2>
+      <p>The applet kept each factor as a list with a 1 wherever the power is a multiple of <code>d</code> and 0 elsewhere. Multiplying two lists adds up shifted copies of one of them — a <a class="wiki-term" data-wiki="Convolution" href="https://en.wikipedia.org/wiki/Convolution" target="_blank" rel="noopener">convolution</a>, its <code>GeoPoly.Times</code> method. This page uses the same idea as a running sum: start with <code>w(0) = 1</code>, then for each coin <code>d</code> add <code>w(n − d)</code> into <code>w(n)</code>. The logic test compares the two over every one of the 256 coin choices and every amount up to 120; they agree.</p>
+
+      <h2>A quirk with big counts</h2>
+      <p>The original applet stored its counts in 64-bit whole numbers, which wrap around when the amount is large and many coins are chosen, so the displayed number becomes wrong. This page keeps exact integers instead. The page itself states no formula to check — only the question "in how many ways ...", which the chart answers. With the default coins 1, 5, 10, 25, 50 there are <code>292</code> ways to change 100, a classic result the test confirms.</p>
+
+      <p class="tip">Tick the 2 coin and watch the counts grow, then untick the 1 coin: suddenly some amounts cannot be made at all.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/CoinChange.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="coin-change-core.js"></script>
+<script src="coin-change.js"></script>
+</body>
+</html>

@@ -276,6 +276,16 @@ const CORE_GLOBALS = {
   "buffon/buffon-core.js": ["BuffonCore"],
   "cavalieri/cavalieri-core.js": ["CavalieriCore"],
   "cantor/cantor-core.js": ["CantorCore"],
+  "chvatal/chvatal-core.js": ["ChvatalCore"],
+  "circles-and-limit/circles-and-limit-core.js": ["CirclesAndLimitCore"],
+  "circle-with-two-centers/circle-with-two-centers-core.js": ["CircleWithTwoCentersCore"],
+  "city-block-hunt/city-block-hunt-core.js": ["CityBlockHuntCore"],
+  "city-block-hunt-from-outside/city-block-hunt-from-outside-core.js": ["CityBlockHuntFromOutsideCore"],
+  "coin-change/coin-change-core.js": ["CoinChangeCore"],
+  "collatz/collatz-core.js": ["CollatzCore"],
+  "color-graph/color-graph-core.js": ["ColorGraphCore"],
+  "combi-gem/combi-gem-core.js": ["CombiGemCore"],
+  "common-multiples/common-multiples-core.js": ["CommonMultiplesCore"],
 };
 
 const games = [];

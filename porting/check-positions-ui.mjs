@@ -359,7 +359,11 @@ const GAMES = {
     await page.click("#newBtn");
   },
   "calculator": async (page) => {
-    await page.locator('#keypad button').nth(8).click();
+    // The 9th key (/) is often broken; exactly one of * or / is always live.
+    // Press it so the saved position keeps its temp = n/d shape.
+    await page.locator(
+      '#keypad button[data-key="*"]:not([disabled]), #keypad button[data-key="/"]:not([disabled])',
+    ).first().click();
   },
   "chess-tournament": async (page) => {
     await page.locator("#pSlider").fill("0.8");
@@ -385,6 +389,19 @@ const GAMES = {
     if (gap < 0) throw new Error("no legal pair was dealt");
     await page.locator(`#board .gap[data-index="${gap}"]`).click();
   },
+  chvatal: async (page) => {
+    await page.click("#v0");
+    await page.click("#v2");
+  },
+  "circles-and-limit": (page) => page.locator("#rInput").fill("2"),
+  "circle-with-two-centers": (page) => page.check("#cheatCheck"),
+  "city-block-hunt": (page) => page.click("#cell-0-0"),
+  "city-block-hunt-from-outside": (page) => page.click('button.cell[data-col="-1"][data-row="0"]'),
+  "coin-change": (page) => page.click("#computeBtn"),
+  collatz: (page) => page.click("#stepBtn"),
+  "color-graph": (page) => page.click("#graph5"),
+  "combi-gem": (page) => page.locator("#sizeInput").fill("5"),
+  "common-multiples": (page) => page.locator("#pInput").fill("4"),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

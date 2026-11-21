@@ -104,6 +104,18 @@ check("all-permutations: the Heap generator was selected", read["all-permutation
 check("isosceles-fallacy: switched to the honest drawing", read["isosceles-fallacy"]?.mode === "right" && read["isosceles-fallacy"].pOnCircumcircle === true && read["isosceles-fallacy"].uOnSide !== read["isosceles-fallacy"].vOnSide);
 check("apportionment-methods: Webster was highlighted", read["apportionment-methods"]?.seats === 23 && read["apportionment-methods"].method === "webster" && Object.keys(read["apportionment-methods"].allocations).length === 5);
 
+// The ten newest ports, on positions saved by their own pages.
+check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
+check("circles-and-limit: E is short of the limit", read["circles-and-limit"]?.a === 3 && read["circles-and-limit"].r === 2 && read["circles-and-limit"].limitX === 12 && read["circles-and-limit"].distanceToLimit > 0);
+check("circle-with-two-centers: the cheat drawing shows two centres", read["circle-with-two-centers"]?.cheat === true && read["circle-with-two-centers"].isIllusion === true);
+check("city-block-hunt: one clue leaves candidates", read["city-block-hunt"]?.clueCount === 1 && read["city-block-hunt"].finished === false && read["city-block-hunt"].pageClaimCheck.agrees === true);
+check("city-block-hunt-from-outside: one outside clue", read["city-block-hunt-from-outside"]?.clueCount === 1 && read["city-block-hunt-from-outside"].finished === false && read["city-block-hunt-from-outside"].treasureInEveryLocus === true);
+check("coin-change: the classic 292 ways", read["coin-change"]?.ways === "292" && read["coin-change"].classic292.sameSetup === true && read["coin-change"].classic292.sameCount === true);
+check("collatz: one step from the saved start", read.collatz?.step === 1 && read.collatz.mode === "divide" && read.collatz.currentValue > 0 && read.collatz.cycle.join(",") === "4,2,1");
+check("color-graph: Graph 6 needs four colours", read["color-graph"]?.graph === "Graph 6" && read["color-graph"].fewestPossible === 4 && read["color-graph"].result === null);
+check("combi-gem: the saved sums match the core", read["combi-gem"]?.n === 5 && read["combi-gem"].count === 10 && read["combi-gem"].savedSumsMatchCore === true);
+check("common-multiples: the first blue dot is the lcm", read["common-multiples"]?.p === 4 && read["common-multiples"].lcm === 12 && read["common-multiples"].firstBlueDot === 12);
+
 
 /* ------------------------------------------------ positions with known answers */
 
@@ -1009,6 +1021,79 @@ const at = (slug, state) => describePosition(slug, state, 1);
   const tent = at("cantor", { a: 3, step: 5, y: 0.5 });
   check("cantor: the slope and the current value are read",
     tent.a === 3 && tent.step === 5 && tent.y === 0.5);
+}
+
+// Chvatal: a fan triangulation of a hexagon and the guard bound.
+{
+  const fan = at("chvatal", { n: 6, diagonals: [{ a: 0, b: 2 }, { a: 0, b: 3 }, { a: 0, b: 4 }], mode: "draw", finished: false });
+  check("chvatal: a hexagon has four triangles and at most two guards",
+    fan.complete === true && fan.triangles === 4 && fan.guards.length <= 2 && fan.everyTriangleGuarded === true && fan.withinBound === true);
+  const fresh = at("chvatal", { n: 6, diagonals: [], mode: "draw" });
+  check("chvatal: a fresh hexagon needs three diagonals", fresh.diagonalsNeeded === 3 && fresh.complete === false);
+}
+
+// Circles and a limit: E approaches 4a and matches the closed form.
+{
+  const p = at("circles-and-limit", { a: 3, r: 1, proof: 1 });
+  check("circles-and-limit: the crossing is short of 12 and agrees with the formula",
+    p.limitX === 12 && p.valid === true && Math.abs(p.crossingX - p.closedFormX) < 1e-5 && p.distanceToLimit > 0);
+}
+
+// Circle with two centers: only the faked drawing has two centres.
+{
+  const A = { x: 90, y: 300 }, B = { x: 330, y: 340 }, C = { x: 310, y: 80 };
+  const fake = at("circle-with-two-centers", { A, B, C, cheat: true });
+  const honest = at("circle-with-two-centers", { A, B, C, cheat: false });
+  check("circle-with-two-centers: honest perpendiculars give one centre",
+    honest.centersCoincide === true && honest.isIllusion === false &&
+    fake.isIllusion === true && fake.centersCoincide === false);
+}
+
+// City block hunt: the page's largest-ambiguous-set rule and two-corner claim.
+{
+  const p = at("city-block-hunt", { n: 4, treasure: { col: 1, row: 3 }, touches: 0, won: false, hint: false, last: null });
+  check("city-block-hunt: ten ambiguous cells and two corners suffice",
+    p.pageClaimCheck.largestAmbiguousSet === 10 && p.pageClaimCheck.formula === 10 &&
+    p.pageClaimCheck.agrees === true && p.pageClaimCheck.twoCornersLocateEveryTreasure === true);
+}
+
+// Outside hunt: a clue of one leaves a diagonal that contains the treasure.
+{
+  const p = at("city-block-hunt-from-outside", { n: 4, treasure: { col: 0, row: 0 }, clues: [{ col: -1, row: 0, d: 1 }], finished: false });
+  check("city-block-hunt-from-outside: a corner-adjacent clue of one pins the corner",
+    p.clueCount === 1 && p.treasureInEveryLocus === true && p.treasureInCandidates === true && p.candidateCount === 1);
+}
+
+// Coin change: exact counts are passed to the tutor as decimal strings.
+{
+  const p = at("coin-change", { denoms: [1, 5, 10, 25, 50], amount: 100, explored: true });
+  check("coin-change: 292 ways to change 100", p.ways === "292" && typeof p.ways === "string" && p.classic292.sameCount === true);
+}
+
+// Collatz: 27 first reaches 1 after 111 steps.
+{
+  const p = at("collatz", { number: 27, digits: 2, mode: "divide", shorten: false, index: 0, step: 0, shown: [27] });
+  check("collatz: 27 needs 111 steps and is over the page's hundred",
+    p.number === 27 && p.stoppingTime === 111 && p.needsOver100Steps === true && p.step === 0 && p.currentValue === 27);
+}
+
+// Color graph: the sample graphs' chromatic numbers are read from the core.
+{
+  const p = at("color-graph", { graph: "Graph 6", nodes: 11, edges: 20, colors: {}, colorsUsed: 0, chromaticNumber: 4, proper: true, mode: "color", moves: 0 });
+  check("color-graph: Graph 6 needs four colours and is not finished",
+    p.fewestPossible === 4 && p.result === null && p.allColored === false);
+}
+
+// Combi gem: the worked example's pair sums.
+{
+  const p = at("combi-gem", { nums: [2, 3, 6, 9], n: 4, s: 2, economize: true, sums: [5, 8, 9, 11, 12, 15] });
+  check("combi-gem: {2,3,6,9} has six pair sums", p.count === 6 && p.distinct === 6 && p.pairCount === 6 && p.savedSumsMatchCore === true);
+}
+
+// Common multiples: lcm = p*q/gcd and the first blue dot is the lcm.
+{
+  const p = at("common-multiples", { p: 6, q: 4, moves: 0, explored: false });
+  check("common-multiples: 6 and 4 have lcm 12", p.gcd === 2 && p.lcm === 12 && p.firstBlueDot === 12 && p.oneDividesTheOther === false);
 }
 
 // A game with no reader, and a position that makes no sense.

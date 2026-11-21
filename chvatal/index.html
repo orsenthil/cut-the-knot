@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chvatal &mdash; coolmaths</title>
+<meta name="description" content="Draw diagonals to split a wandering polygon into triangles. How few corners do you need to pick so that someone standing there can see every point inside?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/chvatal/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Chvatal">
+<meta property="og:description" content="Draw diagonals to split a wandering polygon into triangles. How few corners do you need to pick so that someone standing there can see every point inside?">
+<meta property="og:url" content="https://coolmaths.ai/chvatal/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  .board {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+  }
+  #polyCanvas {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    background: var(--stage);
+    border-radius: 12px;
+  }
+  .vertices {
+    position: absolute;
+    inset: 0;
+  }
+  .vertex {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    border-radius: 50%;
+    border: 2px solid var(--ink);
+    background: var(--card);
+    cursor: pointer;
+  }
+  .vertex:hover {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .vertex:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .vertex.selected {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .vertex.guard {
+    border-color: var(--good);
+    background: var(--good);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+  .controls {
+    flex-wrap: wrap;
+  }
+  .mode-set {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.4rem 0.7rem;
+  }
+  .mode-set legend {
+    padding: 0 0.3rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  #nSpin {
+    width: 4.5rem;
+  }
+  .count {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.6rem 0 0;
+  }
+</style>
+</head>
+<body data-game="chvatal" data-kind="demo">
+<main id="main">
+  <h1>Chvatal</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#graph-theory">Graph Theory</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Pick as few corners as possible so that every spot inside the polygon can be seen from one of them.<br>
+    <strong>How to play:</strong> Click one corner and then another to draw a diagonal that stays inside and never crosses another. Keep going until no more fit, then look at the marked corners.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="board">
+      <canvas id="polyCanvas" width="240" height="240" role="img" aria-label="A polygon with draggable corner buttons. Draw diagonals between its corners."></canvas>
+      <div id="vertices" class="vertices"></div>
+    </div>
+    <p id="diagCount" class="count" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <fieldset class="mode-set">
+      <legend>Mode</legend>
+      <label><input type="radio" name="mode" id="modeDraw" value="draw" checked> Draw diagonals</label>
+      <label><input type="radio" name="mode" id="modeMove" value="move"> Rearrange vertices</label>
+    </fieldset>
+    <label for="nSpin">Corners (N)</label>
+    <input type="number" id="nSpin" min="4" max="40" step="1" value="5">
+    <button id="popBtn" type="button">Pop diagonal</button>
+    <button id="newBtn" type="button" class="primary">New polygon</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A guard standing at a corner of a strange, bent gallery cannot always see every corner of the room. The surprise is that no matter how crooked the polygon is, you never need more than about a third of its corners — and some galleries really need that many. This page shows the idea behind <a class="wiki-term" data-wiki="Art_gallery_problem" href="https://en.wikipedia.org/wiki/Art_gallery_problem" target="_blank" rel="noopener">Chvatal's art gallery theorem</a>.</p>
+
+      <h2>Cut it into triangles first</h2>
+      <p>Any simple polygon can be cut up by diagonals that lie inside it and never cross. A polygon with <code>n</code> corners needs exactly <code>n &minus; 3</code> diagonals, and the result has <code>n &minus; 2</code> triangles. This is the first step of the proof, and it is what you are doing when you draw diagonals: the applet knows it is finished once the count reaches <code>n &minus; 3</code>. The logic test checked this for every triangulation of every polygon of 4 to 9 corners, and for a fan triangulation all the way up to the applet's limit of 40.</p>
+
+      <h2>Colour with three colours</h2>
+      <p>Now colour every corner using three colours so that each little triangle has all three. Start with any triangle and colour its corners; every triangle next door shares two of them, so its third corner is forced to take the only colour left. The triangles join up like the nodes of a <a class="wiki-term" data-wiki="Tree_(graph_theory)" href="https://en.wikipedia.org/wiki/Tree_(graph_theory)" target="_blank" rel="noopener">tree</a> — there is no loop that could bring back a conflicting colour — so the colouring always works. Every triangle has a corner of each colour, so standing at every corner of one colour sees every triangle. That is the key insight of Steve Fisk's proof, which the applet carries out for you.</p>
+
+      <h2>Choose the smallest pile</h2>
+      <p>Suppose the three colours are used <code>B</code>, <code>R</code> and <code>G</code> times. They colour all the corners, so <code>B + R + G = n</code>. One of them must be the smallest, and three times that smallest number cannot exceed <code>n</code>: <code>3B &le; n</code>. By the <a class="wiki-term" data-wiki="Pigeonhole_principle" href="https://en.wikipedia.org/wiki/Pigeonhole_principle" target="_blank" rel="noopener">pigeonhole principle</a> the smallest class has at most <code>floor(n/3)</code> corners. Those are the marked corners on the board. The logic test verified on all 624 triangulations of 4- to 9-gons that every triangle contains a marked corner and that the marked set never exceeds <code>floor(n/3)</code>.</p>
+
+      <h2>Could you do better?</h2>
+      <p>The bound is tight, so the answer really is <code>floor(n/3)</code> in the worst case. A comb-shaped polygon with <code>n</code> triangular teeth has so many tucked-away pockets that each guard can watch only a few of them; you need at least <code>floor(n/3)</code> corners, and the three-colouring method finds exactly that many. Convex polygons are much easier — one corner sees the whole room — but the question asks about the worst polygon of all. This is why the applet lets you both rearrange the corners and draw the diagonals: you can try to build a stubborn gallery yourself.</p>
+
+      <p class="tip">Try a corner count that is a multiple of three, make a comb with that many teeth, and see whether the marked corners are exactly one third of them.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/Chvatal.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="chvatal-core.js"></script>
+<script src="chvatal.js"></script>
+</body>
+</html>

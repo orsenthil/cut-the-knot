@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circles And Limit &mdash; coolmaths</title>
+<meta name="description" content="A small circle at the origin shrinks inside a fixed circle of radius 3. Follow the point E where their shared chord meets the axis: as the small circle vanishes, where does E settle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circles-and-limit/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circles And Limit">
+<meta property="og:description" content="A small circle at the origin shrinks inside a fixed circle of radius 3. Follow the point E where their shared chord meets the axis: as the small circle vanishes, where does E settle?">
+<meta property="og:url" content="https://coolmaths.ai/circles-and-limit/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 40rem;
+    padding: 0.6rem;
+  }
+  #plot {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    border-radius: 8px;
+    touch-action: none;
+  }
+  #plot:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0 0; }
+  .controls label.check { display: inline-flex; align-items: center; gap: 0.35rem; }
+  #rInput { flex: 1 1 10rem; min-width: 8rem; max-width: 16rem; }
+  .readout { white-space: nowrap; }
+</style>
+</head>
+<body data-game="circles-and-limit" data-kind="demo">
+<main id="main">
+  <h1>Circles And Limit</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#limits">Limits</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore, not a game with a winner; two circles meet and a line through their meeting point runs out to a spot called E.<br>
+    <strong>How to play:</strong> Drag the top of the small circle, or slide the control, to change its size and watch E. Tick "hint" for helper lines and "names" to label the points.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="plot" width="640" height="520" tabindex="0" aria-label="A fixed circle of radius 3 and a smaller circle at the origin, with a line from the top of the small circle through their crossing out to the point E on the axis"></canvas>
+    <p class="hint">Drag the bright handle on top of the small circle, or focus the picture and use the arrow keys. Enter toggles the hint.</p>
+  </div>
+
+  <div class="controls">
+    <label for="rInput">Small circle radius</label>
+    <input id="rInput" type="range" min="0.1" max="6" step="0.05" value="2" aria-label="Radius of the small circle">
+    <output id="rReadout" for="rInput">2.00</output>
+    <label class="check"><input id="namesCheck" type="checkbox"> Show names</label>
+    <label class="check"><input id="hintCheck" type="checkbox"> Show hint</label>
+    <label for="proofSelect">Proof</label>
+    <select id="proofSelect" aria-label="Which geometric proof to show">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+    </select>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the small circle to its starting radius">Reset</button>
+    <span class="readout">E at x = <output id="eReadout">11.66</output></span>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two circles, one shrinking, and a line that keeps meeting the axis somewhere new. You might expect that point to run away as the little circle disappears. It does not: it settles down at a definite spot. That spot is the whole puzzle.</p>
+
+      <h2>Set up the picture</h2>
+      <p>The fixed <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> has radius <code>3</code> and sits at <code>(3, 0)</code>, so it passes through the origin <code>O</code>. The small circle is centred at <code>O</code> with radius <code>r</code>. It touches the positive y-axis at <code>A = (0, r)</code> and meets the fixed circle in the upper half-plane at <code>B</code>. Stretch the line through <code>A</code> and <code>B</code> until it crosses the x-axis: that crossing is <code>E</code>.</p>
+
+      <h2>Find where E lands</h2>
+      <p>The two circles cross where <code>x = r²/(2a)</code> and <code>y = r·√(1 − (r/(2a))²)</code>, taking <code>a = 3</code> for the fixed circle. Putting that point <code>B</code> together with <code>A = (0, r)</code> and solving for where the line reaches <code>y = 0</code> gives</p>
+      <blockquote><code>x_E = 2a·(1 + √(1 − (r/(2a))²))</code></blockquote>
+      <p>As <code>r</code> gets tiny, the square root goes to <code>1</code>, so <code>x_E</code> goes to <code>2a·2 = 4a</code>. For <code>a = 3</code> that is <code>12</code>: the point <code>E</code> has a <a class="wiki-term" data-wiki="Limit_(mathematics)" href="https://en.wikipedia.org/wiki/Limit_(mathematics)" target="_blank" rel="noopener">limit</a> at <code>(12, 0)</code>. The logic test checked the formula and the crossing point for hundreds of radii on fixed circles of many sizes, and every value agreed.</p>
+
+      <h2>Four times as far</h2>
+      <p>The article says the limit sits "four times farther from the origin than the centre of the fixed circle." The centre is <code>a</code> from the origin, and the limit is <code>4a</code> from it, so the claim is exactly right: <code>4 × 3 = 12</code>. The test confirmed <code>limit = 4a</code> for <code>a = 1, 2, 3, 5, 10</code>. The applet even hard-codes the same answer: when the line through <code>A</code> and <code>B</code> becomes too flat to cross the axis, it places <code>E</code> at <code>O.x + 4 × (fixed radius)</code> — the very spot the formula approaches.</p>
+
+      <h2>The geometric proof</h2>
+      <p>Tick "hint" to see why no algebra is needed. Three choices show three proofs: they add helper points <code>D</code> and <code>F</code> and dashed lines that turn the picture into right angles and midpoints, from which the ratio <code>4 : 1</code> can be read off. One tiny quirk of the original: in the third proof it relabels the right-hand point as <code>C</code>, moving the name off the bottom of the small circle; this port keeps that quirk. Everything else is the puzzle the article states.</p>
+
+      <p class="tip">Try sliding the radius down to its smallest value: does E ever pass 12, or only get closer and closer?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Calculus/CirclesAndLimit.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="circles-and-limit-core.js"></script>
+<script src="circles-and-limit.js"></script>
+</body>
+</html>

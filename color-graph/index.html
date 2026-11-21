@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Color Graph &mdash; coolmaths</title>
+<meta name="description" content="Six graphs, ten colours: can you colour every node so that neighbours differ, using as few colours as you can?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/color-graph/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Color Graph">
+<meta property="og:description" content="Six graphs, ten colours: can you colour every node so that neighbours differ, using as few colours as you can?">
+<meta property="og:url" content="https://coolmaths.ai/color-graph/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 44rem;
+    padding: 0.75rem;
+  }
+  #graphCanvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    touch-action: none;
+  }
+  #graphCanvas:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  #graphInfo {
+    margin-top: 0.5rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .control-label {
+    width: 100%;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  #graphPicker, #palette, #tools, .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+  .chip {
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    background: var(--stage);
+    color: var(--text);
+    font-size: 1rem;
+  }
+  .chip.selected {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  .swatch {
+    width: 2.4rem;
+    height: 2.4rem;
+    padding: 0;
+    border: 2px solid var(--border);
+    border-radius: 0.6rem;
+    background: var(--swatch);
+  }
+  .swatch.selected {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body data-game="color-graph" data-kind="demo">
+<main id="main">
+  <h1>Color Graph</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#graph-theory">Graph Theory</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Colour the dots so that any two joined by a line have different colours, using as few colours as you can.<br>
+    <strong>How to play:</strong> Pick a colour and click a dot; click it again to move to the next colour. Use the tools to change the picture itself.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="graphCanvas" tabindex="0" aria-label="Graph picture. Arrow keys move between nodes, Enter colours the chosen node, number keys pick a colour, Escape clears all colours."></canvas>
+    <div id="graphInfo"></div>
+  </div>
+
+  <div class="controls">
+    <span class="control-label">Choose a graph</span>
+    <div id="graphPicker" class="control-row" role="group" aria-label="Choose a graph"></div>
+    <div class="control-row">
+      <button id="newBtn" type="button" class="primary">New graph</button>
+      <button id="resetBtn" type="button">Clear colours</button>
+    </div>
+    <span class="control-label">Mode</span>
+    <div class="control-row" role="group" aria-label="Mode">
+      <button id="colorModeBtn" type="button" aria-pressed="true">Colour graph</button>
+      <button id="defineModeBtn" type="button" aria-pressed="false">Define graph</button>
+    </div>
+    <div id="tools" class="control-row" role="group" aria-label="Graph tools" hidden></div>
+    <span class="control-label">Pick a colour</span>
+    <div id="palette" class="control-row" role="group" aria-label="Pick a colour"></div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The applet gives you ten colours and asks for a colouring that uses as few as possible. The rule is one sentence long, but finding the very best colouring is a real puzzle.</p>
+
+      <h2>Proper colourings</h2>
+      <p>A <a class="wiki-term" data-wiki="Graph_coloring" href="https://en.wikipedia.org/wiki/Graph_coloring" target="_blank" rel="noopener">graph colouring</a> gives each dot, or vertex, a colour. It is <em>proper</em> when two vertices joined by an edge never get the same colour. The applet lets you colour any vertex any way you like, so it is up to you to keep the colouring proper. Its <code>Total colors used:</code> counter simply counts the different colours on coloured vertices — an uncoloured vertex is not counted.</p>
+
+      <h2>The chromatic number</h2>
+      <p>The aim on the page is to beat that counter: find a proper colouring with the fewest colours. That smallest number is the <a class="wiki-term" data-wiki="Chromatic_number" href="https://en.wikipedia.org/wiki/Chromatic_number" target="_blank" rel="noopener">chromatic number</a> of the graph:</p>
+      <blockquote><code>chi(G) = the least k for which G has a proper k-colouring</code></blockquote>
+      <p>Of the six graphs on this page, Graph 1 is a <a class="wiki-term" data-wiki="Bipartite_graph" href="https://en.wikipedia.org/wiki/Bipartite_graph" target="_blank" rel="noopener">bipartite</a> tree and needs 2 colours; Graph 2 is a wheel and needs 3; Graphs 3, 4 and 6 need 4, and Graph 5 needs 3. The logic test finds these by searching every possible colouring, so the numbers are checked rather than guessed.</p>
+
+      <h2>Why the minimum is hard</h2>
+      <p>A greedy rule — take the vertices in order and give each the first colour none of its coloured neighbours uses — always produces a proper colouring, but not always the shortest one. To be sure you have the minimum you must rule out every colouring with fewer colours. The logic test checks two different search methods against each other on all 64 graphs with four vertices, on the six samples, and on 120 randomly generated graphs.</p>
+
+      <p>The applet itself never computes the chromatic number; it only counts the colours you have used. The exact numbers here are worked out from the definitions printed on the applet's own page.</p>
+
+      <p class="tip">Try Graph 3: a greedy colouring can use five colours there, but four are enough. Can you find the four-colour one?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/ColorGraph.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="color-graph-core.js"></script>
+<script src="color-graph.js"></script>
+</body>
+</html>

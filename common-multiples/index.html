@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Common Multiples &mdash; coolmaths</title>
+<meta name="description" content="Drag two dots along a number line and watch their multiples line up: can you spot the first number in both rows?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/common-multiples/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Common Multiples">
+<meta property="og:description" content="Drag two dots along a number line and watch their multiples line up: can you spot the first number in both rows?">
+<meta property="og:url" content="https://coolmaths.ai/common-multiples/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 36rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    touch-action: none;
+  }
+  #board:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.5rem 0 0;
+  }
+</style>
+</head>
+<body data-game="common-multiples" data-kind="demo">
+<main id="main">
+  <h1>Common Multiples</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#divisibility">Divisibility</a><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two rows of dots count by two different numbers; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the hollow dots, or type a number for P and Q. Look for the first blue dot sitting on the line.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="600" height="300" tabindex="0" aria-label="Number line with red multiples of P above, red multiples of Q below, blue common multiples on the line, and two draggable hollow dots"></canvas>
+    <p class="hint">Drag a hollow dot, or focus the picture and press P or Q then the arrow keys. P and Q snap to whole numbers from 1 to 50.</p>
+  </div>
+
+  <div class="controls">
+    <label for="pInput">P (top row)</label>
+    <input id="pInput" type="number" min="1" max="50" step="1" value="2" aria-label="P, the number counted by the top row">
+    <label for="qInput">Q (bottom row)</label>
+    <input id="qInput" type="number" min="1" max="50" step="1" value="3" aria-label="Q, the number counted by the bottom row">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset P to 2 and Q to 3">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The top row is what you say when you count by P, and the bottom row is what you say when you count by Q. Sometimes a number turns up in both rows. Those are the blue dots on the line, and the very first one has a special name.</p>
+
+      <h2>Numbers in both rows</h2>
+      <p>A <a class="wiki-term" data-wiki="Multiple_(mathematics)" href="https://en.wikipedia.org/wiki/Multiple_(mathematics)" target="_blank" rel="noopener">multiple</a> of P is P times a whole number. At the start P = 2 and Q = 3, so the top row is 2, 4, 6, 8, ... and the bottom row is 3, 6, 9, 12, .... The numbers 6, 12, 18, ... appear in both, so they get blue dots. Formally the multiples of 5 also include −10, −5 and 0, and the multiples of −5 are the very same list; this picture keeps to positive numbers so that there is a first blue dot. That first blue dot, 6, is the <a class="wiki-term" data-wiki="Least_common_multiple" href="https://en.wikipedia.org/wiki/Least_common_multiple" target="_blank" rel="noopener">least common multiple</a>, written lcm(P, Q).</p>
+
+      <h2>Finding it without counting</h2>
+      <p>The applet draws the first blue dot with one line of arithmetic. If you know the <a class="wiki-term" data-wiki="Greatest_common_divisor" href="https://en.wikipedia.org/wiki/Greatest_common_divisor" target="_blank" rel="noopener">greatest common divisor</a> of P and Q, then</p>
+      <blockquote><code>lcm(P, Q) = (P × Q) / gcd(P, Q)</code></blockquote>
+      <p>The gcd is found quickly by the <a class="wiki-term" data-wiki="Euclidean_algorithm" href="https://en.wikipedia.org/wiki/Euclidean_algorithm" target="_blank" rel="noopener">Euclidean algorithm</a>: keep replacing the larger number by the remainder until nothing is left over. The logic test compared this formula with the applet's own blue-dot calculation for every pair of dots from 1 to 50, and searched every smaller number to confirm the result really is the least number in both rows.</p>
+
+      <h2>When one dot is a multiple of the other</h2>
+      <p>Try P = 4 and Q = 12. The first blue dot lands on 12, which is Q itself. This is Theorem 1 on the original page: <code>lcm(P, Q) = Q</code> exactly when P <a class="wiki-term" data-wiki="Divisor" href="https://en.wikipedia.org/wiki/Divisor" target="_blank" rel="noopener">divides</a> Q. One direction is clear because P must divide the lcm; the other is because Q is already in both rows and nothing in P's row can be smaller than Q's first number. The test checked all 2,500 pairs of dots and the rule never failed. At the extremes it still works: lcm(1, 17) = 17, and lcm(12, 12) = 12.</p>
+
+      <h2>Why every blue dot is a step of the same size</h2>
+      <p>Set P = 4 and Q = 6: the blue dots are 12, 24, 36, ... — each one is a multiple of 12. This is Theorem 2: if a number is in both rows, it is a multiple of the lcm. Split any common multiple by the lcm; the remainder is also in both rows and is smaller than the lcm, so it can only be zero. The test tried every P and Q up to 20 and every number R up to 400, and no exception turned up. The original proof has two small typos in that division step, but the statement itself is true.</p>
+
+      <p class="note">A small quirk: the original applet actually puts 3 on the upper dot and 2 on the lower one when it opens, while its page says P = 2 and Q = 3. Since lcm(2, 3) = lcm(3, 2), the blue dots are the same either way; this page follows the page's labelling.</p>
+
+      <p class="tip">Set P = 4 and Q = 8 and watch the first blue dot jump to 8. Then set Q = 6 instead — how does the gap between blue dots change?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/CommonMultiples.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="common-multiples-core.js"></script>
+<script src="common-multiples.js"></script>
+</body>
+</html>

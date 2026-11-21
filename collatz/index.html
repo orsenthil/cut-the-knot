@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Collatz &mdash; coolmaths</title>
+<meta name="description" content="Pick a number and watch its hailstone trail: does every start end in the 4, 2, 1 loop? Try stripping all the twos at once to shorten the ride.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/collatz/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Collatz">
+<meta property="og:description" content="Pick a number and watch its hailstone trail: does every start end in the 4, 2, 1 loop? Try stripping all the twos at once to shorten the ride.">
+<meta property="og:url" content="https://coolmaths.ai/collatz/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.6rem; }
+  #plot {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    border-radius: 8px;
+    touch-action: manipulation;
+  }
+  #plot:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .control-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 0.5rem 0; min-width: 0; max-width: 100%; }
+  .control-row label { font-weight: 600; min-width: 0; white-space: normal; }
+  input[type="number"] { width: 11rem; max-width: 100%; font-size: 1rem; }
+  fieldset.rule-set { border: 1px solid var(--border); border-radius: 10px; padding: 0.4rem 0.7rem; margin: 0.5rem 0; }
+  fieldset.rule-set legend { padding: 0 0.3rem; }
+  .check { display: inline-flex; align-items: center; gap: 0.35rem; }
+  #seqList { display: flex; flex-wrap: wrap; gap: 0.35rem; max-height: 12rem; overflow-y: auto; margin-top: 0.75rem; }
+  .num { padding: 0.15rem 0.45rem; border: 1px solid var(--border); border-radius: 999px; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+  .num.here { background: var(--highlight); border-color: var(--accent); font-weight: 700; }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0 0; }
+  .step-count { white-space: nowrap; }
+</style>
+</head>
+<body data-game="collatz" data-kind="demo">
+<main id="main">
+  <h1>Collatz</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#number-theory">Number Theory</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Follow a number as it changes again and again to see where it ends up; there is no winning or losing.<br>
+    <strong>How to play:</strong> Type a starting number, choose how even numbers change, then press Next step or Show all. You can also tap the picture or use the arrow keys.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="plot" width="640" height="360" tabindex="0" aria-label="A hailstone chart of the Collatz trail: each dot is one number, and the loop at the end is shown in green"></canvas>
+    <p class="hint">Tap the left of the picture to go back, the middle to step forward, or the right to show all. With the picture focused, use the arrow keys.</p>
+    <div id="seqList" aria-label="Numbers revealed in the trail"></div>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label for="numberInput">Start with</label>
+      <input id="numberInput" type="number" min="1" max="999999999999999" step="1" value="27" aria-label="Starting number">
+      <label for="digitsInput">Digits for a new number</label>
+      <input id="digitsInput" type="number" min="1" max="15" step="1" value="2" aria-label="How many digits the new random number has">
+      <button id="newBtn" type="button" class="primary" aria-label="Make a new random number">New number</button>
+    </div>
+    <fieldset class="rule-set">
+      <legend>Even numbers</legend>
+      <label class="check"><input id="divideRadio" type="radio" name="mode" value="divide" checked> Divide by 2</label>
+      <label class="check"><input id="stripRadio" type="radio" name="mode" value="strip"> Strip of 2</label>
+    </fieldset>
+    <div class="control-row">
+      <label class="check"><input id="shortenCheck" type="checkbox"> Use (3n + 1)/2 for odd numbers</label>
+    </div>
+    <div class="control-row">
+      <button id="stepBtn" type="button" aria-label="Reveal the next number in the trail">Next step</button>
+      <button id="allBtn" type="button" aria-label="Reveal the whole trail">Show all</button>
+      <button id="resetBtn" type="button" aria-label="Hide the trail again, keeping the starting number">Reset trail</button>
+      <span class="step-count">Step <output id="stepReadout">0</output></span>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Start at 27 and the numbers bounce up and down like hailstones before they settle into a small loop. Nobody has proved that <em>every</em> start settles down, which is why this is the famous <a class="wiki-term" data-wiki="Collatz_conjecture" href="https://en.wikipedia.org/wiki/Collatz_conjecture" target="_blank" rel="noopener">Collatz conjecture</a> and not a theorem. The original applet drew the whole path at once and offered a pop-up list; here you step through the same path and the list sits under the chart.</p>
+
+      <h2>Even or odd</h2>
+      <p>The rule depends only on <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a>: an even number is halved, an odd number becomes <code>3n + 1</code>. The applet's multiplier is fixed at 3. Its "Divide by 2" setting (the default) takes out one factor of two per step; "Strip of 2" takes out every factor of two in a single step. Both settings keep going until a number repeats, which means a loop has been found. The original also had an "Autonomous digits" switch; this page always redraws at once, which was that switch's default.</p>
+
+      <h2>The two loops</h2>
+      <p>In "Divide by 2" mode the trail falls into the 3-cycle <code>4, 2, 1, 4</code>. In "Strip of 2" mode it falls into the shorter 2-cycle <code>4, 1, 4</code>. The numbers form an <a class="wiki-term" data-wiki="Integer_sequence" href="https://en.wikipedia.org/wiki/Integer_sequence" target="_blank" rel="noopener">integer sequence</a>: each value is worked out from the one before it. The logic test followed every start from 1 to 20,000 in both modes, allowing up to 1,000 steps, and found no other loop. The applet only allows 150 steps, so its trail for 703 stops before the loop closes. Try <code>8</code>: divide mode goes <code>8, 4, 2, 1</code>, while strip mode goes <code>8, 1</code>.</p>
+
+      <h2>How long is the ride?</h2>
+      <p>Count the steps until a number first reaches 1. No start below 27 needs more than 100 steps, and 27 needs 111. The page then lists 27, 31, 41, 47, 55, 62 as "such numbers", but that list is only a sample: 54 and 63 also take more than 100 steps, and the test found them in the true order. This counting is a question in <a class="wiki-term" data-wiki="Number_theory" href="https://en.wikipedia.org/wiki/Number_theory" target="_blank" rel="noopener">number theory</a>. The applet gives up after 150 steps; 2,817 of the first 20,000 starts hit that cap, 703 being the first. A very large start can also outgrow the numbers this page holds exactly; the trail then stops with the applet's own "is problematic" message.</p>
+
+      <h2>The cheaper rule</h2>
+      <p>If an odd number uses <code>(3n + 1)/2</code> instead, the trip is shorter. The poem on the original page says a $27 item first drops below $27 on day 59 and reaches the <code>2, 1</code> loop on day 69. With "Divide by 2" and "(3n + 1)/2" both on, the test found exactly that: step 59 gives 23 and step 69 gives 2. This is the economical form R. Terras used, in which an odd step already includes one halving.</p>
+
+      <p class="tip">Try 27 with "(3n + 1)/2" switched on, press Show all, and watch the loop appear at the end of the chart.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/Collatz.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="collatz-core.js"></script>
+<script src="collatz.js"></script>
+</body>
+</html>

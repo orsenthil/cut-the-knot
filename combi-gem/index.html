@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Combi Gem &mdash; coolmaths</title>
+<meta name="description" content="Can two different collections of numbers give exactly the same list of sums of pairs? Change the numbers and find out when it is possible.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/combi-gem/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Combi Gem">
+<meta property="og:description" content="Can two different collections of numbers give exactly the same list of sums of pairs? Change the numbers and find out when it is possible.">
+<meta property="og:url" content="https://coolmaths.ai/combi-gem/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 40rem;
+    padding: 1rem;
+  }
+  .boardLabel {
+    margin: 0.2rem 0 0.6rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .sumsLabel { margin-top: 1.1rem; }
+  #nums {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .numCell {
+    position: relative;
+    flex: 0 1 2.4rem;
+    min-width: 2rem;
+    min-height: 2.8rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.6rem;
+    background: var(--accent-soft);
+    color: var(--text);
+    font: 600 1.1rem/1 var(--mono);
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .numCell::after {
+    content: "";
+    position: absolute;
+    top: 22%;
+    bottom: 22%;
+    left: 50%;
+    width: 1px;
+    background: var(--border-strong);
+    opacity: 0.7;
+  }
+  .numCell:hover { background: var(--highlight); }
+  .numCell:focus-visible, .controls button:focus-visible, .controls input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  #sums {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .sumChip {
+    padding: 0.25rem 0.55rem;
+    border-radius: 0.5rem;
+    background: var(--surface-2);
+    color: var(--ink);
+    font: 500 0.95rem/1.3 var(--mono);
+  }
+  #allSums {
+    margin-top: 1rem;
+    max-height: 14rem;
+    overflow: auto;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    background: var(--surface);
+  }
+  #allSums[hidden] { display: none; }
+  #allSumsText {
+    margin: 0;
+    color: var(--ink);
+    font: 0.9rem/1.5 var(--mono);
+    white-space: pre;
+  }
+  .controls { width: 100%; max-width: 40rem; }
+  .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    margin-bottom: 0.6rem;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .control-row label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    min-width: 0;
+    white-space: normal;
+  }
+  .control-row input[type="number"] {
+    width: 4.5rem;
+    min-height: 2.6rem;
+    padding: 0.35rem 0.5rem;
+    color: var(--text);
+    font: inherit;
+    accent-color: var(--accent);
+  }
+  .controls button { min-height: 2.6rem; }
+</style>
+</head>
+<body data-game="combi-gem" data-kind="demo">
+<main id="main">
+  <h1>Combi Gem</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#number-theory">Number Theory</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This shows what you get when you add up pairs of numbers in a collection, and asks when two different collections can give exactly the same list of sums.<br>
+    <strong>How to play:</strong> Tap the right half of a blue number to make it bigger, or the left half to make it smaller; the arrow keys work too. Change how many numbers there are and how many go into each sum, then press "Show all sums" for the whole list.
+  </div>
+
+  <div id="stage" class="stage">
+    <p class="boardLabel">The collection A &mdash; tap a number's left or right half to change it.</p>
+    <div id="nums" role="group" aria-label="The numbers in the collection A"></div>
+    <p class="boardLabel sumsLabel">The list of sums <span id="sumsTitle">A₂</span>, from small to large:</p>
+    <div id="sums" role="list" aria-label="The sorted list of sums"></div>
+    <div id="allSums" hidden>
+      <p class="boardLabel">Every sum, one on each line:</p>
+      <pre id="allSumsText"></pre>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label for="sizeInput">How many numbers (2 to 9)
+        <input id="sizeInput" type="number" min="2" max="9" step="1" value="4" aria-label="How many numbers are in the collection, from 2 to 9">
+      </label>
+      <label for="summondsInput">How many go into each sum (2 to 5)
+        <input id="summondsInput" type="number" min="2" max="5" step="1" value="2" aria-label="How many numbers go into each sum, from 2 to 5">
+      </label>
+      <label for="econInput"><input id="econInput" type="checkbox" checked aria-label="Economize: count each set of positions only once"> Economize</label>
+    </div>
+    <div class="control-row">
+      <button id="listBtn" type="button" aria-label="Show the complete list of sums">Show all sums</button>
+      <button id="newBtn" type="button" class="primary" aria-label="Start again with the numbers 1, 2, 3, 4">Start over</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Take a handful of numbers and add them two at a time. Two completely different handfuls can produce the very same list of answers — but only if the handful has a special size. That is the surprising fact behind this page.</p>
+
+      <h2>Adding numbers two at a time</h2>
+      <p>For a <a class="wiki-term" data-wiki="Multiset" href="https://en.wikipedia.org/wiki/Multiset" target="_blank" rel="noopener">multiset</a> <code>A = {a₁, ..., aₙ}</code>, the applet's <code>A₂</code> is the list of all <code>aᵢ + aⱼ</code> with <code>i &lt; j</code>. For example <code>{2, 3, 6, 9}</code> and <code>{1, 4, 7, 8}</code> both give <code>{5, 8, 9, 11, 12, 15}</code>. The "Economize" box is on to begin with: it writes each choice of positions once, ignoring the order you picked them in. Turn it off and every order is listed, so each pair turns up twice.</p>
+
+      <h2>Why the two collections must be the same size</h2>
+      <p>A collection of <code>k</code> numbers has <code>C(k, 2) = k(k&minus;1)/2</code> different pairs of positions, and that count grows as <code>k</code> grows. Two lists that are exactly the same must have the same number of entries, so <code>A</code> and <code>B</code> must have the same size <code>n</code>. The logic test checks that the pair count is strictly increasing, and searches every collection of sizes 1 through 9 made from the numbers 0 to 8: a collision appears only at <code>n = 1, 2, 4, 8</code>.</p>
+
+      <h2>Where the power of two comes from</h2>
+      <p>Write the collection as a <a class="wiki-term" data-wiki="Generating_function" href="https://en.wikipedia.org/wiki/Generating_function" target="_blank" rel="noopener">generating function</a> <code>f(x) = &Sigma; x<sup>aᵢ</sup></code>, and do the same for <code>B</code> to get <code>g(x)</code>. Squaring counts the sums of two members, so <code>A₂ = B₂</code> gives <code>f(x)² &minus; g(x)² = f(x²) &minus; g(x²)</code>. Factoring and setting <code>h(x) = f(x) &minus; g(x)</code> leaves <code>(f(x) + g(x))h(x) = h(x²)</code>. If <code>h</code> is not zero, write it as <code>(1 &minus; x)<sup>k</sup>p(x)</code> with <code>p(1) &ne; 0</code>; substituting <code>x = 1</code> gives <code>2n p(1) = 2<sup>k</sup> p(1)</code>, hence <code>n = 2<sup>k&minus;1</sup></code>. That is exactly the page's theorem: a <a class="wiki-term" data-wiki="Power_of_two" href="https://en.wikipedia.org/wiki/Power_of_two" target="_blank" rel="noopener">power of two</a>. The logic test confirms the worked example and builds further pairs by the page's own doubling trick.</p>
+
+      <h2>What happens with three or more numbers</h2>
+      <p>Using <code>s</code> numbers in each sum gives <code>[f(x)]<sup>s</sup> &minus; [g(x)]<sup>s</sup> = f(x<sup>s</sup>) &minus; g(x<sup>s</sup>)</code>, and the same substitution yields <code>n<sup>s&minus;1</sup> = s<sup>k&minus;1</sup></code>. The page wonders whether <code>A₃ = B₃</code> is possible for <code>n = 3</code> or <code>n = 9</code>, and floats the guess that equal lists force <code>A = B</code> when <code>n</code> is a power of <code>s</code>. The exhaustive test answers both: for <code>s = 3, n = 3</code>, the different collections <code>{0, 3, 3}</code> and <code>{1, 1, 4}</code> both give <code>{3, 3, 6, 6, 6, 9, 9}</code>. So that guess is false — the formula gives a necessary size, not equality. The page itself warns that the general derivation proves less than it seems to; the test agrees.</p>
+
+      <p class="tip">Try the collection {2, 3, 6, 9} with two summonds, then set "How many numbers" to 3 and "How many go into each sum" to 3 and hunt for a second collection with the same list.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/CombiGem.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="combi-gem-core.js"></script>
+<script src="combi-gem.js"></script>
+</body>
+</html>

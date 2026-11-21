@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>City Block Hunt From Outside &mdash; coolmaths</title>
+<meta name="description" content="A treasure hides under one square of a small grid. Can you find it from the clues you get by touching the squares just outside the grid?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/city-block-hunt-from-outside/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="City Block Hunt From Outside">
+<meta property="og:description" content="A treasure hides under one square of a small grid. Can you find it from the clues you get by touching the squares just outside the grid?">
+<meta property="og:url" content="https://coolmaths.ai/city-block-hunt-from-outside/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  .board-note {
+    margin: 0 0 0.6rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .board-scroll {
+    overflow-x: auto;
+    max-width: 100%;
+    padding-bottom: 0.3rem;
+  }
+  .board {
+    --cols: 6;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), minmax(2.75rem, 1fr));
+    gap: 2px;
+    width: max-content;
+    min-width: 100%;
+    margin: 0 auto;
+  }
+  .board .cell {
+    box-sizing: border-box;
+    aspect-ratio: 1 / 1;
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 0.35rem;
+    background: var(--card);
+    color: var(--ink);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .board .cell.square { border-color: var(--border-strong); }
+  .board .cell.strip {
+    background: var(--surface);
+    border-style: dashed;
+    color: var(--muted);
+  }
+  .board .cell.strip.clued {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--text);
+  }
+  .board .cell.hint { background: var(--highlight); }
+  .board .cell.treasure {
+    background: var(--good);
+    border-color: var(--good);
+    color: var(--card);
+    font-size: 1.5rem;
+  }
+  .board .cell.corner {
+    background: transparent;
+    border-color: transparent;
+  }
+  .board .cell:hover:not(:disabled) { border-color: var(--accent); }
+  .board .cell.square:hover:not(:disabled) { background: var(--card); }
+  .board .cell.strip:hover:not(:disabled) { background: var(--surface); }
+  .board .cell.strip.clued:hover:not(:disabled) { background: var(--accent-soft); }
+  .board .cell.hint:hover:not(:disabled) { background: var(--highlight); }
+  .board .cell.treasure:hover:not(:disabled) { background: var(--good); }
+  .board .cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+</style>
+</head>
+<body data-game="city-block-hunt-from-outside" data-kind="demo">
+<main id="main">
+  <h1>City Block Hunt From Outside</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A treasure is hiding under one square of the grid. Find it by touching squares.<br>
+    <strong>How to play:</strong> Touch a pale square just outside the grid to learn how many steps away the treasure is. Touch a square inside the grid when you think you have found it.
+  </div>
+
+  <div id="stage" class="stage">
+    <p class="board-note">The dashed squares around the grid are the strips you can touch for a clue.</p>
+    <div class="board-scroll">
+      <div id="board" class="board" role="group" aria-label="Treasure grid with strips outside its edges"></div>
+    </div>
+    <p id="boardText" class="sr-only" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label for="nSpin">Grid size N
+      <input id="nSpin" type="number" min="2" max="8" step="1" value="4" aria-label="Grid size N, from 2 to 8">
+    </label>
+    <label><input id="hintChk" type="checkbox" aria-label="Show hint"> Show hint</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Start a new game with a new hidden treasure">New Game</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>One number from a touch outside the grid can narrow the hunt to a whole diagonal. Here is why that happens, and why the treasure is always somewhere on the lit squares.</p>
+
+      <h2>Counting blocks, not straight lines</h2>
+      <p>The clue is the <a class="wiki-term" data-wiki="Taxicab_geometry" href="https://en.wikipedia.org/wiki/Taxicab_geometry" target="_blank" rel="noopener">taxicab distance</a>: you may only step along the grid, never across a corner. If the treasure is in column <code>tc</code>, row <code>tr</code>, then touching square <code>(col, row)</code> reports <code>d = |col &minus; tc| + |row &minus; tr|</code>.</p>
+      <p>The original applet stores the treasure as a point whose <code>x</code> is the row and whose <code>y</code> is the column, but it draws the chest and computes the clue with the same swap, so the rule above is exactly what a player sees.</p>
+
+      <h2>Why a corner touch gives a diagonal</h2>
+      <p>Touch the strip left of row <code>r</code>. Its column is <code>&minus;1</code>, so the clue is <code>(tc + 1) + |r &minus; tr|</code>. A square <code>(c, s)</code> could hold the treasure when <code>c + |s &minus; r| = tc + |r &minus; tr|</code>, and putting <code>c = tc</code>, <code>s = tr</code> makes both sides equal, so the treasure is never ruled out. Next to a corner, <code>r</code> is <code>0</code> or <code>N &minus; 1</code>; the absolute value then becomes <code>s</code> or <code>N &minus; 1 &minus; s</code>, and the equation collapses to <code>c + s = constant</code> or <code>c &minus; s = constant</code> — a single <a class="wiki-term" data-wiki="Diagonal" href="https://en.wikipedia.org/wiki/Diagonal" target="_blank" rel="noopener">diagonal</a> through the treasure. This is the modification's point: it makes the diagonal easy to see.</p>
+
+      <h2>What the test confirmed</h2>
+      <p>The logic test walked every treasure square against every touchable square for <code>N = 2</code> to <code>8</code> — 13,951 pairs — and compared each result with a second transcription of the applet's own click method: the corner rejection, the clamp onto the nearest strip, the stored clues and the distance all agree. It also confirmed that every clue's locus contains the treasure, that all eight corner-adjacent touches give a single diagonal, and that <em>Show hint</em> lights exactly the union of those loci. One deliberate change: the page says the game stops when the treasure is found, and so this port ends the play there; the original applet kept accepting clicks and could hide the chest again.</p>
+
+      <p class="tip">Try two touches next to different corners. The two diagonals usually cross at exactly one square — the treasure. Can you explain why the crossing cannot be anywhere else?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/CityBlockHuntFromOutside.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="city-block-hunt-from-outside-core.js"></script>
+<script src="city-block-hunt-from-outside.js"></script>
+</body>
+</html>
