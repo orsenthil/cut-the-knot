@@ -130,6 +130,7 @@ check("critical-path-scheduling: four processors were chosen", read["critical-pa
 check("jefferson-apportionment: the seat stepper was used", read["jefferson-apportionment"]?.total === read["jefferson-apportionment"]?.seats);
 check("john-sharp-paradox: the sliver was revealed", read["john-sharp-paradox"]?.revealed === true && read["john-sharp-paradox"].discrepancy === 1);
 check("johnson-trotter: one step was made", read["johnson-trotter"]?.steps === 1 && read["johnson-trotter"].permutation.length === 4);
+check("mandelbrot-julia: a c outside the set was clicked", read["mandelbrot-julia"]?.inMandelbrotSet === false && read["mandelbrot-julia"].escape < read["mandelbrot-julia"].maxIter);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1572,6 +1573,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("johnson-trotter", { n: 3 });
   check("johnson-trotter: the first permutation is all left", board.permutation.join(",") === "1,2,3" && board.directions.every((d) => d === -1));
+}
+
+// Mandelbrot and Julia sets.
+{
+  const board = at("mandelbrot-julia", { c: { re: 0, im: 0 }, maxIter: 48 });
+  check("mandelbrot-julia: c = 0 is in the set", board.inMandelbrotSet === true && board.escape === 48);
 }
 
 // A game with no reader, and a position that makes no sense.

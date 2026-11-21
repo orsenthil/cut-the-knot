@@ -346,6 +346,7 @@ const CORE_GLOBALS = {
   "jefferson-apportionment/jefferson-apportionment-core.js": ["JeffersonApportionmentCore"],
   "john-sharp-paradox/john-sharp-paradox-core.js": ["JohnSharpParadoxCore"],
   "johnson-trotter/johnson-trotter-core.js": ["JohnsonTrotterCore"],
+  "mandelbrot-julia/mandelbrot-julia-core.js": ["MandelbrotJuliaCore"],
 };
 
 const games = [];

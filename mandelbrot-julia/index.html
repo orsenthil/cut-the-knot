@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mandelbrot and Julia Sets &mdash; coolmaths</title>
+<meta name="description" content="Click a point in the Mandelbrot set to summon its Julia set. Why does one picture index so many others?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/mandelbrot-julia/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Mandelbrot and Julia Sets">
+<meta property="og:description" content="Click a point in the Mandelbrot set to summon its Julia set. Why does one picture index so many others?">
+<meta property="og:url" content="https://coolmaths.ai/mandelbrot-julia/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.6rem; }
+  .canvases { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .canvas-box { flex: 1 1 12rem; min-width: 0; }
+  .canvas-box p { margin: 0 0 0.3rem; font-size: 0.8rem; color: var(--muted); text-align: center; }
+  .canvas-box canvas { display: block; width: 100%; height: auto; border-radius: 0.5rem; cursor: crosshair; }
+  .readout { margin: 0.6rem 0 0; text-align: center; font-size: 0.85rem; color: var(--muted); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 100%; max-width: 10rem; accent-color: var(--accent); }
+  input:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="mandelbrot-julia" data-kind="demo">
+<main id="main">
+  <h1>Mandelbrot and Julia Sets</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Pick a point in the Mandelbrot picture to see the Julia set it names.<br>
+    <strong>How to play:</strong> Click anywhere on the left picture, then adjust the iteration limit to sharpen both views.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="canvases">
+      <div class="canvas-box">
+        <p>Click here to choose c — the Mandelbrot set</p>
+        <canvas id="mandelbrot" width="180" height="135" aria-label="The Mandelbrot set; click to choose a complex parameter c"></canvas>
+      </div>
+      <div class="canvas-box">
+        <p>The Julia set for that c</p>
+        <canvas id="julia" width="180" height="135" aria-label="The Julia set for the chosen complex parameter"></canvas>
+      </div>
+    </div>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Iterations <input id="iterInput" type="range" min="8" max="128" step="8" value="48" aria-label="Maximum number of iterations, 8 to 128"></label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Every point of one fractal picture names a different fractal picture. The Mandelbrot set is an index of Julia sets.</p>
+
+      <h2>One iteration, two starting points</h2>
+      <p>For <code>f_c(z) = z² + c</code>, the Mandelbrot set fixes <code>z₀ = 0</code> and varies c. The Julia set fixes c and varies <code>z₀</code>. Colour each point by the number of steps before <code>|z| &gt; 2</code>; that escape radius is safe because once a point leaves the circle of radius 2 its orbit diverges. The logic test checks known points, the symmetry under conjugation, and that c = 0 gives the unit circle as the Julia set's boundary.</p>
+
+      <h2>Reading the colour</h2>
+      <p>Inside the Mandelbrot set the orbit of 0 never escapes; those c values give connected Julia sets. Outside, the Julia set is scattered dust. The page's rectangle for c runs from &minus;2.2 &minus; 1.4i to 0.8 + 1.4i — click inside it to explore.</p>
+
+      <p class="tip">Click near the cardioid's edge, then just outside it. How does the Julia picture change?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/blue/julia.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="mandelbrot-julia-core.js"></script>
+<script src="mandelbrot-julia.js"></script>
+</body>
+</html>

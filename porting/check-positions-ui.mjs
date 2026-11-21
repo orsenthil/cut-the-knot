@@ -393,6 +393,10 @@ const GAMES = {
   "johnson-trotter": async (page) => {
     await page.click("#stepBtn");
   },
+  "mandelbrot-julia": async (page) => {
+    const box = await page.locator("#mandelbrot").boundingBox();
+    await page.mouse.click(box.x + box.width * 0.85, box.y + box.height * 0.2);
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

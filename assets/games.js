@@ -1485,5 +1485,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "mandelbrot-julia",
+      title: "Mandelbrot and Julia Sets",
+      blurb: "Click a point in the Mandelbrot set to summon its Julia set. Why does one picture index so many others?",
+      tags: ["algorithms", "sequences", "invariants"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };
