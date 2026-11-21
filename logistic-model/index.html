@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Logistic Model &mdash; coolmaths</title>
+<meta name="description" content="A one-line population rule: settle, cycle, or descend into chaos? Only the growth rate decides.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/logistic-model/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Logistic Model">
+<meta property="og:description" content="A one-line population rule: settle, cycle, or descend into chaos? Only the growth rate decides.">
+<meta property="og:url" content="https://coolmaths.ai/logistic-model/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 30rem; margin: 0 auto; height: auto; border-radius: 0.5rem; }
+  .readout { margin: 0.5rem 0 0; text-align: center; font-size: 0.85rem; color: var(--muted); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; max-width: 100%; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 100%; max-width: 10rem; accent-color: var(--accent); }
+  input:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="logistic-model" data-kind="demo">
+<main id="main">
+  <h1>Logistic Model</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch a simple population rule settle, cycle or descend into chaos.<br>
+    <strong>How to play:</strong> Adjust the growth rate r and starting value p₀, or sweep r to see the pattern change.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="360" height="220" aria-label="A plot of the logistic map orbit over time"></canvas>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Growth rate r <input id="rInput" type="range" min="0" max="4" step="0.01" value="3.2" aria-label="Growth rate r, 0 to 4"></label>
+    <label>Start p₀ <input id="p0Input" type="range" min="0" max="1" step="0.001" value="0.25" aria-label="Starting population, 0 to 1"></label>
+    <label>Steps <input id="iterInput" type="range" min="8" max="400" step="8" value="120" aria-label="Number of iterations, 8 to 400"></label>
+    <button id="sweepBtn" type="button" class="primary">Sweep r</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>One short formula produces an astonishing range of behaviours as a single parameter changes.</p>
+
+      <h2>The map</h2>
+      <p>Set <code>pₙ₊₁ = r·pₙ(1 − pₙ)</code> with p between 0 and 1. For r in [0, 4] the interval maps into itself, so the orbit is always bounded. For small r the population dies out; at r = 2 it settles at 1/2; near r = 3.2 it flips between two values.</p>
+
+      <h2>The road to chaos</h2>
+      <p>As r grows the stable cycle doubles from 1 to 2 to 4 to 8 and so on, until no short period remains. The Lyapunov estimate measures how quickly nearby orbits separate: it is positive in the chaotic regime near r = 4. The logic test checks the invariant interval, the fixed point, the period-two case and that estimate.</p>
+
+      <p class="tip">Sweep r slowly. Where does the two-cycle split into a four-cycle?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/LogisticModel.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="logistic-model-core.js"></script>
+<script src="logistic-model.js"></script>
+</body>
+</html>

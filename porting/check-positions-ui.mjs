@@ -426,6 +426,10 @@ const GAMES = {
   "life-like-automaton": async (page) => {
     await page.selectOption("#presetSel", "highlife");
   },
+  "logistic-model": async (page) => {
+    await page.fill("#rInput", "3.5");
+    await page.locator("#rInput").dispatchEvent("input");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

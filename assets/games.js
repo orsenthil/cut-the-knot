@@ -1565,5 +1565,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "logistic-model",
+      title: "Logistic Model",
+      blurb: "A one-line population rule: settle, cycle, or descend into chaos? Only the growth rate decides.",
+      tags: ["sequences", "algorithms", "invariants"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };
