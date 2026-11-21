@@ -309,6 +309,7 @@ const CORE_GLOBALS = {
   "farey/farey-core.js": ["FareyCore"],
   "fc-exercise/fc-exercise-core.js": ["FcExerciseCore"],
   "fibonacci-cheat/fibonacci-cheat-core.js": ["FibonacciCheatCore"],
+  "fif/fif-core.js": ["FifCore"],
 };
 
 const games = [];

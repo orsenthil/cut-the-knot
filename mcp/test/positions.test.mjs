@@ -1286,6 +1286,18 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("fibonacci-cheat: one piece in the rectangle", q.piecesInTheRectangle === 1 && q.which.join() === "2" && q.allPlaced === false);
 }
 
+// Fif: the numbers each side holds, and the winner.
+{
+  const p = at("fif", { white: 0, black: 0, first: false, finished: false, whiteWins: 0, blackWins: 0, announce: "", rng: 1, moves: 0 });
+  check("fif: an empty board has nine free numbers and the computer would open on 5", p.free.length === 9 && p.winner === null && p.computerWouldPlay === 5);
+  // numbers 2 and 4 (cells 2 and 4 of the applet's bit order are number 2 and 5; build from the numbers through the core's own mapping)
+  const bit = (n) => 1 << [3, 8, 1, 2, 4, 6, 7, 0, 5].indexOf(n - 1);
+  const q = at("fif", { white: bit(1) | bit(5) | bit(9), black: bit(2) | bit(4), first: true, finished: true, whiteWins: 1, blackWins: 0, announce: "I won! It's now 1:0", rng: 1, moves: 3 });
+  check("fif: the computer holding 1, 5 and 9 has won", q.winner === "computer" && q.computerHolds.join() === "1,5,9" && q.youHold.join() === "2,4" && q.score.computer === 1 && q.computerMovesFirst === true);
+  const r = at("fif", { white: bit(1) | bit(7), black: bit(2) | bit(4), first: false, finished: false, whiteWins: 0, blackWins: 0, announce: "", rng: 1, moves: 2 });
+  check("fif: against 2 and 4 the computer holding 1 and 7 would block at 9", r.computerWouldPlay === 9 && r.winner === null);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

@@ -1196,5 +1196,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "fif",
+      title: "The Game of Fif",
+      blurb: "Take turns picking numbers from 1 to 9: the first to hold three that add up to 15 wins. It looks new, but a magic square shows it is a game you already know. Which one?",
+      tags: ["game-strategy", "arithmetic", "logic"],
+      level: 1,
+    },
   ],
 };

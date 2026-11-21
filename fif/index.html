@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Game of Fif &mdash; coolmaths</title>
+<meta name="description" content="Take turns picking numbers from 1 to 9: the first to hold three that add up to 15 wins. It looks new, but a magic square shows it is a game you already know. Which one?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/fif/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Game of Fif">
+<meta property="og:description" content="Take turns picking numbers from 1 to 9: the first to hold three that add up to 15 wins. It looks new, but a magic square shows it is a game you already know. Which one?">
+<meta property="og:url" content="https://coolmaths.ai/fif/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 1rem; }
+  #board { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 0.3rem; }
+  #board.magic { grid-template-columns: repeat(3, minmax(0, 5rem)); justify-content: center; gap: 0.4rem; }
+  button.sq { min-height: 2.75rem; min-width: 0; padding: 0.4rem 0; font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  #board.magic button.sq { min-height: 4.5rem; font-size: 1.8rem; }
+  button.sq.you { color: var(--good); border-color: var(--good); }
+  button.sq.it { color: var(--bad); border-color: var(--bad); }
+  button.sq:disabled { opacity: 1; }
+  #score { margin: 0.8rem 0 0; font-weight: 700; text-align: center; font-variant-numeric: tabular-nums; }
+  #holds { margin: 0.3rem 0 0; color: var(--muted); text-align: center; overflow-wrap: anywhere; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="fif" data-kind="game">
+<main id="main">
+  <h1>fif</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> You and the computer take turns picking numbers from 1 to 9; whoever first holds three numbers that add up to 15 wins.<br>
+    <strong>How to play:</strong> Press a number to take it. The computer answers at once. Tick Computer moves first and press Start if you want it to begin.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="board" role="group" aria-label="The numbers 1 to 9. Press a free number to take it; your numbers show X and the computer's show O."></div>
+    <p id="score" aria-live="polite"></p>
+    <p id="holds" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label><input id="firstBox" type="checkbox"> Computer moves first</label>
+    <button id="startBtn" type="button" class="primary">Start</button>
+    <button id="clearBtn" type="button">Clear</button>
+    <label><input id="magicBox" type="checkbox"> Show the magic square</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Fif looks like a game about adding, but it is <a class="wiki-term" data-wiki="Tic-tac-toe" href="https://en.wikipedia.org/wiki/Tic-tac-toe" target="_blank" rel="noopener">TicTacToe</a> in disguise.</p>
+
+      <h2>The magic square</h2>
+      <p>There are exactly eight ways to write 15 as a sum of three different numbers from 1 to 9: <code>1+5+9, 1+6+8, 2+4+9, 2+5+8, 2+6+7, 3+4+8, 3+5+7, 4+5+6</code>. The logic test found them by trying all 84 triples. Write the nine numbers in the <a class="wiki-term" data-wiki="Magic_square" href="https://en.wikipedia.org/wiki/Magic_square" target="_blank" rel="noopener">magic square</a> <code>4 9 2 / 3 5 7 / 8 1 6</code> and these eight triples are exactly its three rows, three columns and two diagonals. Tick <i>Show the magic square</i> and the game looks like TicTacToe, with the 5 in the centre.</p>
+
+      <h2>Perfect play is a draw</h2>
+      <p>The test solved the whole game tree: with perfect play the game is a draw, as in TicTacToe. The computer is not perfect. It only looks one move ahead, taking a win if it has one and avoiding a move that lets you win at once, so you can beat it: against it with its errors switched off, the test found 16 winning sequences of your moves when you move first and 6 when it does, and many more that lose, as you would expect. You win by making a fork, two threats at once.</p>
+
+      <h2>The computer errs</h2>
+      <p>The page says the computer errs with probability 1/20. In the applet, each free square it looks at has a 1 in 20 chance of being taken straight away without a check. So a missed block is more likely than 1 in 20: in the test the computer blocks a threat only about 82% of the time in a typical position, and takes a win about 90% of the time (<code>0.95²</code>). The test computed those exactly.</p>
+
+      <p class="note">The applet's box is called <i>I move first</i>, and the page explains that checking it makes the computer start; it is called <i>Computer moves first</i> here. Scores are kept until you leave the page, and Clear does not reset them. After a finished game, pressing a number starts a new one with that move.</p>
+
+      <p class="tip">Take 5 first. Then try to win by taking 4, and then 6 or 2, so that two lines are threatened at once.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/blue/fif.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="fif-core.js"></script>
+<script src="fif.js"></script>
+</body>
+</html>
