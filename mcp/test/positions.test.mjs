@@ -128,6 +128,7 @@ check("item-parity: a swap was made", read["item-parity"]?.moves === 1 && read["
 check("item-parity-generalized: five reds were set on top", read["item-parity-generalized"]?.redTop === 5 && read["item-parity-generalized"].equal === true);
 check("critical-path-scheduling: four processors were chosen", read["critical-path-scheduling"]?.processors === 4 && read["critical-path-scheduling"].makespan >= read["critical-path-scheduling"].criticalLength);
 check("jefferson-apportionment: the seat stepper was used", read["jefferson-apportionment"]?.total === read["jefferson-apportionment"]?.seats);
+check("john-sharp-paradox: the sliver was revealed", read["john-sharp-paradox"]?.revealed === true && read["john-sharp-paradox"].discrepancy === 1);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1558,6 +1559,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("jefferson-apportionment", { seats: 23, populations: [100, 200, 300] });
   check("jefferson-apportionment: 23 seats are allocated", board.total === 23 && board.final.length === 3);
+}
+
+// John Sharp's paradox.
+{
+  const board = at("john-sharp-paradox", { n: 7 });
+  check("john-sharp-paradox: 169 to 168 differs by one", board.squareArea === 169 && board.rectangleArea === 168 && board.discrepancy === 1);
 }
 
 // A game with no reader, and a position that makes no sense.

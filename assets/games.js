@@ -1456,6 +1456,14 @@ window.COOLMATHS = {
       level: 3,
     },
     {
+      slug: "john-sharp-paradox",
+      title: "John Sharp's Paradox",
+      blurb: "A 13 by 13 square rearranges into an 8 by 21 rectangle. Where does the missing square hide?",
+      tags: ["paradoxes", "sequences", "invariants"],
+      kind: "demo",
+      level: 2,
+    },
+    {
       slug: "fraction-comparison-exercise",
       title: "Compare Fractions: Interactive Practice",
       blurb: "Two fractions side by side: is the first less than, equal to or more than the second? Press the right sign, with bars and a common denominator to help if you need them.",

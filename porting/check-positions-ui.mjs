@@ -387,6 +387,9 @@ const GAMES = {
   "jefferson-apportionment": async (page) => {
     await page.click("#seatsMore");
   },
+  "john-sharp-paradox": async (page) => {
+    await page.click("#revealBtn");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },
