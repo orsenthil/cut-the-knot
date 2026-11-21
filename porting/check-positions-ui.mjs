@@ -339,6 +339,9 @@ const GAMES = {
   "iterated-function-systems": async (page) => {
     await page.selectOption("#systemSel", "Fern");
   },
+  "imo-1986-3": async (page) => {
+    await page.click("#stepBtn");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

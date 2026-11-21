@@ -330,6 +330,7 @@ const CORE_GLOBALS = {
   "hooper-paradox/hooper-paradox-core.js": ["HooperParadoxCore"],
   "horner-method/horner-method-core.js": ["HornerMethodCore"],
   "iterated-function-systems/iterated-function-systems-core.js": ["IteratedFunctionSystemsCore"],
+  "imo-1986-3/imo-1986-3-core.js": ["Imo1986_3Core"],
 };
 
 const games = [];

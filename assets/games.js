@@ -1096,6 +1096,14 @@ window.COOLMATHS = {
       level: 2,
     },
     {
+      slug: "imo-1986-3",
+      title: "Integer Iterations on a Pentagon",
+      blurb: "Flip a negative number and add it to its neighbours. Why must this always stop, however the numbers are chosen?",
+      tags: ["invariants", "number-theory", "algorithms"],
+      kind: "demo",
+      level: 3,
+    },
+    {
       slug: "common-multiples",
       title: "Common Multiples",
       blurb: "Drag two dots along a number line and watch their multiples line up: can you spot the first number in both rows?",

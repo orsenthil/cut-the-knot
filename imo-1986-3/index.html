@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Integer Iterations on a Pentagon &mdash; coolmaths</title>
+<meta name="description" content="Flip a negative number and add it to its neighbours. Why must this always stop, however the numbers are chosen?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/imo-1986-3/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Integer Iterations on a Pentagon">
+<meta property="og:description" content="Flip a negative number and add it to its neighbours. Why must this always stop, however the numbers are chosen?">
+<meta property="og:url" content="https://coolmaths.ai/imo-1986-3/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 22rem; margin: 0 auto; height: auto; }
+  .edge { stroke: var(--border-strong); stroke-width: 2; }
+  .vertex circle { fill: var(--card); stroke: var(--accent); stroke-width: 2.5; }
+  .vertex.negative circle { fill: var(--bad); stroke: var(--bad); }
+  .vertex text { fill: var(--text); font-size: 16px; font-weight: 700; text-anchor: middle; pointer-events: none; }
+  .vertex.negative text { fill: var(--card); }
+  .vertex:focus-visible { outline: none; }
+  .vertex:focus-visible circle { stroke-width: 5; }
+  .readout { margin: 0.4rem 0 0; text-align: center; font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .control-row label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; }
+  button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="imo-1986-3" data-kind="demo">
+<main id="main">
+  <h1>Integer Iterations on a Pentagon</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Turn every number on the pentagon positive by a rule that flips a negative and adds it to its neighbours.<br>
+    <strong>How to play:</strong> Click a negative number to apply the rule, or press Step or Solve. The process always stops.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 300 270" role="group" aria-label="Five numbers on the vertices of a pentagon"></svg>
+    <p id="potential" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <button id="stepBtn" type="button" class="primary">Step</button>
+    <button id="solveBtn" type="button">Solve</button>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This was problem 3 at the 1986 International Mathematical Olympiad. A rule that seems to wander forever must actually stop — and a sum of squares explains why.</p>
+
+      <h2>The rule and the trap</h2>
+      <p>Five integers on a pentagon add to a positive total. When a number y is negative, flip it to &minus;y and add y to its two neighbours. The sum of all five numbers never changes. It is not obvious that this cannot go on forever.</p>
+
+      <h2>A decreasing potential</h2>
+      <p>Consider <code>f = Σ(xₖ − xₖ₊₂)²</code> around the pentagon. One step changes it by exactly <code>2y·(total sum)</code>, which is negative because y &lt; 0 and the total is positive. The potential is a sum of squares, so it cannot fall forever: the process must stop. The logic test checks this identity on thousands of random starts and confirms that they all terminate. A second solution counts sign changes in certain sums and bounds the number of steps by the initial number of negative sums.</p>
+
+      <p class="tip">Watch the value of f as you step. How much does it drop each time?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/IMO1986_3.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="imo-1986-3-core.js"></script>
+<script src="imo-1986-3.js"></script>
+</body>
+</html>

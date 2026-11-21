@@ -114,6 +114,7 @@ check("hilbert-curve: the order slider changed", read["hilbert-curve"]?.order ==
 check("hooper-paradox: the width was edited and area conserved", read["hooper-paradox"]?.w === 12 && read["hooper-paradox"].conserved === true);
 check("horner-method: x was changed to 3", read["horner-method"]?.t === 3 && read["horner-method"].coefficients.length === 5);
 check("iterated-function-systems: Fern was selected", read["iterated-function-systems"]?.system === "Fern" && read["iterated-function-systems"].maps === 4);
+check("imo-1986-3: a step was applied", read["imo-1986-3"]?.steps === 1 && read["imo-1986-3"].values.length === 5);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1452,6 +1453,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("iterated-function-systems", { system: "Sierpinski gasket" });
   check("iterated-function-systems: the gasket has three contracting maps", board.maps === 3 && board.scales.every((s) => s <= 1));
+}
+
+// IMO 1986 problem 3.
+{
+  const board = at("imo-1986-3", { values: [4, -3, 2, -1, 5], steps: 0 });
+  check("imo-1986-3: the start has potential 106", board.potential === 106 && board.negatives.length === 2);
 }
 
 // A game with no reader, and a position that makes no sense.
