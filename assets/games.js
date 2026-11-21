@@ -1533,5 +1533,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "lcm-algorithm",
+      title: "Algorithm for Computing the LCM",
+      blurb: "Keep raising the smallest number until they all match. What number will they land on?",
+      tags: ["arithmetic", "algorithms", "invariants"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

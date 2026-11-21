@@ -352,6 +352,7 @@ const CORE_GLOBALS = {
   "langman-paradox/langman-paradox-core.js": ["LangmanParadoxCore"],
   "latin-squares/latin-squares-core.js": ["LatinSquaresCore"],
   "lattice-multiplication/lattice-multiplication-core.js": ["LatticeMultiplicationCore"],
+  "lcm-algorithm/lcm-algorithm-core.js": ["LcmAlgorithmCore"],
 };
 
 const games = [];

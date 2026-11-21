@@ -136,6 +136,7 @@ check("langford-skolem: Skolem mode was selected", read["langford-skolem"]?.kind
 check("langman-paradox: cheat was enabled", read["langman-paradox"]?.cheat === true && Math.abs(read["langman-paradox"].cassini) === 1);
 check("latin-squares: a swap broke the Latin property", read["latin-squares"]?.latin === false && read["latin-squares"].moves === 1);
 check("lattice-multiplication: a factor was changed", read["lattice-multiplication"]?.a === 123 && read["lattice-multiplication"].product === read["lattice-multiplication"].expected);
+check("lcm-algorithm: one step was made", read["lcm-algorithm"]?.steps === 1 && read["lcm-algorithm"].lcm === 30);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1614,6 +1615,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("lattice-multiplication", { a: 712, b: 23 });
   check("lattice-multiplication: the page's 712 by 23 example", board.product === 16376 && board.needsCarry === false);
+}
+
+// LCM algorithm.
+{
+  const board = at("lcm-algorithm", { originals: [6, 10, 15], values: [6, 10, 15], steps: 0 });
+  check("lcm-algorithm: the target is 30", board.lcm === 30 && board.finished === false);
 }
 
 // A game with no reader, and a position that makes no sense.

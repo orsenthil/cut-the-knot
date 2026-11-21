@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Algorithm for Computing the LCM &mdash; coolmaths</title>
+<meta name="description" content="Keep raising the smallest number until they all match. What number will they land on?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/lcm-algorithm/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Algorithm for Computing the LCM">
+<meta property="og:description" content="Keep raising the smallest number until they all match. What number will they land on?">
+<meta property="og:url" content="https://coolmaths.ai/lcm-algorithm/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.8rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .number-box { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; min-width: 4rem; flex: 1 1 4rem; padding: 0.5rem; border: 2px solid var(--border); border-radius: 0.6rem; }
+  .number-box.smallest { border-color: var(--accent); background: var(--accent-soft); }
+  .number-box input { width: 3.5rem; max-width: 100%; font: inherit; text-align: center; padding: 0.2rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  .number-box strong { font-size: 1.3rem; font-variant-numeric: tabular-nums; }
+  .arrow { color: var(--accent); font-size: 1rem; }
+  .readout { width: 100%; margin: 0.3rem 0 0; text-align: center; font-size: 0.85rem; color: var(--muted); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; }
+  input:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="lcm-algorithm" data-kind="demo">
+<main id="main">
+  <h1>Algorithm for Computing the LCM</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Raise the smallest number until all the numbers match — then you have their LCM.<br>
+    <strong>How to play:</strong> Edit the starting numbers, then press Step or Run. Reset returns to the start.
+  </div>
+
+  <div id="stage" class="stage"></div>
+  <p id="readout" class="readout"></p>
+
+  <div class="controls">
+    <button id="stepBtn" type="button">Step</button>
+    <button id="runBtn" type="button" class="primary">Run</button>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A tiny rule, repeated, finds the least common multiple without factoring anything.</p>
+
+      <h2>The rule</h2>
+      <p>At each step take the smallest current number and add to it its original value. For 6, 10, 15 the first few states are (12, 10, 15), (12, 20, 15), (12, 20, 30), and eventually all three become 30 — their LCM.</p>
+
+      <h2>Why it stops at the right number</h2>
+      <p>Every value stays a multiple of its original number, so a common value is a common multiple. No value can jump past the true LCM: it would have to cross the multiple that another value is approaching, contradicting that the crossed value was smallest. Hence the first common value is the least common multiple. The logic test checks 600 random sets: the loop always terminates at the value given by the gcd formula, with no value ever exceeding it.</p>
+
+      <p class="tip">Try numbers that share no factors, like 7 and 11. How many steps does it take?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/LCM.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="lcm-algorithm-core.js"></script>
+<script src="lcm-algorithm.js"></script>
+</body>
+</html>

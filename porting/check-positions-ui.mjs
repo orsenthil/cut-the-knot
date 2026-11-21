@@ -414,6 +414,9 @@ const GAMES = {
     await page.fill("#aInput", "123");
     await page.locator("#aInput").press("Enter");
   },
+  "lcm-algorithm": async (page) => {
+    await page.click("#stepBtn");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },
