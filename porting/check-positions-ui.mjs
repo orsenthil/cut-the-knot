@@ -410,6 +410,10 @@ const GAMES = {
     await page.locator(".grid-row").first().locator(".cell").nth(0).click();
     await page.locator(".grid-row").first().locator(".cell").nth(1).click();
   },
+  "lattice-multiplication": async (page) => {
+    await page.fill("#aInput", "123");
+    await page.locator("#aInput").press("Enter");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

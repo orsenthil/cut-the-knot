@@ -135,6 +135,7 @@ check("kaprekar-routine: the run reached 6174", read["kaprekar-routine"]?.result
 check("langford-skolem: Skolem mode was selected", read["langford-skolem"]?.kind === "skolem" && read["langford-skolem"].valid === true);
 check("langman-paradox: cheat was enabled", read["langman-paradox"]?.cheat === true && Math.abs(read["langman-paradox"].cassini) === 1);
 check("latin-squares: a swap broke the Latin property", read["latin-squares"]?.latin === false && read["latin-squares"].moves === 1);
+check("lattice-multiplication: a factor was changed", read["lattice-multiplication"]?.a === 123 && read["lattice-multiplication"].product === read["lattice-multiplication"].expected);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1607,6 +1608,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("latin-squares", { size: 4, symmetric: true, grid: [[1, 2, 3, 4], [2, 3, 4, 1], [3, 4, 1, 2], [4, 1, 2, 3]] });
   check("latin-squares: the cyclic square solves both modes", board.latin === true && board.symmetricGrid === true && board.solved === true);
+}
+
+// Lattice multiplication.
+{
+  const board = at("lattice-multiplication", { a: 712, b: 23 });
+  check("lattice-multiplication: the page's 712 by 23 example", board.product === 16376 && board.needsCarry === false);
 }
 
 // A game with no reader, and a position that makes no sense.

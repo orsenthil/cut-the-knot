@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lattice Multiplication &mdash; coolmaths</title>
+<meta name="description" content="Fill a grid of small products and add along the diagonals. Can diagonal sums really give the final product?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/lattice-multiplication/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Lattice Multiplication">
+<meta property="og:description" content="Fill a grid of small products and add along the diagonals. Can diagonal sums really give the final product?">
+<meta property="og:url" content="https://coolmaths.ai/lattice-multiplication/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.6rem; overflow-x: auto; }
+  #board { display: block; width: 100%; max-width: 26rem; margin: 0 auto; height: auto; }
+  .cell { fill: var(--surface); stroke: var(--border-strong); stroke-width: 1.5; }
+  .diagonal { stroke: var(--border-strong); stroke-width: 1.5; }
+  .digit { fill: var(--text); font-size: 15px; font-family: var(--mono); text-anchor: middle; }
+  .factor { fill: var(--accent); font-size: 17px; font-family: var(--mono); font-weight: 700; text-anchor: middle; }
+  .band { fill: var(--muted); font-size: 13px; font-family: var(--mono); text-anchor: middle; }
+  .band.carry { fill: var(--bad); font-weight: 700; }
+  .readout { margin: 0.5rem 0 0; text-align: center; font-size: 0.85rem; color: var(--muted); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="number"] { width: 7rem; max-width: 100%; font: inherit; padding: 0.2rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="lattice-multiplication" data-kind="demo">
+<main id="main">
+  <h1>Lattice Multiplication</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Multiply two numbers by filling a lattice and adding along its diagonals.<br>
+    <strong>How to play:</strong> Change either factor. Each cell shows part of a product, and the band sums give the answer.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 220 170" role="group" aria-label="A multiplication lattice with diagonal cell products and band sums"></svg>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>First number <input id="aInput" type="number" min="0" value="712" aria-label="First factor"></label>
+    <label>Second number <input id="bInput" type="number" min="0" value="23" aria-label="Second factor"></label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Before calculators, a grid of small products could turn a big multiplication into simple addition.</p>
+
+      <h2>Filling the lattice</h2>
+      <p>Write one factor over the columns and the other beside the rows. Each cell holds the product of its two digits, with the tens above the diagonal and the units below. For 712 × 23 the cells are 14, 21, 02, 03, 04 and 06.</p>
+
+      <h2>Bands and carries</h2>
+      <p>Add the digits along each diagonal band, from the bottom-right upwards. The page's 1, 6, 3, 7, 6 gives 16376 directly. When a band reaches two digits, carry its tens to the band on the left: 124576 × 3857 has a band sum of 10, which becomes 480489632 after carrying. The logic test checks 1,000 random pairs against ordinary multiplication.</p>
+
+      <p class="tip">Find two factors whose band sums are all under ten, so no carrying is needed.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/LatticeMultiplication.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="lattice-multiplication-core.js"></script>
+<script src="lattice-multiplication.js"></script>
+</body>
+</html>

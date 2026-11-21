@@ -1525,5 +1525,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "lattice-multiplication",
+      title: "Lattice Multiplication",
+      blurb: "Fill a grid of small products and add along the diagonals. Can diagonal sums really give the final product?",
+      tags: ["arithmetic", "algorithms", "counting"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

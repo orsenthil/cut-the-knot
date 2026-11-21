@@ -351,6 +351,7 @@ const CORE_GLOBALS = {
   "langford-skolem/langford-skolem-core.js": ["LangfordSkolemCore"],
   "langman-paradox/langman-paradox-core.js": ["LangmanParadoxCore"],
   "latin-squares/latin-squares-core.js": ["LatinSquaresCore"],
+  "lattice-multiplication/lattice-multiplication-core.js": ["LatticeMultiplicationCore"],
 };
 
 const games = [];
