@@ -1270,6 +1270,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("farey: F(5) has 11 terms and nothing is selected", q.terms === 11 && q.selected === null);
 }
 
+// Fraction comparison sped up: is the middle fraction between the pair?
+{
+  const p = at("fc-exercise", { n1: 7, d1: 12, n2: 4, d2: 9, n0: 1, d0: 2, problems: 3, solved: 2, checked: true, response: "Correct!", seed: 5, moves: 4 });
+  check("fc-exercise: 1/2 is between 7/12 and 4/9, and the larger of the pair is 7/12", p.middleIsBetween === true && p.larger === "7/12" && p.signsIfChecked === "> >" && p.correctAnswers === 2);
+  const q = at("fc-exercise", { n1: 3, d1: 5, n2: 7, d2: 8, n0: 9, d0: 6, problems: 1, solved: 0, checked: false, response: "", seed: 1, moves: 0 });
+  check("fc-exercise: 9/6 is outside 3/5 and 7/8", q.middleIsBetween === false && q.larger === "7/8");
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

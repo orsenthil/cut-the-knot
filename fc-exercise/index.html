@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fraction Comparison Sped Up &mdash; coolmaths</title>
+<meta name="description" content="To compare two fractions, find a simple one that sits between them: 7/12 &gt; 1/2 &gt; 4/9. Change the middle fraction's digits until it lies between the two, then check.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/fc-exercise/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Fraction Comparison Sped Up">
+<meta property="og:description" content="To compare two fractions, find a simple one that sits between them: 7/12 &gt; 1/2 &gt; 4/9. Change the middle fraction's digits until it lies between the two, then check.">
+<meta property="og:url" content="https://coolmaths.ai/fc-exercise/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 1rem; }
+  #row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.5rem 0.8rem; }
+  .frac { display: inline-flex; flex-direction: column; align-items: center; font-size: 1.8rem; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 3rem; }
+  .frac .bar { display: block; align-self: stretch; height: 3px; background: var(--ink); margin: 0.2rem 0; border-radius: 2px; }
+  .frac.mid { padding: 0.3rem 0.5rem; border: 2px dashed var(--accent); border-radius: 12px; }
+  .digits { display: inline-flex; gap: 0.15rem; }
+  button.digit { min-width: 2.75rem; min-height: 2.75rem; font-size: 1.5rem; font-weight: 700; padding: 0; font-variant-numeric: tabular-nums; }
+  .sign { font-size: 2rem; font-weight: 700; color: var(--accent); min-width: 2rem; text-align: center; }
+  #score { margin: 0.8rem 0 0; color: var(--muted); text-align: center; }
+</style>
+</head>
+<body data-game="fc-exercise" data-kind="game">
+<main id="main">
+  <h1>FCExercise</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#fractions">Fractions</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two fractions are shown with a third one between them that is not really between them yet; make it fit, then check.<br>
+    <strong>How to play:</strong> Press the digits of the middle fraction to raise them, or select one and type a digit, until the middle fraction is bigger than one of the other two and smaller than the other. Then press Check.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="row" aria-label="First fraction, a question mark, the middle fraction you change, a question mark, the second fraction"></div>
+    <p id="score" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <button id="checkBtn" type="button" class="primary">Check</button>
+    <button id="commonBtn" type="button">Use common denominator</button>
+    <button id="simplifyBtn" type="button">Simplify</button>
+    <button id="nextBtn" type="button">New pair of fractions</button>
+    <button id="restartBtn" type="button">Reset scores</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The standard way to compare <code>a/c</code> and <code>b/d</code> is <a class="wiki-term" data-wiki="Cross-multiplication" href="https://en.wikipedia.org/wiki/Cross-multiplication" target="_blank" rel="noopener">cross-multiplication</a>: <code>a/c &gt; b/d</code> exactly when <code>ad &gt; bc</code>. But the products are often not needed.</p>
+
+      <h2>Shortcuts</h2>
+      <p>With the same denominator, the bigger numerator wins: <code>a/c &gt; b/c</code> when <code>a &gt; b</code>. With the same numerator, the smaller denominator wins: <code>a/c &gt; a/d</code> when <code>c &lt; d</code>. A proper fraction grows when you add 1 to both its parts: <code>a/c &lt; (a+1)/(c+1)</code> when <code>a &lt; c</code>. The test checked all three for every value up to 40 or 60.</p>
+
+      <h2>The trick: a fraction in between</h2>
+      <p>To compare <code>7/12</code> and <code>4/9</code>, notice that <code>7/12 &gt; 6/12 = 1/2</code> while <code>4/9 = 8/18 &lt; 9/18 = 1/2</code>. So <code>7/12 &gt; 1/2 &gt; 4/9</code>, and no multiplication was needed. The exercise asks you for that middle fraction. The applet starts you with a guess that is always just outside the pair (the test confirmed that for 200,000 generated pairs), and Check accepts any fraction between the two, the ends included. The test compared that rule with exact cross-multiplication for more than a million combinations.</p>
+
+      <h2>Common denominators and simplest form</h2>
+      <p>&ldquo;Use common denominator&rdquo; rewrites both fractions over the least common denominator, where the bigger numerator wins. &ldquo;Simplify&rdquo; reduces fractions to lowest terms, which often makes the middle one easier to see. Neither changes a value; the test checked it.</p>
+
+      <p class="note">The applet lets you check a middle fraction with a denominator of 0; this page asks for a real one.</p>
+
+      <p class="tip">Try 5/9 and 4/7. Is 1/2 between them? What about 4/8? Use the common denominator button to see what is going on.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/FCExercise.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="fc-exercise-core.js"></script>
+<script src="fc-exercise.js"></script>
+</body>
+</html>

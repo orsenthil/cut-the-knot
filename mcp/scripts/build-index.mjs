@@ -307,6 +307,7 @@ const CORE_GLOBALS = {
   "euclid-algorithm/euclid-algorithm-core.js": ["EuclidAlgorithmCore"],
   "factorization/factorization-core.js": ["FactorizationCore"],
   "farey/farey-core.js": ["FareyCore"],
+  "fc-exercise/fc-exercise-core.js": ["FcExerciseCore"],
 };
 
 const games = [];

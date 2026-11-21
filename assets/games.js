@@ -1181,5 +1181,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "fc-exercise",
+      title: "Fraction Comparison Sped Up",
+      blurb: "To compare two fractions, find a simple one that sits between them: 7/12 > 1/2 > 4/9. Change the middle fraction's digits until it lies between the two, then check.",
+      tags: ["fractions", "arithmetic", "algebra"],
+      level: 1,
+    },
   ],
 };
