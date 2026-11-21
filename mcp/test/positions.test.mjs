@@ -142,6 +142,7 @@ check("game-of-life: a glider was placed", read["game-of-life"]?.population === 
 check("life-like-automaton: HighLife was chosen", read["life-like-automaton"]?.rule === "B36/S23");
 check("logistic-model: the growth rate was changed", read["logistic-model"]?.r === 3.5 && read["logistic-model"].period !== null);
 check("lone-divider: the default division was solved", read["lone-divider"]?.solved === true && read["lone-divider"].n === 4);
+check("long-multiplication: compact was turned off", read["long-multiplication"]?.compact === false && read["long-multiplication"].sum === 17503);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1656,6 +1657,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("lone-divider", { n: 4, table: [[true, false, true, false], [false, true, false, true], [false, false, true, true]] });
   check("lone-divider: three choosers get pieces", board.solved === true && Object.keys(board.assignments).length === 3);
+}
+
+// Long multiplication.
+{
+  const board = at("long-multiplication", { a: 23, b: 761, compact: true });
+  check("long-multiplication: the page's example gives 17503", board.sum === 17503 && board.correct === true);
 }
 
 // A game with no reader, and a position that makes no sense.

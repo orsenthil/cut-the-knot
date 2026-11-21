@@ -1581,5 +1581,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "long-multiplication",
+      title: "Long Multiplication",
+      blurb: "Break a multiplication into one row per digit. Why do the shifted rows add to the product?",
+      tags: ["arithmetic", "algorithms", "counting"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };

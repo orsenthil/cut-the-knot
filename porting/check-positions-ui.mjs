@@ -433,6 +433,9 @@ const GAMES = {
   "lone-divider": async (page) => {
     await page.click("#solveBtn");
   },
+  "long-multiplication": async (page) => {
+    await page.uncheck("#compactCheck");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

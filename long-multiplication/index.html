@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Long Multiplication &mdash; coolmaths</title>
+<meta name="description" content="Break a multiplication into one row per digit. Why do the shifted rows add to the product?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/long-multiplication/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Long Multiplication">
+<meta property="og:description" content="Break a multiplication into one row per digit. Why do the shifted rows add to the product?">
+<meta property="og:url" content="https://coolmaths.ai/long-multiplication/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.8rem; }
+  #layout { display: flex; flex-direction: column; align-items: flex-end; padding: 0.6rem 1rem; border-radius: 0.6rem; background: var(--surface); }
+  .lm-row { font-family: var(--mono); font-size: 1.15rem; line-height: 1.5; min-height: 1.5rem; white-space: nowrap; }
+  .lm-row.factor { color: var(--accent); font-weight: 700; }
+  .lm-row.partial { color: var(--text); }
+  .lm-row.result { font-weight: 700; color: var(--good); font-size: 1.3rem; }
+  .lm-row.rule { width: 100%; border-top: 2px solid var(--border-strong); height: 0.4rem; min-height: 0.4rem; }
+  .readout { margin: 0.6rem 0 0; text-align: center; font-size: 0.85rem; color: var(--muted); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="number"] { width: 7rem; max-width: 100%; font: inherit; padding: 0.2rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="long-multiplication" data-kind="demo">
+<main id="main">
+  <h1>Long Multiplication</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> See how a multiplication becomes a column of simple additions.<br>
+    <strong>How to play:</strong> Change either factor and toggle the compact display to hide the shifted zeros.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="layout"></div>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>First <input id="aInput" type="number" min="0" value="23" aria-label="First factor"></label>
+    <label>Second <input id="bInput" type="number" min="0" value="761" aria-label="Second factor"></label>
+    <label><input id="compactCheck" type="checkbox" checked> Compact</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Multiplication by a multi-digit number is just several small multiplications added together.</p>
+
+      <h2>The distributive law</h2>
+      <p>For 23 × 761, split 761 into 1 + 60 + 700: the partial products are 23, 1380 and 16100, which add to 17503. Each is the first factor times one digit, shifted left by that digit's place value. Long multiplication is this breakdown written as a column.</p>
+
+      <h2>Compact notation</h2>
+      <p>The trailing zeros from the shifts are usually omitted, leaving 23, 138 and 161 aligned to the right. The addition still gives 17503. The logic test checks the page's examples and 1,000 random pairs: the partials always sum to the ordinary product, and each compact row is the first factor times one digit.</p>
+
+      <p class="tip">Find two factors where one row is zero. What does that digit contribute?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/LongMultiplication.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="long-multiplication-core.js"></script>
+<script src="long-multiplication.js"></script>
+</body>
+</html>
