@@ -318,6 +318,7 @@ const CORE_GLOBALS = {
   "flip-them-iii/flip-them-iii-core.js": ["FlipThemIIICore"],
   "fourth-degree/fourth-degree-core.js": ["FourthDegreeCore"],
   "fraction-comparison-exercise/fraction-comparison-exercise-core.js": ["FractionComparisonExerciseCore"],
+  "futurama/futurama-core.js": ["FuturamaCore"],
 };
 
 const games = [];

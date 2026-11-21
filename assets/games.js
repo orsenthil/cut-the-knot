@@ -1262,5 +1262,12 @@ window.COOLMATHS = {
       tags: ["fractions", "arithmetic"],
       level: 1,
     },
+    {
+      slug: "futurama",
+      title: "The Futurama Theorem",
+      blurb: "A mind-swapping machine will never swap the same two bodies twice. After a mix-up, can everyone get their own mind back with two extra helpers, X and Y? A theorem written for a cartoon says yes.",
+      tags: ["logic", "algorithms", "counting"],
+      level: 3,
+    },
   ],
 };

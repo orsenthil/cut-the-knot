@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Futurama Theorem &mdash; coolmaths</title>
+<meta name="description" content="A mind-swapping machine will never swap the same two bodies twice. After a mix-up, can everyone get their own mind back with two extra helpers, X and Y? A theorem written for a cartoon says yes.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/futurama/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Futurama Theorem">
+<meta property="og:description" content="A mind-swapping machine will never swap the same two bodies twice. After a mix-up, can everyone get their own mind back with two extra helpers, X and Y? A theorem written for a cartoon says yes.">
+<meta property="og:url" content="https://coolmaths.ai/futurama/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #ring { display: block; width: 100%; max-width: 100%; height: auto; }
+  #ring g.body { cursor: pointer; outline: none; }
+  #ring .oval { fill: var(--stage); stroke: var(--ink); stroke-width: 2; }
+  #ring g.home .oval { stroke: var(--good); stroke-width: 4; }
+  #ring g.sel .oval { fill: var(--highlight); stroke: var(--accent); stroke-width: 4; }
+  #ring g.body:focus .oval, #ring g.body:focus-visible .oval { stroke: var(--accent); stroke-width: 4; stroke-dasharray: 5 3; }
+  #ring .mind { font: 700 20px system-ui, sans-serif; pointer-events: none; }
+  #ring .own { font: 600 11px system-ui, sans-serif; fill: var(--muted); pointer-events: none; }
+  #log { margin: 0.5rem 0 0; color: var(--muted); overflow-wrap: anywhere; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 4.5rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="futurama" data-kind="game">
+<main id="main">
+  <h1>The Futurama Theorem</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Some people's minds are mixed up between their bodies. Put every mind back where it belongs, but no two bodies may swap minds twice, and every swap needs one of the two helpers X and Y.<br>
+    <strong>How to play:</strong> Press one body, then another, to swap their minds. Take back the last swap if you need to.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="ring" viewBox="0 0 400 400" role="group" aria-label="People in a ring, each body showing a coloured letter for the mind it holds, with the helpers X and Y below. Press one body and then another to swap their minds; the arrow keys move from body to body."></svg>
+    <p id="log" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label>People <input id="nIn" type="number" min="3" max="12" step="1" aria-label="Number of people, 3 to 12"></label>
+    <button id="backBtn" type="button" disabled>Take back</button>
+    <button id="solveBtn" type="button">Show a solution</button>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>In an episode of <i>Futurama</i> a machine swaps the minds of two bodies, but never the same two bodies twice. The show's writer, Ken Keeler, proved that two extra people, never swapped before, can always put every mind back. The game is a <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">permutation</a> problem.</p>
+
+      <h2>Cycles and transpositions</h2>
+      <p>Every mix-up splits into cycles, like (A B C): A's mind is in B&rsquo;s body, B&rsquo;s in C&rsquo;s, C&rsquo;s in A&rsquo;s. A swap is a transposition. Three lemmas: swapping two neighbours in a cycle takes one of them out of it; swapping a cycle member with an outsider X puts X into the cycle; and <code>(a x y b)(x b) = (a x)(b y)</code>. The logic test verified each as a product of permutations, for cycles up to length 8.</p>
+
+      <h2>Does it always work?</h2>
+      <p>The Futurama theorem says yes, for any number of people. The test did not rely on the proof alone: it went through <i>every</i> mix-up of 3 and of 4 people, and 120 random mix-ups of 5, 6 and 7, and found a sequence of swaps that involves X or Y and never repeats a pair; the game replayed each one. A mix-up of <i>n</i> people needs at least <i>n</i> minus the number of cycles swaps, plus two for each time a swap joins two cycles, which is how the search is organised. Press Show a solution to watch one (up to 7 people).</p>
+
+      <p class="note">As in the applet, a pair of bodies can swap only once, a swap must include X or Y, Take back frees the pair, and the game is done when every mind is home. The applet's range for the number of people and its way of mixing are not in the bytecode I read: here 3 to 12 and a random mix-up that is never already solved.</p>
+
+      <p class="tip">With 3 people try to solve it first without looking. Which swap do you need to start with?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/Futurama.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="futurama-core.js"></script>
+<script src="futurama.js"></script>
+</body>
+</html>

@@ -1368,6 +1368,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("fraction-comparison-exercise: 2/4 and 3/6 are equal and nothing is answered yet", q.correctSign === "=" && q.answered === null && q.wasRight === null);
 }
 
+// The Futurama game: cycles of the mix-up and the swaps made.
+{
+  const p = at("futurama", { n: 3, perm: [1, 2, 0, 3, 4], usedX: [], usedY: [], stack: [], message: "", moves: 0, explored: false });
+  check("futurama: a 3-cycle mix-up is one cycle A B C, nothing swapped, not solved", p.cycles.length === 1 && p.cycles[0].join("") === "ABC" && p.solved === false && p.mindsAtHome === 0);
+  const q = at("futurama", { n: 3, perm: [0, 1, 2, 3, 4], usedX: [0], usedY: [], stack: [[0, 3]], message: "Fantasic!", moves: 2, explored: true });
+  check("futurama: all minds home is solved, and the swap with X is remembered", q.solved === true && q.usedWithX.join() === "A" && q.swapsMade.join() === "AX" && q.mindsAtHome === 3);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

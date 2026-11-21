@@ -434,6 +434,7 @@ const GAMES = {
   "flip-them-iii": (page) => page.locator("#ring g.disc").first().click({ force: true }),
   "fourth-degree": (page) => page.locator("#c3").evaluate((e) => { e.value = "2"; e.dispatchEvent(new Event("input", { bubbles: true })); }),
   "fraction-comparison-exercise": (page) => page.click("#sign1"),
+  "futurama": (page) => page.locator("#ring g.body").first().click({ force: true }),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */
