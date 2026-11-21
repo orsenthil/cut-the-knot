@@ -1509,5 +1509,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "langman-paradox",
+      title: "Langman's Paradox",
+      blurb: "A Fibonacci square rearranges into a rectangle of a different area. Where does the extra unit come from?",
+      tags: ["paradoxes", "sequences", "invariants"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

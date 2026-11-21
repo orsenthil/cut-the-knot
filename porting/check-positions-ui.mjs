@@ -403,6 +403,9 @@ const GAMES = {
   "langford-skolem": async (page) => {
     await page.check('input[value="skolem"]');
   },
+  "langman-paradox": async (page) => {
+    await page.check("#cheatCheck");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

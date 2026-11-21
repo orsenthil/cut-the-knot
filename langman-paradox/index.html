@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Langman's Paradox &mdash; coolmaths</title>
+<meta name="description" content="A Fibonacci square rearranges into a rectangle of a different area. Where does the extra unit come from?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/langman-paradox/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Langman's Paradox">
+<meta property="og:description" content="A Fibonacci square rearranges into a rectangle of a different area. Where does the extra unit come from?">
+<meta property="og:url" content="https://coolmaths.ai/langman-paradox/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.8rem; }
+  .boards { display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: flex-start; }
+  .board-box { flex: 1 1 12rem; min-width: 0; }
+  .board-box p { margin: 0 0 0.3rem; font-size: 0.8rem; color: var(--muted); text-align: center; }
+  .board-box svg { display: block; width: 100%; max-height: 14rem; }
+  .piece { stroke: var(--ink); stroke-width: 0.15; vector-effect: non-scaling-stroke; }
+  .piece.red { fill: #d9534f; fill-opacity: 0.8; }
+  .piece.olive { fill: #9a8b30; fill-opacity: 0.85; }
+  .piece.blue { fill: #3b6fd4; fill-opacity: 0.75; }
+  .sliver { fill: var(--highlight); stroke: var(--accent); stroke-width: 0.2; vector-effect: non-scaling-stroke; }
+  .readout { margin: 0.6rem 0 0; text-align: center; font-size: 0.85rem; color: var(--muted); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 100%; max-width: 10rem; accent-color: var(--accent); }
+  input:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="langman-paradox" data-kind="demo">
+<main id="main">
+  <h1>Langman's Paradox</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> The same three pieces fill a Fibonacci square and a slightly different rectangle.<br>
+    <strong>How to play:</strong> Change the Fibonacci size, and use Cheat to exaggerate the sliver hiding the missing unit.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="boards">
+      <div class="board-box">
+        <p>The square</p>
+        <svg id="squareBoard" viewBox="0 0 8 8" role="img" aria-label="A square cut into three coloured pieces"></svg>
+      </div>
+      <div class="board-box">
+        <p>The rectangle</p>
+        <svg id="rectBoard" viewBox="0 0 13 5" role="img" aria-label="The three pieces arranged as a rectangle, with a sliver"></svg>
+      </div>
+    </div>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Fibonacci size <input id="nInput" type="range" min="4" max="12" value="6" aria-label="Fibonacci index, 4 to 12"></label>
+    <label><input id="cheatCheck" type="checkbox"> Cheat</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Dr. Harry Langman's dissection makes a square appear to become a rectangle of different area. The pieces never change size.</p>
+
+      <h2>Fibonacci dimensions</h2>
+      <p>The square has side F(n); the rectangle has sides F(n−1) and F(n+1). By <a class="wiki-term" data-wiki="Cassini%27s_identity" href="https://en.wikipedia.org/wiki/Cassini%27s_identity" target="_blank" rel="noopener">Cassini's identity</a> their areas differ by exactly one unit: <code>F(n)² − F(n−1)F(n+1) = (−1)ⁿ</code>. That missing or extra square is what the illusion hides.</p>
+
+      <h2>The sloping join</h2>
+      <p>The cut in the square has slope based on 3 and 5, while the rectangle pretends it is based on 5 and 8. The slopes differ slightly, so a thin sliver opens along the join. The logic test uses the shoelace formula for n = 4 through 12: the pieces always conserve area and the discrepancy is always one. The Cheat box widens the sliver visually without changing any piece.</p>
+
+      <p class="tip">Switch Cheat on and off. Does the number in the readout change?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Fallacies/LangmanParadox.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="langman-paradox-core.js"></script>
+<script src="langman-paradox.js"></script>
+</body>
+</html>

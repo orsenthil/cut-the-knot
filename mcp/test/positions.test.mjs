@@ -133,6 +133,7 @@ check("johnson-trotter: one step was made", read["johnson-trotter"]?.steps === 1
 check("mandelbrot-julia: a c outside the set was clicked", read["mandelbrot-julia"]?.inMandelbrotSet === false && read["mandelbrot-julia"].escape < read["mandelbrot-julia"].maxIter);
 check("kaprekar-routine: the run reached 6174", read["kaprekar-routine"]?.result === 6174 && read["kaprekar-routine"].count > 1);
 check("langford-skolem: Skolem mode was selected", read["langford-skolem"]?.kind === "skolem" && read["langford-skolem"].valid === true);
+check("langman-paradox: cheat was enabled", read["langman-paradox"]?.cheat === true && Math.abs(read["langman-paradox"].cassini) === 1);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1593,6 +1594,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("langford-skolem", { N: 4, D: 1, M: 2, H: 0, kind: "langford" });
   check("langford-skolem: n=4 has the classic solution", board.text === "41312432" && board.valid === true);
+}
+
+// Langman's paradox.
+{
+  const board = at("langman-paradox", { n: 6, cheat: false });
+  check("langman-paradox: 64 to 65 differs by one", board.squareArea === 64 && board.rectangleArea === 65 && board.cassini === -1);
 }
 
 // A game with no reader, and a position that makes no sense.
