@@ -384,6 +384,9 @@ const GAMES = {
   "critical-path-scheduling": async (page) => {
     await page.selectOption("#procSel", "4");
   },
+  "jefferson-apportionment": async (page) => {
+    await page.click("#seatsMore");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

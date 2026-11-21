@@ -343,6 +343,7 @@ const CORE_GLOBALS = {
   "item-parity/item-parity-core.js": ["ItemParityCore"],
   "item-parity-generalized/item-parity-generalized-core.js": ["ItemParityGeneralizedCore"],
   "critical-path-scheduling/critical-path-scheduling-core.js": ["CriticalPathSchedulingCore"],
+  "jefferson-apportionment/jefferson-apportionment-core.js": ["JeffersonApportionmentCore"],
 };
 
 const games = [];

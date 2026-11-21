@@ -99,7 +99,14 @@ check("the 7 and 11 minute glasses boil a 15 minute egg in 3 flips", solved.flip
   check("paging reaches every game exactly once", seen.size === first.total);
 
   const demos = await list({ kind: "demo", limit: 100 });
-  check("kind filters", demos.total >= 1 && demos.games.every((g) => g.kind === "demo") && demos.nextOffset === null);
+  const demoGames = [];
+  let demoOffset = 0;
+  for (let guard = 0; guard < 100 && demoOffset !== null; guard++) {
+    const page = await list({ kind: "demo", limit: 100, offset: demoOffset });
+    demoGames.push(...page.games);
+    demoOffset = page.nextOffset;
+  }
+  check("kind filters", demos.total >= 1 && demoGames.length === demos.total && demoGames.every((g) => g.kind === "demo"));
   const both = await list({ tag: "parity", kind: "game", limit: 100 });
   check("tag and kind combine", both.games.every((g) => g.tags.includes("parity") && g.kind === "game"));
   check("an unknown tag is an error", (await call("list_games", { tag: "nonsense" })).isError);
