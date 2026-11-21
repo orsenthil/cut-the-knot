@@ -1192,6 +1192,14 @@ window.COOLMATHS = {
       level: 1,
     },
     {
+      slug: "robinson-induction",
+      title: "Integer Rectangles: A Proof by Induction",
+      blurb: "Split, extend, remove and close the gap. Can repeated shrinking force the big rectangle to have an integer side?",
+      tags: ["invariants", "algorithms", "logic"],
+      kind: "demo",
+      level: 3,
+    },
+    {
       slug: "critical-path",
       title: "Critical Path and Scheduling",
       blurb: "Some jobs must wait for others. Find the longest chain that no schedule can beat, then hand the jobs to two or more workers with a priority list.",

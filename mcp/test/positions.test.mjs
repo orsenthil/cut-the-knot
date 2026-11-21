@@ -120,6 +120,7 @@ check("infinite-latin-square: the level slider changed", read["infinite-latin-sq
 check("integer-rectangle: the width was set to 2", read["integer-rectangle"]?.w === 2 && read["integer-rectangle"].balanced === true);
 check("interest-rates: investment mode was selected", read["interest-rates"]?.mode === "investment" && read["interest-rates"].accumulated > 0);
 check("integer-rectangle-graph: a tiling is saved", read["integer-rectangle-graph"]?.tiles.length === 4 && read["integer-rectangle-graph"].valid === true);
+check("robinson-induction: the split was applied", read["robinson-induction"]?.hCount === 2 && read["robinson-induction"].valid === true);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1499,6 +1500,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
     { x: 1, y: 1, w: 1.5, h: 1, kind: "V" },
   ], step: 1, ambient: { x: 0, y: 0, w: 2.5, h: 2 } });
   check("integer-rectangle-graph: the graph trail ends at a special corner", board.endIsCorner === true && board.endSpecial === true && board.counting.S1 === 2);
+}
+
+// Robinson's induction.
+{
+  const board = at("robinson-induction", {});
+  check("robinson-induction: Winkler's tiling has two H-tiles and two V-tiles", board.hCount === 2 && board.vCount === 2 && board.ambientSpecial === true);
 }
 
 // A game with no reader, and a position that makes no sense.

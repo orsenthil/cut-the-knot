@@ -360,6 +360,9 @@ const GAMES = {
   "integer-rectangle-graph": async (page) => {
     await page.check("#graphCheck");
   },
+  "robinson-induction": async (page) => {
+    await page.click("#splitBtn");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

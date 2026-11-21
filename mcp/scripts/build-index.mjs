@@ -336,6 +336,7 @@ const CORE_GLOBALS = {
   "integer-rectangle/integer-rectangle-core.js": ["IntegerRectangleCore"],
   "interest-rates/interest-rates-core.js": ["InterestRatesCore"],
   "integer-rectangle-graph/integer-rectangle-graph-core.js": ["IntegerRectangleGraphCore"],
+  "robinson-induction/robinson-induction-core.js": ["RobinsonInductionCore"],
 };
 
 const games = [];

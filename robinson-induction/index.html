@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Integer Rectangles: A Proof by Induction &mdash; coolmaths</title>
+<meta name="description" content="Split, extend, remove and close the gap. Can repeated shrinking force the big rectangle to have an integer side?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/robinson-induction/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Integer Rectangles: A Proof by Induction">
+<meta property="og:description" content="Split, extend, remove and close the gap. Can repeated shrinking force the big rectangle to have an integer side?">
+<meta property="og:url" content="https://coolmaths.ai/robinson-induction/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 24rem; margin: 0 auto; height: auto; }
+  .tile { stroke: var(--ink); stroke-width: 2; cursor: pointer; }
+  .tile.htile { fill: var(--good); fill-opacity: 0.45; }
+  .tile.vtile { fill: #d9534f; fill-opacity: 0.4; }
+  .tile.selected { stroke: var(--accent); stroke-width: 5; }
+  .tile.onpath { stroke: #d9a441; stroke-width: 5; }
+  .tile:focus-visible { outline: none; stroke: var(--focus); stroke-width: 5; }
+  .tile-label { fill: var(--text); font-size: 15px; font-weight: 700; text-anchor: middle; pointer-events: none; }
+  .ambient { fill: none; stroke: var(--text); stroke-width: 3; pointer-events: none; }
+  .readout { margin: 0.5rem 0 0; text-align: center; font-size: 0.8rem; color: var(--muted); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; flex-wrap: wrap; }
+  button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="robinson-induction" data-kind="demo">
+<main id="main">
+  <h1>Integer Rectangles: A Proof by Induction</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Shrink a tiled rectangle step by step until its integer side is forced.<br>
+    <strong>How to play:</strong> Split the tiles, select a green one, then Extend, Remove path and Close gap. Induct does the whole run.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 300 250" role="group" aria-label="A rectangle tiled by green integer-width and red integer-height rectangles"></svg>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <button id="splitBtn" type="button">Split</button>
+    <button id="extendBtn" type="button">Extend selected</button>
+    <button id="removeBtn" type="button">Remove path</button>
+    <button id="closeBtn" type="button">Close gap</button>
+    <button id="inductBtn" type="button" class="primary">Induct</button>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>One of the shortest proofs of the rectangle tiling theorem uses nothing but repeated shrinking.</p>
+
+      <h2>Split and shrink</h2>
+      <p>First split each green H-tile into unit-width strips and each red V-tile into unit-height strips. Pick a green tile and extend it through the ones stacked above and below it until a column reaches from the bottom edge to the top. Remove that column and slide the right-hand part one unit left: the new rectangle has fewer green tiles, and any integer side it has is an integer side of the original.</p>
+
+      <h2>The base case</h2>
+      <p>With no green tiles left, only unit-height red tiles remain. They must stack from bottom to top, so the height is a whole number. That finishes the <a class="wiki-term" data-wiki="Mathematical_induction" href="https://en.wikipedia.org/wiki/Mathematical_induction" target="_blank" rel="noopener">induction</a>. The logic test checks the split, the column search, each shrink and the base case on Winkler's tiling.</p>
+      <p>The same shrink can be applied to a row. If both sides of the big rectangle were non-integer, repeatedly reducing the longer side by one would eventually leave a rectangle with both sides under one — which cannot be tiled at all. That is the page's additional proof #15.5.</p>
+
+      <p class="tip">Press Split, then Extend on a green tile. What happens to the red tiles when you close the gap?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/IntRectRobinson.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="robinson-induction-core.js"></script>
+<script src="robinson-induction.js"></script>
+</body>
+</html>
