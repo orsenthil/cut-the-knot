@@ -303,6 +303,7 @@ const CORE_GLOBALS = {
   "egyptian-multiplication/egyptian-multiplication-core.js": ["EgyptianMultiplicationCore"],
   "enemy-ambassadors/enemy-ambassadors-core.js": ["EnemyAmbassadorsCore"],
   "equilateral-fibonacci/equilateral-fibonacci-core.js": ["EquilateralFibonacciCore"],
+  "euclid-alg/euclid-alg-core.js": ["EuclidAlgCore"],
 };
 
 const games = [];

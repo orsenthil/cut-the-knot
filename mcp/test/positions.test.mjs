@@ -1238,6 +1238,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("equilateral-fibonacci: N = 55 holds 9 shapes whose last trapezoid is 13, 21, 34 ending on row 55", p.shapes === 9 && p.trapezoids === 7 && p.lastTrapezoid.top === 13 && p.lastTrapezoid.leg === 21 && p.lastTrapezoid.base === 34 && p.lastTrapezoid.endsOnRow === 55);
 }
 
+// Euclid's game (typed numbers): N/gcd numbers end up on the board.
+{
+  const p = at("euclid-alg", { n1: 85, n2: 18, board: [18, 85], total: 85, turn: "you", started: false, last: null, moves: 0, message: "" });
+  check("euclid-alg: from 85 and 18 the gcd is 1, 85 numbers end up on the board, 83 moves, so the first player wins", p.gcd === 1 && p.willEndWith === 85 && p.movesInTheWholeGame === 83 && p.firstPlayerWins === true && p.movesLeft === 83 && p.over === false);
+  const q = at("euclid-alg", { n1: 18, n2: 12, board: [6, 12, 18], total: 3, turn: "you", started: true, last: "computer", moves: 1, message: "It's now over, I won" });
+  check("euclid-alg: 18 and 12 end with 6, 12, 18 and the game is over", q.over === true && q.gcd === 6 && q.movesInTheWholeGame === 1);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

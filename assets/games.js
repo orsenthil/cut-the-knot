@@ -1150,5 +1150,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "euclid-alg",
+      title: "Euclid's Game with Typed Numbers",
+      blurb: "Two numbers sit on a board. Take turns writing the difference of two numbers already there; whoever cannot write a new one loses. Who wins is settled before the first move: can you see how?",
+      tags: ["number-theory", "game-strategy", "divisibility"],
+      level: 2,
+    },
   ],
 };

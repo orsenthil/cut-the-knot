@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Euclid's Game with Typed Numbers &mdash; coolmaths</title>
+<meta name="description" content="Two numbers sit on a board. Take turns writing the difference of two numbers already there; whoever cannot write a new one loses. Who wins is settled before the first move: can you see how?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/euclid-alg/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Euclid's Game with Typed Numbers">
+<meta property="og:description" content="Two numbers sit on a board. Take turns writing the difference of two numbers already there; whoever cannot write a new one loses. Who wins is settled before the first move: can you see how?">
+<meta property="og:url" content="https://coolmaths.ai/euclid-alg/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 1rem; }
+  #board { display: flex; flex-wrap: wrap; gap: 0.4rem; min-height: 2.75rem; }
+  .chip { min-width: 2.75rem; padding: 0.35rem 0.55rem; text-align: center; font-size: 1.2rem; font-weight: 700; font-variant-numeric: tabular-nums; border-radius: 10px; border: 2px solid var(--border); background: var(--stage); }
+  .chip.given { border-color: var(--accent); }
+  .chip.fresh { background: var(--highlight); }
+  #info { margin: 0.7rem 0 0; color: var(--muted); }
+  #form { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 0.8rem; }
+  #form label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  #numIn { width: 6rem; max-width: 100%; font-size: 1.1rem; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="euclid-alg" data-kind="game">
+<main id="main">
+  <h1>Euclid's Game with Typed Numbers</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#divisibility">Divisibility</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two numbers are on the board. You and the computer take turns writing the difference of two numbers already there, and whoever cannot write a new number loses.<br>
+    <strong>How to play:</strong> Type a number and press Enter. Tick Please start if you want the computer to go first.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="board" role="group" aria-label="Numbers on the board"></div>
+    <p id="info" aria-live="polite"></p>
+    <form id="form" autocomplete="off">
+      <label>Your number <input id="numIn" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" aria-label="A number that is the difference of two numbers on the board"></label>
+      <button type="submit" class="primary" id="putBtn">Put</button>
+    </form>
+  </div>
+
+  <div class="controls">
+    <label><input id="startBox" type="checkbox"> Please start</label>
+    <button id="newBtn" type="button">New game</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The difference of any two numbers is divisible by their <a class="wiki-term" data-wiki="Greatest_common_divisor" href="https://en.wikipedia.org/wiki/Greatest_common_divisor" target="_blank" rel="noopener">greatest common divisor</a>. That is the whole game.</p>
+
+      <h2>What can ever appear</h2>
+      <p>Start with <code>N &gt; M</code> and let <code>g = gcd(N, M)</code>. Every difference of two numbers that are multiples of <code>g</code> is again a multiple of <code>g</code>, so only multiples of <code>g</code> up to <code>N</code> can appear. And all of them do, however the game goes: this is Euclid&rsquo;s algorithm. The test played every possible reply against the computer for every start from 5 to 99 (with up to 16 numbers on the final board) and always ended with exactly the multiples of <code>g</code> up to <code>N</code> on the board.</p>
+
+      <h2>Who wins</h2>
+      <p>The final board holds <code>N/g</code> numbers, two of them given, so exactly <code>N/g − 2</code> moves are made, whatever anyone does. The first player wins when that is odd, and the second when it is even. The test checked this for every play from every start. So you can know before you type anything whether to tick <i>Please start</i>: start if <code>N/g − 2</code> is odd.</p>
+
+      <h2>The computer</h2>
+      <p>The computer does not play to win; it always writes the smallest new multiple of <code>g</code> that it can, as the applet does. It does not need to be clever: with a won position it only has to wait for you to run out.</p>
+
+      <p class="note">The applet checks your number and says <i>Please check your calculations…</i> for a number that is not a multiple of <code>g</code> or is too big, <i>How come? Please try again…</i> for one that is not a difference, and <i>The number is already on the board</i>. The grid version of this game is the page <a href="../euclid-game/">Euclid&rsquo;s Game</a>.</p>
+
+      <p class="tip">Start with 12 and 18. What is g, how many numbers will end up on the board, and who wins?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/blue/EuclidAlg.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="euclid-alg-core.js"></script>
+<script src="euclid-alg.js"></script>
+</body>
+</html>
