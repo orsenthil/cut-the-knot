@@ -397,6 +397,9 @@ const GAMES = {
     const box = await page.locator("#mandelbrot").boundingBox();
     await page.mouse.click(box.x + box.width * 0.85, box.y + box.height * 0.2);
   },
+  "kaprekar-routine": async (page) => {
+    await page.click("#runBtn");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

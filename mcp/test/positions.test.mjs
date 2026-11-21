@@ -131,6 +131,7 @@ check("jefferson-apportionment: the seat stepper was used", read["jefferson-appo
 check("john-sharp-paradox: the sliver was revealed", read["john-sharp-paradox"]?.revealed === true && read["john-sharp-paradox"].discrepancy === 1);
 check("johnson-trotter: one step was made", read["johnson-trotter"]?.steps === 1 && read["johnson-trotter"].permutation.length === 4);
 check("mandelbrot-julia: a c outside the set was clicked", read["mandelbrot-julia"]?.inMandelbrotSet === false && read["mandelbrot-julia"].escape < read["mandelbrot-julia"].maxIter);
+check("kaprekar-routine: the run reached 6174", read["kaprekar-routine"]?.result === 6174 && read["kaprekar-routine"].count > 1);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1579,6 +1580,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("mandelbrot-julia", { c: { re: 0, im: 0 }, maxIter: 48 });
   check("mandelbrot-julia: c = 0 is in the set", board.inMandelbrotSet === true && board.escape === 48);
+}
+
+// Kaprekar's routine.
+{
+  const board = at("kaprekar-routine", { start: 6174, base: 10, width: 4, padded: true });
+  check("kaprekar-routine: 6174 is a fixed point", board.result === 6174 && board.count === 1);
 }
 
 // A game with no reader, and a position that makes no sense.

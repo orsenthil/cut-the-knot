@@ -1493,5 +1493,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "kaprekar-routine",
+      title: "Kaprekar's Iterations",
+      blurb: "Sort digits, subtract, repeat. Why does almost every four-digit number end at 6174?",
+      tags: ["arithmetic", "algorithms", "invariants"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

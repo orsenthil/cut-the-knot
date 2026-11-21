@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kaprekar's Iterations &mdash; coolmaths</title>
+<meta name="description" content="Sort digits, subtract, repeat. Why does almost every four-digit number end at 6174?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/kaprekar-routine/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Kaprekar's Iterations">
+<meta property="og:description" content="Sort digits, subtract, repeat. Why does almost every four-digit number end at 6174?">
+<meta property="og:url" content="https://coolmaths.ai/kaprekar-routine/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.5rem; overflow-x: auto; }
+  .kap-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+  .kap-table th, .kap-table td { padding: 0.3rem 0.35rem; text-align: right; border-bottom: 1px solid var(--border); }
+  .kap-table th { color: var(--muted); font-size: 0.72rem; }
+  .kap-table td:first-child { color: var(--muted); text-align: left; }
+  .kap-table tr.last td { color: var(--accent); font-weight: 700; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="number"] { width: 5rem; font: inherit; padding: 0.2rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  select { font: inherit; max-width: 100%; padding: 0.2rem 0.3rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  input:focus-visible, select:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="kaprekar-routine" data-kind="demo">
+<main id="main">
+  <h1>Kaprekar's Iterations</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Sort a number's digits, subtract, and see which constant the process reaches.<br>
+    <strong>How to play:</strong> Set the start, base and width, then press Step or Run to reveal the chain.
+  </div>
+
+  <div id="stage" class="stage">
+  </div>
+
+  <div class="controls">
+    <label>Start <input id="startInput" type="number" min="0" value="3524" aria-label="Starting number"></label>
+    <label>Base <select id="baseSel" aria-label="Number base"></select></label>
+    <label>Digits <select id="widthSel" aria-label="Number of digits"></select></label>
+    <label><input id="paddedCheck" type="checkbox" checked> Pad with zeros</label>
+    <button id="stepBtn" type="button">Step</button>
+    <button id="runBtn" type="button" class="primary">Run</button>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Nearly every four-digit number falls into the same trap after a handful of steps.</p>
+
+      <h2>The process</h2>
+      <p>Arrange the digits largest-first and smallest-first, then subtract. Kaprekar found that padding short differences with zeros makes every four-digit number except repdigits (1111, 2222, …) reach <code>6174</code>, where <code>7641 − 1467 = 6174</code>. With three digits the constant is 495. The logic test checks all 9,990 non-repdigit four-digit starts: every one reaches 6174 in at most seven steps.</p>
+
+      <h2>Why padding matters</h2>
+      <p>Without padding, 1121 gives <code>2111 − 1112 = 999</code>, and the next subtraction is zero. Padding turns it into <code>9990 − 999 = 8991</code>, which continues to 6174. Other bases have their own constants: base 8 with three digits reaches 252, while base 5 with three digits has no single constant.</p>
+
+      <p class="tip">Try a number with all digits equal, then one that differs by just one. What changes when you uncheck padding?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/Kaprekar.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="kaprekar-routine-core.js"></script>
+<script src="kaprekar-routine.js"></script>
+</body>
+</html>
