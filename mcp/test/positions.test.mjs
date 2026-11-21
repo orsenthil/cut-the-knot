@@ -116,6 +116,7 @@ check("horner-method: x was changed to 3", read["horner-method"]?.t === 3 && rea
 check("iterated-function-systems: Fern was selected", read["iterated-function-systems"]?.system === "Fern" && read["iterated-function-systems"].maps === 4);
 check("imo-1986-3: a step was applied", read["imo-1986-3"]?.steps === 1 && read["imo-1986-3"].values.length === 5);
 check("indy-clock-hands: the angle was changed", Math.abs((read["indy-clock-hands"]?.alpha || 0) - Math.PI / 2) < 1e-9);
+check("infinite-latin-square: the level slider changed", read["infinite-latin-square"]?.level === 4 && read["infinite-latin-square"].side === 16);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1466,6 +1467,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("indy-clock-hands", { alpha: Math.PI / 3, red: Math.PI / 2 });
   check("indy-clock-hands: both hands have the red fraction", Math.abs(board.redFraction - 0.25) < 1e-9);
+}
+
+// Infinite Latin squares.
+{
+  const board = at("infinite-latin-square", { level: 3 });
+  check("infinite-latin-square: the 8 by 8 corner is Latin", board.side === 8 && board.latin === true);
 }
 
 // A game with no reader, and a position that makes no sense.

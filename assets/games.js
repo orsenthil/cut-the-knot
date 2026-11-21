@@ -1128,6 +1128,14 @@ window.COOLMATHS = {
       level: 1,
     },
     {
+      slug: "infinite-latin-square",
+      title: "Infinite Latin Squares",
+      blurb: "Fill an endless grid with numbers so that every row and column has each number once. Can a simple doubling rule really do it?",
+      tags: ["counting", "algorithms", "invariants"],
+      kind: "demo",
+      level: 3,
+    },
+    {
       slug: "complex-numbers",
       title: "Complex Numbers",
       blurb: "Two numbers live on a plane. Add them, multiply them, fix their angles or their sizes: what does the product do when you drag?",

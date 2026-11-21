@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Infinite Latin Squares &mdash; coolmaths</title>
+<meta name="description" content="Fill an endless grid with numbers so that every row and column has each number once. Can a simple doubling rule really do it?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/infinite-latin-square/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Infinite Latin Squares">
+<meta property="og:description" content="Fill an endless grid with numbers so that every row and column has each number once. Can a simple doubling rule really do it?">
+<meta property="og:url" content="https://coolmaths.ai/infinite-latin-square/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.6rem; }
+  .latin-grid { display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 1px; max-width: 26rem; margin: 0 auto; }
+  .cell { min-width: 0; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-variant-numeric: tabular-nums; background: var(--surface); color: var(--text); border-radius: 3px; overflow: hidden; }
+  .cell[style*="--hue"] { background: hsl(var(--hue) 65% 55%); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 100%; max-width: 12rem; accent-color: var(--accent); }
+  .controls input[type="number"] { width: 4rem; font: inherit; padding: 0.2rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="infinite-latin-square" data-kind="demo">
+<main id="main">
+  <h1>Infinite Latin Squares</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Fill an endless grid so every row and column uses each number exactly once.<br>
+    <strong>How to play:</strong> Change the size to see bigger corners of the infinite square, or colour the numbers.
+  </div>
+
+  <div id="stage" class="stage">
+  </div>
+
+  <div class="controls">
+    <label>Size <input id="levelInput" type="range" min="1" max="6" value="3" aria-label="Size of the corner, as a power of two"></label>
+    <label>Modulo <input id="modInput" type="number" min="0" max="20" value="0" aria-label="Modulus for colouring, 0 for numbers"></label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>An infinite grid can be filled so that every row and every column contains every whole number exactly once. The rule is simpler than it looks.</p>
+
+      <h2>Write the numbers in binary</h2>
+      <p>Put <code>i XOR j</code> in row i, column j, where XOR is bitwise exclusive or. In binary, XOR adds without carrying. Doubling the corner square copies it into three quarters and adds the new high bit to two of them — exactly the rule the applet uses. The number 0, 1, 2, …, 7 in binary is 000 through 111, and adding 4 prepends a 1 to each.</p>
+
+      <h2>Why it never repeats</h2>
+      <p>Every corner of side <code>2ⁿ</code> is a finite Latin square: XOR with a fixed number is a one-to-one map, so each row and column contains each symbol once. Since every cell lies in some finite corner, the whole quadrant is Latin. The logic test checks the doubling construction against the XOR formula and confirms the Latin property for all seven levels.</p>
+
+      <p class="tip">Set the modulus to 4 and look at the repeating colour pattern. What do you notice?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/arithmetic/InfiniteLatin.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="infinite-latin-square-core.js"></script>
+<script src="infinite-latin-square.js"></script>
+</body>
+</html>

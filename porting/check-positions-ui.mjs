@@ -346,6 +346,10 @@ const GAMES = {
     await page.fill("#alphaInput", "90");
     await page.locator("#alphaInput").press("Enter");
   },
+  "infinite-latin-square": async (page) => {
+    await page.locator("#levelInput").fill("4");
+    await page.locator("#levelInput").dispatchEvent("input");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },
