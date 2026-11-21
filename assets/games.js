@@ -1000,6 +1000,14 @@ window.COOLMATHS = {
       level: 3,
     },
     {
+      slug: "euler-hamilton-paths",
+      title: "Euler & Hamilton Paths",
+      blurb: "Walk every edge of a graph exactly once, then visit every dot exactly once. The two puzzles follow very different rules.",
+      tags: ["graph-theory", "algorithms", "logic"],
+      kind: "demo",
+      level: 2,
+    },
+    {
       slug: "city-block-hunt",
       title: "City Block Hunt",
       blurb: "A treasure hides under one square of a city-block grid. Touch squares and read the distance clue — how few touches will always find it?",

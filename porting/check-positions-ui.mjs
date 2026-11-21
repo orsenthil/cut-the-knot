@@ -318,6 +318,9 @@ const GAMES = {
     await page.locator("#nInput").fill("12");
     await page.locator("#nInput").dispatchEvent("input");
   },
+  "euler-hamilton-paths": async (page) => {
+    await page.locator(".node").first().click();
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

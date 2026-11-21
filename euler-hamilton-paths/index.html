@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Euler &amp; Hamilton Paths &mdash; coolmaths</title>
+<meta name="description" content="Walk every edge of a graph exactly once, then visit every dot exactly once. The two puzzles follow very different rules.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/euler-hamilton-paths/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Euler &amp; Hamilton Paths">
+<meta property="og:description" content="Walk every edge of a graph exactly once, then visit every dot exactly once. The two puzzles follow very different rules.">
+<meta property="og:url" content="https://coolmaths.ai/euler-hamilton-paths/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: manipulation; }
+  .edge { stroke: var(--border-strong); stroke-width: 3; }
+  .edge.used { stroke: var(--accent); stroke-width: 5; }
+  .node circle { fill: var(--card); stroke: var(--accent); stroke-width: 2.5; }
+  .node.last circle { fill: var(--highlight); stroke-width: 4; }
+  .node text { text-anchor: middle; fill: var(--text); font-size: 15px; font-family: var(--font); pointer-events: none; }
+  .node:focus-visible { outline: none; }
+  .node:focus-visible circle { stroke-width: 5; }
+  .control-row label, .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; max-width: 100%; flex-wrap: wrap; cursor: pointer; }
+  select { font: inherit; max-width: 100%; padding: 0.2rem 0.3rem; border: 1px solid var(--border-strong); border-radius: 0.4rem; background: var(--card); color: var(--text); }
+  button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="euler-hamilton-paths" data-kind="demo">
+<main id="main">
+  <h1>Euler & Hamilton Paths</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#graph-theory">Graph Theory</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Walk through a graph using every line once, or visit every dot once.<br>
+    <strong>How to play:</strong> Choose a graph and a path type, then click the dots in order. Back removes the last click.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 380 330" role="group" aria-label="A graph whose vertices you click in sequence"></svg>
+  </div>
+
+  <div class="controls">
+    <label>Graph <select id="graphSel" aria-label="Example graph">
+      <option value="0">Triangle</option><option value="1" selected>Square with a diagonal</option>
+      <option value="2">House</option><option value="3">Star</option>
+    </select></label>
+    <label><input type="radio" name="mode" value="euler" checked> Euler (edges)</label>
+    <label><input type="radio" name="mode" value="hamilton"> Hamilton (vertices)</label>
+    <button id="backBtn" type="button">Back</button>
+    <button id="clearBtn" type="button" class="primary">Clear</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Some walks are possible and some are not — and the two kinds of path obey entirely different rules.</p>
+
+      <h2>Euler paths</h2>
+      <p>An <a class="wiki-term" data-wiki="Eulerian_path" href="https://en.wikipedia.org/wiki/Eulerian_path" target="_blank" rel="noopener">Euler path</a> uses each edge exactly once. Euler's criterion says it exists precisely when the graph is connected and has either 0 or 2 vertices of odd degree; with 0 odd vertices the path closes into a cycle. The used edges vanish as you click, then return coloured when the path is complete.</p>
+
+      <h2>Hamilton paths</h2>
+      <p>A <a class="wiki-term" data-wiki="Hamiltonian_path" href="https://en.wikipedia.org/wiki/Hamiltonian_path" target="_blank" rel="noopener">Hamilton path</a> visits each vertex exactly once. There is no similarly simple criterion: finding one is a search problem. The logic test checks both validators on real and invalid walks and compares the existence tests with a brute-force search on small graphs.</p>
+
+      <p class="tip">Try the star in Euler mode. Can you explain why no path works there?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/GraphPractice.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="euler-hamilton-paths-core.js"></script>
+<script src="euler-hamilton-paths.js"></script>
+</body>
+</html>
