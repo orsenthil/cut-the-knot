@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hilbert and Moore Curves &mdash; coolmaths</title>
+<meta name="description" content="Can a line fill a square? Follow the Hilbert and Moore curves as they snake through every cell of a finer and finer grid.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hilbert-curve/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hilbert and Moore Curves">
+<meta property="og:description" content="Can a line fill a square? Follow the Hilbert and Moore curves as they snake through every cell of a finer and finer grid.">
+<meta property="og:url" content="https://coolmaths.ai/hilbert-curve/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 22rem; margin: 0 auto; height: auto; }
+  .curve { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 100%; max-width: 12rem; accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="hilbert-curve" data-kind="demo">
+<main id="main">
+  <h1>Hilbert and Moore Curves</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch a single line snake through every small square of a grid.<br>
+    <strong>How to play:</strong> Move the slider to make the curve more detailed, and switch between Hilbert and Moore.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 300 300" role="group" aria-label="A space-filling curve drawn on a square grid"></svg>
+  </div>
+
+  <div class="controls">
+    <label>Order <input id="orderInput" type="range" min="1" max="7" value="3" aria-label="Order of the curve, 1 to 7"></label>
+    <label><input type="radio" name="kind" value="hilbert" checked> Hilbert</label>
+    <label><input type="radio" name="kind" value="moore"> Moore</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A curve that never crosses itself can still pass arbitrarily close to every point of a square. The trick is to take a limit of finite curves.</p>
+
+      <h2>Four copies of the previous curve</h2>
+      <p>Start with a staple-shaped path through four cells. To get the next order, shrink the path, place four copies in the quadrants — the lower two as they are, the upper two turned a quarter turn in opposite directions — and join them with short segments. Order n visits every cell of a <code>2ⁿ × 2ⁿ</code> grid exactly once. The <a class="wiki-term" data-wiki="Hilbert_curve" href="https://en.wikipedia.org/wiki/Hilbert_curve" target="_blank" rel="noopener">Hilbert curve</a> starts at a corner; the Moore curve joins the ends into a closed loop.</p>
+
+      <h2>What the check found</h2>
+      <p>The logic test checks orders 1 through 6: each curve visits every cell once, all points stay in the square, and consecutive points are always neighbours. The page stresses that no finite curve fills the square — only the limiting curve does, which must self-intersect. The logic test describes the finite stages only, which is what the applet draws.</p>
+
+      <p class="tip">Set the order to 6 and switch to Moore. Can you spot where the loop closes?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/exchange/hilbert.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="hilbert-curve-core.js"></script>
+<script src="hilbert-curve.js"></script>
+</body>
+</html>

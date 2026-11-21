@@ -1032,6 +1032,14 @@ window.COOLMATHS = {
       level: 2,
     },
     {
+      slug: "hilbert-curve",
+      title: "Hilbert and Moore Curves",
+      blurb: "Can a line fill a square? Follow the Hilbert and Moore curves as they snake through every cell of a finer and finer grid.",
+      tags: ["sequences", "algorithms", "invariants"],
+      kind: "demo",
+      level: 3,
+    },
+    {
       slug: "coin-change",
       title: "Coin Change",
       blurb: "How many different ways can you make a certain amount using just a few kinds of coins? Pick your coins and an amount to find out.",

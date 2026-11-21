@@ -326,6 +326,7 @@ const CORE_GLOBALS = {
   "archimedes-circumference/archimedes-circumference-core.js": ["ArchimedesCircumferenceCore"],
   "euler-hamilton-paths/euler-hamilton-paths-core.js": ["EulerHamiltonPathsCore"],
   "huntington-hill-method/huntington-hill-method-core.js": ["HuntingtonHillMethodCore"],
+  "hilbert-curve/hilbert-curve-core.js": ["HilbertCurveCore"],
 };
 
 const games = [];

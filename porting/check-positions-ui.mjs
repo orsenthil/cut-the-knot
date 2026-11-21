@@ -324,6 +324,10 @@ const GAMES = {
   "huntington-hill-method": async (page) => {
     await page.click("#seatsMore");
   },
+  "hilbert-curve": async (page) => {
+    await page.locator("#orderInput").fill("4");
+    await page.locator("#orderInput").dispatchEvent("input");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

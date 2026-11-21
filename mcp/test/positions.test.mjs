@@ -110,6 +110,7 @@ check("rouse-ball-fallacy: the congruences hold while the angle stays obtuse", r
 check("archimedes-circumference: the slider changed n to 12", read["archimedes-circumference"]?.n === 12 && read["archimedes-circumference"].squeeze === true);
 check("euler-hamilton-paths: a vertex was clicked", read["euler-hamilton-paths"]?.sequence.length === 1 && read["euler-hamilton-paths"].vertices >= 3);
 check("huntington-hill-method: the seat stepper was used", read["huntington-hill-method"]?.total === read["huntington-hill-method"]?.seats);
+check("hilbert-curve: the order slider changed", read["hilbert-curve"]?.order === 4 && read["hilbert-curve"].grid === 16);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1424,6 +1425,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("huntington-hill-method", { seats: 23, populations: [100, 200, 300] });
   check("huntington-hill-method: 23 seats are allocated", board.total === 23 && board.final.length === 3);
+}
+
+// Hilbert and Moore curves.
+{
+  const board = at("hilbert-curve", { order: 3, kind: "hilbert" });
+  check("hilbert-curve: order 3 visits 64 cells", board.grid === 8 && board.count === 64);
 }
 
 // A game with no reader, and a position that makes no sense.
