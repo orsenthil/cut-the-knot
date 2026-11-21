@@ -1272,6 +1272,14 @@ window.COOLMATHS = {
       level: 3,
     },
     {
+      slug: "item-parity-generalized",
+      title: "Two Colors in Two Rows II",
+      blurb: "The rows can be odd lengths and hold different numbers of reds. Why do the matching links still come out equal?",
+      tags: ["parity", "invariants", "counting"],
+      kind: "demo",
+      level: 2,
+    },
+    {
       slug: "distance-to-line",
       title: "Distance from a Point to a Line",
       blurb: "Drag a line and a point and watch the distance between them. Why is it |Au + Bv + C| divided by the length of the normal, and what does normalizing the equation do?",

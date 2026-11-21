@@ -377,6 +377,10 @@ const GAMES = {
     await page.locator('.cell[data-key="0,0"]').click();
     await page.locator('.cell[data-key="0,1"]').click();
   },
+  "item-parity-generalized": async (page) => {
+    await page.fill("#redsInput", "5");
+    await page.locator("#redsInput").dispatchEvent("input");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

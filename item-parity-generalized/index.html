@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Two Colors in Two Rows II &mdash; coolmaths</title>
+<meta name="description" content="The rows can be odd lengths and hold different numbers of reds. Why do the matching links still come out equal?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/item-parity-generalized/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Two Colors in Two Rows II">
+<meta property="og:description" content="The rows can be odd lengths and hold different numbers of reds. Why do the matching links still come out equal?">
+<meta property="og:url" content="https://coolmaths.ai/item-parity-generalized/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.8rem; }
+  #board { display: block; width: 100%; max-width: 32rem; height: auto; margin: 0 auto; }
+  .cell.red { fill: #d9534f; fill-opacity: 0.8; stroke: var(--ink); stroke-width: 2; }
+  .cell.blue { fill: #3b6fd4; fill-opacity: 0.8; stroke: var(--ink); stroke-width: 2; }
+  .cell.selected { stroke: var(--accent); stroke-width: 5; }
+  .cell:focus-visible { outline: none; stroke: var(--focus); stroke-width: 5; }
+  .joint { stroke-width: 5; stroke-linecap: round; }
+  .joint.red-line { stroke: #d9534f; }
+  .joint.blue-line { stroke: #3b6fd4; }
+  .readout { margin: 0.5rem 0 0; text-align: center; font-size: 0.8rem; color: var(--muted); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 100%; max-width: 9rem; accent-color: var(--accent); }
+  input:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="item-parity-generalized" data-kind="demo">
+<main id="main">
+  <h1>Two Colors in Two Rows II</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Match colours between two rows of any length, even when they hold different numbers of reds.<br>
+    <strong>How to play:</strong> Set the row length and the number of reds on top, then click two cells in a row to swap them.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 150" role="group" aria-label="Two rows of red and blue cells with lines joining matching colours"></svg>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Columns <input id="colsInput" type="range" min="2" max="12" value="7" aria-label="Number of columns, 2 to 12"></label>
+    <label>Reds on top <input id="redsInput" type="range" min="0" max="7" value="3" aria-label="Number of red cells in the top row"></label>
+    <button id="randomBtn" type="button" class="primary">Random colours</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The red and blue counts do not even need to match in the two rows — yet the number of links still does.</p>
+
+      <h2>The weaker condition</h2>
+      <p>All that is needed is that the reds on top equal the blues below (call that M₁), and the blues on top equal the reds below (M₂). The rows may be odd lengths and the two rows may have different numbers of red cells. The logic test checks every configuration satisfying this for rows up to length 6, and 500 random larger ones.</p>
+
+      <h2>Two unmatched counts</h2>
+      <p>If x columns join red to red and u join blue to blue, the unmatched reds on top number M₁ − x and sit above the unmatched blues below, which number M₁ − u. Hence <code>M₁ − x = M₁ − u</code> and <code>x = u</code>. Starting from M₂ gives the same result. The page likens this to pouring water and wine between two glasses: the amount of wine in the water glass equals the amount of water in the wine glass, because each glass ends with the same volume it began with.</p>
+
+      <p class="tip">Set the reds on top to a number that makes the two rows unequal. Does the link count still match?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/ItemParity2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="item-parity-generalized-core.js"></script>
+<script src="item-parity-generalized.js"></script>
+</body>
+</html>

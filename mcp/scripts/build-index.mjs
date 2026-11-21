@@ -341,6 +341,7 @@ const CORE_GLOBALS = {
   "sums-products-invariant/sums-products-invariant-core.js": ["SumsProductsInvariantCore"],
   "isbn-encoding/isbn-encoding-core.js": ["IsbnEncodingCore"],
   "item-parity/item-parity-core.js": ["ItemParityCore"],
+  "item-parity-generalized/item-parity-generalized-core.js": ["ItemParityGeneralizedCore"],
 };
 
 const games = [];
