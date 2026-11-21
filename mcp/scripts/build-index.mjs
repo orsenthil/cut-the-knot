@@ -288,6 +288,7 @@ const CORE_GLOBALS = {
   "common-multiples/common-multiples-core.js": ["CommonMultiplesCore"],
   "compare-fractions/compare-fractions-core.js": ["CompareFractionsCore"],
   "complex-numbers/complex-numbers-core.js": ["ComplexNumbersCore"],
+  "coordinates/coordinates-core.js": ["CoordinatesCore"],
 };
 
 const games = [];

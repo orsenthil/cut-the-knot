@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cartesian Coordinates &mdash; coolmaths</title>
+<meta name="description" content="Drag the axes and stretch the unit: how do two numbers name every point of the plane, and how does the same pair read in complex form?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/coordinates/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cartesian Coordinates">
+<meta property="og:description" content="Drag the axes and stretch the unit: how do two numbers name every point of the plane, and how does the same pair read in complex form?">
+<meta property="og:url" content="https://coolmaths.ai/coordinates/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    touch-action: none;
+    cursor: crosshair;
+  }
+  #board:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  #reading {
+    margin: 0.5rem 0 0;
+    min-height: 1.5rem;
+    font-weight: 600;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.3rem 0 0;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+  .controls input[type="number"] {
+    width: 6rem;
+  }
+</style>
+</head>
+<body data-game="coordinates" data-kind="demo">
+<main id="main">
+  <h1>Cartesian Coordinates</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A set of axes lets you name any spot on a flat board with two numbers; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Move the pointer over the board to read a spot. Drag the red dot in the middle to move the axes, and the other red dot to stretch them.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="360" height="360" tabindex="0" aria-label="Coordinate plane with two red handles: the origin, and the point one unit to its right. The cursor reads the nearest whole-number point."></canvas>
+    <p id="reading" aria-live="off"></p>
+    <p class="hint">Keyboard: focus the board, press O (origin), U (unit point) or C (cursor), then the arrow keys.</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="gridBox" type="checkbox"> Show grid</label>
+    <label><input id="traceBox" type="checkbox"> Trace cursor</label>
+    <label>Write as
+      <select id="formatSel" aria-label="Write the reading as">
+        <option value="pair">coordinates (x,y)</option>
+        <option value="complex">complex x + yi</option>
+      </select>
+    </label>
+    <label>Origin x <input id="oxIn" type="number" min="0" max="360" step="10" aria-label="Origin, pixels from the left"></label>
+    <label>Origin y <input id="oyIn" type="number" min="0" max="360" step="10" aria-label="Origin, pixels from the top"></label>
+    <label>Unit <input id="unitIn" type="number" min="10" max="360" step="5" aria-label="Unit length in pixels"></label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two number lines at right angles turn every point of a plane into a pair of numbers, and every pair into a point. That is the idea of <a class="wiki-term" data-wiki="Cartesian_coordinate_system" href="https://en.wikipedia.org/wiki/Cartesian_coordinate_system" target="_blank" rel="noopener">Cartesian coordinates</a>.</p>
+
+      <h2>Reading a point</h2>
+      <p>Draw a line through the point parallel to each axis. Where they meet the axes gives the <i>x</i>-coordinate (the abscissa) and the <i>y</i>-coordinate (the ordinate). In pixels, a point at <code>(px, py)</code> reads <code>x = (px − ox) / unit</code> and <code>y = (oy − py) / unit</code>, rounded to the nearest whole number as the applet does. The logic test checked that every lattice point reads back as itself and that every pixel reads its nearest lattice point.</p>
+
+      <h2>Distance</h2>
+      <p>By the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a>, the distance from the origin to <code>(x, y)</code> is <code>√(x² + y²)</code>, and between two points <code>√((x₁ − x₂)² + (y₁ − y₂)²)</code>. Change the unit and every pixel distance is scaled by it, but the numbers stay the same.</p>
+
+      <h2>Complex form</h2>
+      <p>Write the point <code>(x, y)</code> as <code>x + yi</code> and it becomes a <a class="wiki-term" data-wiki="Complex_number" href="https://en.wikipedia.org/wiki/Complex_number" target="_blank" rel="noopener">complex number</a>, with distance from the origin <code>|x + yi| = √(x² + y²)</code>, its modulus. The applet drops a zero real part and a coefficient of 1 (so you see <code> +i</code>, not <code>0 + 1i</code>); it also leaves no space after the sign of the imaginary part, which this page keeps.</p>
+
+      <p class="tip">Choose complex form, trace the cursor, and move to (0, 1): the applet reads it as <code> +i</code>. Then drag the unit point to make the units tiny and watch the same numbers cover more of the board.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Calculus/Coordinates.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="coordinates-core.js"></script>
+<script src="coordinates.js"></script>
+</body>
+</html>

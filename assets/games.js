@@ -25,6 +25,7 @@ window.COOLMATHS = {
     "parity": "Parity",
     "divisibility": "Divisibility",
     "fractions": "Fractions",
+    "coordinates": "Coordinates",
     "number-theory": "Number Theory",
     "sequences": "Sequences",
     "series": "Infinite Series",
@@ -1028,6 +1029,14 @@ window.COOLMATHS = {
       tags: ["complex-analysis", "algebra"],
       kind: "demo",
       level: 2,
+    },
+    {
+      slug: "coordinates",
+      title: "Cartesian Coordinates",
+      blurb: "Drag the axes and stretch the unit: how do two numbers name every point of the plane, and how does the same pair read in complex form?",
+      tags: ["coordinates", "algebra"],
+      kind: "demo",
+      level: 1,
     },
   ],
 };

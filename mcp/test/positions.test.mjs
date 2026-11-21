@@ -1113,6 +1113,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("complex-numbers: 3+4i and 4-3i are perpendicular", p.perpendicular === true && p.realProduct.x === 0 && p.collinearWithOrigin === false);
 }
 
+// Coordinates: the lattice range of the board and the reading of a point.
+{
+  const p = at("coordinates", { ox: 180, oy: 180, unit: 40, format: "pair", grid: false, trace: false, moves: 0, explored: false });
+  check("coordinates: the opening board shows x from -4 to 4", p.latticeRange.xmin === -4 && p.latticeRange.xmax === 4 && p.unitHandle.x === 220);
+  const q = at("coordinates", { ox: 100, oy: 300, unit: 60, format: "complex", moves: 2, explored: true });
+  check("coordinates: a moved board has the right lattice", q.latticeRange.ymax === 5 && q.latticePointsOnBoard > 0 && q.format === "complex");
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

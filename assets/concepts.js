@@ -29,6 +29,7 @@ window.COOLMATHS_CONCEPTS = {
   "parity": { label: "Parity", prereqs: ["arithmetic"] },
   "divisibility": { label: "Divisibility", prereqs: ["arithmetic"] },
   "fractions": { label: "Fractions", prereqs: ["arithmetic"] },
+  "coordinates": { label: "Coordinates", prereqs: ["arithmetic"] },
   "number-theory": { label: "Number Theory", prereqs: ["divisibility"] },
   "sequences": { label: "Sequences", prereqs: ["arithmetic"] },
   "series": { label: "Infinite Series", prereqs: ["sequences", "algebra"] },
