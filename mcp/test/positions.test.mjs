@@ -1278,6 +1278,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("fc-exercise: 9/6 is outside 3/5 and 7/8", q.middleIsBetween === false && q.larger === "7/8");
 }
 
+// A faulty dissection: the pieces in the rectangle.
+{
+  const p = at("fibonacci-cheat", { honest: true, pieces: [{ id: 0, f: 1, placed: true }, { id: 1, f: 1, placed: true }, { id: 2, f: 1, placed: true }, { id: 3, f: 1, placed: true }], moves: 4, explored: true });
+  check("fibonacci-cheat: all four pieces placed with the honest shapes shows the gap", p.allPlaced === true && p.piecesInTheRectangle === 4 && p.showingHonestPieces === true && /gap of 1 cell/.test(p.visibleAreaIfAllPlaced));
+  const q = at("fibonacci-cheat", { honest: false, pieces: [{ id: 0, f: 0, placed: false }, { id: 1, f: 0.4, placed: false }, { id: 2, f: 1, placed: true }, { id: 3, f: 0, placed: false }], moves: 2, explored: false });
+  check("fibonacci-cheat: one piece in the rectangle", q.piecesInTheRectangle === 1 && q.which.join() === "2" && q.allPlaced === false);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

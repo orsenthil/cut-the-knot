@@ -1188,5 +1188,13 @@ window.COOLMATHS = {
       tags: ["fractions", "arithmetic", "algebra"],
       level: 1,
     },
+    {
+      slug: "fibonacci-cheat",
+      title: "A Faulty Dissection",
+      blurb: "Cut an 8×8 square into four pieces and they seem to fit a 5×13 rectangle: 64 = 65? Drag the pieces over and find the missing cell. What do the Fibonacci numbers have to do with it?",
+      tags: ["paradoxes", "area", "sequences"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

@@ -308,6 +308,7 @@ const CORE_GLOBALS = {
   "factorization/factorization-core.js": ["FactorizationCore"],
   "farey/farey-core.js": ["FareyCore"],
   "fc-exercise/fc-exercise-core.js": ["FcExerciseCore"],
+  "fibonacci-cheat/fibonacci-cheat-core.js": ["FibonacciCheatCore"],
 };
 
 const games = [];

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A Faulty Dissection &mdash; coolmaths</title>
+<meta name="description" content="Cut an 8×8 square into four pieces and they seem to fit a 5×13 rectangle: 64 = 65? Drag the pieces over and find the missing cell. What do the Fibonacci numbers have to do with it?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/fibonacci-cheat/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="A Faulty Dissection">
+<meta property="og:description" content="Cut an 8×8 square into four pieces and they seem to fit a 5×13 rectangle: 64 = 65? Drag the pieces over and find the missing cell. What do the Fibonacci numbers have to do with it?">
+<meta property="og:url" content="https://coolmaths.ai/fibonacci-cheat/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 8px; touch-action: none; cursor: grab; }
+  #pieceBtns { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
+  #pieceBtns button { border-width: 2px; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="fibonacci-cheat" data-kind="demo">
+<main id="main">
+  <h1>A Faulty Dissection</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#sequences">Sequences</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A square of 64 cells is cut into four pieces that seem to fit a rectangle of 65 cells; there is nothing to win or lose, but where did the extra cell come from?<br>
+    <strong>How to play:</strong> Drag the four pieces from the square into the dashed rectangle, or use the buttons or Animate. Then turn on Honest pieces.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="560" height="560" aria-label="A square cut into two triangles and two trapezoids on the left and a dashed rectangle five cells wide and thirteen tall on the right. Drag the pieces into the rectangle, or use the buttons below."></canvas>
+    <div id="pieceBtns"></div>
+  </div>
+
+  <div class="controls">
+    <button id="animBtn" type="button" class="primary">Animate</button>
+    <button id="resetBtn" type="button">Reset</button>
+    <label><input id="honestBox" type="checkbox"> Honest pieces</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Cut an <code>8 × 8</code> square into two triangles with legs 8 and 3, and two trapezoids of height 5 with parallel sides 5 and 3. Put them together as a <code>5 × 13</code> rectangle. The square has 64 cells and the rectangle 65. Which is it?</p>
+
+      <h2>The pieces do not quite fit</h2>
+      <p>The edge between a triangle and a trapezoid should be a straight line, but its two parts have slopes <code>3/8 = 0.375</code> and <code>2/5 = 0.4</code>. They differ, so the pieces leave a thin gap along the diagonal of the rectangle, a parallelogram with area exactly 1 and a width of only about <code>1/√(5² + 13²) ≈ 0.07</code> of a cell. The applet hides it by squeezing the pieces a little when they snap into place (the side 3 becomes <code>40/13 ≈ 3.077</code>); with <i>Honest pieces</i> the true shapes are shown. The logic test measured it: the true pieces tile the square, and in the rectangle they cover 64 cells and leave a gap of 1.</p>
+
+      <h2>Fibonacci numbers</h2>
+      <p>The numbers 3, 5, 8, 13 are consecutive <a class="wiki-term" data-wiki="Fibonacci_sequence" href="https://en.wikipedia.org/wiki/Fibonacci_sequence" target="_blank" rel="noopener">Fibonacci numbers</a>, and <code>13 × 5 − 8² = 1</code>. This is <a class="wiki-term" data-wiki="Cassini_and_Catalan_identities" href="https://en.wikipedia.org/wiki/Cassini_and_Catalan_identities" target="_blank" rel="noopener">Cassini&rsquo;s identity</a>: <code>F<sub>k+1</sub>F<sub>k−1</sub> − F<sub>k</sub>² = (−1)<sup>k</sup></code>, checked for every <code>k</code> up to 30. The ratio of neighbouring Fibonacci numbers is nearly constant, <code>3/8 ≈ 2/5</code>, so the cuts are nearly parallel and the gap is nearly invisible; with larger Fibonacci numbers it is thinner still. With the other parity (a 13 × 13 square cut into 8 × 21 pieces) the pieces overlap instead and 169 becomes 168.</p>
+
+      <h2>Same area or not?</h2>
+      <p>No amount of dragging can change an area. The pieces have total area <code>12 + 12 + 20 + 20 = 64</code> wherever you put them; what changes is the shape they make, which is not a true rectangle.</p>
+
+      <p class="note">Like the applet, a piece snaps in when its middle is close to its place (about 0.8 cell here), the triangles turn a quarter turn as they approach, and Animate takes 50 steps. The eyes that follow the pointer in the applet are left out.</p>
+
+      <p class="tip">Fill the rectangle, then switch Honest pieces on and off. Where is the gap, and how wide is it?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Fallacies/FibonacciCheat.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="fibonacci-cheat-core.js"></script>
+<script src="fibonacci-cheat.js"></script>
+</body>
+</html>
