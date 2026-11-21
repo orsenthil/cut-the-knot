@@ -1240,6 +1240,14 @@ window.COOLMATHS = {
       level: 2,
     },
     {
+      slug: "isbn-encoding",
+      title: "ISBN Encoding",
+      blurb: "Build a book number with its check digit, then see how the same number becomes an EAN-13 barcode.",
+      tags: ["arithmetic", "algorithms", "counting"],
+      kind: "demo",
+      level: 2,
+    },
+    {
       slug: "cycloids",
       title: "Cycloids",
       blurb: "Fix a pencil to a rolling wheel: what does it draw? Roll the wheel on a line, inside a circle or outside it, and put the pencil on the rim, inside or beyond it.",

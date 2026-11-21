@@ -123,6 +123,7 @@ check("integer-rectangle-graph: a tiling is saved", read["integer-rectangle-grap
 check("robinson-induction: the split was applied", read["robinson-induction"]?.hCount === 2 && read["robinson-induction"].valid === true);
 check("winkler-path-proof: the start has a red path", read["winkler-path-proof"]?.pathKind === "red" && read["winkler-path-proof"].valid === true);
 check("sums-products-invariant: a pair was merged without changing the invariant", read["sums-products-invariant"]?.remaining === 4 && read["sums-products-invariant"].invariant === read["sums-products-invariant"].initialInvariant);
+check("isbn-encoding: a cell was cycled", read["isbn-encoding"]?.symbols.length === 13 && read["isbn-encoding"].valid === false);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1520,6 +1521,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("sums-products-invariant", { values: [1, 2, 3, 4, 5, 6], count: 6, max: 6 });
   check("sums-products-invariant: 1..6 predicts 5039", board.invariant === 5039 && board.initialInvariant === 5039);
+}
+
+// ISBN encoding.
+{
+  const board = at("isbn-encoding", { symbols: ["0", "-", "3", "0", "6", "-", "4", "0", "6", "1", "5", "-", "2"] });
+  check("isbn-encoding: 0-306-40615-2 is valid", board.valid === true && board.checkDigit === "2");
 }
 
 // A game with no reader, and a position that makes no sense.

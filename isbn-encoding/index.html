@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ISBN Encoding &mdash; coolmaths</title>
+<meta name="description" content="Build a book number with its check digit, then see how the same number becomes an EAN-13 barcode.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/isbn-encoding/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="ISBN Encoding">
+<meta property="og:description" content="Build a book number with its check digit, then see how the same number becomes an EAN-13 barcode.">
+<meta property="og:url" content="https://coolmaths.ai/isbn-encoding/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.8rem; }
+  #cells { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem; }
+  .isbn-cell { min-width: 1.7rem; min-height: 2.6rem; padding: 0.2rem; font: inherit; font-size: 1.2rem; font-variant-numeric: tabular-nums; border: 2px solid var(--accent); border-radius: 0.45rem; background: var(--card); color: var(--text); cursor: pointer; }
+  .isbn-cell.hyphen { border-color: var(--border-strong); color: var(--muted); }
+  .isbn-cell.check { border-color: var(--good); background: var(--accent-soft); cursor: default; }
+  .isbn-cell:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .ean { margin-top: 0.9rem; text-align: center; }
+  .ean-label { margin: 0; font-size: 0.75rem; color: var(--muted); }
+  #eanText { margin: 0.2rem 0; font-family: var(--mono); font-size: 0.9rem; letter-spacing: 0.1em; overflow-wrap: anywhere; }
+  #bars { display: block; width: 100%; max-width: 20rem; height: 70px; margin: 0 auto; }
+  .module.on { fill: var(--ink); }
+  .module.off { fill: transparent; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; }
+  button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="isbn-encoding" data-kind="demo">
+<main id="main">
+  <h1>ISBN Encoding</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Build a valid ten-digit book number, including its hidden check digit.<br>
+    <strong>How to play:</strong> Click any of the first twelve cells to cycle it through digits and hyphens. The last cell is worked out for you.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="cells"></div>
+    <div class="ean">
+      <p class="ean-label">The same number as an EAN-13 barcode (prefix 978):</p>
+      <p id="eanText"></p>
+      <svg id="bars" viewBox="0 0 190 70" role="img" aria-label="The EAN-13 barcode for this ISBN"></svg>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The last digit of a book number is not chosen freely — it is a checksum that catches mistakes.</p>
+
+      <h2>The mod-11 check</h2>
+      <p>A ten-digit ISBN satisfies <code>10d₁ + 9d₂ + … + 2d₉ + d₁₀ ≡ 0 (mod 11)</code>. Given the first nine digits, the last is forced. If it comes out to 10, it is written <code>X</code>. The logic test checks the formula on real ISBNs such as 0-306-40615-2 and 0-8044-2957-X, and confirms that changing one digit breaks the check. The page's formatting rules are also enforced: three hyphens, none consecutive, and one just before the check digit.</p>
+
+      <h2>Two independent checks</h2>
+      <p>An ISBN-10 appears in a barcode by prepending 978 to its nine digits and appending a <em>new</em> check digit, computed with weights 3 and 1 to make the total a multiple of 10. The two check digits are unrelated: the embedding only reuses the first nine digits. The test confirms the new check digit and that the 95 black-and-white modules decode back to the EAN-13.</p>
+
+      <p class="tip">Cycle one digit and watch the last cell change. Why does a single wrong digit always get caught?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/ISBN.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="isbn-encoding-core.js"></script>
+<script src="isbn-encoding.js"></script>
+</body>
+</html>

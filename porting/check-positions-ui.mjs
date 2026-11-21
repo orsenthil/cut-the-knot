@@ -370,6 +370,9 @@ const GAMES = {
     await page.locator(".number").first().click();
     await page.locator(".number").last().click();
   },
+  "isbn-encoding": async (page) => {
+    await page.locator(".isbn-cell").first().click();
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },
