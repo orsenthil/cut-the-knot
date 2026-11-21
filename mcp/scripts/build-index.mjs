@@ -338,6 +338,7 @@ const CORE_GLOBALS = {
   "integer-rectangle-graph/integer-rectangle-graph-core.js": ["IntegerRectangleGraphCore"],
   "robinson-induction/robinson-induction-core.js": ["RobinsonInductionCore"],
   "winkler-path-proof/winkler-path-proof-core.js": ["WinklerPathProofCore"],
+  "sums-products-invariant/sums-products-invariant-core.js": ["SumsProductsInvariantCore"],
 };
 
 const games = [];

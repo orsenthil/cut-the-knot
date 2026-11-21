@@ -122,6 +122,7 @@ check("interest-rates: investment mode was selected", read["interest-rates"]?.mo
 check("integer-rectangle-graph: a tiling is saved", read["integer-rectangle-graph"]?.tiles.length === 4 && read["integer-rectangle-graph"].valid === true);
 check("robinson-induction: the split was applied", read["robinson-induction"]?.hCount === 2 && read["robinson-induction"].valid === true);
 check("winkler-path-proof: the start has a red path", read["winkler-path-proof"]?.pathKind === "red" && read["winkler-path-proof"].valid === true);
+check("sums-products-invariant: a pair was merged without changing the invariant", read["sums-products-invariant"]?.remaining === 4 && read["sums-products-invariant"].invariant === read["sums-products-invariant"].initialInvariant);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1513,6 +1514,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("winkler-path-proof", {});
   check("winkler-path-proof: the red path has height 2", board.pathKind === "red" && board.sum === 2);
+}
+
+// Sums and products invariant.
+{
+  const board = at("sums-products-invariant", { values: [1, 2, 3, 4, 5, 6], count: 6, max: 6 });
+  check("sums-products-invariant: 1..6 predicts 5039", board.invariant === 5039 && board.initialInvariant === 5039);
 }
 
 // A game with no reader, and a position that makes no sense.

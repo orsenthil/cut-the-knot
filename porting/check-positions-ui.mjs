@@ -366,6 +366,10 @@ const GAMES = {
   "winkler-path-proof": async (page) => {
     await page.check("#bordersCheck");
   },
+  "sums-products-invariant": async (page) => {
+    await page.locator(".number").first().click();
+    await page.locator(".number").last().click();
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

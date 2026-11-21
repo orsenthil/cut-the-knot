@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sums and Products Invariant &mdash; coolmaths</title>
+<meta name="description" content="Merge pairs of numbers again and again. Can you work out the final number before you start?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/sums-products-invariant/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Sums and Products Invariant">
+<meta property="og:description" content="Merge pairs of numbers again and again. Can you work out the final number before you start?">
+<meta property="og:url" content="https://coolmaths.ai/sums-products-invariant/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.8rem; }
+  #numbers { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .number { min-width: 3.5rem; min-height: 3rem; padding: 0.4rem 0.6rem; font: inherit; font-size: 1.1rem; font-variant-numeric: tabular-nums; border: 2px solid var(--accent); border-radius: 0.6rem; background: var(--card); color: var(--text); cursor: pointer; }
+  .number.selected { background: var(--highlight); border-color: var(--good); }
+  .number:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .prediction { margin: 0.8rem 0 0; font-size: 0.85rem; color: var(--muted); overflow-wrap: anywhere; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 100%; max-width: 9rem; accent-color: var(--accent); }
+  input:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="sums-products-invariant" data-kind="demo">
+<main id="main">
+  <h1>Sums and Products Invariant</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Merge pairs of numbers until one is left — and predict that last number in advance.<br>
+    <strong>How to play:</strong> Click two numbers to replace them by their product plus both of them. Repeat restores the start.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="numbers"></div>
+    <p id="prediction" class="prediction"></p>
+  </div>
+
+  <div class="controls">
+    <label>Count <input id="countInput" type="range" min="2" max="12" value="5" aria-label="Starting number of integers, 2 to 12"></label>
+    <label>Max <input id="maxInput" type="range" min="1" max="20" value="8" aria-label="Largest starting integer, 1 to 20"></label>
+    <button id="repeatBtn" type="button">Repeat</button>
+    <button id="resetBtn" type="button" class="primary">New numbers</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>You can know the last number before making a single move. The secret is to add one to every number.</p>
+
+      <h2>The operation in disguise</h2>
+      <p>Replacing A and B by <code>A·B + A + B</code> is the same as replacing them by <code>(A+1)(B+1) − 1</code>. The product of all the numbers <em>increased by one</em> therefore loses the two factors <code>(A+1)</code> and <code>(B+1)</code> and gains exactly their product. Nothing changes.</p>
+
+      <h2>Reading the invariant</h2>
+      <p>So <code>P = ∏(Aᵢ + 1) − 1</code> is an <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>. When one number is left it must equal P. For the page's list 1, 2, 3, 4, 5, 6 that is <code>7! − 1 = 5039</code>, whatever order you merge in. The logic test checks every possible move on all lists of three small numbers and 400 random longer lists.</p>
+
+      <p class="tip">What happens if one of the numbers is 0? What if all of them are &minus;1?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/arithmetic/Invariant.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="sums-products-invariant-core.js"></script>
+<script src="sums-products-invariant.js"></script>
+</body>
+</html>

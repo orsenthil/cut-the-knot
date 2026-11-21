@@ -1224,6 +1224,14 @@ window.COOLMATHS = {
       level: 2,
     },
     {
+      slug: "sums-products-invariant",
+      title: "Sums and Products Invariant",
+      blurb: "Merge pairs of numbers again and again. Can you work out the final number before you start?",
+      tags: ["invariants", "arithmetic", "algorithms"],
+      kind: "demo",
+      level: 2,
+    },
+    {
       slug: "cwidth",
       title: "Shapes of Constant Width",
       blurb: "A rounded triangle turns inside a square and never stops touching all four sides. How can a shape that is not a circle have the same width in every direction?",
