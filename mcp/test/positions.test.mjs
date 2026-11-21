@@ -119,6 +119,7 @@ check("indy-clock-hands: the angle was changed", Math.abs((read["indy-clock-hand
 check("infinite-latin-square: the level slider changed", read["infinite-latin-square"]?.level === 4 && read["infinite-latin-square"].side === 16);
 check("integer-rectangle: the width was set to 2", read["integer-rectangle"]?.w === 2 && read["integer-rectangle"].balanced === true);
 check("interest-rates: investment mode was selected", read["interest-rates"]?.mode === "investment" && read["interest-rates"].accumulated > 0);
+check("integer-rectangle-graph: a tiling is saved", read["integer-rectangle-graph"]?.tiles.length === 4 && read["integer-rectangle-graph"].valid === true);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1487,6 +1488,17 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("interest-rates", { principal: 1000, deposit: 0, depositsPerYear: 2, interest: 12, years: 1, mode: "investment" });
   check("interest-rates: 1000 at 12% twice a year is 1123.60", board.accumulated === 1123.6);
+}
+
+// Integer rectangles: both proofs on Winkler's tiling.
+{
+  const board = at("integer-rectangle-graph", { tiles: [
+    { x: 0, y: 0, w: 1, h: 0.7, kind: "H" },
+    { x: 0, y: 0.7, w: 1, h: 1.3, kind: "H" },
+    { x: 1, y: 0, w: 1.5, h: 1, kind: "V" },
+    { x: 1, y: 1, w: 1.5, h: 1, kind: "V" },
+  ], step: 1, ambient: { x: 0, y: 0, w: 2.5, h: 2 } });
+  check("integer-rectangle-graph: the graph trail ends at a special corner", board.endIsCorner === true && board.endSpecial === true && board.counting.S1 === 2);
 }
 
 // A game with no reader, and a position that makes no sense.

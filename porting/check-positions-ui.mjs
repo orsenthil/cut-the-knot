@@ -357,6 +357,9 @@ const GAMES = {
   "interest-rates": async (page) => {
     await page.check('input[name="mode"][value="investment"]');
   },
+  "integer-rectangle-graph": async (page) => {
+    await page.check("#graphCheck");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

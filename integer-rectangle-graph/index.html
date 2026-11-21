@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Integer Rectangles: Two Proofs &mdash; coolmaths</title>
+<meta name="description" content="Tile a rectangle with rectangles that each have a whole-number side. Can the big rectangle escape having one too?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/integer-rectangle-graph/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Integer Rectangles: Two Proofs">
+<meta property="og:description" content="Tile a rectangle with rectangles that each have a whole-number side. Can the big rectangle escape having one too?">
+<meta property="og:url" content="https://coolmaths.ai/integer-rectangle-graph/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 24rem; margin: 0 auto; height: auto; }
+  .tile { stroke: var(--ink); stroke-width: 2; cursor: pointer; }
+  .tile.htile { fill: #c2653a; fill-opacity: 0.45; }
+  .tile.vtile { fill: #d9534f; fill-opacity: 0.4; }
+  .tile.selected { stroke: var(--accent); stroke-width: 5; }
+  .tile:focus-visible { outline: none; stroke: var(--focus); stroke-width: 5; }
+  .tile-label { fill: var(--text); font-size: 15px; font-weight: 700; text-anchor: middle; pointer-events: none; }
+  .ambient { fill: none; stroke: var(--text); stroke-width: 3; pointer-events: none; }
+  .graph-edge { stroke: var(--accent); stroke-width: 2.5; pointer-events: none; }
+  .trail { fill: none; stroke: var(--good); stroke-width: 4; pointer-events: none; }
+  .corner { fill: var(--card); stroke: var(--text); stroke-width: 2; pointer-events: none; }
+  .corner.special { fill: var(--good); stroke: var(--good); }
+  .readout { margin: 0.5rem 0 0; text-align: center; font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; flex-wrap: wrap; cursor: pointer; }
+  select { font: inherit; max-width: 100%; padding: 0.2rem 0.3rem; border: 1px solid var(--border-strong); border-radius: 0.4rem; background: var(--card); color: var(--text); }
+  .fields { display: flex; flex-wrap: wrap; gap: 0.4rem 0.8rem; margin-top: 0.6rem; }
+  .fields label { display: inline-flex; align-items: center; gap: 0.3rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .fields input { width: 4rem; max-width: 100%; font: inherit; padding: 0.2rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  input:focus-visible, select:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="integer-rectangle-graph" data-kind="demo">
+<main id="main">
+  <h1>Integer Rectangles: Two Proofs</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#graph-theory">Graph Theory</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> See why a rectangle tiled by rectangles with whole-number sides must itself have one.<br>
+    <strong>How to play:</strong> Pick a tiling, switch on the graph or the special corners, and select a tile to change it.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 300 250" role="group" aria-label="A rectangle tiled by smaller rectangles, with an optional corner graph"></svg>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Tiling <select id="presetSel" aria-label="Choose a tiling"></select></label>
+    <label><input id="graphCheck" type="checkbox"> Graph</label>
+    <label><input id="cornersCheck" type="checkbox"> Special corners</label>
+    <label><input id="trailCheck" type="checkbox" checked> Path from lower left</label>
+  </div>
+
+  <div id="editor" class="fields">
+    <label>x <input id="tileX" type="number" step="0.1" aria-label="Selected tile's x position"></label>
+    <label>y <input id="tileY" type="number" step="0.1" aria-label="Selected tile's y position"></label>
+    <label>width <input id="tileW" type="number" min="0.25" step="0.1" aria-label="Selected tile's width"></label>
+    <label>height <input id="tileH" type="number" min="0.25" step="0.1" aria-label="Selected tile's height"></label>
+    <button id="kindBtn" type="button">Kind: H (click to swap)</button>
+    <button id="removeBtn" type="button">Remove tile</button>
+    <button id="addBtn" type="button" class="primary">Add tile</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two short proofs of a surprising fact about tiling a rectangle with smaller rectangles.</p>
+
+      <h2>The corner graph</h2>
+      <p>Call a number <em>special</em> if it is a whole number (the argument works for any additive group). A tile whose width is special gets two horizontal edges joining its left and right corners; one whose height is special gets two vertical edges. An edge always joins two <a class="wiki-term" data-wiki="Graph_theory" href="https://en.wikipedia.org/wiki/Graph_theory" target="_blank" rel="noopener">graph</a> nodes that are both special. The big rectangle's four corners have degree 1, and every other node has degree 2 or 4, so a path starting at the lower-left corner can only get stuck at another corner of the big rectangle — which must therefore be special.</p>
+
+      <h2>Counting corners</h2>
+      <p>A special tile has 0, 2 or 4 special corners, so their total S is even. Counting the same corners as nodes gives <code>S = S₁ + 2S₂ + 4S₄</code>, where S₁ counts nodes seen once. Hence S₁ is even; since the lower-left corner is counted once, at least two big corners are special. The logic test checks both proofs on three tilings, including one where "special" means a multiple of one half.</p>
+
+      <p class="tip">Switch on the graph and follow the green path from the lower-left corner. Where does it stop?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/IntRectGraph.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="integer-rectangle-graph-core.js"></script>
+<script src="integer-rectangle-graph.js"></script>
+</body>
+</html>

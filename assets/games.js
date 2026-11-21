@@ -1176,6 +1176,14 @@ window.COOLMATHS = {
       level: 1,
     },
     {
+      slug: "integer-rectangle-graph",
+      title: "Integer Rectangles: Two Proofs",
+      blurb: "Tile a rectangle with rectangles that each have a whole-number side. Can the big rectangle escape having one too?",
+      tags: ["invariants", "graph-theory", "logic"],
+      kind: "demo",
+      level: 3,
+    },
+    {
       slug: "counting-squares-in-square",
       title: "Counting Squares in a Square",
       blurb: "How many squares of every size hide inside an N by N grid? Slide a small square around, paint the places it fits, and find the pattern.",
