@@ -1135,5 +1135,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "enemy-ambassadors",
+      title: "Ambassadors at a Round Table",
+      blurb: "Seat 2n ambassadors round a table so that no one sits next to an enemy, given that everybody has at most n−1 enemies. Turn arcs of the table over: can you always make the red edges vanish?",
+      tags: ["graph-theory", "algorithms", "counting"],
+      level: 3,
+    },
   ],
 };

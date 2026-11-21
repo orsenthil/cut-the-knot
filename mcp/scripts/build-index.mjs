@@ -301,6 +301,7 @@ const CORE_GLOBALS = {
   "divisibility/divisibility-core.js": ["DivisibilityCore"],
   "ean13/ean13-core.js": ["Ean13Core"],
   "egyptian-multiplication/egyptian-multiplication-core.js": ["EgyptianMultiplicationCore"],
+  "enemy-ambassadors/enemy-ambassadors-core.js": ["EnemyAmbassadorsCore"],
 };
 
 const games = [];

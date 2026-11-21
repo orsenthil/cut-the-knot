@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ambassadors at a Round Table &mdash; coolmaths</title>
+<meta name="description" content="Seat 2n ambassadors round a table so that no one sits next to an enemy, given that everybody has at most n−1 enemies. Turn arcs of the table over: can you always make the red edges vanish?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/enemy-ambassadors/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Ambassadors at a Round Table">
+<meta property="og:description" content="Seat 2n ambassadors round a table so that no one sits next to an enemy, given that everybody has at most n−1 enemies. Turn arcs of the table over: can you always make the red edges vanish?">
+<meta property="og:url" content="https://coolmaths.ai/enemy-ambassadors/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 28rem; padding: 0.6rem; }
+  #table { display: block; width: 100%; max-width: 100%; height: auto; }
+  #table .chord { stroke: var(--bad); stroke-width: 1.6; opacity: 0.55; }
+  #table .chord.side { stroke-width: 4; opacity: 1; }
+  #table .dot { fill: var(--stage); stroke: var(--ink); stroke-width: 2; }
+  #table .num { fill: var(--ink); font-family: system-ui, sans-serif; font-weight: 700; pointer-events: none; }
+  #table .hit { fill: transparent; cursor: pointer; }
+  #table g.sel .dot { fill: var(--highlight); stroke: var(--accent); stroke-width: 4; }
+  #table g.place:focus-visible .dot, #table g.place:focus .dot { stroke: var(--accent); stroke-width: 4; }
+  #table g.place { outline: none; }
+  #count { margin: 0.6rem 0 0; font-weight: 600; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 4.5rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="enemy-ambassadors" data-kind="game">
+<main id="main">
+  <h1>Ambassadors at a Round Table</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#graph-theory">Graph Theory</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Ambassadors sit round a table, and some of them are enemies (red lines). Win by seating them so that nobody sits next to an enemy.<br>
+    <strong>How to play:</strong> Press one ambassador, then another: everyone from the first to the second, going round the table, is turned around. The Hint button shows a good turn.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="table" viewBox="0 0 400 400" role="group" aria-label="A round table with numbered ambassadors. Red lines join enemies; a thick red line along the table's edge means two enemies sit side by side. Press one place and then another to turn the arc between them over; left and right arrows move round the table."></svg>
+    <p id="count" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label>Ambassadors <input id="nIn" type="number" min="5" max="30" step="1" aria-label="Number of ambassadors, 5 to 30"></label>
+    <button id="hintBtn" type="button">Hint</button>
+    <button id="newBtn" type="button" class="primary">New enemies</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <<details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>If <code>2n</code> ambassadors are invited and each has at most <code>n−1</code> enemies, they can always be seated round a table so that nobody sits next to an enemy. The picture turns the problem into a <a class="wiki-term" data-wiki="Graph_theory" href="https://en.wikipedia.org/wiki/Graph_theory" target="_blank" rel="noopener">graph</a>: the ambassadors are dots, enemies are joined by red lines, and you want a circle through every dot that uses no red line.</p>
+
+      <h2>An algorithm, not just a proof</h2>
+      <p>Seat them any way, and count the pairs of enemy neighbours. Take one such pair, <code>A</code> then <code>B</code>. Walk on from <code>B</code> and look for a pair of neighbours <code>B′, A′</code> where <code>B′</code> is not an enemy of <code>A</code> and <code>A′</code> is not an enemy of <code>B</code>. Turn the whole arc from <code>B</code> to <code>B′</code> over: now <code>A</code> sits beside <code>B′</code> and <code>B</code> beside <code>A′</code>, and the number of enemy neighbours has dropped by at least one. The Hint button does exactly this.</p>
+
+      <h2>Why the lucky pair exists</h2>
+      <p><code>A</code> has at most <code>n−1</code> enemies, so at least <code>n</code> friends, and those friends have <code>n</code> neighbours on one side. <code>B</code> has at most <code>n−1</code> enemies, so one of those neighbours must be a friend of <code>B</code>. The logic test did not take this on trust: for every graph on 4 and on 6 ambassadors in which nobody has more than <code>n−1</code> enemies, and every seating, the lucky pair existed and each use of it lowered the count; the same held for 40,000 random graphs at the limit of the condition with up to 30 ambassadors.</p>
+
+      <h2>Sufficient, not necessary</h2>
+      <p>The condition is not needed for a good seating: draw every diagonal and no side of a regular polygon, and each ambassador has far more than <code>n−1</code> enemies, yet nobody sits next to one. Without it there may be no seating at all: if one ambassador is everyone&rsquo;s enemy, he always sits between two others.</p>
+
+      <p class="note">The applet draws its enemies at random, each ambassador picking a quarter of the others; that does not promise the condition, so some boards have no solution, and the Hint says so when the condition fails.</p>
+
+      <p class="tip">Press Hint again and again and count how many turns it needs. Is it ever more than the number of red edges you started with?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algorithms/EnemyAmbassadors.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="enemy-ambassadors-core.js"></script>
+<script src="enemy-ambassadors.js"></script>
+</body>
+</html>

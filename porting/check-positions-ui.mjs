@@ -417,6 +417,7 @@ const GAMES = {
   "divisibility": (page) => page.locator("button.digit").first().click(),
   "ean13": (page) => page.locator("#digits button").first().click(),
   "egyptian-multiplication": (page) => page.locator("button.digit.a").last().click(),
+  "enemy-ambassadors": (page) => page.locator("#table g.place").first().click(),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

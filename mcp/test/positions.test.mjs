@@ -1224,6 +1224,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("egyptian-multiplication: 85 x 18 = 1530 from 64 + 16 + 4 + 1", p.product === 1530 && p.chosenPowers.join() === "1,4,16,64" && p.rows === 7 && p.binaryOfA === "1010101");
 }
 
+// Ambassadors at a round table: the page's condition and the enemy neighbours.
+{
+  const p = at("enemy-ambassadors", { n: 6, enemies: [[0, 1], [1, 2], [3, 4]], seat: [0, 1, 2, 3, 4, 5], selected: -1, moves: 0 });
+  check("enemy-ambassadors: three enemy pairs sit side by side, and nobody has more than n-1 = 2 enemies", p.enemyNeighbourPairs === 3 && p.conditionHolds === true && p.solved === false && p.hintAvailable === true && p.mostEnemies === 2);
+  const q = at("enemy-ambassadors", { n: 6, enemies: [[0, 2], [0, 4], [1, 3]], seat: [0, 1, 2, 3, 4, 5], selected: 2, moves: 1 });
+  check("enemy-ambassadors: nobody next to an enemy is solved", q.solved === true && q.selectedPlace === 2);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;
