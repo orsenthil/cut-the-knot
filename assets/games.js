@@ -1218,5 +1218,13 @@ window.COOLMATHS = {
       tags: ["counting", "algorithms", "invariants"],
       level: 3,
     },
+    {
+      slug: "first-proof",
+      title: "Heads and Tails",
+      blurb: "Pins with a blunt head and a pointed tail form a triangle: at each corner two pins meet head to head, head to tail or tail to tail. Why are the corners all alike or all different, and what is true with more pins?",
+      tags: ["logic", "parity", "invariants"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

@@ -1316,6 +1316,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("fill-the-board: one chip fills nothing", q.chips === 1 && q.chipsFromTheseWouldFill === false && q.mode === "play");
 }
 
+// Heads and tails: the counts of the three kinds of corner.
+{
+  const p = at("first-proof", { n: 3, direct: [true, false, true], hint: true, moves: 1, explored: true });
+  check("first-proof: three pins with one turned round give one corner of each kind", p.HH === 1 && p.HT === 1 && p.TT === 1 && p.allThreeKindsPresent === true && p.HHequalsTT === true);
+  const q = at("first-proof", { n: 6, direct: [true, true, false, false, true, true], hint: false, moves: 2, explored: true });
+  check("first-proof: six pins, HH = TT = 1 and HT = 4", q.HH === 1 && q.TT === 1 && q.HT === 4 && q.HHequalsTT === true && q.allCornersAlike === false);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

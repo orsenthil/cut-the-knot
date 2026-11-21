@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Heads and Tails &mdash; coolmaths</title>
+<meta name="description" content="Pins with a blunt head and a pointed tail form a triangle: at each corner two pins meet head to head, head to tail or tail to tail. Why are the corners all alike or all different, and what is true with more pins?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/first-proof/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Heads and Tails">
+<meta property="og:description" content="Pins with a blunt head and a pointed tail form a triangle: at each corner two pins meet head to head, head to tail or tail to tail. Why are the corners all alike or all different, and what is true with more pins?">
+<meta property="og:url" content="https://coolmaths.ai/first-proof/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #pins { display: block; width: 100%; max-width: 100%; height: auto; }
+  #pins g.pin { cursor: pointer; outline: none; }
+  #pins .hit { stroke: transparent; stroke-width: 22; stroke-linecap: round; }
+  #pins .shaft { stroke: var(--accent); stroke-linecap: butt; }
+  #pins .tail, #pins .head { fill: var(--accent); }
+  #pins g.pin:hover .shaft { stroke: var(--ink); } #pins g.pin:hover .tail, #pins g.pin:hover .head { fill: var(--ink); }
+  #pins g.pin:focus .shaft, #pins g.pin:focus-visible .shaft { stroke: var(--ink); }
+  #pins g.pin:focus .head, #pins g.pin:focus-visible .head, #pins g.pin:focus .tail, #pins g.pin:focus-visible .tail { fill: var(--ink); }
+  #pins .corner { fill: var(--muted); }
+  #pins .corner.kHT { fill: var(--good); } #pins .corner.kHH { fill: var(--bad); } #pins .corner.kTT { fill: #3a80d0; }
+  #counts { margin: 0.6rem 0 0; font-weight: 700; font-variant-numeric: tabular-nums; text-align: center; overflow-wrap: anywhere; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 4.5rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="first-proof" data-kind="demo">
+<main id="main">
+  <h1>Heads and Tails</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Pins with a round head and a pointed tail are laid end to end in a ring; at every corner two pins meet in one of three ways. There is nothing to win or lose, but there is a pattern to find.<br>
+    <strong>How to play:</strong> Press a pin to turn it round. Tick Hint to count the three kinds of corner, and change the number of pins.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="pins" viewBox="0 0 400 380" role="group" aria-label="A ring of pins. Each pin has a round head and a pointed tail. Press a pin to turn it round; the arrow keys move from pin to pin."></svg>
+    <p id="counts" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label>Pins <input id="nIn" type="number" min="3" max="50" step="1" aria-label="Number of pins, 3 to 50"></label>
+    <label><input id="hintBox" type="checkbox"> Hint</label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>At a corner where two pins meet there are three possibilities: head to head (HH), head to tail (HT) or tail to tail (TT). With three pins, either all the corners are the same or all are different. What happens with more pins?</p>
+
+      <h2>Three pins</h2>
+      <p>Each pin points either round the triangle or against it. If all three point the same way, every corner is head to tail. Otherwise two agree and one does not, and then there is one corner of each kind. The logic test also went through all eight patterns. With four pins all four corners can be alike, but they can never be all different, since there are only three kinds.</p>
+
+      <h2>The generalisation: HH = TT</h2>
+      <p>With <code>n</code> pins, the number of head-to-head corners always equals the number of tail-to-tail corners, so <code>HT = n − 2·HH</code>. Why? Start with all pins pointing the same way: <code>HH = TT = 0</code>. Turning one pin round either changes nothing (when the two pins next to it point opposite ways) or changes <code>HH</code> and <code>TT</code> both by 1 in the same direction and <code>HT</code> by 2 the other way (when they point the same way): the page's table. So <code>HH − TT</code> stays 0. The test checked it by trying all <code>2<sup>n</sup></code> patterns for every <code>n</code> from 3 to 20, and the table for every pin of every pattern up to <code>n = 14</code>.</p>
+
+      <h2>An invariant</h2>
+      <p>This is an <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>: a quantity (<code>HH − TT</code>) that no move can change. Every pattern can be made from the start by turning some of the pins, so it is zero for all of them.</p>
+
+      <p class="note">As in the applet, the number of pins runs from 3 to 50, every pin starts pointing the same way, and the counts show only when Hint is ticked; the number is a box here where the applet changes it when you press the number.</p>
+
+      <p class="tip">Tick Hint and turn pins at random with 8 pins. What do you notice about the numbers of red and blue corners?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/FirstProof.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="first-proof-core.js"></script>
+<script src="first-proof.js"></script>
+</body>
+</html>

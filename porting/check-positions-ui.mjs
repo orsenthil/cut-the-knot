@@ -428,6 +428,7 @@ const GAMES = {
   "fif": (page) => page.locator("#board button.sq").first().click(),
   "figurate": (page) => page.fill("#nIn", "5").then(() => page.press("#nIn", "Tab")),
   "fill-the-board": (page) => page.locator("#grid button").first().click(),
+  "first-proof": (page) => page.locator("#pins g.pin").first().click({ force: true }),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

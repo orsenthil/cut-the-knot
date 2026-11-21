@@ -312,6 +312,7 @@ const CORE_GLOBALS = {
   "fif/fif-core.js": ["FifCore"],
   "figurate/figurate-core.js": ["FigurateCore"],
   "fill-the-board/fill-the-board-core.js": ["FillTheBoardCore"],
+  "first-proof/first-proof-core.js": ["FirstProofCore"],
 };
 
 const games = [];
