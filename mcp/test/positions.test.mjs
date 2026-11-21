@@ -1138,6 +1138,20 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("counting-squares-in-square: a square bigger than the grid has no places", q.places === 0 && q.squareFits === false);
 }
 
+// Critical path: the page's project has critical path B E H C G of length 38.
+{
+  const tasks = [
+    { name: "A", duration: 3, after: [] }, { name: "B", duration: 4, after: [] }, { name: "C", duration: 2, after: ["A", "H"] },
+    { name: "D", duration: 4, after: ["A"] }, { name: "E", duration: 12, after: ["B"] }, { name: "F", duration: 5, after: ["B"] },
+    { name: "G", duration: 12, after: ["C"] }, { name: "H", duration: 8, after: ["D", "E"] }, { name: "I", duration: 4, after: ["F"] },
+  ];
+  const p = at("critical-path", { tasks, endAfter: ["G", "H", "I"], procs: 2, list: "B E A D F I H C G", showCritical: true, scheduled: true, finish: 38, moves: 2, explored: true });
+  check("critical-path: the page's critical path is B E H C G, 38 long", p.criticalPath.join("") === "BEHCG" && p.criticalPathLength === 38 && p.valid === true);
+  check("critical-path: a finish at the critical path cannot be improved", p.finish === 38 && p.lowerBoundOnFinish === 38 && /cannot be improved/.test(p.note));
+  const q = at("critical-path", { tasks: [{ name: "A", duration: 0, after: [] }], procs: 3, list: "", moves: 0, explored: false });
+  check("critical-path: a bad duration is reported", q.valid === false && q.problems.length === 1);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

@@ -1054,5 +1054,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "critical-path",
+      title: "Critical Path and Scheduling",
+      blurb: "Some jobs must wait for others. Find the longest chain that no schedule can beat, then hand the jobs to two or more workers with a priority list.",
+      tags: ["graph-theory", "algorithms", "counting"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };

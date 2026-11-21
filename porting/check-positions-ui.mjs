@@ -407,6 +407,7 @@ const GAMES = {
   coordinates: (page) => page.check("#gridBox"),
   counting: (page) => page.locator("#dots .dot").first().click(),
   "counting-squares-in-square": (page) => page.locator("#nIn").fill("5"),
+  "critical-path": (page) => page.check("#critBox"),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

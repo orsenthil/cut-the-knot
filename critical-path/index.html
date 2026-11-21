@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Critical Path and Scheduling &mdash; coolmaths</title>
+<meta name="description" content="Some jobs must wait for others. Find the longest chain that no schedule can beat, then hand the jobs to two or more workers with a priority list.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/critical-path/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Critical Path and Scheduling">
+<meta property="og:description" content="Some jobs must wait for others. Find the longest chain that no schedule can beat, then hand the jobs to two or more workers with a priority list.">
+<meta property="og:url" content="https://coolmaths.ai/critical-path/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 44rem;
+    padding: 0.8rem;
+  }
+  .step h2 {
+    font-size: 1.05rem;
+    margin: 0 0 0.5rem;
+  }
+  .step {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  .step + .step {
+    margin-top: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .table-wrap {
+    overflow-x: auto;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+  table.tasks {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  table.tasks th, table.tasks td {
+    padding: 0.2rem 0.3rem;
+    text-align: left;
+  }
+  table.tasks th {
+    font-size: 0.85rem;
+  }
+  table.tasks input.cell {
+    width: 100%;
+    min-width: 3.5rem;
+    min-height: 2.75rem;
+    box-sizing: border-box;
+  }
+  table.tasks input.duration {
+    min-width: 4.5rem;
+  }
+  table.tasks tr.selected input {
+    background: var(--highlight);
+  }
+  td.fixed {
+    font-style: italic;
+    color: var(--muted);
+  }
+  #problems {
+    color: var(--bad);
+    margin: 0.4rem 0 0;
+    padding-left: 1.2rem;
+  }
+  svg.diagram {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-width: 100%;
+    touch-action: none;
+  }
+  .edge {
+    stroke: var(--muted);
+    stroke-width: 1.8;
+  }
+  .edge.crit, .node.crit circle {
+    stroke: var(--bad);
+  }
+  .edge.crit {
+    stroke-width: 3;
+  }
+  .arrowhead {
+    fill: var(--muted);
+  }
+  .arrowhead.crit {
+    fill: var(--bad);
+  }
+  .node {
+    cursor: grab;
+  }
+  .node circle {
+    fill: var(--stage);
+    stroke: var(--ink);
+    stroke-width: 2;
+  }
+  .node.crit circle {
+    stroke-width: 3.5;
+  }
+  .node.end circle {
+    fill: var(--highlight);
+  }
+  .node:focus-visible circle {
+    stroke: var(--accent);
+    stroke-width: 4;
+  }
+  .node:focus {
+    outline: none;
+  }
+  .node text {
+    text-anchor: middle;
+    fill: var(--ink);
+    pointer-events: none;
+  }
+  .node .nm { font-size: 13px; font-weight: 700; }
+  .node .du { font-size: 10px; }
+  .node .se { font-size: 9px; }
+  #critText {
+    margin: 0.4rem 0 0;
+    min-height: 1.4rem;
+    font-weight: 600;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+  }
+  .row input[type="text"] {
+    flex: 1 1 12rem;
+    min-width: 0;
+    min-height: 2.75rem;
+  }
+  #timeline {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-width: 100%;
+    cursor: pointer;
+  }
+  #timeline .block rect {
+    fill: var(--accent);
+    opacity: 0.85;
+  }
+  #timeline .bn {
+    fill: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    text-anchor: middle;
+  }
+  #timeline .lane, #timeline .tickn, .hintsvg {
+    fill: var(--muted);
+    font-size: 12px;
+  }
+  #timeline .tickn { text-anchor: middle; }
+  #timeline .laneline, #timeline .tick {
+    stroke: var(--muted);
+    stroke-width: 1;
+  }
+  #timeline .now {
+    stroke: var(--bad);
+    stroke-width: 2;
+    stroke-dasharray: 4 3;
+  }
+  ul.states {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    padding: 0;
+    margin: 0.5rem 0 0;
+  }
+  li.st {
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  li.st.done { background: var(--good); color: #fff; }
+  li.st.running { background: var(--accent); color: #fff; }
+  li.st.ready { background: var(--highlight); }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  #timeIn {
+    width: 6rem;
+    min-height: 2.75rem;
+  }
+  .row label {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    max-width: 100%;
+  }
+  .stepper {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="critical-path" data-kind="demo">
+<main id="main">
+  <h1>Critical Path and Scheduling</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#graph-theory">Graph Theory</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A project is a set of jobs where some must wait for others; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Edit the table of jobs and press Apply, tick the box to see the longest chain of jobs, then type an order for the jobs and press Schedule to see who does what, and when.
+  </div>
+
+  <div id="stage" class="stage">
+    <section class="step" aria-labelledby="h-table">
+      <h2 id="h-table">1. The jobs</h2>
+      <div class="table-wrap">
+        <table class="tasks" aria-label="Project table">
+          <thead><tr><th scope="col">Task</th><th scope="col">Duration</th><th scope="col">Comes after</th></tr></thead>
+          <tbody id="rows"></tbody>
+          <tfoot><tr><th scope="row">End</th><td class="fixed">—</td><td class="fixed" id="endAfter">—</td></tr></tfoot>
+        </table>
+      </div>
+      <ul id="problems" hidden role="alert"></ul>
+      <div class="row">
+        <button id="addBtn" type="button">Add task</button>
+        <button id="removeBtn" type="button">Remove task</button>
+        <button id="applyBtn" type="button" class="primary">Apply</button>
+        <button id="newBtn" type="button">New project</button>
+        <button id="exampleBtn" type="button">Page&rsquo;s example</button>
+      </div>
+    </section>
+
+    <section class="step" aria-labelledby="h-graph">
+      <h2 id="h-graph">2. The graph</h2>
+      <svg id="graph" class="diagram" viewBox="0 0 600 300" role="group" aria-label="Project graph. Each task is a circle with its name and duration; arrows point to the tasks that wait for it."></svg>
+      <div class="row"><label><input id="critBox" type="checkbox"> Compute critical path</label></div>
+      <p id="critText"></p>
+    </section>
+
+    <section class="step" aria-labelledby="h-sched">
+      <h2 id="h-sched">3. The schedule</h2>
+      <div class="row">
+        <span id="procsLabel">Processors</span>
+        <button id="procsLess" type="button" class="stepper" aria-label="One processor fewer">&minus;</button>
+        <output id="procsOut" aria-labelledby="procsLabel">2</output>
+        <button id="procsMore" type="button" class="stepper" aria-label="One processor more">+</button>
+      </div>
+      <div class="row">
+        <input id="listIn" type="text" placeholder="Type in here a priority list, e.g. B E A D F I H C G" aria-label="Priority list: the task names in order, separated by commas or spaces">
+        <button id="scheduleBtn" type="button" class="primary">Schedule</button>
+      </div>
+      <svg id="timeline" viewBox="0 0 400 40" role="img" aria-label="Timeline: no schedule yet"></svg>
+      <div class="row">
+        <label>Look at time <input id="timeIn" type="number" min="0" step="1" value="0" disabled aria-label="Time to look at, in units"></label>
+      </div>
+      <ul id="states" class="states" aria-label="What each task is doing at that time"></ul>
+    </section>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Many jobs depend on each other: you cannot paint the wall before it is built. Which jobs decide how long the whole project takes, and how should the work be handed out?</p>
+
+      <h2>The critical path</h2>
+      <p>Draw each job as a node and an arrow from a job to every job that waits for it, with Start before the jobs that wait for nothing and End after the jobs nobody waits for. Every chain of jobs from Start to End has a total duration, and the project cannot finish sooner than the <i>longest</i> one: that chain is the <a class="wiki-term" data-wiki="Critical_path_method" href="https://en.wikipedia.org/wiki/Critical_path_method" target="_blank" rel="noopener">critical path</a>. In the page&rsquo;s example it is B, E, H, C, G with 4 + 12 + 8 + 2 + 12 = 38. The logic test compared the applet&rsquo;s way of listing every path with a longest-path calculation on every project of up to four jobs, and they always agreed. If two chains tie, the applet keeps the first it finds.</p>
+
+      <h2>Priority lists</h2>
+      <p>With only a few workers you also need an order. A <a class="wiki-term" data-wiki="List_scheduling" href="https://en.wikipedia.org/wiki/List_scheduling" target="_blank" rel="noopener">priority list</a> says: whenever someone is free, give them the first job on the list whose earlier jobs are all done. Different lists can give different finishing times, and none can beat the critical path or the total work divided by the number of workers. The test ran every order of every project of up to five jobs on two to five workers and checked all of this against a second, independent simulation.</p>
+
+      <h2>When more workers stop helping</h2>
+      <p>With as many workers as jobs, the finishing time is exactly the critical path: extra workers cannot shorten it. In the page&rsquo;s example two workers reach 38 with a good list such as B E A D F I H C G, but a careless one can cost 3 more: A B C D F E G H I finishes at 41, because F starts before E and so holds E back. The test tried all 362,880 orders of the nine jobs: on two workers exactly half finish at 38 and half at 41, and on three, four or five workers every order finishes at 38.</p>
+
+      <p class="note">The page says that ticking &ldquo;Compute critical path&rdquo; also makes the timeline show a schedule from the critical path algorithm. The applet does not do that: ticking only draws the critical path on the graph, and the timeline always uses the list you type. This port does the same.</p>
+
+      <p class="tip">On 2 processors, schedule A B C D E F G H I (38), then swap E and F (41). Now try 3 processors with any list at all.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/CriticalPath.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="critical-path-core.js"></script>
+<script src="critical-path.js"></script>
+</body>
+</html>

@@ -291,6 +291,7 @@ const CORE_GLOBALS = {
   "coordinates/coordinates-core.js": ["CoordinatesCore"],
   "counting/counting-core.js": ["CountingCore"],
   "counting-squares-in-square/counting-squares-in-square-core.js": ["CountingSquaresInSquareCore"],
+  "critical-path/critical-path-core.js": ["CriticalPathCore"],
 };
 
 const games = [];
