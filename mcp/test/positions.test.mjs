@@ -1152,6 +1152,15 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("critical-path: a bad duration is reported", q.valid === false && q.problems.length === 1);
 }
 
+// Curry's paradox: Fibonacci legs, rectangles one square apart, pieces in place.
+{
+  const p = at("curry-paradox", { fn: 5, four: false, inner: true, offsets: [{ dx: -8, dy: 10 }, { dx: 5, dy: 5 }], moves: 2, explored: true });
+  check("curry-paradox: n = 6 has legs 13 and 5 and rectangles 15 and 16", p.n === 6 && p.triangleLegs[0] === 13 && p.triangleLegs[1] === 5 && p.rectangleBefore.area === 15 && p.rectangleAfter.area === 16 && p.areaDifference === 1);
+  check("curry-paradox: both pieces placed", p.allInPlace === true && p.piecesInPlace === 2);
+  const q = at("curry-paradox", { fn: 5, four: false, inner: true, offsets: [{ dx: 0, dy: 0 }, { dx: 0, dy: 0 }], moves: 0, explored: false });
+  check("curry-paradox: nothing moved is nothing in place", q.piecesInPlace === 0 && q.allInPlace === false);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

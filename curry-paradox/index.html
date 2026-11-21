@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Curry's Paradox &mdash; coolmaths</title>
+<meta name="description" content="Swap two pieces inside a thin triangle and the leftover rectangle gains a square. Fibonacci numbers set the trap: where does the extra area come from?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/curry-paradox/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Curry's Paradox">
+<meta property="og:description" content="Swap two pieces inside a thin triangle and the leftover rectangle gains a square. Fibonacci numbers set the trap: where does the extra area come from?">
+<meta property="og:url" content="https://coolmaths.ai/curry-paradox/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 36rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  .box {
+    fill: var(--stage);
+    stroke: var(--ink);
+    stroke-width: 0.06;
+  }
+  .grid {
+    stroke: var(--muted);
+    opacity: 0.5;
+    fill: none;
+  }
+  .hyp {
+    stroke: var(--bad);
+    stroke-dasharray: 0.3 0.2;
+    opacity: 0.8;
+  }
+  .leftover {
+    fill: var(--highlight);
+    opacity: 0.35;
+  }
+  .leftover.shown {
+    opacity: 0.8;
+  }
+  .rlabel {
+    text-anchor: middle;
+    dominant-baseline: middle;
+    fill: var(--ink);
+    font-weight: 700;
+    pointer-events: none;
+  }
+  .piece {
+    cursor: grab;
+  }
+  .piece .poly {
+    stroke: var(--ink);
+    stroke-linejoin: round;
+    fill-opacity: 0.88;
+  }
+  .piece.home .poly {
+    fill-opacity: 1;
+  }
+  .piece:focus {
+    outline: none;
+  }
+  .piece:focus-visible .poly {
+    stroke: var(--accent);
+  }
+  #facts {
+    margin: 0.5rem 0 0;
+    font-weight: 600;
+  }
+  .controls fieldset {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 0;
+    padding: 0.2rem 0.7rem;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0 0.8rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+  .controls input[type="number"] {
+    width: 4.5rem;
+  }
+</style>
+</head>
+<body data-game="curry-paradox" data-kind="demo">
+<main id="main">
+  <h1>Curry's Paradox</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#sequences">Sequences</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two pieces are swapped inside a triangle and some area seems to appear out of nowhere; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the coloured pieces from the top triangle into the same places in the bottom one, or press Animate. Then compare the leftover rectangles.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 17 16" role="group" aria-label="Two copies of a thin right triangle, one above the other. The coloured pieces start in the upper one."></svg>
+    <p id="facts" aria-live="off"></p>
+  </div>
+
+  <div class="controls">
+    <label>n <input id="nIn" type="number" min="4" max="11" step="1" aria-label="n, the Fibonacci index: the triangle has legs F(n+1) and F(n-1)"></label>
+    <fieldset><legend>Pieces</legend>
+      <label><input id="two" type="radio" name="pieces" checked> 2</label>
+      <label><input id="four" type="radio" name="pieces"> 4</label>
+    </fieldset>
+    <fieldset><legend>Hole is</legend>
+      <label><input id="inner" type="radio" name="hole" checked disabled> inside</label>
+      <label><input id="perim" type="radio" name="hole" disabled> on perimeter</label>
+    </fieldset>
+    <button id="animateBtn" type="button" class="primary">Animate</button>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Cut a thin right triangle with legs 13 and 5 into two small triangles and a rectangle. Swap the triangles and the leftover rectangle grows from 15 to 16 squares. Where did the extra square come from?</p>
+
+      <h2>Fibonacci numbers</h2>
+      <p>The numbers are consecutive <a class="wiki-term" data-wiki="Fibonacci_number" href="https://en.wikipedia.org/wiki/Fibonacci_number" target="_blank" rel="noopener">Fibonacci numbers</a>. A triangle with legs F<sub>n+1</sub> and F<sub>n−1</sub> holds triangles with legs F<sub>n</sub>, F<sub>n−2</sub> and F<sub>n−1</sub>, F<sub>n−3</sub>, and rectangles F<sub>n−1</sub> × F<sub>n−2</sub> and F<sub>n</sub> × F<sub>n−3</sub>. Their areas always differ by one: <code>F<sub>n</sub>F<sub>n−3</sub> − F<sub>n−1</sub>F<sub>n−2</sub> = (−1)<sup>n</sup></code>, a form of <a class="wiki-term" data-wiki="Cassini_and_Catalan_identities" href="https://en.wikipedia.org/wiki/Cassini_and_Catalan_identities" target="_blank" rel="noopener">Cassini&rsquo;s identity</a> and a case of d&rsquo;Ocagne&rsquo;s identity <code>F<sub>n+1</sub>F<sub>m</sub> − F<sub>n</sub>F<sub>m+1</sub> = (−1)<sup>n</sup>F<sub>m−n</sub></code> with m = n − 2. The logic test checked both identities, with indices from −12 to 12, and the areas for every size the applet offers.</p>
+
+      <h2>The resolution</h2>
+      <p>The three slanted edges are not on one line: the big triangle's edge has slope 5/13 ≈ 0.385, but the small triangle's is 2/5 = 0.4 and the larger one's 3/8 = 0.375. So the "triangle" is really a thin four-sided shape that bulges a little one way in the first arrangement and dents the other way in the second, and in each the sliver between the pieces and the line is worth half a square: the pieces fall half a square short of the triangle in one and exceed it by half a square in the other, a total difference of exactly one. For larger n the slopes agree better and better, so you cannot see it; the dashed red line shows the true hypotenuse, and with n = 4 the gap is obvious. The test confirmed the half-square slack for every size.</p>
+
+      <h2>Four pieces and the hole</h2>
+      <p>With n = 6 the 5 × 3 rectangle can be cut into two shapes that tile the 8 × 2 rectangle with a single unit square missing, inside it or on its edge (Curry&rsquo;s own version): 15 squares of material cannot fill 16. This is closely related to the <a class="wiki-term" data-wiki="Missing_square_puzzle" href="https://en.wikipedia.org/wiki/Missing_square_puzzle" target="_blank" rel="noopener">missing square puzzle</a>.</p>
+
+      <p class="tip">Set n = 4 (the smallest) and swap the triangles: see how far the pieces bend away from the red line. Then try n = 11 and look for any gap at all.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Fallacies/CurryParadox.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="curry-paradox-core.js"></script>
+<script src="curry-paradox.js"></script>
+</body>
+</html>

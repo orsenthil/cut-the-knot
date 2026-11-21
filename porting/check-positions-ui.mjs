@@ -408,6 +408,7 @@ const GAMES = {
   counting: (page) => page.locator("#dots .dot").first().click(),
   "counting-squares-in-square": (page) => page.locator("#nIn").fill("5"),
   "critical-path": (page) => page.check("#critBox"),
+  "curry-paradox": (page) => page.locator('[data-piece="0"]').focus().then(() => page.keyboard.press("Enter")),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

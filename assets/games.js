@@ -1062,5 +1062,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "curry-paradox",
+      title: "Curry's Paradox",
+      blurb: "Swap two pieces inside a thin triangle and the leftover rectangle gains a square. Fibonacci numbers set the trap: where does the extra area come from?",
+      tags: ["paradoxes", "area", "sequences"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
