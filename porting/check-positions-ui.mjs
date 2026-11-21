@@ -431,6 +431,7 @@ const GAMES = {
   "first-proof": (page) => page.locator("#pins g.pin").first().click({ force: true }),
   "flavius": (page) => page.locator("#ring g.place").first().click({ force: true }),
   "flip-them-ii": (page) => page.locator("#ring g.disc").first().click({ force: true }),
+  "flip-them-iii": (page) => page.locator("#ring g.disc").first().click({ force: true }),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

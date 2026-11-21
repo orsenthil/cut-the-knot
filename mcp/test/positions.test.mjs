@@ -1342,6 +1342,16 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("flip-them-ii: N = 7, M = 3 is solvable, and with only circle 1 blue it is solved", q.puzzleSolvableFromTheStart === true && q.solved === true && q.mDividesN === false);
 }
 
+// Flipping items simultaneously III: the fewest clicks.
+{
+  const blue = Array(12).fill(false), clicks = Array(12).fill(0);
+  for (const i of [0, 3, 6, 9]) { clicks[i] = 1; for (const j of [i, i + 1, i + 2]) blue[j % 12] = !blue[j % 12]; }
+  const p = at("flip-them-iii", { n: 12, m: 3, blue, clicks, moves: 4, explored: true });
+  check("flip-them-iii: 12 circles, 3 at a time: four clicks make all blue, which is the fewest (12/3)", p.allBlue === true && p.clicksSoFar === 4 && p.fewestPossible === 4 && p.atTheFewest === true && p.solvable === true);
+  const q = at("flip-them-iii", { n: 12, m: 8, blue: Array(12).fill(false), clicks: Array(12).fill(0), moves: 0, explored: false });
+  check("flip-them-iii: 12 circles, 8 at a time: gcd 4, M1 = 2 is even: it cannot be done", q.solvable === false && q.fewestPossible === null && q.gcd === 4 && q.M1 === 2);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

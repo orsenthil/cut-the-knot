@@ -1240,5 +1240,12 @@ window.COOLMATHS = {
       tags: ["invariants", "parity", "algebra"],
       level: 3,
     },
+    {
+      slug: "flip-them-iii",
+      title: "Flipping Items Simultaneously III",
+      blurb: "In a ring of circles a click changes the colour of M of them in a row. What is the fewest clicks that turn every circle blue? Sometimes it cannot be done at all: when, and how many clicks does it take?",
+      tags: ["algorithms", "parity", "number-theory"],
+      level: 3,
+    },
   ],
 };

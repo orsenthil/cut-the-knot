@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flipping Items Simultaneously III &mdash; coolmaths</title>
+<meta name="description" content="In a ring of circles a click changes the colour of M of them in a row. What is the fewest clicks that turn every circle blue? Sometimes it cannot be done at all: when, and how many clicks does it take?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/flip-them-iii/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Flipping Items Simultaneously III">
+<meta property="og:description" content="In a ring of circles a click changes the colour of M of them in a row. What is the fewest clicks that turn every circle blue? Sometimes it cannot be done at all: when, and how many clicks does it take?">
+<meta property="og:url" content="https://coolmaths.ai/flip-them-iii/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #ring { display: block; width: 100%; max-width: 100%; height: auto; }
+  #ring g.disc { cursor: pointer; outline: none; }
+  #ring .body { stroke: var(--ink); stroke-width: 2; }
+  #ring g.red .body { fill: #e0556b; }
+  #ring g.blue .body { fill: #4a90e2; }
+  #ring .dot { fill: #fff; opacity: 0.9; }
+  #ring g.will .body { stroke: var(--accent); stroke-width: 5; }
+  #ring g.disc:focus .body, #ring g.disc:focus-visible .body { stroke: var(--accent); stroke-width: 5; stroke-dasharray: 5 3; }
+  #info { margin: 0.6rem 0 0; }
+  #answer { margin: 0.3rem 0 0; color: var(--muted); }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 4.5rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="flip-them-iii" data-kind="game">
+<main id="main">
+  <h1>Flipping Items Simultaneously III</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#number-theory">Number Theory</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A ring of red circles must all be turned blue, with as few clicks as you can manage.<br>
+    <strong>How to play:</strong> Press a circle: it and the next few circles clockwise swap colours. Choose how many with M, and how many circles with N. Tick Show the answer to check the fewest clicks.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="ring" viewBox="0 0 400 400" role="group" aria-label="A ring of red and blue circles. Press a circle to change the colour of it and the next M minus 1 circles clockwise; the arrow keys move round the ring. A white dot marks a circle you have clicked an odd number of times."></svg>
+    <p id="info" aria-live="polite"></p>
+    <p id="answer" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label>M <input id="mIn" type="number" min="2" max="12" step="1" aria-label="M, how many circles change colour at once, 2 to 12"></label>
+    <label>N <input id="nIn" type="number" min="5" max="24" step="1" aria-label="N, the number of circles, 5 to 24"></label>
+    <label><input id="answerBox" type="checkbox"> Show the answer</label>
+    <button id="solveBtn" type="button">Show a solution</button>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>There are N lights in a circle, all off, and a click toggles M neighbouring ones. In Levitin&rsquo;s puzzle M = 3. What is the fewest clicks that turn every light on?</p>
+
+      <h2>The answer</h2>
+      <p>Let <code>g = gcd(M, N)</code>, <code>M₁ = M/g</code> and <code>N₁ = N/g</code>. The puzzle can be solved exactly when <code>M₁</code> is odd, and then <code>N₁</code> clicks are the fewest: click every <code>g</code>th circle. When M divides N, that is <code>N/M</code> clicks. When <code>M₁</code> is even there is no way at all. The logic test tried <i>every</i> set of circles to click, for every N up to 20 and every M, and the fewest it found was the page&rsquo;s <code>N₁</code> each time, or none when <code>M₁</code> is even. It also solved the equations for every pair with N up to 60.</p>
+
+      <h2>Why one click per circle is enough</h2>
+      <p>A circle&rsquo;s colour depends only on how many times it has been flipped, not on the order, and two clicks on the same circle cancel. So you never need to click a circle more than once and the order does not matter (the test shuffled random click lists to check). The question becomes: which set of circles to click? Over the field of two elements this is a system of <code>N</code> linear equations in <code>N</code> unknowns.</p>
+
+      <h2>Why M₁ must be odd, and why it is enough</h2>
+      <p>With <code>g = gcd(M, N)</code>, a block of <code>M = g·M₁</code> neighbouring circles holds <code>M₁</code> circles of each of the <code>g</code> classes of circles that are alike modulo <code>g</code>, and each class has <code>N₁ = N/g</code> circles. Every circle has to be flipped an odd number of times, so every class needs <code>N₁</code> odd flips, an amount whose parity is that of <code>N₁</code>. But <i>k</i> clicks flip <code>M₁·k</code> circles of a class. So <code>M₁·k ≡ N₁ (mod 2)</code>. Now <code>M₁</code> and <code>N₁</code> have no common factor, so they are not both even: if <code>M₁</code> is even then <code>N₁</code> is odd and <code>M₁·k</code> is even, which cannot equal it. No number of clicks works. If <code>M₁</code> is odd, click every <code>g</code>th circle: each circle is then covered by exactly <code>M₁</code> blocks, an odd number, so every circle turns blue, using <code>N₁</code> clicks. The test replayed this for every pair with N up to 60. That <code>N₁</code> clicks are the <i>fewest</i> was found by trying every set of circles (N up to 20) and by the equations over two elements (N up to 60, with the combinations of the kernel tried when it was small).</p>
+
+      <p class="note">As in the applet, N runs from 5 to 24 and M from 2 to 12 (kept below N), a click changes M circles clockwise from the one clicked, and the puzzle is done when all the circles are blue. A white dot on a circle means you have clicked it an odd number of times.</p>
+
+      <p class="tip">Try N = 12 with M = 3, 4, 5, 6 and 8. Which can be done, in how many clicks, and what do their M₁ values say?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/FlipThemIII.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="flip-them-iii-core.js"></script>
+<script src="flip-them-iii.js"></script>
+</body>
+</html>
