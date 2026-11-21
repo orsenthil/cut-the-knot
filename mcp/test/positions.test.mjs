@@ -141,6 +141,7 @@ check("leibniz-triangle: the Leibniz triangle was selected", read["leibniz-trian
 check("game-of-life: a glider was placed", read["game-of-life"]?.population === 5 && read["game-of-life"].generation === 0);
 check("life-like-automaton: HighLife was chosen", read["life-like-automaton"]?.rule === "B36/S23");
 check("logistic-model: the growth rate was changed", read["logistic-model"]?.r === 3.5 && read["logistic-model"].period !== null);
+check("lone-divider: the default division was solved", read["lone-divider"]?.solved === true && read["lone-divider"].n === 4);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1649,6 +1650,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("logistic-model", { r: 3.2, p0: 0.25, iterations: 200 });
   check("logistic-model: r = 3.2 has period two", board.period === 2 && board.inInterval === true);
+}
+
+// Lone divider.
+{
+  const board = at("lone-divider", { n: 4, table: [[true, false, true, false], [false, true, false, true], [false, false, true, true]] });
+  check("lone-divider: three choosers get pieces", board.solved === true && Object.keys(board.assignments).length === 3);
 }
 
 // A game with no reader, and a position that makes no sense.

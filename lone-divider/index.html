@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fair Division: Lone Divider &mdash; coolmaths</title>
+<meta name="description" content="One player cuts the cake and the others mark acceptable pieces. Can everyone be satisfied?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/lone-divider/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Fair Division: Lone Divider">
+<meta property="og:description" content="One player cuts the cake and the others mark acceptable pieces. Can everyone be satisfied?">
+<meta property="og:url" content="https://coolmaths.ai/lone-divider/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.7rem; overflow-x: auto; }
+  .grid-row { display: flex; align-items: center; gap: 0.25rem; margin-bottom: 0.25rem; }
+  .grid-row > span, .pref-cell { flex: 1 1 2.2rem; min-width: 1.8rem; text-align: center; }
+  .grid-row.header { font-size: 0.75rem; color: var(--muted); }
+  .grid-row.header > span:first-child, .row-label { flex: 2 1 6rem; text-align: left; font-size: 0.8rem; }
+  .pref-cell { min-height: 2.2rem; font: inherit; border: 2px solid var(--border-strong); border-radius: 0.4rem; background: var(--card); color: var(--text); cursor: pointer; }
+  .pref-cell.yes { background: var(--good); border-color: var(--good); color: var(--card); }
+  .pref-cell.no { color: var(--bad); }
+  .pref-cell.assigned { outline: 3px solid var(--accent); outline-offset: 1px; }
+  .pref-cell.divider { cursor: default; }
+  .divider-row { margin-top: 0.5rem; }
+  .readout { margin: 0.6rem 0 0; text-align: center; font-size: 0.85rem; color: var(--muted); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 100%; max-width: 9rem; accent-color: var(--accent); }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="lone-divider" data-kind="demo">
+<main id="main">
+  <h1>Fair Division: Lone Divider</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#graph-theory">Graph Theory</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> One player cuts the goods; everyone else picks a piece they would accept.<br>
+    <strong>How to play:</strong> Click cells to mark a chooser's acceptable pieces, then press Solve to match them.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="grid"></div>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Players <input id="nInput" type="range" min="2" max="6" value="4" aria-label="Number of players, 2 to 6"></label>
+    <label><input id="solveCheck" type="checkbox"> Solve</label>
+    <button id="solveBtn" type="button" class="primary">Solve</button>
+    <button id="randomBtn" type="button">Random</button>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>With one divider and several choosers, a careful rule makes everyone feel fairly treated.</p>
+
+      <h2>The divider's advantage</h2>
+      <p>The divider cuts n pieces that they consider equally valuable, so any piece is fair to them. Every chooser marks the pieces they would accept. A piece nobody marks goes straight to the divider. The rest must be matched one-to-one to the choosers who accept them — an instance of the <a class="wiki-term" data-wiki="Matching_(graph_theory)" href="https://en.wikipedia.org/wiki/Matching_(graph_theory)" target="_blank" rel="noopener">matching problem</a> in graph theory.</p>
+
+      <h2>When matching fails</h2>
+      <p>If two choosers accept only the same piece, no perfect matching exists and a partial division must be followed by another round among the remaining players. The logic test checks 500 random preference tables: every assigned piece is acceptable, no chooser gets two pieces, and all pieces are accounted for.</p>
+
+      <p class="tip">For two players this becomes the famous rule: one cuts, the other chooses first.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/SocialScience/LoneDivider.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="lone-divider-core.js"></script>
+<script src="lone-divider.js"></script>
+</body>
+</html>

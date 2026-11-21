@@ -430,6 +430,9 @@ const GAMES = {
     await page.fill("#rInput", "3.5");
     await page.locator("#rInput").dispatchEvent("input");
   },
+  "lone-divider": async (page) => {
+    await page.click("#solveBtn");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

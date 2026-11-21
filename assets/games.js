@@ -1573,5 +1573,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "lone-divider",
+      title: "Fair Division: Lone Divider",
+      blurb: "One player cuts the cake and the others mark acceptable pieces. Can everyone be satisfied?",
+      tags: ["algorithms", "graph-theory", "logic"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

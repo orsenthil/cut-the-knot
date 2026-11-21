@@ -357,6 +357,7 @@ const CORE_GLOBALS = {
   "game-of-life/game-of-life-core.js": ["GameOfLifeCore"],
   "life-like-automaton/life-like-automaton-core.js": ["LifeLikeAutomatonCore"],
   "logistic-model/logistic-model-core.js": ["LogisticModelCore"],
+  "lone-divider/lone-divider-core.js": ["LoneDividerCore"],
 };
 
 const games = [];
