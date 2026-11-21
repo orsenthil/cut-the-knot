@@ -1167,7 +1167,7 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("cwidth: the width is the side and the square has side 1", p.widthInEveryDirection === 1 && p.squareSide === 1 && p.angleModulo120 === 35);
   check("cwidth: two of three views seen is not all", p.allViewsSeen === false && p.view === "trace");
   const q = at("cwidth", { angle: 100, mode: "square", step: 10, seen: ["rotate", "trace", "square"], moves: 3 });
-  check("cwidth: all views seen", q.allViewsSeen === true && q.touchedByArcs.includes("top") === false);
+  check("cwidth: all views seen; at 100 degrees an arc touches the top and the left", q.allViewsSeen === true && q.touchedByArcs.includes("top") && q.touchedByArcs.includes("left"));
 }
 
 // A game with no reader, and a position that makes no sense.
