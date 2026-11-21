@@ -422,6 +422,7 @@ const GAMES = {
   "euclid-alg": (page) => page.fill("#numIn", "1000").then(() => page.press("#numIn", "Enter")),
   "euclid-algorithm": (page) => page.locator("button.digit.a").last().click(),
   "factorization": (page) => page.click("#goBtn"),
+  "farey": (page) => page.click("#moreBtn"),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

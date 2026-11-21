@@ -1173,5 +1173,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "farey",
+      title: "The Farey Series",
+      blurb: "Neighbouring Farey fractions always satisfy m2·n1 − m1·n2 = 1, and each is the mediant of its neighbours. See them as the points you can see from the corner of a grid: why does it work?",
+      tags: ["fractions", "number-theory", "sequences"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };

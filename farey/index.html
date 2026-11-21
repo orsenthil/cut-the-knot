@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Farey Series &mdash; coolmaths</title>
+<meta name="description" content="Neighbouring Farey fractions always satisfy m2·n1 − m1·n2 = 1, and each is the mediant of its neighbours. See them as the points you can see from the corner of a grid: why does it work?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/farey/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Farey Series">
+<meta property="og:description" content="Neighbouring Farey fractions always satisfy m2·n1 − m1·n2 = 1, and each is the mediant of its neighbours. See them as the points you can see from the corner of a grid: why does it work?">
+<meta property="og:url" content="https://coolmaths.ai/farey/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 8px; cursor: crosshair; }
+  #board:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  #info { margin: 0.6rem 0 0; overflow-wrap: anywhere; }
+  #series { margin: 0.5rem 0 0; font-size: 0.9rem; color: var(--muted); overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 4.5rem; max-width: 100%; }
+  .controls .step { min-width: 2.75rem; min-height: 2.75rem; }
+</style>
+</head>
+<body data-game="farey" data-kind="demo">
+<main id="main">
+  <h1>The Farey Series</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#fractions">Fractions</a><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#sequences">Sequences</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A grid shows every fraction with a bottom number up to N as a dot you can see from the corner; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Press a dot under the diagonal, or use the arrow keys, to pick a fraction and see its two neighbours. Change N with the buttons.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="420" height="420" tabindex="0" aria-label="A grid with a dot for every fraction p over q in lowest terms, q across and p up, and a line from the corner to each dot. Arrow keys pick a fraction of the Farey series; the picked fraction and its neighbours are coloured."></canvas>
+    <p id="info" aria-live="polite"></p>
+    <p id="series" aria-label="The Farey series"></p>
+  </div>
+
+  <div class="controls">
+    <button id="lessBtn" type="button" class="step" aria-label="Smaller N">&lt;</button>
+    <label>N <input id="nIn" type="number" min="2" max="70" step="1" aria-label="N, the largest denominator, 2 to 70"></label>
+    <button id="moreBtn" type="button" class="step" aria-label="Larger N">&gt;</button>
+    <label><input id="halfBox" type="checkbox" checked> One half</label>
+    <label><input id="linesBox" type="checkbox" checked> Lines</label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The <a class="wiki-term" data-wiki="Farey_sequence" href="https://en.wikipedia.org/wiki/Farey_sequence" target="_blank" rel="noopener">Farey series</a> <code>F<sub>N</sub></code> lists all fractions in lowest terms between 0 and 1 with denominators up to <code>N</code>, in order. For <code>N = 5</code>: 0/1, 1/5, 1/4, 1/3, 2/5, 1/2, 3/5, 2/3, 3/4, 4/5, 1/1.</p>
+
+      <h2>Neighbours</h2>
+      <p>If <code>m₁/n₁</code> and <code>m₂/n₂</code> are successive terms, then <code>m₂n₁ − m₁n₂ = 1</code>. The picture: the dot for <code>p/q</code> is at <code>(q, p)</code>, and the fractions of <code>F<sub>N</sub></code> are the dots you can see from the corner. That cross product is twice the area of the triangle formed by the corner and two neighbouring dots, so every such triangle has area exactly <code>½</code>, the smallest a lattice triangle can have, and no other dot fits inside. The logic test checked this for every <code>N</code> from 2 to 70.</p>
+
+      <h2>The middle one is a mediant</h2>
+      <p>For three successive terms, <code>m₂/n₂ = (m₁ + m₃)/(n₁ + n₃)</code>. The page proves it by subtracting the two neighbour equations (3): <code>(m₃ + m₁)n₂ = m₂(n₃ + n₁)</code>. The page also goes back: start from 0/1 and 1/1, and keep inserting the mediant of two neighbours while its denominator is at most <code>N</code>, and you get exactly <code>F<sub>N</sub></code>. The test did that for every <code>N</code> up to 70 and compared with a list made by sorting all fractions.</p>
+
+      <h2>How many fractions</h2>
+      <p>There are <code>1 + φ(1) + φ(2) + … + φ(N)</code> terms, where <a class="wiki-term" data-wiki="Euler%27s_totient_function" href="https://en.wikipedia.org/wiki/Euler%27s_totient_function" target="_blank" rel="noopener">φ</a> counts the numbers up to <code>n</code> with no common factor with <code>n</code>; the test checked it for every <code>N</code> up to 70.</p>
+
+      <p class="note">The applet's board draws every dot <code>(q, p)</code> with <code>p</code> and <code>q</code> up to <code>N</code>, so fractions above 1 appear above the diagonal. With <i>One half</i> off, each dot is also drawn with its two coordinates swapped. The page this puzzle is linked to is about the series itself, not the applet.</p>
+
+      <p class="tip">Pick 1/2 with N = 7 and see its neighbours. Then raise N to 8 and 9. When do the neighbours of 1/2 change?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/Farey.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="farey-core.js"></script>
+<script src="farey.js"></script>
+</body>
+</html>

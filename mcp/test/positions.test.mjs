@@ -1262,6 +1262,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("factorization: 1 and 97 are coprime with lcm 97", q.gcd === "1" && q.lcm === "97" && q.coprime === true && q.format === "long");
 }
 
+// Farey series: neighbours and the mediant.
+{
+  const p = at("farey", { n: 7, lines: true, oneHalf: true, selected: 9, moves: 3, explored: true });
+  check("farey: in F(7) the tenth term is 1/2, between 3/7 and 4/7, and the mediant of its neighbours", p.terms === 19 && p.selected === "1/2" && p.neighbours.join() === "3/7,4/7" && p.selectedIsMediantOfNeighbours === true);
+  const q = at("farey", { n: 5, lines: false, oneHalf: false, selected: -1, moves: 0, explored: false });
+  check("farey: F(5) has 11 terms and nothing is selected", q.terms === 11 && q.selected === null);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;
