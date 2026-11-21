@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Filling a Grid with Good Neighbors &mdash; coolmaths</title>
+<meta name="description" content="A chip may be added to a square that has two occupied neighbours. How few chips can you start with so that the whole N×N grid fills up? Why can no fewer than N ever do it?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/fill-the-board/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Filling a Grid with Good Neighbors">
+<meta property="og:description" content="A chip may be added to a square that has two occupied neighbours. How few chips can you start with so that the whole N×N grid fills up? Why can no fewer than N ever do it?">
+<meta property="og:url" content="https://coolmaths.ai/fill-the-board/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 0.8rem; }
+  #grid { display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: 2px; }
+  button.sq { min-width: 0; min-height: 0; aspect-ratio: 1; padding: 0; font-size: clamp(0.7rem, 3.4vw, 1.1rem); font-weight: 700; font-variant-numeric: tabular-nums; background: var(--stage); border: 1px solid var(--border); border-radius: 4px; color: var(--ink); }
+  button.sq.chip { background: var(--accent); color: #fff; border-color: var(--accent); }
+  button.sq.added { background: hsl(var(--hue), 60%, 58%); color: #111; border-color: transparent; }
+  #info { margin: 0.6rem 0 0; }
+  .controls fieldset { border: 1px solid var(--border); border-radius: 8px; margin: 0; padding: 0.1rem 0.7rem; display: inline-flex; flex-wrap: wrap; gap: 0 0.8rem; max-width: 100%; min-width: 0; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 4.5rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="fill-the-board" data-kind="game">
+<main id="main">
+  <h1>Filling a Grid with Good Neighbors</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Put some chips on a grid. A new chip may be added on any square that touches two chips; win by choosing the first chips so that the whole grid fills up.<br>
+    <strong>How to play:</strong> In Set up, press squares to place chips. Then choose Play and press One step again and again. Go back to Set up to try a different start.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="grid" role="group" aria-label="The grid. Arrow keys move between squares; Enter or Space presses a square."></div>
+    <p id="info" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <fieldset><legend>Mode</legend>
+      <label><input type="radio" name="mode" id="setupRadio" checked> Set up</label>
+      <label><input type="radio" name="mode" id="playRadio"> Play</label>
+    </fieldset>
+    <button id="stepBtn" type="button" class="primary" disabled>One step</button>
+    <button id="resetBtn" type="button">Reset</button>
+    <label>N <input id="nIn" type="number" min="2" max="15" step="1" aria-label="Size of the grid, 2 to 15"></label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Chips stand on some squares of an <code>N × N</code> grid. A free square that touches at least two occupied squares (side by side, not diagonally) may be filled. How many chips do you need to start with so that the whole grid fills up?</p>
+
+      <h2>N chips are enough</h2>
+      <p>Put <code>N</code> chips on a diagonal. Each square next to the diagonal touches two chips, so the next step fills the two lines beside it, and so on outwards: the whole grid is full after <code>N − 1</code> steps. The logic test ran this for every <code>N</code> up to 15. Other starts work too: of the 53,130 ways to place five chips on a 5 by 5 grid, 1,615 fill it. The test found that the diagonal is among the fastest (<code>N − 1</code> steps) and that the slowest ways take 1, 4, 9 and 14 steps for <code>N = 2, 3, 4, 5</code>, as the page invites you to find out.</p>
+
+      <h2>Fewer than N chips never do</h2>
+      <p>Look at the <i>perimeter</i> of the filled squares, the number of square sides that have a free square or the edge of the grid on their other side. A free square with at least two filled neighbours has at least two of its four sides against filled squares: filling it hides those sides and exposes at most two new ones, so the perimeter never grows. A full grid has perimeter <code>4N</code>, and each chip at the start brings at most 4, so you need at least <code>N</code> chips. The test checked that the perimeter never grows at any step of any start for <code>N ≤ 4</code>, and that no start of fewer than <code>N</code> chips fills the board for every start up to <code>N = 5</code>.</p>
+
+      <h2>Order does not matter</h2>
+      <p>The applet adds all possible squares at each step. If you add them one at a time in any order you reach the same final board, which the test confirmed on random starts. So the steps count only measures how fast the filling spreads.</p>
+
+      <p class="note">As in the applet, a step adds the squares that touch at least two squares filled in an <i>earlier</i> step, so squares added together never help each other in the same step. Here the game also says when you have won (the grid is full) or got stuck.</p>
+
+      <p class="tip">Try N = 5 with five chips in a plus shape, then in a row. Which fills the board, and which takes more steps?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/FillTheBoard.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="fill-the-board-core.js"></script>
+<script src="fill-the-board.js"></script>
+</body>
+</html>

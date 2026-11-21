@@ -1211,5 +1211,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "fill-the-board",
+      title: "Filling a Grid with Good Neighbors",
+      blurb: "A chip may be added to a square that has two occupied neighbours. How few chips can you start with so that the whole N×N grid fills up? Why can no fewer than N ever do it?",
+      tags: ["counting", "algorithms", "invariants"],
+      level: 3,
+    },
   ],
 };

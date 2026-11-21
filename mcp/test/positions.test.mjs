@@ -1306,6 +1306,16 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("figurate: the gnomon of 7 sums to 7 cubed = 343", q.litCells === 13 && q.sum === 343);
 }
 
+// Filling a grid with good neighbours: the chips and what they would fill.
+{
+  const g = [0, 1, 2, 3].map((x) => [0, 1, 2, 3].map((y) => (x === y ? 0 : -1)));
+  const p = at("fill-the-board", { n: 4, grid: g, step: 0, playing: false, moves: 4, explored: false });
+  check("fill-the-board: four chips on the diagonal of a 4 by 4 board would fill it in 3 steps", p.chips === 4 && p.chipsFromTheseWouldFill === true && p.stepsFromTheChipsAlone === 3 && p.mode === "setup" && p.full === false && p.fewestChipsPossible === 4);
+  const h = [0, 1, 2, 3].map((x) => [0, 1, 2, 3].map((y) => (x === 0 && y === 0 ? 0 : -1)));
+  const q = at("fill-the-board", { n: 4, grid: h, step: 1, playing: true, moves: 3, explored: true });
+  check("fill-the-board: one chip fills nothing", q.chips === 1 && q.chipsFromTheseWouldFill === false && q.mode === "play");
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

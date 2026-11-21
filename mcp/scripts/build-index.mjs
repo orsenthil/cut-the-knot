@@ -311,6 +311,7 @@ const CORE_GLOBALS = {
   "fibonacci-cheat/fibonacci-cheat-core.js": ["FibonacciCheatCore"],
   "fif/fif-core.js": ["FifCore"],
   "figurate/figurate-core.js": ["FigurateCore"],
+  "fill-the-board/fill-the-board-core.js": ["FillTheBoardCore"],
 };
 
 const games = [];
