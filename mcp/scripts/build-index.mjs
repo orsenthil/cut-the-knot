@@ -353,6 +353,7 @@ const CORE_GLOBALS = {
   "latin-squares/latin-squares-core.js": ["LatinSquaresCore"],
   "lattice-multiplication/lattice-multiplication-core.js": ["LatticeMultiplicationCore"],
   "lcm-algorithm/lcm-algorithm-core.js": ["LcmAlgorithmCore"],
+  "leibniz-triangle/leibniz-triangle-core.js": ["LeibnizTriangleCore"],
 };
 
 const games = [];

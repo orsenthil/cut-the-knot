@@ -1541,5 +1541,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "leibniz-triangle",
+      title: "Leibniz and Pascal Triangles",
+      blurb: "Add numbers above or below, then keep only remainders. What patterns survive the reduction?",
+      tags: ["counting", "sequences", "algorithms"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

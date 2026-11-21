@@ -137,6 +137,7 @@ check("langman-paradox: cheat was enabled", read["langman-paradox"]?.cheat === t
 check("latin-squares: a swap broke the Latin property", read["latin-squares"]?.latin === false && read["latin-squares"].moves === 1);
 check("lattice-multiplication: a factor was changed", read["lattice-multiplication"]?.a === 123 && read["lattice-multiplication"].product === read["lattice-multiplication"].expected);
 check("lcm-algorithm: one step was made", read["lcm-algorithm"]?.steps === 1 && read["lcm-algorithm"].lcm === 30);
+check("leibniz-triangle: the Leibniz triangle was selected", read["leibniz-triangle"]?.kind === "leibniz" && read["leibniz-triangle"].symmetric === true);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1621,6 +1622,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("lcm-algorithm", { originals: [6, 10, 15], values: [6, 10, 15], steps: 0 });
   check("lcm-algorithm: the target is 30", board.lcm === 30 && board.finished === false);
+}
+
+// Leibniz and Pascal triangles.
+{
+  const board = at("leibniz-triangle", { rows: 8, mod: 5, kind: "pascal" });
+  check("leibniz-triangle: Pascal row sums are powers of two", board.rowSums[4] === 16 && board.symmetric === true);
 }
 
 // A game with no reader, and a position that makes no sense.

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Leibniz and Pascal Triangles &mdash; coolmaths</title>
+<meta name="description" content="Add numbers above or below, then keep only remainders. What patterns survive the reduction?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/leibniz-triangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Leibniz and Pascal Triangles">
+<meta property="og:description" content="Add numbers above or below, then keep only remainders. What patterns survive the reduction?">
+<meta property="og:url" content="https://coolmaths.ai/leibniz-triangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.7rem; overflow-x: auto; }
+  .tri-row { display: flex; justify-content: center; gap: 0.2rem; margin: 0.15rem 0; }
+  .tri-cell { min-width: 1.6rem; max-width: 3rem; flex: 0 1 auto; padding: 0.15rem 0.2rem; text-align: center; font-size: 0.8rem; font-family: var(--mono); border-radius: 0.3rem; background: var(--accent-soft); color: var(--text); overflow: hidden; }
+  .tri-cell.zero { background: var(--surface); color: var(--muted); }
+  .readout { margin: 0.6rem 0 0; text-align: center; font-size: 0.85rem; color: var(--muted); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; max-width: 100%; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 100%; max-width: 9rem; accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="leibniz-triangle" data-kind="demo">
+<main id="main">
+  <h1>Leibniz and Pascal Triangles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two famous triangles hide patterns when you keep only the remainders.<br>
+    <strong>How to play:</strong> Choose Pascal or Leibniz, then change the number of rows and the modulus.
+  </div>
+
+  <div id="stage" class="stage"></div>
+  <p id="readout" class="readout"></p>
+
+  <div class="controls">
+    <label><input type="radio" name="kind" value="pascal" checked> Pascal</label>
+    <label><input type="radio" name="kind" value="leibniz"> Leibniz</label>
+    <label>Rows <input id="rowsInput" type="range" min="3" max="16" value="8" aria-label="Number of rows, 3 to 16"></label>
+    <label>Modulus <input id="modInput" type="range" min="2" max="12" value="5" aria-label="Modulus, 2 to 12"></label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Pascal's triangle adds the two numbers above; Leibniz's adds the two below. Reducing either one modulo n reveals surprising repeating patterns.</p>
+
+      <h2>Two related triangles</h2>
+      <p>The m-th entry of Pascal's row n is the <a class="wiki-term" data-wiki="Binomial_coefficient" href="https://en.wikipedia.org/wiki/Binomial_coefficient" target="_blank" rel="noopener">binomial coefficient</a> C(n, m). The matching entry of the Leibniz harmonic triangle is the reciprocal of <code>(n + 1)C(n, m)</code>. Pascal builds by addition from the top, Leibniz by subtraction from the bottom — yet both are symmetric.</p>
+
+      <h2>Telescoping diagonals</h2>
+      <p>The second diagonal of the Leibniz triangle is <code>1/2, 1/6, 1/12, 1/20, … = 1/(n(n+1))</code>, whose sum telescopes to 1: each term is <code>1/n − 1/(n+1)</code>. The page's other identity, <code>1/2 = 1/3 + 1/12 + 1/30 + …</code>, is the next diagonal. The logic test checks the row sums of Pascal, both symmetry properties and these sums.</p>
+
+      <p class="tip">Set the modulus to 2. What shape does Pascal's triangle become?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/LeibnitzTriangle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="leibniz-triangle-core.js"></script>
+<script src="leibniz-triangle.js"></script>
+</body>
+</html>

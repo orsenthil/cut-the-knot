@@ -417,6 +417,9 @@ const GAMES = {
   "lcm-algorithm": async (page) => {
     await page.click("#stepBtn");
   },
+  "leibniz-triangle": async (page) => {
+    await page.check('input[value="leibniz"]');
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },
