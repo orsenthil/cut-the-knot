@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Estimating Circumference &mdash; coolmaths</title>
+<meta name="description" content="Add sides to a polygon inside a circle and watch its perimeter creep toward the circumference. How close can you get?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/archimedes-circumference/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Estimating Circumference">
+<meta property="og:description" content="Add sides to a polygon inside a circle and watch its perimeter creep toward the circumference. How close can you get?">
+<meta property="og:url" content="https://coolmaths.ai/archimedes-circumference/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 20rem; margin: 0 auto; height: auto; }
+  .circle { fill: none; stroke: var(--good); stroke-width: 2; }
+  .polygon { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+  .vertex { fill: var(--accent); }
+  .readout { margin: 0.4rem 0 0; font-size: 0.8rem; font-family: var(--mono); text-align: center; overflow-wrap: anywhere; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; }
+  .controls input { width: 100%; max-width: 16rem; accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="archimedes-circumference" data-kind="demo">
+<main id="main">
+  <h1>Estimating Circumference</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#series">Infinite Series</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch straight-sided shapes close in on the curved edge of a circle.<br>
+    <strong>How to play:</strong> Move the slider to add sides to the polygon and watch the perimeter readings tighten around the circumference.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 300 300" role="group" aria-label="A regular polygon inscribed in a circle"></svg>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Sides n <input id="nInput" type="range" min="3" max="96" value="6" aria-label="Number of polygon sides, 3 to 96"></label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A polygon with straight sides can never be a circle — but with enough sides its perimeter gets as close as you like.</p>
+
+      <h2>Inscribed and circumscribed</h2>
+      <p>A regular n-gon inside a circle of radius R has perimeter <code>P = 2nR·sin(π/n)</code>; one outside has <code>C = 2nR·tan(π/n)</code>. The circle's circumference <code>2πR</code> is squeezed between them. As n grows, the inscribed perimeter increases, the circumscribed one decreases, and the gap between them shrinks to zero — the idea Archimedes used more than two thousand years ago with n = 3, 6, 12, 24, 48 and 96.</p>
+
+      <h2>What the check found</h2>
+      <p>The logic test checks all n from 3 to 96: the squeeze holds, the two sequences really are monotone, the gap shrinks, and summing the chord lengths independently matches the sine formula. At 96 sides the inscribed perimeter is within 0.01 of 2π for a unit circle.</p>
+
+      <p class="tip">Slide to 96 sides. How much bigger is the circumscribed perimeter than the inscribed one?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Calculus/GoodLimit.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="archimedes-circumference-core.js"></script>
+<script src="archimedes-circumference.js"></script>
+</body>
+</html>

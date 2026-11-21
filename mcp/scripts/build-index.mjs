@@ -323,6 +323,7 @@ const CORE_GLOBALS = {
   "gcd-lcm-rectangles/gcd-lcm-rectangles-core.js": ["GcdLcmRectanglesCore"],
   "gencon-construction/gencon-construction-core.js": ["GenConConstructionCore"],
   "rouse-ball-fallacy/rouse-ball-fallacy-core.js": ["RouseBallFallacyCore"],
+  "archimedes-circumference/archimedes-circumference-core.js": ["ArchimedesCircumferenceCore"],
 };
 
 const games = [];

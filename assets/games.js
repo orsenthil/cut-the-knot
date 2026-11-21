@@ -976,6 +976,14 @@ window.COOLMATHS = {
       level: 3,
     },
     {
+      slug: "archimedes-circumference",
+      title: "Estimating Circumference",
+      blurb: "Add sides to a polygon inside a circle and watch its perimeter creep toward the circumference. How close can you get?",
+      tags: ["series", "algorithms", "counting"],
+      kind: "demo",
+      level: 2,
+    },
+    {
       slug: "circles-and-limit",
       title: "Circles and a Limit",
       blurb: "A small circle at the origin shrinks inside a fixed circle of radius 3. Follow the point E where their shared chord meets the axis: as the small circle vanishes, where does E settle?",

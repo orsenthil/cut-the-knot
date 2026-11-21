@@ -107,6 +107,7 @@ check("gcd-by-factor-tree: a new problem has two numbers", read["gcd-by-factor-t
 check("gcd-lcm-rectangles: M was changed to 12", read["gcd-lcm-rectangles"]?.m === 12 && read["gcd-lcm-rectangles"].holds === true);
 check("gencon-construction: an angle was edited", read["gencon-construction"]?.angles[0] === 120 && read["gencon-construction"].works === true);
 check("rouse-ball-fallacy: the congruences hold while the angle stays obtuse", read["rouse-ball-fallacy"]?.congruent === true && read["rouse-ball-fallacy"].angleDAE > 90);
+check("archimedes-circumference: the slider changed n to 12", read["archimedes-circumference"]?.n === 12 && read["archimedes-circumference"].squeeze === true);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1403,6 +1404,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("rouse-ball-fallacy", {});
   check("rouse-ball-fallacy: angle ADC is right and DAE is obtuse", board.angleADC === 90 && board.angleDAE > 90 && board.congruent === true);
+}
+
+// Estimating circumference.
+{
+  const board = at("archimedes-circumference", { n: 96, radius: 1 });
+  check("archimedes-circumference: 96 sides squeeze 2 pi tightly", board.squeeze === true && board.gap < 0.01);
 }
 
 // A game with no reader, and a position that makes no sense.

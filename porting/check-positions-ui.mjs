@@ -314,6 +314,10 @@ const GAMES = {
   "rouse-ball-fallacy": async (page) => {
     await page.check("#hintCheck");
   },
+  "archimedes-circumference": async (page) => {
+    await page.locator("#nInput").fill("12");
+    await page.locator("#nInput").dispatchEvent("input");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },
