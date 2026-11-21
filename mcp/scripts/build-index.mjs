@@ -333,6 +333,7 @@ const CORE_GLOBALS = {
   "imo-1986-3/imo-1986-3-core.js": ["Imo1986_3Core"],
   "indy-clock-hands/indy-clock-hands-core.js": ["IndyClockHandsCore"],
   "infinite-latin-square/infinite-latin-square-core.js": ["InfiniteLatinSquareCore"],
+  "integer-rectangle/integer-rectangle-core.js": ["IntegerRectangleCore"],
 };
 
 const games = [];

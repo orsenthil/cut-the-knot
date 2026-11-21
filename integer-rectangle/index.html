@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rectangle on a Chessboard &mdash; coolmaths</title>
+<meta name="description" content="Slide a rectangle over a chessboard. What must be true for it to cover exactly as much light as dark?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/integer-rectangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Rectangle on a Chessboard">
+<meta property="og:description" content="Slide a rectangle over a chessboard. What must be true for it to cover exactly as much light as dark?">
+<meta property="og:url" content="https://coolmaths.ai/integer-rectangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 24rem; margin: 0 auto; height: auto; touch-action: none; }
+  .square.light { fill: var(--surface); }
+  .square.dark { fill: var(--border); fill-opacity: 0.55; }
+  .region { fill: var(--accent); fill-opacity: 0.28; stroke: var(--accent); stroke-width: 3; cursor: grab; }
+  .region.balanced { fill: var(--good); fill-opacity: 0.3; stroke: var(--good); }
+  .region:focus-visible { outline: none; stroke-width: 6; }
+  .resize { fill: var(--accent); stroke: var(--card); stroke-width: 2; cursor: nwse-resize; }
+  .resize:focus-visible { outline: none; stroke: var(--focus); stroke-width: 5; }
+  .piece { fill: none; stroke-width: 3; stroke-dasharray: 7 5; pointer-events: none; }
+  .piece.split-a { stroke: #c2653a; }
+  .piece.split-b { stroke: #15803d; }
+  .piece.split-c { stroke: #d9a441; }
+  .readout { margin: 0.5rem 0 0; text-align: center; font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; max-width: 100%; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 100%; max-width: 8rem; accent-color: var(--accent); }
+  input:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="integer-rectangle" data-kind="demo">
+<main id="main">
+  <h1>Rectangle on a Chessboard</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Cover equal amounts of the light and dark squares of a chessboard with one rectangle.<br>
+    <strong>How to play:</strong> Drag the rectangle, pull the corner to resize it, or use the sliders. Watch the two areas.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="group" aria-label="An eight by eight chessboard with a draggable rectangle"></svg>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>x <input id="xInput" type="range" min="0" max="7.75" step="0.25" value="0.5" aria-label="Horizontal position of the rectangle"></label>
+    <label>y <input id="yInput" type="range" min="0" max="7.75" step="0.25" value="0.5" aria-label="Vertical position of the rectangle"></label>
+    <label>width <input id="wInput" type="range" min="0.25" max="7.75" step="0.25" value="2.5" aria-label="Width of the rectangle"></label>
+    <label>height <input id="hInput" type="range" min="0.25" max="7.75" step="0.25" value="1.5" aria-label="Height of the rectangle"></label>
+    <label><input id="splitCheck" type="checkbox"> Show the split</label>
+    <button id="centerBtn" type="button">Centre on a line</button>
+    <button id="randomBtn" type="button">Random</button>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A rectangle placed on a chessboard may cover equal amounts of the two colours — but only in two very particular situations.</p>
+
+      <h2>When it works</h2>
+      <p>The page's condition is an <em>if and only if</em>: a rectangle covers equal areas of the two colours exactly when one of its sides is an even whole number of square sides, <em>or</em> its <a class="wiki-term" data-wiki="Centroid" href="https://en.wikipedia.org/wiki/Centroid" target="_blank" rel="noopener">centre</a> lies on a grid line. An even side pairs a light square with a dark one in every strip; a centre on a line gives a matching symmetry.</p>
+
+      <h2>Why nothing else works</h2>
+      <p>Any rectangle splits into at most three pieces: one with even width, one with even height, and one with both sides less than two. Checking the three small prototype shapes shows that the last piece is unbalanced unless its centre lies on a grid line. A random placement almost surely fails that, so for a rectangle without an even side the probability of balance is zero; with an even side it is one.</p>
+      <p>The logic test checks the condition on 20,736 placements, the three-piece split on 10,000 more, and the chessboard corollary: rectangles with at least one integer side tile a rectangle with an integer side.</p>
+
+      <p class="tip">Tick "Show the split". Which of the pieces is the one that decides the answer?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/IntegerRectangle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="integer-rectangle-core.js"></script>
+<script src="integer-rectangle.js"></script>
+</body>
+</html>

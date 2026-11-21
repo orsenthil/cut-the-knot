@@ -1144,6 +1144,14 @@ window.COOLMATHS = {
       level: 2,
     },
     {
+      slug: "integer-rectangle",
+      title: "Rectangle on a Chessboard",
+      blurb: "Slide a rectangle over a chessboard. What must be true for it to cover exactly as much light as dark?",
+      tags: ["invariants", "arithmetic", "algorithms"],
+      kind: "demo",
+      level: 3,
+    },
+    {
       slug: "coordinates",
       title: "Cartesian Coordinates",
       blurb: "Drag the axes and stretch the unit: how do two numbers name every point of the plane, and how does the same pair read in complex form?",

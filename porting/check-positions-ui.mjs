@@ -350,6 +350,10 @@ const GAMES = {
     await page.locator("#levelInput").fill("4");
     await page.locator("#levelInput").dispatchEvent("input");
   },
+  "integer-rectangle": async (page) => {
+    await page.fill("#wInput", "2");
+    await page.locator("#wInput").dispatchEvent("input");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },
