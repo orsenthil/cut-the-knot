@@ -111,6 +111,7 @@ check("archimedes-circumference: the slider changed n to 12", read["archimedes-c
 check("euler-hamilton-paths: a vertex was clicked", read["euler-hamilton-paths"]?.sequence.length === 1 && read["euler-hamilton-paths"].vertices >= 3);
 check("huntington-hill-method: the seat stepper was used", read["huntington-hill-method"]?.total === read["huntington-hill-method"]?.seats);
 check("hilbert-curve: the order slider changed", read["hilbert-curve"]?.order === 4 && read["hilbert-curve"].grid === 16);
+check("hooper-paradox: the width was edited and area conserved", read["hooper-paradox"]?.w === 12 && read["hooper-paradox"].conserved === true);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1431,6 +1432,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("hilbert-curve", { order: 3, kind: "hilbert" });
   check("hilbert-curve: order 3 visits 64 cells", board.grid === 8 && board.count === 64);
+}
+
+// Hooper's paradox: area conservation.
+{
+  const board = at("hooper-paradox", { w: 10, h: 3, a: 4 });
+  check("hooper-paradox: the pieces cover 30 square units", board.originalArea === 30 && board.pieceTotal === 30 && board.conserved === true);
 }
 
 // A game with no reader, and a position that makes no sense.

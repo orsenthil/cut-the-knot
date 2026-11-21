@@ -327,6 +327,7 @@ const CORE_GLOBALS = {
   "euler-hamilton-paths/euler-hamilton-paths-core.js": ["EulerHamiltonPathsCore"],
   "huntington-hill-method/huntington-hill-method-core.js": ["HuntingtonHillMethodCore"],
   "hilbert-curve/hilbert-curve-core.js": ["HilbertCurveCore"],
+  "hooper-paradox/hooper-paradox-core.js": ["HooperParadoxCore"],
 };
 
 const games = [];

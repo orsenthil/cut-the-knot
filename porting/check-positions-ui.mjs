@@ -328,6 +328,10 @@ const GAMES = {
     await page.locator("#orderInput").fill("4");
     await page.locator("#orderInput").dispatchEvent("input");
   },
+  "hooper-paradox": async (page) => {
+    await page.fill("#wInput", "12");
+    await page.locator("#wInput").press("Enter");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

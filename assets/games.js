@@ -1048,6 +1048,14 @@ window.COOLMATHS = {
       level: 2,
     },
     {
+      slug: "hooper-paradox",
+      title: "Hooper's Paradox",
+      blurb: "A 3 by 10 rectangle seems to rearrange into a 2 by 6 and a 4 by 5. Where does the extra area come from?",
+      tags: ["paradoxes", "arithmetic", "invariants"],
+      kind: "demo",
+      level: 2,
+    },
+    {
       slug: "collatz",
       title: "The Collatz Problem",
       blurb: "Pick a number and watch its hailstone trail: does every start end in the 4, 2, 1 loop? Try stripping all the twos at once to shorten the ride.",

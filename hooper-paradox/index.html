@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hooper's Paradox &mdash; coolmaths</title>
+<meta name="description" content="A 3 by 10 rectangle seems to rearrange into a 2 by 6 and a 4 by 5. Where does the extra area come from?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hooper-paradox/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hooper's Paradox">
+<meta property="og:description" content="A 3 by 10 rectangle seems to rearrange into a 2 by 6 and a 4 by 5. Where does the extra area come from?">
+<meta property="og:url" content="https://coolmaths.ai/hooper-paradox/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; height: auto; }
+  .piece { stroke: var(--ink); stroke-width: 2; }
+  .piece.blue { fill: var(--accent); fill-opacity: 0.7; }
+  .piece.warm { fill: #c2653a; fill-opacity: 0.7; }
+  .piece.green { fill: var(--good); fill-opacity: 0.6; }
+  .piece.gold { fill: #d9a441; fill-opacity: 0.7; }
+  #board text { fill: var(--text); font-size: 14px; font-weight: 700; text-anchor: middle; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="number"] { width: 4rem; font: inherit; padding: 0.2rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="hooper-paradox" data-kind="demo">
+<main id="main">
+  <h1>Hooper's Paradox</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Cut a rectangle into four pieces and see how they can look like they make a bigger one.<br>
+    <strong>How to play:</strong> Change the rectangle's sides and the cut, then tick "Show the flaw".
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 460 260" role="group" aria-label="A rectangle cut into four coloured pieces"></svg>
+  </div>
+
+  <div class="controls">
+    <label>Width <input id="wInput" type="number" min="2" max="20" value="10" aria-label="Rectangle width"></label>
+    <label>Height <input id="hInput" type="number" min="2" max="20" value="3" aria-label="Rectangle height"></label>
+    <label>Cut <input id="aInput" type="number" min="1" max="9" value="4" aria-label="Horizontal leg of the triangles"></label>
+    <label><input id="hintCheck" type="checkbox"> Show the flaw</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Can cutting a shape up and moving the pieces change its area? Of course not — but a clever drawing can make it look as if it did.</p>
+
+      <h2>Geometric money</h2>
+      <p>Hooper's classic puzzle cuts a 3 by 10 rectangle (30 square units) into triangles and trapezoids that seem to reassemble into a 2 by 6 and a 4 by 5 rectangle — 32 square units. Hooper called the apparent profit "geometric money". The pieces keep their areas; what changes is a tiny gap or overlap hidden along the joins. Fibonacci ratios make the mismatch so slight that the eye accepts the false picture.</p>
+
+      <h2>What the check found</h2>
+      <p>The logic test computes the areas of the four pieces by the shoelace formula for every rectangle up to 20 by 20 and every cut: their total always equals the original area. It also checks <a class="wiki-term" data-wiki="Cassini%27s_identity" href="https://en.wikipedia.org/wiki/Cassini%27s_identity" target="_blank" rel="noopener">Cassini's identity</a> for Fibonacci numbers, the algebraic reason near-miss dissections like this exist.</p>
+
+      <p class="tip">Tick "Show the flaw" and work out where the missing area would have to go.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Fallacies/HooperParadox.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="hooper-paradox-core.js"></script>
+<script src="hooper-paradox.js"></script>
+</body>
+</html>
