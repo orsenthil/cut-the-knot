@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flipping Items Simultaneously II &mdash; coolmaths</title>
+<meta name="description" content="Circles in a ring: a click changes the colour of M of them in a row. Can you get from one blue circle to a different one? For 12 circles and 3, 4 or 6 at a time, no, and an invariant says why. Which other pairs work?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/flip-them-ii/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Flipping Items Simultaneously II">
+<meta property="og:description" content="Circles in a ring: a click changes the colour of M of them in a row. Can you get from one blue circle to a different one? For 12 circles and 3, 4 or 6 at a time, no, and an invariant says why. Which other pairs work?">
+<meta property="og:url" content="https://coolmaths.ai/flip-them-ii/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #ring { display: block; width: 100%; max-width: 100%; height: auto; }
+  #ring g.disc { cursor: pointer; outline: none; }
+  #ring .body { stroke: var(--ink); stroke-width: 2; }
+  #ring g.red .body { fill: #e0556b; }
+  #ring g.blue .body { fill: #4a90e2; }
+  #ring .kernel { fill: #2fbf71; stroke: #064; stroke-width: 1; }
+  #ring g.will .body { stroke: var(--accent); stroke-width: 5; }
+  #ring g.disc:focus .body, #ring g.disc:focus-visible .body { stroke: var(--accent); stroke-width: 5; stroke-dasharray: 5 3; }
+  #ring .arrow { stroke: var(--ink); stroke-width: 3; }
+  #ring .arrowhead { fill: var(--ink); }
+  #info { margin: 0.6rem 0 0; color: var(--muted); }
+  .controls .field { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 4.5rem; max-width: 100%; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="flip-them-ii" data-kind="game">
+<main id="main">
+  <h1>Flipping Items Simultaneously II</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A ring of red circles has one blue one. Make the circle next to the arrow the only blue one.<br>
+    <strong>How to play:</strong> Press a circle: it and the next few circles clockwise swap colours. Choose how many with M, and how many circles with N.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="ring" viewBox="0 0 420 400" role="group" aria-label="A ring of red and blue circles with an arrow pointing at the one on the right. Press a circle to change the colour of it and the next M minus 1 circles clockwise; the arrow keys move round the ring."></svg>
+    <p id="info" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label>M <input id="mIn" type="number" min="2" max="12" step="1" aria-label="M, how many circles change colour at once, 2 to 12"></label>
+    <label>N <input id="nIn" type="number" min="5" max="24" step="1" aria-label="N, the number of circles, 5 to 24"></label>
+    <label><input id="helperBox" type="checkbox"> Solution helper</label>
+    <button id="solveBtn" type="button">Show a solution</button>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>N circles stand in a ring, one of them blue. Each click changes the colour of M neighbouring circles. Can you move the blue colour to the circle the arrow points at, leaving all the others red? For N = 12 and M = 3, 4 or 6 you cannot.</p>
+
+      <h2>An invariant when M divides N</h2>
+      <p>Tick <i>Solution helper</i> (it is offered when M divides N). Circles whose place leaves the remainder 0 or M − 1 on division by M get a green centre. Among any M circles in a row there are exactly two marked ones, so every click changes the colour of exactly two marked circles. Write 1 for red and −1 for blue: the product of the numbers on the marked circles starts at −1 and stays −1. Both the starting blue circle is marked and the target is not (when M is at least 3), so all-marked-red is impossible. The logic test did not only rely on the proof: it searched every state reachable from the start, for every N up to 16, and the target was never among them when M ≥ 3 divides N.</p>
+      <p>For M = 2 every circle is marked, the argument breaks, and the target can be reached by clicking neighbouring pairs; the page's proof says &ldquo;M divides N&rdquo; but needs M ≥ 3.</p>
+
+      <h2>Other pairs of M and N</h2>
+      <p>The page asks what can be said about other pairs. The test solved the puzzle over the field of two elements (a click twice undoes itself, so each circle is clicked 0 or 1 times) for every N up to 60 and every M below N, and compared with a rule: <b>the target can be reached exactly when gcd(M, N) = 1, or gcd(M, N) = 2 and M is 2 more than a multiple of 4.</b> The test also checked every pair in the applet&rsquo;s range against a search of the whole state graph, and replayed every solution it found. The reason for the impossible cases is the same kind of invariant: with <code>g = gcd(M, N)</code>, a click changes <code>M/g</code> circles in each of the <code>g</code> classes of circles that are alike modulo <code>g</code>; the start and target blue circles are in different classes, and a class pattern that cannot be fixed is an obstruction. &ldquo;Show a solution&rdquo; plays out a way when there is one.</p>
+
+      <p class="tip">Try N = 7, M = 3, then N = 10, M = 6, then N = 10, M = 4. Which can be solved?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/FlipThemII.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="flip-them-ii-core.js"></script>
+<script src="flip-them-ii.js"></script>
+</body>
+</html>

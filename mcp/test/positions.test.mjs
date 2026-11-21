@@ -1332,6 +1332,16 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("flavius: with 10 people and every third, the third place goes first", q.youWouldSurvive === false && q.youAreRemovedNumber === 1 && q.safePlaceFromTop === 4);
 }
 
+// Flipping items simultaneously II: the ring and whether the target can be reached.
+{
+  const blue = Array(12).fill(false); blue[11] = true;
+  const p = at("flip-them-ii", { n: 12, m: 3, blue, helper: true, moves: 0, explored: false });
+  check("flip-them-ii: the start of the 12-ring with M = 3 cannot reach the target, and one blue marked circle remains odd", p.puzzleSolvableFromTheStart === false && p.mDividesN === true && p.blueMarkedCircles === 1 && p.solved === false && p.blueCircles.join() === "12");
+  const b2 = Array(7).fill(false); b2[0] = true;
+  const q = at("flip-them-ii", { n: 7, m: 3, blue: b2, helper: false, moves: 4, explored: true });
+  check("flip-them-ii: N = 7, M = 3 is solvable, and with only circle 1 blue it is solved", q.puzzleSolvableFromTheStart === true && q.solved === true && q.mDividesN === false);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

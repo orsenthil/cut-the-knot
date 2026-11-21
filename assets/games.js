@@ -1233,5 +1233,12 @@ window.COOLMATHS = {
       tags: ["sequences", "algorithms", "counting"],
       level: 2,
     },
+    {
+      slug: "flip-them-ii",
+      title: "Flipping Items Simultaneously II",
+      blurb: "Circles in a ring: a click changes the colour of M of them in a row. Can you get from one blue circle to a different one? For 12 circles and 3, 4 or 6 at a time, no, and an invariant says why. Which other pairs work?",
+      tags: ["invariants", "parity", "algebra"],
+      level: 3,
+    },
   ],
 };
