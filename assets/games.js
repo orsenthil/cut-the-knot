@@ -776,6 +776,14 @@ window.COOLMATHS = {
       level: 2,
     },
     {
+      slug: "gcd-by-factor-tree",
+      title: "GCD and LCM via Factor Tree",
+      blurb: "Split two numbers into their prime factors. Can you use the same primes to build both the greatest common divisor and the least common multiple?",
+      tags: ["number-theory", "arithmetic", "algorithms"],
+      kind: "demo",
+      level: 2,
+    },
+    {
       slug: "arithmetic-sequence",
       title: "Arithmetic Sequence",
       blurb: "Colour the numbers 1 to 9 with two colours. Can you always find three evenly spaced numbers in the same group — and what changes when you drop to eight?",

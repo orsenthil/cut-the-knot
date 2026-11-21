@@ -300,6 +300,9 @@ const GAMES = {
   "all-permutations": async (page) => {
     await page.click('input[value="heap"]');
   },
+  "gcd-by-factor-tree": async (page) => {
+    await page.click("#newBtn");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

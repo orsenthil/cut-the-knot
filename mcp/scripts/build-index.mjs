@@ -319,6 +319,7 @@ const CORE_GLOBALS = {
   "fourth-degree/fourth-degree-core.js": ["FourthDegreeCore"],
   "fraction-comparison-exercise/fraction-comparison-exercise-core.js": ["FractionComparisonExerciseCore"],
   "futurama/futurama-core.js": ["FuturamaCore"],
+  "gcd-by-factor-tree/gcd-by-factor-tree-core.js": ["GcdByFactorTreeCore"],
 };
 
 const games = [];

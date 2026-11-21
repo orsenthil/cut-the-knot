@@ -103,6 +103,7 @@ check("all-combinations: the choose step changed M", read["all-combinations"]?.n
 check("all-permutations: the Heap generator was selected", read["all-permutations"]?.n === 3 && read["all-permutations"].algorithm === "heap" && read["all-permutations"].count === 6);
 check("isosceles-fallacy: switched to the honest drawing", read["isosceles-fallacy"]?.mode === "right" && read["isosceles-fallacy"].pOnCircumcircle === true && read["isosceles-fallacy"].uOnSide !== read["isosceles-fallacy"].vOnSide);
 check("apportionment-methods: Webster was highlighted", read["apportionment-methods"]?.seats === 23 && read["apportionment-methods"].method === "webster" && Object.keys(read["apportionment-methods"].allocations).length === 5);
+check("gcd-by-factor-tree: a new problem has two numbers", read["gcd-by-factor-tree"]?.n >= 4 && read["gcd-by-factor-tree"].m >= 4 && read["gcd-by-factor-tree"].gcd > 0);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1374,6 +1375,13 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("futurama: a 3-cycle mix-up is one cycle A B C, nothing swapped, not solved", p.cycles.length === 1 && p.cycles[0].join("") === "ABC" && p.solved === false && p.mindsAtHome === 0);
   const q = at("futurama", { n: 3, perm: [0, 1, 2, 3, 4], usedX: [0], usedY: [], stack: [[0, 3]], message: "Fantasic!", moves: 2, explored: true });
   check("futurama: all minds home is solved, and the swap with X is remembered", q.solved === true && q.usedWithX.join() === "A" && q.swapsMade.join() === "AX" && q.mindsAtHome === 3);
+}
+
+// GCD and LCM via factor trees.
+{
+  const board = at("gcd-by-factor-tree", { n: 20, m: 350 });
+  check("gcd-by-factor-tree: gcd 10, lcm 700 and the identity holds",
+    board.gcd === 10 && board.lcm === 700 && board.n * board.m === board.gcd * board.lcm);
 }
 
 // A game with no reader, and a position that makes no sense.

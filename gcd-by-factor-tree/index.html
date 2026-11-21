@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GCD and LCM via Factor Tree &mdash; coolmaths</title>
+<meta name="description" content="Split two numbers into their prime factors. Can you use the same primes to build both the greatest common divisor and the least common multiple?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/gcd-by-factor-tree/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="GCD and LCM via Factor Tree">
+<meta property="og:description" content="Split two numbers into their prime factors. Can you use the same primes to build both the greatest common divisor and the least common multiple?">
+<meta property="og:url" content="https://coolmaths.ai/gcd-by-factor-tree/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.8rem; overflow-x: auto; }
+  .trees { display: flex; flex-wrap: wrap; gap: 1rem; }
+  .tree-box { flex: 1 1 12rem; min-width: 0; padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.7rem; background: var(--card); }
+  .tree-title { margin: 0 0 0.5rem; font-size: 0.95rem; color: var(--muted); text-align: center; }
+  .kids { display: flex; justify-content: center; gap: 0.6rem; margin-top: 0.3rem; }
+  .fnode { min-width: 2.2rem; min-height: 2rem; padding: 0.2rem 0.4rem; font: inherit; font-size: 0.9rem; border: 2px solid var(--accent); border-radius: 0.5rem; background: var(--accent-soft); color: var(--text); cursor: pointer; }
+  .fnode.leaf { border-color: var(--good); background: transparent; }
+  .fnode:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .plist { margin: 0.5rem 0 0; font-size: 0.85rem; overflow-wrap: anywhere; }
+  .result { margin: 0.7rem 0 0; font-size: 0.9rem; font-weight: 700; overflow-wrap: anywhere; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; }
+</style>
+</head>
+<body data-game="gcd-by-factor-tree" data-kind="demo">
+<main id="main">
+  <h1>GCD and LCM via Factor Tree</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Break two numbers into prime factors and use them to build their greatest common divisor and least common multiple.<br>
+    <strong>How to play:</strong> Press "New problem" for two numbers, then click a factor in a tree to see how it splits.
+  </div>
+
+  <div id="stage" class="stage">
+  </div>
+
+  <div class="controls">
+    <button id="repeatBtn" type="button">Repeat problem</button>
+    <button id="newBtn" type="button" class="primary">New problem</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Multiply the prime factors of two numbers in different ways and you get both their greatest common divisor and their least common multiple.</p>
+
+      <h2>Prime factors as a multiset</h2>
+      <p>A number like 20 becomes the multiset <code>{2, 2, 5}</code> of its <a class="wiki-term" data-wiki="Prime_factor" href="https://en.wikipedia.org/wiki/Prime_factor" target="_blank" rel="noopener">prime factors</a> — a multiset allows repeats. The <a class="wiki-term" data-wiki="Greatest_common_divisor" href="https://en.wikipedia.org/wiki/Greatest_common_divisor" target="_blank" rel="noopener">greatest common divisor</a> keeps the smaller multiplicity of each prime; the <a class="wiki-term" data-wiki="Least_common_multiple" href="https://en.wikipedia.org/wiki/Least_common_multiple" target="_blank" rel="noopener">least common multiple</a> keeps the larger. For 20 = {2, 2, 5} and 350 = {2, 5, 5, 7} that gives gcd = {2, 5} = 10 and lcm = {2, 2, 5, 5, 7} = 700.</p>
+
+      <h2>Why the product identity holds</h2>
+      <p>For every prime, the exponent in the gcd is <code>min(a, b)</code> and in the lcm it is <code>max(a, b)</code>. Since <code>min + max = a + b</code>, the exponents in <code>gcd × lcm</code> match those in <code>N × M</code>, so <code>N·M = gcd·lcm</code>. The logic test checks this on all 3,481 pairs up to 60 and confirms the gcd agrees with Euclid's algorithm on all 40,000 pairs up to 200.</p>
+
+      <p class="tip">Find two numbers with no common prime besides 1. What are their gcd and lcm?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/GCDByBTree.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="gcd-by-factor-tree-core.js"></script>
+<script src="gcd-by-factor-tree.js"></script>
+</body>
+</html>
