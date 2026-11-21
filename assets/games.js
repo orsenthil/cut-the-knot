@@ -968,6 +968,14 @@ window.COOLMATHS = {
       level: 2,
     },
     {
+      slug: "rouse-ball-fallacy",
+      title: "Rouse Ball's Fallacy",
+      blurb: "A proof using matching triangles says an obtuse angle is right. All the steps look correct — so which one is wrong?",
+      tags: ["paradoxes", "logic", "invariants"],
+      kind: "demo",
+      level: 3,
+    },
+    {
       slug: "circles-and-limit",
       title: "Circles and a Limit",
       blurb: "A small circle at the origin shrinks inside a fixed circle of radius 3. Follow the point E where their shared chord meets the axis: as the small circle vanishes, where does E settle?",

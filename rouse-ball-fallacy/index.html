@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rouse Ball's Fallacy &mdash; coolmaths</title>
+<meta name="description" content="A proof using matching triangles says an obtuse angle is right. All the steps look correct — so which one is wrong?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/rouse-ball-fallacy/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Rouse Ball's Fallacy">
+<meta property="og:description" content="A proof using matching triangles says an obtuse angle is right. All the steps look correct — so which one is wrong?">
+<meta property="og:url" content="https://coolmaths.ai/rouse-ball-fallacy/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  .quad { fill: var(--accent-soft); stroke: none; }
+  .edge { stroke: var(--ink); stroke-width: 2; }
+  .ray { stroke: var(--bad); stroke-width: 2; stroke-dasharray: 5 4; }
+  .point { fill: var(--accent); }
+  .point-o { fill: var(--bad); }
+  .hit { fill: transparent; }
+  .handle { cursor: grab; }
+  .handle:focus-visible { outline: none; }
+  .handle:focus-visible .hit { stroke: var(--accent); stroke-width: 3; }
+  .label { fill: var(--text); font-size: 13px; font-family: var(--font); pointer-events: none; }
+  .control-row label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; cursor: pointer; }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="rouse-ball-fallacy" data-kind="demo">
+<main id="main">
+  <h1>Rouse Ball's Fallacy</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Find the mistake in a proof that an obtuse angle is a right angle.<br>
+    <strong>How to play:</strong> Drag the points, then tick "Show the flaw" to see where the proof goes wrong.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 360" role="group" aria-label="Points A, D, C and E with the perpendicular-bisector point O"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="hintCheck" type="checkbox"> Show the flaw</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A flawless chain of congruences seems to prove that an obtuse angle is right. The geometry is fine — the picture is not.</p>
+
+      <h2>The chain of congruences</h2>
+      <p>Build a right angle ADC and an obtuse angle DAE with DC = AE. The perpendicular bisectors of EC and DA meet at O. Then CO = EO and DO = AO, so triangles OCD and OEA are congruent by SSS, giving angle CDO = angle EAO. Also angle ADO = angle DAO. Subtracting appears to leave angle ADC = angle DAE — so the obtuse angle would be right.</p>
+
+      <h2>Where the subtraction fails</h2>
+      <p>The subtraction of angles is only meaningful if the ray EO lies outside the quadrilateral ADCE. In the real construction it does: the page explains that the applet shortens AE by 4% to make the ray pass inside, which makes the picture misleading. The logic test confirms that all the congruences hold while the obtuse angle stays obtuse — the error is in the final step, not the geometry.</p>
+
+      <p class="tip">Drag E until angle DAE is close to 90°. Does the "proof" become less convincing?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Fallacies/GeoFallacy.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="rouse-ball-fallacy-core.js"></script>
+<script src="rouse-ball-fallacy.js"></script>
+</body>
+</html>

@@ -311,6 +311,9 @@ const GAMES = {
     await page.locator('.control-row input').first().fill("120");
     await page.locator('.control-row input').first().press("Enter");
   },
+  "rouse-ball-fallacy": async (page) => {
+    await page.check("#hintCheck");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

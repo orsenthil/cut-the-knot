@@ -106,6 +106,7 @@ check("apportionment-methods: Webster was highlighted", read["apportionment-meth
 check("gcd-by-factor-tree: a new problem has two numbers", read["gcd-by-factor-tree"]?.n >= 4 && read["gcd-by-factor-tree"].m >= 4 && read["gcd-by-factor-tree"].gcd > 0);
 check("gcd-lcm-rectangles: M was changed to 12", read["gcd-lcm-rectangles"]?.m === 12 && read["gcd-lcm-rectangles"].holds === true);
 check("gencon-construction: an angle was edited", read["gencon-construction"]?.angles[0] === 120 && read["gencon-construction"].works === true);
+check("rouse-ball-fallacy: the congruences hold while the angle stays obtuse", read["rouse-ball-fallacy"]?.congruent === true && read["rouse-ball-fallacy"].angleDAE > 90);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1396,6 +1397,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("gencon-construction", { points: [{ x: 100, y: 300 }, { x: 320, y: 300 }, { x: 200, y: 110 }], angles: [90, 90, 90] });
   check("gencon-construction: three centres and 90 degree angles close a triangle", board.works === true && board.totalAngle === 270);
+}
+
+// Rouse Ball's fallacy.
+{
+  const board = at("rouse-ball-fallacy", {});
+  check("rouse-ball-fallacy: angle ADC is right and DAE is obtuse", board.angleADC === 90 && board.angleDAE > 90 && board.congruent === true);
 }
 
 // A game with no reader, and a position that makes no sense.
