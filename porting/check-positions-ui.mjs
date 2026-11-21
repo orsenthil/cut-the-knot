@@ -405,6 +405,7 @@ const GAMES = {
   "compare-fractions": (page) => page.click("#simplifyBtn"),
   "complex-numbers": (page) => page.check("input[name=mode][value=sum]"),
   coordinates: (page) => page.check("#gridBox"),
+  counting: (page) => page.locator("#dots .dot").first().click(),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

@@ -1121,6 +1121,15 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("coordinates: a moved board has the right lattice", q.latticeRange.ymax === 5 && q.latticePointsOnBoard > 0 && q.format === "complex");
 }
 
+// Counting: the tally and the equation for a finished count.
+{
+  const dots = Array.from({ length: 14 }, (_, i) => ({ row: 0, col: i, jx: 0.5, jy: 0.5, num: i + 1 }));
+  const p = at("counting", { max: 20, group: 3, count: 14, numbers: false, dots, counted: 14, moves: 14, finished: true });
+  check("counting: 14 dots in threes is 4 x 3 + 2", p.finished === true && p.equation === "3 + 3 + 3 + 3 + 2 = 14  or  4 × 3 + 2 = 14" && p.tallySoFar.length === 5);
+  const q = at("counting", { max: 10, group: 5, count: 8, dots: dots.slice(0, 8).map((d) => ({ ...d, num: 0 })), counted: 3, moves: 3, finished: false });
+  check("counting: three of eight counted is not finished", q.finished === false && q.remaining === 5 && q.equation === null);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

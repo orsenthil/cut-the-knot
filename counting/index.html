@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Counting and Grouping &mdash; coolmaths</title>
+<meta name="description" content="Count a heap of dots one at a time and watch a tally grow in groups. What is left over when the groups do not come out even?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/counting/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Counting and Grouping">
+<meta property="og:description" content="Count a heap of dots one at a time and watch a tally grow in groups. What is left over when the groups do not come out even?">
+<meta property="og:url" content="https://coolmaths.ai/counting/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.8rem;
+  }
+  #dots {
+    position: relative;
+    width: 100%;
+    min-height: 10rem;
+    max-height: 26rem;
+    margin: 0 auto;
+  }
+  .dot {
+    position: absolute;
+    min-width: 1.4rem;
+    min-height: 1.4rem;
+    padding: 0;
+    border-radius: 50%;
+    border: 2px solid var(--ink);
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .dot.counted {
+    background: var(--highlight);
+    color: var(--ink);
+    cursor: default;
+  }
+  #tally {
+    display: block;
+    height: 2.2rem;
+    max-width: 100%;
+    margin-top: 0.8rem;
+  }
+  .stroke {
+    stroke: var(--ink);
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  #equation {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0.5rem 0 0;
+    min-height: 1.6rem;
+  }
+  .controls label, .controls .field {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem;
+    max-width: 100%;
+  }
+  .controls input[type="number"] {
+    width: 4.5rem;
+  }
+  .controls .step {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="counting" data-kind="demo">
+<main id="main">
+  <h1>Counting and Grouping</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#divisibility">Divisibility</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A heap of dots is waiting to be counted; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Press the dots one by one to count them. A tally of strokes grows underneath in groups, and when you finish it becomes a sum.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="dots" role="group" aria-label="The dots to count"></div>
+    <svg id="tally" role="img" aria-label="Tally: nothing counted yet" viewBox="0 0 40 34"></svg>
+    <p id="equation" hidden></p>
+  </div>
+
+  <div class="controls">
+    <span class="field"><label for="groupIn">Group by</label>
+      <button id="groupLess" type="button" class="step" aria-label="Smaller groups">&lt;</button>
+      <input id="groupIn" type="number" min="1" step="1" aria-label="Group size">
+      <button id="groupMore" type="button" class="step" aria-label="Bigger groups">&gt;</button></span>
+    <span class="field"><label for="maxIn">Maximum</label>
+      <button id="maxLess" type="button" class="step" aria-label="Lower maximum">&lt;</button>
+      <input id="maxIn" type="number" min="5" max="100" step="1" aria-label="Most dots a new set can have">
+      <button id="maxMore" type="button" class="step" aria-label="Higher maximum">&gt;</button></span>
+    <span class="field"><label for="countIn">Count</label>
+      <input id="countIn" type="number" min="1" max="500" step="1" aria-label="Number of dots"></span>
+    <label><input id="numbersBox" type="checkbox"> Numbers</label>
+    <button id="againBtn" type="button">Count again</button>
+    <button id="newBtn" type="button" class="primary">New dots</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Counting is putting the dots in a row and giving each one the next number. Grouping is a way of doing the same work in bigger steps.</p>
+
+      <h2>Groups and what is left over</h2>
+      <p>Counting 14 strokes in groups of 3 gives four full groups and 2 left over: <code>14 = 4 × 3 + 2</code>. In general, every whole number N and group size g have a unique <code>q</code> and <code>r</code> with <code>N = q·g + r</code> and <code>0 ≤ r &lt; g</code>: this is <a class="wiki-term" data-wiki="Euclidean_division" href="https://en.wikipedia.org/wiki/Euclidean_division" target="_blank" rel="noopener">division with remainder</a>. The logic test checked the tally and both equations for every N up to 200 and every group size up to 220.</p>
+
+      <h2>The remainder is the residue</h2>
+      <p>The leftover <code>r</code> is the <a class="wiki-term" data-wiki="Modular_arithmetic" href="https://en.wikipedia.org/wiki/Modular_arithmetic" target="_blank" rel="noopener">residue of N modulo g</a>. Change the group size and watch it change while the number of dots stays put: with 12 dots, groups of 5 leave 2, groups of 4 leave nothing. The applet's own title is &ldquo;Dot patterns &amp; modular arithmetic&rdquo;.</p>
+
+      <h2>Two ways to say it</h2>
+      <p>The equation is shown as a repeated sum, <code>3 + 3 + 3 + 3 + 2 = 14</code>, and as a product, <code>4 × 3 + 2 = 14</code>: multiplication is repeated addition. The applet leaves out the long sum when there is at most one full group, and for groups of 1 once there are 20 dots or more.</p>
+
+      <p class="tip">Choose 12 dots and try every group size from 1 to 13. For which sizes is nothing left over?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/arithmetic/counting.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="counting-core.js"></script>
+<script src="counting.js"></script>
+</body>
+</html>

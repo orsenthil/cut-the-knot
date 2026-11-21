@@ -289,6 +289,7 @@ const CORE_GLOBALS = {
   "compare-fractions/compare-fractions-core.js": ["CompareFractionsCore"],
   "complex-numbers/complex-numbers-core.js": ["ComplexNumbersCore"],
   "coordinates/coordinates-core.js": ["CoordinatesCore"],
+  "counting/counting-core.js": ["CountingCore"],
 };
 
 const games = [];

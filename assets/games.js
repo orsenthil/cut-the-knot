@@ -1038,5 +1038,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "counting",
+      title: "Counting and Grouping",
+      blurb: "Count a heap of dots one at a time and watch a tally grow in groups. What is left over when the groups do not come out even?",
+      tags: ["counting", "arithmetic", "divisibility"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };
