@@ -1477,5 +1477,13 @@ window.COOLMATHS = {
       tags: ["logic", "algorithms", "counting"],
       level: 3,
     },
+    {
+      slug: "johnson-trotter",
+      title: "Johnson–Trotter Algorithm",
+      blurb: "List every permutation by swapping just one neighbouring pair at a time. What rule keeps the sequence going?",
+      tags: ["algorithms", "counting", "sequences"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Johnson–Trotter Algorithm &mdash; coolmaths</title>
+<meta name="description" content="List every permutation by swapping just one neighbouring pair at a time. What rule keeps the sequence going?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/johnson-trotter/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Johnson–Trotter Algorithm">
+<meta property="og:description" content="List every permutation by swapping just one neighbouring pair at a time. What rule keeps the sequence going?">
+<meta property="og:url" content="https://coolmaths.ai/johnson-trotter/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.9rem; }
+  #row { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+  .item { min-width: 3rem; min-height: 3.2rem; display: flex; align-items: center; justify-content: center; padding: 0.3rem 0.5rem; font: inherit; font-size: 1.3rem; font-family: var(--mono); border: 2px solid var(--border-strong); border-radius: 0.6rem; background: var(--card); color: var(--text); }
+  .item.mobile { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 3px var(--highlight); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 100%; max-width: 9rem; accent-color: var(--accent); }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="johnson-trotter" data-kind="demo">
+<main id="main">
+  <h1>Johnson–Trotter Algorithm</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#sequences">Sequences</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> List every ordering of a set by changing just one neighbouring pair at a time.<br>
+    <strong>How to play:</strong> Step or run the algorithm and watch the largest "mobile" number move.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="row"></div>
+  </div>
+
+  <div class="controls">
+    <label>Size n <input id="nInput" type="range" min="2" max="7" value="4" aria-label="Number of elements, 2 to 7"></label>
+    <button id="stepBtn" type="button" class="primary">Step</button>
+    <button id="runBtn" type="button">Run</button>
+    <button id="stopBtn" type="button">Stop</button>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>There is a way to list all permutations in which each one differs from the last by just one adjacent swap.</p>
+
+      <h2>Mobile numbers</h2>
+      <p>Each number looks left or right, written <code>&lt;k</code> or <code>k&gt;</code>. It is <em>mobile</em> if its neighbour in that direction is smaller. The algorithm swaps the largest mobile number with that neighbour, then reverses the directions of every larger number. Starting from <code>&lt;1 &lt;2 … &lt;n</code>, it eventually reaches <code>&lt;2 &lt;1 3&gt; 4&gt; … n&gt;</code>, where nothing is mobile.</p>
+
+      <h2>A minimal-change order</h2>
+      <p>Every new permutation is obtained by a single transposition of adjacent elements — the same idea behind <a class="wiki-term" data-wiki="Gray_code" href="https://en.wikipedia.org/wiki/Gray_code" target="_blank" rel="noopener">Gray codes</a>. The logic test checks for n = 1 through 7 that the algorithm produces exactly n! distinct permutations, that every step is one adjacent swap, and that it halts at the expected permutation.</p>
+
+      <p class="tip">Watch the largest number travel back and forth. What changes whenever it turns around?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/JohnsonTrotter.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="johnson-trotter-core.js"></script>
+<script src="johnson-trotter.js"></script>
+</body>
+</html>

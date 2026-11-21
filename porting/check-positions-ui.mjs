@@ -390,6 +390,9 @@ const GAMES = {
   "john-sharp-paradox": async (page) => {
     await page.click("#revealBtn");
   },
+  "johnson-trotter": async (page) => {
+    await page.click("#stepBtn");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

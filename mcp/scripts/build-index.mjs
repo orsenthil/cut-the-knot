@@ -345,6 +345,7 @@ const CORE_GLOBALS = {
   "critical-path-scheduling/critical-path-scheduling-core.js": ["CriticalPathSchedulingCore"],
   "jefferson-apportionment/jefferson-apportionment-core.js": ["JeffersonApportionmentCore"],
   "john-sharp-paradox/john-sharp-paradox-core.js": ["JohnSharpParadoxCore"],
+  "johnson-trotter/johnson-trotter-core.js": ["JohnsonTrotterCore"],
 };
 
 const games = [];
