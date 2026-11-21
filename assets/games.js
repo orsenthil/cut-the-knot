@@ -1208,6 +1208,14 @@ window.COOLMATHS = {
       level: 3,
     },
     {
+      slug: "winkler-path-proof",
+      title: "Integers and Rectangles: Winkler's Proof",
+      blurb: "Colour the tiles, add the strips, and find a path across the rectangle. What does the path tell you about its sides?",
+      tags: ["invariants", "graph-theory", "logic"],
+      kind: "demo",
+      level: 3,
+    },
+    {
       slug: "curry-paradox",
       title: "Curry's Paradox",
       blurb: "Swap two pieces inside a thin triangle and the leftover rectangle gains a square. Fibonacci numbers set the trap: where does the extra area come from?",

@@ -121,6 +121,7 @@ check("integer-rectangle: the width was set to 2", read["integer-rectangle"]?.w 
 check("interest-rates: investment mode was selected", read["interest-rates"]?.mode === "investment" && read["interest-rates"].accumulated > 0);
 check("integer-rectangle-graph: a tiling is saved", read["integer-rectangle-graph"]?.tiles.length === 4 && read["integer-rectangle-graph"].valid === true);
 check("robinson-induction: the split was applied", read["robinson-induction"]?.hCount === 2 && read["robinson-induction"].valid === true);
+check("winkler-path-proof: the start has a red path", read["winkler-path-proof"]?.pathKind === "red" && read["winkler-path-proof"].valid === true);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1506,6 +1507,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("robinson-induction", {});
   check("robinson-induction: Winkler's tiling has two H-tiles and two V-tiles", board.hCount === 2 && board.vCount === 2 && board.ambientSpecial === true);
+}
+
+// Winkler's path proof.
+{
+  const board = at("winkler-path-proof", {});
+  check("winkler-path-proof: the red path has height 2", board.pathKind === "red" && board.sum === 2);
 }
 
 // A game with no reader, and a position that makes no sense.

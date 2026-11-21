@@ -337,6 +337,7 @@ const CORE_GLOBALS = {
   "interest-rates/interest-rates-core.js": ["InterestRatesCore"],
   "integer-rectangle-graph/integer-rectangle-graph-core.js": ["IntegerRectangleGraphCore"],
   "robinson-induction/robinson-induction-core.js": ["RobinsonInductionCore"],
+  "winkler-path-proof/winkler-path-proof-core.js": ["WinklerPathProofCore"],
 };
 
 const games = [];

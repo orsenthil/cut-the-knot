@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Integers and Rectangles: Winkler's Proof &mdash; coolmaths</title>
+<meta name="description" content="Colour the tiles, add the strips, and find a path across the rectangle. What does the path tell you about its sides?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/winkler-path-proof/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Integers and Rectangles: Winkler's Proof">
+<meta property="og:description" content="Colour the tiles, add the strips, and find a path across the rectangle. What does the path tell you about its sides?">
+<meta property="og:url" content="https://coolmaths.ai/winkler-path-proof/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 24rem; margin: 0 auto; height: auto; }
+  .tile { stroke: transparent; stroke-width: 2; cursor: pointer; }
+  .tile.bordered { stroke: var(--ink); }
+  .tile.htile { fill: var(--good); fill-opacity: 0.45; }
+  .tile.vtile { fill: #d9534f; fill-opacity: 0.4; }
+  .tile.selected { stroke: var(--accent); stroke-width: 5; }
+  .tile:focus-visible { outline: none; stroke: var(--focus); stroke-width: 5; }
+  .strip { pointer-events: none; }
+  .strip.htile { fill: var(--good); fill-opacity: 0.9; }
+  .strip.vtile { fill: #d9534f; fill-opacity: 0.9; }
+  .path { fill: none; stroke-width: 5; stroke-linejoin: round; pointer-events: none; }
+  .path.green { stroke: var(--good); }
+  .path.red { stroke: #d9534f; }
+  .ambient { fill: none; stroke: var(--text); stroke-width: 3; pointer-events: none; }
+  .readout { margin: 0.5rem 0 0; text-align: center; font-size: 0.8rem; color: var(--muted); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; flex-wrap: wrap; cursor: pointer; }
+  select { font: inherit; max-width: 100%; padding: 0.2rem 0.3rem; border: 1px solid var(--border-strong); border-radius: 0.4rem; background: var(--card); color: var(--text); }
+  input:focus-visible, select:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="winkler-path-proof" data-kind="demo">
+<main id="main">
+  <h1>Integers and Rectangles: Winkler's Proof</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#graph-theory">Graph Theory</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Find a path across a tiled rectangle that proves one of its sides is a whole number.<br>
+    <strong>How to play:</strong> Pick a tiling, toggle the decoration and borders, and click a tile to swap its colour.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 300 250" role="group" aria-label="A tiled rectangle with green and red tiles and an optional spanning path"></svg>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Tiling <select id="presetSel" aria-label="Choose a tiling"></select></label>
+    <label><input id="decorateCheck" type="checkbox" checked> Decorate</label>
+    <label><input id="bordersCheck" type="checkbox"> Show borders</label>
+    <button id="kindBtn" type="button">Colour: green (H) — click to swap</button>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Peter Winkler's proof turns a tiling puzzle into a path puzzle very like the game of Hex.</p>
+
+      <h2>Colour and decorate</h2>
+      <p>Green tiles have an integer width; red tiles have an integer height. Give each tile thin strips of the opposite colour along its integer-length sides: green tiles get red strips above and below, red tiles get green strips left and right. Now a green region can only be crossed sideways and a red region only vertically. Just as in <a class="wiki-term" data-wiki="Hex_(board_game)" href="https://en.wikipedia.org/wiki/Hex_(board_game)" target="_blank" rel="noopener">Hex</a>, one of two things must happen: a green path joins the left and right edges, or a red path joins the top and bottom.</p>
+
+      <h2>Reading off the answer</h2>
+      <p>A green path passes through whole green widths, which add to the big width; a red path adds whole red heights to the big height. Either way the big rectangle has an integer side. The logic test checks which path occurs in three tilings and confirms that the widths or heights along the path sum exactly to the corresponding side.</p>
+
+      <p class="tip">Uncheck "Decorate" and check "Show borders". Does the path you see still prove the theorem?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/IntRectWinkler.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="winkler-path-proof-core.js"></script>
+<script src="winkler-path-proof.js"></script>
+</body>
+</html>

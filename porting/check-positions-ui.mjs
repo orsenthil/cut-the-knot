@@ -363,6 +363,9 @@ const GAMES = {
   "robinson-induction": async (page) => {
     await page.click("#splitBtn");
   },
+  "winkler-path-proof": async (page) => {
+    await page.check("#bordersCheck");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },
