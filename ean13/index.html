@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EAN-13 Encoding &mdash; coolmaths</title>
+<meta name="description" content="Change the first twelve digits of an EAN-13 code and watch the check digit and the bars follow. How does the last digit catch a slip of the finger, and what does the first digit do?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/ean13/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="EAN-13 Encoding">
+<meta property="og:description" content="Change the first twelve digits of an EAN-13 code and watch the check digit and the bars follow. How does the last digit catch a slip of the finger, and what does the first digit do?">
+<meta property="og:url" content="https://coolmaths.ai/ean13/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 0.8rem; }
+  #bars { display: block; width: 100%; max-width: 100%; height: auto; }
+  #bars .paper { fill: #fbfbf8; }
+  #bars .bar { fill: #1b1d24; }
+  #bars .par { font: 4px system-ui, sans-serif; fill: #5d6472; }
+  #digits { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3rem; margin-top: 0.6rem; }
+  .digit { min-width: 2.4rem; min-height: 2.75rem; font-size: 1.3rem; font-weight: 700; padding: 0 0.3rem; font-variant-numeric: tabular-nums; }
+  span.digit.check { display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 2px solid var(--good); background: color-mix(in srgb, var(--good) 18%, transparent); }
+  #sum { margin: 0.6rem 0 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+</style>
+</head>
+<body data-game="ean13" data-kind="demo">
+<main id="main">
+  <h1>EAN-13 Encoding</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#divisibility">Divisibility</a><a class="tag" href="../index.html#number-theory">Number Theory</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A shop barcode is a thirteen-digit number drawn as bars; the last digit is worked out from the others. There is nothing to win or lose.<br>
+    <strong>How to play:</strong> Press one of the first twelve digits to raise it by one, or select it and type a new digit, and watch the last digit and the bars change.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="bars" viewBox="0 0 105 64" role="img" aria-label="The 95 black and white bars of the barcode, with a letter over each digit's bars: L or G for the left six, R for the right six."></svg>
+    <div id="digits" aria-label="The thirteen digits"></div>
+    <p id="sum" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <<details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The <a class="wiki-term" data-wiki="International_Article_Number" href="https://en.wikipedia.org/wiki/International_Article_Number" target="_blank" rel="noopener">EAN-13</a> code on a shop item is thirteen digits. The last is a <a class="wiki-term" data-wiki="Check_digit" href="https://en.wikipedia.org/wiki/Check_digit" target="_blank" rel="noopener">check digit</a>: it is chosen so that a little sum comes out a multiple of ten.</p>
+
+      <h2>The check digit</h2>
+      <p>Write the digits <code>d1 d2 … d13</code>. Then <code>d1 + 3d2 + d3 + 3d4 + … + d11 + 3d12 + d13 ≡ 0 (mod 10)</code>, so the last digit is whatever makes the sum a multiple of ten. The logic test checked this on more than half a million codes, with every digit value in every position. Because <code>1</code> and <code>3</code> are coprime to 10, changing any one digit changes the sum by a non-multiple of ten, so every single wrong digit is caught; the test tried every wrong digit in every position of 2,000 codes. Swapping two neighbours <code>a, b</code> changes the sum by <code>±2(a − b)</code>, which is a multiple of ten only when <code>a</code> and <code>b</code> differ by 5: the test found exactly those swaps go unnoticed.</p>
+
+      <h2>UPC-A and ISBN</h2>
+      <p>A twelve-digit UPC-A code is an EAN-13 with a 0 in front, and the check digit stays the same because the weights line up: the test confirmed it for 50,000 codes. A book&rsquo;s ISBN-10 becomes an EAN-13 by putting 978 in front of its first nine digits and working out a new check digit: <code>0-14-200057-4</code> becomes <code>9780142000571</code>, as on the page.</p>
+
+      <h2>The bars</h2>
+      <p>The code is 95 modules wide: guard bars at each end and in the middle, and seven modules for each of twelve digits. The first digit has no bars of its own. It picks, for each of the six left digits, one of two patterns (L, odd, or G, even), so that the scanner can tell the code is not upside down and can recover the first digit. The test turned the bars of 200,000 random codes back into digits without a mistake.</p>
+
+      <p class="tip">Type 978 at the start of the code, then six more digits of any book&rsquo;s ISBN, and compare the last digit with the book&rsquo;s own.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/EAN13.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="ean13-core.js"></script>
+<script src="ean13.js"></script>
+</body>
+</html>

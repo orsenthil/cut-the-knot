@@ -299,6 +299,7 @@ const CORE_GLOBALS = {
   "distance-to-line/distance-to-line-core.js": ["DistanceToLineCore"],
   "distributive-law/distributive-law-core.js": ["DistributiveLawCore"],
   "divisibility/divisibility-core.js": ["DivisibilityCore"],
+  "ean13/ean13-core.js": ["Ean13Core"],
 };
 
 const games = [];

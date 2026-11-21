@@ -1119,5 +1119,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "ean13",
+      title: "EAN-13 Encoding",
+      blurb: "Change the first twelve digits of an EAN-13 code and watch the check digit and the bars follow. How does the last digit catch a slip of the finger, and what does the first digit do?",
+      tags: ["arithmetic", "divisibility", "number-theory"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

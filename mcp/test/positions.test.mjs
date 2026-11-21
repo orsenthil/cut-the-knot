@@ -1210,6 +1210,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("divisibility: with p = 2 one odd number can be left over, since 2 is not prime to 10", q.exactlyOneLeftOver === true && q.primeTo10 === false);
 }
 
+// EAN-13: the check digit and the parity pattern of the left digits.
+{
+  const p = at("ean13", { digits: [9, 7, 8, 0, 1, 4, 2, 0, 0, 0, 5, 7, 1], moves: 3, explored: true });
+  check("ean13: 9780142000571 is valid, a Bookland code with parity LGGLGL", p.valid === true && p.isBookland === true && p.leftParity === "LGGLGL" && p.checkDigit === 1);
+  const q = at("ean13", { digits: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2], moves: 0, explored: false });
+  check("ean13: the opening code 0123456789012 is a UPC-A with all left digits L", q.valid === true && q.isUpcA === true && q.leftParity === "LLLLLL");
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;
