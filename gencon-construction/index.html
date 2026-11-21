@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>General Polygon Construction &mdash; coolmaths</title>
+<meta name="description" content="A triangle can be rebuilt from the centres of squares on its sides. Can a polygon be recovered from any set of points and turning angles?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/gencon-construction/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="General Polygon Construction">
+<meta property="og:description" content="A triangle can be rebuilt from the centres of squares on its sides. Can a polygon be recovered from any set of points and turning angles?">
+<meta property="og:url" content="https://coolmaths.ai/gencon-construction/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  .polygon { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+  .vertex { fill: var(--good); }
+  .centre { fill: var(--accent); stroke: var(--ink); stroke-width: 1.5; }
+  .fixed { fill: none; stroke: var(--bad); stroke-width: 2.5; }
+  .hit { fill: transparent; }
+  .handle { cursor: grab; }
+  .handle:focus-visible { outline: none; }
+  .handle:focus-visible .centre { stroke: var(--accent); stroke-width: 4; }
+  .label { fill: var(--text); font-size: 13px; font-family: var(--font); pointer-events: none; }
+  .control-row { display: flex; flex-wrap: wrap; gap: 0.4rem 0.8rem; }
+  .control-row label { display: inline-flex; align-items: center; gap: 0.3rem; min-height: 2.5rem; }
+  .control-row input { width: 4rem; font: inherit; padding: 0.2rem; border: 1px solid var(--border-strong); border-radius: 0.4rem; background: var(--card); color: var(--text); }
+  .control-row input:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="gencon-construction" data-kind="demo">
+<main id="main">
+  <h1>General Polygon Construction</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#induction">Induction</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Build a hidden polygon from a set of centres and turning angles.<br>
+    <strong>How to play:</strong> Drag a centre to move it, or change its angle in the boxes. The polygon appears when the angles allow it.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 380" role="group" aria-label="Centres and the polygon reconstructed from them"></svg>
+  </div>
+
+  <div class="controls">
+    <div id="angles" class="control-row"></div>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three centrest of squares on a triangle determine the triangle. The same trick works for any number of points and angles.</p>
+
+      <h2>Spin the point around</h2>
+      <p>At each centre M<sub>i</sub>, rotate a point by the angle a<sub>i</sub>. Doing this for all centres composes into a single <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a> by the total angle. If the total is not a multiple of 360°, that rotation has one fixed point — and it is the first vertex A<sub>1</sub> of the hidden polygon. Rotate A<sub>1</sub> by each angle in turn to find the other vertices.</p>
+
+      <h2>Why the triangles fit</h2>
+      <p>Each rotation about M<sub>i</sub> sends A<sub>i</sub> to A<sub>i+1</sub>, so those two points are the same distance from M<sub>i</sub> and the angle between them is exactly a<sub>i</sub>: the triangle is isosceles as required. The logic test checks this on hundreds of random centre sets and angle triples, and covers the page's 60°, 90° and 180° examples.</p>
+
+      <h2>When it breaks</h2>
+      <p>If the angles add to a multiple of 360°, the composite rotation is a translation or the identity: there is no single fixed point, so the construction has no unique answer. The page asks why; the fixed-point equation <code>(I &minus; R)F = t</code> has no solution because <code>I &minus; R</code> is singular exactly in that case.</p>
+
+      <p class="tip">Set all three angles to 90° (the squares problem), then set them to 60° (equilateral triangles). What changes?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/GenCon.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="gencon-construction-core.js"></script>
+<script src="gencon-construction.js"></script>
+</body>
+</html>

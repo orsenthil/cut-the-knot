@@ -952,6 +952,14 @@ window.COOLMATHS = {
       level: 2,
     },
     {
+      slug: "gencon-construction",
+      title: "General Polygon Construction",
+      blurb: "A triangle can be rebuilt from the centres of squares on its sides. Can a polygon be recovered from any set of points and turning angles?",
+      tags: ["induction", "algorithms", "logic"],
+      kind: "demo",
+      level: 3,
+    },
+    {
       slug: "chvatal",
       title: "Chvátal's Art Gallery Theorem",
       blurb: "Draw diagonals to split a wandering polygon into triangles. How few corners do you need to pick so that someone standing there can see every point inside?",

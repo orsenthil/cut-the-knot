@@ -321,6 +321,7 @@ const CORE_GLOBALS = {
   "futurama/futurama-core.js": ["FuturamaCore"],
   "gcd-by-factor-tree/gcd-by-factor-tree-core.js": ["GcdByFactorTreeCore"],
   "gcd-lcm-rectangles/gcd-lcm-rectangles-core.js": ["GcdLcmRectanglesCore"],
+  "gencon-construction/gencon-construction-core.js": ["GenConConstructionCore"],
 };
 
 const games = [];

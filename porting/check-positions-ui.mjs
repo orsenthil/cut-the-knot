@@ -307,6 +307,10 @@ const GAMES = {
     await page.fill("#mInput", "12");
     await page.locator("#mInput").press("Enter");
   },
+  "gencon-construction": async (page) => {
+    await page.locator('.control-row input').first().fill("120");
+    await page.locator('.control-row input').first().press("Enter");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },
