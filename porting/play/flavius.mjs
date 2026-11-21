@@ -1,0 +1,43 @@
+// The Josephus Flavius game: lose with a doomed place, win with the safe place, then the controls.
+// Run with: NODE_PATH=$(npm root -g) node porting/play.mjs flavius
+export default async ({ page, first, log, shot, text }) => {
+  const kind = () => page.evaluate(() => ["win", "lose", "done"].find((k) => document.getElementById("status").classList.contains(k)) || "");
+  const focus = () => page.evaluate(() => { const a = document.activeElement; return a && (a.dataset.place !== undefined ? "place " + a.dataset.place : a.id); });
+  const place = (i) => page.locator(`#ring g.place[data-place="${i}"]`);
+  const finished = () => page.waitForFunction(() => ["win", "lose"].some((c) => document.getElementById("status").classList.contains(c)), null, { timeout: 25000 });
+  const josephus = (n, k) => { let j = 0; for (let m = 2; m <= n; m++) j = (j + k) % m; return j; };
+  log("initial:", await text("#status"), "| fast enabled =", await page.locator("#fastBtn").isEnabled());
+  await shot("initial");
+  await page.fill("#nIn", "50"); await page.press("#nIn", "Tab");
+  log("50 people:", await text("#status"));
+  await shot("max-options");
+  await page.fill("#nIn", "40"); await page.press("#nIn", "Tab");
+  await place(0).click({ force: true });
+  log("picked the top place:", await text("#status"), "| fast enabled =", await page.locator("#fastBtn").isEnabled());
+  await page.click("#fastBtn"); await finished();
+  log("run with the top place:", await text("#status"), "| result =", await kind());
+  await shot("loss");
+  await page.click("#resetBtn");
+  const safe = josephus(40, 3);
+  await place(safe).click({ force: true });
+  await page.click("#fastBtn"); await finished();
+  log(`run with the safe place ${safe + 1}:`, await text("#status"), "| result =", await kind());
+  await shot("win");
+  if (!first) return;
+  await page.click("#resetBtn");
+  await page.click("#kMore"); await page.click("#kMore");
+  log("every which after two >:", await page.inputValue("#kIn"));
+  await page.fill("#kIn", "0"); await page.press("#kIn", "Tab");
+  log("every which typed 0:", await text("#status"), "|", await page.inputValue("#kIn"));
+  await page.fill("#nIn", "2"); await page.press("#nIn", "Tab");
+  log("how many typed 2:", await text("#status"), "|", await page.inputValue("#nIn"));
+  await place(0).focus(); await page.keyboard.press("ArrowRight"); await page.keyboard.press("Enter");
+  log("keyboard: moved on and picked, focus =", await focus(), "|", await text("#status"));
+  await page.click("#slowBtn");
+  log("slow running: controls locked =", await page.locator("#nIn").isDisabled(), "| fast enabled =", await page.locator("#fastBtn").isEnabled());
+  await finished();
+  log("slow finished:", await text("#status"), "| result =", await kind());
+  await page.click("#resetBtn");
+  log("after Reset:", await text("#status"));
+  await shot("reset");
+};

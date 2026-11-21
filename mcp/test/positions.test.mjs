@@ -1324,6 +1324,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("first-proof: six pins, HH = TT = 1 and HT = 4", q.HH === 1 && q.TT === 1 && q.HT === 4 && q.HHequalsTT === true && q.allCornersAlike === false);
 }
 
+// The Josephus Flavius game: the safe place and when you would be removed.
+{
+  const p = at("flavius", { n: 41, k: 3, status: Array(41).fill(0), hits: 0, counter: -1, finished: false, selected: 30, order: [], moves: 1, explored: false });
+  check("flavius: with 41 people and every third removed, place 31 (index 30) is the safe place and you would survive", p.safePlaceFromTop === 31 && p.youWouldSurvive === true && p.yourPlaceFromTop === 31 && p.youAreRemovedNumber === null);
+  const q = at("flavius", { n: 10, k: 3, status: Array(10).fill(0), hits: 0, counter: -1, finished: false, selected: 2, order: [], moves: 1, explored: false });
+  check("flavius: with 10 people and every third, the third place goes first", q.youWouldSurvive === false && q.youAreRemovedNumber === 1 && q.safePlaceFromTop === 4);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

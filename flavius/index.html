@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Josephus Flavius Game &mdash; coolmaths</title>
+<meta name="description" content="Forty soldiers stand in a circle and every third one is removed. Where should you stand to be the last one left? Pick a place and watch, then change how many and how often.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/flavius/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Josephus Flavius Game">
+<meta property="og:description" content="Forty soldiers stand in a circle and every third one is removed. Where should you stand to be the last one left? Pick a place and watch, then change how many and how often.">
+<meta property="og:url" content="https://coolmaths.ai/flavius/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #ring { display: block; width: 100%; max-width: 100%; height: auto; }
+  #ring .mark { stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+  #ring g.place { cursor: pointer; outline: none; }
+  #ring .face { fill: #f2c94c; stroke: var(--ink); stroke-width: 1.5; }
+  #ring .eye, #ring .mouth { fill: none; stroke: #222; stroke-width: 1.6; stroke-linecap: round; }
+  #ring .pupil { fill: #222; }
+  #ring .no { font: 9px system-ui, sans-serif; fill: var(--muted); }
+  #ring g.dead .face { fill: #8b8f99; }
+  #ring g.mine .face { stroke: var(--accent); stroke-width: 4; }
+  #ring g.last .face { fill: var(--good); }
+  #ring g.now .face { stroke: var(--bad); stroke-width: 4; }
+  #ring g.place:focus .face, #ring g.place:focus-visible .face { stroke: var(--accent); stroke-width: 4; stroke-dasharray: 4 2; }
+  .controls .field { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 4rem; max-width: 100%; }
+  .controls .step { min-width: 2.75rem; min-height: 2.75rem; }
+</style>
+</head>
+<body data-game="flavius" data-kind="game">
+<main id="main">
+  <h1>flavius</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> People stand in a circle and, going round from the top, every few people one is removed until only one is left. Win by standing in the place of the last one.<br>
+    <strong>How to play:</strong> Press a smiley to choose where you stand, then press Slow or Fast and watch who goes. Press Reset to try another place.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="ring" viewBox="0 0 400 400" role="group" aria-label="A circle of people. The counting starts at the short mark at the top. Press a person to choose your place; the arrow keys move round the circle."></svg>
+  </div>
+
+  <div class="controls">
+    <span class="field"><span id="nLabel">How many</span>
+      <button id="nLess" type="button" class="step" aria-label="One fewer person">&lt;</button>
+      <input id="nIn" type="number" min="3" max="50" step="1" aria-labelledby="nLabel">
+      <button id="nMore" type="button" class="step" aria-label="One more person">&gt;</button></span>
+    <span class="field"><span id="kLabel">Every which</span>
+      <button id="kLess" type="button" class="step" aria-label="Remove every earlier person">&lt;</button>
+      <input id="kIn" type="number" min="1" max="50" step="1" aria-labelledby="kLabel">
+      <button id="kMore" type="button" class="step" aria-label="Remove every later person">&gt;</button></span>
+    <button id="slowBtn" type="button" class="primary" disabled>Slow</button>
+    <button id="fastBtn" type="button" disabled>Fast</button>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The historian Josephus Flavius, trapped in a cave with 40 soldiers, is said to have found the one place in the circle that survives when every third person is killed. This is the <a class="wiki-term" data-wiki="Josephus_problem" href="https://en.wikipedia.org/wiki/Josephus_problem" target="_blank" rel="noopener">Josephus problem</a>.</p>
+
+      <h2>A recurrence</h2>
+      <p>Number the places from 0 at the top. Let <code>J(m)</code> be the place that survives among <code>m</code> people when every <code>k</code>-th is removed. With one person, <code>J(1) = 0</code>. After the first removal, <code>m − 1</code> people are left and the counting begins again <i>k</i> places further on, so <code>J(m) = (J(m − 1) + k) mod m</code>. The logic test compared this with the applet's own counting and with a plain list count, for every number of people from 3 to 50 and every <code>k</code> from 1 to 50 (2,400 games), and found the same survivor and the same order of removals every time.</p>
+
+      <h2>Every second person</h2>
+      <p>For <code>k = 2</code> there is a neat closed form: write <code>n = 2<sup>m</sup> + L</code> with <code>0 ≤ L &lt; 2<sup>m</sup></code>; counting from 1 at the top the survivor is place <code>2L + 1</code>. With 50 people, <code>50 = 32 + 18</code>, so place 37. The test checked this for every <code>n</code> up to 50. (Concrete Mathematics, by Graham, Knuth and Patashnik, treats the problem in full.)</p>
+
+      <h2>The legend</h2>
+      <p>With 41 people (Josephus and a friend) and every third killed, the last two are places 31 and 16 (counting from 1 at the top): the places the story says Josephus and his friend took. With 40 people, the page's number, the safe place is the one shown by the test.</p>
+
+      <p class="note">As in the applet, the count starts at the top place (&ldquo;1&rdquo; is said there), so the first person to go is the <i>k</i>-th place from the top; the last person counted is the survivor and is not removed; and when your place is removed the game ends there.</p>
+
+      <p class="tip">Choose every 2nd with 16 people, then 17, then 31, then 32. Which places are safe, and can you see the pattern?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/recurrence/flavius.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="flavius-core.js"></script>
+<script src="flavius.js"></script>
+</body>
+</html>
