@@ -420,6 +420,9 @@ const GAMES = {
   "leibniz-triangle": async (page) => {
     await page.check('input[value="leibniz"]');
   },
+  "game-of-life": async (page) => {
+    await page.selectOption("#patternSel", "glider");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

@@ -1549,5 +1549,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "game-of-life",
+      title: "The Game of Life",
+      blurb: "Three simple rules decide which cells live. What patterns can emerge from them?",
+      tags: ["algorithms", "counting", "logic"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

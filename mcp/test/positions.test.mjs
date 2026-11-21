@@ -138,6 +138,7 @@ check("latin-squares: a swap broke the Latin property", read["latin-squares"]?.l
 check("lattice-multiplication: a factor was changed", read["lattice-multiplication"]?.a === 123 && read["lattice-multiplication"].product === read["lattice-multiplication"].expected);
 check("lcm-algorithm: one step was made", read["lcm-algorithm"]?.steps === 1 && read["lcm-algorithm"].lcm === 30);
 check("leibniz-triangle: the Leibniz triangle was selected", read["leibniz-triangle"]?.kind === "leibniz" && read["leibniz-triangle"].symmetric === true);
+check("game-of-life: a glider was placed", read["game-of-life"]?.population === 5 && read["game-of-life"].generation === 0);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1628,6 +1629,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("leibniz-triangle", { rows: 8, mod: 5, kind: "pascal" });
   check("leibniz-triangle: Pascal row sums are powers of two", board.rowSums[4] === 16 && board.symmetric === true);
+}
+
+// Conway's Life.
+{
+  const board = at("game-of-life", { size: 5, generation: 2, population: 1, encoded: "00000/01000/00000/00000/00000" });
+  check("game-of-life: generation and population are read", board.generation === 2 && board.population === 1);
 }
 
 // A game with no reader, and a position that makes no sense.

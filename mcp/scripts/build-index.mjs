@@ -354,6 +354,7 @@ const CORE_GLOBALS = {
   "lattice-multiplication/lattice-multiplication-core.js": ["LatticeMultiplicationCore"],
   "lcm-algorithm/lcm-algorithm-core.js": ["LcmAlgorithmCore"],
   "leibniz-triangle/leibniz-triangle-core.js": ["LeibnizTriangleCore"],
+  "game-of-life/game-of-life-core.js": ["GameOfLifeCore"],
 };
 
 const games = [];
