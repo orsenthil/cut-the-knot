@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Figurate Numbers in the Multiplication Table &mdash; coolmaths</title>
+<meta name="description" content="Sum a corner, a gnomon, a diagonal or an anti-diagonal of the multiplication table and out come squares of triangular numbers, cubes, sums of squares and tetrahedral numbers. Why?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/figurate/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Figurate Numbers in the Multiplication Table">
+<meta property="og:description" content="Sum a corner, a gnomon, a diagonal or an anti-diagonal of the multiplication table and out come squares of triangular numbers, cubes, sums of squares and tetrahedral numbers. Why?">
+<meta property="og:url" content="https://coolmaths.ai/figurate/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 8px; touch-action: none; cursor: crosshair; }
+  #board:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  #identity { margin: 0.6rem 0 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+  .controls fieldset { border: 1px solid var(--border); border-radius: 8px; margin: 0; padding: 0.2rem 0.7rem; display: inline-flex; flex-wrap: wrap; gap: 0 0.8rem; max-width: 100%; min-width: 0; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 4.5rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="figurate" data-kind="demo">
+<main id="main">
+  <h1>Figurate Numbers in the Multiplication Table</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A multiplication table lights up in different shapes, and the numbers in each shape add up to something surprising; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Move the pointer over the table (or press a cell, or use the arrow keys) and read the sum underneath. Pick a different shape with the buttons.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="480" height="480" tabindex="0" aria-label="The multiplication table from 1 by 1 to 14 by 14. The cell under the pointer chooses a number n and a shape of cells lights up. Left and right arrow keys change n."></canvas>
+    <p id="identity" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <fieldset><legend>Shape</legend>
+      <label><input type="radio" name="mode" value="triangular-squares" checked> Triangular squares</label>
+      <label><input type="radio" name="mode" value="cubes"> Cubes</label>
+      <label><input type="radio" name="mode" value="squares"> Squares</label>
+      <label><input type="radio" name="mode" value="tetrahedral"> Tetrahedral numbers</label>
+    </fieldset>
+    <label>n <input id="nIn" type="number" min="0" max="14" step="1" aria-label="n, 0 to 14"></label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The multiplication table hides four identities. Each is a sum of table entries along a shape, and each equals a <a class="wiki-term" data-wiki="Figurate_number" href="https://en.wikipedia.org/wiki/Figurate_number" target="_blank" rel="noopener">figurate number</a>. The logic test summed the lit cells themselves for every <code>n</code> up to 300 and compared with the formulas.</p>
+
+      <h2>Triangular squares and cubes</h2>
+      <p>The sum of all entries of the <code>n × n</code> corner is <code>(1 + 2 + … + n)² = [n(n+1)/2]²</code>: the first row sums to <code>n(n+1)/2</code>, the second to twice that, and so on, so the total is <code>(1 + 2 + … + n) · n(n+1)/2</code>. The <i>n</i>th row and <i>n</i>th column together (the diagonal entry counted once) sum to <code>2n(1 + … + n) − n² = n² (n+1) − n² = n³</code>. Adding such gnomons for <code>1, 2, …, n</code> builds the square of the triangular number out of cubes: <code>1³ + 2³ + … + n³ = [n(n+1)/2]²</code>.</p>
+
+      <h2>Squares</h2>
+      <p>The diagonal of the table holds <code>1², 2², 3², …</code>, and their sum is <code>1² + 2² + … + n² = n(n+1)(2n+1)/6</code>.</p>
+
+      <h2>Tetrahedral numbers</h2>
+      <p>Add along an anti-diagonal: <code>n·1 + (n−1)·2 + … + 1·n = n(n+1)(n+2)/6</code>, the <i>n</i>th tetrahedral number, which counts the balls in a pyramid of <code>n</code> layers.</p>
+
+      <p class="note">As in the applet, the table runs to 14 and the number <code>n</code> is the larger of the cell's column and row (for the anti-diagonal, column plus row minus 1).</p>
+
+      <p class="tip">Choose Cubes and move across the table. Which cell gives 7³ = 343?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/Figurate.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="figurate-core.js"></script>
+<script src="figurate.js"></script>
+</body>
+</html>

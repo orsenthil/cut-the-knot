@@ -1298,6 +1298,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("fif: against 2 and 4 the computer holding 1 and 7 would block at 9", r.computerWouldPlay === 9 && r.winner === null);
 }
 
+// Figurate numbers: the sum of a shape of the multiplication table.
+{
+  const p = at("figurate", { mode: "tetrahedral", n: 5, moves: 3, explored: true });
+  check("figurate: the anti-diagonal for n = 5 holds 5 cells summing to 35 = 5*6*7/6", p.litCells === 5 && p.sum === 35 && p.shape === "tetrahedral");
+  const q = at("figurate", { mode: "cubes", n: 7, moves: 1, explored: true });
+  check("figurate: the gnomon of 7 sums to 7 cubed = 343", q.litCells === 13 && q.sum === 343);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

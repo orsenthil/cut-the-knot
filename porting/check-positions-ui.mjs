@@ -426,6 +426,7 @@ const GAMES = {
   "fc-exercise": (page) => page.locator("button.digit").first().click(),
   "fibonacci-cheat": (page) => page.locator("#pieceBtns button").first().click(),
   "fif": (page) => page.locator("#board button.sq").first().click(),
+  "figurate": (page) => page.fill("#nIn", "5").then(() => page.press("#nIn", "Tab")),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

@@ -1203,5 +1203,13 @@ window.COOLMATHS = {
       tags: ["game-strategy", "arithmetic", "logic"],
       level: 1,
     },
+    {
+      slug: "figurate",
+      title: "Figurate Numbers in the Multiplication Table",
+      blurb: "Sum a corner, a gnomon, a diagonal or an anti-diagonal of the multiplication table and out come squares of triangular numbers, cubes, sums of squares and tetrahedral numbers. Why?",
+      tags: ["algebra", "sequences", "arithmetic"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
