@@ -113,6 +113,7 @@ check("huntington-hill-method: the seat stepper was used", read["huntington-hill
 check("hilbert-curve: the order slider changed", read["hilbert-curve"]?.order === 4 && read["hilbert-curve"].grid === 16);
 check("hooper-paradox: the width was edited and area conserved", read["hooper-paradox"]?.w === 12 && read["hooper-paradox"].conserved === true);
 check("horner-method: x was changed to 3", read["horner-method"]?.t === 3 && read["horner-method"].coefficients.length === 5);
+check("iterated-function-systems: Fern was selected", read["iterated-function-systems"]?.system === "Fern" && read["iterated-function-systems"].maps === 4);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1445,6 +1446,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("horner-method", { coefficients: [2, -3, 0, 1, 7], t: 2 });
   check("horner-method: the page example gives 17 and derivative 29", board.value === 17 && board.derivative === 29);
+}
+
+// Iterated function systems.
+{
+  const board = at("iterated-function-systems", { system: "Sierpinski gasket" });
+  check("iterated-function-systems: the gasket has three contracting maps", board.maps === 3 && board.scales.every((s) => s <= 1));
 }
 
 // A game with no reader, and a position that makes no sense.

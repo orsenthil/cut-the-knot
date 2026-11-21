@@ -1080,6 +1080,14 @@ window.COOLMATHS = {
       level: 2,
     },
     {
+      slug: "iterated-function-systems",
+      title: "Iterated Function Systems",
+      blurb: "A few shrinking maps, picked at random, can draw a fern or a gasket. How does the chaos game know what shape to make?",
+      tags: ["algorithms", "sequences", "counting"],
+      kind: "demo",
+      level: 3,
+    },
+    {
       slug: "combi-gem",
       title: "Combinatorial Gem",
       blurb: "Can two different collections of numbers give exactly the same list of sums of pairs? Change the numbers and find out when it is possible.",

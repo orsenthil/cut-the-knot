@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Iterated Function Systems &mdash; coolmaths</title>
+<meta name="description" content="A few shrinking maps, picked at random, can draw a fern or a gasket. How does the chaos game know what shape to make?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/iterated-function-systems/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Iterated Function Systems">
+<meta property="og:description" content="A few shrinking maps, picked at random, can draw a fern or a gasket. How does the chaos game know what shape to make?">
+<meta property="og:url" content="https://coolmaths.ai/iterated-function-systems/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 24rem; margin: 0 auto; height: auto; border-radius: 0.6rem; }
+  .control-row label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; flex-wrap: wrap; }
+  select { font: inherit; max-width: 100%; padding: 0.2rem 0.3rem; border: 1px solid var(--border-strong); border-radius: 0.4rem; background: var(--card); color: var(--text); }
+  button:focus-visible, select:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="iterated-function-systems" data-kind="demo">
+<main id="main">
+  <h1>Iterated Function Systems</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Let a sequence of random map choices draw a fractal shape.<br>
+    <strong>How to play:</strong> Pick a system, press Start and watch the picture build up. Clear and choose another to compare.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="300" height="300" aria-label="Points plotted by the chaos game for the selected iterated function system"></canvas>
+  </div>
+
+  <div class="controls">
+    <label>System <select id="systemSel" aria-label="Predefined iterated function system"></select></label>
+    <button id="startBtn" type="button" class="primary">Start</button>
+    <button id="stopBtn" type="button">Stop</button>
+    <button id="clearBtn" type="button">Clear</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A handful of shrinking maps, chosen at random, can trace out an intricate shape with no jagged edges anywhere in the rules.</p>
+
+      <h2>The chaos game</h2>
+      <p>An <a class="wiki-term" data-wiki="Iterated_function_system" href="https://en.wikipedia.org/wiki/Iterated_function_system" target="_blank" rel="noopener">iterated function system</a> is a finite set of <a class="wiki-term" data-wiki="Contraction_mapping" href="https://en.wikipedia.org/wiki/Contraction_mapping" target="_blank" rel="noopener">contractions</a>. Starting from any point, repeatedly apply a randomly chosen map and plot where you land. The orbit converges to the attractor: the unique set that is the union of its own images. The probabilities affect how evenly the picture fills in, not the attractor itself.</p>
+
+      <h2>Affine maps</h2>
+      <p>Each map here is affine: <code>(x,y) → (ax + by + e, cx + dy + f)</code>. Three examples are provided — the Sierpinski gasket, a square and Barnsley's fern. The logic test checks the maps on known points, that they are non-expanding, and that a long chaos-game orbit stays bounded inside the attractor's box.</p>
+
+      <p class="tip">Compare the gasket and the square. What does changing the number of maps do to the picture?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/ifs.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="iterated-function-systems-core.js"></script>
+<script src="iterated-function-systems.js"></script>
+</body>
+</html>

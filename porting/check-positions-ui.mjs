@@ -336,6 +336,9 @@ const GAMES = {
     await page.fill("#tInput", "3");
     await page.locator("#tInput").press("Enter");
   },
+  "iterated-function-systems": async (page) => {
+    await page.selectOption("#systemSel", "Fern");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

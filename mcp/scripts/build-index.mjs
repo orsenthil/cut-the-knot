@@ -329,6 +329,7 @@ const CORE_GLOBALS = {
   "hilbert-curve/hilbert-curve-core.js": ["HilbertCurveCore"],
   "hooper-paradox/hooper-paradox-core.js": ["HooperParadoxCore"],
   "horner-method/horner-method-core.js": ["HornerMethodCore"],
+  "iterated-function-systems/iterated-function-systems-core.js": ["IteratedFunctionSystemsCore"],
 };
 
 const games = [];
