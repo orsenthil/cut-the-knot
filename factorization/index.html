@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GCD and LCM by Plain Factorization &mdash; coolmaths</title>
+<meta name="description" content="Factor two numbers into primes and compare the exponents: the gcd takes the smaller, the lcm the larger. Add one factor at a time to a number: can you predict what happens to the gcd and lcm?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/factorization/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="GCD and LCM by Plain Factorization">
+<meta property="og:description" content="Factor two numbers into primes and compare the exponents: the gcd takes the smaller, the lcm the larger. Add one factor at a time to a number: can you predict what happens to the gcd and lcm?">
+<meta property="og:url" content="https://coolmaths.ai/factorization/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 1rem; }
+  #form { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+  #form label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  #form input[type="text"] { width: 10rem; max-width: 100%; font-size: 1.05rem; }
+  #form fieldset { border: 1px solid var(--border); border-radius: 8px; margin: 0; padding: 0.1rem 0.7rem; display: inline-flex; flex-wrap: wrap; gap: 0 0.8rem; }
+  #out { margin-top: 0.9rem; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  #out p { margin: 0.3rem 0; }
+  #out .result { font-size: 1.1rem; }
+  #out .check { color: var(--muted); }
+  table.exps { border-collapse: collapse; margin: 0.6rem 0; max-width: 100%; }
+  table.exps th, table.exps td { padding: 0.2rem 0.6rem; text-align: center; border-bottom: 1px solid var(--border); }
+  table.exps th { font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+  table.exps td.min { color: var(--good); font-weight: 700; }
+  table.exps td.max { color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body data-game="factorization" data-kind="demo">
+<main id="main">
+  <h1>GCD and LCM by Plain Factorization</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#divisibility">Divisibility</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two numbers are broken into primes, and the biggest number that divides both and the smallest that both divide are read off; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Type two numbers (or products like 12*5*7) and press Compute. Add one factor at a time and guess what changes.
+  </div>
+
+  <div id="stage" class="stage">
+    <form id="form" autocomplete="off">
+      <label>N1 <input id="n1" type="text" inputmode="text" aria-label="First number, or a product typed with stars"></label>
+      <label>N2 <input id="n2" type="text" inputmode="text" aria-label="Second number, or a product typed with stars"></label>
+      <button type="submit" class="primary" id="goBtn">Compute</button>
+      <fieldset><legend>Factorization</legend>
+        <label><input type="radio" name="fmt" id="short" checked> short</label>
+        <label><input type="radio" name="fmt" id="long"> long</label>
+      </fieldset>
+    </form>
+    <div id="out" aria-live="polite"></div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Every whole number above 1 is a product of <a class="wiki-term" data-wiki="Prime_number" href="https://en.wikipedia.org/wiki/Prime_number" target="_blank" rel="noopener">primes</a> in exactly one way, and that makes the gcd and lcm easy to read off.</p>
+
+      <h2>Smaller and larger exponents</h2>
+      <p>For every prime, look at its exponent in each number. The <a class="wiki-term" data-wiki="Greatest_common_divisor" href="https://en.wikipedia.org/wiki/Greatest_common_divisor" target="_blank" rel="noopener">gcd</a> takes the smaller exponent and the <a class="wiki-term" data-wiki="Least_common_multiple" href="https://en.wikipedia.org/wiki/Least_common_multiple" target="_blank" rel="noopener">lcm</a> the larger. The table shows them side by side. The logic test checked this against Euclid&rsquo;s algorithm for every pair from 1 to 400 and for 20,000 random pairs with a number up to two billion.</p>
+
+      <h2>gcd × lcm = M × N</h2>
+      <p>For every prime the smaller and the larger of two exponents add up to the same as the exponents themselves: <code>min(a, b) + max(a, b) = a + b</code>. Multiply over all the primes and you get <code>gcd(M, N) · lcm(M, N) = M · N</code>, which is why finding one of them gives the other. The page shows the check under the table.</p>
+
+      <h2>Building numbers a factor at a time</h2>
+      <p>Adding one factor to a number raises one exponent. If it raises the exponent in the smaller of the two, the gcd grows with it; if it raises the larger, only the lcm grows. Try it: type <code>360</code>, then <code>360*7</code>, and watch.</p>
+
+      <p class="note">Like the applet, this page reads a text as a whole number or a product of whole numbers joined with <code>*</code>, and writes 0 back for anything else; the page says it handles numbers up to 7,000,000,000, and so does this one.</p>
+
+      <p class="tip">Try 360 and 84, then add *5 to the second. What happens to the gcd? And to the lcm?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/Factorization.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="factorization-core.js"></script>
+<script src="factorization.js"></script>
+</body>
+</html>

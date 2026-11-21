@@ -1254,6 +1254,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("euclid-algorithm: the Fibonacci pair 89 and 55 takes 9 steps", q.steps === 9 && q.gcd === 1);
 }
 
+// Factorization: gcd and lcm from the exponents.
+{
+  const p = at("factorization", { t1: "360", t2: "84", n1: 360, n2: 84, brief: true, computed: true, moves: 1 });
+  check("factorization: 360 and 84 have gcd 12 and lcm 2520, sharing 2 and 3", p.gcd === "12" && p.lcm === "2520" && p.coprime === false && p.sharedPrimes.join() === "2,3" && p.computed === true);
+  const q = at("factorization", { t1: "1", t2: "97", n1: 1, n2: 97, brief: false, computed: true, moves: 2 });
+  check("factorization: 1 and 97 are coprime with lcm 97", q.gcd === "1" && q.lcm === "97" && q.coprime === true && q.format === "long");
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

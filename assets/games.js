@@ -1165,5 +1165,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "factorization",
+      title: "GCD and LCM by Plain Factorization",
+      blurb: "Factor two numbers into primes and compare the exponents: the gcd takes the smaller, the lcm the larger. Add one factor at a time to a number: can you predict what happens to the gcd and lcm?",
+      tags: ["number-theory", "divisibility", "arithmetic"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
