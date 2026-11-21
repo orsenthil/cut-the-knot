@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Distance from a Point to a Line &mdash; coolmaths</title>
+<meta name="description" content="Drag a line and a point and watch the distance between them. Why is it |Au + Bv + C| divided by the length of the normal, and what does normalizing the equation do?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/distance-to-line/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Distance from a Point to a Line">
+<meta property="og:description" content="Drag a line and a point and watch the distance between them. Why is it |Au + Bv + C| divided by the length of the normal, and what does normalizing the equation do?">
+<meta property="og:url" content="https://coolmaths.ai/distance-to-line/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 8px; touch-action: none; cursor: grab; }
+  .readout { margin: 0.6rem 0 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .readout strong { color: var(--good); }
+  .controls fieldset { border: 1px solid var(--border); border-radius: 8px; margin: 0; padding: 0.2rem 0.7rem; display: inline-flex; flex-wrap: wrap; gap: 0 0.8rem; max-width: 100%; min-width: 0; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 4.5rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="distance-to-line" data-kind="demo">
+<main id="main">
+  <h1>Distance from a Point to a Line</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#curves">Curves</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A line and a dot sit on a grid, and the green stick shows how far the dot is from the line; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the dot, the two ends of the line, or the line itself, and watch the number. The boxes below move them too.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="420" height="420" aria-label="A grid from minus six to six with a line through two points, a dot P, and the shortest segment from P to the line."></canvas>
+    <p class="readout" id="equation" aria-live="polite"></p>
+    <p class="readout"><strong id="distance"></strong></p>
+  </div>
+
+  <div class="controls">
+    <fieldset><legend>Line, through</legend>
+      <label>x₁ <input id="p1x" type="number" min="-6" max="6" step="0.1" aria-label="First point of the line, x"></label>
+      <label>y₁ <input id="p1y" type="number" min="-6" max="6" step="0.1" aria-label="First point of the line, y"></label>
+      <label>x₂ <input id="p2x" type="number" min="-6" max="6" step="0.1" aria-label="Second point of the line, x"></label>
+      <label>y₂ <input id="p2y" type="number" min="-6" max="6" step="0.1" aria-label="Second point of the line, y"></label>
+    </fieldset>
+    <fieldset><legend>Point P</legend>
+      <label>u <input id="px" type="number" min="-6" max="6" step="0.1" aria-label="Point P, u"></label>
+      <label>v <input id="py" type="number" min="-6" max="6" step="0.1" aria-label="Point P, v"></label>
+    </fieldset>
+    <label><input id="normBox" type="checkbox"> Normalize equation</label>
+    <label><input id="levelBox" type="checkbox"> Show level lines</label>
+    <label>Round to <input id="digitsIn" type="number" min="0" max="6" step="1" aria-label="Digits to round to"> digits</label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <<details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A line is the set of points where <code>f(x, y) = Ax + By + C</code> is zero. The distance from a point to that line is a one-line formula, and the picture shows why.</p>
+
+      <h2>The formula</h2>
+      <p>The distance from <code>P = (u, v)</code> to the line is <code>|Au + Bv + C| / ‖n‖</code>, where <code>n = (A, B)</code> is the <a class="wiki-term" data-wiki="Normal_(geometry)" href="https://en.wikipedia.org/wiki/Normal_(geometry)" target="_blank" rel="noopener">normal</a> vector, drawn in purple. Every unit step along the normal changes <code>f</code> by exactly <code>‖n‖</code>, and <code>f</code> does not change at all along the line. So <code>f(P)</code> counts how many steps of length <code>1/‖n‖</code> P is from the line. The logic test compared the formula with the distance to the foot of the perpendicular for every pair of points on a grid and found them equal to rounding.</p>
+
+      <h2>Level lines</h2>
+      <p>The lines <code>f = c</code> are all parallel to the line, one for each value of <code>c</code>. The dashed lines are the ones where <code>f</code> is a whole number. When the equation is normalized (<code>A² + B² = 1</code>) they are exactly one unit apart, and the distance is just <code>|Au + Bv + C|</code>.</p>
+
+      <h2>Which side</h2>
+      <p>The line splits the plane in two. On the side the normal points to, <code>f</code> is positive; on the other it is negative. The foot of the perpendicular is <code>P − d·m</code> or <code>P + d·m</code>, with <code>m = n/‖n‖</code>, the sign chosen to match the side, and the test confirmed that too.</p>
+
+      <p class="tip">Turn on the level lines, then slide the line across P and watch the distance reach 0 as P lands on it.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Calculus/DistanceToLine.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="distance-to-line-core.js"></script>
+<script src="distance-to-line.js"></script>
+</body>
+</html>

@@ -1187,6 +1187,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("delian: for N = 12 the middle point is exact too", q.pointsExactlyRight === 3 && q.worstPercent < 0.15);
 }
 
+// Distance to a line: the formula and the foot of the perpendicular.
+{
+  const p = at("distance-to-line", { p1: [0, 0], p2: [4, 3], p: [0, 5], normalize: false, levels: false, digits: 2, moves: 1, explored: true });
+  check("distance-to-line: from (0,5) to the 3-4-5 line the distance is 4", p.distance === 4 && p.normNormal === 5);
+  const q = at("distance-to-line", { p1: [0, 0], p2: [4, 3], p: [2, 1.5], normalize: true, levels: true, digits: 2, moves: 2, explored: true });
+  check("distance-to-line: a point on the line is at distance 0 and the equation is normalized", q.distance === 0 && q.equationNormalized === true);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

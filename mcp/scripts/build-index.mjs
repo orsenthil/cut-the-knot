@@ -296,6 +296,7 @@ const CORE_GLOBALS = {
   "cwidth/cwidth-core.js": ["CwidthCore"],
   "cycloids/cycloids-core.js": ["CycloidsCore"],
   "delian/delian-core.js": ["DelianCore"],
+  "distance-to-line/distance-to-line-core.js": ["DistanceToLineCore"],
 };
 
 const games = [];

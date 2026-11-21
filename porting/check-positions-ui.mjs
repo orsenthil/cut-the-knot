@@ -412,6 +412,7 @@ const GAMES = {
   cycloids: (page) => page.click("#markRim"),
   delian: (page) => page.click("#nMore"),
   "curry-paradox": (page) => page.locator('[data-piece="0"]').focus().then(() => page.keyboard.press("Enter")),
+  "distance-to-line": (page) => page.check("#normBox"),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

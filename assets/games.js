@@ -1095,5 +1095,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "distance-to-line",
+      title: "Distance from a Point to a Line",
+      blurb: "Drag a line and a point and watch the distance between them. Why is it |Au + Bv + C| divided by the length of the normal, and what does normalizing the equation do?",
+      tags: ["coordinates", "algebra", "curves"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };
