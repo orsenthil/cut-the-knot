@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Life-like Automaton With Definable Rules &mdash; coolmaths</title>
+<meta name="description" content="Choose which neighbour counts give birth and which allow survival. What world do your rules create?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/life-like-automaton/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Life-like Automaton With Definable Rules">
+<meta property="og:description" content="Choose which neighbour counts give birth and which allow survival. What world do your rules create?">
+<meta property="og:url" content="https://coolmaths.ai/life-like-automaton/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 24rem; margin: 0 auto; height: auto; cursor: crosshair; }
+  .readout { margin: 0.5rem 0 0; text-align: center; font-size: 0.85rem; color: var(--muted); }
+  .rule-group { display: flex; flex-wrap: wrap; align-items: center; gap: 0.2rem 0.5rem; margin-bottom: 0.4rem; }
+  .rule-group > span { font-size: 0.85rem; color: var(--muted); min-width: 7rem; }
+  .rule-box { display: inline-flex; align-items: center; gap: 0.2rem; font-size: 0.85rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; min-width: 0; max-width: 100%; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 100%; max-width: 8rem; accent-color: var(--accent); }
+  .controls { min-width: 0; }
+  select { font: inherit; width: 8rem; min-width: 0; max-width: 100%; padding: 0.2rem 0.3rem; border: 1px solid var(--border-strong); border-radius: 0.4rem; background: var(--card); color: var(--text); }
+  button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="life-like-automaton" data-kind="demo">
+<main id="main">
+  <h1>Life-like Automaton With Definable Rules</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Decide which neighbour counts create life and which let it continue.<br>
+    <strong>How to play:</strong> Click cells to draw, tick the B and S boxes (or pick a preset), then step or run.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="300" height="300" aria-label="A square grid for a Life-like cellular automaton"></canvas>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div id="rulesPanel" class="controls"></div>
+
+  <div class="controls">
+    <label>Size <input id="sideInput" type="range" min="8" max="40" value="20" aria-label="Board side, 8 to 40"></label>
+    <label>Preset
+      <select id="presetSel" aria-label="Choose a named rule"></select>
+    </label>
+    <button id="startBtn" type="button" class="primary">Start</button>
+    <button id="stopBtn" type="button">Stop</button>
+    <button id="stepBtn" type="button">One step</button>
+    <button id="reverseBtn" type="button">Reverse</button>
+    <button id="randomBtn" type="button">Randomize</button>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Changing two short lists of numbers creates entirely different universes.</p>
+
+      <h2>Birth and survival sets</h2>
+      <p>A rule is written <code>B…/S…</code>: an empty cell is born when its neighbour count is in B, and a live cell survives when its count is in S. Conway's Life is B3/S23. The page's example B135/S35 gives a different world from B3/S23 with the same starting pattern.</p>
+
+      <h2>A family of automata</h2>
+      <p>HighLife (B36/S23) adds a self-replicating pattern; Seeds (B2/S) has no survival at all, so nothing persists from one generation to the next; Life without Death (B3/S012345678) can only grow. The logic test checks these rules, Conway's blinker, rule toggling and the reverse step.</p>
+
+      <p class="tip">Start from Conway, then add 6 to the birth set. What new pattern appears?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/LifeG.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="life-like-automaton-core.js"></script>
+<script src="life-like-automaton.js"></script>
+</body>
+</html>

@@ -1557,5 +1557,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "life-like-automaton",
+      title: "Life-like Automaton With Definable Rules",
+      blurb: "Choose which neighbour counts give birth and which allow survival. What world do your rules create?",
+      tags: ["algorithms", "logic", "counting"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };

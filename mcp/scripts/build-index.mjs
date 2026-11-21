@@ -355,6 +355,7 @@ const CORE_GLOBALS = {
   "lcm-algorithm/lcm-algorithm-core.js": ["LcmAlgorithmCore"],
   "leibniz-triangle/leibniz-triangle-core.js": ["LeibnizTriangleCore"],
   "game-of-life/game-of-life-core.js": ["GameOfLifeCore"],
+  "life-like-automaton/life-like-automaton-core.js": ["LifeLikeAutomatonCore"],
 };
 
 const games = [];

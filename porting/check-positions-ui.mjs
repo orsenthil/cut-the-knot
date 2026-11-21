@@ -423,6 +423,9 @@ const GAMES = {
   "game-of-life": async (page) => {
     await page.selectOption("#patternSel", "glider");
   },
+  "life-like-automaton": async (page) => {
+    await page.selectOption("#presetSel", "highlife");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },
