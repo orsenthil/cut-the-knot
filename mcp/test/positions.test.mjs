@@ -1246,6 +1246,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("euclid-alg: 18 and 12 end with 6, 12, 18 and the game is over", q.over === true && q.gcd === 6 && q.movesInTheWholeGame === 1);
 }
 
+// Euclid's algorithm: the steps and the gcd.
+{
+  const p = at("euclid-algorithm", { digits: 2, a: 85, b: 18, autonomous: true, moves: 1, explored: true });
+  check("euclid-algorithm: 85 and 18 take 6 steps and have gcd 1", p.gcd === 1 && p.steps === 6 && p.coprime === true);
+  const q = at("euclid-algorithm", { digits: 2, a: 89, b: 55, autonomous: true, moves: 2, explored: true });
+  check("euclid-algorithm: the Fibonacci pair 89 and 55 takes 9 steps", q.steps === 9 && q.gcd === 1);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

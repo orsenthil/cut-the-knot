@@ -1157,5 +1157,13 @@ window.COOLMATHS = {
       tags: ["number-theory", "game-strategy", "divisibility"],
       level: 2,
     },
+    {
+      slug: "euclid-algorithm",
+      title: "Euclid's Algorithm",
+      blurb: "Divide the bigger number by the smaller, then the smaller by the remainder, and go on: the last divisor is the greatest common divisor. Why does it work, and how long can it take?",
+      tags: ["number-theory", "divisibility", "algorithms"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

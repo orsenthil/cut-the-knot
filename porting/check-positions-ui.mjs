@@ -420,6 +420,7 @@ const GAMES = {
   "enemy-ambassadors": (page) => page.locator("#table g.place").first().click(),
   "equilateral-fibonacci": (page) => page.fill("#nIn", "55"),
   "euclid-alg": (page) => page.fill("#numIn", "1000").then(() => page.press("#numIn", "Enter")),
+  "euclid-algorithm": (page) => page.locator("button.digit.a").last().click(),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

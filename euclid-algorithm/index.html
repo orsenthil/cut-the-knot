@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Euclid's Algorithm &mdash; coolmaths</title>
+<meta name="description" content="Divide the bigger number by the smaller, then the smaller by the remainder, and go on: the last divisor is the greatest common divisor. Why does it work, and how long can it take?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/euclid-algorithm/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Euclid's Algorithm">
+<meta property="og:description" content="Divide the bigger number by the smaller, then the smaller by the remainder, and go on: the last divisor is the greatest common divisor. Why does it work, and how long can it take?">
+<meta property="og:url" content="https://coolmaths.ai/euclid-algorithm/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 1rem; }
+  #nums { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.6rem; }
+  .number { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 0.2rem; max-width: 100%; min-width: 0; }
+  .comma { font-size: 1.6rem; font-weight: 700; }
+  button.digit { min-width: 2.75rem; min-height: 2.75rem; font-size: 1.5rem; font-weight: 700; padding: 0; font-variant-numeric: tabular-nums; }
+  button.digit.a { border-color: var(--accent); }
+  button.digit.b { border-color: var(--good); }
+  #steps { list-style: none; margin: 0.9rem 0 0; padding: 0; font-size: 1.1rem; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  #steps li { padding: 0.15rem 0; }
+  #steps li.gcd { font-weight: 700; color: var(--good); border-top: 1px solid var(--border); margin-top: 0.3rem; padding-top: 0.4rem; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 4.5rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="euclid-algorithm" data-kind="demo">
+<main id="main">
+  <h1>Euclid's Algorithm</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#divisibility">Divisibility</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two numbers are divided again and again, bigger by smaller and then smaller by what is left, until nothing is left; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Press a digit of either number to raise it, or select it and type a digit, and watch the divisions change.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="nums" aria-label="The two numbers"></div>
+    <ol id="steps" aria-label="The divisions, ending with the greatest common divisor"></ol>
+  </div>
+
+  <div class="controls">
+    <label>Digits <input id="digitsIn" type="number" min="1" max="4" step="1" aria-label="Number of digits in each number, 1 to 4"></label>
+    <label><input id="autoBox" type="checkbox" checked> Autonomous digits</label>
+    <button id="newBtn" type="button" class="primary">New numbers</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p><a class="wiki-term" data-wiki="Euclidean_algorithm" href="https://en.wikipedia.org/wiki/Euclidean_algorithm" target="_blank" rel="noopener">Euclid&rsquo;s algorithm</a> finds the greatest common divisor of two numbers without factoring either.</p>
+
+      <h2>Why it works</h2>
+      <p>If <code>N = M·s + R</code>, then a common divisor of <code>N</code> and <code>M</code> divides <code>R</code>, and a common divisor of <code>M</code> and <code>R</code> divides <code>N</code>, so <code>gcd(N, M) = gcd(M, R)</code>. (The page says any pair of the three works; that is too strong. In <code>8 = 3×2 + 2</code> the numbers 8 and 2 share the divisor 2, but 3 does not have it. Only the two pairs above are needed.) Take <code>R</code> to be the remainder, which is less than <code>M</code>, and the problem has become one with smaller numbers. The remainders shrink and cannot go on for ever, so one of them is 0, and the last divisor is the gcd. The logic test checked both facts for every <code>N</code> up to 120, and found that counterexample and the gcd against trial division for every pair of numbers up to 400.</p>
+
+      <h2>How long can it take?</h2>
+      <p>The steps are shorter than you might fear: never more than five times the number of digits of the smaller number (<a class="wiki-term" data-wiki="Lam%C3%A9%27s_theorem" href="https://en.wikipedia.org/wiki/Euclidean_algorithm#Algorithmic_efficiency" target="_blank" rel="noopener">Lam&eacute;&rsquo;s theorem</a>). The test checked it for every pair up to 1,500. The worst case is always a pair of consecutive <a class="wiki-term" data-wiki="Fibonacci_sequence" href="https://en.wikipedia.org/wiki/Fibonacci_sequence" target="_blank" rel="noopener">Fibonacci numbers</a> such as 89 and 55, where every quotient is 1. Try those.</p>
+
+      <p class="note">With <i>Autonomous digits</i> a digit goes up by one by itself, so raising the 9 in 19 gives 10; without it the whole number goes up by the digit's place value, giving 20. If the first number is smaller, the two are swapped, and with a 0 there is no gcd to find, so the page shows <i>?</i>.</p>
+
+      <p class="tip">Make the numbers 89 and 55, then 88 and 55. Which takes more steps?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/EuclidAlgorithm.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="euclid-algorithm-core.js"></script>
+<script src="euclid-algorithm.js"></script>
+</body>
+</html>
