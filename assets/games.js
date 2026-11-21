@@ -864,6 +864,14 @@ window.COOLMATHS = {
       level: 2,
     },
     {
+      slug: "gcd-lcm-rectangles",
+      title: "GCD × LCM = M × N",
+      blurb: "Tile a rectangle with the largest possible equal squares. How does that picture explain the least common multiple of two numbers?",
+      tags: ["number-theory", "arithmetic", "invariants"],
+      kind: "demo",
+      level: 2,
+    },
+    {
       slug: "box-volume",
       title: "Box Volume",
       blurb: "Cut equal squares from the corners of a sheet and fold it into a box. Which cut gives the biggest box?",

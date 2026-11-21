@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GCD × LCM = M × N &mdash; coolmaths</title>
+<meta name="description" content="Tile a rectangle with the largest possible equal squares. How does that picture explain the least common multiple of two numbers?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/gcd-lcm-rectangles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="GCD × LCM = M × N">
+<meta property="og:description" content="Tile a rectangle with the largest possible equal squares. How does that picture explain the least common multiple of two numbers?">
+<meta property="og:url" content="https://coolmaths.ai/gcd-lcm-rectangles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.8rem; overflow-x: auto; }
+  .rect-box { margin-bottom: 0.9rem; padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.7rem; background: var(--card); }
+  .rect-title { margin: 0 0 0.4rem; font-size: 0.85rem; color: var(--muted); }
+  .grid { display: grid; grid-template-columns: repeat(var(--cols), 1rem); gap: 2px; }
+  .cell { width: 1rem; height: 1rem; border-radius: 3px; background: var(--accent-soft); border: 1px solid var(--accent); }
+  .cell.alt { background: var(--highlight); border-color: var(--good); }
+  .identity { margin: 0.5rem 0 0; font-size: 0.85rem; font-weight: 700; overflow-wrap: anywhere; }
+  .control-row label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; }
+  .controls input { width: 4rem; font: inherit; padding: 0.2rem; border: 1px solid var(--border-strong); border-radius: 0.4rem; background: var(--card); color: var(--text); }
+  .controls input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="gcd-lcm-rectangles" data-kind="demo">
+<main id="main">
+  <h1>GCD × LCM = M × N</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> See how tiling a rectangle with equal squares explains a surprising link between the gcd and lcm of two numbers.<br>
+    <strong>How to play:</strong> Change M and N with the number boxes and watch the three rectangles update.
+  </div>
+
+  <div id="stage" class="stage">
+  </div>
+
+  <div class="controls">
+    <label>M <input id="mInput" type="number" min="1" max="40" value="6" aria-label="The number M, 1 to 40"></label>
+    <label>N <input id="nInput" type="number" min="1" max="40" value="4" aria-label="The number N, 1 to 40"></label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two numbers multiplied together equal their greatest common divisor times their least common multiple. A picture of tiled rectangles shows why.</p>
+
+      <h2>The largest square that tiles</h2>
+      <p>The <a class="wiki-term" data-wiki="Greatest_common_divisor" href="https://en.wikipedia.org/wiki/Greatest_common_divisor" target="_blank" rel="noopener">greatest common divisor</a> G = gcd(M, N) is exactly the side of the largest square that tiles an M by N rectangle. It takes S = (M/G)(N/G) such squares. Splitting each G by G square into G strips gives S·G small rectangles — and that number is divisible by both M and N.</p>
+
+      <h2>The least common multiple</h2>
+      <p>The two extra rectangles show S·G as (M/G)·N strips and as M·(N/G) strips. This common multiple is the least possible: a larger common strip would mean a larger square also tiles the original rectangle, contradicting the maximality of G. Hence S·G is the <a class="wiki-term" data-wiki="Least_common_multiple" href="https://en.wikipedia.org/wiki/Least_common_multiple" target="_blank" rel="noopener">least common multiple</a>, and <code>M·N = gcd·lcm</code>.</p>
+
+      <h2>Why min + max wins</h2>
+      <p>For each prime, the exponent in the gcd is the smaller of the two exponents and in the lcm the larger. Since <code>min + max = a + b</code>, the exponents on both sides match. The logic test checks the identity and all three rectangle counts for every pair M, N from 1 to 40 — 1,600 cases — and confirms the gcd against Euclid's algorithm.</p>
+
+      <p class="tip">Try M = 12 and N = 10. How many G by G squares fill the first rectangle, and what is the lcm?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/GcdLcm.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="gcd-lcm-rectangles-core.js"></script>
+<script src="gcd-lcm-rectangles.js"></script>
+</body>
+</html>

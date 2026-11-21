@@ -320,6 +320,7 @@ const CORE_GLOBALS = {
   "fraction-comparison-exercise/fraction-comparison-exercise-core.js": ["FractionComparisonExerciseCore"],
   "futurama/futurama-core.js": ["FuturamaCore"],
   "gcd-by-factor-tree/gcd-by-factor-tree-core.js": ["GcdByFactorTreeCore"],
+  "gcd-lcm-rectangles/gcd-lcm-rectangles-core.js": ["GcdLcmRectanglesCore"],
 };
 
 const games = [];

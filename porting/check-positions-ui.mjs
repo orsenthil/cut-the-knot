@@ -303,6 +303,10 @@ const GAMES = {
   "gcd-by-factor-tree": async (page) => {
     await page.click("#newBtn");
   },
+  "gcd-lcm-rectangles": async (page) => {
+    await page.fill("#mInput", "12");
+    await page.locator("#mInput").press("Enter");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },
