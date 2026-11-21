@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inflection Points of Fourth Degree Polynomials &mdash; coolmaths</title>
+<meta name="description" content="Draw the line through the two inflection points of a quartic: it meets the graph in two more points, and the golden ratio turns up. Move the coefficients and see it hold.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/fourth-degree/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Inflection Points of Fourth Degree Polynomials">
+<meta property="og:description" content="Draw the line through the two inflection points of a quartic: it meets the graph in two more points, and the golden ratio turns up. Move the coefficients and see it hold.">
+<meta property="og:url" content="https://coolmaths.ai/fourth-degree/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 8px; }
+  #info { margin: 0.6rem 0 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+  .sl { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr) 3.5rem; align-items: center; gap: 0.5rem; margin: 0.2rem 0; }
+  .sl input[type="range"] { width: 100%; min-width: 0; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 5rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="fourth-degree" data-kind="demo">
+<main id="main">
+  <h1>Inflection Points of Fourth Degree Polynomials</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#limits">Limits</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A curve with a wiggle has two points where it changes its bend; a line through them meets the curve twice more. There is nothing to win or lose.<br>
+    <strong>How to play:</strong> Move the five sliders to change the curve and read the numbers under the picture.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="560" height="400" aria-label="Graph of a fourth degree polynomial from minus six to six, with the line through its two inflection points and the points where they meet the curve."></canvas>
+    <p id="info" aria-live="polite"></p>
+      <div class="sl"><label for="c4">m4</label><input id="c4" type="range" min="-10" max="10" step="0.1" aria-label="Coefficient m4 of x to the power 4"><output id="o4" for="c4"></output></div>
+      <div class="sl"><label for="c3">m3</label><input id="c3" type="range" min="-10" max="10" step="0.1" aria-label="Coefficient m3 of x to the power 3"><output id="o3" for="c3"></output></div>
+      <div class="sl"><label for="c2">m2</label><input id="c2" type="range" min="-10" max="10" step="0.1" aria-label="Coefficient m2 of x to the power 2"><output id="o2" for="c2"></output></div>
+      <div class="sl"><label for="c1">m1</label><input id="c1" type="range" min="-10" max="10" step="0.1" aria-label="Coefficient m1 of x to the power 1"><output id="o1" for="c1"></output></div>
+      <div class="sl"><label for="c0">m0</label><input id="c0" type="range" min="-10" max="10" step="0.1" aria-label="Coefficient m0 of x to the power 0"><output id="o0" for="c0"></output></div>
+  </div>
+
+  <div class="controls">
+    <label><input id="gBox" type="checkbox"> Graph</label>
+    <label><input id="lBox" type="checkbox"> Inflection line</label>
+    <label><input id="dBox" type="checkbox"> Difference</label>
+    <label>Vertical range ± <input id="yIn" type="number" min="1" max="1000" step="1" aria-label="Vertical range, plus and minus"></label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A quartic <code>p(x) = m₄x⁴ + m₃x³ + m₂x² + m₁x + m₀</code> may have two <a class="wiki-term" data-wiki="Inflection_point" href="https://en.wikipedia.org/wiki/Inflection_point" target="_blank" rel="noopener">inflection points</a> <code>a &lt; b</code>, where <code>p″</code> changes sign. Draw the line <code>L</code> through them.</p>
+
+      <h2>The line meets the graph twice more</h2>
+      <p>Write <code>p″ = 12m₄(x − a)(x − b)</code> and integrate: <code>p − L</code> has the coefficients <code>m₄, −2(a+b)m₄, 6ab·m₄, (a³ − 3a²b − 3ab² + b³)m₄, −ab(a² − 3ab + b²)m₄</code>, and the roots <code>x<sub>L</sub>, a, b, x<sub>R</sub></code>. Comparing with the factored form gives <code>a + b = x<sub>L</sub> + x<sub>R</sub></code> and <code>x<sub>L</sub>x<sub>R</sub> = −(a² − 3ab + b²)</code>, so <code>x<sub>L</sub>, x<sub>R</sub> = ((a+b) ∓ (b−a)√5)/2</code>.</p>
+
+      <h2>The golden ratio</h2>
+      <p>That makes <code>(b − a)/(a − x<sub>L</sub>) = (1 + √5)/2</code>, the <a class="wiki-term" data-wiki="Golden_ratio" href="https://en.wikipedia.org/wiki/Golden_ratio" target="_blank" rel="noopener">golden ratio</a>. Also <code>a − x<sub>L</sub> = x<sub>R</sub> − b</code>, so <code>p − L</code> is symmetric: tick <i>Difference</i>. The three regions between graph and line have areas in the ratio 1 : 2 : 1. The logic test checked all of it on 200,000 random quartics, the areas by exact integration.</p>
+
+      <p class="note">The slider range (−10 to 10 in steps of 0.1) is my choice; the applet's sliders have a movable origin and unit. Without two inflection points (m₄ = 0, or <code>p″</code> with no two real roots) there is no line.</p>
+
+      <p class="tip">Keep m₄ = 1 and move m₂ from −6 towards 0: what happens to the two inflection points?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Calculus/FourthDegree.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="fourth-degree-core.js"></script>
+<script src="fourth-degree.js"></script>
+</body>
+</html>

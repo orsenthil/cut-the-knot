@@ -1247,5 +1247,13 @@ window.COOLMATHS = {
       tags: ["algorithms", "parity", "number-theory"],
       level: 3,
     },
+    {
+      slug: "fourth-degree",
+      title: "Inflection Points of Fourth Degree Polynomials",
+      blurb: "Draw the line through the two inflection points of a quartic: it meets the graph in two more points, and the golden ratio turns up. Move the coefficients and see it hold.",
+      tags: ["curves", "algebra", "limits"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };

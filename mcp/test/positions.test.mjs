@@ -1352,6 +1352,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("flip-them-iii: 12 circles, 8 at a time: gcd 4, M1 = 2 is even: it cannot be done", q.solvable === false && q.fewestPossible === null && q.gcd === 4 && q.M1 === 2);
 }
 
+// Fourth degree polynomials: inflection points and the line through them.
+{
+  const p = at("fourth-degree", { c: [0, 1, -6, 0, 1], showGraph: true, showLine: true, showDiff: false, moves: 1, explored: true });
+  check("fourth-degree: x^4 - 6x^2 + x has inflection points -1 and 1 and meets its line at +-sqrt 5", p.hasTwoInflectionPoints === true && p.inflectionPoints.join() === "-1,1" && Math.abs(p.otherCrossings[1] - 2.236068) < 1e-5);
+  const q = at("fourth-degree", { c: [0, 0, 1, 0, 1], showGraph: true, showLine: true, showDiff: true, moves: 0, explored: false });
+  check("fourth-degree: x^4 + x^2 has no inflection points", q.hasTwoInflectionPoints === false && q.inflectionPoints === null);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

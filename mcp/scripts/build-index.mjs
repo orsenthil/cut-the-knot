@@ -316,6 +316,7 @@ const CORE_GLOBALS = {
   "flavius/flavius-core.js": ["FlaviusCore"],
   "flip-them-ii/flip-them-ii-core.js": ["FlipThemIICore"],
   "flip-them-iii/flip-them-iii-core.js": ["FlipThemIIICore"],
+  "fourth-degree/fourth-degree-core.js": ["FourthDegreeCore"],
 };
 
 const games = [];
