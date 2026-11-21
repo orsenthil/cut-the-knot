@@ -293,6 +293,7 @@ const CORE_GLOBALS = {
   "counting-squares-in-square/counting-squares-in-square-core.js": ["CountingSquaresInSquareCore"],
   "critical-path/critical-path-core.js": ["CriticalPathCore"],
   "curry-paradox/curry-paradox-core.js": ["CurryParadoxCore"],
+  "cwidth/cwidth-core.js": ["CwidthCore"],
 };
 
 const games = [];

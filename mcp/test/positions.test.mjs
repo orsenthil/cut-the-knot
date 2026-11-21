@@ -1161,6 +1161,15 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("curry-paradox: nothing moved is nothing in place", q.piecesInPlace === 0 && q.allInPlace === false);
 }
 
+// Shapes of constant width: the same width in every direction, whatever the angle.
+{
+  const p = at("cwidth", { angle: 35, mode: "trace", step: 5, seen: ["rotate", "trace"], moves: 8 });
+  check("cwidth: the width is the side and the square has side 1", p.widthInEveryDirection === 1 && p.squareSide === 1 && p.angleModulo120 === 35);
+  check("cwidth: two of three views seen is not all", p.allViewsSeen === false && p.view === "trace");
+  const q = at("cwidth", { angle: 100, mode: "square", step: 10, seen: ["rotate", "trace", "square"], moves: 3 });
+  check("cwidth: all views seen", q.allViewsSeen === true && q.touchedByArcs.includes("top") === false);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

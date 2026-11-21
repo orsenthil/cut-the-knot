@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shapes of Constant Width &mdash; coolmaths</title>
+<meta name="description" content="A rounded triangle turns inside a square and never stops touching all four sides. How can a shape that is not a circle have the same width in every direction?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cwidth/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Shapes of Constant Width">
+<meta property="og:description" content="A rounded triangle turns inside a square and never stops touching all four sides. How can a shape that is not a circle have the same width in every direction?">
+<meta property="og:url" content="https://coolmaths.ai/cwidth/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 26rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  #board:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.5rem 0 0;
+  }
+  .controls label {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+  .controls input[type="number"] {
+    width: 5rem;
+  }
+</style>
+</head>
+<body data-game="cwidth" data-kind="demo">
+<main id="main">
+  <h1>Shapes of Constant Width</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#limits">Limits</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A rounded triangle turns inside a square and never stops touching all four sides; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Watch it turn. Click the picture (or press View) to change what you see: the triangle turning, the square turning round it, or the ground the triangle covers.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="360" height="360" tabindex="0" aria-label="A Reuleaux triangle turning inside a square that always touches it on all four sides. Click or press Enter to change the view; space to pause; arrow keys to turn it."></canvas>
+    <p class="hint">Click the picture or press Enter for the next view. Space pauses; the arrow keys turn it.</p>
+  </div>
+
+  <div class="controls">
+    <button id="viewBtn" type="button" class="primary">View</button>
+    <button id="pauseBtn" type="button" aria-pressed="false">Pause</button>
+    <label>Degrees a step <input id="stepIn" type="number" min="1" max="30" step="1" aria-label="Degrees it turns each tenth of a second"></label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>You cannot drill a square hole with a round drill, but with a rounded triangle you can come very close, because that triangle has the same width in every direction.</p>
+
+      <h2>Width and the Reuleaux triangle</h2>
+      <p>Squeeze a shape between two parallel lines, as tight as it will go: the distance between them is its <i>width</i> in that direction. A circle has the same width everywhere. So does the <a class="wiki-term" data-wiki="Reuleaux_triangle" href="https://en.wikipedia.org/wiki/Reuleaux_triangle" target="_blank" rel="noopener">Reuleaux triangle</a>: start with an equilateral triangle of side <code>s</code> and bulge each side into an arc of radius <code>s</code> centred at the opposite vertex. The logic test measured its width in every direction (one degree apart) at every angle of the applet and always found exactly <code>s</code>.</p>
+
+      <h2>Inside a square</h2>
+      <p>Because the width is <code>s</code> both across and up, the shape always fits snugly in a square of side <code>s</code>, touching all four sides as it turns. The applet finds that square without calculus: where an arc (not a corner) is the extreme side, the opposite side is a corner, <code>s</code> away. As it turns, the triangle covers almost the whole square, leaving only the four corners nearly untouched: the area covered is <code>2√3 + π/6 − 3 ≈ 0.98770</code> of a square of side 1, found here by counting grid points and agreeing to three decimal places.</p>
+
+      <h2>Area and perimeter</h2>
+      <p>Its area is <code>(π − √3)/2 · s² ≈ 0.7048 s²</code>, less than the circle of the same width, <code>π/4 · s² ≈ 0.7854 s²</code>. Its perimeter is three arcs of 60°, that is <code>π s</code>: the same formula as a circle of diameter <code>s</code>, which is <a class="wiki-term" data-wiki="Barbier%27s_theorem" href="https://en.wikipedia.org/wiki/Barbier%27s_theorem" target="_blank" rel="noopener">Barbier&rsquo;s theorem</a>: the perimeter of every shape of constant width <code>s</code> is <code>π s</code>. Its three corners are 120° angles. And if a triangle of side 50 has its sides extended 10 beyond each corner and arcs added in the same way, the width is 50 + 2 · 10 = 70.</p>
+
+      <p class="note">The page says the applet has three modes; the original cycles through four settings with each click. This port keeps the three described on the page.</p>
+
+      <p class="tip">Pause, then turn it with the arrow keys and watch which side of the square is touched by a corner and which by an arc. Then switch to the trace view.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/do_you_know/cwidth.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="cwidth-core.js"></script>
+<script src="cwidth.js"></script>
+</body>
+</html>

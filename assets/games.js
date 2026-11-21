@@ -1070,5 +1070,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "cwidth",
+      title: "Shapes of Constant Width",
+      blurb: "A rounded triangle turns inside a square and never stops touching all four sides. How can a shape that is not a circle have the same width in every direction?",
+      tags: ["area", "limits", "algebra"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
