@@ -132,6 +132,7 @@ check("john-sharp-paradox: the sliver was revealed", read["john-sharp-paradox"]?
 check("johnson-trotter: one step was made", read["johnson-trotter"]?.steps === 1 && read["johnson-trotter"].permutation.length === 4);
 check("mandelbrot-julia: a c outside the set was clicked", read["mandelbrot-julia"]?.inMandelbrotSet === false && read["mandelbrot-julia"].escape < read["mandelbrot-julia"].maxIter);
 check("kaprekar-routine: the run reached 6174", read["kaprekar-routine"]?.result === 6174 && read["kaprekar-routine"].count > 1);
+check("langford-skolem: Skolem mode was selected", read["langford-skolem"]?.kind === "skolem" && read["langford-skolem"].valid === true);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1586,6 +1587,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("kaprekar-routine", { start: 6174, base: 10, width: 4, padded: true });
   check("kaprekar-routine: 6174 is a fixed point", board.result === 6174 && board.count === 1);
+}
+
+// Langford and Skolem sequences.
+{
+  const board = at("langford-skolem", { N: 4, D: 1, M: 2, H: 0, kind: "langford" });
+  check("langford-skolem: n=4 has the classic solution", board.text === "41312432" && board.valid === true);
 }
 
 // A game with no reader, and a position that makes no sense.

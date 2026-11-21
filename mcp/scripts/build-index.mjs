@@ -348,6 +348,7 @@ const CORE_GLOBALS = {
   "johnson-trotter/johnson-trotter-core.js": ["JohnsonTrotterCore"],
   "mandelbrot-julia/mandelbrot-julia-core.js": ["MandelbrotJuliaCore"],
   "kaprekar-routine/kaprekar-routine-core.js": ["KaprekarRoutineCore"],
+  "langford-skolem/langford-skolem-core.js": ["LangfordSkolemCore"],
 };
 
 const games = [];

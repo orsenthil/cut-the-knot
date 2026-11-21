@@ -1501,5 +1501,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "langford-skolem",
+      title: "Langford and Skolem Sequences",
+      blurb: "Place pairs of numbers with exactly the right gaps between them. For which sizes is it possible at all?",
+      tags: ["counting", "algorithms", "invariants"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };

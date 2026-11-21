@@ -400,6 +400,9 @@ const GAMES = {
   "kaprekar-routine": async (page) => {
     await page.click("#runBtn");
   },
+  "langford-skolem": async (page) => {
+    await page.check('input[value="skolem"]');
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Langford and Skolem Sequences &mdash; coolmaths</title>
+<meta name="description" content="Place pairs of numbers with exactly the right gaps between them. For which sizes is it possible at all?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/langford-skolem/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Langford and Skolem Sequences">
+<meta property="og:description" content="Place pairs of numbers with exactly the right gaps between them. For which sizes is it possible at all?">
+<meta property="og:url" content="https://coolmaths.ai/langford-skolem/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.7rem; }
+  #stage:not(:has(.none)) { display: flex; flex-wrap: wrap; gap: 0.3rem; justify-content: center; }
+  .cell { min-width: 2.2rem; min-height: 2.6rem; display: flex; align-items: center; justify-content: center; padding: 0.2rem; font: inherit; font-size: 1rem; font-weight: 700; border-radius: 0.45rem; background: var(--tone, var(--surface)); color: var(--card); border: 2px solid var(--ink); }
+  .cell.hole { background: var(--surface); color: var(--muted); border-style: dashed; }
+  .none { width: 100%; color: var(--muted); text-align: center; }
+  .readout { margin: 0.6rem 0 0; text-align: center; font-size: 0.8rem; color: var(--muted); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="number"] { width: 4rem; font: inherit; padding: 0.2rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  select { font: inherit; max-width: 100%; padding: 0.2rem 0.3rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  input:focus-visible, select:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="langford-skolem" data-kind="demo">
+<main id="main">
+  <h1>Langford and Skolem Sequences</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Place pairs of numbers so the gap between matching copies has the right size.<br>
+    <strong>How to play:</strong> Choose the sequence type and the ranges, then read off the arrangement the solver finds.
+  </div>
+
+  <div id="stage" class="stage">
+  </div>
+  <p id="readout" class="readout"></p>
+
+  <div class="controls">
+    <label><input type="radio" name="kind" value="langford" checked> Langford</label>
+    <label><input type="radio" name="kind" value="skolem"> Skolem</label>
+    <label>Largest N <input id="nInput" type="number" min="1" max="12" value="4" aria-label="Largest number in the sequence"></label>
+    <label>Smallest D <input id="dInput" type="number" min="1" max="4" value="1" aria-label="Smallest number in the sequence"></label>
+    <label>Copies
+      <select id="mSel" aria-label="Copies of each number">
+        <option value="2" selected>Pairs</option><option value="3">Triples</option>
+      </select>
+    </label>
+    <label>Holes
+      <select id="hSel" aria-label="Number of empty cells">
+        <option value="0" selected>0</option><option value="1">1</option><option value="2">2</option>
+      </select>
+    </label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A child's row of coloured cubes turned into a question that has kept mathematicians busy for decades.</p>
+
+      <h2>Two spacing rules</h2>
+      <p>In a Langford sequence the copies of k are k + 1 places apart, as in <code>41312432</code>; in a Skolem sequence they are k places apart, as in <code>42324311</code>. With one empty cell just before the end you get a hooked sequence such as <code>121*2</code>.</p>
+
+      <h2>When solutions exist</h2>
+      <p>A perfect Langford sequence exists exactly when n is 0 or 3 modulo 4; a Skolem sequence when n is 0 or 1 modulo 4. The necessity comes from adding the positions of all copies in two ways: the sum of first positions must be an integer, forcing <code>(3n² − n)/4</code> or <code>(3n² + n)/4</code> to be whole. The logic test checks both congruences for n = 1 through 12 and validates every arrangement the search returns, including triples, other defects and holes.</p>
+
+      <p class="tip">Try n = 3, then n = 4. What does the modulo-4 rule predict?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/LangfordSequence.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="langford-skolem-core.js"></script>
+<script src="langford-skolem.js"></script>
+</body>
+</html>
