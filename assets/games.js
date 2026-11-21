@@ -1087,5 +1087,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "delian",
+      title: "The Delian Construction",
+      blurb: "A drawing claims to double the cube with only a ruler and a compass. It looks right, and it is wrong by less than a seventh of a percent: where does it fail, and why must it?",
+      tags: ["paradoxes", "algebra"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };

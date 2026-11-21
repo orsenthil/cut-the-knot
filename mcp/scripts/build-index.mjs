@@ -295,6 +295,7 @@ const CORE_GLOBALS = {
   "curry-paradox/curry-paradox-core.js": ["CurryParadoxCore"],
   "cwidth/cwidth-core.js": ["CwidthCore"],
   "cycloids/cycloids-core.js": ["CycloidsCore"],
+  "delian/delian-core.js": ["DelianCore"],
 };
 
 const games = [];

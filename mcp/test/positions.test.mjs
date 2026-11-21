@@ -1178,6 +1178,15 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("cycloids: a regular wheel with no spin", q.wheel === "regular" && q.spinFactor === 0 && q.rollsWithoutSlipping === false && q.marks === 0);
 }
 
+// Delian: the construction is exact at the ends and the middle only.
+{
+  const p = at("delian", { n: 3, moves: 1, explored: true });
+  check("delian: N = 3 gives 1.26120 for the cube root of 2, which is 1.25992", p.cubeRootPoint === 1.26119796 || Math.abs(p.cubeRootPoint - 1.2612) < 1e-4);
+  check("delian: only the two ends are exact for N = 3", p.pointsExactlyRight === 2 && p.pointsOnAB === 4);
+  const q = at("delian", { n: 12, moves: 2, explored: true });
+  check("delian: for N = 12 the middle point is exact too", q.pointsExactlyRight === 3 && q.worstPercent < 0.15);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

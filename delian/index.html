@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Delian Construction &mdash; coolmaths</title>
+<meta name="description" content="A drawing claims to double the cube with only a ruler and a compass. It looks right, and it is wrong by less than a seventh of a percent: where does it fail, and why must it?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/delian/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Delian Construction">
+<meta property="og:description" content="A drawing claims to double the cube with only a ruler and a compass. It looks right, and it is wrong by less than a seventh of a percent: where does it fail, and why must it?">
+<meta property="og:url" content="https://coolmaths.ai/delian/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.6rem;
+  }
+  svg.diagram {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+  }
+  .tri { stroke: var(--ink); stroke-width: 0.02; }
+  .gold { stroke: #d4a017; stroke-width: 0.024; }
+  .gold.thin, .aux { stroke-width: 0.012; stroke-dasharray: 0.05 0.04; }
+  .aux { stroke: var(--muted); fill: none; }
+  .aux-dot { fill: var(--muted); }
+  .radial { stroke: var(--accent); stroke-width: 0.01; opacity: 0.7; }
+  .par { stroke: var(--bad); stroke-width: 0.01; opacity: 0.7; }
+  .xdot { fill: var(--bad); }
+  .got { fill: var(--accent); }
+  .claim { fill: none; stroke: var(--good); stroke-width: 0.012; }
+  svg.diagram text { font-size: 0.1px; fill: var(--ink); font-weight: 700; }
+  svg.diagram text.small { font-size: 0.08px; }
+  .table-wrap {
+    overflow-x: auto;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-top: 0.8rem;
+  }
+  table.values {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+  }
+  table.values th, table.values td {
+    border-bottom: 1px solid var(--border);
+    padding: 0.2rem 0.5rem;
+    text-align: right;
+  }
+  table.values thead th { text-align: right; }
+  table.values tr.exact { background: var(--highlight); }
+  #summary {
+    margin: 0.6rem 0 0;
+    font-weight: 600;
+  }
+  svg.bars {
+    display: block;
+    width: 100%;
+    max-height: 7rem;
+  }
+  svg.bars .axis { stroke: var(--muted); stroke-width: 0.5; }
+  svg.bars .pos { fill: var(--accent); }
+  svg.bars .neg { fill: var(--bad); }
+  svg.bars .bn { font-size: 8px; text-anchor: middle; fill: var(--muted); }
+  .legend {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.4rem 0 0;
+  }
+  .controls label {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+  .controls input[type="number"] {
+    width: 5rem;
+  }
+  .controls .step {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="delian" data-kind="demo">
+<main id="main">
+  <h1>The Delian Construction</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A reader says a clever drawing doubles a cube with only a ruler and a compass; your job is to find out whether it really works.<br>
+    <strong>How to play:</strong> Change N, the number of radials. The drawing shows where the construction puts its points on the vertical line AB, and the table says how far each is from where the reader claims it should be.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="figure" class="diagram" viewBox="-1.35 -2.25 1.95 2.55" role="img" aria-label="The construction: a right triangle ABC with the golden triangle BFD, radials from A to the division points of BC, and the points they give on AB. Filled dots are what the construction gives; rings show the points 2 to the power k over N."></svg>
+    <p class="legend">Filled dots on AB: what the construction gives. Rings beside them: where the claim says they should be.</p>
+  </div>
+
+  <div class="controls">
+    <span class="field"><label for="nIn">N</label>
+      <button id="nLess" type="button" class="step" aria-label="Fewer divisions">&minus;</button>
+      <input id="nIn" type="number" min="2" max="20" step="1" aria-label="N, the number of equal parts BC is divided into">
+      <button id="nMore" type="button" class="step" aria-label="More divisions">+</button></span>
+    <label><input id="arcBox" type="checkbox" checked> Show the compass arc</label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <p id="summary"></p>
+
+  <div class="table-wrap">
+    <table class="values" aria-label="Where the construction puts its points on AB, from A">
+      <caption class="legend">Distances from A along AB (AD = 1, AB = 2). The last column is the construction minus the claim, times 1000.</caption>
+      <thead><tr><th scope="col">k</th><th scope="col">Construction</th><th scope="col">2<sup>k/N</sup></th><th scope="col">Gap &times; 1000</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <svg id="bars" class="bars" role="img" aria-label="Bar chart of the gap for each division, blue above zero and red below"></svg>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Doubling the cube means building a cube with twice the volume of a given one, so a side <code>∛2</code> times as long. The Greeks tried with ruler and compass; it cannot be done, and this drawing, which claims to do it, is a good place to see how an impossibility hides.</p>
+
+      <h2>What the reader claims</h2>
+      <p>Draw a right triangle with AB = 2 and BC = 1, find the point x on AB with Ax = √2 (a compass arc from A of radius AE, where AD = DE = 1 so that AE = √2), then draw the lines that make the &ldquo;Golden Triangle&rdquo; BFD. Divide BC into N equal parts, join each division to A, and carry the points where the radials cross DF and BF down to AB with parallels. The claim is that on AB they mark <code>1, 2<sup>1/N</sup>, 2<sup>2/N</sup>, …, 2</code>, a geometric progression, and for N = 3 the second point would be <code>∛2</code>.</p>
+
+      <h2>What the drawing really does</h2>
+      <p>The construction is built from straight lines, so it can only send the equally spaced points on BC to positions on AB by a <a class="wiki-term" data-wiki="Möbius_transformation" href="https://en.wikipedia.org/wiki/M%C3%B6bius_transformation" target="_blank" rel="noopener">projective (Möbius) map</a>, never an exponential. The logic test found that the point for division k is exactly at distance <code>(1 + (√2 − 1)t) / (1 − (1 − √2/2)t)</code> from A with <code>t = k/N</code>, by two independent ways of computing it, for every N from 2 to 20. That function and <code>2<sup>t</sup></code> agree at t = 0, ½ and 1 (so the ends and the middle are exactly right, and the middle point is truly <code>√2</code> for even N), and differ by at most 0.0024, about 0.13%, in between. For N = 3 the &ldquo;cube root of 2&rdquo; point is at 1.26120 instead of 1.25992, and its cube is 2.006, not 2. The mistake is hard to see exactly because the drawing is so close.</p>
+
+      <h2>Why it cannot work</h2>
+      <p>A length built with ruler and compass lies in a chain of square-root extensions of the rationals, so the degree of the number over the rationals is a power of 2. But <code>∛2</code> is a root of <code>x³ − 2</code>, which has no rational root (a rational root would be ±1 or ±2, and none works), so it is <a class="wiki-term" data-wiki="Irreducible_polynomial" href="https://en.wikipedia.org/wiki/Irreducible_polynomial" target="_blank" rel="noopener">irreducible</a> of degree 3. Not a power of 2, so <a class="wiki-term" data-wiki="Doubling_the_cube" href="https://en.wikipedia.org/wiki/Doubling_the_cube" target="_blank" rel="noopener">the cube cannot be doubled</a> by these tools (Wantzel, 1837).</p>
+
+      <p class="tip">Set N = 12, the reader&rsquo;s case, and look at the bars: where is the error largest? Then set N = 2, the one case where the construction gives exactly what it claims.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/do_you_know/Delian.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="delian-core.js"></script>
+<script src="delian.js"></script>
+</body>
+</html>

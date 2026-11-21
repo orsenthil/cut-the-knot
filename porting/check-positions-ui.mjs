@@ -410,6 +410,7 @@ const GAMES = {
   "critical-path": (page) => page.check("#critBox"),
   cwidth: (page) => page.click("#viewBtn"),
   cycloids: (page) => page.click("#markRim"),
+  delian: (page) => page.click("#nMore"),
   "curry-paradox": (page) => page.locator('[data-piece="0"]').focus().then(() => page.keyboard.press("Enter")),
 };
 
