@@ -342,6 +342,10 @@ const GAMES = {
   "imo-1986-3": async (page) => {
     await page.click("#stepBtn");
   },
+  "indy-clock-hands": async (page) => {
+    await page.fill("#alphaInput", "90");
+    await page.locator("#alphaInput").press("Enter");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

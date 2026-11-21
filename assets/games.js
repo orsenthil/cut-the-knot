@@ -1112,6 +1112,14 @@ window.COOLMATHS = {
       level: 2,
     },
     {
+      slug: "indy-clock-hands",
+      title: "Indy's Clock Hands",
+      blurb: "Two hands locked at a fixed angle spin on a circle with a red arc. Why does each land on red just as often as a free hand?",
+      tags: ["counting", "paradoxes", "algorithms"],
+      kind: "demo",
+      level: 2,
+    },
+    {
       slug: "compare-fractions",
       title: "Compare Fractions",
       blurb: "Which is bigger, 3/4 or 5/7? Draw two fractions as boxes, put them over a common denominator and see why cross multiplication always works.",

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Indy's Clock Hands &mdash; coolmaths</title>
+<meta name="description" content="Two hands locked at a fixed angle spin on a circle with a red arc. Why does each land on red just as often as a free hand?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/indy-clock-hands/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Indy's Clock Hands">
+<meta property="og:description" content="Two hands locked at a fixed angle spin on a circle with a red arc. Why does each land on red just as often as a free hand?">
+<meta property="og:url" content="https://coolmaths.ai/indy-clock-hands/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 22rem; margin: 0 auto; height: auto; }
+  .rim { fill: none; stroke: var(--border-strong); stroke-width: 2; }
+  .redarc { fill: none; stroke: var(--bad); stroke-width: 14; }
+  .hand.first { stroke: var(--accent); stroke-width: 4; }
+  .hand.second { stroke: var(--good); stroke-width: 4; stroke-dasharray: 6 4; }
+  .readout { margin: 0.5rem 0 0; text-align: center; font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input { width: 4rem; font: inherit; padding: 0.2rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  input:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="indy-clock-hands" data-kind="demo">
+<main id="main">
+  <h1>Indy's Clock Hands</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two hands are fixed at an angle; watch how often each lands on a red arc.<br>
+    <strong>How to play:</strong> Throw the hands, or run many throws, and change the angle and the size of the red arc.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 300 300" role="group" aria-label="A circle with a red arc and two hands at a fixed angle"></svg>
+    <p id="stats" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Angle between hands <input id="alphaInput" type="number" min="0" max="360" step="5" value="45" aria-label="Angle between the hands in degrees"></label>
+    <label>Red arc <input id="redInput" type="number" min="1" max="360" step="5" value="60" aria-label="Size of the red arc in degrees"></label>
+    <button id="throwBtn" type="button" class="primary">Throw</button>
+    <button id="runBtn" type="button">Run</button>
+    <button id="stopBtn" type="button">Stop</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Both hands are thrown at the same time and locked at a fixed angle, yet each lands on red just as often as a single free hand.</p>
+
+      <h2>Shifting a set on a circle</h2>
+      <p>Picking a hand's direction is picking a uniformly random point on the circle. The second hand is the first point shifted by the fixed angle &alpha;. Shifting a set around a circle leaves its size unchanged — the cut where the circle is unfolded into an interval merely moves. So the chance of landing in the red set is the red fraction of the circle for both hands, whatever &alpha; is.</p>
+
+      <h2>What the check found</h2>
+      <p>The logic test samples many directions for several arc sizes and angles: both hit rates approach the red fraction. It also computes the exact joint probability by scanning the overlap of the red arc and its shift — a reminder that equal individual probabilities do not by themselves tell you how the two events depend on each other.</p>
+
+      <p class="tip">Set the angle to 0. Do the two hands now always agree?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Probability/Indy.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="indy-clock-hands-core.js"></script>
+<script src="indy-clock-hands.js"></script>
+</body>
+</html>

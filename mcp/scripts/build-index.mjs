@@ -331,6 +331,7 @@ const CORE_GLOBALS = {
   "horner-method/horner-method-core.js": ["HornerMethodCore"],
   "iterated-function-systems/iterated-function-systems-core.js": ["IteratedFunctionSystemsCore"],
   "imo-1986-3/imo-1986-3-core.js": ["Imo1986_3Core"],
+  "indy-clock-hands/indy-clock-hands-core.js": ["IndyClockHandsCore"],
 };
 
 const games = [];

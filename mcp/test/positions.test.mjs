@@ -115,6 +115,7 @@ check("hooper-paradox: the width was edited and area conserved", read["hooper-pa
 check("horner-method: x was changed to 3", read["horner-method"]?.t === 3 && read["horner-method"].coefficients.length === 5);
 check("iterated-function-systems: Fern was selected", read["iterated-function-systems"]?.system === "Fern" && read["iterated-function-systems"].maps === 4);
 check("imo-1986-3: a step was applied", read["imo-1986-3"]?.steps === 1 && read["imo-1986-3"].values.length === 5);
+check("indy-clock-hands: the angle was changed", Math.abs((read["indy-clock-hands"]?.alpha || 0) - Math.PI / 2) < 1e-9);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1459,6 +1460,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("imo-1986-3", { values: [4, -3, 2, -1, 5], steps: 0 });
   check("imo-1986-3: the start has potential 106", board.potential === 106 && board.negatives.length === 2);
+}
+
+// Indy's clock hands.
+{
+  const board = at("indy-clock-hands", { alpha: Math.PI / 3, red: Math.PI / 2 });
+  check("indy-clock-hands: both hands have the red fraction", Math.abs(board.redFraction - 0.25) < 1e-9);
 }
 
 // A game with no reader, and a position that makes no sense.
