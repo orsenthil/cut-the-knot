@@ -1232,6 +1232,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("enemy-ambassadors: nobody next to an enemy is solved", q.solved === true && q.selectedPlace === 2);
 }
 
+// Equilateral Fibonacci: the trapezoids and their consecutive Fibonacci triples.
+{
+  const p = at("equilateral-fibonacci", { n: 55, moves: 1, explored: true });
+  check("equilateral-fibonacci: N = 55 holds 9 shapes whose last trapezoid is 13, 21, 34 ending on row 55", p.shapes === 9 && p.trapezoids === 7 && p.lastTrapezoid.top === 13 && p.lastTrapezoid.leg === 21 && p.lastTrapezoid.base === 34 && p.lastTrapezoid.endsOnRow === 55);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

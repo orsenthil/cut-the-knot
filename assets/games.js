@@ -1142,5 +1142,13 @@ window.COOLMATHS = {
       tags: ["graph-theory", "algorithms", "counting"],
       level: 3,
     },
+    {
+      slug: "equilateral-fibonacci",
+      title: "Fibonacci Numbers in an Equilateral Triangle",
+      blurb: "Colour the top of a triangular lattice and then trapezoids, left and right in turn. Why are the top, the sides and the base of each trapezoid three consecutive Fibonacci numbers?",
+      tags: ["sequences", "area", "algebra"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

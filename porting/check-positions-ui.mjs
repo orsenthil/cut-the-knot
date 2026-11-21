@@ -418,6 +418,7 @@ const GAMES = {
   "ean13": (page) => page.locator("#digits button").first().click(),
   "egyptian-multiplication": (page) => page.locator("button.digit.a").last().click(),
   "enemy-ambassadors": (page) => page.locator("#table g.place").first().click(),
+  "equilateral-fibonacci": (page) => page.fill("#nIn", "55"),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

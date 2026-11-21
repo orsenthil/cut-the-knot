@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fibonacci Numbers in an Equilateral Triangle &mdash; coolmaths</title>
+<meta name="description" content="Colour the top of a triangular lattice and then trapezoids, left and right in turn. Why are the top, the sides and the base of each trapezoid three consecutive Fibonacci numbers?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equilateral-fibonacci/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Fibonacci Numbers in an Equilateral Triangle">
+<meta property="og:description" content="Colour the top of a triangular lattice and then trapezoids, left and right in turn. Why are the top, the sides and the base of each trapezoid three consecutive Fibonacci numbers?">
+<meta property="og:url" content="https://coolmaths.ai/equilateral-fibonacci/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #tri { display: block; width: 100%; max-width: 100%; height: auto; }
+  #tri .lattice line { stroke: var(--muted); stroke-width: 0.4; opacity: 0.45; }
+  #tri .outline { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #tri .shape { stroke: var(--ink); stroke-width: 0.8; }
+  #tri .s0 { fill: var(--accent); opacity: 0.85; }
+  #tri .s1 { fill: var(--good); opacity: 0.8; }
+  #list { margin: 0.6rem 0 0; padding-left: 1.3rem; font-size: 0.95rem; overflow-wrap: anywhere; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 5rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="equilateral-fibonacci" data-kind="demo">
+<main id="main">
+  <h1>Fibonacci Numbers in an Equilateral Triangle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A big triangle made of tiny triangles is coloured in a pattern of flat-topped shapes; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Change the size N with the box or the up and down arrow keys, and read the list of shapes under the picture.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="tri" viewBox="0 0 420 380" role="img" aria-label="An equilateral triangle cut into small triangles, with the top triangle and a stack of trapezoids coloured in turn on its left and right sides."></svg>
+    <ol id="list" aria-label="The coloured shapes from the top"></ol>
+  </div>
+
+  <div class="controls">
+    <label>N <input id="nIn" type="number" min="5" max="145" step="5" aria-label="Side of the big triangle, 5 to 145 in steps of 5"></label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Colour the top triangle of a triangular lattice, then the next one down on the right, then trapezoids hanging alternately from the left and right edges. The sizes of the rows they end on, and the sides of every trapezoid, are <a class="wiki-term" data-wiki="Fibonacci_sequence" href="https://en.wikipedia.org/wiki/Fibonacci_sequence" target="_blank" rel="noopener">Fibonacci numbers</a>.</p>
+
+      <h2>A trapezoid with 60 degree angles</h2>
+      <p>Cut a trapezoid with 60° base angles. Each slanted side leans out by half its length at each end, so <code>base = top + leg</code>. That is the Fibonacci rule <code>F<sub>k+2</sub> = F<sub>k</sub> + F<sub>k+1</sub></code> in disguise. The logic test measured every shape from its corners for every N the applet offers (5 to 145) and found top, leg and base to be three consecutive Fibonacci numbers: <code>(1,1,2), (1,2,3), (2,3,5), (3,5,8), …</code>.</p>
+
+      <h2>Why the next one fits</h2>
+      <p>Each trapezoid ends on a row whose number is the next Fibonacci number, and the next one starts on that row: 1, 2, 3, 5, 8, 13, 21, &hellip; The next top is the leg that went before, so the shapes stack with no gaps, and the test checked that every shape starts on the row where the one above ended. The applet stops when the next row would be past N.</p>
+
+      <h2>Counting unit triangles</h2>
+      <p>A trapezoid is a big triangle of side <code>base</code> with a small one of side <code>top</code> cut off, so it holds <code>base² − top² = leg × (base + top)</code> unit triangles: the trapezoid with top 21, sides 34 and base 55 has <code>55² − 21² = 2584</code>.</p>
+
+      <p class="note">The applet's two shapes at the very top (a unit triangle on each edge) are the degenerate trapezoids with top 0; the numbering of the page's rhombi (sides 1, 1, 2, 3, 5, 8, &hellip;) is not drawn by the applet and is not shown here.</p>
+
+      <p class="tip">Set N to 145 and read the list from the top. What is the next trapezoid after top 34, sides 55, base 89?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/EquilateralFibonacci.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="equilateral-fibonacci-core.js"></script>
+<script src="equilateral-fibonacci.js"></script>
+</body>
+</html>
