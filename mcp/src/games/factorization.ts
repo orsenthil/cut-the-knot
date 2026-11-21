@@ -42,8 +42,8 @@ export function actions(): GameActions {
           factorizationOfM: C.show(m, true), factorizationOfN: C.show(n, true),
           exponents: c.rows,
           gcd: String(c.gcdBig), lcm: String(c.lcmBig),
-          gcdFactorization: C.show(c.gcd, true), lcmFactorization: c.lcm <= 7e9 ? C.show(c.lcm, true) : null,
-          gcdTimesLcmEqualsProduct: c.gcdBig * c.lcmBig === BigInt(m) * BigInt(n),
+          gcdFactorization: C.show(c.gcd, true), lcmFactorization: c.lcm !== null && c.lcm <= 7e9 ? C.show(c.lcm, true) : null,
+          gcdTimesLcmEqualsProduct: c.gcdBig !== null && c.lcmBig !== null && c.gcdBig * c.lcmBig === BigInt(m) * BigInt(n),
         };
       },
     },
