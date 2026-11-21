@@ -1160,6 +1160,14 @@ window.COOLMATHS = {
       level: 1,
     },
     {
+      slug: "interest-rates",
+      title: "Interest Rate Calculations",
+      blurb: "Borrow or save at the same yearly rate — but compound it more often. How much difference can the frequency make?",
+      tags: ["arithmetic", "series", "algorithms"],
+      kind: "demo",
+      level: 2,
+    },
+    {
       slug: "counting",
       title: "Counting and Grouping",
       blurb: "Count a heap of dots one at a time and watch a tally grow in groups. What is left over when the groups do not come out even?",

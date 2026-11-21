@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Interest Rate Calculations &mdash; coolmaths</title>
+<meta name="description" content="Borrow or save at the same yearly rate — but compound it more often. How much difference can the frequency make?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/interest-rates/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Interest Rate Calculations">
+<meta property="og:description" content="Borrow or save at the same yearly rate — but compound it more often. How much difference can the frequency make?">
+<meta property="og:url" content="https://coolmaths.ai/interest-rates/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.9rem; }
+  .result-label { margin: 0; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .result-value { margin: 0.2rem 0; font-size: 1.6rem; font-weight: 700; color: var(--accent); overflow-wrap: anywhere; }
+  .result-detail { margin: 0 0 0.7rem; font-size: 0.85rem; color: var(--muted); overflow-wrap: anywhere; }
+  .bar { display: flex; width: 100%; height: 1rem; border-radius: 0.5rem; overflow: hidden; background: var(--surface); }
+  .bar-main { background: var(--accent); }
+  .bar-extra { background: var(--good); }
+  .bar-key { display: flex; gap: 1rem; margin: 0.4rem 0 0; font-size: 0.7rem; color: var(--muted); }
+  .bar-key span::before { content: ""; display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 2px; margin-right: 0.3rem; vertical-align: -1px; }
+  .key-main::before { background: var(--accent); }
+  .key-extra::before { background: var(--good); }
+  .fields { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin-bottom: 0.8rem; }
+  .fields[hidden] { display: none; }
+  .fields label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .fields input[type="number"], .fields select { width: 6rem; max-width: 100%; font: inherit; padding: 0.25rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  .fields fieldset { display: flex; flex-wrap: wrap; gap: 0.2rem 0.7rem; border: 1px solid var(--border); border-radius: 0.5rem; padding: 0.3rem 0.6rem; margin: 0; }
+  .fields legend { font-size: 0.75rem; color: var(--muted); padding: 0 0.3rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; cursor: pointer; }
+  input:focus-visible, select:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="interest-rates" data-kind="demo">
+<main id="main">
+  <h1>Interest Rate Calculations</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#series">Infinite Series</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Work out what a loan costs, or how savings grow, when interest is added many times a year.<br>
+    <strong>How to play:</strong> Choose Loan or Investment, fill in the boxes and press Calculate. Try changing how often interest is compounded.
+  </div>
+
+  <div id="stage" class="stage">
+    <p class="result-label">Result</p>
+    <p id="result" class="result-value"></p>
+    <p id="detail" class="result-detail"></p>
+    <div id="bar" class="bar" role="img" aria-label="How much of the total is your own money and how much is interest"></div>
+    <p class="bar-key"><span class="key-main">Your money</span><span class="key-extra">Interest</span></p>
+  </div>
+
+  <div class="controls">
+    <label><input type="radio" name="mode" value="loan" checked> Loan</label>
+    <label><input type="radio" name="mode" value="investment"> Investment</label>
+  </div>
+
+  <div id="loanFields" class="fields">
+    <label>Loan amount <input id="loanAmount" type="number" min="1" step="100" value="1000" aria-label="Loan amount"></label>
+    <label>Years to pay <input id="loanYears" type="number" min="0.5" step="1" value="10" aria-label="Years to pay"></label>
+    <label>Interest % <input id="loanInterest" type="number" min="0" step="0.5" value="12" aria-label="Yearly interest percentage"></label>
+    <fieldset>
+      <legend>Payment frequency</legend>
+      <label><input type="radio" name="payFreq" value="12"> Monthly</label>
+      <label><input type="radio" name="payFreq" value="4"> Quarterly</label>
+      <label><input type="radio" name="payFreq" value="1" checked> Yearly</label>
+    </fieldset>
+    <fieldset>
+      <legend>Interest compounded</legend>
+      <label><input type="radio" name="compFreq" value="365"> Daily</label>
+      <label><input type="radio" name="compFreq" value="12" checked> Monthly</label>
+      <label><input type="radio" name="compFreq" value="4"> Quarterly</label>
+      <label><input type="radio" name="compFreq" value="1"> Yearly</label>
+    </fieldset>
+  </div>
+
+  <div id="investFields" class="fields" hidden>
+    <label>Principal <input id="principal" type="number" min="0" step="100" value="1000" aria-label="Starting principal"></label>
+    <label>Deposit <input id="deposit" type="number" min="0" step="50" value="100" aria-label="Deposit each period"></label>
+    <label>Deposits per year
+      <select id="depositFreq" aria-label="Deposits per year">
+        <option value="1" selected>Yearly</option><option value="4">Quarterly</option>
+        <option value="12">Monthly</option><option value="365">Daily</option>
+      </select>
+    </label>
+    <label>Yearly interest % <input id="investInterest" type="number" min="0" step="0.5" value="5" aria-label="Yearly interest percentage"></label>
+    <label>Number of years <input id="investYears" type="number" min="0.5" step="1" value="10" aria-label="Number of years"></label>
+  </div>
+
+  <div class="controls">
+    <button id="computeBtn" type="button" class="primary">Calculate</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Interest added to interest grows faster than interest added once — and the more often it is added, the faster it grows.</p>
+
+      <h2>Simple versus compound</h2>
+      <p>At 12% a year, 1,000 borrowed for a year costs 1,120 with a single assessment. Assessed twice at 6%, it becomes <code>1000 × 1.06² = 1123.60</code>: an effective rate of 12.36%. The page's table for 1, 2, 4 and 12 assessments gives 1120.00, 1123.60, 1125.50 and 1126.82 — the logic test reproduces all four.</p>
+
+      <h2>Geometric series</h2>
+      <p>With yearly rate q compounded m times, each deposit period multiplies the balance by <code>1 + q/m</code>. After N periods that is a <a class="wiki-term" data-wiki="Geometric_series" href="https://en.wikipedia.org/wiki/Geometric_series" target="_blank" rel="noopener">geometric series</a>, giving <code>P(1+q/m)^N + p((1+q/m)^N − 1)/(q/m)</code> for savings. For a loan, the same series inverted gives the payment that clears the debt: <code>P·r(1+r)^n / ((1+r)^n − 1)</code> with r the rate per payment. The test checks both by simulating every payment and every deposit.</p>
+
+      <p class="tip">Set the interest to 0. What do the two formulas become then?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/arithmetic/interest.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="interest-rates-core.js"></script>
+<script src="interest-rates.js"></script>
+</body>
+</html>

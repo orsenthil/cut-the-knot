@@ -334,6 +334,7 @@ const CORE_GLOBALS = {
   "indy-clock-hands/indy-clock-hands-core.js": ["IndyClockHandsCore"],
   "infinite-latin-square/infinite-latin-square-core.js": ["InfiniteLatinSquareCore"],
   "integer-rectangle/integer-rectangle-core.js": ["IntegerRectangleCore"],
+  "interest-rates/interest-rates-core.js": ["InterestRatesCore"],
 };
 
 const games = [];

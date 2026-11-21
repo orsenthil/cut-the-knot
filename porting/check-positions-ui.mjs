@@ -354,6 +354,9 @@ const GAMES = {
     await page.fill("#wInput", "2");
     await page.locator("#wInput").dispatchEvent("input");
   },
+  "interest-rates": async (page) => {
+    await page.check('input[name="mode"][value="investment"]');
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },
