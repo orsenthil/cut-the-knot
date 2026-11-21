@@ -1170,6 +1170,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("cwidth: all views seen; at 100 degrees an arc touches the top and the left", q.allViewsSeen === true && q.touchedByArcs.includes("top") && q.touchedByArcs.includes("left"));
 }
 
+// Cycloids: the wheel, its marks and the cusps of a rim mark.
+{
+  const p = at("cycloids", { kind: "hypo", ratio: 4, r: 30, speed: 1, formula: false, curvesOnly: false, marks: [{ dist: 25, angle: 0, t0: 0, id: 0 }, { dist: 40, angle: 1, t0: 0, id: 1 }, { dist: 12, angle: 2, t0: 0, id: 2 }], time: 120, moves: 5, explored: true });
+  check("cycloids: a hypocycloid with R/r = 4 has 4 cusps and a 25 pixel wheel", p.wheel === "hypo" && p.cuspsOfRimMark === 4 && p.wheelRadius === 25 && p.marksOnTheRim === 1 && p.marksOutside === 1 && p.marksInside === 1);
+  const q = at("cycloids", { kind: "regular", ratio: 2, r: 30, speed: 0, marks: [], time: 0, moves: 0, explored: false });
+  check("cycloids: a regular wheel with no spin", q.wheel === "regular" && q.spinFactor === 0 && q.rollsWithoutSlipping === false && q.marks === 0);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

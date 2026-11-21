@@ -294,6 +294,7 @@ const CORE_GLOBALS = {
   "critical-path/critical-path-core.js": ["CriticalPathCore"],
   "curry-paradox/curry-paradox-core.js": ["CurryParadoxCore"],
   "cwidth/cwidth-core.js": ["CwidthCore"],
+  "cycloids/cycloids-core.js": ["CycloidsCore"],
 };
 
 const games = [];

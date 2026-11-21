@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cycloids &mdash; coolmaths</title>
+<meta name="description" content="Fix a pencil to a rolling wheel: what does it draw? Roll the wheel on a line, inside a circle or outside it, and put the pencil on the rim, inside or beyond it.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cycloids/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cycloids">
+<meta property="og:description" content="Fix a pencil to a rolling wheel: what does it draw? Roll the wheel on a line, inside a circle or outside it, and put the pencil on the rim, inside or beyond it.">
+<meta property="og:url" content="https://coolmaths.ai/cycloids/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 26rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    cursor: crosshair;
+  }
+  #board:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.5rem 0 0;
+  }
+  .controls fieldset {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 0;
+    padding: 0.2rem 0.7rem;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0 0.8rem;
+  }
+  .controls label, .controls .field {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+    max-width: 100%;
+  }
+  .controls input[type="number"] {
+    width: 5rem;
+  }
+  .controls output {
+    min-width: 2.2rem;
+    text-align: center;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .controls .step {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="cycloids" data-kind="demo">
+<main id="main">
+  <h1>Cycloids</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A wheel rolls along, and pencils fixed to it draw curious curves; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Press the picture to fix a pencil to the wheel (or use the Add buttons), then press Start and watch what each one draws. Try the rolling-inside and rolling-outside wheels too.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="390" height="350" tabindex="0" aria-label="A wheel rolling along a line or round a circle. Press to fix a coloured mark to it; the marks draw their paths. Space starts and stops."></canvas>
+    <p class="hint">Press the picture to add a mark. Space or Enter starts and stops; the right arrow steps ahead.</p>
+  </div>
+
+  <div class="controls">
+    <fieldset><legend>Wheel</legend>
+      <label><input type="radio" name="kind" value="regular" checked> rolls on a line</label>
+      <label><input type="radio" name="kind" value="hypo"> rolls inside a circle</label>
+      <label><input type="radio" name="kind" value="epi"> rolls outside a circle</label>
+    </fieldset>
+    <button id="startBtn" type="button" class="primary">Start</button>
+    <button id="stepBtn" type="button">Step</button>
+    <button id="resetBtn" type="button">Reset</button>
+    <span class="field"><span id="speedLabel">Roll / rotate</span>
+      <button id="speedLess" type="button" class="step" aria-label="Spin slower, then backwards towards one over more">&lt;</button>
+      <output id="speedOut" aria-labelledby="speedLabel">1</output>
+      <button id="speedMore" type="button" class="step" aria-label="Spin faster">&gt;</button></span>
+    <span class="field"><span id="ratioLabel">R / r</span>
+      <button id="ratioLess" type="button" class="step" aria-label="Smaller ratio of the fixed circle to the wheel">&lt;</button>
+      <output id="ratioOut" aria-labelledby="ratioLabel">–</output>
+      <button id="ratioMore" type="button" class="step" aria-label="Bigger ratio of the fixed circle to the wheel">&gt;</button></span>
+    <label>Wheel radius <input id="radiusIn" type="number" min="5" max="60" step="1" aria-label="Radius of the wheel rolling on a line, in pixels"></label>
+    <label><input id="curvesBox" type="checkbox"> Curves only</label>
+    <label><input id="formulaBox" type="checkbox"> Formula</label>
+    <button id="markRim" type="button">Add mark on the rim</button>
+    <button id="markIn" type="button">Add mark inside</button>
+    <button id="markOut" type="button">Add mark outside</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Roll a coin along a table, with a dot painted on its edge. The path the dot follows is a <a class="wiki-term" data-wiki="Cycloid" href="https://en.wikipedia.org/wiki/Cycloid" target="_blank" rel="noopener">cycloid</a>. Here you can put the dot anywhere on the wheel, or roll the wheel round a circle instead.</p>
+
+      <h2>The ordinary cycloid</h2>
+      <p>A dot on the rim touches the line once every time the wheel has rolled its own circumference, <code>2πr</code>, and each arch is exactly <code>8r</code> long and encloses <code>3πr²</code>, three times the wheel's own area. The logic test measured both by walking along the curve in small steps. A dot inside the wheel makes a gentler wave without points (a <i>curtate</i> cycloid); a dot outside it, such as on a flange, loops back on itself (a <i>prolate</i> cycloid).</p>
+
+      <h2>Rolling round a circle</h2>
+      <p>Roll the wheel inside a fixed circle and a rim dot draws a <a class="wiki-term" data-wiki="Hypocycloid" href="https://en.wikipedia.org/wiki/Hypocycloid" target="_blank" rel="noopener">hypocycloid</a>; roll it outside and it draws an <a class="wiki-term" data-wiki="Epicycloid" href="https://en.wikipedia.org/wiki/Epicycloid" target="_blank" rel="noopener">epicycloid</a>. When the ratio <code>R/r</code> of the circle's radius to the wheel's is a whole number <code>k</code>, either curve has exactly <code>k</code> sharp points (cusps) and closes after one trip round. With <code>R/r = 2</code> inside, the dot moves along a straight line (the <a class="wiki-term" data-wiki="Tusi_couple" href="https://en.wikipedia.org/wiki/Tusi_couple" target="_blank" rel="noopener">Tusi couple</a>); with 3 it is a <i>deltoid</i>; with 4 it is the <a class="wiki-term" data-wiki="Astroid" href="https://en.wikipedia.org/wiki/Astroid" target="_blank" rel="noopener">astroid</a>, <code>x<sup>2/3</sup> + y<sup>2/3</sup> = R<sup>2/3</sup></code>, which the test checked point by point. Outside with <code>R/r = 1</code> it is the <a class="wiki-term" data-wiki="Cardioid" href="https://en.wikipedia.org/wiki/Cardioid" target="_blank" rel="noopener">cardioid</a>, of length <code>16r</code> and area <code>6πr²</code>.</p>
+
+      <h2>Roll / rotate</h2>
+      <p>The <i>Roll / rotate</i> number says how fast the wheel spins compared with rolling without slipping: 1 is true rolling, 2 twice as fast, 1/2 half as fast, 0 no spin at all. Rolling round a circle, a wheel that rolls truly spins <code>R/r + 1</code> times for every trip round outside, and <code>R/r − 1</code> times, the other way, inside. The page gives each position in two ways, by formula and by turning the dots a little each step, and the test found the two agree.</p>
+
+      <p class="note">The page this puzzle is linked to is a reader&rsquo;s question about cycloids and does not contain the applet; the rules here come from the applet itself. The applet cut the radius <code>R/r</code> down to whole pixels, so some of its curves do not quite close; this port uses the exact value.</p>
+
+      <p class="tip">Add three marks (inside, on the rim, outside) on a wheel rolling on a line and press Start. Then try rolling inside a circle with R/r = 4.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/exchange/cycloids.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="cycloids-core.js"></script>
+<script src="cycloids.js"></script>
+</body>
+</html>
