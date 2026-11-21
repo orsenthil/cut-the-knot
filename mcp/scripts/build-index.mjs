@@ -350,6 +350,7 @@ const CORE_GLOBALS = {
   "kaprekar-routine/kaprekar-routine-core.js": ["KaprekarRoutineCore"],
   "langford-skolem/langford-skolem-core.js": ["LangfordSkolemCore"],
   "langman-paradox/langman-paradox-core.js": ["LangmanParadoxCore"],
+  "latin-squares/latin-squares-core.js": ["LatinSquaresCore"],
 };
 
 const games = [];

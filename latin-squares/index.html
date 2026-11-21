@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Latin Squares &mdash; coolmaths</title>
+<meta name="description" content="Fill a grid so every row and column has each number once. Can you also make it symmetric?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/latin-squares/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Latin Squares">
+<meta property="og:description" content="Fill a grid so every row and column has each number once. Can you also make it symmetric?">
+<meta property="og:url" content="https://coolmaths.ai/latin-squares/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.7rem; overflow-x: auto; }
+  #grid { display: flex; flex-direction: column; gap: 0.3rem; }
+  .grid-row { display: flex; align-items: center; gap: 0.25rem; }
+  .row-controls { display: flex; gap: 0.15rem; margin-right: 0.3rem; flex: none; }
+  .row-controls button { min-width: 1.4rem; min-height: 2rem; padding: 0; font-size: 0.7rem; }
+  .cell { min-width: 0; min-height: 2.2rem; flex: 1 1 1.6rem; padding: 0.1rem; font: inherit; font-size: 1rem; border: 2px solid var(--border-strong); border-radius: 0.4rem; background: var(--card); color: var(--text); cursor: pointer; }
+  .cell.selected { border-color: var(--accent); background: var(--highlight); }
+  .cell.bad { color: var(--bad); }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .controls { min-width: 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; min-width: 0; max-width: 100%; flex-wrap: wrap; overflow-wrap: anywhere; }
+  .controls input[type="range"] { width: 100%; max-width: 9rem; accent-color: var(--accent); }
+</style>
+</head>
+<body data-game="latin-squares" data-kind="demo">
+<main id="main">
+  <h1>Latin Squares</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Put numbers in a grid so each appears once per row and column — and maybe symmetrically too.<br>
+    <strong>How to play:</strong> Click two cells in a row to swap them, or use the arrows to cycle a row. Restore resets the grid.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="grid"></div>
+  </div>
+
+  <div class="controls">
+    <label>Size <input id="sizeInput" type="range" min="2" max="9" value="5" aria-label="Size of the square, 2 to 9"></label>
+    <label><input id="symCheck" type="checkbox" checked> Symmetric</label>
+    <button id="restoreBtn" type="button" class="primary">Restore</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A grid where every row and column has each number once is surprisingly easy to build — even with the symmetry rule.</p>
+
+      <h2>The cyclic construction</h2>
+      <p>Put <code>(i + j) mod n + 1</code> in row i, column j (starting from zero). Every row is a shift of every other, so each number occurs once per row and once per column. Because <code>i + j = j + i</code>, the grid is also symmetric about the main diagonal — solving the applet's harder problem at the same time.</p>
+
+      <h2>Why the moves break it</h2>
+      <p>Cycling one row keeps its own numbers distinct but repeats values in the columns. Swapping two different cells in a row breaks the row's distinctness. The logic test checks the construction for every size from 2 to 9, rejects grids with repeated row or column entries, and confirms the effects of both moves.</p>
+
+      <p class="tip">Swap two cells, then repair the square using only row cycles and swaps. How many moves do you need?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/Latin.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="latin-squares-core.js"></script>
+<script src="latin-squares.js"></script>
+</body>
+</html>

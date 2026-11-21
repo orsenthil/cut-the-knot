@@ -406,6 +406,10 @@ const GAMES = {
   "langman-paradox": async (page) => {
     await page.check("#cheatCheck");
   },
+  "latin-squares": async (page) => {
+    await page.locator(".grid-row").first().locator(".cell").nth(0).click();
+    await page.locator(".grid-row").first().locator(".cell").nth(1).click();
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

@@ -1517,5 +1517,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "latin-squares",
+      title: "Latin Squares",
+      blurb: "Fill a grid so every row and column has each number once. Can you also make it symmetric?",
+      tags: ["algorithms", "counting", "invariants"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

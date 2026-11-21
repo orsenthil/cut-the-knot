@@ -134,6 +134,7 @@ check("mandelbrot-julia: a c outside the set was clicked", read["mandelbrot-juli
 check("kaprekar-routine: the run reached 6174", read["kaprekar-routine"]?.result === 6174 && read["kaprekar-routine"].count > 1);
 check("langford-skolem: Skolem mode was selected", read["langford-skolem"]?.kind === "skolem" && read["langford-skolem"].valid === true);
 check("langman-paradox: cheat was enabled", read["langman-paradox"]?.cheat === true && Math.abs(read["langman-paradox"].cassini) === 1);
+check("latin-squares: a swap broke the Latin property", read["latin-squares"]?.latin === false && read["latin-squares"].moves === 1);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1600,6 +1601,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("langman-paradox", { n: 6, cheat: false });
   check("langman-paradox: 64 to 65 differs by one", board.squareArea === 64 && board.rectangleArea === 65 && board.cassini === -1);
+}
+
+// Latin squares.
+{
+  const board = at("latin-squares", { size: 4, symmetric: true, grid: [[1, 2, 3, 4], [2, 3, 4, 1], [3, 4, 1, 2], [4, 1, 2, 3]] });
+  check("latin-squares: the cyclic square solves both modes", board.latin === true && board.symmetricGrid === true && board.solved === true);
 }
 
 // A game with no reader, and a position that makes no sense.
