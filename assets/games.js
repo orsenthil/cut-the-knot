@@ -934,7 +934,7 @@ window.COOLMATHS = {
     },
     {
       slug: "chvatal",
-      title: "Chvatal",
+      title: "Chvátal's Art Gallery Theorem",
       blurb: "Draw diagonals to split a wandering polygon into triangles. How few corners do you need to pick so that someone standing there can see every point inside?",
       tags: ["counting", "graph-theory", "algorithms"],
       kind: "demo",
@@ -942,7 +942,7 @@ window.COOLMATHS = {
     },
     {
       slug: "circles-and-limit",
-      title: "Circles And Limit",
+      title: "Circles and a Limit",
       blurb: "A small circle at the origin shrinks inside a fixed circle of radius 3. Follow the point E where their shared chord meets the axis: as the small circle vanishes, where does E settle?",
       tags: ["limits", "algebra"],
       kind: "demo",
@@ -950,7 +950,7 @@ window.COOLMATHS = {
     },
     {
       slug: "circle-with-two-centers",
-      title: "Circle With Two Centers",
+      title: "A Circle with Two Centers",
       blurb: "A circle appears to have two centres. Drag the points of the angle and turn the cheat on and off to find out which drawing is lying.",
       tags: ["paradoxes", "logic"],
       kind: "demo",
@@ -966,7 +966,7 @@ window.COOLMATHS = {
     },
     {
       slug: "city-block-hunt-from-outside",
-      title: "City Block Hunt From Outside",
+      title: "City Block Hunt from Outside",
       blurb: "A treasure hides under one square of a small grid. Can you find it from the clues you get by touching the squares just outside the grid?",
       tags: ["logic", "game-strategy", "arithmetic"],
       kind: "demo",
@@ -982,7 +982,7 @@ window.COOLMATHS = {
     },
     {
       slug: "collatz",
-      title: "Collatz",
+      title: "The Collatz Problem",
       blurb: "Pick a number and watch its hailstone trail: does every start end in the 4, 2, 1 loop? Try stripping all the twos at once to shorten the ride.",
       tags: ["sequences", "parity", "number-theory"],
       kind: "demo",
@@ -990,7 +990,7 @@ window.COOLMATHS = {
     },
     {
       slug: "color-graph",
-      title: "Color Graph",
+      title: "Graph Coloring",
       blurb: "Six graphs, ten colours: can you colour every node so that neighbours differ, using as few colours as you can?",
       tags: ["graph-theory", "logic", "algorithms"],
       kind: "demo",
@@ -998,7 +998,7 @@ window.COOLMATHS = {
     },
     {
       slug: "combi-gem",
-      title: "Combi Gem",
+      title: "Combinatorial Gem",
       blurb: "Can two different collections of numbers give exactly the same list of sums of pairs? Change the numbers and find out when it is possible.",
       tags: ["counting", "algebra", "number-theory"],
       kind: "demo",
