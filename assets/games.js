@@ -1127,5 +1127,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "egyptian-multiplication",
+      title: "Egyptian Multiplication",
+      blurb: "Multiply by doubling, the way the Rhind papyrus does: write powers of two beside the doublings and add the right ones. Which powers do you pick, and why do the doublings add up to the product?",
+      tags: ["arithmetic", "algorithms", "algebra"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

@@ -1218,6 +1218,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("ean13: the opening code 0123456789012 is a UPC-A with all left digits L", q.valid === true && q.isUpcA === true && q.leftParity === "LLLLLL");
 }
 
+// Egyptian multiplication: the chosen powers are the 1-bits of a.
+{
+  const p = at("egyptian-multiplication", { digits: 2, a: 85, b: 18, autonomous: true, binary: false, moves: 2, explored: true });
+  check("egyptian-multiplication: 85 x 18 = 1530 from 64 + 16 + 4 + 1", p.product === 1530 && p.chosenPowers.join() === "1,4,16,64" && p.rows === 7 && p.binaryOfA === "1010101");
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

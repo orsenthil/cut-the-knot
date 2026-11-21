@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Egyptian Multiplication &mdash; coolmaths</title>
+<meta name="description" content="Multiply by doubling, the way the Rhind papyrus does: write powers of two beside the doublings and add the right ones. Which powers do you pick, and why do the doublings add up to the product?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/egyptian-multiplication/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Egyptian Multiplication">
+<meta property="og:description" content="Multiply by doubling, the way the Rhind papyrus does: write powers of two beside the doublings and add the right ones. Which powers do you pick, and why do the doublings add up to the product?">
+<meta property="og:url" content="https://coolmaths.ai/egyptian-multiplication/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 1rem; }
+  #nums { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.6rem; }
+  .number { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 0.2rem; max-width: 100%; min-width: 0; }
+  .times { font-size: 1.6rem; font-weight: 700; }
+  button.digit { min-width: 2.75rem; min-height: 2.75rem; font-size: 1.5rem; font-weight: 700; padding: 0; font-variant-numeric: tabular-nums; }
+  button.digit.a { border-color: var(--accent); }
+  button.digit.b { border-color: var(--good); }
+  #table { border-collapse: collapse; margin: 0.8rem auto 0; font-variant-numeric: tabular-nums; max-width: 100%; table-layout: auto; }
+  #table th { font-size: 0.85rem; color: var(--muted); padding: 0.2rem 0.4rem; font-weight: 600; }
+  #table td { padding: 0.25rem 0.4rem; text-align: right; font-size: 1.1rem; border-top: 1px solid var(--border); }
+  #table td.tag { text-align: center; color: var(--accent); }
+  #table tr.chosen td { font-weight: 700; background: color-mix(in srgb, var(--accent) 18%, transparent); }
+  #table tr.other td { color: var(--muted); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  #sum { margin: 0.6rem 0 0; font-weight: 600; overflow-wrap: anywhere; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 4.5rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="egyptian-multiplication" data-kind="demo">
+<main id="main">
+  <h1>Egyptian Multiplication</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two numbers are multiplied the old Egyptian way, by doubling and adding; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Press a digit of either number to raise it, or select it and type a digit, and see which doublings are used to make the answer.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="nums" aria-label="The two numbers to multiply"></div>
+    <table id="table" aria-label="Powers of two beside the second number doubled; the chosen rows add up to the answer"></table>
+    <p id="sum" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label>Digits <input id="digitsIn" type="number" min="1" max="4" step="1" aria-label="Number of digits in each number, 1 to 4"></label>
+    <label><input id="autoBox" type="checkbox" checked> Autonomous digits</label>
+    <label><input id="binBox" type="checkbox"> Show binary</label>
+    <button id="newBtn" type="button" class="primary">New numbers</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <<details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The ancient Egyptians multiplied by doubling. It works because every number is a sum of different powers of two, which is another way of saying it has a <a class="wiki-term" data-wiki="Binary_number" href="https://en.wikipedia.org/wiki/Binary_number" target="_blank" rel="noopener">binary</a> form.</p>
+
+      <h2>The table</h2>
+      <p>Write <code>1</code> over one column and <code>b</code> over the other, and keep doubling both until the next power of two would pass <code>a</code>. That takes <code>⌊log₂ a⌋ + 1</code> rows. Then pick the powers that add up to <code>a</code>: take the largest power not above what is left, subtract it, and go on. For <code>85</code> that is <code>64 + 16 + 4 + 1</code>, and these are exactly the 1s in <code>85 = 1010101₂</code>. The test checked, for every <code>a</code> from 1 to 9999, that the chosen powers are the 1-bits of <code>a</code>.</p>
+
+      <h2>Why it adds up</h2>
+      <p>If <code>a = 2<sup>i</sup> + 2<sup>j</sup> + …</code> then <code>a × b = 2<sup>i</sup>b + 2<sup>j</sup>b + …</code>, and the right-hand column holds exactly the numbers <code>2<sup>k</sup>b</code>. So adding the entries beside the chosen powers gives the product: <code>85 × 18 = 1152 + 288 + 72 + 18 = 1530</code>. The test confirmed it for every <code>a</code> up to 9999 with several <code>b</code>, and for every pair up to 400 by 400, and compared it with the Russian peasant method of halving and doubling.</p>
+
+      <p class="note">The applet's digits: with <i>Autonomous digits</i> a digit goes up by one by itself (9 becomes 0); without it, pressing a digit raises the whole number by that digit's place value. The first number is never allowed to be 0.</p>
+
+      <p class="tip">Try 64 × anything (one row used), then 63 × the same (six rows used). Which is quicker?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/EgyptianMultiplication.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="egyptian-multiplication-core.js"></script>
+<script src="egyptian-multiplication.js"></script>
+</body>
+</html>

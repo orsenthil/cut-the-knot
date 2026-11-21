@@ -300,6 +300,7 @@ const CORE_GLOBALS = {
   "distributive-law/distributive-law-core.js": ["DistributiveLawCore"],
   "divisibility/divisibility-core.js": ["DivisibilityCore"],
   "ean13/ean13-core.js": ["Ean13Core"],
+  "egyptian-multiplication/egyptian-multiplication-core.js": ["EgyptianMultiplicationCore"],
 };
 
 const games = [];
