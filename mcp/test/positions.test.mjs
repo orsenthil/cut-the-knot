@@ -1096,6 +1096,16 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("common-multiples: 6 and 4 have lcm 12", p.gcd === 2 && p.lcm === 12 && p.firstBlueDot === 12 && p.oneDividesTheOther === false);
 }
 
+// Compare fractions: cross multiplication, and the too-big case after a common denominator.
+{
+  const p = at("compare-fractions", { n1: 3, d1: 4, n2: 5, d2: 7, moves: 0, explored: false });
+  check("compare-fractions: 3/4 is greater than 5/7", p.comparison === 1 && p.cross.n1TimesD2 === 21 && p.cross.n2TimesD1 === 20 && p.tooBigToDraw === false);
+  const q = at("compare-fractions", { n1: 89, d1: 97, n2: 97, d2: 89, moves: 1, explored: true });
+  check("compare-fractions: 89/97 is less than 97/89", q.comparison === -1 && q.commonDenominator === 8633);
+  const b = at("compare-fractions", { n1: 7921, d1: 8633, n2: 9409, d2: 8633, moves: 2, explored: true });
+  check("compare-fractions: numbers above 99 are too big to draw", b.tooBigToDraw === true && b.comparison === -1);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

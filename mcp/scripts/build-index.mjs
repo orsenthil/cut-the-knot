@@ -286,6 +286,7 @@ const CORE_GLOBALS = {
   "color-graph/color-graph-core.js": ["ColorGraphCore"],
   "combi-gem/combi-gem-core.js": ["CombiGemCore"],
   "common-multiples/common-multiples-core.js": ["CommonMultiplesCore"],
+  "compare-fractions/compare-fractions-core.js": ["CompareFractionsCore"],
 };
 
 const games = [];

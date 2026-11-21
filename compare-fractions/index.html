@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Compare Fractions &mdash; coolmaths</title>
+<meta name="description" content="Which is bigger, 3/4 or 5/7? Draw two fractions as boxes, put them over a common denominator and see why cross multiplication always works.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/compare-fractions/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Compare Fractions">
+<meta property="og:description" content="Which is bigger, 3/4 or 5/7? Draw two fractions as boxes, put them over a common denominator and see why cross multiplication always works.">
+<meta property="og:url" content="https://coolmaths.ai/compare-fractions/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 36rem;
+    padding: 1rem;
+  }
+  #fractions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 1rem;
+  }
+  .fraction {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+  .fraction .bar {
+    align-self: stretch;
+    height: 3px;
+    background: var(--ink);
+    border-radius: 2px;
+  }
+  .num {
+    display: inline-flex;
+  }
+  .digit {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0 0.3rem;
+    font-size: 1.8rem;
+    font-variant-numeric: tabular-nums;
+    cursor: ns-resize;
+  }
+  #pictures {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-around;
+    gap: 1rem;
+    margin-top: 1rem;
+    min-height: 2rem;
+  }
+  .pic {
+    max-width: 100%;
+    height: auto;
+  }
+  .box {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1;
+  }
+  .pic1 .box.on { fill: var(--bad); }
+  .pic2 .box.on { fill: var(--accent); }
+  .toobig {
+    font-weight: 700;
+    color: var(--bad);
+    margin: 0.5rem 0;
+  }
+</style>
+</head>
+<body data-game="compare-fractions" data-kind="demo">
+<main id="main">
+  <h1>Compare Fractions</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#fractions">Fractions</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#divisibility">Divisibility</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two fractions are drawn as boxes so you can see which is bigger; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Press the top half of a digit to raise it and the bottom half to lower it, or use the Up and Down keys. Use the buttons to give both fractions the same bottom number, or to make them as small as they go.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="fractions"></div>
+    <div id="pictures" role="group" aria-label="The two fractions drawn as rows of boxes"></div>
+  </div>
+
+  <div class="controls">
+    <button id="commonBtn" type="button" class="primary">Common denominator</button>
+    <button id="simplifyBtn" type="button">Simplify fractions</button>
+    <button id="newBtn" type="button">New fractions</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Which is bigger, 3/4 or 5/7? The pictures show a fraction as boxes, but a picture is slow when the numbers get big. There is a faster test that needs only whole-number multiplication.</p>
+
+      <h2>Compare by subtracting</h2>
+      <p>Two numbers are compared by their difference: the first is bigger exactly when the difference is positive. Put both fractions over a <a class="wiki-term" data-wiki="Lowest_common_denominator" href="https://en.wikipedia.org/wiki/Lowest_common_denominator" target="_blank" rel="noopener">common denominator</a> and subtract:</p>
+      <blockquote><code>p/q − r/s = (p·s − r·q) / (q·s)</code></blockquote>
+
+      <h2>Cross multiplication</h2>
+      <p>Since q·s is positive, the sign of the answer is the sign of the top: <code>p/q &gt; r/s</code> exactly when <code>p·s &gt; r·q</code>. The status line shows that comparison for the fractions on screen. The logic test checked it against an exact comparison for every pair of fractions with numerators and denominators up to 30 (810,000 pairs) and it never failed.</p>
+
+      <h2>The two buttons</h2>
+      <p>Common denominator gives both fractions the denominator <code>q·s / gcd(q, s)</code>, the <a class="wiki-term" data-wiki="Least_common_multiple" href="https://en.wikipedia.org/wiki/Least_common_multiple" target="_blank" rel="noopener">least common multiple</a>; the test confirmed that is the smallest possible for all 9,801 pairs of denominators up to 99. Simplify divides top and bottom by their <a class="wiki-term" data-wiki="Greatest_common_divisor" href="https://en.wikipedia.org/wiki/Greatest_common_divisor" target="_blank" rel="noopener">greatest common divisor</a>, found by the <a class="wiki-term" data-wiki="Euclidean_algorithm" href="https://en.wikipedia.org/wiki/Euclidean_algorithm" target="_blank" rel="noopener">Euclidean algorithm</a>, giving lowest terms. The applet only draws numbers up to 99, so after a big common denominator it asks you to simplify again; 97 and 89 give 8633, which is too big to draw. This page keeps that rule.</p>
+
+      <p class="tip">Try 3/4 and 6/8: the pictures look different but the status line says they are equal. Then try 97 and 89 as denominators and press Common denominator.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/CompareFractions.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="compare-fractions-core.js"></script>
+<script src="compare-fractions.js"></script>
+</body>
+</html>

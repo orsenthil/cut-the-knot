@@ -24,6 +24,7 @@ window.COOLMATHS = {
     "place-value": "Place Value",
     "parity": "Parity",
     "divisibility": "Divisibility",
+    "fractions": "Fractions",
     "number-theory": "Number Theory",
     "sequences": "Sequences",
     "series": "Infinite Series",
@@ -1011,6 +1012,14 @@ window.COOLMATHS = {
       tags: ["divisibility", "number-theory", "arithmetic"],
       kind: "demo",
       level: 2,
+    },
+    {
+      slug: "compare-fractions",
+      title: "Compare Fractions",
+      blurb: "Which is bigger, 3/4 or 5/7? Draw two fractions as boxes, put them over a common denominator and see why cross multiplication always works.",
+      tags: ["fractions", "arithmetic", "divisibility"],
+      kind: "demo",
+      level: 1,
     },
   ],
 };

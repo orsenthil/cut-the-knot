@@ -402,6 +402,7 @@ const GAMES = {
   "color-graph": (page) => page.click("#graph5"),
   "combi-gem": (page) => page.locator("#sizeInput").fill("5"),
   "common-multiples": (page) => page.locator("#pInput").fill("4"),
+  "compare-fractions": (page) => page.click("#simplifyBtn"),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */
