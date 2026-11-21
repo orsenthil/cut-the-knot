@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Compare Fractions: Interactive Practice &mdash; coolmaths</title>
+<meta name="description" content="Two fractions side by side: is the first less than, equal to or more than the second? Press the right sign, with bars and a common denominator to help if you need them.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/fraction-comparison-exercise/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Compare Fractions: Interactive Practice">
+<meta property="og:description" content="Two fractions side by side: is the first less than, equal to or more than the second? Press the right sign, with bars and a common denominator to help if you need them.">
+<meta property="og:url" content="https://coolmaths.ai/fraction-comparison-exercise/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 1rem; }
+  #row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.5rem 1rem; }
+  .frac { display: inline-flex; flex-direction: column; align-items: center; font-size: 2rem; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 3rem; }
+  .frac .bar { display: block; align-self: stretch; height: 3px; background: var(--ink); margin: 0.2rem 0; border-radius: 2px; }
+  .q { font-size: 2.2rem; font-weight: 700; color: var(--accent); min-width: 2rem; text-align: center; }
+  #signs { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-top: 0.8rem; }
+  #signs button { min-width: 3.5rem; min-height: 2.75rem; font-size: 1.4rem; font-weight: 700; }
+  #bars { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.8rem; }
+  .barsvg { width: 100%; height: auto; }
+  .barsvg .on { fill: var(--accent); stroke: var(--stage); stroke-width: 1; }
+  .barsvg .off { fill: transparent; stroke: var(--muted); stroke-width: 1; }
+  #score { margin: 0.8rem 0 0; color: var(--muted); text-align: center; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="fraction-comparison-exercise" data-kind="game">
+<main id="main">
+  <h1>Compare Fractions: Interactive Practice</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#fractions">Fractions</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two fractions are shown; say whether the first is less than, equal to, or more than the second.<br>
+    <strong>How to play:</strong> Press the &lt;, = or &gt; button under them. Tick Show graphics for bars, and Use common denominator to cut both bars into equal parts.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="row" aria-label="Two fractions to compare"></div>
+    <div id="signs" role="group" aria-label="Your answer"><button id="sign0" type="button" aria-label="The first is less than the second">&lt;</button><button id="sign1" type="button" aria-label="The two are equal">=</button><button id="sign2" type="button" aria-label="The first is more than the second">&gt;</button></div>
+    <div id="bars"></div>
+    <p id="score" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label><input id="gBox" type="checkbox"> Show graphics</label>
+    <label><input id="cBox" type="checkbox"> Use common denominator</label>
+    <button id="nextBtn" type="button" class="primary">New pair of fractions</button>
+    <button id="restartBtn" type="button">Reset scores</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>To compare <code>a/c</code> and <code>b/d</code> you can cross-multiply: <code>a/c &gt; b/d</code> exactly when <code>ad &gt; bc</code>. Or you can give them the same denominator and compare the numerators.</p>
+
+      <h2>Two ways, one answer</h2>
+      <p>Cutting both bars into the least common denominator&rsquo;s parts (the tick box) turns the comparison into counting shaded parts: <code>a/c = a·(L/c)/L</code> and <code>b/d = b·(L/d)/L</code>. The logic test compared the two methods for every pair of fractions with parts up to 30 (810,000 pairs): they never differ.</p>
+
+      <h2>What the practice gives you</h2>
+      <p>The pairs are made as in the applet: denominators 5 to 9, numerators 5 to 9 or just under the denominator, one pair in about twenty with equal values written differently (like 2/3 and 4/6), so all three answers occur. The test checked 200,000 generated pairs. For quicker ways see the companion page, Fraction Comparison Sped Up.</p>
+
+      <p class="tip">Press Show graphics and compare 3/5 with 5/8, first with their own bars and then with the common denominator.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/FractionComparisonExercise.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="fraction-comparison-exercise-core.js"></script>
+<script src="fraction-comparison-exercise.js"></script>
+</body>
+</html>

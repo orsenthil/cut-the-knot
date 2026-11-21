@@ -317,6 +317,7 @@ const CORE_GLOBALS = {
   "flip-them-ii/flip-them-ii-core.js": ["FlipThemIICore"],
   "flip-them-iii/flip-them-iii-core.js": ["FlipThemIIICore"],
   "fourth-degree/fourth-degree-core.js": ["FourthDegreeCore"],
+  "fraction-comparison-exercise/fraction-comparison-exercise-core.js": ["FractionComparisonExerciseCore"],
 };
 
 const games = [];

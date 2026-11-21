@@ -1360,6 +1360,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("fourth-degree: x^4 + x^2 has no inflection points", q.hasTwoInflectionPoints === false && q.inflectionPoints === null);
 }
 
+// Compare fractions practice: the pair, the right sign and the answer given.
+{
+  const p = at("fraction-comparison-exercise", { n1: 7, d1: 12, n2: 4, d2: 9, problems: 2, solved: 1, answered: 2, graphics: true, common: false, seed: 4, moves: 1 });
+  check("fraction-comparison-exercise: 7/12 is more than 4/9 and the answer > was right", p.correctSign === ">" && p.wasRight === true && p.answered === ">" && p.correctAnswers === 1);
+  const q = at("fraction-comparison-exercise", { n1: 2, d1: 4, n2: 3, d2: 6, problems: 1, solved: 0, answered: -1, graphics: false, common: false, seed: 1, moves: 0 });
+  check("fraction-comparison-exercise: 2/4 and 3/6 are equal and nothing is answered yet", q.correctSign === "=" && q.answered === null && q.wasRight === null);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

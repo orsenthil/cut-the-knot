@@ -1255,5 +1255,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "fraction-comparison-exercise",
+      title: "Compare Fractions: Interactive Practice",
+      blurb: "Two fractions side by side: is the first less than, equal to or more than the second? Press the right sign, with bars and a common denominator to help if you need them.",
+      tags: ["fractions", "arithmetic"],
+      level: 1,
+    },
   ],
 };
