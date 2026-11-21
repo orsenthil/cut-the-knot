@@ -1021,5 +1021,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "complex-numbers",
+      title: "Complex Numbers",
+      blurb: "Two numbers live on a plane. Add them, multiply them, fix their angles or their sizes: what does the product do when you drag?",
+      tags: ["complex-analysis", "algebra"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

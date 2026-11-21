@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Complex Numbers &mdash; coolmaths</title>
+<meta name="description" content="Two numbers live on a plane. Add them, multiply them, fix their angles or their sizes: what does the product do when you drag?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/complex-numbers/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Complex Numbers">
+<meta property="og:description" content="Two numbers live on a plane. Add them, multiply them, fix their angles or their sizes: what does the product do when you drag?">
+<meta property="og:url" content="https://coolmaths.ai/complex-numbers/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 36rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    touch-action: none;
+    cursor: grab;
+  }
+  #board:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.5rem 0 0;
+  }
+  fieldset.opts {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 0;
+    padding: 0.4rem 0.7rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 1rem;
+  }
+  fieldset.opts legend {
+    font-weight: 600;
+    padding: 0 0.3rem;
+  }
+  fieldset.opts label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+  .coords label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .coords input {
+    width: 6.75rem;
+  }
+  .table-wrap {
+    width: 100%;
+    max-width: 36rem;
+    min-width: 0;
+    overflow-x: auto;
+  }
+  table.values {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+  }
+  table.values th, table.values td {
+    border-bottom: 1px solid var(--border);
+    padding: 0.25rem 0.5rem;
+    text-align: left;
+  }
+  table.values tr.shown {
+    background: var(--highlight);
+  }
+</style>
+</head>
+<body data-game="complex-numbers" data-kind="demo">
+<main id="main">
+  <h1>Complex Numbers</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#complex-analysis">Complex Analysis</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two numbers live on a flat plane, and you watch what adding and multiplying them does; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the dots A and B around, or press A or B and use the arrow keys. Pick what to show, and try fixing their angle or their size.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="400" height="300" tabindex="0" aria-label="Complex plane with two draggable numbers, A in red and B in blue, and whatever result is chosen below in green"></canvas>
+    <p class="hint">Drag a dot. Or focus the picture, press A or B, then use the arrow keys.</p>
+  </div>
+
+  <div class="controls">
+    <fieldset class="opts"><legend>Show</legend>
+      <label><input type="radio" name="mode" value="none" checked> nothing extra</label>
+      <label><input type="radio" name="mode" value="conjugate"> conjugates</label>
+      <label><input type="radio" name="mode" value="sum"> sum</label>
+      <label><input type="radio" name="mode" value="common"> common product</label>
+      <label><input type="radio" name="mode" value="real"> real product</label>
+      <label><input type="radio" name="mode" value="complex"> complex product</label>
+    </fieldset>
+    <fieldset class="opts"><legend>Fix</legend>
+      <label><input type="radio" name="fix" value="free" checked> free hand</label>
+      <label><input type="radio" name="fix" value="angle"> angle</label>
+      <label><input type="radio" name="fix" value="radius"> absolute value</label>
+    </fieldset>
+    <div class="coords">
+      <label>A real <input id="axA" type="number" step="0.5" min="-10" max="10" aria-label="A, real part"></label>
+      <label>A imaginary <input id="ayA" type="number" step="0.5" min="-7.5" max="7.5" aria-label="A, imaginary part"></label>
+      <label>B real <input id="axB" type="number" step="0.5" min="-10" max="10" aria-label="B, real part"></label>
+      <label>B imaginary <input id="ayB" type="number" step="0.5" min="-7.5" max="7.5" aria-label="B, imaginary part"></label>
+    </div>
+    <button id="newBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div class="table-wrap">
+    <table class="values" aria-label="Values of the numbers and their results">
+      <thead><tr><th scope="col">Number</th><th scope="col">Value</th><th scope="col">Modulus</th><th scope="col">Argument</th></tr></thead>
+      <tbody id="readout"></tbody>
+    </table>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A <a class="wiki-term" data-wiki="Complex_number" href="https://en.wikipedia.org/wiki/Complex_number" target="_blank" rel="noopener">complex number</a> is a point (x, y) of the plane, written x + yi. Adding is easy; multiplying turns out to be turning and stretching.</p>
+
+      <h2>Adding and multiplying</h2>
+      <p>Numbers add componentwise, which is the parallelogram rule for arrows: <code>(x1, y1) + (x2, y2) = (x1 + x2, y1 + y2)</code>. The product is <code>(x1x2 − y1y2, x1y2 + x2y1)</code>. Fix the absolute values of both numbers and drag the angles: the product always stays on one circle, of radius |A|·|B|, because moduli multiply and <a class="wiki-term" data-wiki="Argument_(complex_analysis)" href="https://en.wikipedia.org/wiki/Argument_(complex_analysis)" target="_blank" rel="noopener">arguments</a> add. The logic test confirmed this for every board position tried.</p>
+
+      <h2>Easy multipliers</h2>
+      <p>A real factor only stretches (the argument is unchanged); multiplying by a number on the imaginary axis turns by 90° counter-clockwise; multiplying by −1 reflects in the origin. The <a class="wiki-term" data-wiki="Complex_conjugate" href="https://en.wikipedia.org/wiki/Complex_conjugate" target="_blank" rel="noopener">conjugate</a> reflects in the real axis, so conjugating twice gives the number back.</p>
+
+      <h2>The real and complex products</h2>
+      <p>The real product <code>x1x2 + y1y2</code> is always on the real axis and is zero exactly when the arrows are perpendicular: it is the <a class="wiki-term" data-wiki="Dot_product" href="https://en.wikipedia.org/wiki/Dot_product" target="_blank" rel="noopener">dot product</a>. The complex product is always on the imaginary axis and is zero exactly when A, B and the origin are in a line. A small catch: the page's formula (z1 Conj(z2) − Conj(z1) z2)/2 gives <code>(y1x2 − x1y2)i</code>, while the applet draws <code>(x1y2 − x2y1)i</code>, the opposite sign. This port follows the applet; the two agree about where it is zero.</p>
+
+      <p class="tip">Fix the angle, then slide A along its line through the origin while showing the common product: where does it go?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/ComplexNumbers.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="complex-numbers-core.js"></script>
+<script src="complex-numbers.js"></script>
+</body>
+</html>

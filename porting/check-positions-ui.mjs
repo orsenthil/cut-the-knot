@@ -403,6 +403,7 @@ const GAMES = {
   "combi-gem": (page) => page.locator("#sizeInput").fill("5"),
   "common-multiples": (page) => page.locator("#pInput").fill("4"),
   "compare-fractions": (page) => page.click("#simplifyBtn"),
+  "complex-numbers": (page) => page.check("input[name=mode][value=sum]"),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

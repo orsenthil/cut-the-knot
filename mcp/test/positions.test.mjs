@@ -1106,6 +1106,13 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("compare-fractions: numbers above 99 are too big to draw", b.tooBigToDraw === true && b.comparison === -1);
 }
 
+// Complex numbers: moduli multiply, and the two special products.
+{
+  const p = at("complex-numbers", { a: { x: 3, y: 4 }, b: { x: 4, y: -3 }, mode: "common", constraint: "free", lock: { a: null, b: null }, moves: 1, explored: true });
+  check("complex-numbers: (3+4i)(4-3i) = 24+7i", p.commonProduct.x === 24 && p.commonProduct.y === 7 && p.commonProduct.modulus === 25);
+  check("complex-numbers: 3+4i and 4-3i are perpendicular", p.perpendicular === true && p.realProduct.x === 0 && p.collinearWithOrigin === false);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;
