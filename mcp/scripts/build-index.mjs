@@ -325,6 +325,7 @@ const CORE_GLOBALS = {
   "rouse-ball-fallacy/rouse-ball-fallacy-core.js": ["RouseBallFallacyCore"],
   "archimedes-circumference/archimedes-circumference-core.js": ["ArchimedesCircumferenceCore"],
   "euler-hamilton-paths/euler-hamilton-paths-core.js": ["EulerHamiltonPathsCore"],
+  "huntington-hill-method/huntington-hill-method-core.js": ["HuntingtonHillMethodCore"],
 };
 
 const games = [];

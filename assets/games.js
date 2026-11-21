@@ -1016,6 +1016,14 @@ window.COOLMATHS = {
       level: 2,
     },
     {
+      slug: "huntington-hill-method",
+      title: "Huntington-Hill Apportionment",
+      blurb: "Congress rounds quotas by a geometric mean, not a midpoint. Can you see which states that changes?",
+      tags: ["arithmetic", "counting", "algorithms"],
+      kind: "demo",
+      level: 3,
+    },
+    {
       slug: "city-block-hunt-from-outside",
       title: "City Block Hunt from Outside",
       blurb: "A treasure hides under one square of a small grid. Can you find it from the clues you get by touching the squares just outside the grid?",

@@ -109,6 +109,7 @@ check("gencon-construction: an angle was edited", read["gencon-construction"]?.a
 check("rouse-ball-fallacy: the congruences hold while the angle stays obtuse", read["rouse-ball-fallacy"]?.congruent === true && read["rouse-ball-fallacy"].angleDAE > 90);
 check("archimedes-circumference: the slider changed n to 12", read["archimedes-circumference"]?.n === 12 && read["archimedes-circumference"].squeeze === true);
 check("euler-hamilton-paths: a vertex was clicked", read["euler-hamilton-paths"]?.sequence.length === 1 && read["euler-hamilton-paths"].vertices >= 3);
+check("huntington-hill-method: the seat stepper was used", read["huntington-hill-method"]?.total === read["huntington-hill-method"]?.seats);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1417,6 +1418,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("euler-hamilton-paths", { graph: 0, mode: "euler", sequence: [0] });
   check("euler-hamilton-paths: a triangle has 3 vertices and 3 edges", board.vertices === 3 && board.edges === 3);
+}
+
+// Huntington-Hill apportionment.
+{
+  const board = at("huntington-hill-method", { seats: 23, populations: [100, 200, 300] });
+  check("huntington-hill-method: 23 seats are allocated", board.total === 23 && board.final.length === 3);
 }
 
 // A game with no reader, and a position that makes no sense.

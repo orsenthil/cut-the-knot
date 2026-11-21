@@ -321,6 +321,9 @@ const GAMES = {
   "euler-hamilton-paths": async (page) => {
     await page.locator(".node").first().click();
   },
+  "huntington-hill-method": async (page) => {
+    await page.click("#seatsMore");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Huntington-Hill Apportionment &mdash; coolmaths</title>
+<meta name="description" content="Congress rounds quotas by a geometric mean, not a midpoint. Can you see which states that changes?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/huntington-hill-method/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Huntington-Hill Apportionment">
+<meta property="og:description" content="Congress rounds quotas by a geometric mean, not a midpoint. Can you see which states that changes?">
+<meta property="og:url" content="https://coolmaths.ai/huntington-hill-method/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.5rem; overflow-x: auto; }
+  .hh-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+  .hh-table th, .hh-table td { padding: 0.3rem 0.25rem; text-align: right; border-bottom: 1px solid var(--border); }
+  .hh-table th:first-child, .hh-table td:first-child { text-align: left; font-weight: 700; }
+  .hh-table th { color: var(--muted); font-size: 0.72rem; }
+  .hh-table .totals { border-top: 2px solid var(--border-strong); font-weight: 700; }
+  .hh-table input { width: 3.5rem; max-width: 100%; font: inherit; padding: 0.15rem 0.25rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  .control-row, .controls { display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem 0.8rem; }
+  .control-label { color: var(--muted); font-size: 0.85rem; }
+  .stepper { display: inline-flex; align-items: center; gap: 0.3rem; }
+  .stepper output { min-width: 2rem; text-align: center; font-weight: 700; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input { width: 5rem; font: inherit; padding: 0.2rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  .hh-table input:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="huntington-hill-method" data-kind="demo">
+<main id="main">
+  <h1>Huntington-Hill Apportionment</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Share seats between states using the rounding rule that the US Congress uses today.<br>
+    <strong>How to play:</strong> Change the number of seats or states, edit a population, and watch the final column.
+  </div>
+
+  <div id="stage" class="stage">
+  </div>
+
+  <div class="controls">
+    <span class="control-label">Seats</span>
+    <span class="stepper"><button id="seatsLess" type="button" aria-label="Fewer seats">&minus;</button><output id="seatsOut">23</output><button id="seatsMore" type="button" aria-label="More seats">+</button></span>
+    <span class="control-label">States</span>
+    <span class="stepper"><button id="statesLess" type="button" aria-label="Fewer states">&minus;</button><output id="statesOut">3</output><button id="statesMore" type="button" aria-label="More states">+</button></span>
+    <label class="control-label">Divisor <input id="divisorInput" type="number" step="0.01" aria-label="Modified divisor"></label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Huntington-Hill's method has been used by the US Congress since 1941. Its rounding rule is subtly different from ordinary rounding.</p>
+
+      <h2>The equal-proportions cutoff</h2>
+      <p>With ordinary rounding, a quota between L and L+1 is rounded up past the midpoint <code>L + 1/2</code>. The method of equal proportions instead uses the <a class="wiki-term" data-wiki="Geometric_mean" href="https://en.wikipedia.org/wiki/Geometric_mean" target="_blank" rel="noopener">geometric mean</a> <code>sqrt(L(L+1))</code> as the cutoff. Equivalently, each additional seat goes to the state with the largest <code>population / sqrt(s(s+1))</code>, where s is the number of seats it already has.</p>
+
+      <h2>What the check found</h2>
+      <p>The logic test examines nearly two thousand random countries. Every allocation fills the house, states with zero population get no seats, the seat-by-seat priorities match an independent transcription, and the results agree with the Huntington-Hill column of the combined apportionment calculator on this site.</p>
+
+      <p class="tip">Compare the "Cutoff" column with the midpoint between the whole numbers around each quota. Which states round differently?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/SocialScience/HH.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="huntington-hill-method-core.js"></script>
+<script src="huntington-hill-method.js"></script>
+</body>
+</html>
