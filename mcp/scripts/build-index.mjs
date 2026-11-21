@@ -340,6 +340,7 @@ const CORE_GLOBALS = {
   "winkler-path-proof/winkler-path-proof-core.js": ["WinklerPathProofCore"],
   "sums-products-invariant/sums-products-invariant-core.js": ["SumsProductsInvariantCore"],
   "isbn-encoding/isbn-encoding-core.js": ["IsbnEncodingCore"],
+  "item-parity/item-parity-core.js": ["ItemParityCore"],
 };
 
 const games = [];

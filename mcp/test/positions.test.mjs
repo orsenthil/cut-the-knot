@@ -124,6 +124,7 @@ check("robinson-induction: the split was applied", read["robinson-induction"]?.h
 check("winkler-path-proof: the start has a red path", read["winkler-path-proof"]?.pathKind === "red" && read["winkler-path-proof"].valid === true);
 check("sums-products-invariant: a pair was merged without changing the invariant", read["sums-products-invariant"]?.remaining === 4 && read["sums-products-invariant"].invariant === read["sums-products-invariant"].initialInvariant);
 check("isbn-encoding: a cell was cycled", read["isbn-encoding"]?.symbols.length === 13 && read["isbn-encoding"].valid === false);
+check("item-parity: a swap was made", read["item-parity"]?.moves === 1 && read["item-parity"].red === read["item-parity"].blue);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1527,6 +1528,12 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("isbn-encoding", { symbols: ["0", "-", "3", "0", "6", "-", "4", "0", "6", "1", "5", "-", "2"] });
   check("isbn-encoding: 0-306-40615-2 is valid", board.valid === true && board.checkDigit === "2");
+}
+
+// Two colors in two rows.
+{
+  const board = at("item-parity", { cols: 4, rows: [["R", "R", "B", "B"], ["R", "B", "B", "R"]] });
+  check("item-parity: the two rows have one joint of each colour", board.red === 1 && board.blue === 1 && board.equal === true);
 }
 
 // A game with no reader, and a position that makes no sense.

@@ -373,6 +373,10 @@ const GAMES = {
   "isbn-encoding": async (page) => {
     await page.locator(".isbn-cell").first().click();
   },
+  "item-parity": async (page) => {
+    await page.locator('.cell[data-key="0,0"]').click();
+    await page.locator('.cell[data-key="0,1"]').click();
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Two Colors in Two Rows &mdash; coolmaths</title>
+<meta name="description" content="Join matching colours down two rows. Why must the number of red links always equal the number of blue ones?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/item-parity/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Two Colors in Two Rows">
+<meta property="og:description" content="Join matching colours down two rows. Why must the number of red links always equal the number of blue ones?">
+<meta property="og:url" content="https://coolmaths.ai/item-parity/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.8rem; }
+  #board { display: block; width: 100%; max-width: 32rem; height: auto; margin: 0 auto; }
+  .cell.red { fill: #d9534f; fill-opacity: 0.8; stroke: var(--ink); stroke-width: 2; }
+  .cell.blue { fill: #3b6fd4; fill-opacity: 0.8; stroke: var(--ink); stroke-width: 2; }
+  .cell.selected { stroke: var(--accent); stroke-width: 5; }
+  .cell:focus-visible { outline: none; stroke: var(--focus); stroke-width: 5; }
+  .joint { stroke-width: 5; stroke-linecap: round; }
+  .joint.red-line { stroke: #d9534f; }
+  .joint.blue-line { stroke: #3b6fd4; }
+  .readout { margin: 0.5rem 0 0; text-align: center; font-size: 0.85rem; color: var(--muted); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 100%; max-width: 10rem; accent-color: var(--accent); }
+  input:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="item-parity" data-kind="demo">
+<main id="main">
+  <h1>Two Colors in Two Rows</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Join matching colours between two rows and discover a count that never changes.<br>
+    <strong>How to play:</strong> Click two cells in the same row to swap them, or change the number of columns.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 150" role="group" aria-label="Two rows of red and blue cells with lines joining matching colours"></svg>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Columns <input id="colsInput" type="range" min="2" max="12" step="2" value="8" aria-label="Number of columns, an even number from 2 to 12"></label>
+    <button id="randomBtn" type="button" class="primary">Random colours</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Shuffle the two rows as much as you like: the number of red links always matches the number of blue links.</p>
+
+      <h2>The unmatched cells</h2>
+      <p>Each row has M red and M blue cells. Let x be the number of columns where both rows are red and u the number where both are blue. A red cell in the top row that is not joined must face a blue cell in the bottom row, and vice versa — so the number of unmatched reds in one row equals the number of unmatched blues in the other. That gives <code>M − x = M − u</code>, hence <code>x = u</code>.</p>
+
+      <h2>From two rows to a whole grid</h2>
+      <p>In a bigger array with half of each colour in every row and column, the same argument applies between any two adjacent rows. Adding those equal counts over all row pairs and all column pairs gives equal total numbers of red and blue segments. The logic test checks every balanced pair of rows with 2, 4 and 6 columns, 500 random larger rows, and a balanced 4 by 4 grid.</p>
+
+      <p class="tip">Swap cells until all the links vanish. What can you say about the two rows then?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/ItemParity.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="item-parity-core.js"></script>
+<script src="item-parity.js"></script>
+</body>
+</html>

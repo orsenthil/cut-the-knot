@@ -1256,6 +1256,14 @@ window.COOLMATHS = {
       level: 2,
     },
     {
+      slug: "item-parity",
+      title: "Two Colors in Two Rows",
+      blurb: "Join matching colours down two rows. Why must the number of red links always equal the number of blue ones?",
+      tags: ["parity", "invariants", "counting"],
+      kind: "demo",
+      level: 2,
+    },
+    {
       slug: "delian",
       title: "The Delian Construction",
       blurb: "A drawing claims to double the cube with only a ruler and a compass. It looks right, and it is wrong by less than a seventh of a percent: where does it fail, and why must it?",
