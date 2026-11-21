@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Horner's Method &mdash; coolmaths</title>
+<meta name="description" content="Evaluate a polynomial with one repeated multiply-and-add, and discover that the quotient it gives away is also the derivative.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/horner-method/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Horner's Method">
+<meta property="og:description" content="Evaluate a polynomial with one repeated multiply-and-add, and discover that the quotient it gives away is also the derivative.">
+<meta property="og:url" content="https://coolmaths.ai/horner-method/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.6rem; overflow-x: auto; }
+  .horner-table { border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  .horner-table th, .horner-table td { padding: 0.35rem 0.3rem; text-align: center; border: 1px solid var(--border); }
+  .horner-table th { color: var(--muted); font-size: 0.8rem; }
+  .horner-table tr:last-child td { color: var(--accent); font-weight: 700; }
+  .horner-table input { width: 3.5rem; max-width: 100%; font: inherit; text-align: center; padding: 0.2rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  .horner-summary { margin-top: 0.8rem; }
+  .horner-summary label { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .horner-summary input { width: 4rem; font: inherit; padding: 0.2rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  .horner-summary p { font-size: 0.85rem; overflow-wrap: anywhere; }
+  .horner-note { color: var(--muted); font-size: 0.85rem; margin: 0; }
+  .horner-table input:focus-visible, .horner-summary input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="horner-method" data-kind="demo">
+<main id="main">
+  <h1>Horner's Method</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Evaluate a polynomial in one repeated step, and get its derivative almost for free.<br>
+    <strong>How to play:</strong> Edit any coefficient or the value of x and watch the table rebuild itself.
+  </div>
+
+  <div id="stage" class="stage">
+  </div>
+
+  <div class="controls">
+    <p class="horner-note">The coefficients run from the highest power of x down to the constant term.</p>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>One small recurrence evaluates a polynomial, divides it by a linear factor and finds a derivative — all at once.</p>
+
+      <h2>The nested form</h2>
+      <p>Write <code>P(x) = (…(aₙx + aₙ₋₁)x + … + a₁)x + a₀</code>. Starting from the leading coefficient, set <code>bₖ = t·bₖ₊₁ + aₖ</code>. The final <code>b₀</code> is <code>P(t)</code>. For the page's <code>2x⁴ − 3x³ + x + 7</code> at <code>t = 2</code>, the row is 2, 1, 2, 5, 17 — so <code>P(2) = 17</code>.</p>
+
+      <h2>Quotient and derivative</h2>
+      <p>The same row gives <code>P(x) = (x − t)Q(x) + r</code>, with Q's coefficients in the first entries and the remainder r last. Differentiating and setting <code>x = t</code> leaves <code>P'(t) = Q(t)</code>, so a second Horner pass on the quotient gives the derivative. The logic test checks the value against direct evaluation, the division identity as a polynomial, and the derivative against the power rule on 500 random polynomials.</p>
+
+      <p class="tip">Try x = 0. What do the quotient and remainder tell you then?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Calculus/HornerMethod.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="horner-method-core.js"></script>
+<script src="horner-method.js"></script>
+</body>
+</html>

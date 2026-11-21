@@ -332,6 +332,10 @@ const GAMES = {
     await page.fill("#wInput", "12");
     await page.locator("#wInput").press("Enter");
   },
+  "horner-method": async (page) => {
+    await page.fill("#tInput", "3");
+    await page.locator("#tInput").press("Enter");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

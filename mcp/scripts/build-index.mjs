@@ -328,6 +328,7 @@ const CORE_GLOBALS = {
   "huntington-hill-method/huntington-hill-method-core.js": ["HuntingtonHillMethodCore"],
   "hilbert-curve/hilbert-curve-core.js": ["HilbertCurveCore"],
   "hooper-paradox/hooper-paradox-core.js": ["HooperParadoxCore"],
+  "horner-method/horner-method-core.js": ["HornerMethodCore"],
 };
 
 const games = [];

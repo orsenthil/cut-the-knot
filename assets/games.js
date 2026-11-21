@@ -1064,6 +1064,14 @@ window.COOLMATHS = {
       level: 1,
     },
     {
+      slug: "horner-method",
+      title: "Horner's Method",
+      blurb: "Evaluate a polynomial with one repeated multiply-and-add, and discover that the quotient it gives away is also the derivative.",
+      tags: ["algebra", "algorithms", "arithmetic"],
+      kind: "demo",
+      level: 2,
+    },
+    {
       slug: "color-graph",
       title: "Graph Coloring",
       blurb: "Six graphs, ten colours: can you colour every node so that neighbours differ, using as few colours as you can?",
