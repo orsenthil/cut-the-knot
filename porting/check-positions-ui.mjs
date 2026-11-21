@@ -414,6 +414,7 @@ const GAMES = {
   "curry-paradox": (page) => page.locator('[data-piece="0"]').focus().then(() => page.keyboard.press("Enter")),
   "distance-to-line": (page) => page.check("#normBox"),
   "distributive-law": (page) => page.click("#cutCol"),
+  "divisibility": (page) => page.locator("button.digit").first().click(),
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

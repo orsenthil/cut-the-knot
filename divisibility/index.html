@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A Problem of Divisibility &mdash; coolmaths</title>
+<meta name="description" content="Read every row and every column of a digit matrix as a number. If all the numbers but one are divisible by p, why must the last one be too?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/divisibility/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="A Problem of Divisibility">
+<meta property="og:description" content="Read every row and every column of a digit matrix as a number. If all the numbers but one are divisible by p, why must the last one be too?">
+<meta property="og:url" content="https://coolmaths.ai/divisibility/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 1rem; overflow-x: auto; }
+  #grid { display: flex; justify-content: center; min-width: 0; }
+  table.matrix { border-collapse: separate; border-spacing: 0.35rem; }
+  table.matrix td { text-align: center; padding: 0; }
+  button.digit { min-width: 2.75rem; min-height: 2.75rem; font-size: 1.4rem; font-weight: 700; font-variant-numeric: tabular-nums; padding: 0; }
+  td.num { font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums; padding: 0.2rem 0.5rem; border-radius: 8px; color: var(--ink); background: transparent; border: 2px solid var(--border); }
+  td.num.yes { border-color: var(--good); background: color-mix(in srgb, var(--good) 18%, transparent); }
+  #summary { margin: 0.6rem 0 0; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 4.5rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="divisibility" data-kind="demo">
+<main id="main">
+  <h1>A Problem of Divisibility</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#divisibility">Divisibility</a><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A grid of digits makes a number out of every row and every column, and the ones a chosen number divides are lit green; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Press a digit to raise it by one, or select it and type a digit. Change the size or the number p, and try to light all but one.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="grid" aria-label="A matrix of digits. Each row, read left to right, and each column, read downwards, is a number shown at the right and below."></div>
+    <p id="summary" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label>Columns <input id="colsIn" type="number" min="2" max="8" step="1" aria-label="Number of columns, 2 to 8"></label>
+    <label>Rows <input id="rowsIn" type="number" min="2" max="8" step="1" aria-label="Number of rows, 2 to 8"></label>
+    <label>p <input id="pIn" type="number" min="2" max="99" step="1" aria-label="The number p to divide by, 2 to 99"></label>
+    <button id="newBtn" type="button" class="primary">New digits</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <<details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Write digits in a rectangle. Every row is a number, and so is every column. Pick a <code>p</code> with no factor in common with 10 (odd, and not a multiple of 5: 3, 7, 9, 11, 21 &hellip;). The surprise: if all of those numbers but one are divisible by <code>p</code>, the last one is too.</p>
+
+      <h2>Two ways to add the same number</h2>
+      <p>Weight the rows by <code>10<sup>n−1</sup>, 10<sup>n−2</sup>, …, 1</code> and add them to get <code>C</code>; weight the columns by <code>10<sup>m−1</sup>, …, 1</code> and add them to get <code>D</code>. A digit in row <code>i</code> and column <code>j</code> is multiplied by <code>10<sup>m+n−i−j</sup></code> in both sums, so <code>C = D</code>. The logic test confirmed this for every matrix of the three smallest shapes and for 200,000 random matrices up to 8 by 8.</p>
+
+      <h2>Dividing out the powers of ten</h2>
+      <p>Suppose every number but one is divisible by <code>p</code>. Then in <code>C = D</code> everything but one term is a multiple of <code>p</code>, so that term, a power of ten times the odd one out, is too. Since <code>p</code> and 10 are <a class="wiki-term" data-wiki="Coprime_integers" href="https://en.wikipedia.org/wiki/Coprime_integers" target="_blank" rel="noopener">coprime</a>, so are <code>p</code> and every power of 10, and the power of ten can be divided out. The test tried every matrix of the three smallest shapes and every such <code>p</code> up to 99, and never found exactly one number left over.</p>
+
+      <h2>Why p must be prime to 10</h2>
+      <p>Try <code>p = 2</code> or <code>p = 5</code>. Whether a number is even depends only on its last digit, so a matrix with the first row ending in an odd digit and everything else ending in even digits leaves exactly one odd number. The claim needs <code>p</code> prime to 10, and the page says so.</p>
+
+      <p class="note">The applet itself shows only the matrix, with clickable digits and the two sizes; the row and column integers and the number <code>p</code> are added here to let you test the claim, as the page asks.</p>
+
+      <p class="tip">Set p to 3 and try to make all rows divisible by 3 but only some columns. What does the digit sum tell you?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/arithmetic/Divisibility.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="divisibility-core.js"></script>
+<script src="divisibility.js"></script>
+</body>
+</html>

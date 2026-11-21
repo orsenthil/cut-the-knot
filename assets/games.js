@@ -1111,5 +1111,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "divisibility",
+      title: "A Problem of Divisibility",
+      blurb: "Read every row and every column of a digit matrix as a number. If all the numbers but one are divisible by p, why must the last one be too?",
+      tags: ["divisibility", "number-theory", "algebra"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

@@ -1202,6 +1202,14 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("distributive-law: 4*5 cut after two columns reads 4*2+4*3", p.written === "4*2+4*3" && p.value === 20 && p.pieces === 2 && p.cutsToGo === 18 && p.finished === false);
 }
 
+// Divisibility: rows and columns as integers.
+{
+  const p = at("divisibility", { rows: 2, cols: 3, p: 3, digits: [[1, 2, 3], [4, 5, 6]], moves: 1, explored: true });
+  check("divisibility: 123, 456 and 14, 25, 36 with p = 3: three are divisible", p.divisibleCount === 3 && p.total === 5 && p.primeTo10 === true && p.exactlyOneLeftOver === false);
+  const q = at("divisibility", { rows: 2, cols: 2, p: 2, digits: [[0, 1], [0, 0]], moves: 3, explored: true });
+  check("divisibility: with p = 2 one odd number can be left over, since 2 is not prime to 10", q.exactlyOneLeftOver === true && q.primeTo10 === false);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

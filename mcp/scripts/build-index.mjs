@@ -298,6 +298,7 @@ const CORE_GLOBALS = {
   "delian/delian-core.js": ["DelianCore"],
   "distance-to-line/distance-to-line-core.js": ["DistanceToLineCore"],
   "distributive-law/distributive-law-core.js": ["DistributiveLawCore"],
+  "divisibility/divisibility-core.js": ["DivisibilityCore"],
 };
 
 const games = [];
