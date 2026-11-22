@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Counting Primes &mdash; coolmaths</title>
+<meta name="description" content="How many primes are there up to x? Gauss guessed x / ln x, then a better curve, Li(x). How close does the true count stay, and how big may the error be?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/prime-counting/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Counting Primes">
+<meta property="og:description" content="How many primes are there up to x? Gauss guessed x / ln x, then a better curve, Li(x). How close does the true count stay, and how big may the error be?">
+<meta property="og:url" content="https://coolmaths.ai/prime-counting/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.8rem; }
+  #chart { width: 100%; height: auto; display: block; }
+  .readout { white-space: pre-line; font-family: var(--mono); font-size: 0.85rem; margin: 0.6rem 0 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: min(14rem, 60vw); accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="prime-counting" data-kind="demo">
+<main id="main">
+  <h1>Counting Primes</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#limits">Limits</a><a class="tag" href="../index.html#riemann-hypothesis">Riemann Hypothesis</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Count the prime numbers, and see how well a smooth curve can guess the count.<br>
+    <strong>How to play:</strong> Slide to see more numbers. Switch to the error view to see how far each guess is from the truth.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="chart" width="640" height="400" aria-label="Chart of the number of primes up to x with two smooth guesses, or the size of their errors"></canvas>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label><input id="viewCount" type="radio" name="view" checked> How many</label>
+    <label><input id="viewError" type="radio" name="view"> Error</label>
+    <label><input id="gaussCheck" type="checkbox"> Include x / ln x</label>
+    <label>Numbers up to <input id="e" type="range" min="1" max="6" step="0.05" value="3" aria-label="Largest x, from 10 to 1,000,000"> <output id="xOut">1,000</output></label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The primes look random, but their <em>count</em> is remarkably smooth. How smooth is exactly the question the Riemann Hypothesis answers.</p>
+
+      <h2>Two guesses</h2>
+      <p>Let <code>π(x)</code> be the number of primes up to <code>x</code>. Around 1792 the teenage Gauss guessed that primes near <code>x</code> have density <code>1 / ln x</code>, so <code>π(x)</code> is close to <code>x / ln x</code>. Adding up the density gives a better curve, the <a class="wiki-term" data-wiki="Logarithmic_integral_function" href="https://en.wikipedia.org/wiki/Logarithmic_integral_function" target="_blank" rel="noopener">logarithmic integral</a> <code>Li(x)</code>, the integral of <code>1 / ln t</code> from 2 to <code>x</code>. The <a class="wiki-term" data-wiki="Prime_number_theorem" href="https://en.wikipedia.org/wiki/Prime_number_theorem" target="_blank" rel="noopener">prime number theorem</a> says the ratio <code>π(x) / (x / ln x)</code> tends to 1. The test confirmed it is falling towards 1 along 10³ … 10⁶, but very slowly (1.08 at a million).</p>
+
+      <h2>How big is the error?</h2>
+      <p>Switch to the error view. Li(x) stays within a few hundred of the truth at a million, while x / ln x is off by thousands. The test confirmed that Li(x) is slightly <em>above</em> π(x) at every sampled x from 20 to a million. The Riemann Hypothesis is <em>equivalent</em> to a statement about this error: <code>|π(x) − li(x)| &lt; √x · ln x / (8π)</code> for all <code>x ≥ 2657</code>. The yellow band is that allowance, and the test confirmed the true error stays inside it at every x up to a million.</p>
+
+      <h2>Why the hypothesis matters</h2>
+      <p>A proof of the <a class="wiki-term" data-wiki="Riemann_hypothesis" href="https://en.wikipedia.org/wiki/Riemann_hypothesis" target="_blank" rel="noopener">Riemann Hypothesis</a> would show the primes are about as regular as a random set can be. Without it, the best proven error bounds are much weaker than the square-root band. The reason zeros of the zeta function control this error is the subject of the last two pages.</p>
+
+      <p class="tip">Set the range to a million and tick "Include x / ln x" in the error view. Why does the guess that looked fine on the first view look so bad here?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original demo for coolmaths, after
+    <a class="wiki-term" data-wiki="Bernhard_Riemann" href="https://en.wikipedia.org/wiki/Bernhard_Riemann" target="_blank" rel="noopener">Bernhard Riemann</a>'s 1859 paper
+    (<a href="https://en.wikipedia.org/wiki/Riemann_hypothesis" target="_blank" rel="noopener">Wikipedia</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="prime-counting-core.js"></script>
+<script src="prime-counting.js"></script>
+</body>
+</html>
