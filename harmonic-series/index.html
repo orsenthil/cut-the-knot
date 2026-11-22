@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Harmonic Series &mdash; coolmaths</title>
+<meta name="description" content="The terms 1, 1/2, 1/3, 1/4, … shrink towards nothing, yet the sum never stops growing. How can that be, and how slowly does it creep upward?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/harmonic-series/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Harmonic Series">
+<meta property="og:description" content="The terms 1, 1/2, 1/3, 1/4, … shrink towards nothing, yet the sum never stops growing. How can that be, and how slowly does it creep upward?">
+<meta property="og:url" content="https://coolmaths.ai/harmonic-series/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.8rem; }
+  #chart { width: 100%; height: auto; display: block; }
+  .readout { white-space: pre-line; font-family: var(--mono); font-size: 0.85rem; margin: 0.6rem 0 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: min(14rem, 60vw); accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="harmonic-series" data-kind="demo">
+<main id="main">
+  <h1>The Harmonic Series</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#series">Infinite Series</a><a class="tag" href="../index.html#limits">Limits</a><a class="tag" href="../index.html#riemann-hypothesis">Riemann Hypothesis</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Add 1 + 1/2 + 1/3 + 1/4 + … forever. Does it ever stop growing?<br>
+    <strong>How to play:</strong> Slide to add more and more terms. The purple line is the sum; the dashed line is a staircase that is always below it.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="chart" width="640" height="400" aria-label="The harmonic sum against the number of terms on a logarithmic scale: a nearly straight rising line above a dashed staircase"></canvas>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Terms <input id="e" type="range" min="0" max="6" step="0.05" value="2" aria-label="How many terms to add, from 1 to 1,000,000"> <output id="nOut">100</output></label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The terms 1, 1/2, 1/3, … get as small as you like, so it is tempting to think the sum must settle down. It does not.</p>
+
+      <h2>Oresme's grouping</h2>
+      <p>Around 1350 Nicole Oresme grouped the terms: <code>1/3 + 1/4 &gt; 1/4 + 1/4 = 1/2</code>, <code>1/5 + … + 1/8 &gt; 4 · 1/8 = 1/2</code>, and so on. The block from <code>2^(k−1)+1</code> to <code>2^k</code> has <code>2^(k−1)</code> terms, each at least <code>1/2^k</code>, so it adds at least ½. Therefore <code>H(2^k) ≥ 1 + k/2</code>, which has no upper limit. The logic test checked every block up to <code>k = 19</code>, and that <code>H(n)</code> is never a whole number for <code>2 ≤ n ≤ 300</code>, using exact fractions.</p>
+
+      <h2>Slowly, like a logarithm</h2>
+      <p>Each doubling of <code>n</code> adds about <code>ln 2 ≈ 0.69</code>, because <code>H(n)</code> is close to <code>ln n + γ</code> where <code>γ = 0.5772…</code> is <a class="wiki-term" data-wiki="Euler–Mascheroni_constant" href="https://en.wikipedia.org/wiki/Euler%E2%80%93Mascheroni_constant" target="_blank" rel="noopener">Euler's constant</a>. The test confirmed the gap stays between <code>1/(2n+2)</code> and <code>1/(2n)</code> up to a million. That is why 12,367 terms are needed to pass 10 and a million only reach 14.39.</p>
+
+      <h2>The pole of the zeta function</h2>
+      <p>The sum <code>1 + 2^−s + 3^−s + …</code> is the <a class="wiki-term" data-wiki="Riemann_zeta_function" href="https://en.wikipedia.org/wiki/Riemann_zeta_function" target="_blank" rel="noopener">zeta function</a> for <code>s &gt; 1</code>. At <code>s = 1</code> it is the harmonic series, so ζ(s) blows up as <code>s</code> comes down to 1, like <code>1/(s − 1)</code>. This is the only place the function is infinite, and Euler's product turns it into the fact that there are infinitely many primes. The <a class="wiki-term" data-wiki="Riemann_hypothesis" href="https://en.wikipedia.org/wiki/Riemann_hypothesis" target="_blank" rel="noopener">Riemann Hypothesis</a> is about where ζ is zero; this page is about where it is infinite.</p>
+
+      <p class="tip">Which takes longer: going from 10 terms to 100, or from 100 to 1,000? Compare how far the line rises.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original demo for coolmaths, after
+    <a class="wiki-term" data-wiki="Bernhard_Riemann" href="https://en.wikipedia.org/wiki/Bernhard_Riemann" target="_blank" rel="noopener">Bernhard Riemann</a>'s 1859 paper
+    (<a href="https://en.wikipedia.org/wiki/Riemann_hypothesis" target="_blank" rel="noopener">Wikipedia</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="harmonic-series-core.js"></script>
+<script src="harmonic-series.js"></script>
+</body>
+</html>

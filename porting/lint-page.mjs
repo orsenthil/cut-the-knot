@@ -54,6 +54,14 @@ const EXEMPT = {
     checks: ["byline"],
     why: "an original demo for the Riemann Hypothesis path, not a port, so there is no cut-the-knot page to cite",
   },
+  "harmonic-series": {
+    checks: ["byline"],
+    why: "an original demo for the Riemann Hypothesis path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "basel-problem": {
+    checks: ["byline"],
+    why: "an original demo for the Riemann Hypothesis path, not a port, so there is no cut-the-knot page to cite",
+  },
 };
 
 function readCatalogue() {

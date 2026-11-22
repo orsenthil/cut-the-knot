@@ -1591,6 +1591,22 @@ window.COOLMATHS = {
       level: 1,
     },
     {
+      slug: "harmonic-series",
+      title: "The Harmonic Series",
+      blurb: "The terms 1, 1/2, 1/3, 1/4, … shrink towards nothing, yet the sum never stops growing. How can that be, and how slowly does it creep upward?",
+      tags: ["series", "limits", "riemann-hypothesis"],
+      kind: "demo",
+      level: 2,
+    },
+    {
+      slug: "basel-problem",
+      title: "The Basel Problem",
+      blurb: "Add 1 + 1/4 + 1/9 + 1/16 + … and the sum settles on a number involving π. How quickly does it get there, and why is it π²/6?",
+      tags: ["series", "limits", "riemann-hypothesis"],
+      kind: "demo",
+      level: 2,
+    },
+    {
       slug: "other-primes",
       title: "Other Primes",
       blurb: "List every odd composite number in one table with no step-by-step sieve, and the primes are exactly the numbers that never appear. Which numbers are missing, and why?",

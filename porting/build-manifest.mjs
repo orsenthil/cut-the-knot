@@ -108,6 +108,8 @@ const SLUG_FALLBACK_URL = {
   "prime-counting": null,
   "zeta-critical-line": null,
   "prime-waves": null,
+  "harmonic-series": null,
+  "basel-problem": null,
 };
 
 /* ----------------------------------------------------------- classification */
