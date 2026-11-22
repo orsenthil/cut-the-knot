@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Square Sieve &mdash; coolmaths</title>
+<meta name="description" content="Step k flips the colour of every multiple of k. After all the steps, which numbers are red? Look at a number's divisors, and the answer pops out.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/square-sieve/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Square Sieve">
+<meta property="og:description" content="Step k flips the colour of every multiple of k. After all the steps, which numbers are red? Look at a number's divisors, and the answer pops out.">
+<meta property="og:url" content="https://coolmaths.ai/square-sieve/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.8rem; }
+  #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(2.6rem, 1fr)); gap: 0.25rem; }
+  .num { display: flex; align-items: center; justify-content: center; min-height: 2.6rem; font-family: var(--mono); font-size: 0.85rem; border: 1px solid var(--border); border-radius: 0.3rem; color: var(--accent); background: var(--card); }
+  .num.red { color: var(--bad); font-weight: 700; border-radius: 50%; border: 2px solid var(--bad); }
+  .num.flipped { background: var(--highlight); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="number"] { width: 5.5rem; font: inherit; padding: 0.2rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="square-sieve" data-kind="demo">
+<main id="main">
+  <h1>Square Sieve</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#divisibility">Divisibility</a><a class="tag" href="../index.html#riemann-hypothesis">Riemann Hypothesis</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Flip the colours of numbers again and again, then see which ones end up red.<br>
+    <strong>How to play:</strong> Press the step button: it flips every number in the times table of its step number. Keep pressing until the steps run out.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="grid" aria-label="The numbers, blue or red"></div>
+  </div>
+
+  <div class="controls">
+    <button id="stepBtn" type="button" class="primary">Step 1</button>
+    <button id="finishBtn" type="button">Do all the steps</button>
+    <label>N <input id="n" type="number" min="5" max="250" value="50" aria-label="Largest number, 5 to 250"></label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Flipping a switch twice puts it back, so each number's final colour depends only on whether the number of flips is odd or even.</p>
+
+      <h2>Divisors come in pairs</h2>
+      <p>Number <code>m</code> is flipped on step <code>k</code> exactly when <code>k</code> divides <code>m</code>. So the number of flips is the number of <a class="wiki-term" data-wiki="Divisor" href="https://en.wikipedia.org/wiki/Divisor" target="_blank" rel="noopener">divisors</a> of <code>m</code>. Divisors pair up as <code>m = a × b</code>, and the flips from steps <code>a</code> and <code>b</code> cancel. The only divisor without a partner is <code>a = b</code>, which happens only when <code>m = a²</code>.</p>
+
+      <h2>The red numbers are the squares</h2>
+      <p>So after all <code>N</code> steps exactly 1, 4, 9, 16, … are red. The logic test confirmed this for every <code>N</code> from 5 to 250, and that a number never changes after its own step. The applet's flipping rule (step <code>m</code> touches indexes <code>m, 2m, 3m, …</code>) is the same as the one tested. This is also the locker puzzle: students open and close lockers, and only the perfect-square lockers end open.</p>
+
+      <h2>A link to the Riemann Hypothesis</h2>
+      <p>This sieve counts divisors, and the divisor-counting function is one of the sums behind the <a class="wiki-term" data-wiki="Riemann_zeta_function" href="https://en.wikipedia.org/wiki/Riemann_zeta_function" target="_blank" rel="noopener">zeta function</a>, which is what the <a class="wiki-term" data-wiki="Riemann_hypothesis" href="https://en.wikipedia.org/wiki/Riemann_hypothesis" target="_blank" rel="noopener">Riemann Hypothesis</a> is about. How many divisors a number has, on average, is tied to how regular the primes are.</p>
+
+      <p class="tip">Set N to 250 and press "Do all the steps". Count the red numbers: how many squares are there up to 250?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/SquareSieve.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="square-sieve-core.js"></script>
+<script src="square-sieve.js"></script>
+</body>
+</html>

@@ -1598,5 +1598,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "square-sieve",
+      title: "Square Sieve",
+      blurb: "Step k flips the colour of every multiple of k. After all the steps, which numbers are red? Look at a number's divisors, and the answer pops out.",
+      tags: ["number-theory", "divisibility", "riemann-hypothesis"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
