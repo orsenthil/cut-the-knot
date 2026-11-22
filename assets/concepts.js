@@ -50,6 +50,7 @@ window.COOLMATHS_CONCEPTS = {
   "limits": { label: "Limits", prereqs: ["area", "series"] },
   "physics": { label: "Physics", prereqs: ["algebra"] },
   "complex-analysis": { label: "Complex Analysis", prereqs: ["algebra"] },
+  "riemann-hypothesis": { label: "Riemann Hypothesis", prereqs: ["number-theory", "series", "complex-analysis"] },
   "differential-equations": { label: "Differential Equations", prereqs: ["algebra", "series"] },
   "fluid-dynamics": { label: "Fluid Dynamics", prereqs: ["differential-equations", "physics"] },
 };

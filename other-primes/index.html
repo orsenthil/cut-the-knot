@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Other Primes &mdash; coolmaths</title>
+<meta name="description" content="List every odd composite number in one table with no step-by-step sieve, and the primes are exactly the numbers that never appear. Which numbers are missing, and why?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/other-primes/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Other Primes">
+<meta property="og:description" content="List every odd composite number in one table with no step-by-step sieve, and the primes are exactly the numbers that never appear. Which numbers are missing, and why?">
+<meta property="og:url" content="https://coolmaths.ai/other-primes/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.8rem; overflow-x: auto; }
+  #grid { display: grid; grid-template-columns: repeat(var(--dim, 10), minmax(2.75rem, 1fr)); gap: 2px; width: max-content; min-width: 100%; }
+  .cell { font-family: var(--mono); font-size: 0.8rem; min-height: 2.75rem; padding: 0.1rem; border: 1px solid var(--border); border-radius: 0.3rem; background: var(--card); color: var(--text); cursor: pointer; }
+  .cell.line { background: var(--highlight); }
+  .cell.on { background: var(--accent); color: var(--accent-ink, #fff); border-color: var(--accent); font-weight: 700; }
+  .cell:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+  .readout { margin: 0.6rem 0 0; font-size: 0.9rem; color: var(--muted); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="number"] { width: 5rem; font: inherit; padding: 0.2rem; border: 1px solid var(--border-strong); border-radius: 0.35rem; background: var(--card); color: var(--text); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="other-primes" data-kind="demo">
+<main id="main">
+  <h1>Other Primes</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#divisibility">Divisibility</a><a class="tag" href="../index.html#riemann-hypothesis">Riemann Hypothesis</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Find the numbers that never show up in a big table, and see why they are the primes.<br>
+    <strong>How to play:</strong> Pick any cell to see where it comes from, switch between the two views, and make the table bigger.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="grid" aria-label="Table of numbers n"></div>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label><input id="showN" type="radio" name="view" value="n" checked> Show n</label>
+    <label><input id="showX" type="radio" name="view" value="x"> Show x</label>
+    <label>Table size <input id="dim" type="number" min="2" max="30" value="10" aria-label="Table dimension, 2 to 30"></label>
+    <button id="newBtn" type="button">Redraw</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The <a class="wiki-term" data-wiki="Sieve_of_Eratosthenes" href="https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes" target="_blank" rel="noopener">sieve of Eratosthenes</a> crosses out composites step by step. This table writes them all down at once, and the primes are what is left over.</p>
+
+      <h2>A multiplication table in disguise</h2>
+      <p>Row <code>i</code> (counting from 0) starts at <code>4 + 3i</code> and grows by <code>3 + 2i</code>, so the cell in row <code>i</code>, column <code>j</code> holds <code>n = 4 + 3i + j(3 + 2i)</code>. Then <code>x = 2n + 1 = (2i + 3)(2j + 3)</code>: the "Show x" view is the multiplication table of the odd numbers 3, 5, 7, … Row one lists the odd multiples of 3 (from 9), row two those of 5 (from 15), and so on.</p>
+
+      <h2>Why the theorem holds</h2>
+      <p>An odd <code>x &gt; 2</code> is composite exactly when it is a product of two odd numbers that are both at least 3, which is exactly when it sits in the "x" table. So <code>x</code> is prime exactly when <code>n = (x − 1) / 2</code> is missing from the "n" table. The logic test checked this against trial division for every odd <code>x</code> a 30 × 30 table can decide. A table only holds products of odd numbers up to <code>2·size + 1</code>, so a small table can miss a big composite such as 3 × 101 = 303; it never wrongly rules out a prime.</p>
+
+      <h2>Why this matters for primes</h2>
+      <p>Counting the holes in the table is counting <a class="wiki-term" data-wiki="Prime_number" href="https://en.wikipedia.org/wiki/Prime_number" target="_blank" rel="noopener">primes</a>. The holes thin out in an irregular but statistical way, and how irregular is what the <a class="wiki-term" data-wiki="Riemann_hypothesis" href="https://en.wikipedia.org/wiki/Riemann_hypothesis" target="_blank" rel="noopener">Riemann Hypothesis</a> is about.</p>
+
+      <p class="tip">Make the table 30 × 30 in the "n" view and look for the biggest gaps between missing numbers.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/OtherPrimes.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="other-primes-core.js"></script>
+<script src="other-primes.js"></script>
+</body>
+</html>

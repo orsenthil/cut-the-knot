@@ -40,6 +40,7 @@ window.COOLMATHS = {
     "limits": "Limits",
     "physics": "Physics",
     "complex-analysis": "Complex Analysis",
+    "riemann-hypothesis": "Riemann Hypothesis",
     "differential-equations": "Differential Equations",
     "fluid-dynamics": "Fluid Dynamics",
   },
@@ -1588,6 +1589,14 @@ window.COOLMATHS = {
       tags: ["arithmetic", "algorithms", "counting"],
       kind: "demo",
       level: 1,
+    },
+    {
+      slug: "other-primes",
+      title: "Other Primes",
+      blurb: "List every odd composite number in one table with no step-by-step sieve, and the primes are exactly the numbers that never appear. Which numbers are missing, and why?",
+      tags: ["number-theory", "divisibility", "riemann-hypothesis"],
+      kind: "demo",
+      level: 2,
     },
   ],
 };
