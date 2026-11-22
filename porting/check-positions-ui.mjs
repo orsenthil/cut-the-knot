@@ -4,7 +4,7 @@
 /*
  * Browser test: the games that report their position really save one.
  *
- *   NODE_PATH=$(npm root -g) node porting/check-positions-ui.mjs [--update]
+ *   NODE_PATH=$(npm root -g) node porting/check-positions-ui.mjs [--update] [--only <slug>]
  *
  * Opens each page, makes a move where that is one click, and reads the
  * position Track saved. It must be for that game and have the same fields,
@@ -22,6 +22,8 @@ import { join } from "node:path";
 import { serveRepo, launch, REPO } from "./lib/browser.mjs";
 
 const update = process.argv.includes("--update");
+// --only <slug> checks one game (handy when repeating a flaky one).
+const only = process.argv.includes("--only") ? process.argv[process.argv.indexOf("--only") + 1] : null;
 
 /** slug -> one move to make before reading the position (optional). */
 const GAMES = {
@@ -606,12 +608,27 @@ function shape(value) {
   return typeof value;
 }
 
+/**
+ * Whether two shapes agree. An empty list says nothing about what it would
+ * hold, so it agrees with any list: a random deal can leave a list empty on
+ * one run (no joints of one colour, say) and full on the next.
+ */
+function sameShape(a, b) {
+  if (Array.isArray(a) && Array.isArray(b)) return !a.length || !b.length || sameShape(a[0], b[0]);
+  if (a && b && typeof a === "object" && typeof b === "object" && !Array.isArray(a) && !Array.isArray(b)) {
+    const ka = Object.keys(a).sort(), kb = Object.keys(b).sort();
+    return ka.length === kb.length && ka.every((k, i) => k === kb[i] && sameShape(a[k], b[k]));
+  }
+  return a === b;
+}
+
 const { server, port } = await serveRepo();
 const browser = await launch();
 let failed = false;
 
 try {
   for (const [slug, move] of Object.entries(GAMES)) {
+    if (only && slug !== only) continue;
     const context = await browser.newContext({ viewport: { width: 700, height: 900 } });
     const page = await context.newPage();
     const errors = [];
@@ -635,7 +652,8 @@ try {
       const saved = JSON.parse(readFileSync(file, "utf8"));
       // Maps keyed by ids that change every deal are compared as "an object".
       const loose = (s) => JSON.stringify(s, (key, v) => (key === "placements" || key === "occupied" ? "map" : v));
-      if (loose(shape(saved.state)) !== loose(shape(live.state))) {
+      const strip = (v) => JSON.parse(loose(v));
+      if (!sameShape(strip(shape(saved.state)), strip(shape(live.state)))) {
         problems.push(`the saved position changed shape:\n  was ${loose(shape(saved.state))}\n  now ${loose(shape(live.state))}`);
       }
       if (saved.stateVersion !== live.stateVersion) problems.push("stateVersion changed");
