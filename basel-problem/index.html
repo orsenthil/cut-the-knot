@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Basel Problem &mdash; coolmaths</title>
+<meta name="description" content="Add 1 + 1/4 + 1/9 + 1/16 + … and the sum settles on a number involving π. How quickly does it get there, and why is it π²/6?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/basel-problem/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Basel Problem">
+<meta property="og:description" content="Add 1 + 1/4 + 1/9 + 1/16 + … and the sum settles on a number involving π. How quickly does it get there, and why is it π²/6?">
+<meta property="og:url" content="https://coolmaths.ai/basel-problem/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.8rem; }
+  #chart { width: 100%; height: auto; display: block; }
+  .readout { white-space: pre-line; font-family: var(--mono); font-size: 0.85rem; margin: 0.6rem 0 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: min(14rem, 60vw); accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="basel-problem" data-kind="demo">
+<main id="main">
+  <h1>The Basel Problem</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#series">Infinite Series</a><a class="tag" href="../index.html#limits">Limits</a><a class="tag" href="../index.html#riemann-hypothesis">Riemann Hypothesis</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Add 1 + 1/4 + 1/9 + 1/16 + … and watch the total settle on one exact number.<br>
+    <strong>How to play:</strong> Slide to add more terms. Compare the purple line (squares) with the grey one (no squares), which never stops climbing.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="chart" width="640" height="400" aria-label="Partial sums of one over k squared flattening against pi squared over six, with the harmonic sum climbing off the top"></canvas>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Terms <input id="e" type="range" min="0" max="5" step="0.05" value="1" aria-label="How many terms to add, from 1 to 100,000"> <output id="nOut">10</output></label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Squaring the denominators turns the divergent harmonic series into one with a limit, and a famous one. This was the <a class="wiki-term" data-wiki="Basel_problem" href="https://en.wikipedia.org/wiki/Basel_problem" target="_blank" rel="noopener">Basel problem</a>, open for almost a century until Euler solved it in 1735.</p>
+
+      <h2>It converges</h2>
+      <p>For <code>k ≥ 2</code>, <code>1/k² &lt; 1/(k−1) − 1/k</code>, and these differences telescope, so <code>S(n) &lt; 2 − 1/n</code> and the sum has a limit below 2. The test confirmed the bound, that the sum only increases, and that it stays under π²/6, for every <code>n</code> up to 100,000.</p>
+
+      <h2>It is π²/6</h2>
+      <p>Euler's limit is <code>π²/6 = 1.6449…</code>. The same method gives every even power: <code>ζ(4) = π⁴/90</code>, <code>ζ(6) = π⁶/945</code>, and in general <code>ζ(2k)</code> is a rational multiple of <code>π^(2k)</code> through <a class="wiki-term" data-wiki="Bernoulli_number" href="https://en.wikipedia.org/wiki/Bernoulli_number" target="_blank" rel="noopener">Bernoulli numbers</a>. The test checked <code>k = 1</code> to <code>6</code> against direct sums. No such formula is known for odd powers like ζ(3).</p>
+
+      <h2>How fast, and a faster way</h2>
+      <p>The tail after <code>n</code> terms is about <code>1/n</code>, so <code>n × error</code> tends to 1 (the test saw 0.64, 0.95, 0.995, … along powers of ten). That is slow: ten digits would take ten billion terms. But the tail is much closer to <code>1/(n + ½)</code>, and the test confirmed that <code>S(n) + 1/(n + ½)</code> is within <code>1/(12n³)</code> of π²/6, a tiny fraction of the error. This is the idea behind <a class="wiki-term" data-wiki="Euler–Maclaurin_formula" href="https://en.wikipedia.org/wiki/Euler%E2%80%93Maclaurin_formula" target="_blank" rel="noopener">Euler–Maclaurin summation</a>, which the zeta pages use to compute ζ at complex numbers.</p>
+
+      <h2>Towards the zeta function</h2>
+      <p>This is <code>ζ(2)</code> in the <a class="wiki-term" data-wiki="Riemann_zeta_function" href="https://en.wikipedia.org/wiki/Riemann_zeta_function" target="_blank" rel="noopener">Riemann zeta function</a>, the sum of <code>1/n^s</code>. Power 1 diverges (the harmonic series); power 2 converges to π²/6. The <a class="wiki-term" data-wiki="Riemann_hypothesis" href="https://en.wikipedia.org/wiki/Riemann_hypothesis" target="_blank" rel="noopener">Riemann Hypothesis</a> asks about the same function for complex <code>s</code>.</p>
+
+      <p class="tip">Add 10 terms, then 100. How many more correct digits did the factor of ten buy? And how many does the corrected line gain?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original demo for coolmaths, after
+    <a class="wiki-term" data-wiki="Bernhard_Riemann" href="https://en.wikipedia.org/wiki/Bernhard_Riemann" target="_blank" rel="noopener">Bernhard Riemann</a>'s 1859 paper
+    (<a href="https://en.wikipedia.org/wiki/Riemann_hypothesis" target="_blank" rel="noopener">Wikipedia</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="basel-problem-core.js"></script>
+<script src="basel-problem.js"></script>
+</body>
+</html>
