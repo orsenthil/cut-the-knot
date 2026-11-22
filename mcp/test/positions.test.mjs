@@ -143,6 +143,14 @@ check("life-like-automaton: HighLife was chosen", read["life-like-automaton"]?.r
 check("logistic-model: the growth rate was changed", read["logistic-model"]?.r === 3.5 && read["logistic-model"].period !== null);
 check("lone-divider: the default division was solved", read["lone-divider"]?.solved === true && read["lone-divider"].n === 4);
 check("long-multiplication: compact was turned off", read["long-multiplication"]?.compact === false && read["long-multiplication"].sum === 17503);
+check("other-primes: the x view, with 11 and 13 found by being missing", read["other-primes"]?.view.startsWith("x") && read["other-primes"].primesFoundByMissingNumbers.includes(11) && read["other-primes"].primesFoundByMissingNumbers.includes(13));
+check("square-sieve: three steps done, 4 not yet decided correctly", read["square-sieve"]?.stepsDone === 3 && read["square-sieve"].nextStep === 4 && read["square-sieve"].finished === false);
+check("euler-product: s = 2 sum and product close to pi^2/6", Math.abs(read["euler-product"]?.zeta - Math.PI ** 2 / 6) < 1e-9 && read["euler-product"].sumOverAllNumbers < read["euler-product"].zeta && read["euler-product"].productOverPrimes < read["euler-product"].zeta);
+check("prime-counting: the page saved a range with Li above the true count", read["prime-counting"]?.primesUpToX > 1000 && read["prime-counting"].Li > read["prime-counting"].primesUpToX);
+check("zeta-critical-line: the page jumped to the first zero", read["zeta-critical-line"]?.onCriticalLine === true && Math.abs(read["zeta-critical-line"].nearestZeroOnLine - 14.134725) < 1e-4 && read["zeta-critical-line"].distanceFromOrigin < 0.05);
+check("prime-waves: ten zeros added", read["prime-waves"]?.zerosUsed === 10 && Math.abs(read["prime-waves"].latestZero - 49.773832) < 1e-5);
+check("harmonic-series: the sum is a little under ln n + 1", read["harmonic-series"]?.sum > read["harmonic-series"].oresmeBound && Math.abs(read["harmonic-series"].sum - read["harmonic-series"].lnNPlusGamma) < 0.01);
+check("basel-problem: the sum is under pi^2/6 and n x error is below 1", read["basel-problem"]?.sum < Math.PI ** 2 / 6 && read["basel-problem"].nTimesError < 1);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1663,6 +1671,26 @@ const at = (slug, state) => describePosition(slug, state, 1);
 {
   const board = at("long-multiplication", { a: 23, b: 761, compact: true });
   check("long-multiplication: the page's example gives 17503", board.sum === 17503 && board.correct === true);
+}
+
+// The Riemann Hypothesis path.
+{
+  const t = at("other-primes", { dim: 10, showX: false });
+  check("other-primes: the odd primes up to 21 are the numbers missing from a 10x10 table", [3, 5, 7, 11, 13, 17, 19].every((p) => t.primesFoundByMissingNumbers.includes(p)) && !t.primesFoundByMissingNumbers.includes(9) && !t.primesFoundByMissingNumbers.includes(21));
+  const q = at("square-sieve", { n: 50, next: 51, red: [] });
+  check("square-sieve: all steps done leaves the squares red", q.finished === true && q.red.join() === "1,4,9,16,25,36,49");
+  const e = at("euler-product", { s: 1, n: 100 });
+  check("euler-product: s = 1 has no limit", e.zeta === null && e.gapSum === null);
+  const p = at("prime-counting", { x: 1000000, view: "error" });
+  check("prime-counting: 78498 primes up to a million, inside the hypothesis band", p.primesUpToX === 78498 && p.errorWithinHypothesisBand === true && p.view === "error");
+  const z = at("zeta-critical-line", { sigma: 0.5, t: 50 });
+  check("zeta-critical-line: 10 zeros below t = 50 are counted", z.zerosBelowT === 10 && Math.abs(z.nearestZeroOnLine - 49.773832) < 1e-4);
+  const w0 = at("prime-waves", { k: 0, x: 60, flat: false }), w100 = at("prime-waves", { k: 100, x: 60, flat: false });
+  check("prime-waves: 100 zeros fit the staircase far better than none", w100.meanErrorAgainstTrueCount < w0.meanErrorAgainstTrueCount / 3);
+  const h = at("harmonic-series", { n: 1000000 });
+  check("harmonic-series: a million terms give 14.39", Math.abs(h.sum - 14.3927267) < 1e-6);
+  const b = at("basel-problem", { n: 100 });
+  check("basel-problem: the corrected sum is far closer than the plain one", Math.abs(b.correctedError) < Math.abs(b.error) / 1000);
 }
 
 // A game with no reader, and a position that makes no sense.

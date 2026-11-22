@@ -436,6 +436,30 @@ const GAMES = {
   "long-multiplication": async (page) => {
     await page.uncheck("#compactCheck");
   },
+  "other-primes": async (page) => {
+    await page.check("#showX");
+  },
+  "square-sieve": async (page) => {
+    for (let i = 0; i < 3; i++) await page.click("#stepBtn");
+  },
+  "euler-product": async (page) => {
+    await page.locator("#n").evaluate((el) => { el.value = 120; el.dispatchEvent(new Event("input", { bubbles: true })); });
+  },
+  "prime-counting": async (page) => {
+    await page.locator("#e").evaluate((el) => { el.value = 4; el.dispatchEvent(new Event("input", { bubbles: true })); });
+  },
+  "zeta-critical-line": async (page) => {
+    await page.click("#nextBtn");
+  },
+  "prime-waves": async (page) => {
+    await page.locator("#k").evaluate((el) => { el.value = 10; el.dispatchEvent(new Event("input", { bubbles: true })); });
+  },
+  "harmonic-series": async (page) => {
+    await page.locator("#e").evaluate((el) => { el.value = 3; el.dispatchEvent(new Event("input", { bubbles: true })); });
+  },
+  "basel-problem": async (page) => {
+    await page.locator("#e").evaluate((el) => { el.value = 2; el.dispatchEvent(new Event("input", { bubbles: true })); });
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

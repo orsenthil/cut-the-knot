@@ -359,6 +359,14 @@ const CORE_GLOBALS = {
   "logistic-model/logistic-model-core.js": ["LogisticModelCore"],
   "lone-divider/lone-divider-core.js": ["LoneDividerCore"],
   "long-multiplication/long-multiplication-core.js": ["LongMultiplicationCore"],
+  "other-primes/other-primes-core.js": ["OtherPrimesCore"],
+  "square-sieve/square-sieve-core.js": ["SquareSieveCore"],
+  "euler-product/euler-product-core.js": ["EulerProductCore"],
+  "prime-counting/prime-counting-core.js": ["PrimeCountingCore"],
+  "zeta-critical-line/zeta-critical-line-core.js": ["ZetaCriticalLineCore"],
+  "prime-waves/prime-waves-core.js": ["PrimeWavesCore"],
+  "harmonic-series/harmonic-series-core.js": ["HarmonicSeriesCore"],
+  "basel-problem/basel-problem-core.js": ["BaselProblemCore"],
 };
 
 const games = [];
