@@ -104,6 +104,10 @@ const SLUG_FALLBACK_URL = {
   "vanishing-digit": "https://www.cut-the-knot.org/Curriculum/Magic/VanishingDigit.shtml",
   "maths-quiz": "https://www.cut-the-knot.org/arithmetic/rapid/index.shtml",
   euler2d: null, // ported from xscreensaver, not from cut-the-knot
+  "euler-product": null, // original demo for the Riemann Hypothesis path
+  "prime-counting": null,
+  "zeta-critical-line": null,
+  "prime-waves": null,
 };
 
 /* ----------------------------------------------------------- classification */

@@ -38,6 +38,22 @@ const EXEMPT = {
     checks: ["byline"],
     why: "ported from xscreensaver/hacks/euler2d.c, so there is no cut-the-knot page to cite",
   },
+  "euler-product": {
+    checks: ["byline"],
+    why: "an original demo for the Riemann Hypothesis path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "prime-counting": {
+    checks: ["byline"],
+    why: "an original demo for the Riemann Hypothesis path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "zeta-critical-line": {
+    checks: ["byline"],
+    why: "an original demo for the Riemann Hypothesis path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "prime-waves": {
+    checks: ["byline"],
+    why: "an original demo for the Riemann Hypothesis path, not a port, so there is no cut-the-knot page to cite",
+  },
 };
 
 function readCatalogue() {
