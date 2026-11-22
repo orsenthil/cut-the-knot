@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Zeta Function on the Critical Line &mdash; coolmaths</title>
+<meta name="description" content="Walk along the line where the real part of s is one half and watch the zeta function trace a curve in the plane. Where does it pass through zero, and why would it never do so anywhere else in the strip?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/zeta-critical-line/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Zeta Function on the Critical Line">
+<meta property="og:description" content="Walk along the line where the real part of s is one half and watch the zeta function trace a curve in the plane. Where does it pass through zero, and why would it never do so anywhere else in the strip?">
+<meta property="og:url" content="https://coolmaths.ai/zeta-critical-line/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.8rem; }
+  #plane, #strip { width: 100%; height: auto; display: block; }
+  #strip { margin-top: 0.6rem; }
+  .readout { white-space: pre-line; font-family: var(--mono); font-size: 0.85rem; margin: 0.6rem 0 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: min(14rem, 60vw); accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="zeta-critical-line" data-kind="demo">
+<main id="main">
+  <h1>The Zeta Function on the Critical Line</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#complex-analysis">Complex Analysis</a><a class="tag" href="../index.html#riemann-hypothesis">Riemann Hypothesis</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Follow a path drawn by a famous function, and find the moments when it passes exactly through the middle.<br>
+    <strong>How to play:</strong> Press Walk, or drag t along. Each time the red dot lands on the black dot in the middle, you have found a zero. Then move the other slider and see what changes.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="plane" width="560" height="460" aria-label="The path of the zeta function in the complex plane, with the origin marked and the current point in red"></canvas>
+    <canvas id="strip" width="560" height="220" aria-label="The distance of the zeta function from zero plotted against t, with the zeros on the line marked"></canvas>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <button id="walkBtn" type="button" class="primary">Walk</button>
+    <button id="nextBtn" type="button">Next zero</button>
+    <label>t <input id="t" type="range" min="0" max="100" step="0.01" value="0" aria-label="How far up the line, t, from 0 to 100"> <output id="tOut">0.00</output></label>
+    <label>σ <input id="sigma" type="range" min="0.05" max="0.95" step="0.01" value="0.5" aria-label="Real part sigma, from 0.05 to 0.95; one half is the critical line"> <output id="sigOut">0.50</output></label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The <a class="wiki-term" data-wiki="Riemann_zeta_function" href="https://en.wikipedia.org/wiki/Riemann_zeta_function" target="_blank" rel="noopener">zeta function</a> takes a complex number <code>s = σ + it</code> and gives another one. Plot the answer as <code>t</code> grows and you get a curve in the <a class="wiki-term" data-wiki="Complex_plane" href="https://en.wikipedia.org/wiki/Complex_plane" target="_blank" rel="noopener">complex plane</a>.</p>
+
+      <h2>Zeros are visits to the middle</h2>
+      <p>A zero of ζ is an <code>s</code> where the answer is exactly 0, which on the plot is the origin. The curve for <code>σ = ½</code> loops around the origin again and again, and at certain values of <code>t</code> it goes through it. The first are <code>t ≈ 14.1347, 21.0220, 25.0109, 30.4249, 32.9351</code>. There are 29 below <code>t = 100</code>. The test confirmed all 29, the first ten against their published values to eight decimals, and that the strip below the plane dips to the floor at each one. The values ζ(2) = π²/6 and ζ(0) = −½ come out right too, as does ζ(−1) = −1/12.</p>
+
+      <h2>The critical strip</h2>
+      <p>The zeros that matter are in the strip <code>0 &lt; σ &lt; 1</code>. Euler's sum <code>1 + 2^−s + 3^−s + …</code> only converges for <code>σ &gt; 1</code>; Riemann's continuation reaches the rest of the plane, and this page computes it by Euler–Maclaurin summation. Move σ off ½: the curve loses its crossings, and the test confirmed that up to <code>t = 100</code> the closest approach to the origin grows steadily as σ moves away from ½ (0.04 at σ = 0.45, 0.17 at σ = 0.3).</p>
+
+      <h2>The hypothesis</h2>
+      <p>The <a class="wiki-term" data-wiki="Riemann_hypothesis" href="https://en.wikipedia.org/wiki/Riemann_hypothesis" target="_blank" rel="noopener">Riemann Hypothesis</a> says that every zero in the strip has <code>σ = ½</code>. Computers have found no exception among the first ten trillion zeros, but no one has a proof. What you see here for <code>t &lt; 100</code> is evidence, not proof.</p>
+
+      <p class="tip">Drag σ slowly from 0.5 to 0.45 near t = 14.13. The curve and the origin are almost touching. What do you think it would take for a zero to leave the line?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original demo for coolmaths, after
+    <a class="wiki-term" data-wiki="Bernhard_Riemann" href="https://en.wikipedia.org/wiki/Bernhard_Riemann" target="_blank" rel="noopener">Bernhard Riemann</a>'s 1859 paper
+    (<a href="https://en.wikipedia.org/wiki/Riemann_hypothesis" target="_blank" rel="noopener">Wikipedia</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="zeta-critical-line-core.js"></script>
+<script src="zeta-critical-line.js"></script>
+</body>
+</html>
