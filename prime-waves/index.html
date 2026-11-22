@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Primes from the Zeros &mdash; coolmaths</title>
+<meta name="description" content="Add the zeros of the zeta function one at a time, each a wave, and a smooth curve turns into the staircase that counts the primes. Can you hear the primes in the zeros?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/prime-waves/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Primes from the Zeros">
+<meta property="og:description" content="Add the zeros of the zeta function one at a time, each a wave, and a smooth curve turns into the staircase that counts the primes. Can you hear the primes in the zeros?">
+<meta property="og:url" content="https://coolmaths.ai/prime-waves/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.8rem; }
+  #chart { width: 100%; height: auto; display: block; }
+  .key { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; margin: 0.4rem 0 0; font-size: 0.85rem; color: var(--muted); }
+  .key i { display: inline-block; width: 1.4rem; height: 0.3rem; border-radius: 0.15rem; vertical-align: middle; margin-right: 0.35rem; }
+  .readout { font-size: 0.9rem; margin: 0.6rem 0 0; color: var(--muted); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: min(14rem, 60vw); accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="prime-waves" data-kind="demo">
+<main id="main">
+  <h1>Primes from the Zeros</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#complex-analysis">Complex Analysis</a><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#riemann-hypothesis">Riemann Hypothesis</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Make waves add up to a staircase that climbs at every prime number.<br>
+    <strong>How to play:</strong> Press "Add zeros" and watch the smooth green line learn where the primes are. Slide to add or remove zeros yourself.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="chart" width="640" height="420" aria-label="A staircase that steps up at each prime power, and a smooth curve built from waves that bends towards it as more zeros are added"></canvas>
+    <p class="key"><span><i style="background: var(--accent)"></i>Counting primes (ψ)</span><span><i style="background: var(--good)"></i>Built from the zeros</span></p>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <button id="playBtn" type="button" class="primary">Add zeros</button>
+    <label>Zeros <input id="k" type="range" min="0" max="100" step="1" value="0" aria-label="How many zeros to use, from 0 to 100"> <output id="kOut">0</output></label>
+    <label>Numbers up to <input id="xmax" type="range" min="20" max="200" step="1" value="50" aria-label="Largest number, from 20 to 200"> <output id="xOut">50</output></label>
+    <label><input id="flat" type="checkbox"> Flatten (subtract x)</label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This is why the zeros of the zeta function matter: each one is a wave, and together the waves spell out the primes. Riemann found this in 1859.</p>
+
+      <h2>A staircase for the primes</h2>
+      <p>Chebyshev's function <code>ψ(x)</code> adds <code>ln p</code> each time <code>x</code> passes a prime power <code>p^k</code>, so it is a staircase with steps at 2, 3, 4, 5, 7, 8, 9, … It is also <code>ln lcm(1, 2, …, x)</code>; the test confirmed this up to 40. By the prime number theorem, <code>ψ(x)</code> is close to <code>x</code>.</p>
+
+      <h2>Riemann's explicit formula</h2>
+      <p>Riemann's <a class="wiki-term" data-wiki="Explicit_formulae_(L-function)" href="https://en.wikipedia.org/wiki/Explicit_formulae_(L-function)" target="_blank" rel="noopener">explicit formula</a> says <code>ψ(x) = x − Σ x^ρ/ρ − ln 2π − ½ ln(1 − x⁻²)</code>, summed over the zeros <code>ρ = ½ + iγ</code> of the zeta function. A pair <code>½ ± iγ</code> gives the real wave <code>−2√x · (½ cos(γ ln x) + γ sin(γ ln x)) / (¼ + γ²)</code>. The test confirmed the real form against complex arithmetic, that the 100 zeros used here are zeros (the 29 below 100 matched the ones found on the previous page), and that the average error against the true staircase falls steadily as zeros are added: 0.92 with none, 0.53 with 10 and 0.16 with 100.</p>
+
+      <h2>Where the hypothesis comes in</h2>
+      <p>Each wave has size about <code>√x / γ</code>. If every zero has real part ½, as the <a class="wiki-term" data-wiki="Riemann_hypothesis" href="https://en.wikipedia.org/wiki/Riemann_hypothesis" target="_blank" rel="noopener">Riemann Hypothesis</a> says, no wave can outgrow <code>√x</code>, so <code>ψ(x)</code> stays within a square-root-sized distance of <code>x</code>. The test confirmed this: <code>|ψ(x) − x| &lt; √x ln²x / (8π)</code> for every x from 74 to 20,000. A zero with real part above ½ would make a wave that grows faster than <code>√x</code> and eventually breaks this bound. Low zeros make big, slow waves; high zeros small, fast ones. You hear a drum from its overtones, and here you hear the primes from the zeros.</p>
+
+      <p class="tip">Tick "Flatten" and add zeros one by one. Which jumps does the first zero find? How does the picture sharpen when the 100th zero arrives?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original demo for coolmaths, after
+    <a class="wiki-term" data-wiki="Bernhard_Riemann" href="https://en.wikipedia.org/wiki/Bernhard_Riemann" target="_blank" rel="noopener">Bernhard Riemann</a>'s 1859 paper
+    (<a href="https://en.wikipedia.org/wiki/Riemann_hypothesis" target="_blank" rel="noopener">Wikipedia</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="prime-waves-core.js"></script>
+<script src="prime-waves.js"></script>
+</body>
+</html>
