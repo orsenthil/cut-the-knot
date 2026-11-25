@@ -1723,5 +1723,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "magic-in-square",
+      title: "Magic in a Square",
+      blurb: "Think of one number in a square of numbers and point out its column twice. The computer then names your number. How does it know?",
+      tags: ["logic", "counting", "coordinates"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };

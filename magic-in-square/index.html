@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Magic in a Square &mdash; coolmaths</title>
+<meta name="description" content="Think of one number in a square of numbers and point out its column twice. The computer then names your number. How does it know?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/magic-in-square/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Magic in a Square">
+<meta property="og:description" content="Think of one number in a square of numbers and point out its column twice. The computer then names your number. How does it know?">
+<meta property="og:url" content="https://coolmaths.ai/magic-in-square/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.8rem; text-align: center; }
+  #prompt { font-weight: 600; margin: 0 0 0.6rem; min-height: 3.2rem; }
+  #prompt .big { display: block; font-size: 2.2rem; line-height: 1.1; color: var(--accent); }
+  #square { display: grid; gap: 0.35rem; margin: 0 auto; max-width: 24rem; }
+  .cell { display: flex; align-items: center; justify-content: center; min-height: 2.7rem; border-radius: 0.5rem; background: var(--surface); border: 2px solid var(--border); font: 600 1.1rem var(--mono); }
+  .cell.found { background: var(--highlight); border-color: var(--good); }
+  .pick { min-height: 2.75rem; min-width: 2.75rem; padding: 0; border-radius: 0.5rem; border: 2px solid var(--accent); background: transparent; color: var(--accent); font: 700 1.1rem system-ui, sans-serif; cursor: pointer; }
+  .pick.chosen { background: var(--accent); color: var(--accent-ink, #fff); }
+  .pick:disabled { opacity: 0.4; cursor: default; }
+  .pick:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: min(10rem, 45vw); accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="magic-in-square" data-kind="demo">
+<main id="main">
+  <h1>Magic in a Square</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#coordinates">Coordinates</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Think of one number in the square. Tell the computer which column it is in, twice, and it will name your number.<br>
+    <strong>How to play:</strong> Pick a number in your head, then press the button under its column. The numbers move around. Find your number again and press under its new column.
+  </div>
+
+  <div id="stage" class="stage">
+    <p id="prompt" aria-live="polite"></p>
+    <div id="square" role="group" aria-label="The square of numbers, with a button under each column"></div>
+  </div>
+
+  <div class="controls">
+    <label>Square of size <input id="n" type="range" min="3" max="6" step="1" value="5" aria-label="Size of the square, from 3 to 6"> <output id="nOut">5</output></label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The trick needs no memory and no luck. It uses the way every place in a square is found: by a row and a column. The computer needs both, and it gets one with each question.</p>
+
+      <h2>Two answers, one place</h2>
+      <p>Your first answer tells it the column of your number. Then it takes each row of the square and stands it up as a column, so the numbers that were side by side are now one above another. Your number was in one of those rows, so it is in the new column that was made from its row. Your second answer says which new column that is. Column and row together are the place, and the place names the number. The test went through every size from 3 to 6, 40 random deals each and every possible number: all of them were named correctly.</p>
+
+      <h2>Hiding the secret</h2>
+      <p>Each new column holds the numbers of exactly one old row, and the test checked that each time. To confuse anyone who might notice the pattern, the computer shuffles the order inside every column before showing it. The shuffle changes nothing for the trick, since only columns matter, but a spectator can no longer see where each row went. As <a class="wiki-term" data-wiki="Martin_Gardner" href="https://en.wikipedia.org/wiki/Martin_Gardner" target="_blank" rel="noopener">Martin Gardner</a> wrote, the trick depends on the spectator not following the procedure closely.</p>
+
+      <h2>Counting</h2>
+      <p>A square of size N holds N² numbers, and each answer is one of N columns. Two answers make N × N = N² different outcomes, exactly as many as there are numbers. That is why two questions are enough, and why one question cannot be (it would only narrow N² numbers to N).</p>
+
+      <p class="tip">Try size 3, then 6. How many questions would a 4 by 4 by 4 cube of numbers need?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Magic/MagicInSquare.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="magic-in-square-core.js"></script>
+<script src="magic-in-square.js"></script>
+</body>
+</html>
