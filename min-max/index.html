@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Minimax Principle &mdash; coolmaths</title>
+<meta name="description" content="In a table of numbers, take the smallest in each row, then the biggest of those; take the largest in each column, then the smallest of those. Which of the two answers is bigger, and when are they equal?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/min-max/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Minimax Principle">
+<meta property="og:description" content="In a table of numbers, take the smallest in each row, then the biggest of those; take the largest in each column, then the smallest of those. Which of the two answers is bigger, and when are they equal?">
+<meta property="og:url" content="https://coolmaths.ai/min-max/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 44rem; padding: 0.8rem; overflow-x: auto; }
+  #grid { display: grid; gap: 0.25rem; width: max-content; margin: 0 auto; }
+  .c { min-width: 2.75rem; min-height: 2.75rem; display: flex; align-items: center; justify-content: center; border-radius: 0.4rem; font: 700 1.05rem var(--mono); padding: 0; }
+  button.c { border: 2px solid var(--border-strong); background: var(--surface); color: var(--ink); cursor: pointer; }
+  button.c.saddle { border-color: var(--good); box-shadow: 0 0 0 3px var(--good); background: var(--highlight); }
+  button.c:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .c.blue { color: #3b6fe0; border: 2px dashed #3b6fe0; background: transparent; }
+  .c.red { color: var(--bad); border: 3px solid var(--bad); background: transparent; }
+  .c.empty { visibility: hidden; }
+  #hint { font-size: 0.85rem; color: var(--muted); margin: 0.6rem 0 0; text-align: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: min(9rem, 40vw); accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="min-max" data-kind="demo">
+<main id="main">
+  <h1>The Minimax Principle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#game-strategy">Game Strategy</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A table of numbers has its row smallest and column largest numbers written beside it (in blue). Then the biggest blue number at the side and the smallest blue number underneath are written in red. Compare the two red numbers.<br>
+    <strong>How to play:</strong> Press Reset for new numbers. Press the left half of a number to make it smaller and the right half to make it bigger, to try to make the red numbers equal.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="grid" role="group" aria-label="A table of numbers. Blue numbers are the row minimums and column maximums; red numbers are MaxMin and MinMax."></div>
+    <p id="hint">Press the left half of a number to lower it, the right half to raise it. With the keyboard use the arrow keys.</p>
+  </div>
+
+  <div class="controls">
+    <label>Rows <input id="rows" type="range" min="2" max="12" step="1" value="3" aria-label="Number of rows, from 2 to 12"> <output id="rowsOut">3</output></label>
+    <label>Columns <input id="cols" type="range" min="2" max="12" step="1" value="5" aria-label="Number of columns, from 2 to 12"> <output id="colsOut">5</output></label>
+    <label>Max <input id="max" type="range" min="2" max="20" step="1" value="10" aria-label="Largest number dealt, plus one: from 2 to 20"> <output id="maxOut">10</output></label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Call the smallest number in row i by B<sub>i</sub> and the largest in column k by C<sub>k</sub>. The blue numbers are the B's (at the right) and the C's (at the bottom). Then <code>MaxMin = max B<sub>i</sub></code> and <code>MinMax = min C<sub>k</sub></code> are the two red numbers. The statement behind the applet is the <a class="wiki-term" data-wiki="Minimax_theorem" href="https://en.wikipedia.org/wiki/Minimax_theorem" target="_blank" rel="noopener">minimax principle</a> for tables: <code>MaxMin ≤ MinMax</code>, and the two are equal exactly when some entry is the largest in its column and the smallest in its row (a <a class="wiki-term" data-wiki="Saddle_point" href="https://en.wikipedia.org/wiki/Saddle_point" target="_blank" rel="noopener">saddle point</a>).</p>
+
+      <h2>Why MaxMin never exceeds MinMax</h2>
+      <p>Take the column k₀ that gives MinMax, so MinMax = C<sub>k₀</sub>, and any row i. The entry A<sub>i,k₀</sub> is at most C<sub>k₀</sub> (it is in the column) and at least B<sub>i</sub> (it is in the row). So <code>B<sub>i</sub> ≤ A<sub>i,k₀</sub> ≤ MinMax</code> for every row, and then the largest B<sub>i</sub>, which is MaxMin, is at most MinMax. The test checked it on every table with up to 3 rows and 3 columns and entries up to 3 (262,144 for 3 by 3) and on 300,000 random tables.</p>
+
+      <h2>When they are equal</h2>
+      <p>If an entry is the largest in its column and the smallest in its row, it is at least B<sub>i</sub> and at most C<sub>k</sub>, so MinMax ≤ it ≤ MaxMin, and the two are equal. Conversely, if MaxMin = B<sub>i₀</sub> and MinMax = C<sub>k₀</sub> are equal, the entry A<sub>i₀,k₀</sub> is trapped between them and equals both. When they coincide, the page frames those entries: these are the saddle points. In the test the saddle points the page lists are exactly the entries that are both, and equality happened exactly when a saddle point existed, in every table tried.</p>
+
+      <h2>Why it matters</h2>
+      <p>In a two-player game where the table gives what one player pays the other, the row player can guarantee at least MaxMin and the column player can hold the loss to at most MinMax. With a saddle point both can stop worrying: this is the best that either can do. Without one (22% of the default 3 by 5 tables have one) the players need mixed strategies, a subject for game theory.</p>
+
+      <p class="tip">At 3 by 5, press Reset ten times. Then try to turn a table without a saddle point into one with a single change of one entry.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/arithmetic/MinMax.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="min-max-core.js"></script>
+<script src="min-max.js"></script>
+</body>
+</html>

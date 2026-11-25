@@ -1793,5 +1793,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "min-max",
+      title: "The Minimax Principle",
+      blurb: "In a table of numbers, take the smallest in each row, then the biggest of those; take the largest in each column, then the smallest of those. Which of the two answers is bigger, and when are they equal?",
+      tags: ["algebra", "logic", "game-strategy"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
