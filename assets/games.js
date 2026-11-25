@@ -1896,5 +1896,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "northcotts-game",
+      title: "Northcott's Game",
+      blurb: "Each row holds one white and one black checker, and you take turns sliding them without jumping. Who can't move loses. Can you beat the computer, and what old game is hiding here?",
+      tags: ["game-strategy", "algorithms"],
+      level: 3,
+    },
   ],
 };

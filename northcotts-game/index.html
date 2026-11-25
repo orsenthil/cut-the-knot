@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Northcott's Game &mdash; coolmaths</title>
+<meta name="description" content="Each row holds one white and one black checker, and you take turns sliding them without jumping. Who can't move loses. Can you beat the computer, and what old game is hiding here?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/northcotts-game/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Northcott's Game">
+<meta property="og:description" content="Each row holds one white and one black checker, and you take turns sliding them without jumping. Who can't move loses. Can you beat the computer, and what old game is hiding here?">
+<meta property="og:url" content="https://coolmaths.ai/northcotts-game/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 44rem; padding: 0.6rem; overflow-x: auto; }
+  #board { display: grid; gap: 2px; min-width: min-content; }
+  #board .cell { aspect-ratio: 1; min-width: 1.5rem; padding: 0; border: 1px solid var(--border); border-radius: 0.3rem; background: var(--surface); display: grid; place-items: center; cursor: default; }
+  #board .cell.dark { background: var(--stage); }
+  #board .cell.target { background: var(--highlight); cursor: pointer; outline: 2px dashed var(--accent); outline-offset: -3px; }
+  /* the checkers are really white and black, in both themes */
+  #board .chip { width: 74%; height: 74%; border-radius: 50%; box-sizing: border-box; border: 2px solid #6b6f7b; }
+  #board .chip.w { background: #f6f6f8; }
+  #board .chip.b { background: #17181c; border-color: #c7cad3; }
+  #board .cell.mine { cursor: pointer; }
+  #board .cell.mine.picked .chip { box-shadow: 0 0 0 3px var(--accent); }
+  #board .cell.moved .chip { box-shadow: 0 0 0 3px var(--good); }
+  #board .cell:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+  .controls label { display: inline-flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; max-width: 100%; }
+  .controls input[type=number] { width: 4.5rem; max-width: 100%; font: inherit; }
+  #score { margin: 0.5rem 0 0; font-size: 0.95rem; }
+</style>
+</head>
+<body data-game="northcotts-game" data-kind="game">
+<main id="main">
+  <h1>Northcott's Game</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Every row has one white and one black checker. You take turns with the computer sliding a checker along its row, and whoever cannot move loses. You are white and go first.<br>
+    <strong>How to play:</strong> Press one of your white checkers, then press a square in its row to slide it there. You may not jump over the black checker.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="board" role="group" aria-label="The board: each row has a white checker (yours) and a black checker (the computer's)"></div>
+    <p id="score"></p>
+  </div>
+
+  <div class="controls">
+    <label>Width <input id="nxIn" type="number" min="11" max="20" step="1" value="11" aria-label="Board width"></label>
+    <label>Height <input id="nyIn" type="number" min="2" max="20" step="1" value="6" aria-label="Board height"></label>
+    <button id="newBtn" type="button" class="primary">Reset</button>
+    <button id="hintBtn" type="button">Show a good move</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The pieces have two colours, so it looks as if each player has different moves, which would make it a more complicated kind of game. It is in fact an old friend wearing a disguise.</p>
+
+      <h2>Nim in disguise</h2>
+      <p>In each row count the empty squares between the two checkers: that is a heap of beans. Sliding your checker toward the other one takes beans off the heap, exactly as in <a class="wiki-term" data-wiki="Nim" href="https://en.wikipedia.org/wiki/Nim" target="_blank" rel="noopener">Nim</a>. Sliding it away puts beans <em>back</em>, which Nim does not allow. But whoever moves next can slide their own checker the same distance toward it and take them off again, so the heap is the same as before and the other player faces the same position. A move like this is called reversible, and a game with such moves is a <em>bogus Nim</em>.</p>
+
+      <h2>Who wins</h2>
+      <p>As in Nim, the player about to move loses exactly when the <a class="wiki-term" data-wiki="Nim#Mathematical_theory" href="https://en.wikipedia.org/wiki/Nim#Mathematical_theory" target="_blank" rel="noopener">nim-sum</a> (the bitwise XOR) of the heaps is 0. The computer plays this way: if the nim-sum is not 0 it reduces a heap to make it 0, and if it is 0 it takes a few beans at random and hopes. The test solved the whole game on every position of boards up to 7 squares wide and 3 rows tall, including the moves that add beans, and found no position left undecided and no exception to the rule. It also let the computer play thousands of games on full-size boards: from a start with nim-sum 0 it never lost, and a player who always makes the nim-sum 0 never lost against it from any other start. The button "Show a good move" gives you that move.</p>
+
+      <h2>Why the game ends</h2>
+      <p>Each time a player adds beans the opponent can take them away again, and the beans you could add keep shrinking toward the walls, so the game cannot go on forever. If you let both players move checkers of either colour, the game would never have to end.</p>
+
+      <p class="tip">Press "Show a good move" when the board is new. If it says there is none, the computer is the one in the winning seat: just play on and hope it slips.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/recurrence/Northcott.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="northcotts-game-core.js"></script>
+<script src="northcotts-game.js"></script>
+</body>
+</html>
