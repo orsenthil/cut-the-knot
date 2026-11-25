@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Two Circles, Two Points &mdash; coolmaths</title>
+<meta name="description" content="Draw a circle of radius 1 around two points. Where can the circles cross? Never in more than two places, and that one fact already limits how many unit distances n points can have.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/two-circles-two-points/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Two Circles, Two Points">
+<meta property="og:description" content="Draw a circle of radius 1 around two points. Where can the circles cross? Never in more than two places, and that one fact already limits how many unit distances n points can have.">
+<meta property="og:url" content="https://coolmaths.ai/two-circles-two-points/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.8rem; }
+  #board { width: 100%; height: auto; display: block; touch-action: none; cursor: grab; }
+  #board:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .readout { white-space: pre-line; font-family: var(--mono); font-size: 0.9rem; margin: 0.6rem 0 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: min(12rem, 55vw); accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="two-circles-two-points" data-kind="game">
+<main id="main">
+  <h1>Two Circles, Two Points</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#graph-theory">Graph Theory</a><a class="tag" href="../index.html#unit-distance">Unit Distance Problem</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two dots each have a circle round them, one step wide. Make the circles cross in as many places as you can.<br>
+    <strong>How to play:</strong> Drag the two dots. Every place the circles cross is a spot that is exactly one step from both dots. With the keyboard, press Space to switch dots and use the arrow keys to move.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="640" height="420" tabindex="0" aria-label="Two draggable points, each with a circle of radius one around it, and dots where the circles cross. Space switches points, arrow keys move."></canvas>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Points in all <input id="n" type="range" min="2" max="200" step="1" value="9" aria-label="How many points in all"> <output id="nOut">9</output></label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>If two points are both exactly 1 from a third, the third is on both unit circles. Two <em>different</em> circles of the same radius cross in at most two places, so you will never see three. This tiny fact gives the first upper bound for the <a class="wiki-term" data-wiki="Unit_distance_graph" href="https://en.wikipedia.org/wiki/Unit_distance_graph" target="_blank" rel="noopener">unit distance problem</a>.</p>
+
+      <h2>Counting cherries</h2>
+      <p>Among n points with e unit pairs, call a point together with two of its unit neighbours a cherry. A point with d neighbours is the top of <code>d(d−1)/2</code> cherries. Each pair of points can be the two ends of at most 2 cherries (the page above shows why), so the total is at most <code>2 · n(n−1)/2 = n(n−1)</code>.</p>
+
+      <h2>Convexity does the rest</h2>
+      <p>The total of <code>d(d−1)/2</code> over all points is smallest when the degrees are equal, at 2e/n each. That gives <code>(2e/n)(2e/n − 1) ≤ 2(n−1)</code>, so</p>
+      <blockquote>e ≤ n (1 + √(8n − 7)) / 4, about n<sup>3/2</sup> / √2.</blockquote>
+      <p>The test checks the bound on every small graph with the "at most two" property and shows the known best counts (3, 5, 7, 9, 12, 14, 18 for 3 to 9 points) sit just under it. For 9 points the bound allows 20 and the truth is 18.</p>
+
+      <h2>Better than n<sup>3/2</sup></h2>
+      <p>The best proved upper bound is about n<sup>4/3</sup>, from the <a class="wiki-term" data-wiki="Crossing_number_(graph_theory)" href="https://en.wikipedia.org/wiki/Crossing_number_(graph_theory)#The_crossing_number_inequality" target="_blank" rel="noopener">crossing number inequality</a>: draw the unit circles' arcs as a graph in the plane and count its crossings in two ways. The cherries here are the same idea in its simplest form.</p>
+
+      <p class="tip">Slide the number of points up. How close does the bound come to n<sup>1.5</sup>, and how far is that from the n<sup>4/3</sup> that is known to hold?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original game for coolmaths, after a problem posed by
+    <a class="wiki-term" data-wiki="Paul_Erd%C5%91s" href="https://en.wikipedia.org/wiki/Paul_Erd%C5%91s" target="_blank" rel="noopener">Paul Erdős</a> in 1946
+    (<a href="https://en.wikipedia.org/wiki/Unit_distance_graph" target="_blank" rel="noopener">Wikipedia</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="two-circles-two-points-core.js"></script>
+<script src="two-circles-two-points.js"></script>
+</body>
+</html>

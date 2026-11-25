@@ -1662,5 +1662,12 @@ window.COOLMATHS = {
       tags: ["coordinates", "graph-theory", "unit-distance"],
       level: 1,
     },
+    {
+      slug: "two-circles-two-points",
+      title: "Two Circles, Two Points",
+      blurb: "Draw a circle of radius 1 around two points. Where can the circles cross? Never in more than two places, and that one fact already limits how many unit distances n points can have.",
+      tags: ["coordinates", "graph-theory", "unit-distance"],
+      level: 1,
+    },
   ],
 };
