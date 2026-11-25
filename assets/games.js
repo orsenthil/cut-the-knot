@@ -1731,5 +1731,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "mandel-cycle",
+      title: "Colour Cycling on the Mandelbrot Set",
+      blurb: "Paint the outside of the Mandelbrot set by how fast points fly away, then rotate the colours. The picture does not change, yet it comes alive. Why?",
+      tags: ["complex-analysis", "limits", "algorithms"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

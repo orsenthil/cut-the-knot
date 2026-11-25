@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Colour Cycling on the Mandelbrot Set &mdash; coolmaths</title>
+<meta name="description" content="Paint the outside of the Mandelbrot set by how fast points fly away, then rotate the colours. The picture does not change, yet it comes alive. Why?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/mandel-cycle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Colour Cycling on the Mandelbrot Set">
+<meta property="og:description" content="Paint the outside of the Mandelbrot set by how fast points fly away, then rotate the colours. The picture does not change, yet it comes alive. Why?">
+<meta property="og:url" content="https://coolmaths.ai/mandel-cycle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 0.8rem; text-align: center; }
+  #pic { width: 100%; max-width: 26rem; height: auto; aspect-ratio: 1; border: 2px solid var(--border-strong); border-radius: 0.5rem; background: #000; }
+  .controls fieldset { border: 0; margin: 0; padding: 0; display: inline-flex; gap: 0.25rem 0.9rem; flex-wrap: wrap; align-items: center; }
+  .controls legend { padding: 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="mandel-cycle" data-kind="demo">
+<main id="main">
+  <h1>Colour Cycling on the Mandelbrot Set</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#complex-analysis">Complex Analysis</a><a class="tag" href="../index.html#limits">Limits</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch a famous picture, the Mandelbrot set, come alive when its colours are turned round and round like a wheel.<br>
+    <strong>How to play:</strong> Press Cycle to start and Stop to pause. Choose whether the colours run in or out, and whether they go fast or slow.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="pic" width="256" height="256" aria-label="The Mandelbrot set in black, with bands of red, blue and green around it, whose colours can be cycled"></canvas>
+  </div>
+
+  <div class="controls">
+    <fieldset><legend class="sr-only">Speed</legend>
+      <label><input type="radio" name="speed" id="fast" value="fast"> Fast</label>
+      <label><input type="radio" name="speed" id="slow" value="slow" checked> Slow</label>
+    </fieldset>
+    <fieldset><legend class="sr-only">Direction</legend>
+      <label><input type="radio" name="dir" id="in" value="in"> In</label>
+      <label><input type="radio" name="dir" id="out" value="out" checked> Out</label>
+    </fieldset>
+    <button id="goBtn" type="button" class="primary">Cycle</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The black shape is the <a class="wiki-term" data-wiki="Mandelbrot_set" href="https://en.wikipedia.org/wiki/Mandelbrot_set" target="_blank" rel="noopener">Mandelbrot set</a>. The colours around it are only a label for "how soon does this point fly away", and the cycling shows that the labels are all that the colours are.</p>
+
+      <h2>How a point is coloured</h2>
+      <p>For each point <code>c</code> of the plane, start with <code>z = c</code> and repeat <code>z → z² + c</code>. If <code>|z|²</code> ever goes above 4 the point is certain to run away to infinity, and the number of rounds it took is its colour index. A point that has not escaped after 85 rounds is counted as inside the set and left black. The test compares this count with a second version for 14,400 points, and checks known points: 0, −1 and −2 stay, 1 escapes after 2 rounds, and 3 is out at once.</p>
+
+      <h2>Colour registers</h2>
+      <p>Early graphics cards kept their colours in a table of registers. A picture stored only register numbers, so changing the table recoloured the picture instantly, without redrawing a pixel. Cycling does just that: each colour takes the place of the next one in the 85-colour table (red to blue to green to black), so a point with index 20 gets the colour that index 21 had. After 85 turns the table is back where it was, which the test confirms, and turning in undoes turning out.</p>
+
+      <h2>Why it looks like flowing</h2>
+      <p>Neighbouring bands have neighbouring indices, so shifting the table moves every band's colour to the next band. The eye sees the colours travel towards the set, or away from it. The picture itself is unchanged: the black part is exactly the points that never escape, and the sampled picture gives an area of about 1.54, a little over the true 1.5066, because some points that escape later than round 85 are counted as inside.</p>
+
+      <p class="tip">Press Cycle, then switch In and Out. Which direction seems to pull the colours towards the black shape?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Magic/MandelCycle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="mandel-cycle-core.js"></script>
+<script src="mandel-cycle.js"></script>
+</body>
+</html>
