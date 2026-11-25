@@ -1676,5 +1676,13 @@ window.COOLMATHS = {
       tags: ["graph-theory", "coordinates", "unit-distance"],
       level: 2,
     },
+    {
+      slug: "sums-of-two-squares",
+      title: "Sums of Two Squares",
+      blurb: "Some numbers are a sum of two squares in many ways: 25 = 0² + 5² = 3² + 4². How many ways can you find, and what do they have to do with unit distances?",
+      tags: ["number-theory", "coordinates", "unit-distance"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

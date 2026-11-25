@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sums of Two Squares &mdash; coolmaths</title>
+<meta name="description" content="Some numbers are a sum of two squares in many ways: 25 = 0² + 5² = 3² + 4². How many ways can you find, and what do they have to do with unit distances?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/sums-of-two-squares/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Sums of Two Squares">
+<meta property="og:description" content="Some numbers are a sum of two squares in many ways: 25 = 0² + 5² = 3² + 4². How many ways can you find, and what do they have to do with unit distances?">
+<meta property="og:url" content="https://coolmaths.ai/sums-of-two-squares/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 38rem; padding: 0.8rem; }
+  #chart { width: 100%; height: auto; display: block; }
+  .readout { white-space: pre-line; font-family: var(--mono); font-size: 0.9rem; margin: 0.6rem 0 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: min(14rem, 55vw); accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="sums-of-two-squares" data-kind="demo">
+<main id="main">
+  <h1>Sums of Two Squares</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#unit-distance">Unit Distance Problem</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Pick a number and see every way to write it as one square plus another, as dots on a circle.<br>
+    <strong>How to play:</strong> Slide the number, or press the button to jump to the next number with more ways than any before.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="chart" width="640" height="460" aria-label="A circle drawn over the whole-number grid, with a dot at every grid point that lies exactly on the circle"></canvas>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Number <input id="n" type="range" min="1" max="1200" step="1" value="25" aria-label="The number n to write as a sum of two squares"> <output id="nOut">25</output></label>
+    <button id="nextBtn" type="button" class="primary">Next record</button>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A dot of the whole-number grid at <code>(a, b)</code> is on the circle of radius √n exactly when <code>a² + b² = n</code>. Counting these dots is counting the ways to write n as a <a class="wiki-term" data-wiki="Sum_of_two_squares_theorem" href="https://en.wikipedia.org/wiki/Sum_of_two_squares_theorem" target="_blank" rel="noopener">sum of two squares</a>.</p>
+
+      <h2>Jacobi's count</h2>
+      <p>Count signs and order, so that 25 = 5² + 0² gives 4 dots and 25 = 4² + 3² gives 8: that is 12 in all. In general the number of dots is <code>4 (d₁ − d₃)</code>, where d₁ and d₃ count the divisors of n that leave remainder 1 and 3 when divided by 4. The test compares this with a direct count for every n up to 1200.</p>
+
+      <h2>Primes decide it</h2>
+      <p>Factor n. If some prime that leaves remainder 3 mod 4 appears an odd number of times, there are no dots at all (3, 6, 7, 11 …). Otherwise the count is 4 times the product of <code>(e + 1)</code> over the primes <code>p ≡ 1 mod 4</code>, where e is the power of p. So 25 = 5² gives 4 · 3 = 12, and 65 = 5 · 13 gives 4 · 2 · 2 = 16. The records come from stacking small primes that are 1 mod 4: 5, 65, 325, 1105 …</p>
+
+      <h2>From dots to unit distances</h2>
+      <p>Shrink the grid by 1/√n. Every grid point then has a unit-distance neighbour for each dot on the circle, so r₂(n) of them. On a k × k piece of this grid with n picked well, the number of unit pairs is about the number of points times r₂(n), and since r₂ can be made larger than any power of log, Erdős got <code>n<sup>1 + C / log log n</sup></code> unit distances for n points. The next pages put this into practice.</p>
+
+      <p class="tip">Is there a number with a record of 20 or 28? Find out which record counts are possible, and why they all are multiples of 4.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original demo for coolmaths, on
+    <a class="wiki-term" data-wiki="Carl_Gustav_Jacob_Jacobi" href="https://en.wikipedia.org/wiki/Carl_Gustav_Jacob_Jacobi" target="_blank" rel="noopener">Jacobi</a>'s two-square theorem and
+    <a class="wiki-term" data-wiki="Paul_Erd%C5%91s" href="https://en.wikipedia.org/wiki/Paul_Erd%C5%91s" target="_blank" rel="noopener">Erdős</a>'s grid
+    (<a href="https://en.wikipedia.org/wiki/Sum_of_two_squares_theorem" target="_blank" rel="noopener">Wikipedia</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="sums-of-two-squares-core.js"></script>
+<script src="sums-of-two-squares.js"></script>
+</body>
+</html>
