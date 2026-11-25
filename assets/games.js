@@ -1832,5 +1832,13 @@ window.COOLMATHS = {
       tags: ["parity", "invariants", "algorithms"],
       level: 2,
     },
+    {
+      slug: "multiplication-table",
+      title: "The Multiplication Table",
+      blurb: "The plain decimal multiplication table from 1 to 20. It looks dull, but it is full of patterns: mirrors, squares along a diagonal, numbers that appear many times. What can you find?",
+      tags: ["arithmetic", "mental-math", "counting"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };
