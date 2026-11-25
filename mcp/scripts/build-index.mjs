@@ -375,6 +375,15 @@ const CORE_GLOBALS = {
   "unit-distance-growth/unit-distance-growth-core.js": ["UnitGrowthCore"],
   "roots-of-unity-lattice/roots-of-unity-lattice-core.js": ["RootsCore"],
   "no-equilateral-triangles/no-equilateral-triangles-core.js": ["NoEquilateralTrianglesCore"],
+  "loop-or-halt/loop-or-halt-core.js": ["LoopOrHaltCore"],
+  "magic-in-square/magic-in-square-core.js": ["MagicInSquareCore"],
+  "mandel-cycle/mandel-cycle-core.js": ["MandelCycleCore"],
+  "markers/markers-core.js": ["MarkersCore"],
+  "math-telepathy/math-telepathy-core.js": ["MathTelepathyCore"],
+  "means/means-core.js": ["MeansCore"],
+  "memory/memory-core.js": ["MemoryCore"],
+  "merlin/merlin-core.js": ["MerlinCore"],
+  "midline-in-sim-tris/midline-in-sim-tris-core.js": ["MidlineCore"],
 };
 
 const games = [];

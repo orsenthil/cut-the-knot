@@ -160,6 +160,16 @@ check("grid-spacing-dial: the best dial for 16 by 16, 976 pairs", read["grid-spa
 check("unit-distance-growth: the 36 by 36 grid, 7632 pairs", read["unit-distance-growth"]?.n === 1296 && read["unit-distance-growth"].count === 7632);
 check("roots-of-unity-lattice: m = 12, r = 3 is ahead of the grid, 1056 against 976", read["roots-of-unity-lattice"]?.points === 256 && read["roots-of-unity-lattice"].unitPairs === 1056 && read["roots-of-unity-lattice"].bestSquareGrid.count === 976 && read["roots-of-unity-lattice"].aheadOfTheGrid === true);
 check("no-equilateral-triangles: some triangle is monochromatic-countable and the note says the fewest is 1", typeof read["no-equilateral-triangles"]?.monochromaticTriangles === "number" && read["no-equilateral-triangles"].monochromaticTriangles >= 1);
+// Nine more ports, on positions saved by their own pages.
+check("loop-or-halt: the process stops with 1 first and the largest leader is in the leaders", read["loop-or-halt"]?.leaders.at(-1) === 1 && read["loop-or-halt"].leaders.includes(read["loop-or-halt"].largestLeader));
+check("magic-in-square: after one answer the first column is given", read["magic-in-square"]?.stage === 1 && read["magic-in-square"].firstColumn === 1 && read["magic-in-square"].numberNamed === null);
+check("mandel-cycle: a full start and stop of cycling", typeof read["mandel-cycle"]?.turnsOfThePalette === "number" && read["mandel-cycle"].cycling === false);
+check("markers: three players and every one served", read.markers?.players === 3 && read.markers.awards.length === 3 && new Set(read.markers.awards.map((a) => a.player)).size === 3);
+check("math-telepathy: 3, 3, 6 make the computer say 6", read["math-telepathy"]?.digitsGiven.join() === "3,3,6" && read["math-telepathy"].computersAnswer === 6 && read["math-telepathy"].pressedGuess === true);
+check("means: exponent 1 is the arithmetic mean, at least the geometric", read.means?.r === 1 && read.means.nameOfThisMean === "arithmetic mean" && read.means.arithmetic >= read.means.geometric && read.means.geometric >= read.means.harmonic);
+check("memory: one card up in Shape mode and ten pairs left", read.memory?.cardsUp === 1 && read.memory.pairsLeft === 10 && read.memory.mode === "Match Shape and Color");
+check("merlin: the plane with 3 states, a solution to the board is given", read.merlin?.states === 3 && read.merlin.geometry === "Plane" && read.merlin.pressesThatSolveIt.length === 9);
+check("midline-in-sim-tris: the first picture has DE half of CN", Math.abs(read["midline-in-sim-tris"]?.ratioDEtoCN - 0.5) < 1e-9 && read["midline-in-sim-tris"].parallel === true && read["midline-in-sim-tris"].trianglesOutward === true);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1722,6 +1732,27 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("roots-of-unity-lattice: m = 12, r = 4 is behind the grid", r.unitPairs === 2800 && r.aheadOfTheGrid === false);
   const e = at("no-equilateral-triangles", { colours: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] });
   check("no-equilateral-triangles: one colour makes all 15 monochromatic", e.monochromaticTriangles === 15);
+// The nine ports, on positions built here.
+{
+  const l = at("loop-or-halt", { n: 6, start: [3, 6, 2, 1, 5, 4], steps: 8 });
+  check("loop-or-halt: 362154 leaders 3,2,6,4,3,5,2,4,1 and 8 flips", l.leaders.join() === "3,2,6,4,3,5,2,4,1" && l.flips === 8 && l.largestLeader === 6);
+  const mq = at("magic-in-square", { n: 3, grid: [[1, 2, 3], [4, 5, 6], [7, 8, 9]], aux: [[0, 1, 2], [0, 1, 2], [0, 1, 2]], stage: 2, col: 1, row: 2 });
+  check("magic-in-square: column 2 then row 3 names 8", mq.numberNamed === 8 && mq.firstColumn === 2 && mq.secondColumn === 3);
+  const mc = at("mandel-cycle", { turns: 12, direction: "in", fast: true, running: true });
+  check("mandel-cycle: reads the cycling state", mc.turnsOfThePalette === 12 && mc.speed === "fast" && mc.cycling === true);
+  const mk = at("markers", { n: 3, markers: [[100, 250], [120, 200], [90, 300]], leftover: 0 });
+  check("markers: player 3 first (marker 90), then 2, then 1, leaving 80", mk.awards.map((a) => a.player).join() === "3,2,1" && mk.leftover === 80);
+  const mt = at("math-telepathy", { digits: [4, 5], guessed: null });
+  check("math-telepathy: 4 and 5 add to 9, so the circled digit is 9", mt.computersAnswer === 9 && mt.pressedGuess === false);
+  const mn = at("means", { values: [20, 30], r: -1, mean: 24 });
+  check("means: the harmonic mean of 20 and 30 is 24", Math.abs(mn.mean - 24) < 1e-9 && mn.nameOfThisMean === "harmonic mean");
+  const me = at("memory", { which: 7, ids: Array(20).fill(0), matched: Array(20).fill(false).map((_, i) => i < 4), showing: [], turns: 2 });
+  check("memory: four cards matched, 8 pairs left, All Ops", me.pairsLeft === 8 && me.mode === "Match Result of Operations");
+  const mr = at("merlin", { n: 3, geometry: 0, values: [1, 1, 1, 1, 0, 1, 1, 1, 1], target: [1, 1, 1, 1, 0, 1, 1, 1, 1], hint: [0, 0, 0, 0, 0, 0, 0, 0, 0], hintOn: false });
+  check("merlin: a solved board needs no presses", mr.solved === true && mr.totalPresses === 0);
+  const mi = at("midline-in-sim-tris", { A: { x: 0, y: 0 }, B: { x: 100, y: 0 }, C: { x: 0, y: 100 }, L: { x: 100, y: 100 } });
+  check("midline-in-sim-tris: any triangle and L keep DE = CN / 2", Math.abs(mi.ratioDEtoCN - 0.5) < 1e-9 && mi.parallel === true);
+}
 }
 }
 

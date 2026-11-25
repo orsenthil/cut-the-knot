@@ -483,6 +483,30 @@ const GAMES = {
     await page.locator("#r").evaluate((el) => { el.value = 3; el.dispatchEvent(new Event("input", { bubbles: true })); });
   },
   "no-equilateral-triangles": null,
+  // Nine more ports.
+  "loop-or-halt": null,
+  "magic-in-square": async (page) => {
+    await page.locator(".pick").first().click();
+  },
+  "mandel-cycle": async (page) => {
+    await page.click("#goBtn");
+    await page.click("#goBtn");
+  },
+  markers: null,
+  "math-telepathy": async (page) => {
+    for (const d of [3, 3, 6]) await page.locator("#pad button").nth(d).click();
+    await page.click("#guessBtn");
+  },
+  means: async (page) => {
+    await page.locator("#r").evaluate((el) => { el.value = 1; el.dispatchEvent(new Event("input", { bubbles: true })); });
+  },
+  memory: async (page) => {
+    await page.locator(".card").first().click();
+  },
+  merlin: async (page) => {
+    await page.locator("#board .b").first().click();
+  },
+  "midline-in-sim-tris": null,
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },
