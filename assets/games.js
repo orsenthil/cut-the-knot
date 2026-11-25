@@ -1840,5 +1840,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "mean-value-theorem",
+      title: "Rolle's and the Mean Value Theorems",
+      blurb: "Draw a curve, pick two points on it and draw the line joining them. Somewhere between them the curve has a tangent parallel to that line. Can you find it, and can you shape the curve so there are several?",
+      tags: ["curves", "limits", "algebra"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };

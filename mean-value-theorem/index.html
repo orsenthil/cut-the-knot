@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rolle's and the Mean Value Theorems &mdash; coolmaths</title>
+<meta name="description" content="Draw a curve, pick two points on it and draw the line joining them. Somewhere between them the curve has a tangent parallel to that line. Can you find it, and can you shape the curve so there are several?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/mean-value-theorem/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Rolle's and the Mean Value Theorems">
+<meta property="og:description" content="Draw a curve, pick two points on it and draw the line joining them. Somewhere between them the curve has a tangent parallel to that line. Can you find it, and can you shape the curve so there are several?">
+<meta property="og:url" content="https://coolmaths.ai/mean-value-theorem/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 42rem; padding: 0.4rem; }
+  #board { width: 100%; height: auto; display: block; touch-action: none; user-select: none; }
+  #board .axis { stroke: var(--border-strong); stroke-width: 1; }
+  #board .curve { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
+  #board .secant { stroke: #3b6fe0; stroke-width: 2.5; }
+  #board .tangent { stroke: var(--bad); stroke-width: 2.5; stroke-linecap: round; }
+  #board .tangent.par { stroke: var(--good); stroke-width: 4; }
+  #board .secant.par { stroke: var(--good); }
+  #board .knot { fill: var(--surface); stroke: var(--muted); stroke-width: 2; cursor: ns-resize; }
+  #board .endpt { fill: #3b6fe0; stroke: var(--ink); stroke-width: 2; cursor: ew-resize; }
+  #board .xpt { fill: var(--bad); stroke: var(--ink); stroke-width: 2; cursor: ew-resize; }
+  #board .xpt.par { fill: var(--good); }
+  #board .hit { fill: transparent; }
+  #board [tabindex]:focus-visible { outline: none; stroke: var(--focus); stroke-width: 4; }
+  #board text { font: 700 14px system-ui, sans-serif; fill: var(--ink); paint-order: stroke; stroke: var(--stage, var(--surface)); stroke-width: 4px; }
+  .readout { font-family: var(--mono); font-size: 0.85rem; margin: 0.5rem 0 0; white-space: pre-line; }
+</style>
+</head>
+<body data-game="mean-value-theorem" data-kind="demo">
+<main id="main">
+  <h1>Rolle's and the Mean Value Theorems</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#limits">Limits</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two blue points on a curve are joined by a straight line. Slide the red point along the curve until its tangent line points the same way as the blue line. When it does, everything turns green.<br>
+    <strong>How to play:</strong> Drag the red and blue points along the curve, or drag the small squares to change the curve. With the keyboard use the arrow keys on a focused point. Press Find c to jump to a place where the lines are parallel.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 340" role="group" aria-label="A curve with two blue points joined by a line, and a red point with its tangent line"></svg>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <button id="findBtn" type="button" class="primary">Find c</button>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The curve here is a smooth <a class="wiki-term" data-wiki="Spline_(mathematics)" href="https://en.wikipedia.org/wiki/Spline_(mathematics)" target="_blank" rel="noopener">cubic spline</a> through the eleven small squares: a function with a tangent everywhere, so the theorems apply to it.</p>
+
+      <h2>Rolle's theorem</h2>
+      <p>Take two points on a curve at the same height, and join them: the line is horizontal. Between them the curve must turn round somewhere, and at the turning point the tangent is horizontal as well, so its slope is 0. That is <a class="wiki-term" data-wiki="Rolle%27s_theorem" href="https://en.wikipedia.org/wiki/Rolle%27s_theorem" target="_blank" rel="noopener">Rolle's theorem</a>: if <code>f(a) = f(b)</code> then <code>f′(c) = 0</code> for some c between a and b. The test took thousands of random curves, found pairs of points at the same height on each, and found a point with slope 0 between them every time.</p>
+
+      <h2>The Mean Value Theorem</h2>
+      <p>Tilt the picture so the line joining A and B is horizontal and Rolle's theorem is what you get. In general: <code>f′(c) = (f(b) − f(a)) / (b − a)</code> for some c in (a, b). The page's proof subtracts the secant line <code>g(x) = f(a) + [(f(b) − f(a))/(b − a)](x − a)</code> from f. The difference f − g is zero at both ends (the test checks it) and Rolle's theorem gives a point where its slope is 0, which is exactly the equation. The test checked, for 4,000 random curves and random intervals, that at least one such c exists and that every point the page finds really has the secant's slope.</p>
+
+      <h2>How many such points?</h2>
+      <p>The theorem only says there is at least one. In the test more than half of the random curves had two or more (up to nine). Drag the small squares to make the curve wavy and press Find c repeatedly: it jumps from one to the next. And the position of c is not given by a formula: that is why the theorem is called one of pure existence. A form that is more useful in practice, due to Dieudonné and Boas, bounds the change: <code>|f(b) − f(a)| ≤ M (b − a)</code> if the slope never exceeds M in size, which the test also verified.</p>
+
+      <p class="tip">Turn the curve into a flat line by dragging all the squares to the same height. Where is c then? Then lift just one square. What changes?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Calculus/MVT.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="mean-value-theorem-core.js"></script>
+<script src="mean-value-theorem.js"></script>
+</body>
+</html>
