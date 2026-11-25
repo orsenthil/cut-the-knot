@@ -1864,5 +1864,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "signs-and-sums",
+      title: "Signs and Sums in a Sequence",
+      blurb: "Every three neighbours add up to a positive number. Can the whole row still add up to a negative one?",
+      tags: ["sequences", "algebra"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

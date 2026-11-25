@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Signs and Sums in a Sequence &mdash; coolmaths</title>
+<meta name="description" content="Every three neighbours add up to a positive number. Can the whole row still add up to a negative one?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/signs-and-sums/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Signs and Sums in a Sequence">
+<meta property="og:description" content="Every three neighbours add up to a positive number. Can the whole row still add up to a negative one?">
+<meta property="og:url" content="https://coolmaths.ai/signs-and-sums/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 42rem; padding: 1rem; overflow-x: auto; }
+  .row { display: grid; grid-template-columns: repeat(var(--n), minmax(1.75rem, 1fr)); gap: 0.25rem; align-items: center; text-align: center; min-width: min-content; }
+  .row + .row { margin-top: 0.4rem; }
+  .row-label { font-size: 0.85rem; color: var(--muted, inherit); margin: 0.6rem 0 0.2rem; }
+  .cell { font-variant-numeric: tabular-nums; font-weight: 600; padding: 0.3rem 0; border-radius: 0.4rem; font-size: 1.1rem; }
+  .cell.neg { color: var(--accent); }
+  .cell.pos { color: var(--ink); }
+  .sum { border: 1px solid var(--border); }
+  .sum.ok { border-color: var(--good); color: var(--good); }
+  .sum.no { border-color: var(--bad); color: var(--bad); }
+  .total { grid-column: 1 / -1; font-size: 1.25rem; padding: 0.5rem; border: 2px solid var(--border); }
+  .total.neg { border-color: var(--good); }
+  .step { width: 100%; min-height: 1.9rem; padding: 0; line-height: 1; }
+  .controls label { display: inline-flex; gap: 0.4rem; align-items: center; }
+  .controls select { font: inherit; }
+  .span-offset { grid-column-start: 2; }
+</style>
+</head>
+<body data-game="signs-and-sums" data-kind="demo">
+<main id="main">
+  <h1>Signs and Sums in a Sequence</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Make a row of numbers where every three neighbours add up to more than zero, but all the numbers together add up to less than zero.<br>
+    <strong>How to play:</strong> Press the little arrows over and under a number to make it bigger or smaller. Try rows of different lengths and see which ones can be done.
+  </div>
+
+  <div id="stage" class="stage" aria-label="The row of numbers, the sums of each three neighbours, and the total"></div>
+
+  <div class="controls">
+    <label>Sequence length
+      <select id="lengthSel" aria-label="Sequence length"></select>
+    </label>
+    <button id="newBtn" type="button" class="primary">New Row</button>
+    <button id="showBtn" type="button">Show me one</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>If every three neighbours add up to a positive number, it feels as if the whole row must be positive. It is, but only sometimes: the length of the row decides.</p>
+
+      <h2>When the length is a multiple of 3</h2>
+      <p>Whether <code>N</code> is a multiple of 3 is a question about <a class="wiki-term" data-wiki="Modular_arithmetic" href="https://en.wikipedia.org/wiki/Modular_arithmetic" target="_blank" rel="noopener">remainders</a>. Cut a row of <code>N = 3m</code> numbers into <code>m</code> blocks of three, one after another. Each block is positive, so the total is positive. The answer is a plain <em>no</em>. The test agrees: a search over every row of small whole numbers found none for lengths 6 and 9, and found rows for lengths 4, 5 and 7.</p>
+
+      <h2>When one or two numbers are left over</h2>
+      <p>Let the row repeat <code>a, b, c</code> with <code>a + b + c = 1</code>. Every three neighbours then add up to 1. For <code>N = 3k + 1</code> the row ends with one more <code>a</code>, so the total is <code>k + a</code>, and <code>a = -k - 1</code> (with <code>b = k</code>, <code>c = 2</code>) makes it <code>-1</code>. For <code>N = 3k + 2</code> it ends with <code>a, b</code>, so the total is <code>k + a + b</code>, and <code>(a, b, c) = (-k, -1, k + 2)</code> again gives <code>-1</code>. The page of the applet gives this construction and so does the button "Show me one"; the test checked it for every length from 4 to 60.</p>
+
+      <h2>Around a circle it is different</h2>
+      <p>If the numbers sit on a circle, there are <code>N</code> triples and each number lies in exactly three of them. Adding all the triple sums gives <code>3 &times; total</code>, so the total is positive whenever every triple is. The line "in a row" is what leaves room for a negative total: the two ends are counted fewer times than the middle.</p>
+
+      <p class="tip">Try length 7, then 8. Put a large negative number first and last, and large positive numbers in the middle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/NegPosSum.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="signs-and-sums-core.js"></script>
+<script src="signs-and-sums.js"></script>
+</body>
+</html>
