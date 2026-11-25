@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Golden Ratio in an Irregular Pentagon &mdash; coolmaths</title>
+<meta name="description" content="In a lopsided pentagon the five triangles cut off by the diagonals all have area 1. What is the area of the pentagon, and where does the golden ratio come in?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/golden-ratio-pentagon/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Golden Ratio in an Irregular Pentagon">
+<meta property="og:description" content="In a lopsided pentagon the five triangles cut off by the diagonals all have area 1. What is the area of the pentagon, and where does the golden ratio come in?">
+<meta property="og:url" content="https://coolmaths.ai/golden-ratio-pentagon/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 42rem; padding: 0.4rem; }
+  #board { width: 100%; height: auto; display: block; touch-action: none; user-select: none; }
+  #board .pent { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
+  #board .diag { stroke: var(--muted); stroke-width: 1.5; }
+  #board .ear { fill: var(--accent); fill-opacity: 0.22; stroke: none; }
+  #board .ear.e1 { fill-opacity: 0.35; }
+  #board .inner { fill: var(--highlight); fill-opacity: 0.5; stroke: var(--ink); stroke-width: 1.5; }
+  #board .helper { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 4; }
+  #board .dot { fill: var(--ink); }
+  #board .free { fill: var(--accent); stroke: var(--ink); stroke-width: 2; cursor: grab; }
+  #board .hit { fill: transparent; cursor: grab; }
+  #board [tabindex]:focus-visible { outline: none; stroke: var(--focus); stroke-width: 4; }
+  #board text { font: 700 14px system-ui, sans-serif; fill: var(--ink); paint-order: stroke; stroke: var(--stage, var(--surface)); stroke-width: 4px; pointer-events: none; }
+  .readout { font-size: 0.95rem; margin: 0.5rem 0 0; }
+  .controls label { display: inline-flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; max-width: 100%; }
+</style>
+</head>
+<body data-game="golden-ratio-pentagon" data-kind="demo">
+<main id="main">
+  <h1>Golden Ratio in an Irregular Pentagon</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Bend a lopsided five-sided shape in which the five triangles at its corners always stay the same size, and see what else stays true.<br>
+    <strong>How to play:</strong> Drag the three big dots, X, Z and D, and watch the pentagon and the numbers below change. Tick the boxes to show the corner triangles and the letters.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 340" role="group" aria-label="An irregular pentagon ABCDE with its five diagonals; the dots X, Z and D can be dragged"></svg>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label><input id="earsBox" type="checkbox" checked> Show the five triangles</label>
+    <label><input id="namesBox" type="checkbox" checked> Show names</label>
+    <button id="newBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Only one thing is asked of the pentagon: the five triangles ABC, BCD, CDE, DEA and EAB all have the same area. Everything else follows, however crooked the pentagon is.</p>
+
+      <h2>Diagonals parallel to sides</h2>
+      <p>Triangles ABC and ABE have the same area and the same base AB, so C and E are at the same height above AB: the diagonal CE is parallel to AB. The same argument works for every diagonal and the side it leaves out. The test builds 200,000 random pentagons with the applet's construction and finds all five parallelisms every time.</p>
+
+      <h2>The golden ratio and the area</h2>
+      <p>Let the diagonals BD and CE meet at M. Then ABME is a parallelogram. Call the area of BCM <code>x</code>, with the corner triangles of area 1. Because BCDE is a trapezoid, DEM also has area <code>x</code>, and comparing ratios of areas gives <code>x / (1 - x) = 1 / x</code>, that is <code>x&sup2; + x - 1 = 0</code>, so <code>x = (&radic;5 - 1)/2</code>. Then <code>BM/DM</code> is the <a class="wiki-term" data-wiki="Golden_ratio" href="https://en.wikipedia.org/wiki/Golden_ratio" target="_blank" rel="noopener">golden ratio</a> and the pentagon has area <code>3 + x = (5 + &radic;5)/2 = 3.618...</code> times one corner triangle. The numbers above the picture show these values for the pentagon you made.</p>
+
+      <h2>More of the same</h2>
+      <p>These pentagons are exactly the stretched and sheared copies (<a class="wiki-term" data-wiki="Affine_transformation" href="https://en.wikipedia.org/wiki/Affine_transformation" target="_blank" rel="noopener">affine images</a>) of a regular pentagon, which explains why nothing but the shape changes. The pentagon the diagonals make inside is of the same kind, with area 1/&phi;<sup>4</sup> of the outer one; extending the sides into a star gives five points that form another one, &phi;<sup>4</sup> times as big. The test confirms both on every random pentagon.</p>
+
+      <p class="tip">Drag X until the pentagon is as long and thin as you can make it. Is the ratio of its area to a corner triangle still 3.618?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/do_you_know/NoRegularPentagon.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="golden-ratio-pentagon-core.js"></script>
+<script src="golden-ratio-pentagon.js"></script>
+</body>
+</html>

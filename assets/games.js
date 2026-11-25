@@ -1888,5 +1888,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "golden-ratio-pentagon",
+      title: "Golden Ratio in an Irregular Pentagon",
+      blurb: "In a lopsided pentagon the five triangles cut off by the diagonals all have area 1. What is the area of the pentagon, and where does the golden ratio come in?",
+      tags: ["area", "algebra"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };
