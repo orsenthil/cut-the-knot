@@ -367,6 +367,14 @@ const CORE_GLOBALS = {
   "prime-waves/prime-waves-core.js": ["PrimeWavesCore"],
   "harmonic-series/harmonic-series-core.js": ["HarmonicSeriesCore"],
   "basel-problem/basel-problem-core.js": ["BaselProblemCore"],
+  "unit-distance-points/unit-distance-points-core.js": ["UnitDistanceCore"],
+  "two-circles-two-points/two-circles-two-points-core.js": ["TwoCirclesCore"],
+  "moser-spindle-colouring/moser-spindle-colouring-core.js": ["MoserCore"],
+  "sums-of-two-squares/sums-of-two-squares-core.js": ["TwoSquaresCore"],
+  "grid-spacing-dial/grid-spacing-dial-core.js": ["GridDialCore"],
+  "unit-distance-growth/unit-distance-growth-core.js": ["UnitGrowthCore"],
+  "roots-of-unity-lattice/roots-of-unity-lattice-core.js": ["RootsCore"],
+  "no-equilateral-triangles/no-equilateral-triangles-core.js": ["NoEquilateralTrianglesCore"],
 };
 
 const games = [];

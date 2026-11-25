@@ -151,6 +151,15 @@ check("zeta-critical-line: the page jumped to the first zero", read["zeta-critic
 check("prime-waves: ten zeros added", read["prime-waves"]?.zerosUsed === 10 && Math.abs(read["prime-waves"].latestZero - 49.773832) < 1e-5);
 check("harmonic-series: the sum is a little under ln n + 1", read["harmonic-series"]?.sum > read["harmonic-series"].oresmeBound && Math.abs(read["harmonic-series"].sum - read["harmonic-series"].lnNPlusGamma) < 0.01);
 check("basel-problem: the sum is under pi^2/6 and n x error is below 1", read["basel-problem"]?.sum < Math.PI ** 2 / 6 && read["basel-problem"].nTimesError < 1);
+// The Unit Distance path.
+check("unit-distance-points: the best four-point arrangement shown, 5 pairs", read["unit-distance-points"]?.points === 4 && read["unit-distance-points"].pairsAtUnitDistance === 5 && read["unit-distance-points"].reachedTheBest === true);
+check("two-circles-two-points: the starting dots are too far apart to share a crossing", read["two-circles-two-points"]?.crossings === 0 && read["two-circles-two-points"].pairBoundForN.n === 9 && read["two-circles-two-points"].pairBoundForN.atMost === 20);
+check("moser-spindle-colouring: one point painted, no clash, 4 colours possible", read["moser-spindle-colouring"]?.painted === 1 && read["moser-spindle-colouring"].clashes === 0 && read["moser-spindle-colouring"].solved === false && read["moser-spindle-colouring"].possibleWithThisManyColours === true);
+check("sums-of-two-squares: the page jumped to the record 65 with 16 dots", read["sums-of-two-squares"]?.n === 65 && read["sums-of-two-squares"].r2 === 16);
+check("grid-spacing-dial: the best dial for 16 by 16, 976 pairs", read["grid-spacing-dial"]?.c2 === 25 && read["grid-spacing-dial"].pairs === 976 && read["grid-spacing-dial"].atTheBest === true);
+check("unit-distance-growth: the 36 by 36 grid, 7632 pairs", read["unit-distance-growth"]?.n === 1296 && read["unit-distance-growth"].count === 7632);
+check("roots-of-unity-lattice: m = 12, r = 3 is ahead of the grid, 1056 against 976", read["roots-of-unity-lattice"]?.points === 256 && read["roots-of-unity-lattice"].unitPairs === 1056 && read["roots-of-unity-lattice"].bestSquareGrid.count === 976 && read["roots-of-unity-lattice"].aheadOfTheGrid === true);
+check("no-equilateral-triangles: some triangle is monochromatic-countable and the note says the fewest is 1", typeof read["no-equilateral-triangles"]?.monochromaticTriangles === "number" && read["no-equilateral-triangles"].monochromaticTriangles >= 1);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1691,6 +1700,29 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("harmonic-series: a million terms give 14.39", Math.abs(h.sum - 14.3927267) < 1e-6);
   const b = at("basel-problem", { n: 100 });
   check("basel-problem: the corrected sum is far closer than the plain one", Math.abs(b.correctedError) < Math.abs(b.error) / 1000);
+// The Unit Distance path, on positions built here.
+{
+  const u = at("unit-distance-points", { n: 3, points: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 0.5, y: Math.sqrt(3) / 2 }] });
+  check("unit-distance-points: a unit triangle has 3 pairs, the most for 3 points", u.pairsAtUnitDistance === 3 && u.mostPossible === 3 && u.reachedTheBest === true);
+  const u2 = at("unit-distance-points", { n: 3, points: [{ x: 0, y: 0 }, { x: 1.5, y: 0 }, { x: 0, y: 2 }] });
+  check("unit-distance-points: points not 1 apart have none", u2.pairsAtUnitDistance === 0 && u2.reachedTheBest === false);
+  const t = at("two-circles-two-points", { a: { x: 0, y: 0 }, b: { x: 1, y: 0 }, crossings: 2, n: 100 });
+  check("two-circles-two-points: unit-apart centres cross twice; 100 points allow at most 729", t.crossings === 2 && t.pairBoundForN.atMost === 729);
+  const m = at("moser-spindle-colouring", { k: 3, colours: [0, 1, 2, 0, 0, 1, 2], clashes: 0 });
+  check("moser-spindle-colouring: 3 colours are impossible, this try has clashes", m.possibleWithThisManyColours === false && m.solved === false);
+  const m4 = at("moser-spindle-colouring", { k: 4, colours: cores["moser-spindle-colouring"].MoserCore.solve(4), clashes: 0 });
+  check("moser-spindle-colouring: a full proper 4-colouring is solved", m4.solved === true && m4.clashes === 0);
+  const s2 = at("sums-of-two-squares", { n: 1105, r2: 32, ways: [] });
+  check("sums-of-two-squares: 1105 has 32 dots", s2.r2 === 32 && s2.factorisation.length === 3);
+  const g = at("grid-spacing-dial", { k: 16, c2: 65 });
+  check("grid-spacing-dial: c2 = 65 gives 912, not the best", g.pairs === 912 && g.atTheBest === false && g.best.c2 === 25);
+  const gr = at("unit-distance-growth", { k: 64 });
+  check("unit-distance-growth: 64 by 64 is 33080 pairs, under the ceiling", gr.count === 33080 && gr.count < gr.provedCeiling);
+  const r = at("roots-of-unity-lattice", { m: 12, r: 4 });
+  check("roots-of-unity-lattice: m = 12, r = 4 is behind the grid", r.unitPairs === 2800 && r.aheadOfTheGrid === false);
+  const e = at("no-equilateral-triangles", { colours: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] });
+  check("no-equilateral-triangles: one colour makes all 15 monochromatic", e.monochromaticTriangles === 15);
+}
 }
 
 // A game with no reader, and a position that makes no sense.

@@ -1670,6 +1670,14 @@ window.COOLMATHS = {
       level: 1,
     },
     {
+      slug: "no-equilateral-triangles",
+      title: "No Equilateral Triangles",
+      blurb: "Ten dots sit in a triangular grid, and each is orange or red. Can you colour them so that no three dots of one colour form an equilateral triangle?",
+      tags: ["logic", "coordinates", "unit-distance"],
+      kind: "demo",
+      level: 2,
+    },
+    {
       slug: "moser-spindle-colouring",
       title: "Colour the Moser Spindle",
       blurb: "Seven points, eleven pairs exactly one step apart. Paint the points so that two points one step apart never share a colour: how few colours can you use?",
@@ -1706,14 +1714,6 @@ window.COOLMATHS = {
       tags: ["complex-analysis", "unit-distance", "number-theory"],
       kind: "demo",
       level: 3,
-    },
-    {
-      slug: "no-equilateral-triangles",
-      title: "No Equilateral Triangles",
-      blurb: "Ten dots sit in a triangular grid, and each is orange or red. Can you colour them so that no three dots of one colour form an equilateral triangle?",
-      tags: ["logic", "coordinates", "unit-distance"],
-      kind: "demo",
-      level: 2,
     },
   ],
 };

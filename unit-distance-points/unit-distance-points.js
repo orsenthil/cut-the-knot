@@ -51,7 +51,7 @@
     draw();
     if (!revealed && c >= target) say(`Yes! ${c} pairs for ${n} points, the most there can be.`, "win");
     else if (!revealed) say("", null);
-    if (typeof Track !== "undefined" && Track.state) Track.state({ n, points: pts.map((p) => ({ x: +p.x.toFixed(4), y: +p.y.toFixed(4) })), pairs: c, target });
+    if (typeof Track !== "undefined" && Track.state) Track.state({ n, points: pts.map((p) => ({ x: p.x, y: p.y })), pairs: c, target });
   }
 
   function reset(newN) {

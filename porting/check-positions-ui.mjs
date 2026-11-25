@@ -462,6 +462,27 @@ const GAMES = {
   "basel-problem": async (page) => {
     await page.locator("#e").evaluate((el) => { el.value = 2; el.dispatchEvent(new Event("input", { bubbles: true })); });
   },
+  // The Unit Distance path.
+  "unit-distance-points": async (page) => {
+    await page.click("#showBtn");
+  },
+  "two-circles-two-points": null,
+  "moser-spindle-colouring": async (page) => {
+    await page.locator(".node").first().click();
+  },
+  "sums-of-two-squares": async (page) => {
+    await page.click("#nextBtn");
+  },
+  "grid-spacing-dial": async (page) => {
+    await page.click("#showBtn");
+  },
+  "unit-distance-growth": async (page) => {
+    await page.locator("#k").evaluate((el) => { el.value = 36; el.dispatchEvent(new Event("input", { bubbles: true })); });
+  },
+  "roots-of-unity-lattice": async (page) => {
+    await page.locator("#r").evaluate((el) => { el.value = 3; el.dispatchEvent(new Event("input", { bubbles: true })); });
+  },
+  "no-equilateral-triangles": null,
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },
