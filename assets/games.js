@@ -1872,5 +1872,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "newtons-method",
+      title: "Newton's Method",
+      blurb: "Draw the tangent, slide down it to the axis, and repeat. How quickly do the lines home in on where a curve crosses zero, and when do they fly off instead?",
+      tags: ["curves", "limits", "algebra"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };

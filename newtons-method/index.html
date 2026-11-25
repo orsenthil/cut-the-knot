@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Newton's Method &mdash; coolmaths</title>
+<meta name="description" content="Draw the tangent, slide down it to the axis, and repeat. How quickly do the lines home in on where a curve crosses zero, and when do they fly off instead?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/newtons-method/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Newton's Method">
+<meta property="og:description" content="Draw the tangent, slide down it to the axis, and repeat. How quickly do the lines home in on where a curve crosses zero, and when do they fly off instead?">
+<meta property="og:url" content="https://coolmaths.ai/newtons-method/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 42rem; padding: 0.4rem; }
+  #board { width: 100%; height: auto; display: block; touch-action: none; user-select: none; cursor: crosshair; }
+  #board .axis { stroke: var(--border-strong); stroke-width: 1; }
+  #board .curve { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
+  #board .drop { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .tangent { stroke: var(--bad); stroke-width: 2.2; stroke-linecap: round; }
+  #board .tangent.last { stroke: var(--good); }
+  #board .pt { fill: var(--accent); stroke: var(--ink); stroke-width: 1.5; }
+  #board .pt.start { fill: var(--highlight); }
+  #board .knot { fill: var(--surface); stroke: var(--muted); stroke-width: 2; cursor: ns-resize; }
+  #board .hit { fill: transparent; cursor: ns-resize; }
+  #board [tabindex]:focus-visible { outline: none; stroke: var(--focus); stroke-width: 4; }
+  .readout { font-family: var(--mono); font-size: 0.85rem; margin: 0.5rem 0 0; white-space: pre-line; }
+  .controls input[type=number] { width: 5rem; max-width: 100%; font: inherit; }
+  .controls label { display: inline-flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; max-width: 100%; }
+  #heron { width: 100%; box-sizing: border-box; max-width: 42rem; margin-top: 1rem; padding: 0.8rem 1rem; }
+  #heron h2 { font-size: 1.05rem; margin: 0 0 0.5rem; }
+  #heronOut { font-family: var(--mono); font-size: 0.85rem; white-space: pre; overflow-x: auto; margin: 0.5rem 0 0; }
+</style>
+</head>
+<body data-game="newtons-method" data-kind="demo">
+<main id="main">
+  <h1>Newton's Method</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#limits">Limits</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Pick a starting place on the curve and watch straight lines walk you down to where the curve crosses the line in the middle.<br>
+    <strong>How to play:</strong> Click anywhere on the picture to choose where to start (click again to clear). Change how many steps to draw. Tick "Show points" to see little squares you can drag to bend the curve.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 340" role="group" aria-label="A curve crossing a horizontal axis, with the straight lines of Newton's method walking toward where it crosses"></svg>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Start at x <input id="x0In" type="number" min="-5" max="5" step="0.1" aria-label="Starting x"></label>
+    <label>Steps <input id="nIn" type="number" min="1" max="10" step="1" value="1" aria-label="Number of steps"></label>
+    <label><input id="pts" type="checkbox"> Show points</label>
+    <button id="clearBtn" type="button">Clear start</button>
+    <button id="newBtn" type="button" class="primary">Reset curve</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <section id="heron" class="stage" aria-label="Square roots by Newton's method">
+    <h2>Square roots: the page's example</h2>
+    <div class="controls">
+      <label>Find the square root of <input id="hN" type="number" min="1" max="100000" step="1" value="2" aria-label="Number whose square root to find"></label>
+      <label>start <input id="hX" type="number" min="0.001" step="0.5" value="1" aria-label="Starting guess"></label>
+      <label>steps <input id="hS" type="number" min="1" max="12" step="1" value="6" aria-label="Number of steps"></label>
+    </div>
+    <pre id="heronOut" aria-live="polite"></pre>
+  </section>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Newton's method turns "solve <code>f(x) = 0</code>" into a string of easy problems: where does a straight line meet the axis? The surprise is how fast it works when it works, and how badly it can fail.</p>
+
+      <h2>The tangent trick</h2>
+      <p>At <code>x<sub>n</sub></code> the <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> to the graph is <code>y = f(x<sub>n</sub>) + (x - x<sub>n</sub>) f'(x<sub>n</sub>)</code>. It meets the axis at <code>x<sub>n+1</sub> = x<sub>n</sub> - f(x<sub>n</sub>) / f'(x<sub>n</sub>)</code>. On this page the curve is a cubic spline through eleven points, and its slope at each point is the spline's own derivative.</p>
+
+      <h2>Square roots</h2>
+      <p>With <code>f(x) = x&sup2; - N</code> the step becomes <code>x<sub>n+1</sub> = (x<sub>n</sub> + N/x<sub>n</sub>)/2</code>, the average of a guess and <code>N</code> divided by the guess: Heron's method. The table above reproduces the page's figures to the last digit (1, 1.5, 1.4166666666666665, 1.4142156862745097, ...), and the fractions 3/2, 17/12, 577/408 are exact. After the first step every guess is at least <code>&radic;N</code>, by the arithmetic-geometric mean inequality.</p>
+
+      <h2>How fast, and when it fails</h2>
+      <p>For <code>x&sup2; - N</code> the error obeys exactly <code>a - x<sub>n+1</sub> = -(a - x<sub>n</sub>)&sup2; / (2x<sub>n</sub>)</code>, so each step roughly squares the error: about twice as many correct digits each time. In general the factor is <code>M = -f''(a) / (2f'(a))</code>, and the page says the start must satisfy <code>|a - x<sub>0</sub>| &lt; 1/|M|</code>. The test shows that this is a good rule of thumb near the root but not a guarantee: for <code>x&sup2; - 2</code> the bound is 2.83, yet a start at -1.3, which is inside it, goes to the other root, <code>-&radic;2</code>. Near a flat part of the curve the tangent is nearly level and the next point is thrown far away (try starting near the top of the hump), and for <code>x&sup3; - 2x + 2</code> a start at 0 bounces between 0 and 1 forever.</p>
+
+      <p class="tip">Start at x = 4.5 with 4 steps and watch the points pile up at the crossing. Then start near x = 0.6, the top of the hump.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Calculus/NewtonsMethod.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="newtons-method-core.js"></script>
+<script src="newtons-method.js"></script>
+</body>
+</html>
