@@ -1763,5 +1763,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "memory",
+      title: "Memory",
+      blurb: "Twenty cards lie face down. Turn two at a time and find the pairs that match: by count, by shape, by number, or by the answer to a sum. How few turns do you need?",
+      tags: ["arithmetic", "mental-math", "counting"],
+      level: 1,
+    },
   ],
 };

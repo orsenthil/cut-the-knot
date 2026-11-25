@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Memory &mdash; coolmaths</title>
+<meta name="description" content="Twenty cards lie face down. Turn two at a time and find the pairs that match: by count, by shape, by number, or by the answer to a sum. How few turns do you need?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/memory/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Memory">
+<meta property="og:description" content="Twenty cards lie face down. Turn two at a time and find the pairs that match: by count, by shape, by number, or by the answer to a sum. How few turns do you need?">
+<meta property="og:url" content="https://coolmaths.ai/memory/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.8rem; }
+  #caption { margin: 0 0 0.6rem; text-align: center; font-weight: 700; font-size: 1.05rem; }
+  #grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.4rem; }
+  .card { aspect-ratio: 1; min-width: 0; padding: 0; border-radius: 0.6rem; border: 2px solid var(--border-strong); cursor: pointer; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; font: 700 1.4rem system-ui, sans-serif; }
+  .card .face { display: none; width: 100%; height: 100%; align-items: center; justify-content: center; }
+  .card.up { background: var(--surface); color: var(--ink); cursor: default; }
+  .card.up .back { display: none; }
+  .card.up .face { display: flex; }
+  .card.found { border-color: var(--good); box-shadow: 0 0 0 2px var(--good); }
+  .card svg { width: 100%; height: 100%; display: block; }
+  .card .txt { font: 700 1.05rem var(--mono); }
+  .card:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .card:disabled { opacity: 1; }
+  fieldset.modes { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.25rem 0.9rem; }
+  .modes label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="memory" data-kind="game">
+<main id="main">
+  <h1>Memory</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#mental-math">Mental Math</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Twenty cards lie face down. Turn two at a time and find the pairs that match, using as few turns as you can.<br>
+    <strong>How to play:</strong> Press a card to turn it, then another. Matching cards stay up, the others turn back. Choose below what counts as a match: how many shapes, which shape, a number, or the answer of a sum.
+  </div>
+
+  <div id="stage" class="stage">
+    <p id="caption"></p>
+    <div id="grid" role="group" aria-label="Twenty cards in five columns and four rows"></div>
+  </div>
+
+  <div class="controls">
+    <fieldset class="modes"><legend class="sr-only">What makes a match</legend></fieldset>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Every card hides a whole number from 0 to 29, and each pair of cards was dealt the same number. What you see on a card is only one way to look at that number, and the mode decides which features count.</p>
+
+      <h2>One number, many faces</h2>
+      <p>The number n gives a shape (n mod 12, one of twelve), a colour (n divided by 12, rounded down) and a count (n mod 5, plus 1). So 29 is the sixth shape, the third colour, drawn 5 times. In "Count 1" two cards match when they show the same number of shapes, which is the same remainder mod 5; in "Count 2" the colour must agree as well. The test checks this rule against the applet's own comparison for every pair of numbers in every mode.</p>
+
+      <h2>Sums and products with the same answer</h2>
+      <p>In the three arithmetic modes the card shows an expression and matches the one whose result is the same, however it was written: <code>7+5</code> matches <code>20−8</code> and <code>3×4</code> and <code>36÷3</code>. In Addition the hidden number is 3 less than the sum shown. A difference <code>a − b</code> is built from the answer by adding a small b to it; a product splits the answer into two factors (a number that is prime can only be 1 times itself); a quotient multiplies the answer by 1 to 10. The test builds thousands of cards and checks that each really comes to its number.</p>
+
+      <h2>How many turns?</h2>
+      <p>With ten pairs there is no way to find a pair for certain without luck: each unseen card could be any of the numbers. But with a good memory you need only 10 turns on top of the cards you uncover while searching. The test plays the perfect game (always turning a card and its partner) and clears the board in exactly 10 turns. Because the numbers are dealt with replacement, two different pairs can share a number, and then any two of those four cards match.</p>
+
+      <p class="tip">Try Count 1, then Shape. Why is the first so much easier? How many different cards are there in each?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/Memory.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="memory-core.js"></script>
+<script src="memory.js"></script>
+</body>
+</html>
