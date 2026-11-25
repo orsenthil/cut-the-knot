@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Modular Arithmetic Tables &mdash; coolmaths</title>
+<meta name="description" content="Add, subtract, multiply and divide with only the remainders on division by N. The tables are full of patterns. Which ones can you find, and why do they change when N is a prime?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/modular-tables/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Modular Arithmetic Tables">
+<meta property="og:description" content="Add, subtract, multiply and divide with only the remainders on division by N. The tables are full of patterns. Which ones can you find, and why do they change when N is a prime?">
+<meta property="og:url" content="https://coolmaths.ai/modular-tables/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 46rem; padding: 0.6rem; overflow: auto; max-height: 34rem; }
+  table { border-collapse: separate; border-spacing: 2px; margin: 0 auto; font-family: var(--mono); }
+  th, td { text-align: center; padding: 0; }
+  th { color: var(--accent); font-size: 0.85rem; min-width: 2.2rem; height: 2.2rem; background: var(--stage, transparent); position: sticky; top: 0; left: 0; z-index: 1; }
+  td button { width: 100%; min-width: 2.2rem; height: 2.2rem; padding: 0; border: 1px solid var(--border); border-radius: 0.25rem; background: var(--surface); color: var(--ink); font: 600 0.85rem var(--mono); cursor: pointer; }
+  td button.on { background: var(--accent); color: #fff; border-color: var(--ink); }
+  td button:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+  fieldset.ops { border: 0; margin: 0; padding: 0; display: inline-flex; gap: 0.2rem 0.8rem; flex-wrap: wrap; align-items: center; }
+  .ops legend { float: left; padding: 0; margin-right: 0.6rem; font-weight: 600; }
+  .ops label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; font-size: 1.1rem; }
+  .ops input:disabled + span { opacity: 0.4; }
+  .controls label.mod { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; }
+  .controls input[type="range"] { width: min(12rem, 45vw); accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="modular-tables" data-kind="demo">
+<main id="main">
+  <h1>Modular Arithmetic Tables</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#divisibility">Divisibility</a><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Look at the table of an operation where numbers wrap around, like the hours on a clock. See what patterns hide in it.<br>
+    <strong>How to play:</strong> Choose +, ×, − or ÷ and slide the modulus. Press a number in the table to light up all the same numbers. Division works only when the modulus is a prime number.
+  </div>
+
+  <div id="stage" class="stage"><table id="tbl" aria-label="The table"></table></div>
+
+  <div class="controls">
+    <fieldset class="ops"><legend>Operation</legend></fieldset>
+    <label class="mod">Modulus <input id="n" type="range" min="2" max="30" step="1" value="10" aria-label="The modulus N, from 2 to 30"> <output id="nOut">10</output></label>
+    <button id="clearBtn" type="button">Clear marks</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two numbers are <a class="wiki-term" data-wiki="Modular_arithmetic" href="https://en.wikipedia.org/wiki/Modular_arithmetic" target="_blank" rel="noopener">congruent modulo N</a> when they leave the same remainder on division by N. Doing arithmetic with only the N remainders works for adding, subtracting and multiplying. The tables show what it is like. Every statement here was checked by the test for every modulus from 2 to 30.</p>
+
+      <h2>Addition and subtraction</h2>
+      <p>Each row of an addition table is the one above it with every entry moved one place round, a circular rotation. If N is odd, the main diagonal (a + a = 2a) holds every remainder once; if N is even, it holds only half of them, each twice. In a subtraction table with an odd number of rows the second diagonal is a rearrangement of the first row.</p>
+
+      <h2>Multiplication, and why primes are special</h2>
+      <p>The tables leave out 0. When N is <a class="wiki-term" data-wiki="Prime_number" href="https://en.wikipedia.org/wiki/Prime_number" target="_blank" rel="noopener">prime</a>, every row and every column is a rearrangement of the first, so a product never repeats within a row: you can always undo a multiplication, which means division works. Press a number: it appears exactly once in each row and each column, a solution of the rook problem (N rooks that cannot capture one another). The 1 is in both corners of the main diagonal and nowhere else, and 6 ÷ 5 = 4 mod 7 because 4 × 5 = 20 = 6 mod 7. Both diagonals of a multiplication table read the same in both directions, and for a prime modulus the main diagonal holds half the remainders (the squares), each twice.</p>
+
+      <h2>When N is not prime</h2>
+      <p>Then rows have zeros and repeats. Mod 10, 5 × 1, 5 × 3, 5 × 5, 5 × 7 and 5 × 9 are all 5, so "5 ÷ 5" has no single answer, and 5 × 2, 5 × 4, 5 × 6 and 5 × 8 are all 0, which never happens with ordinary numbers. A row is a rearrangement of the first row exactly when its number has no common factor with N (the test confirmed this in both directions for every N, so the page's remark that "the reverse is wrong" does not hold for these tables).</p>
+
+      <p class="tip">Compare N = 7 and N = 8 with ×. Which table has a row that is a rearrangement of the first? How many of them are there for N = 8?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/blue/Modulo.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="modular-tables-core.js"></script>
+<script src="modular-tables.js"></script>
+</body>
+</html>

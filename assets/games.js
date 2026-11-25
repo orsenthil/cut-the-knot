@@ -1809,5 +1809,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "modular-tables",
+      title: "Modular Arithmetic Tables",
+      blurb: "Add, subtract, multiply and divide with only the remainders on division by N. The tables are full of patterns. Which ones can you find, and why do they change when N is a prime?",
+      tags: ["divisibility", "number-theory", "algebra"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
