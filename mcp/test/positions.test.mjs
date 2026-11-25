@@ -170,6 +170,17 @@ check("means: exponent 1 is the arithmetic mean, at least the geometric", read.m
 check("memory: one card up in Shape mode and ten pairs left", read.memory?.cardsUp === 1 && read.memory.pairsLeft === 10 && read.memory.mode === "Match Shape and Color");
 check("merlin: the plane with 3 states, a solution to the board is given", read.merlin?.states === 3 && read.merlin.geometry === "Plane" && read.merlin.pressesThatSolveIt.length === 9);
 check("midline-in-sim-tris: the first picture has DE half of CN", Math.abs(read["midline-in-sim-tris"]?.ratioDEtoCN - 0.5) < 1e-9 && read["midline-in-sim-tris"].parallel === true && read["midline-in-sim-tris"].trianglesOutward === true);
+// Ten more ports, on positions saved by their own pages.
+check("hummers-mind-reader: one coin selected, nothing announced", read["hummers-mind-reader"]?.places.join() === "0,1,2" && read["hummers-mind-reader"].announced === false);
+check("min-max: MaxMin never above MinMax on the saved table", read["min-max"]?.maxMin <= read["min-max"].minMax && Array.isArray(read["min-max"].rowMins));
+check("miu-system: rule 2 on MI gives MII, two theorems, I count 2", read["miu-system"]?.newest === "MII" && read["miu-system"].theorems === 2 && read["miu-system"].iCountIsMultipleOfThree === false);
+check("modular-tables: the page marked a remainder in the 10 table", read["modular-tables"]?.modulus === 10 && read["modular-tables"].modulusIsPrime === false && read["modular-tables"].markedRemainder !== null);
+check("monty-hall: one round, switching and staying are opposites", read["monty-hall"]?.rounds === 1 && read["monty-hall"].stayedWon + read["monty-hall"].switchedWon === 1);
+check("moving-chips-in-pairs: the starting height of N = 10 is 45, odd, so unsolvable", read["moving-chips-in-pairs"]?.n === 10 && read["moving-chips-in-pairs"].height === 45 && read["moving-chips-in-pairs"].solvableFromHere === false);
+check("multiplication-table: 3 x 4 = 12 appears 6 times", read["multiplication-table"]?.product === 12 && read["multiplication-table"].timesInTheTable === 6);
+check("mean-value-theorem: after Find c the tangent is parallel to the secant", read["mean-value-theorem"]?.tangentParallelToSecant === true && read["mean-value-theorem"].meanValuePoints.length >= 1);
+check("napier-bones: 187 x 3 = 561", read["napier-bones"]?.numberInBase === "187" && read["napier-bones"].product === "561");
+check("napoleon-polygons: the pentagon's last polygon is regular", read["napoleon-polygons"]?.n === 5 && read["napoleon-polygons"].lastPolygonIsRegular === true);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1752,6 +1763,29 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("merlin: a solved board needs no presses", mr.solved === true && mr.totalPresses === 0);
   const mi = at("midline-in-sim-tris", { A: { x: 0, y: 0 }, B: { x: 100, y: 0 }, C: { x: 0, y: 100 }, L: { x: 100, y: 100 } });
   check("midline-in-sim-tris: any triangle and L keep DE = CN / 2", Math.abs(mi.ratioDEtoCN - 0.5) < 1e-9 && mi.parallel === true);
+// The ten newer ports, on positions built here.
+{
+  const hm = at("hummers-mind-reader", { pos: [0, 2, 1], selected: [], announcement: null });
+  check("hummers-mind-reader: after swapping nickel and dime the penny is the one", hm.coinInItsOwnPlace === "penny");
+  const mm = at("min-max", { rows: 2, cols: 2, max: 10, values: [[1, 2], [3, 4]] });
+  check("min-max: 1 2 / 3 4 has MaxMin 3 = MinMax 3 and a saddle point at row 2, column 1", mm.maxMin === 3 && mm.minMax === 3 && mm.saddles.length === 1);
+  const mi = at("miu-system", { theorems: ["MI"], count: 5, top: "MIIU" });
+  check("miu-system: MIIU has 2 I's", mi.iCountOfNewest === 2 && mi.iCountIsMultipleOfThree === false);
+  const md = at("modular-tables", { n: 7, op: 3, mark: null });
+  check("modular-tables: modulus 7 is prime", md.modulus === 7 && md.modulusIsPrime === true && md.operation === ":");
+  const mh = at("monty-hall", { car: 1, picked: 0, trials: 30, stayedWon: 10, stayedLost: 20, switchedWon: 20, switchedLost: 10 });
+  check("monty-hall: 30 rounds, switching won 2/3", Math.abs(mh.shareSwitchWon - 2 / 3) < 1e-9 && Math.abs(mh.shareStayWon - 1 / 3) < 1e-9);
+  const mc = at("moving-chips-in-pairs", { n: 4, rows: [0, 3, 1, 2], selected: [false, false, false, false], moves: 0, height: 6 });
+  check("moving-chips-in-pairs: N = 4 has height 6, solvable, best move columns 1 and 3", mc.height === 6 && mc.solvableFromHere === true && mc.nextStrategyMove.join() === "0,2");
+  const mt = at("multiplication-table", { n: 20, picked: { a: 20, b: 20 } });
+  check("multiplication-table: 400 appears once", mt.product === 400 && mt.timesInTheTable === 1);
+  const mv = at("mean-value-theorem", { ys: Array.from({ length: 11 }, () => 1), a: 2, b: 7, x: 4 });
+  check("mean-value-theorem: a flat curve is Rolle's case", mv.rollesCase === true && mv.tangentParallelToSecant === true);
+  const nb = at("napier-bones", { base: 16, number: 187, multiplier: 3 });
+  check("napier-bones: BB x 3 = 231 in base 16", nb.numberInBase === "BB" && nb.product === "231");
+  const np = at("napoleon-polygons", { n: 3, m: 2, points: [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 20, y: 80 }], showTriangles: false });
+  check("napoleon-polygons: Napoleon's triangle is regular", np.lastPolygonIsRegular === true && np.steps.join() === "1");
+}
 }
 }
 }

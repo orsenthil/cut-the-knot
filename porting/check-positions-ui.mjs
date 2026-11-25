@@ -507,6 +507,29 @@ const GAMES = {
     await page.locator("#board .b").first().click();
   },
   "midline-in-sim-tris": null,
+  // Ten more ports.
+  "hummers-mind-reader": async (page) => {
+    await page.locator(".coin").first().click();
+  },
+  "min-max": null,
+  "miu-system": async (page) => {
+    await page.locator("#rules4 button").nth(1).click();
+  },
+  "modular-tables": async (page) => {
+    await page.locator("td button").nth(3).click();
+  },
+  "monty-hall": async (page) => {
+    await page.locator(".door").nth(1).click();
+  },
+  "moving-chips-in-pairs": null,
+  "multiplication-table": async (page) => {
+    await page.locator('td button[data-a="3"][data-b="4"]').click();
+  },
+  "mean-value-theorem": async (page) => {
+    await page.click("#findBtn");
+  },
+  "napier-bones": null,
+  "napoleon-polygons": null,
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

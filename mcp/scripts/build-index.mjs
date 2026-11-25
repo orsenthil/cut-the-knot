@@ -384,6 +384,16 @@ const CORE_GLOBALS = {
   "memory/memory-core.js": ["MemoryCore"],
   "merlin/merlin-core.js": ["MerlinCore"],
   "midline-in-sim-tris/midline-in-sim-tris-core.js": ["MidlineCore"],
+  "hummers-mind-reader/hummers-mind-reader-core.js": ["HummersCore"],
+  "min-max/min-max-core.js": ["MinMaxCore"],
+  "miu-system/miu-system-core.js": ["MIUCore"],
+  "modular-tables/modular-tables-core.js": ["ModularCore"],
+  "monty-hall/monty-hall-core.js": ["MontyCore"],
+  "moving-chips-in-pairs/moving-chips-in-pairs-core.js": ["ChipsCore"],
+  "multiplication-table/multiplication-table-core.js": ["MultiplicationCore"],
+  "mean-value-theorem/mean-value-theorem-core.js": ["MVTCore"],
+  "napier-bones/napier-bones-core.js": ["NapierCore"],
+  "napoleon-polygons/napoleon-polygons-core.js": ["NapoleonCore"],
 };
 
 const games = [];
