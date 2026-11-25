@@ -1927,5 +1927,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "orthogonal-latin-squares",
+      title: "Orthogonal Latin Squares",
+      blurb: "Arrange letter pairs on a grid so that every row and column has each small letter once and each capital once, and no pair is ever repeated. Euler thought that was impossible for six.",
+      tags: ["number-theory", "algorithms", "logic"],
+      level: 3,
+    },
   ],
 };

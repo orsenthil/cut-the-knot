@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Orthogonal Latin Squares &mdash; coolmaths</title>
+<meta name="description" content="Arrange letter pairs on a grid so that every row and column has each small letter once and each capital once, and no pair is ever repeated. Euler thought that was impossible for six.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/orthogonal-latin-squares/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Orthogonal Latin Squares">
+<meta property="og:description" content="Arrange letter pairs on a grid so that every row and column has each small letter once and each capital once, and no pair is ever repeated. Euler thought that was impossible for six.">
+<meta property="og:url" content="https://coolmaths.ai/orthogonal-latin-squares/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 52rem; padding: 0.8rem; overflow-x: auto; }
+  #grid { display: grid; gap: 3px; width: max-content; max-width: none; margin: 0 auto; }
+  #grid button { min-width: 2.4rem; height: 2.4rem; padding: 0; border-radius: 0.35rem; font-size: 1rem; line-height: 1; display: grid; place-items: center; }
+  #grid button.cell { display: flex; align-items: center; justify-content: center; gap: 0.05rem; border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink); font-weight: 700; cursor: pointer; }
+  #grid button.cell .l { color: var(--accent); } #grid button.cell .r { color: var(--ink); }
+  #grid button.cell.sel { outline: 3px solid var(--accent); outline-offset: -1px; background: var(--highlight); }
+  #grid button.cell.dup { border-color: var(--bad); box-shadow: inset 0 0 0 2px var(--bad); }
+  #grid button.rot { background: transparent; border: 1px dashed var(--border); color: var(--muted); cursor: pointer; font-size: 0.9rem; min-width: 1.8rem; }
+  #grid .spacer { min-width: 1.8rem; }
+  #checks { margin: 0.7rem 0 0; font-size: 0.95rem; text-align: center; }
+  .controls label { display: inline-flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; max-width: 100%; }
+  .controls input[type=number] { width: 4.5rem; max-width: 100%; font: inherit; }
+  .controls fieldset { border: 0; margin: 0; padding: 0; display: inline-flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+</style>
+</head>
+<body data-game="orthogonal-latin-squares" data-kind="game">
+<main id="main">
+  <h1>Orthogonal Latin Squares</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Every square holds a small letter and a capital. Arrange them so that each small letter and each capital appears once in every row and every column, and no pair of letters is repeated anywhere.<br>
+    <strong>How to play:</strong> Press two squares in the same row to swap their small letters (or capitals), or press the arrows to slide a whole row or column around. Choose which letters move with &ldquo;Apply to&rdquo;.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="grid" role="group" aria-label="The board of letter pairs, with arrows around it that rotate a row or a column"></div>
+    <p id="checks" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label>Size <input id="nIn" type="number" min="2" max="20" step="1" value="4" aria-label="Size of the board"></label>
+    <fieldset aria-label="Apply moves to">
+      <span>Apply to</span>
+      <label><input type="radio" name="apply" id="applyL" checked> small letters</label>
+      <label><input type="radio" name="apply" id="applyR"> capitals</label>
+    </fieldset>
+    <label><input id="randBox" type="checkbox" checked> Randomize</label>
+    <button id="newBtn" type="button" class="primary">New Game</button>
+    <button id="showBtn" type="button">Show a solution</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two <a class="wiki-term" data-wiki="Latin_square" href="https://en.wikipedia.org/wiki/Latin_square" target="_blank" rel="noopener">Latin squares</a> of the same size are <em>orthogonal</em> if, laid on top of each other, every possible pair of letters appears exactly once. For size <code>N</code> there are <code>N&sup2;</code> cells and <code>N&sup2;</code> pairs, so &ldquo;no pair twice&rdquo; means &ldquo;every pair once&rdquo;.</p>
+
+      <h2>Counting</h2>
+      <p>The test counted every Latin square of size 2 to 5: there are 2, 12, 576 and 161,280. Pairing every square of size 2, 3 and 4 with every other gave 0, 72 and 6,912 orthogonal pairs. So there are none of size 2 at all, and 72 of size 3 (a cyclic pair is one of them).</p>
+
+      <h2>Building them</h2>
+      <p>For an odd size <code>N</code> take the squares <code>i + j</code> and <code>i + 2j</code> (mod <code>N</code>): both are Latin because 2 has an inverse, and a pair of cells with the same two letters would have the same <code>i + j</code> and <code>i + 2j</code>, so the same <code>j</code> and the same <code>i</code>. For sizes 4, 8 and 16, work in the field with that many elements. For sizes like 12 or 20, <a class="wiki-term" data-wiki="Kronecker_product" href="https://en.wikipedia.org/wiki/Kronecker_product" target="_blank" rel="noopener">multiply</a> a pair of size 4 by a pair of odd size. The button shows such a pair for every size from 3 to 20 that these cover, and the test checked each of them.</p>
+
+      <h2>Euler's 36 officers</h2>
+      <p>Which sizes have an orthogonal pair? Euler guessed that none of the sizes 2, 6, 10, 14, ... (twice an odd number) do. He was right for 2 and for 6: Gaston Tarry showed in 1900 by hand that six regiments of six ranks cannot be arranged, so nobody can win with a 6 by 6 board. But in 1959&ndash;60 Bose, Shrikhande and Parker built pairs for 10, 14, 18 and every larger size of this form. So the only sizes without a pair are 2 and 6. (The test checked the claim for 2 directly; the case 6 is Tarry's theorem and was not re-checked here, and the page does not build pairs for 10, 14 and 18.)</p>
+
+      <h2>A note on the applet</h2>
+      <p>The original applet announced success after comparing each cell only with cells below and to its right. That misses pairs of cells that sit on the other diagonal, and for size 4 it would accept 18,432 pairs of Latin squares though only 6,912 are orthogonal. This version compares every pair of cells.</p>
+
+      <p class="tip">Press &ldquo;Show a solution&rdquo; for size 5, then spoil it with a swap and try to repair it. The cells that repeat a pair of letters are outlined in red.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/OrthoLatin.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="orthogonal-latin-squares-core.js"></script>
+<script src="orthogonal-latin-squares.js"></script>
+</body>
+</html>
