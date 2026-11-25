@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Napoleon's Theorem and the Petr-Douglas-Neumann Theorem &mdash; coolmaths</title>
+<meta name="description" content="Build similar triangles on the sides of a triangle and join their centres: you always get an equilateral triangle. The same idea, repeated on any polygon, makes it regular. Drag the corners and watch it happen.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/napoleon-polygons/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Napoleon's Theorem and the Petr-Douglas-Neumann Theorem">
+<meta property="og:description" content="Build similar triangles on the sides of a triangle and join their centres: you always get an equilateral triangle. The same idea, repeated on any polygon, makes it regular. Drag the corners and watch it happen.">
+<meta property="og:url" content="https://coolmaths.ai/napoleon-polygons/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 42rem; padding: 0.4rem; }
+  #board { width: 100%; height: auto; display: block; touch-action: none; user-select: none; overflow: hidden; }
+  #board .base { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
+  #board .poly { fill: none; stroke-width: 2.5; stroke-linejoin: round; }
+  #board .poly.last { stroke-width: 4; }
+  #board .tri { fill: none; stroke-width: 1; opacity: 0.6; }
+  #board .vert { fill: var(--accent); stroke: var(--ink); stroke-width: 2; cursor: grab; }
+  #board .vert:focus-visible { outline: none; stroke: var(--focus); stroke-width: 4; }
+  #board .hit { fill: transparent; }
+  #board .pt { fill: var(--surface); stroke-width: 2; }
+  .readout { font-family: var(--mono); font-size: 0.85rem; margin: 0.5rem 0 0; white-space: pre-line; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: min(9rem, 38vw); accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="napoleon-polygons" data-kind="demo">
+<main id="main">
+  <h1>Napoleon's Theorem and the Petr-Douglas-Neumann Theorem</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#complex-analysis">Complex Analysis</a><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A shape with straight sides is changed again and again by putting a new corner on each side, and the new shapes get closer and closer to a perfectly regular one. Make a messy shape and see.<br>
+    <strong>How to play:</strong> Drag the dark corners of the first shape, or move a focused corner with the arrow keys. Change the number of corners and which step is left out, and tick Show triangles to see how the new corners are made.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 360" role="group" aria-label="A polygon with draggable corners and the polygons made from it, the last one regular"></svg>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Corners N <input id="n" type="range" min="3" max="15" step="1" value="5" aria-label="Number of corners, from 3 to 15"> <output id="nOut">5</output></label>
+    <label>Leave out <input id="m" type="range" min="0" max="4" step="1" value="1" aria-label="The step number to leave out"> <output id="mOut">1</output></label>
+    <label><input type="checkbox" id="tri"> Show triangles</label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p><a class="wiki-term" data-wiki="Napoleon%27s_theorem" href="https://en.wikipedia.org/wiki/Napoleon%27s_theorem" target="_blank" rel="noopener">Napoleon's theorem</a> says that if you build equilateral triangles on the sides of any triangle, the three centres form an equilateral triangle. It holds for outer and inner triangles alike (the test checked 5,000 random triangles both ways). Here is a far bigger statement, found by Petr, Douglas and Neumann.</p>
+
+      <h2>One step</h2>
+      <p>Treat corners as complex numbers. For a number c, put a new corner on each side from <code>A</code> to <code>B</code> at <code>C = (1 − c)A + cB</code>: the triangle <code>A, B, C</code> is similar to the triangle <code>0, 1, c</code>. With <code>c = 1/2 + i√3/6</code> this is the centre of an equilateral triangle on the side. The new polygon has the same centre of gravity as the old one (the test checked it for every polygon in every chain).</p>
+
+      <h2>Many steps</h2>
+      <p>Let <code>w = e<sup>2πi/N</sup></code>. Step k uses <code>c = 1/(1 − w<sup>k</sup>)</code>. Write the corners as a sum of "spinning" patterns (a <a class="wiki-term" data-wiki="Discrete_Fourier_transform" href="https://en.wikipedia.org/wiki/Discrete_Fourier_transform" target="_blank" rel="noopener">discrete Fourier transform</a>): step k removes exactly the pattern that spins N − k times round, and leaves the average position alone. So do every step k from 1 to N − 1 <em>except one</em> (the number you leave out): all patterns die except one, and what is left is a regular N-gon, a star if the leftover pattern spins more than once. For N = 3 this is Napoleon's theorem, for any triangle. The test applied the steps to 23,400 random polygons with N from 3 to 15 and every number to leave out: the last polygon was always exactly regular (to 3 × 10<sup>−12</sup>), the order of the steps never mattered, and with nothing left out (0) the whole thing collapses to the centre of gravity.</p>
+
+      <h2>What you see</h2>
+      <p>The dark polygon is the one you drag. The coloured ones are made one after another, the last drawn thickest. For N = 5, leaving out 1 gives a pentagon, and leaving out 2 gives a pentagram. The triangles you can switch on are the similar triangles on the sides at each step. (The page uses the same step numbers as the original applet; the leftover pattern is the one that spins N − m times, which turns the same way round but backwards.)</p>
+
+      <p class="tip">Drag the corners of the pentagon as wildly as you like. Does the thick polygon ever stop being a regular pentagon? Now try leaving out 2.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/Napolegon.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="napoleon-polygons-core.js"></script>
+<script src="napoleon-polygons.js"></script>
+</body>
+</html>

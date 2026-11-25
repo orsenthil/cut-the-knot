@@ -1856,5 +1856,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "napoleon-polygons",
+      title: "Napoleon's Theorem and the Petr-Douglas-Neumann Theorem",
+      blurb: "Build similar triangles on the sides of a triangle and join their centres: you always get an equilateral triangle. The same idea, repeated on any polygon, makes it regular. Drag the corners and watch it happen.",
+      tags: ["complex-analysis", "algebra", "invariants"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };
