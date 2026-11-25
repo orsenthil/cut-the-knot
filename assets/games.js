@@ -1715,5 +1715,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "loop-or-halt",
+      title: "Loop Or Halt",
+      blurb: "Take a shuffled row of numbers 1 to N. If the first number is k, flip the first k numbers over, and repeat. Will it ever stop, or go round in circles?",
+      tags: ["algorithms", "induction", "logic"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

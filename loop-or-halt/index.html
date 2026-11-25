@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Loop Or Halt &mdash; coolmaths</title>
+<meta name="description" content="Take a shuffled row of numbers 1 to N. If the first number is k, flip the first k numbers over, and repeat. Will it ever stop, or go round in circles?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/loop-or-halt/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Loop Or Halt">
+<meta property="og:description" content="Take a shuffled row of numbers 1 to N. If the first number is k, flip the first k numbers over, and repeat. Will it ever stop, or go round in circles?">
+<meta property="og:url" content="https://coolmaths.ai/loop-or-halt/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.8rem; overflow-x: auto; }
+  #rows { list-style: none; margin: 0; padding: 0; font-family: var(--mono); }
+  #rows li { display: flex; gap: 0.35rem; align-items: center; padding: 0.15rem 0; }
+  #rows .n { display: inline-block; min-width: 2.1rem; text-align: center; border-radius: 0.4rem; padding: 0.1rem 0; border: 2px solid transparent; }
+  #rows .flip { background: var(--highlight); }
+  #rows .lead { border-color: var(--accent); font-weight: 700; }
+  #rows li.last .lead { border-color: var(--good); }
+  #rows .idx { min-width: 1.8rem; color: var(--muted); font-size: 0.8rem; }
+  .readout { font-family: var(--mono); font-size: 0.9rem; margin: 0.6rem 0 0; overflow-wrap: anywhere; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: min(12rem, 55vw); accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="loop-or-halt" data-kind="demo">
+<main id="main">
+  <h1>Loop Or Halt</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#induction">Induction</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A row of numbers is shuffled. Look at the first number, say 3, and flip the first 3 numbers around. Keep going and see whether it ever stops.<br>
+    <strong>How to play:</strong> Pick how long the row is and press New row. The page shows every flip, one under the other, until 1 is first.
+  </div>
+
+  <div id="stage" class="stage">
+    <ol id="rows" aria-label="Every step of the flipping, one row per step"></ol>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Length of the row <input id="n" type="range" min="3" max="12" step="1" value="6" aria-label="Length of the row, from 3 to 12"> <output id="nOut">6</output></label>
+    <button id="newBtn" type="button" class="primary">New row</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A process with only finitely many possible states must either stop or repeat itself forever. Here the states are the arrangements of the numbers, so the question is real: could the flipping go round in a loop? It never does, and the reason is a small, neat argument.</p>
+
+      <h2>The largest leader leads only once</h2>
+      <p>Look at the numbers that come first (the leaders, shown under the rows). Let L be the largest of them. When L leads, the first L numbers are flipped, so L lands in place L. To lead again it would have to be moved out of that place, but only a larger leader could do that, and L is the largest. So L leads exactly once. The test confirmed this for every one of the 362,880 starting rows of length 9 (and every shorter length).</p>
+
+      <h2>Then it gets smaller</h2>
+      <p>After L has led, every later leader is smaller than L. Apply the same argument to the largest of those, and so on. The largest leader falls every round, <a class="wiki-term" data-wiki="Infinite_descent" href="https://en.wikipedia.org/wiki/Infinite_descent" target="_blank" rel="noopener">like a descent that cannot go on for ever</a>, and the only place it can end is 1. The test checked that every later leader is smaller, and that every row halts with 1 first.</p>
+
+      <h2>How long can it take?</h2>
+      <p>The proof gives no count of the steps. The test found the longest run over all starting rows: 2, 4, 7, 10, 16, 22, 30 flips for lengths 3 to 9. It grows quickly. With cards instead of numbers this process is known as Topswops.</p>
+
+      <p class="tip">Press New row several times at length 12. Do the leaders ever repeat? Which is the largest leader, and does it lead only once?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/LoopOrHalt.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="loop-or-halt-core.js"></script>
+<script src="loop-or-halt.js"></script>
+</body>
+</html>
