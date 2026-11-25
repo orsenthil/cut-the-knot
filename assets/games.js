@@ -1934,5 +1934,13 @@ window.COOLMATHS = {
       tags: ["number-theory", "algorithms", "logic"],
       level: 3,
     },
+    {
+      slug: "kochs-snowflake",
+      title: "Koch's Snowflake",
+      blurb: "Keep putting a tent on the middle third of every side. The outline grows without end, yet the snowflake fits inside a circle. How can a bounded curve have no length?",
+      tags: ["limits", "sequences", "area"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
