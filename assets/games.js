@@ -1747,5 +1747,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "math-telepathy",
+      title: "Math Telepathy",
+      blurb: "Choose a number, shuffle its digits, subtract, and circle one digit of the answer. Tell the computer every other digit and it reads your mind. How?",
+      tags: ["divisibility", "arithmetic", "logic"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };

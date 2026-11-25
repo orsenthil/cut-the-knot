@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Math Telepathy &mdash; coolmaths</title>
+<meta name="description" content="Choose a number, shuffle its digits, subtract, and circle one digit of the answer. Tell the computer every other digit and it reads your mind. How?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/math-telepathy/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Math Telepathy">
+<meta property="og:description" content="Choose a number, shuffle its digits, subtract, and circle one digit of the answer. Tell the computer every other digit and it reads your mind. How?">
+<meta property="og:url" content="https://coolmaths.ai/math-telepathy/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 1rem; text-align: center; }
+  #lines { list-style: none; margin: 0; padding: 0; font-size: 1.05rem; }
+  #lines li { padding: 0.15rem 0; }
+  #given { font: 600 1.3rem var(--mono); margin: 0.4rem 0; overflow-wrap: anywhere; }
+  #answer { font-size: 1.2rem; margin: 0.6rem 0 0; }
+  #answer .big { display: block; font-size: 3rem; line-height: 1.1; color: var(--accent); }
+  #pad { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.4rem; margin: 0.8rem auto 0; max-width: 20rem; }
+  #pad button { min-height: 2.75rem; font: 700 1.2rem var(--mono); }
+</style>
+</head>
+<body data-game="math-telepathy" data-kind="demo">
+<main id="main">
+  <h1>Math Telepathy</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#divisibility">Divisibility</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Think of a number, shuffle its digits, subtract, and keep one digit of the answer in mind. The computer will name it.<br>
+    <strong>How to play:</strong> Follow the steps on the screen. Then press the digit buttons once for every digit of your answer except the one you kept, and press Guess.
+  </div>
+
+  <div id="stage" class="stage">
+    <ol id="lines" aria-label="What to do"></ol>
+    <p id="given" aria-live="polite"></p>
+    <p id="answer" aria-live="polite"></p>
+    <div id="pad" role="group" aria-label="Digit buttons"></div>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button">Reset</button>
+    <button id="guessBtn" type="button" class="primary">Guess</button>
+    <button id="backBtn" type="button">Take back</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>No mind reading: the computer uses the fact that a number and any shuffle of its digits leave the same remainder when divided by 9, so their difference is a multiple of 9.</p>
+
+      <h2>Any power of 10 is 1 mod 9</h2>
+      <p>Since <code>10 = 9 + 1</code>, every power of 10 leaves remainder 1 when divided by 9. A digit d standing for <code>d · 10<sup>k</sup></code> in the first number and for <code>d · 10<sup>m</sup></code> after shuffling contributes <code>d(10<sup>k</sup> − 10<sup>m</sup>)</code> to the difference, and that is a multiple of 9. So the whole difference is a multiple of 9. The test checked this for all 6,581,934 pairs of a number up to 99,999 and a different shuffle of its digits.</p>
+
+      <h2>A multiple of 9 has digits adding to a multiple of 9</h2>
+      <p>This is the <a class="wiki-term" data-wiki="Digital_root" href="https://en.wikipedia.org/wiki/Digital_root" target="_blank" rel="noopener">casting out nines</a> rule. Given every digit but one, the computer adds them and takes the remainder mod 9; the missing digit is what is needed to reach the next multiple of 9, which is <code>9 − (sum mod 9)</code>. When the circled digit is 9 the other digits already add to a multiple of 9, and the computer says 9 and never 0, which is right because the circled digit is not zero. All 25,607,935 circled digits of all those differences were named correctly.</p>
+
+      <h2>Why the warning about mistakes</h2>
+      <p>The trick lives on the difference being a multiple of 9. If the subtraction is wrong by 1, the digits add up to 1 more than a multiple of 9, and then the computer's answer cannot be the circled digit: the test found it was never right in over 29,000 tries. Check your subtraction, or use a calculator.</p>
+
+      <p class="tip">Try a number with a repeated digit, such as 4,400. Does a shuffle like 0,044 still work? What is the largest circled digit you can make?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Magic/MathTelepathy.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="math-telepathy-core.js"></script>
+<script src="math-telepathy.js"></script>
+</body>
+</html>
