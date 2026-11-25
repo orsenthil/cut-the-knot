@@ -110,6 +110,13 @@ const SLUG_FALLBACK_URL = {
   "prime-waves": null,
   "harmonic-series": null,
   "basel-problem": null,
+  "unit-distance-points": null,
+  "two-circles-two-points": null,
+  "moser-spindle-colouring": null,
+  "sums-of-two-squares": null,
+  "grid-spacing-dial": null,
+  "unit-distance-growth": null,
+  "roots-of-unity-lattice": null,
 };
 
 /* ----------------------------------------------------------- classification */

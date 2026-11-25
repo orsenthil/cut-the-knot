@@ -41,6 +41,7 @@ window.COOLMATHS = {
     "physics": "Physics",
     "complex-analysis": "Complex Analysis",
     "riemann-hypothesis": "Riemann Hypothesis",
+    "unit-distance": "Unit Distance Problem",
     "differential-equations": "Differential Equations",
     "fluid-dynamics": "Fluid Dynamics",
   },
@@ -1653,6 +1654,13 @@ window.COOLMATHS = {
       tags: ["complex-analysis", "number-theory", "riemann-hypothesis"],
       kind: "demo",
       level: 3,
+    },
+    {
+      slug: "unit-distance-points",
+      title: "Unit Distance Points",
+      blurb: "Drag a handful of points so that as many pairs as possible are exactly one unit apart. Can you match the best arrangement known for 3 to 9 points?",
+      tags: ["coordinates", "graph-theory", "unit-distance"],
+      level: 1,
     },
   ],
 };

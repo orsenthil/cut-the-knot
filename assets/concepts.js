@@ -51,6 +51,7 @@ window.COOLMATHS_CONCEPTS = {
   "physics": { label: "Physics", prereqs: ["algebra"] },
   "complex-analysis": { label: "Complex Analysis", prereqs: ["algebra"] },
   "riemann-hypothesis": { label: "Riemann Hypothesis", prereqs: ["number-theory", "series", "complex-analysis"] },
+  "unit-distance": { label: "Unit Distance Problem", prereqs: ["number-theory", "coordinates", "graph-theory"] },
   "differential-equations": { label: "Differential Equations", prereqs: ["algebra", "series"] },
   "fluid-dynamics": { label: "Fluid Dynamics", prereqs: ["differential-equations", "physics"] },
 };

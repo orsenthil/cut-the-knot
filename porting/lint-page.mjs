@@ -62,6 +62,34 @@ const EXEMPT = {
     checks: ["byline"],
     why: "an original demo for the Riemann Hypothesis path, not a port, so there is no cut-the-knot page to cite",
   },
+  "unit-distance-points": {
+    checks: ["byline"],
+    why: "an original demo for the Unit Distance path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "two-circles-two-points": {
+    checks: ["byline"],
+    why: "an original demo for the Unit Distance path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "moser-spindle-colouring": {
+    checks: ["byline"],
+    why: "an original demo for the Unit Distance path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "sums-of-two-squares": {
+    checks: ["byline"],
+    why: "an original demo for the Unit Distance path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "grid-spacing-dial": {
+    checks: ["byline"],
+    why: "an original demo for the Unit Distance path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "unit-distance-growth": {
+    checks: ["byline"],
+    why: "an original demo for the Unit Distance path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "roots-of-unity-lattice": {
+    checks: ["byline"],
+    why: "an original demo for the Unit Distance path, not a port, so there is no cut-the-knot page to cite",
+  },
 };
 
 function readCatalogue() {
