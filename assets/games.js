@@ -1848,5 +1848,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "napier-bones",
+      title: "Napier's Bones in Various Bases",
+      blurb: "Napier's rods turn multiplication into addition along diagonals. Lay the bones for the digits of a number side by side, pick a row, and read the product. Does it still work in base 5, or base 16?",
+      tags: ["arithmetic", "place-value", "mental-math"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

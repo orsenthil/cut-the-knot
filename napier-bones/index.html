@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Napier's Bones in Various Bases &mdash; coolmaths</title>
+<meta name="description" content="Napier's rods turn multiplication into addition along diagonals. Lay the bones for the digits of a number side by side, pick a row, and read the product. Does it still work in base 5, or base 16?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/napier-bones/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Napier's Bones in Various Bases">
+<meta property="og:description" content="Napier's rods turn multiplication into addition along diagonals. Lay the bones for the digits of a number side by side, pick a row, and read the product. Does it still work in base 5, or base 16?">
+<meta property="og:url" content="https://coolmaths.ai/napier-bones/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 46rem; padding: 0.7rem; overflow: auto; }
+  #bones { display: grid; gap: 3px; width: max-content; margin: 0 auto; }
+  .head, .rowlab { display: flex; align-items: center; justify-content: center; font: 700 1.1rem var(--mono); color: var(--ink); }
+  .head { background: var(--accent); color: #fff; border-radius: 0.4rem; min-width: 2.8rem; min-height: 2.4rem; }
+  button.rowlab { min-width: 2.2rem; min-height: 2.4rem; border: 2px solid var(--border-strong); border-radius: 0.4rem; background: var(--surface); cursor: pointer; padding: 0; }
+  button.rowlab.sel { background: var(--highlight); border-color: var(--accent); }
+  button.rowlab:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .cell { position: relative; min-width: 2.8rem; min-height: 2.4rem; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 0.25rem; font: 600 0.95rem var(--mono); color: var(--ink);
+          background-image: linear-gradient(to top left, transparent calc(50% - 1px), var(--muted) calc(50% - 1px), var(--muted) calc(50% + 1px), transparent calc(50% + 1px)); }
+  .cell .t { position: absolute; left: 0.3rem; top: 0.1rem; }
+  .cell .u { position: absolute; right: 0.3rem; bottom: 0.1rem; }
+  .cell.row { background-color: var(--highlight); }
+  #steps { font-family: var(--mono); font-size: 0.95rem; margin: 0.8rem 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="text"] { font: 700 1.1rem var(--mono); width: 11rem; max-width: 40vw; min-height: 2.5rem; padding: 0 0.5rem; border-radius: 0.4rem; border: 2px solid var(--border-strong); background: var(--surface); color: var(--ink); }
+  .controls input[type="range"] { width: min(10rem, 40vw); accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="napier-bones" data-kind="demo">
+<main id="main">
+  <h1>Napier's Bones in Various Bases</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#place-value">Place Value</a><a class="tag" href="../index.html#mental-math">Mental Math</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Napier's bones are little sticks with a multiplication table on each. Put the sticks for the digits of a number side by side and a whole multiplication becomes a matter of adding along slanted lines.<br>
+    <strong>How to play:</strong> Type a number and choose its base. Press a number on the left to pick the row you want to multiply by. The page adds along the slanted lines and gives the answer.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="bones" role="group" aria-label="The bones of the digits of the number. The left column holds the multipliers."></div>
+    <p id="steps" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label>Number <input id="num" type="text" inputmode="text" autocomplete="off" maxlength="12" value="187" aria-label="The number, written in the chosen base"></label>
+    <label>Base <input id="base" type="range" min="3" max="20" step="1" value="10" aria-label="The base, from 3 to 20"> <output id="baseOut">10</output></label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>John Napier published his "rods" in 1617. Each rod is the multiplication table of one digit, and the trick is to keep every product in two parts, so that adding along diagonals does the carrying-over for you.</p>
+
+      <h2>Why the diagonals work</h2>
+      <p>The product of a digit d and a multiplier k is a number up to two digits long: tens t and units u, so <code>d × k = t · B + u</code> in base B. Write t above the diagonal and u below it. When you put two bones side by side, the units of the left bone's cell sit on the same slanted line as the tens of the right bone's cell: they are exactly the two parts that have the same place value. Adding along each slanted line therefore adds the right things together: this is long multiplication with every step of the carrying left until the end. Reading from the right, the first line gives the units, the next the next place, and so on. When a line adds up to B or more, carry the extra into the next place. For 187 × 3, the lines give 1, 4 + 2 = 6, 3 + 2 = 5 and 0, so the answer is 561.</p>
+
+      <h2>It works in every base</h2>
+      <p>Nothing here needs base 10. The page lets you choose any base from 3 to 20, with digits above 9 written as letters A, B, C, … The test multiplied every number of up to 3 digits in each base (about 625,000 multiplications, with every multiplier) the Napier way and always got the true product, and also did the same for random numbers of up to 12 digits. A diagonal can add up to at most 2(B − 1), so the carry is always 0 or 1.</p>
+
+      <h2>Napier and the binary system</h2>
+      <p>The page remarks that Napier also found the binary system. The smallest base offered here is 3 because base 2 has only one non-zero digit: its bones would be nothing but "1", and multiplication by 1 is trivial.</p>
+
+      <p class="tip">Try base 5 with the number 4321, and multiplier 3. Do the carries come more often than in base 10? Then try base 16 with the number BEEF.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/blue/Napier.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="napier-bones-core.js"></script>
+<script src="napier-bones.js"></script>
+</body>
+</html>
