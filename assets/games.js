@@ -1903,5 +1903,13 @@ window.COOLMATHS = {
       tags: ["game-strategy", "algorithms"],
       level: 3,
     },
+    {
+      slug: "counting-triangles",
+      title: "Counting Triangles",
+      blurb: "Cut a square into N times N small squares and you get N² of them. Cut a triangle the same way. Why do you get N² small triangles too?",
+      tags: ["induction", "area", "sequences"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
