@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Merlin's Magic Squares &mdash; coolmaths</title>
+<meta name="description" content="Press a button and several buttons change at once. Can you bring the board to the target pattern, and can you work out by arithmetic what to press?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/merlin/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Merlin's Magic Squares">
+<meta property="og:description" content="Press a button and several buttons change at once. Can you bring the board to the target pattern, and can you work out by arithmetic what to press?">
+<meta property="og:url" content="https://coolmaths.ai/merlin/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.9rem; display: flex; flex-wrap: wrap; gap: 1.2rem 1.6rem; justify-content: center; align-items: flex-start; }
+  .panel { text-align: center; }
+  .panel h2 { font-size: 1rem; margin: 0 0 0.4rem; }
+  .grid { display: grid; gap: 0.3rem; margin: 0 auto; }
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #board { width: min(100%, 14rem); }
+  #targetGrid { width: min(100%, 8.6rem); }
+  .panel { max-width: 100%; min-width: 0; flex: 0 1 auto; }
+  .b { aspect-ratio: 1; border-radius: 0.55rem; border: 2px solid var(--border-strong); font: 700 1.5rem var(--mono); cursor: pointer; padding: 0; color: #111; min-width: 0; }
+  #targetGrid .b { font-size: 1rem; }
+  .b.s0 { background: var(--surface); color: var(--ink); } .b.s1 { background: #8f86ff; } .b.s2 { background: #f0b247; } .b.s3 { background: #3fb27f; }
+  .b:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  #board.hinting .b { border-style: dashed; border-color: var(--accent); }
+  .controls fieldset { border: 0; margin: 0; padding: 0; display: inline-flex; flex-wrap: wrap; gap: 0.1rem 0.8rem; align-items: center; }
+  .controls legend { float: left; padding: 0; margin-right: 0.5rem; font-weight: 600; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  input:disabled + span { opacity: 0.5; }
+</style>
+</head>
+<body data-game="merlin" data-kind="game">
+<main id="main">
+  <h1>Merlin's Magic Squares</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Make the big board look like the small target board. Each button has a few states, shown as numbers and colours that go round and round.<br>
+    <strong>How to play:</strong> Press a big button: it changes, and so do some of its neighbours. Click a small square to change the target. Tick Hint to see how many times to press each button.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="panel"><h2>Target</h2><div id="targetGrid" class="grid" role="group" aria-label="The target board. Press a square to change it."></div></div>
+    <div class="panel"><h2 id="boardTitle">Board</h2><div id="board" class="grid" role="group" aria-label="The board. Press a button to play."></div></div>
+  </div>
+
+  <div class="controls">
+    <fieldset id="modulus"><legend>States</legend></fieldset>
+    <fieldset id="geometry"><legend>Geometry</legend></fieldset>
+    <label><input type="checkbox" id="hintBox"> Hint</label>
+    <button id="undoBtn" type="button">Undo</button>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Number the nine buttons 1 to 9, row by row. A board is then a list of nine numbers, and pressing a button adds a fixed list to it, all counted modulo the number of states N. That is <a class="wiki-term" data-wiki="Linear_algebra" href="https://en.wikipedia.org/wiki/Linear_algebra" target="_blank" rel="noopener">linear algebra</a> on a clock with N hours.</p>
+
+      <h2>The equation</h2>
+      <p>If s says how many times each button is pressed, then <code>target = board + A s</code> (mod N), where column k of the matrix A is what pressing button k adds. In the plane game a corner adds itself, its two neighbours along the edges and the centre; a side adds the three buttons in its line; the centre adds itself and the four sides. Pressing 1 advances buttons 1, 2, 4 and 5, as the original page says, and the test checks all nine columns.</p>
+
+      <h2>When can it always be solved?</h2>
+      <p>If A is invertible mod N then <code>s = A⁻¹ (target − board)</code> and every board can be solved in exactly one way, which is the Hint. The determinant of the plane matrix is 5, so it is invertible when N is not a multiple of 5: for N = 2, 3 and 4 (the test checked that the map from presses to boards is one-to-one for each, and not for N = 5). On the torus, where a press advances the whole row and column, the determinant is 80 = 16 · 5, so of 2, 3 and 4 only N = 3 works. The test confirms that torus boards with 2 or 4 states are not all reachable, and that the hint solved every board it was tried on: all 19,683 three-state boards, all 512 × 512 pairs of two-state boards and 200,000 random pairs.</p>
+
+      <h2>Questions from the page</h2>
+      <p>The order of the presses does not matter (the test shuffled 500 random sequences). The matrix of the plane game has the eigenvalue 1 twice, with two independent eigenvectors; the test finds the double root of the characteristic polynomial and two vectors with <code>A v = v</code>, which also hold mod 2, 3 and 4. And the rules can be found by experiment: set the target to zero, ask the hint for each single-button target, and read off the columns. The third geometry, "Don't touch", has rules you can find that way; they turn out to be the well known Lights Out rules (a button and its four neighbours), with determinant −7.</p>
+
+      <p class="tip">Choose 2 states and tick Hint, then press the buttons the hint shows. Why does the board come out right?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/Merlin.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="merlin-core.js"></script>
+<script src="merlin.js"></script>
+</body>
+</html>

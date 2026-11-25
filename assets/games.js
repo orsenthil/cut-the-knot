@@ -1770,5 +1770,12 @@ window.COOLMATHS = {
       tags: ["arithmetic", "mental-math", "counting"],
       level: 1,
     },
+    {
+      slug: "merlin",
+      title: "Merlin's Magic Squares",
+      blurb: "Press a button and several buttons change at once. Can you bring the board to the target pattern, and can you work out by arithmetic what to press?",
+      tags: ["algebra", "invariants", "logic"],
+      level: 3,
+    },
   ],
 };
