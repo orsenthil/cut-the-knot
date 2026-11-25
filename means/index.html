@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Means &mdash; coolmaths</title>
+<meta name="description" content="The average of some numbers can be taken in many ways: add, multiply, flip them over. Drag the bars and the exponent to see how all these means line up. Which is largest, and which smallest?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/means/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Means">
+<meta property="og:description" content="The average of some numbers can be taken in many ways: add, multiply, flip them over. Drag the bars and the exponent to see how all these means line up. Which is largest, and which smallest?">
+<meta property="og:url" content="https://coolmaths.ai/means/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 46rem; padding: 0.8rem; overflow-x: auto; }
+  #plot { position: relative; display: flex; gap: 0.35rem; align-items: flex-end; height: 13rem; width: max-content; min-width: 100%; padding: 0.2rem 0; touch-action: pan-x; }
+  .col { position: relative; width: 2.6rem; height: 100%; flex: none; border-radius: 0.4rem; background: var(--border); cursor: ns-resize; touch-action: none; }
+  .col .fill { position: absolute; left: 0; right: 0; bottom: 0; border-radius: 0.4rem; background: var(--accent); opacity: 0.8; }
+  .col:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .col.avg { cursor: default; background: transparent; border: 2px dashed var(--ink); }
+  .col.avg .fill { background: var(--good); opacity: 0.85; border-radius: 0.3rem; }
+  #meanline { position: absolute; left: 0; right: 0; height: 0; border-top: 2px dashed var(--good); pointer-events: none; }
+  #labels { display: flex; gap: 0.35rem; width: max-content; min-width: 100%; font: 600 0.8rem var(--mono); }
+  #labels span { width: 2.6rem; flex: none; text-align: center; }
+  #readout { font-size: 1.05rem; margin: 0.7rem 0 0; font-weight: 600; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: min(12rem, 50vw); accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="means" data-kind="demo">
+<main id="main">
+  <h1>The Means</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#limits">Limits</a><a class="tag" href="../index.html#fractions">Fractions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Find the middle of a set of numbers in many ways. The green bar is the mean, and the exponent decides which kind of mean it is.<br>
+    <strong>How to play:</strong> Drag the purple bars up and down, or use the arrow keys on a focused bar. Slide the exponent: 1 adds, 0 multiplies, minus 1 flips. Change the size of the set below.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="plot" role="group" aria-label="The numbers as bars, with the mean as the first bar and a dashed line across"></div>
+    <div id="labels" aria-hidden="true"></div>
+    <p id="readout" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label>Exponent <input id="r" type="range" min="-50" max="50" step="1" value="0" aria-label="Exponent of the mean, from -50 to 50"> <output id="rOut">0</output></label>
+    <label>Size of the set <input id="n" type="range" min="2" max="30" step="1" value="10" aria-label="How many numbers, from 2 to 30"> <output id="nOut">10</output></label>
+    <button id="newBtn" type="button" class="primary">New numbers</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>If a car drives for one hour at 20 miles per hour and another hour at 30, its average speed is 25: the <a class="wiki-term" data-wiki="Arithmetic_mean" href="https://en.wikipedia.org/wiki/Arithmetic_mean" target="_blank" rel="noopener">arithmetic mean</a>. If instead it drives half the <em>distance</em> at each speed, the average is 24, not 25: the <a class="wiki-term" data-wiki="Harmonic_mean" href="https://en.wikipedia.org/wiki/Harmonic_mean" target="_blank" rel="noopener">harmonic mean</a>. The same rule, distance divided by time, is applied to different things. Both answers are checked in the test (25 and 24, and 2d ÷ (d/20 + d/30) = 24).</p>
+
+      <h2>One formula for all the means</h2>
+      <p>For positive numbers <code>a₁ … aₙ</code> and an exponent r, the mean is <code>M<sub>r</sub> = ((a₁<sup>r</sup> + … + aₙ<sup>r</sup>) / n)<sup>1/r</sup></code>. With r = 1 it is the arithmetic mean, with r = −1 the harmonic mean (and <code>H(a) = 1 / A(1/a)</code>, which the test confirms), and with r = 2 the quadratic mean. At r = 0 the formula breaks, but the means settle down to the <a class="wiki-term" data-wiki="Geometric_mean" href="https://en.wikipedia.org/wiki/Geometric_mean" target="_blank" rel="noopener">geometric mean</a> <code>(a₁ ⋯ aₙ)<sup>1/n</sup></code> as r goes to 0, so that is what the page shows at 0. The test compares M at r = ±0.0001 with it on thousands of sets.</p>
+
+      <h2>The means line up</h2>
+      <p>Slide the exponent from −50 to 50 and the green bar only ever rises. This is the <a class="wiki-term" data-wiki="Generalized_mean" href="https://en.wikipedia.org/wiki/Generalized_mean" target="_blank" rel="noopener">power mean inequality</a>: <code>M<sub>r</sub> ≥ M<sub>r/2</sub></code> for r &gt; 0, which comes from the Cauchy–Schwarz inequality, and from it the famous <code>arithmetic ≥ geometric ≥ harmonic</code>. The test checked all of this at every exponent from −50 to 50 on 5,000 random sets of 2 to 30 numbers. All the means are equal only when all the numbers are equal.</p>
+
+      <h2>The two ends</h2>
+      <p>For very negative r the mean hugs the smallest number and for very large r the largest. At r = ±50 it is within a factor <code>n<sup>1/50</sup></code> of the end, which the test confirms.</p>
+
+      <p class="tip">Make all the bars equal. What happens to the means? Then make one bar much taller than the others and slide the exponent from −50 to 50.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/arithmetic/Means.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="means-core.js"></script>
+<script src="means.js"></script>
+</body>
+</html>

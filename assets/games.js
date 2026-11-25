@@ -1755,5 +1755,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "means",
+      title: "The Means",
+      blurb: "The average of some numbers can be taken in many ways: add, multiply, flip them over. Drag the bars and the exponent to see how all these means line up. Which is largest, and which smallest?",
+      tags: ["algebra", "limits", "fractions"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };
