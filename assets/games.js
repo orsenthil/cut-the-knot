@@ -1911,5 +1911,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "zeros-and-ones-array",
+      title: "Filling an Array with 0s and 1s, and Counting",
+      blurb: "Fill a grid with 0s and 1s and count the 1s in every row and column. How many different counts can you get, and what is the most possible?",
+      tags: ["counting", "logic"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

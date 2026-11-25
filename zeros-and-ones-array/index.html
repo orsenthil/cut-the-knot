@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Filling an Array with 0s and 1s, and Counting &mdash; coolmaths</title>
+<meta name="description" content="Fill a grid with 0s and 1s and count the 1s in every row and column. How many different counts can you get, and what is the most possible?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/zeros-and-ones-array/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Filling an Array with 0s and 1s, and Counting">
+<meta property="og:description" content="Fill a grid with 0s and 1s and count the 1s in every row and column. How many different counts can you get, and what is the most possible?">
+<meta property="og:url" content="https://coolmaths.ai/zeros-and-ones-array/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 44rem; padding: 0.8rem; overflow-x: auto; }
+  #grid { display: grid; gap: 3px; width: max-content; max-width: 100%; margin: 0 auto; }
+  #grid button, #grid .sum { width: 2rem; height: 2rem; padding: 0; display: grid; place-items: center; font-weight: 700; font-variant-numeric: tabular-nums; border-radius: 0.35rem; }
+  #grid button { border: 1px solid var(--border-strong); background: var(--surface); color: var(--muted); cursor: pointer; }
+  #grid button.one { background: var(--accent); color: #fff; border-color: var(--accent); }
+  #grid .sum { color: var(--ink); background: var(--highlight); font-size: 0.95rem; }
+  #grid .corner { visibility: hidden; }
+  #setLine { text-align: center; font-size: 1.15rem; margin: 0.8rem 0 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .controls label { display: inline-flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; max-width: 100%; }
+  .controls input[type=number] { width: 4.5rem; max-width: 100%; font: inherit; }
+</style>
+</head>
+<body data-game="zeros-and-ones-array" data-kind="demo">
+<main id="main">
+  <h1>Filling an Array with 0s and 1s, and Counting</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Fill a grid with 0s and 1s. Count the 1s in every row and every column. Try to get as many different counts as you can.<br>
+    <strong>How to play:</strong> Press a square to change a 0 into a 1 and back. The counts show on the right and at the bottom, and the different ones are collected underneath.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="grid" role="group" aria-label="The array of zeros and ones, with the number of ones in each row at the right and in each column at the bottom"></div>
+    <p id="setLine" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label>N (rows) <input id="nIn" type="number" min="2" max="20" step="1" value="3" aria-label="Number of rows"></label>
+    <label>M (columns) <input id="mIn" type="number" min="2" max="20" step="1" value="3" aria-label="Number of columns"></label>
+    <button id="clearBtn" type="button">Reset</button>
+    <button id="compBtn" type="button">Complement</button>
+    <button id="bestBtn" type="button" class="primary">Show the most possible</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The problem was set at the 1993&ndash;94 St. Petersburg Regional Olympiad for a 10 by 19 array: fill an <code>N</code> by <code>M</code> array with 0s and 1s, count the 1s in every row and column, and ask how many different counts there can be.</p>
+
+      <h2>An easy upper bound</h2>
+      <p>Swapping two rows or two columns changes none of the counts, so only the pattern of 1s matters, not where it sits. Say <code>N &ge; M</code>. A count is a whole number from 0 to <code>N</code> and no more, so there are at most <code>N + 1</code> different ones. The test tried every array on boards of up to 20 squares and none went above <code>max(N, M) + 1</code>.</p>
+
+      <h2>When the bound is reached</h2>
+      <p>The page says <code>N + 1</code> different counts can be had when <code>N = M</code>, when <code>N = M + 1</code> and <code>M &gt; 2</code>, when <code>N</code> is even and <code>M &ge; N/2 + 1</code>, and when <code>N</code> is odd and <code>M &gt; (N + 1)/2</code>. The button builds such an array for every size from 2 by 2 to 20 by 20 where this holds: a few full rows, then a run of rows that grows shorter by one each time. The test also found that on every board up to 7 by 7 these are <em>exactly</em> the sizes where the bound is reached: for example 3 by 2 only gets 3 different counts, not 4, and 6 by 3 gets 6, not 7. That uses the <a class="wiki-term" data-wiki="Gale%E2%80%93Ryser_theorem" href="https://en.wikipedia.org/wiki/Gale%E2%80%93Ryser_theorem" target="_blank" rel="noopener">Gale&ndash;Ryser theorem</a>, which says exactly which lists of row counts and column counts some array can have.</p>
+
+      <h2>Complements</h2>
+      <p>Replacing every 0 by 1 and every 1 by 0 turns a count <code>s</code> into <code>N - s</code> in the columns and <code>M - s</code> in the rows. For a square array that sends the set <code>{0, 1, ..., N}</code> to itself, so the complement of an optimal array is optimal. That is what the Complement button shows.</p>
+
+      <p class="tip">Make a 4 by 4 array with five different counts, then press Complement. Then try 4 by 2: what is the most you can get?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/Numbers01.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="zeros-and-ones-array-core.js"></script>
+<script src="zeros-and-ones-array.js"></script>
+</body>
+</html>
