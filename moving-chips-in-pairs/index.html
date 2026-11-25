@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Moving Chips in Pairs Down a Checkerboard &mdash; coolmaths</title>
+<meta name="description" content="N chips sit on an N by N board, one in each row and column. Each move slides any two chips one square down. Can you get every chip to the bottom row?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/moving-chips-in-pairs/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Moving Chips in Pairs Down a Checkerboard">
+<meta property="og:description" content="N chips sit on an N by N board, one in each row and column. Each move slides any two chips one square down. Can you get every chip to the bottom row?">
+<meta property="og:url" content="https://coolmaths.ai/moving-chips-in-pairs/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 44rem; padding: 0.7rem; overflow-x: auto; }
+  #board { display: grid; gap: 2px; margin: 0 auto; width: max-content; background: var(--border-strong); border: 2px solid var(--border-strong); }
+  .sq { width: 2.2rem; height: 2.2rem; background: var(--surface); display: flex; align-items: center; justify-content: center; padding: 0; border: 0; }
+  .sq.alt { background: var(--stage, var(--surface)); filter: brightness(0.95); }
+  .sq.bottom { box-shadow: inset 0 -3px 0 var(--good); }
+  button.sq { cursor: pointer; }
+  .chip { width: 80%; height: 80%; border-radius: 50%; background: #d94f3f; border: 3px solid var(--ink); box-sizing: border-box; }
+  .sq.sel .chip { background: var(--accent); box-shadow: 0 0 0 3px var(--highlight); }
+  .sq.done .chip { background: var(--good); }
+  button.sq:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: min(10rem, 40vw); accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="moving-chips-in-pairs" data-kind="game">
+<main id="main">
+  <h1>Moving Chips in Pairs Down a Checkerboard</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Some chips stand on a checkerboard, one in each row and one in each column. Slide chips down, always two at a time, until every chip is on the bottom row.<br>
+    <strong>How to play:</strong> Press two chips to pick them, then press Make move: both slide down one square. A chip on the bottom row cannot be picked. Can you get all of them down?
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="board" role="group" aria-label="The board. The bottom row is marked in green."></div>
+  </div>
+
+  <div class="controls">
+    <label>Size N <input id="n" type="range" min="3" max="20" step="1" value="10" aria-label="Size of the board, from 3 to 20"> <output id="nOut">10</output></label>
+    <button id="undoBtn" type="button">Remove last</button>
+    <button id="moveBtn" type="button" class="primary">Make move</button>
+    <button id="hintBtn" type="button">Show a good move</button>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Call a chip's <b>height</b> the number of squares between it and the bottom row, and the height of a position the sum of the heights of its chips. The game is won exactly when the height is 0.</p>
+
+      <h2>Every move lowers the height by 2</h2>
+      <p>A move slides two chips down by one square each, so the height of the position drops by exactly 2. Starting from an odd height you can never reach 0, so an odd position is not solvable. At the start the chips stand one in each row, so the heights are 0, 1, …, N−1 and the starting height is <code>N(N−1)/2</code>. This is even exactly when N leaves remainder 0 or 1 when divided by 4. So the game can be won for N = 4, 5, 8, 9, 12, 13, 16, 17, 20, and for the other sizes (3, 6, 7, 10, 11, …) it is impossible whatever you do. The test confirmed this by trying every possible sequence of moves from every placement for N = 3 to 6.</p>
+
+      <h2>A strategy that always works</h2>
+      <p>When the height is even, there is a way: <em>always move the two chips that are highest.</em> Sort the heights of the chips: at the start they are 0, 1, …, N−1 with no gaps. Moving the two highest down keeps the sorted list free of gaps. A blocked position (one chip left, high up at an even, non-zero height) would need a gap, so it never happens, and since the height keeps falling the process ends with every chip on the bottom row. The test played this strategy from every starting placement for N up to 8 (all N! placements), with the ties broken in seven different ways each: for even heights it won every time with no gap ever appearing, and for odd heights it always ended blocked with one chip left at an odd height.</p>
+
+      <h2>Try it</h2>
+      <p>The Show a good move button highlights the two chips the strategy would move. Use it, and compare with your own choices.</p>
+
+      <p class="tip">Pick N = 5 and try to win without the hint. Then pick N = 6. Why can you never win?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/MovingInpairs.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="moving-chips-in-pairs-core.js"></script>
+<script src="moving-chips-in-pairs.js"></script>
+</body>
+</html>

@@ -1825,5 +1825,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "moving-chips-in-pairs",
+      title: "Moving Chips in Pairs Down a Checkerboard",
+      blurb: "N chips sit on an N by N board, one in each row and column. Each move slides any two chips one square down. Can you get every chip to the bottom row?",
+      tags: ["parity", "invariants", "algorithms"],
+      level: 2,
+    },
   ],
 };
