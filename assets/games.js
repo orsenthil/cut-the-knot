@@ -1817,5 +1817,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "monty-hall",
+      title: "The Monty Hall Problem",
+      blurb: "A car is behind one of three doors, goats behind the others. You pick a door, and the host, who knows where the car is, opens a door with a goat. Should you stay or switch? Try it many times and count.",
+      tags: ["counting", "logic", "game-strategy"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };
