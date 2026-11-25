@@ -394,6 +394,16 @@ const CORE_GLOBALS = {
   "mean-value-theorem/mean-value-theorem-core.js": ["MVTCore"],
   "napier-bones/napier-bones-core.js": ["NapierCore"],
   "napoleon-polygons/napoleon-polygons-core.js": ["NapoleonCore"],
+  "signs-and-sums/signs-and-sums-core.js": ["SignsAndSumsCore"],
+  "newtons-method/newtons-method-core.js": ["NewtonCore"],
+  "nine-squares/nine-squares-core.js": ["NineSquaresCore"],
+  "golden-ratio-pentagon/golden-ratio-pentagon-core.js": ["PentagonCore"],
+  "northcotts-game/northcotts-game-core.js": ["NorthcottCore"],
+  "counting-triangles/counting-triangles-core.js": ["TrianglesCore"],
+  "zeros-and-ones-array/zeros-and-ones-array-core.js": ["ZeroOneCore"],
+  "adding-functions/adding-functions-core.js": ["FunctionsCore"],
+  "orthogonal-latin-squares/orthogonal-latin-squares-core.js": ["LatinCore"],
+  "kochs-snowflake/kochs-snowflake-core.js": ["KochCore"],
 };
 
 const games = [];

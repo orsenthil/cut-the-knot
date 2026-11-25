@@ -530,6 +530,40 @@ const GAMES = {
   },
   "napier-bones": null,
   "napoleon-polygons": null,
+  // Ten more ports.
+  "signs-and-sums": async (page) => {
+    await page.locator('button[aria-label="Increase number 1"]').click();
+  },
+  "newtons-method": async (page) => {
+    await page.fill("#x0In", "4.5");
+    await page.dispatchEvent("#x0In", "change");
+    await page.fill("#nIn", "3");
+    await page.dispatchEvent("#nIn", "change");
+  },
+  "nine-squares": async (page) => {
+    await page.click("#nineBtn");
+  },
+  "golden-ratio-pentagon": null,
+  "northcotts-game": async (page) => {
+    await page.locator("#board .cell.mine").first().click();
+  },
+  "counting-triangles": async (page) => {
+    await page.fill("#aIn", "128");
+    await page.dispatchEvent("#aIn", "input");
+  },
+  "zeros-and-ones-array": async (page) => {
+    await page.click("#bestBtn");
+  },
+  "adding-functions": async (page) => {
+    await page.check("#opSub");
+  },
+  "orthogonal-latin-squares": async (page) => {
+    await page.click("#showBtn");
+  },
+  "kochs-snowflake": async (page) => {
+    await page.fill("#nIn", "4");
+    await page.dispatchEvent("#nIn", "input");
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

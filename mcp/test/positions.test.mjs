@@ -181,6 +181,17 @@ check("multiplication-table: 3 x 4 = 12 appears 6 times", read["multiplication-t
 check("mean-value-theorem: after Find c the tangent is parallel to the secant", read["mean-value-theorem"]?.tangentParallelToSecant === true && read["mean-value-theorem"].meanValuePoints.length >= 1);
 check("napier-bones: 187 x 3 = 561", read["napier-bones"]?.numberInBase === "187" && read["napier-bones"].product === "561");
 check("napoleon-polygons: the pentagon's last polygon is regular", read["napoleon-polygons"]?.n === 5 && read["napoleon-polygons"].lastPolygonIsRegular === true);
+// Ten more ports, on positions saved by their own pages.
+check("signs-and-sums: a length-4 row, with the sums of every three and a length that allows a negative total", read["signs-and-sums"]?.n === 4 && read["signs-and-sums"].tripleSums.length === 2 && read["signs-and-sums"].canBeSolvedAtThisLength === true && read["signs-and-sums"].total === read["signs-and-sums"].values.reduce((a, b) => a + b, 0));
+check("newtons-method: a start at 4.5 with three steps ends at the root near 3.837", read["newtons-method"]?.startX === 4.5 && read["newtons-method"].stepsDrawn.length === 3 && read["newtons-method"].stepsDrawn[2].next > 3.83 && read["newtons-method"].stepsDrawn[2].next < 3.85);
+check("nine-squares: a = 9 tiles a 33 by 32 rectangle exactly", read["nine-squares"]?.a === 9 && read["nine-squares"].tilesExactly === true && read["nine-squares"].rectangle === "33 by 32" && read["nine-squares"].sides.join() === "1,9,10,14,18,8,4,7,15");
+check("golden-ratio-pentagon: the five triangles are equal and the pentagon is 3.618 of one", read["golden-ratio-pentagon"]?.allEqual === true && Math.abs(read["golden-ratio-pentagon"].areaOverOneTriangle - 3.618034) < 1e-5);
+check("northcotts-game: the saved board's nim-sum is the XOR of its gaps", read["northcotts-game"]?.gaps.length === 6 && read["northcotts-game"].nimSum === read["northcotts-game"].gaps.reduce((a, b) => a ^ b, 0) && read["northcotts-game"].playerToMoveIsWinning === (read["northcotts-game"].nimSum !== 0));
+check("counting-triangles: N = 5 with the slider in the middle, 25 triangles at both ends", read["counting-triangles"]?.n === 5 && read["counting-triangles"].slider === "in between" && read["counting-triangles"].totals.triangle === 25 && read["counting-triangles"].totals.square === 25);
+check("zeros-and-ones-array: the most possible array was shown for 3 by 3, 4 sums", read["zeros-and-ones-array"]?.size === "3 by 3" && read["zeros-and-ones-array"].count === 4 && read["zeros-and-ones-array"].reachedTheMost === true);
+check("adding-functions: the difference was chosen and its height at the marker is f - g", read["adding-functions"]?.operation === "f - g" && Math.abs(read["adding-functions"].result - (read["adding-functions"].f - read["adding-functions"].g)) < 1e-9);
+check("orthogonal-latin-squares: the solution for 4 is saved, Latin and orthogonal", read["orthogonal-latin-squares"]?.size === 4 && read["orthogonal-latin-squares"].solved === true && read["orthogonal-latin-squares"].repeats === 0);
+check("kochs-snowflake: N = 4 has 192 segments and an outline 7.11 sides long", read["kochs-snowflake"]?.n === 4 && read["kochs-snowflake"].segments === 192 && Math.abs(read["kochs-snowflake"].totalLength - 64 / 9) < 1e-9);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1785,6 +1796,33 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("napier-bones: BB x 3 = 231 in base 16", nb.numberInBase === "BB" && nb.product === "231");
   const np = at("napoleon-polygons", { n: 3, m: 2, points: [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 20, y: 80 }], showTriangles: false });
   check("napoleon-polygons: Napoleon's triangle is regular", np.lastPolygonIsRegular === true && np.steps.join() === "1");
+  // The ten newest ports, on positions built here.
+  const ss = at("signs-and-sums", { n: 4, values: [-4, 3, 3, -4] });
+  check("signs-and-sums: -4 3 3 -4 is the goal", ss.solved === true && ss.total === -2 && ss.tripleSums.join() === "2,2");
+  const ss6 = at("signs-and-sums", { n: 6, values: [1, 1, 1, 1, 1, 1] });
+  check("signs-and-sums: length 6 can never have a negative total", ss6.canBeSolvedAtThisLength === false && ss6.solved === false);
+  const nm = at("newtons-method", { ys: Array.from({ length: 11 }, (_, i) => -((i - 5) ** 3) - 4 * (i - 5) ** 2 + 5 * (i - 5) + 95.83333333333333), x0: 0, n: 3 });
+  check("newtons-method: a start at 0 on the starting curve goes off the picture at once", nm.leftThePicture === true && nm.reachedARoot === false && nm.stepsDrawn.length === 1);
+  const ns = at("nine-squares", { a: 6, tiles: false });
+  check("nine-squares: a = 6 leaves gaps and still has the sides 1, 4 and 15", ns.tilesExactly === false && ns.emptyUnitSquares === 66 && ns.sides[0] === 1 && ns.sides[6] === 4 && ns.sides[8] === 15);
+  const gp = at("golden-ratio-pentagon", { X: { x: 100, y: 80 }, Z: { x: 300, y: 250 }, D: { x: 210, y: 300 } });
+  check("golden-ratio-pentagon: any X, Z, D give equal triangles", gp.allEqual === true && Math.abs(gp.areaOverOneTriangle - gp.expected) < 1e-6);
+  const nc = at("northcotts-game", { nx: 11, ny: 2, white: [2, 8], black: [6, 1], turn: "white" });
+  check("northcotts-game: gaps 3 and 6 have nim-sum 5, so white to move wins with a move in row 2", nc.nimSum === 5 && nc.playerToMoveIsWinning === true && nc.winningMove.row === 1);
+  const nz = at("northcotts-game", { nx: 11, ny: 2, white: [2, 8], black: [6, 4], turn: "white" });
+  check("northcotts-game: gaps 3 and 3 have nim-sum 0, so the player to move is losing", nz.nimSum === 0 && nz.playerToMoveIsWinning === false && nz.winningMove === null);
+  const ct = at("counting-triangles", { n: 7, alpha: 256 });
+  check("counting-triangles: N = 7 at the triangle end, 28 + 21 = 49", ct.slider === "triangle" && ct.counts.full === 28 && ct.counts.low === 21 && ct.totals.triangle === 49);
+  const za = at("zeros-and-ones-array", { n: 3, m: 2, cells: [[1, 1], [1, 0], [1, 0]] });
+  check("zeros-and-ones-array: 3 by 2 has at most 4 different sums and the page's construction cannot reach it", za.most === 4 && za.mostIsReachableForThisSize === false && za.count === 3);
+  const af = at("adding-functions", { f: new Array(11).fill(2), g: new Array(11).fill(2), op: "sub", shade: false, points: false, probe: 1 });
+  check("adding-functions: f = g = 2 has difference 0", af.result === 0 && af.f === 2 && af.operation === "f - g");
+  const ol = at("orthogonal-latin-squares", { n: 3, left: [[0, 1, 2], [1, 2, 0], [2, 0, 1]], right: [[0, 1, 2], [0, 1, 2], [0, 1, 2]], apply: "right" });
+  check("orthogonal-latin-squares: the right square has repeated letters in its columns, so not solved", ol.latinLeft === true && ol.latinRight === false && ol.solved === false && ol.movesApplyTo === "capitals");
+  const ol6 = at("orthogonal-latin-squares", { n: 6, left: [[0, 1, 2, 3, 4, 5], [1, 2, 3, 4, 5, 0], [2, 3, 4, 5, 0, 1], [3, 4, 5, 0, 1, 2], [4, 5, 0, 1, 2, 3], [5, 0, 1, 2, 3, 4]], right: [[0, 1, 2, 3, 4, 5], [1, 2, 3, 4, 5, 0], [2, 3, 4, 5, 0, 1], [3, 4, 5, 0, 1, 2], [4, 5, 0, 1, 2, 3], [5, 0, 1, 2, 3, 4]], apply: "left" });
+  check("orthogonal-latin-squares: size 6 has no solution at all (Euler's 36 officers)", ol6.solutionExistsForThisSize === false && ol6.solved === false);
+  const ks = at("kochs-snowflake", { n: 8 });
+  check("kochs-snowflake: N = 8 has 49,152 segments and area under 8/5", ks.segments === 49152 && ks.areaOverTriangle < 1.6 && ks.areaOverTriangle > 1.59);
 }
 }
 }
