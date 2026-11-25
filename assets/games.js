@@ -1669,5 +1669,12 @@ window.COOLMATHS = {
       tags: ["coordinates", "graph-theory", "unit-distance"],
       level: 1,
     },
+    {
+      slug: "moser-spindle-colouring",
+      title: "Colour the Moser Spindle",
+      blurb: "Seven points, eleven pairs exactly one step apart. Paint the points so that two points one step apart never share a colour: how few colours can you use?",
+      tags: ["graph-theory", "coordinates", "unit-distance"],
+      level: 2,
+    },
   ],
 };

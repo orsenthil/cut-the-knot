@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Colour the Moser Spindle &mdash; coolmaths</title>
+<meta name="description" content="Seven points, eleven pairs exactly one step apart. Paint the points so that two points one step apart never share a colour: how few colours can you use?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/moser-spindle-colouring/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Colour the Moser Spindle">
+<meta property="og:description" content="Seven points, eleven pairs exactly one step apart. Paint the points so that two points one step apart never share a colour: how few colours can you use?">
+<meta property="og:url" content="https://coolmaths.ai/moser-spindle-colouring/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.8rem; }
+  #board { position: relative; width: 100%; }
+  #edges { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #edges line { stroke: var(--ink); stroke-width: 0.9; stroke-linecap: round; }
+  #edges line.clash { stroke: var(--bad); stroke-width: 1.8; }
+  .node { position: absolute; width: 3.2rem; height: 3.2rem; transform: translate(-50%, -50%); border-radius: 50%; border: 3px solid var(--ink);
+          background: var(--surface); color: #111; font: 700 1.1rem system-ui, sans-serif; cursor: pointer; padding: 0; }
+  .node:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  .node.c1 { background: #8f86ff; } .node.c2 { background: #3fb27f; } .node.c3 { background: #f0b247; } .node.c4 { background: #ec7a66; }
+  .node.clash { box-shadow: 0 0 0 4px var(--bad); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .readout { font-family: var(--mono); font-size: 0.9rem; margin: 0.6rem 0 0; }
+</style>
+</head>
+<body data-game="moser-spindle-colouring" data-kind="game">
+<main id="main">
+  <h1>Colour the Moser Spindle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#graph-theory">Graph Theory</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#unit-distance">Unit Distance Problem</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Paint all seven dots so that two dots joined by a line never have the same colour.<br>
+    <strong>How to play:</strong> Tap a dot to give it the next colour. A joined pair with the same colour glows red. First try with 4 colours, then with 3.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="board" role="group" aria-label="The seven points of the Moser spindle. Tap a point to change its colour.">
+      <svg id="edges" aria-hidden="true" focusable="false"></svg>
+    </div>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Colours <select id="k" aria-label="How many colours"><option value="4">4</option><option value="3">3</option><option value="2">2</option></select></label>
+    <button id="resetBtn" type="button" class="primary">Clear</button>
+    <button id="checkBtn" type="button">Is it possible?</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Each line joins two points exactly 1 apart. Two equilateral triangles form a rhombus; two rhombi share the point A, and they are turned about A just far enough that their far tips are also 1 apart. That is the <a class="wiki-term" data-wiki="Moser_spindle" href="https://en.wikipedia.org/wiki/Moser_spindle" target="_blank" rel="noopener">Moser spindle</a>, found by the brothers Leo and William Moser in 1961.</p>
+
+      <h2>Why 3 colours fail</h2>
+      <p>In a triangle all three points differ. In a rhombus (A, B, C, D, with B and C the middle points) B and C differ from each other, and A and D each differ from both of them. With only 3 colours, A and D must then both take the third one. That holds in each rhombus, so each far tip has the same colour as A. But the two tips D and D' are 1 apart and so must differ, while both match A. That is a contradiction. The test confirms it by trying every colouring: none of 3<sup>7</sup> works, and 4 colours do.</p>
+
+      <h2>Colouring the plane</h2>
+      <p>If a colouring of the whole plane gives different colours to points 1 apart, then it also colours this spindle properly, so the plane needs at least 4 colours. In 2018 Aubrey de Grey found a much larger unit-distance graph that needs 5, and seven colours (tiling the plane in small hexagons) are enough. Whether the answer is 5, 6 or 7 is the <a class="wiki-term" data-wiki="Hadwiger%E2%80%93Nelson_problem" href="https://en.wikipedia.org/wiki/Hadwiger%E2%80%93Nelson_problem" target="_blank" rel="noopener">Hadwiger–Nelson problem</a>, still open.</p>
+
+      <h2>Link to the unit distance problem</h2>
+      <p>The same graphs, points of the plane joined when 1 apart, are what the unit distance problem counts. One asks how few colours a unit distance graph needs, the other how many edges it can have.</p>
+
+      <p class="tip">Choose 3 colours and use "Is it possible?" Where does your attempt first get stuck?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original game for coolmaths, on the colouring of
+    <a class="wiki-term" data-wiki="Moser_spindle" href="https://en.wikipedia.org/wiki/Moser_spindle" target="_blank" rel="noopener">Moser's spindle</a>
+    (<a href="https://en.wikipedia.org/wiki/Hadwiger%E2%80%93Nelson_problem" target="_blank" rel="noopener">Wikipedia</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="moser-spindle-colouring-core.js"></script>
+<script src="moser-spindle-colouring.js"></script>
+</body>
+</html>
