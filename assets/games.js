@@ -1919,5 +1919,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "adding-functions",
+      title: "Addition and Subtraction of Functions",
+      blurb: "Add or subtract two curves one point at a time. Bend either curve and watch the sum or the difference follow it.",
+      tags: ["curves", "algebra"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

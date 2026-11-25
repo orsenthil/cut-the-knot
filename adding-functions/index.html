@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Addition and Subtraction of Functions &mdash; coolmaths</title>
+<meta name="description" content="Add or subtract two curves one point at a time. Bend either curve and watch the sum or the difference follow it.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/adding-functions/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Addition and Subtraction of Functions">
+<meta property="og:description" content="Add or subtract two curves one point at a time. Bend either curve and watch the sum or the difference follow it.">
+<meta property="og:url" content="https://coolmaths.ai/adding-functions/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 42rem; padding: 0.4rem; }
+  #board { width: 100%; height: auto; display: block; touch-action: none; user-select: none; cursor: ns-resize; }
+  #board .axis { stroke: var(--border-strong); stroke-width: 1; }
+  #board .c { fill: none; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+  #board .c.f { stroke: var(--ink); }
+  #board .c.g { stroke: #2e9e62; }
+  #board .c.add { stroke: #3b6fe0; stroke-width: 3.5; }
+  #board .c.sub { stroke: var(--bad); stroke-width: 3.5; }
+  #board .shade { stroke: none; fill-opacity: 0.18; }
+  #board .shade.add { fill: #3b6fe0; }
+  #board .shade.sub { fill: var(--bad); }
+  #board .probe { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 4; }
+  #board .dot.f { fill: var(--ink); } #board .dot.g { fill: #2e9e62; } #board .dot.r { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  #board .knot { stroke: var(--ink); stroke-width: 1.5; cursor: ns-resize; }
+  #board .knot.f { fill: var(--surface); } #board .knot.g { fill: #2e9e62; fill-opacity: 0.3; }
+  #board [tabindex]:focus-visible { outline: none; stroke: var(--focus); stroke-width: 4; }
+  .readout { font-family: var(--mono); font-size: 0.85rem; margin: 0.5rem 0 0; white-space: pre-line; }
+  .controls label { display: inline-flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; max-width: 100%; }
+  .controls input[type=range] { width: min(12rem, 100%); }
+  .key { display: inline-block; width: 1.2rem; height: 0.35rem; border-radius: 0.2rem; vertical-align: middle; margin-right: 0.25rem; }
+  .keys { font-size: 0.9rem; margin: 0.4rem 0 0; display: flex; flex-wrap: wrap; gap: 0.2rem 1rem; }
+</style>
+</head>
+<body data-game="adding-functions" data-kind="demo">
+<main id="main">
+  <h1>Addition and Subtraction of Functions</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two curves, black f and green g, are added or subtracted point by point to make a third curve. Change f and g and watch the new curve follow.<br>
+    <strong>How to play:</strong> Drag the black or green curve up or down anywhere along it. Choose f + g (blue) or f &minus; g (red), and slide the marker to compare the heights.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 340" role="group" aria-label="Graphs of f in black, g in green and their sum or difference"></svg>
+    <p class="keys"><span><i class="key" style="background:var(--ink)"></i>f</span><span><i class="key" style="background:#2e9e62"></i>g</span><span id="keyR"><i class="key" id="keyRColor" style="background:#3b6fe0"></i><span id="keyRText">f + g</span></span></p>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label><input type="radio" name="op" id="opAdd" checked> f + g</label>
+    <label><input type="radio" name="op" id="opSub"> f &minus; g</label>
+    <label><input id="shadeBox" type="checkbox"> Shade graph</label>
+    <label><input id="ptsBox" type="checkbox"> Show points</label>
+    <label>x <input id="probe" type="range" min="-5" max="5" step="0.05" value="1" aria-label="Where to read the three heights"></label>
+    <button id="newBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Adding or subtracting two functions is done one input at a time: take the height of each graph at the same <code>x</code> and add or subtract them.</p>
+
+      <h2>Point by point</h2>
+      <p><code>(f + g)(x) = f(x) + g(x)</code> and <code>(f &minus; g)(x) = f(x) &minus; g(x)</code>. At the marker you can read off the three heights. The test checked these equalities at thousands of random places on randomly bent graphs.</p>
+
+      <h2>What to look for</h2>
+      <p>The difference is zero exactly where the graphs of f and g cross: the red curve touches the middle line there (the test finds each sign change and checks that f and g meet). Where g is zero the sum and difference both equal f. If g equals f, the difference is the flat line 0 and the sum is the double of f. And <code>(f + g) &minus; g = f</code>: subtracting undoes adding.</p>
+
+      <h2>A fact hidden in the picture</h2>
+      <p>The curves are <a class="wiki-term" data-wiki="Spline_(mathematics)" href="https://en.wikipedia.org/wiki/Spline_(mathematics)" target="_blank" rel="noopener">cubic splines</a>: smooth curves through eleven points whose heights you drag. The blue curve is not computed separately. It is the cubic spline through the <em>sums</em> of the heights of the points of f and g, because building a spline from the heights is a <a class="wiki-term" data-wiki="Linear_map" href="https://en.wikipedia.org/wiki/Linear_map" target="_blank" rel="noopener">linear</a> operation. The test checks this on 300 random pairs of curves.</p>
+
+      <p class="tip">Make g exactly follow f. What happens to the red curve? Then flip g upside down and compare the red and blue curves.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Calculus/OperationsOnFunctions.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="adding-functions-core.js"></script>
+<script src="adding-functions.js"></script>
+</body>
+</html>
