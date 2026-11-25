@@ -1801,5 +1801,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "miu-system",
+      title: "The MIU System",
+      blurb: "Start from the word MI and use four rules to make new words. Hofstadter asks: can you ever make MU? Try, and then find out why not.",
+      tags: ["logic", "invariants", "divisibility"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

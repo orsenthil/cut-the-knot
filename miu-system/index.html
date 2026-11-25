@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The MIU System &mdash; coolmaths</title>
+<meta name="description" content="Start from the word MI and use four rules to make new words. Hofstadter asks: can you ever make MU? Try, and then find out why not.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/miu-system/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The MIU System">
+<meta property="og:description" content="Start from the word MI and use four rules to make new words. Hofstadter asks: can you ever make MU? Try, and then find out why not.">
+<meta property="og:url" content="https://coolmaths.ai/miu-system/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.8rem; display: grid; grid-template-columns: minmax(0, 14rem) minmax(0, 1fr); gap: 0.8rem 1rem; align-items: start; }
+  @media (max-width: 34rem) { #stage { grid-template-columns: minmax(0, 1fr); } }
+  #rules4 { display: grid; gap: 0.4rem; }
+  #rules4 button { text-align: left; font-family: var(--mono); font-size: 0.85rem; min-height: 2.75rem; overflow-wrap: anywhere; }
+  #list { list-style: none; margin: 0; padding: 0; font-family: var(--mono); font-size: 1rem; max-height: 22rem; overflow: auto; border: 2px solid var(--border); border-radius: 0.5rem; background: var(--surface); }
+  #list li { padding: 0.3rem 0.5rem; overflow-wrap: anywhere; border-bottom: 1px solid var(--border); }
+  #list li:first-child { font-weight: 700; background: var(--highlight); }
+  #pick { grid-column: 1 / -1; font-family: var(--mono); font-size: 1.15rem; overflow-wrap: anywhere; line-height: 2.2; border-top: 2px dashed var(--border-strong); padding-top: 0.6rem; }
+  #pick button { font: inherit; padding: 0 0.15rem; min-width: 2rem; min-height: 2.2rem; border-radius: 0.35rem; border: 2px solid var(--accent); background: var(--highlight); color: var(--ink); cursor: pointer; }
+  #pick p { margin: 0 0 0.4rem; font-family: system-ui, sans-serif; font-size: 0.95rem; line-height: 1.4; }
+  #stage button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="miu-system" data-kind="demo">
+<main id="main">
+  <h1>The MIU System</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#divisibility">Divisibility</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> You start with the word MI. Four rules let you make new words from the newest one, and the question is whether you can ever make the word MU.<br>
+    <strong>How to play:</strong> Press a rule's button to use it on the top word. When a rule fits in more than one place, click the letter where you want it. Remove last takes back the newest word.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="rules4" role="group" aria-label="The four rules"></div>
+    <ol id="list" aria-label="The words so far, newest first"></ol>
+    <div id="pick" hidden></div>
+  </div>
+
+  <div class="controls">
+    <button id="removeBtn" type="button">Remove last</button>
+    <button id="resetBtn" type="button">Start again</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The MIU system is a tiny <a class="wiki-term" data-wiki="Formal_system" href="https://en.wikipedia.org/wiki/Formal_system" target="_blank" rel="noopener">formal system</a> from Douglas Hofstadter's book <em>Gödel, Escher, Bach</em>: one axiom (MI), four rules, and words of three letters. A word you can make is a theorem. The puzzle: is MU a theorem?</p>
+
+      <h2>The rules</h2>
+      <p>With x and y standing for any strings: (1) <code>xI → xIU</code>, (2) <code>Mx → Mxx</code>, (3) <code>xIIIy → xUy</code>, (4) <code>xUUy → xy</code>. The page's text prints rule 1 as "xI → xIM", but the applet's button, like Hofstadter's book, adds a U, and the page follows the applet. The test applies the rules to every word in a search and checks them against a second, independent version.</p>
+
+      <h2>An invariant answers the puzzle</h2>
+      <p>Count the I's. The axiom MI has one. Rule 1 adds a U and rule 4 drops two U's, so neither changes the count. Rule 2 doubles it. Rule 3 removes three. Starting from 1 (not a multiple of 3), doubling 1 or 2 gives 2 or 4, and neither is a multiple of 3; subtracting 3 changes nothing mod 3. So the number of I's is never a multiple of 3. MU has no I's, and 0 is a multiple of 3, so MU is <b>not</b> a theorem, however long you try. The test searched all 299,108 theorems of up to 26 letters and found no word with a multiple of 3 I's and never MU.</p>
+
+      <h2>What can be made</h2>
+      <p>The test also found that every word that is M followed by up to seven I's and U's, with the number of I's not a multiple of 3, can be made. (Some, such as MUUUUUUI, need words much longer than themselves on the way; the applet allows up to 10,000 letters.) So the invariant does not just forbid words: it describes the theorems, at least among the short words.</p>
+
+      <p class="tip">Make MIIU, then MIIIIU... which rule gets rid of three I's at once? Can you ever reach a word with exactly 3 I's?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/MIUsystem.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="miu-system-core.js"></script>
+<script src="miu-system.js"></script>
+</body>
+</html>
