@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>No Equilateral Triangles &mdash; coolmaths</title>
+<meta name="description" content="Ten dots sit in a triangular grid, and each is orange or red. Can you colour them so that no three dots of one colour form an equilateral triangle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/no-equilateral-triangles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="No Equilateral Triangles">
+<meta property="og:description" content="Ten dots sit in a triangular grid, and each is orange or red. Can you colour them so that no three dots of one colour form an equilateral triangle?">
+<meta property="og:url" content="https://coolmaths.ai/no-equilateral-triangles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.8rem; }
+  #board { position: relative; width: 100%; aspect-ratio: 8 / 5.9; }
+  #lines { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #lines polygon { fill: var(--accent); fill-opacity: 0.35; stroke: var(--accent); stroke-width: 0.7; stroke-linejoin: round; }
+  .dot { position: absolute; width: 3rem; height: 3rem; transform: translate(-50%, -50%); border-radius: 50%; border: 3px solid var(--ink);
+         color: #111; font: 700 1rem system-ui, sans-serif; cursor: pointer; padding: 0; }
+  .dot.orange { background: #f0b247; } .dot.red { background: #e5624d; }
+  .dot:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  .readout { font-family: var(--mono); font-size: 0.9rem; margin: 0.6rem 0 0; }
+</style>
+</head>
+<body data-game="no-equilateral-triangles" data-kind="demo">
+<main id="main">
+  <h1>No Equilateral Triangles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#unit-distance">Unit Distance Problem</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Ten dots are each orange or red. Colour them so that no three dots of the same colour make a triangle with three equal sides.<br>
+    <strong>How to play:</strong> Tap a dot to switch its colour. A triangle whose corners are all one colour is shaded blue. Can you make them all go away?
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="board" role="group" aria-label="Ten dots in rows of one, two, three and four. Tap a dot to switch its colour.">
+      <svg id="lines" aria-hidden="true" focusable="false"></svg>
+    </div>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary">New colours</button>
+    <button id="checkBtn" type="button">Try every colouring</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The answer is no: however the ten dots are coloured, some equilateral triangle has three corners of one colour. This is a small case of <a class="wiki-term" data-wiki="Ramsey_theory" href="https://en.wikipedia.org/wiki/Ramsey_theory" target="_blank" rel="noopener">Ramsey theory</a>: a big enough pattern cannot avoid having an ordered piece. It also shows that the plane cannot be split into two colours with no monochromatic equilateral triangle.</p>
+
+      <h2>Fifteen triangles</h2>
+      <p>Among the ten dots there are exactly 15 equilateral triangles, 9 with side 1 (6 pointing up, 3 down), 3 of side 2 and 3 tilted ones. The test found them from the distances and confirmed that the applet's list is the whole set.</p>
+
+      <h2>Trying everything</h2>
+      <p>With two colours there are 2<sup>10</sup> = 1,024 colourings. The test tried all of them: none avoids a monochromatic triangle, and the best have exactly one (60 of them do). The button above does the same, in the page.</p>
+
+      <h2>Are dots 7 and 10 needed?</h2>
+      <p>The proofs on the original page never use dots 7 and 10 (the last row's two ends), and ask whether they could be removed. They cannot. The test found a colouring of the other eight dots with no monochromatic triangle among them, and in fact removing any single dot leaves a colouring that works. So all ten dots are needed, even though the written proofs only mention eight.</p>
+
+      <h2>Link to unit distances</h2>
+      <p>Here every size of triangle counts. If only pairs 1 apart must differ, two colours fail at once (a triangle of side 1 needs three) and the Moser spindle shows that four are needed. Whether five, six or seven colours suffice for the whole plane is the open Hadwiger–Nelson problem.</p>
+
+      <p class="tip">Make a colouring with just one blue triangle. Then flip the dots one at a time. Can you ever reach zero?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/NoEquilateralTriangles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="no-equilateral-triangles-core.js"></script>
+<script src="no-equilateral-triangles.js"></script>
+</body>
+</html>

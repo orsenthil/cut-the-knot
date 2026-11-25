@@ -1707,5 +1707,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "no-equilateral-triangles",
+      title: "No Equilateral Triangles",
+      blurb: "Ten dots sit in a triangular grid, and each is orange or red. Can you colour them so that no three dots of one colour form an equilateral triangle?",
+      tags: ["logic", "coordinates", "unit-distance"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
