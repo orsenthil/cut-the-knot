@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grid Spacing Dial &mdash; coolmaths</title>
+<meta name="description" content="Take a square grid of points and set how far apart they are. Erdős found that the right spacing puts many pairs exactly one unit apart. Which spacing wins?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/grid-spacing-dial/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Grid Spacing Dial">
+<meta property="og:description" content="Take a square grid of points and set how far apart they are. Erdős found that the right spacing puts many pairs exactly one unit apart. Which spacing wins?">
+<meta property="og:url" content="https://coolmaths.ai/grid-spacing-dial/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 38rem; padding: 0.8rem; }
+  #chart { width: 100%; height: auto; display: block; touch-action: none; }
+  .readout { white-space: pre-line; font-family: var(--mono); font-size: 0.9rem; margin: 0.6rem 0 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: min(14rem, 55vw); accent-color: var(--accent); }
+  input:focus-visible, select:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="grid-spacing-dial" data-kind="game">
+<main id="main">
+  <h1>Grid Spacing Dial</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#unit-distance">Unit Distance Problem</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A grid of dots is squeezed so that some neighbours end up exactly one step apart. Find the setting that makes the most pairs.<br>
+    <strong>How to play:</strong> Turn the dial. The lines show the pairs that are exactly one step apart; the big purple dot shows where one dot's neighbours are. Tap the grid to move that dot.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="chart" width="640" height="560" aria-label="A square grid of dots; lines join every pair of dots that are exactly one unit apart at the chosen spacing"></canvas>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Dial c² <input id="c" type="range" min="1" max="450" step="1" value="1" aria-label="The number c squared; the grid spacing is one over its square root"> <output id="cOut">1</output></label>
+    <label>Grid <select id="k" aria-label="Grid size"><option value="8">8 × 8</option><option value="12">12 × 12</option><option value="16" selected>16 × 16</option><option value="24">24 × 24</option></select></label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+    <button id="showBtn" type="button">Show the best</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Set the spacing of a square grid to <code>1/c</code>, with c² a whole number. Two grid points are exactly 1 apart when their offset, in grid steps, is a pair <code>(a, b)</code> with <code>a² + b² = c²</code>. So the dial picks which offsets count, and the number of offsets is the number of ways to write c² as a sum of two squares.</p>
+
+      <h2>More ways, more neighbours, but a catch</h2>
+      <p>Spacing 1 (c² = 1) has 4 offsets. c² = 25 has 12: (±5, 0), (0, ±5), (±3, ±4) and (±4, ±3). c² = 65 has 16. But an offset like (8, 1) only fits if the grid is wide enough, so pairs near the edge are lost. On a 16 × 16 grid, c² = 25 gives 976 unit pairs and c² = 65 only 912, though 65 has more offsets. The test checks both numbers by looking at every pair of points, and finds that 25 is the best choice for this grid.</p>
+
+      <h2>The count</h2>
+      <p>An offset <code>(a, b)</code> fits <code>(k − |a|)(k − |b|)</code> times in a k × k grid. Add that up over all offsets and halve it, because each pair is counted from both ends. Compare with a bigger grid and the best c² moves up: it pays to use richer c² when there is more room.</p>
+
+      <h2>Why it is not enough</h2>
+      <p>With n = k² points, the best c² gives about n · r₂(c²) / 2 pairs, and this can beat n by a factor that grows slower than any power of n. Erdős proved this gives <code>n<sup>1 + C / log log n</sup></code> unit distances. Erdős conjectured that nothing could do much better than these grids, and that is the conjecture the 2026 construction disproved.</p>
+
+      <p class="tip">Change the grid size and find the best dial for each. Does the best c² grow with the grid?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original game for coolmaths, after
+    <a class="wiki-term" data-wiki="Paul_Erd%C5%91s" href="https://en.wikipedia.org/wiki/Paul_Erd%C5%91s" target="_blank" rel="noopener">Paul Erdős</a>'s 1946 construction
+    (<a href="https://en.wikipedia.org/wiki/Unit_distance_graph" target="_blank" rel="noopener">Wikipedia</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="grid-spacing-dial-core.js"></script>
+<script src="grid-spacing-dial.js"></script>
+</body>
+</html>

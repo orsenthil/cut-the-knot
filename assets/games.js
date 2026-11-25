@@ -1684,5 +1684,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "grid-spacing-dial",
+      title: "Grid Spacing Dial",
+      blurb: "Take a square grid of points and set how far apart they are. Erdős found that the right spacing puts many pairs exactly one unit apart. Which spacing wins?",
+      tags: ["number-theory", "coordinates", "unit-distance"],
+      level: 2,
+    },
   ],
 };
