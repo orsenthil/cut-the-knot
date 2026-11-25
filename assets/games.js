@@ -1777,5 +1777,13 @@ window.COOLMATHS = {
       tags: ["algebra", "invariants", "logic"],
       level: 3,
     },
+    {
+      slug: "midline-in-sim-tris",
+      title: "Midline in Similar Triangles",
+      blurb: "Draw three similar triangles outward on the sides of any triangle. The midpoints D and E of two segments are joined. Why is DE always parallel to one more segment, and exactly half as long?",
+      tags: ["complex-analysis", "coordinates", "algebra"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };

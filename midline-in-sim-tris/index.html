@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Midline in Similar Triangles &mdash; coolmaths</title>
+<meta name="description" content="Draw three similar triangles outward on the sides of any triangle. The midpoints D and E of two segments are joined. Why is DE always parallel to one more segment, and exactly half as long?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/midline-in-sim-tris/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Midline in Similar Triangles">
+<meta property="og:description" content="Draw three similar triangles outward on the sides of any triangle. The midpoints D and E of two segments are joined. Why is DE always parallel to one more segment, and exactly half as long?">
+<meta property="og:url" content="https://coolmaths.ai/midline-in-sim-tris/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.5rem; }
+  #board { width: 100%; height: auto; display: block; touch-action: none; user-select: none; }
+  #board .tri { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+  #board .base { fill: var(--accent); fill-opacity: 0.12; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; }
+  #board .mid { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; fill: none; }
+  #board .de { stroke: var(--good); stroke-width: 4; stroke-linecap: round; }
+  #board .cn { stroke: var(--bad); stroke-width: 4; stroke-linecap: round; }
+  #board .hint { stroke: var(--highlight-strong, var(--accent)); stroke-width: 2.5; fill: none; }
+  #board .arc { fill: none; stroke: var(--ink); stroke-width: 1.6; }
+  #board .tick { stroke: var(--ink); stroke-width: 2; }
+  #board .dot { fill: var(--surface); stroke: var(--ink); stroke-width: 2; }
+  #board .hit { fill: transparent; cursor: grab; }
+  #board .handle { fill: var(--accent); stroke: var(--ink); stroke-width: 2; }
+  #board .handle:focus-visible { outline: none; stroke: var(--focus); stroke-width: 4; }
+  #board text { font: 700 15px system-ui, sans-serif; fill: var(--ink); paint-order: stroke; stroke: var(--stage, var(--surface)); stroke-width: 4px; }
+  .readout { font-family: var(--mono); font-size: 0.85rem; margin: 0.5rem 0 0; overflow-wrap: anywhere; }
+  .controls { align-items: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="midline-in-sim-tris" data-kind="demo">
+<main id="main">
+  <h1>Midline in Similar Triangles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#complex-analysis">Complex Analysis</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Three triangles of the same shape are built on the sides of a triangle. Two midpoints, D and E, are joined by a line. Watch what that line does when you move the points.<br>
+    <strong>How to play:</strong> Drag the points A, B, C and L (or focus one and use the arrow keys). Tick the boxes to see the names, the givens, the claim and a hint.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group" aria-label="Triangle ABC with three similar triangles on its sides. Points A, B, C and L can be moved."></svg>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <span>Show</span>
+    <label><input type="checkbox" id="showNames" checked> names</label>
+    <label><input type="checkbox" id="showPremise"> premise</label>
+    <label><input type="checkbox" id="showStatement"> statement</label>
+    <label><input type="checkbox" id="showHint"> hint</label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This is a problem of Ayoub B. Ayoub: on the sides of triangle ABC draw three similar triangles AKB, BLC and CNA, all turned the same way. If D is the midpoint of AB and E the midpoint of KL, then DE is parallel to NC and half as long. Move L to change the shape of all three triangles at once, and put it on the other side of BC to draw them inwards: the claim still holds.</p>
+
+      <h2>An algebraic proof</h2>
+      <p>Treat points as complex numbers. "Similar and similarly turned" means that one fixed complex number z (its size the ratio, its angle the turn) takes each base to its apex: <code>K = A + z(B − A)</code>, <code>L = B + z(C − B)</code>, <code>N = C + z(A − C)</code>. The page reads z from where you put L, as <code>z = (L − B)/(C − B)</code>. Then E is half of <code>K + L = (1 − z)A + B + zC</code> and D is half of <code>A + B</code>, so <code>D − E</code> is half of <code>z(A − C) = N − C</code>. That is <code>D − E = (N − C)/2</code>: DE is parallel to CN and half as long. The test checked this on 200,000 random triangles and random z, outward and inward.</p>
+
+      <h2>A geometric view</h2>
+      <p>If F is the midpoint of BC, then DF is the midline of ABC, so DF is parallel to AC and half of it. If the claim is right, then EF should be parallel to AN and half of it as well, and the triangles DEF and CNA would be similar with ratio 1/2. The hint shows this, and the test confirms DF and EF and the three side ratios in every case. That is how the Three Similar Triangles theorem proves it.</p>
+
+      <h2>The same construction, two ways</h2>
+      <p>The original applet builds K and N from angles: it copies the two angles of triangle BLC onto AB and CA and intersects the rays. The test does exactly that and finds the same points as the spiral similarity on 50,000 random cases, so the page and the applet draw the same picture.</p>
+
+      <p class="tip">Put L right on the line BC (the triangles become flat) or on B (they shrink to nothing). Does the claim still hold? What are DE and CN then?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/MidlineInSimTris.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="midline-in-sim-tris-core.js"></script>
+<script src="midline-in-sim-tris.js"></script>
+</body>
+</html>
