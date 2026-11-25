@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How Fast Do Unit Distances Grow? &mdash; coolmaths</title>
+<meta name="description" content="With n points, the best square grid makes about n·(a slowly growing factor) unit pairs, while the proven ceiling is near n^(4/3). Where does the truth sit between them?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/unit-distance-growth/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="How Fast Do Unit Distances Grow?">
+<meta property="og:description" content="With n points, the best square grid makes about n·(a slowly growing factor) unit pairs, while the proven ceiling is near n^(4/3). Where does the truth sit between them?">
+<meta property="og:url" content="https://coolmaths.ai/unit-distance-growth/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.8rem; }
+  #chart { width: 100%; height: auto; display: block; }
+  .readout { white-space: pre-line; font-family: var(--mono); font-size: 0.85rem; margin: 0.6rem 0 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: min(14rem, 55vw); accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="unit-distance-growth" data-kind="demo">
+<main id="main">
+  <h1>How Fast Do Unit Distances Grow?</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#limits">Limits</a><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#unit-distance">Unit Distance Problem</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch how many pairs the best grid can have as the number of points grows, and compare it with the straight lines that mark the known limits.<br>
+    <strong>How to play:</strong> Slide the grid size. The purple line is the best grid, the dashed curve is a limit that no arrangement can beat, and the thin lines show different growth speeds.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="chart" width="640" height="420" aria-label="Log-log chart of unit pairs against number of points: the best grid, the proved ceiling, and guide lines of slope 1, 4/3 and 1.014"></canvas>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Grid size <input id="k" type="range" min="2" max="64" step="1" value="16" aria-label="Side of the square grid, from 2 to 64"> <output id="kOut">16</output></label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Write u(n) for the most unit distances among n points of the plane. Nobody knows u(n) exactly. The chart shows what is known, with both axes on a log scale so that growth like <code>n<sup>s</sup></code> is a straight line of slope s.</p>
+
+      <h2>The grid: slope barely above 1</h2>
+      <p>The purple line is the best k × k grid (the best spacing for each k), and it is real data, computed here. The exponent <code>log(pairs)/log(n)</code> is about 1.15 at 16 points, 1.24 at 256 and 1.25 at 4,096. Erdős's formula says it creeps towards 1 + C/log log n, and at sizes anyone can draw that is far from a straight line. The article's example: a 1,296-point grid has 7,632 unit pairs, and the test reproduces this number.</p>
+
+      <h2>The ceiling: slope 4/3</h2>
+      <p>The dashed curve is the ceiling from the previous page, which is a proof valid for every n. The best proved ceiling, from the <a class="wiki-term" data-wiki="Crossing_number_(graph_theory)" href="https://en.wikipedia.org/wiki/Crossing_number_(graph_theory)#The_crossing_number_inequality" target="_blank" rel="noopener">crossing number inequality</a>, has slope 4/3, and it is drawn here only as a guide, since its constant is not shown.</p>
+
+      <h2>The new line: slope 1.014</h2>
+      <p>For decades the conjecture was that u(n) is n<sup>1 + o(1)</sup>, a slope that tends to 1. In 2026 an OpenAI model found a construction that disproved it, and Will Sawin's clean-up proves at least <code>n<sup>1.014</sup></code> unit pairs for large n. That is the third guide line. The gap between 1.014 and 4/3 is still open. The guide lines start at the same point and show slopes only. The new construction does not win at sizes you can draw: the effect is for huge n.</p>
+
+      <p class="tip">Slide to 64. Does the purple line look straighter than the slope-1 line? What would you need to see to tell 1.014 from 1?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original demo for coolmaths, on the unit distance problem posed by
+    <a class="wiki-term" data-wiki="Paul_Erd%C5%91s" href="https://en.wikipedia.org/wiki/Paul_Erd%C5%91s" target="_blank" rel="noopener">Paul Erdős</a>
+    (<a href="https://en.wikipedia.org/wiki/Unit_distance_graph" target="_blank" rel="noopener">Wikipedia</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="unit-distance-growth-core.js"></script>
+<script src="unit-distance-growth.js"></script>
+</body>
+</html>

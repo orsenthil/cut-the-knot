@@ -1691,5 +1691,13 @@ window.COOLMATHS = {
       tags: ["number-theory", "coordinates", "unit-distance"],
       level: 2,
     },
+    {
+      slug: "unit-distance-growth",
+      title: "How Fast Do Unit Distances Grow?",
+      blurb: "With n points, the best square grid makes about n·(a slowly growing factor) unit pairs, while the proven ceiling is near n^(4/3). Where does the truth sit between them?",
+      tags: ["limits", "number-theory", "unit-distance"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };
