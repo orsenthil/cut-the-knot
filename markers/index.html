@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fair Division: Method of Markers &mdash; coolmaths</title>
+<meta name="description" content="Each player marks where they think the goods should be cut so that every piece is worth the same to them. Can the leftmost marker decide who gets what, so that everyone is happy?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/markers/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Fair Division: Method of Markers">
+<meta property="og:description" content="Each player marks where they think the goods should be cut so that every piece is worth the same to them. Can the leftmost marker decide who gets what, so that everyone is happy?">
+<meta property="og:url" content="https://coolmaths.ai/markers/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.6rem; }
+  #board { width: 100%; height: auto; display: block; touch-action: none; user-select: none; }
+  #board .track { fill: var(--border); }
+  #board .goods { stroke: var(--ink); stroke-width: 1; }
+  #board .left { fill: var(--ink); }
+  #board .piece { stroke: var(--ink); stroke-width: 1; }
+  #board .hit { fill: transparent; cursor: ew-resize; }
+  #board .handle { fill: var(--surface); stroke: var(--ink); stroke-width: 2; cursor: ew-resize; }
+  #board .handle:focus-visible { outline: none; stroke: var(--focus); stroke-width: 4; }
+  #board text { font: 700 12px system-ui, sans-serif; fill: var(--ink); }
+  #board text.on-colour { fill: #111; }
+  #board text.small { font-weight: 500; fill: var(--muted); }
+  #rounds { margin: 0.6rem 0 0; padding-left: 1.3rem; font-size: 0.9rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: min(12rem, 50vw); accent-color: var(--accent); }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="markers" data-kind="demo">
+<main id="main">
+  <h1>Fair Division: Method of Markers</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#fractions">Fractions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Several people want a fair share of a long thing, like a gold chain. Each one marks where it could be cut so that every piece is worth the same to them. Then the leftmost marks decide who gets what.<br>
+    <strong>How to play:</strong> Drag the little bars along each person's line, or focus one and use the arrow keys. The top bar shows who gets which piece. The parts with no colour are left over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" role="group" aria-label="The goods as a bar at the top, and one line for each player with that player's markers"></svg>
+    <ol id="rounds" aria-label="Who is served in each round"></ol>
+  </div>
+
+  <div class="controls">
+    <label>Number of players <input id="n" type="range" min="2" max="10" step="1" value="3" aria-label="Number of players, from 2 to 10"> <output id="nOut">3</output></label>
+    <button id="newBtn" type="button" class="primary">New markers</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>With N people and a line of goods, each person puts N − 1 markers so that the N pieces between them (the ends of the goods count) all seem equal in value. Every piece is then worth exactly 1/N of the whole to that person, which is the <a class="wiki-term" data-wiki="Fair_division" href="https://en.wikipedia.org/wiki/Fair_division" target="_blank" rel="noopener">fair share</a> they are entitled to, and they promise to accept any one of their pieces.</p>
+
+      <h2>The leftmost marker wins</h2>
+      <p>In round 1 look at everyone's first marker. The person whose marker is furthest left gets the stretch from the left end to that marker, and drops the rest of their markers. In round 2, among the remaining people, the leftmost second marker wins the stretch from that person's first marker to their second. And so on. The last person left gets the stretch from their last marker to the right end. (A tie goes to the lower-numbered player, as in the applet, which compares whole pixel positions.)</p>
+
+      <h2>Why everyone is happy</h2>
+      <p>Each winner's stretch lies between two consecutive markers of their own, so it is one of the pieces they said they would accept. The test tried every placement of the markers on a short rail (all of them for 2 and for 3 players) and 2,000 random deals for each number of players from 2 to 10: every person is served once, every piece is one of that person's own N pieces, and no two pieces overlap. The piece of the next winner starts at or beyond the end of the earlier one because the earlier marker was the leftmost, which is why no piece is taken twice.</p>
+
+      <h2>The leftovers</h2>
+      <p>The uncoloured parts of the bar (the original shows them in black) are goods that nobody received, since each person took only one piece and the pieces do not have to touch. In the test every random deal left something over, about 48 of 400 units for 3 players. The leftover can then be divided again, and a leftover is the price for needing so few questions (just markers).</p>
+
+      <p class="tip">Make two players' markers the same, then move one a little. Who is served first, and does the leftover grow or shrink?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/SocialScience/Markers.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="markers-core.js"></script>
+<script src="markers.js"></script>
+</body>
+</html>

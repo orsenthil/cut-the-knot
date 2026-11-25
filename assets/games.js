@@ -1739,5 +1739,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "markers",
+      title: "Fair Division: Method of Markers",
+      blurb: "Each player marks where they think the goods should be cut so that every piece is worth the same to them. Can the leftmost marker decide who gets what, so that everyone is happy?",
+      tags: ["algorithms", "logic", "fractions"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
