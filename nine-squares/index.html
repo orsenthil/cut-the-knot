@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nine Squares: What Is This About? &mdash; coolmaths</title>
+<meta name="description" content="Slide one number and seven of nine squares change, but three never do. Which ones stay put, and why? And where do all nine fit together perfectly?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/nine-squares/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Nine Squares: What Is This About?">
+<meta property="og:description" content="Slide one number and seven of nine squares change, but three never do. Which ones stay put, and why? And where do all nine fit together perfectly?">
+<meta property="og:url" content="https://coolmaths.ai/nine-squares/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 42rem; padding: 0.4rem; }
+  #board { width: 100%; height: auto; display: block; }
+  #board rect { stroke: var(--ink); stroke-width: 0.25; fill-opacity: 0.78; }
+  #board rect.black { fill: var(--ink); fill-opacity: 1; }
+  #board text { font: 700 2.4px system-ui, sans-serif; fill: var(--ink); text-anchor: middle; dominant-baseline: central; paint-order: stroke; stroke: var(--stage, var(--surface)); stroke-width: 0.5px; pointer-events: none; }
+  .readout { font-size: 0.95rem; margin: 0.5rem 0 0; }
+  .controls label { display: inline-flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; max-width: 100%; }
+  .controls input[type=range] { width: min(16rem, 100%); }
+  #sizes { margin: 0.5rem 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 0.3rem 0.8rem; font-size: 0.9rem; }
+  #sizes li { display: inline-flex; align-items: center; gap: 0.35rem; }
+  #sizes .sw { width: 0.8rem; height: 0.8rem; border-radius: 0.15rem; border: 1px solid var(--ink); display: inline-block; }
+</style>
+</head>
+<body data-game="nine-squares" data-kind="demo">
+<main id="main">
+  <h1>Nine Squares: What Is This About?</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Nine squares sit side by side and change size as you slide a number. Find out which ones refuse to change, and find the one setting where they fit together perfectly.<br>
+    <strong>How to play:</strong> Move the slider for a. Watch the small black square and the two red ones, and look for the setting with no gaps and no overlaps.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="-38 -17 55 48" role="img" aria-label="Nine squares of different sizes placed edge to edge"></svg>
+    <p id="readout" class="readout"></p>
+    <ul id="sizes" aria-label="The side of each square"></ul>
+  </div>
+
+  <div class="controls">
+    <label>a <input id="aIn" type="range" min="3" max="15" step="1" value="4" aria-label="a"> <output id="aOut">4</output></label>
+    <button id="nineBtn" type="button" class="primary">Go to a = 9</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Seven of the nine squares change with <code>a</code>, yet the black square and the two red ones stay exactly the same size. Is that a coincidence?</p>
+
+      <h2>Why the red square is always 4</h2>
+      <p>Call the side of the blue square <code>a</code> and the side of the red square in the middle <code>c</code>. The other sides follow from the picture. Adding the three squares along the top gives <code>a + (a + 1) + (a + 1 + c) = 3a + 2 + c</code>. Adding the three along the bottom gives <code>(a + 1 + 2c) + (a - 2) + (a - 1) = 3a - 2 + 2c</code>. The two rows are the same width, so <code>c = 4</code>, whatever <code>a</code> is. The test confirms that the rows agree for exactly one value of <code>c</code>, and that the red 4 and the red 15 never change. The same kind of argument fixes the other red square at 15.</p>
+
+      <h2>A rectangle of unequal squares</h2>
+      <p>The picture only closes up when everything fits. The test checked every <code>a</code> from 3 to 500 and found that the squares have no gaps and no overlaps for <code>a = 9</code> alone. Then the sides are 1, 4, 7, 8, 9, 10, 14, 15 and 18, all different, and they fill a 33 by 32 rectangle (area 1056, the sum of their squares). This <a class="wiki-term" data-wiki="Squaring_the_square" href="https://en.wikipedia.org/wiki/Squaring_the_square" target="_blank" rel="noopener">perfect rectangle</a> was found by Zbigniew Mor&oacute;n in 1925. Nine is the fewest squares for which this is possible.</p>
+
+      <h2>Can a square be done too?</h2>
+      <p>Cutting a <em>square</em> into squares that are all different is much harder. The page lists Sprague's 55 pieces (1939) and a 24-piece square from 1948, and says that the record has held since. That is out of date: in 1978 A. J. W. Duijvestijn found a square of side 112 cut into 21 different squares, and a computer search showed that no smaller number can do it.</p>
+
+      <p class="tip">Slide a up from 3 and watch the squares first overlap, then leave gaps. Stop when the picture is a clean rectangle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/NineSquares.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="nine-squares-core.js"></script>
+<script src="nine-squares.js"></script>
+</body>
+</html>

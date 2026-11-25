@@ -1880,5 +1880,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "nine-squares",
+      title: "Nine Squares: What Is This About?",
+      blurb: "Slide one number and seven of nine squares change, but three never do. Which ones stay put, and why? And where do all nine fit together perfectly?",
+      tags: ["algebra", "area", "invariants"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
