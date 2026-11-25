@@ -20,7 +20,7 @@
  */
 
 import { execFileSync, spawnSync } from "node:child_process";
-import { readFileSync, readdirSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -52,7 +52,7 @@ const files = [
   ...readdirSync(join(REPO, slug)).map((f) => join(slug, f)),
   `porting/check-${slug}.mjs`,
   `porting/play/${slug}.mjs`,
-].filter((f) => existsSync(join(REPO, f)) && !/\.(png|gif|jpg|webp)$/.test(f));
+].filter((f) => existsSync(join(REPO, f)) && !statSync(join(REPO, f)).isDirectory() && !/\.(png|gif|jpg|webp)$/.test(f));
 const todo = [];
 for (const file of files) {
   readFileSync(join(REPO, file), "utf8")

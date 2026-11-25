@@ -1785,5 +1785,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "hummers-mind-reader",
+      title: "Hummer's Mind Reader",
+      blurb: "Think of one of three coins, swap the other two, then keep swapping any two while telling the computer which ones, until the coins are back in their first order. How does it know your coin?",
+      tags: ["logic", "counting", "invariants"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };

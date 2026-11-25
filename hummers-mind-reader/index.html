@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hummer's Mind Reader &mdash; coolmaths</title>
+<meta name="description" content="Think of one of three coins, swap the other two, then keep swapping any two while telling the computer which ones, until the coins are back in their first order. How does it know your coin?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hummers-mind-reader/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hummer's Mind Reader">
+<meta property="og:description" content="Think of one of three coins, swap the other two, then keep swapping any two while telling the computer which ones, until the coins are back in their first order. How does it know your coin?">
+<meta property="og:url" content="https://coolmaths.ai/hummers-mind-reader/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 1rem; text-align: center; }
+  #row { display: flex; justify-content: center; gap: clamp(0.5rem, 4vw, 1.6rem); margin: 0.5rem 0 1rem; }
+  .coin { flex: 0 1 6.5rem; aspect-ratio: 1; min-width: 0; border-radius: 50%; border: 4px solid transparent; background: var(--surface); padding: 0.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; font: 700 2.2rem var(--mono); color: var(--ink); }
+  .coin img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .coin.sel { border-color: var(--accent); box-shadow: 0 0 0 3px var(--highlight); }
+  .coin:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  .coin:disabled { opacity: 0.75; cursor: default; }
+  #say { min-height: 3.4rem; font-weight: 600; margin: 0; }
+  #say .big { display: block; font-size: 1.5rem; color: var(--accent); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; }
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="hummers-mind-reader" data-kind="demo">
+<main id="main">
+  <h1>Hummer's Mind Reader</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Put three coins in a row and think of one. The computer will name it after you swap coins and tell it which ones you swapped.<br>
+    <strong>How to play:</strong> In real life, think of a coin and swap the other two. Then swap any two coins, again and again, and press the same two coins here each time. Finish with your real coins back in the first order and press Announce.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="row" role="group" aria-label="The three coins, in their places"></div>
+    <p id="say" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label><input type="radio" name="what" id="useCoins" checked> Coins</label>
+    <label><input type="radio" name="what" id="useNumbers"> Numbers</label>
+    <button id="resetBtn" type="button">Reset</button>
+    <button id="announceBtn" type="button" class="primary">Announce</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This trick was invented by Bob Hummer. It is about <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">permutations</a>: each swap of two objects is a permutation, and doing several one after another gives their product.</p>
+
+      <h2>The secret first swap</h2>
+      <p>Your first, unannounced action leaves exactly one object where it was, the one you thought of, and swaps the other two. The computer never sees it. It sees only your later swaps, and these, multiplied together, bring the objects back to the original order <em>after</em> the secret swap. So the announced swaps are the undoing of the secret one. A swap is its own undoing, so the announced swaps together do exactly what the secret swap did: they leave the coin you thought of in its place and swap the other two.</p>
+
+      <h2>So the computer just looks</h2>
+      <p>The computer applies your announced swaps to its own coins, which start in order. When you say you are done, one of its coins is in its own place, and that is yours. The test tried every one of the 3 × (3 + 27 + 243 + 2,187 …) sequences of up to 8 announced swaps that bring the real objects back, for each of the three thoughts, and the computer named the right coin every time. If the computer's coins are all in place, or none, you have not followed the rules, and it asks whether they are in the original order.</p>
+
+      <h2>Why the count is odd</h2>
+      <p>One swap changes the order from even to odd (or back), and the secret swap makes it odd. To return to the original order you must then make an odd number of announced swaps, and the test confirms that no even-length play can work: 1 swap (the secret one undone), 3, 5, 7 all can. If you finish in a different order, the computer is never right in the test: out of 3,003 such plays it asked again 2,457 times and named a coin 546 times, wrongly each time.</p>
+
+      <p class="tip">Think of the dime, swap the penny and nickel for real, then swap the dime and penny, then the nickel and dime, then the dime and penny. Where do your real coins end up? Tell the computer those three swaps and press Announce.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Magic/MindReader.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="hummers-mind-reader-core.js"></script>
+<script src="hummers-mind-reader.js"></script>
+</body>
+</html>
