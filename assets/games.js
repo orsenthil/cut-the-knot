@@ -1699,5 +1699,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "roots-of-unity-lattice",
+      title: "Roots of Unity Lattice",
+      blurb: "Add up whole-number multiples of a few unit-length arrows, then flatten the result onto the plane. Points that differ by an arrow are exactly one apart. How many pairs can you get that way?",
+      tags: ["complex-analysis", "unit-distance", "number-theory"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };

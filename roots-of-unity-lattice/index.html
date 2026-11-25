@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Roots of Unity Lattice &mdash; coolmaths</title>
+<meta name="description" content="Add up whole-number multiples of a few unit-length arrows, then flatten the result onto the plane. Points that differ by an arrow are exactly one apart. How many pairs can you get that way?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/roots-of-unity-lattice/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Roots of Unity Lattice">
+<meta property="og:description" content="Add up whole-number multiples of a few unit-length arrows, then flatten the result onto the plane. Points that differ by an arrow are exactly one apart. How many pairs can you get that way?">
+<meta property="og:url" content="https://coolmaths.ai/roots-of-unity-lattice/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 38rem; padding: 0.8rem; }
+  #chart { width: 100%; height: auto; display: block; touch-action: none; }
+  .readout { white-space: pre-line; font-family: var(--mono); font-size: 0.85rem; margin: 0.6rem 0 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: min(10rem, 45vw); accent-color: var(--accent); }
+  input:focus-visible, select:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="roots-of-unity-lattice" data-kind="demo">
+<main id="main">
+  <h1>Roots of Unity Lattice</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#complex-analysis">Complex Analysis</a><a class="tag" href="../index.html#unit-distance">Unit Distance Problem</a><a class="tag" href="../index.html#number-theory">Number Theory</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Build a cloud of points from a few unit-length arrows, then see how many pairs end up exactly one step apart, compared with a plain square grid of the same size.<br>
+    <strong>How to play:</strong> Choose how many directions the arrows can point (m) and how many of each you may use (r). Tap a dot to see its neighbours.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="chart" width="640" height="520" aria-label="A cloud of points, with lines between every pair exactly one unit apart; one chosen point has bold lines to its neighbours"></canvas>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Directions m <select id="m" aria-label="Number of directions m, the order of the root of unity"><option>5</option><option>7</option><option>8</option><option>9</option><option selected>12</option></select></label>
+    <label>Uses r <input id="r" type="range" min="1" max="5" step="1" value="2" aria-label="Largest number of times each arrow may be used"> <output id="rOut">2</output></label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Let <code>z = e<sup>2πi/m</sup></code> be a step of 1/m of a full turn. Every power of z is a unit-length arrow. If you add up whole-number multiples of the arrows <code>1, z, z², …</code>, you get points of the plane. Two points that differ by one arrow are exactly 1 apart.</p>
+
+      <h2>A grid with more dimensions</h2>
+      <p>The number of arrows you need before the rest are combinations of them is <a class="wiki-term" data-wiki="Euler%27s_totient_function" href="https://en.wikipedia.org/wiki/Euler%27s_totient_function" target="_blank" rel="noopener">φ(m)</a>: 4 for m = 5, 8 or 12, and 6 for m = 7 or 9. Using each of those arrows 0 to r times gives <code>(r + 1)<sup>φ(m)</sup></code> points, a four- or six-dimensional grid flattened onto the plane. The test checks that no two of them land on top of each other, so nothing is lost.</p>
+
+      <h2>More neighbours per point</h2>
+      <p>A point inside has up to m (or 2m, for odd m) neighbours, one for each arrow and its opposite. A square grid at the best spacing for c² = 25 has 12. The test confirms that the pairs it counts by looking for arrows are exactly the pairs at distance 1, for every shape offered here.</p>
+
+      <h2>Who wins?</h2>
+      <p>Neither, always. For 81 points with m = 12 the flattened grid has 288 unit pairs against 224 for the best square grid, and for 256 points 1,056 against 976. But with 625 points the square grid is ahead again (3,144 against 2,800), because the edge of the box in four dimensions loses neighbours. This is a toy of an idea, not a proof of anything: the real power of the idea only shows for huge n.</p>
+
+      <h2>Where this connects</h2>
+      <p>In 2026 an OpenAI model disproved Erdős's conjecture with a construction of this general kind: a grid in a high-dimensional space built from <a class="wiki-term" data-wiki="Algebraic_integer" href="https://en.wikipedia.org/wiki/Algebraic_integer" target="_blank" rel="noopener">algebraic integers</a>, projected into the plane. The article describes it in these terms and gives no formula. Roots of unity are the simplest algebraic integers of absolute value 1, which is why they make a good toy. The actual construction is far more careful about which number system it uses.</p>
+
+      <p class="tip">Try m = 12 with r from 1 to 5. At which sizes does the lattice beat the grid, and what changes as r grows?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original demo for coolmaths, on the unit distance problem posed by
+    <a class="wiki-term" data-wiki="Paul_Erd%C5%91s" href="https://en.wikipedia.org/wiki/Paul_Erd%C5%91s" target="_blank" rel="noopener">Paul Erdős</a>
+    (<a href="https://en.wikipedia.org/wiki/Unit_distance_graph" target="_blank" rel="noopener">Wikipedia</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="roots-of-unity-lattice-core.js"></script>
+<script src="roots-of-unity-lattice.js"></script>
+</body>
+</html>
