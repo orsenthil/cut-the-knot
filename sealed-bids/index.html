@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sealed Bids &mdash; coolmaths</title>
+<meta name="description" content="Everyone privately values each item, then the highest bidder takes it. Can cash payments make the result fair in everyone's eyes?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/sealed-bids/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Sealed Bids">
+<meta property="og:description" content="Everyone privately values each item, then the highest bidder takes it. Can cash payments make the result fair in everyone's eyes?">
+<meta property="og:url" content="https://coolmaths.ai/sealed-bids/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 46rem;
+    padding: 0.9rem 1rem;
+  }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; min-width: max-content; }
+  th, td {
+    padding: 0.25rem 0.4rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .row-label {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    min-width: 6.5rem;
+    background: var(--stage);
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: right;
+  }
+  .col-label { color: var(--accent); font-family: var(--mono); }
+  .bid {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--card);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .bid:hover { background: var(--accent-soft); border-color: var(--accent); }
+  .winner { background: var(--accent-soft); }
+  .winner .bid { border-color: var(--accent); color: var(--accent); font-weight: 700; }
+  .win-badge { display: none; margin-left: 0.2rem; color: var(--accent); font-size: 0.7rem; }
+  .winner .win-badge { display: inline; }
+  .result-row td { font-family: var(--mono); font-size: 0.85rem; }
+  .result-row th { border-top: 1px solid var(--border-strong); }
+  td.negative { color: var(--bad); }
+  td.cash:not(.negative) { color: var(--accent); }
+  .hint { margin: 0.7rem 0 0; color: var(--muted); font-size: 0.85rem; }
+  .controls .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    gap: 0.75rem;
+  }
+  .spinner {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    gap: 0.35rem;
+  }
+  .controls .spinner label { white-space: normal; color: var(--muted); font-size: 0.9rem; }
+  .step {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0.25rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  .step:hover { background: var(--accent-soft); border-color: var(--accent); }
+  .spinner input {
+    width: 3.75rem;
+    min-height: 2.75rem;
+    padding: 0.25rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--card);
+    color: var(--text);
+    font: inherit;
+    text-align: center;
+  }
+  button:focus-visible, input:focus-visible, .bid:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="sealed-bids" data-kind="demo">
+<main id="main">
+  <h1>Sealed Bids</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#fractions">Fractions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Everyone secretly says what each item is worth to them. Each item goes to the person who bid the most, and money is paid to make things fair. There is nothing to win &mdash; see how the money works out.<br>
+    <strong>How to play:</strong> Click the left or right half of a bid to change it, or use arrow keys. Change the number of bidders or items, or press New bids for a fresh table.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="scroll"><table id="table" aria-label="Bids and payments for each bidder"></table></div>
+    <p class="hint">A <strong>W</strong> marks the winning bid in each row. Tap the left half of a bid to lower it, the right half to raise it; arrow keys work too. A wide table slides sideways.</p>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <div class="spinner">
+        <button id="playersDown" type="button" class="step" aria-label="Remove a bidder">&minus;</button>
+        <label for="playersInput">Bidders</label>
+        <input id="playersInput" type="number" min="2" max="26" step="1" inputmode="numeric">
+        <button id="playersUp" type="button" class="step" aria-label="Add a bidder">+</button>
+      </div>
+      <div class="spinner">
+        <button id="itemsDown" type="button" class="step" aria-label="Remove an item">&minus;</button>
+        <label for="itemsInput">Items</label>
+        <input id="itemsInput" type="number" min="1" max="15" step="1" inputmode="numeric">
+        <button id="itemsUp" type="button" class="step" aria-label="Add an item">+</button>
+      </div>
+    </div>
+    <div class="control-row">
+      <button id="newBidsBtn" type="button" class="primary">New bids</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Suppose friends are sharing several things but value them differently. The <a class="wiki-term" data-wiki="Fair_division" href="https://en.wikipedia.org/wiki/Fair_division" target="_blank" rel="noopener">method of sealed bids</a> hands every item to whoever wants it most, then uses cash so that everyone ends up with what they think is a fair share.</p>
+
+      <h2>Who gets each item</h2>
+      <p>Look down an item's row: the largest bid wins it, and a <strong>W</strong> marks that cell. If two people tie, the applet flips a coin, so the same tie can go to different bidders on different runs. With three equal bids the last bidder wins half the time, because each later coin flip can take the lead from the one before.</p>
+
+      <h2>What is a fair share?</h2>
+      <p>Each bidder's fair share is the average of the bids <em>they</em> made, not the average of everyone's bids. If Amelia bid 9, 4 and 2, her total is 15 and, with three bidders, her fair share is 5. Adding all the fair shares adds up to all the bids divided by the number of bidders.</p>
+
+      <h2>Paying and receiving</h2>
+      <p>The <code>Owe(s/d)</code> row is what each bidder received minus their fair share. A positive amount means they must pay; a negative one means they should be paid. The amounts left over cannot add up to a negative number: for every item, the highest bid is at least the average of the bids on that item, so the total received is at least the total of the fair shares.</p>
+
+      <h2>Splitting the leftovers</h2>
+      <p>The cash left over is shared equally. A bidder's final cash is the negative of what they owe, plus their equal slice of the surplus, so the payments and receipts cancel exactly: the <code>Cash</code> column adds up to zero. The applet prints only two decimal places, so the <em>printed</em> amounts may be a cent away from zero. Change one bid and you will see both columns move, but the last row balances again.</p>
+
+      <h2>What was checked</h2>
+      <p>The logic test compares the whole calculation with a second transcription of the applet's own method on about 266,000 small bid tables, and on tables at the option limits: 2 to 26 bidders and 1 to 15 items, with bids from 0 to 1000. It checks that winners really bid the most, that the surplus is never negative and that the cash balances. It also checks the applet's odd number formatting: a small negative such as <code>-0.05</code> is printed as <code>-.0-</code>, and half a unit is printed as <code>.50</code> with no leading zero. The page keeps the applet's numbers as they are.</p>
+
+      <p class="tip">Give two bidders identical bids for one item, press New bids a few times, and watch the W jump between them.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/SocialScience/SealedBids.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="sealed-bids-core.js"></script>
+<script src="sealed-bids.js"></script>
+</body>
+</html>

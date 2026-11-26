@@ -2126,5 +2126,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "sealed-bids",
+      title: "Sealed Bids",
+      blurb: "Everyone privately values each item, then the highest bidder takes it. Can cash payments make the result fair in everyone's eyes?",
+      tags: ["algorithms", "logic", "fractions"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
