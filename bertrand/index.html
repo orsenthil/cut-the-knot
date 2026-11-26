@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bertrand's Paradox &mdash; coolmaths</title>
+<meta name="description" content="Pick a chord of a circle at random: how likely is it to be longer than a side of an inscribed equilateral triangle? Drag the chord and try three different meanings of &quot;random&quot;.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bertrand/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Bertrand's Paradox">
+<meta property="og:description" content="Pick a chord of a circle at random: how likely is it to be longer than a side of an inscribed equilateral triangle? Drag the chord and try three different meanings of &quot;random&quot;.">
+<meta property="og:url" content="https://coolmaths.ai/bertrand/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 40rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .main-circle { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .inner-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .triangle { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .radius-line { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 4; }
+  #board .chord { fill: none; stroke: var(--accent); stroke-width: 3.5; }
+  #board .chord.long { stroke: var(--good); }
+  #board .chord.short { stroke: var(--ink); }
+  #board .past { stroke: var(--muted); stroke-width: 1; opacity: 0.5; }
+  #board .past.long { stroke: var(--good); opacity: 0.7; }
+  #board .mid-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .caption { fill: var(--muted); font-size: 13px; font-weight: 500; }
+  #board .cutoff-label { fill: var(--bad); }
+  #board .axis { stroke: var(--muted); stroke-width: 1.5; }
+  #board .cutoff { stroke: var(--bad); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .cdf { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .mode-controls { flex-wrap: wrap; gap: 0.4rem; }
+  .mode-btn[aria-pressed="true"] { border-color: var(--accent); background: var(--highlight); }
+</style>
+</head>
+<body data-game="bertrand" data-kind="demo">
+<main id="main">
+  <h1>Bertrand's Paradox</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#probability">Probability</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag a line across the circle and see how often it is longer than a side of the triangle drawn inside.<br>
+    <strong>How to play:</strong> Drag the three dots, choose how the next lines are picked, then press Draw or Draw 100. There is no winning — just watch the numbers.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 540 300" role="group"
+         aria-label="A circle with a draggable chord and its midpoint, next to a graph of chord lengths"></svg>
+  </div>
+
+  <div class="controls mode-controls" role="group" aria-label="How the next chords are chosen">
+    <button class="mode-btn" type="button" data-mode="0" aria-pressed="true" aria-label="Choose two random ends on the circle">Two random ends</button>
+    <button class="mode-btn" type="button" data-mode="1" aria-pressed="false" aria-label="Keep one end fixed and choose the other at random">One fixed end</button>
+    <button class="mode-btn" type="button" data-mode="2" aria-pressed="false" aria-label="Choose a midpoint with a random radius and a random angle">Random radius</button>
+    <button class="mode-btn" type="button" data-mode="3" aria-pressed="false" aria-label="Choose a midpoint at a random spot in the circle">Random spot</button>
+  </div>
+  <div class="controls">
+    <button id="drawBtn" type="button" class="primary" aria-label="Draw one random chord">Draw one</button>
+    <button id="batchBtn" type="button" aria-label="Draw one hundred random chords">Draw 100</button>
+    <button id="autoBtn" type="button" aria-pressed="false" aria-label="Start drawing one chord every tenth of a second">Auto</button>
+    <button id="resetBtn" type="button" aria-label="Reset the circle and the counts">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>One question — how long is a chord picked at random? — gives three different answers. Which one you get depends on what you mean by "at random". That is the <a class="wiki-term" data-wiki="Bertrand_paradox_(probability)" href="https://en.wikipedia.org/wiki/Bertrand_paradox_(probability)" target="_blank" rel="noopener">Bertrand paradox</a>.</p>
+
+      <h2>The question and the three answers</h2>
+      <p>The old page asks: given a circle, find the probability that a <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord</a> chosen at random is longer than the side of an inscribed <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangle</a>. It gives three answers: <code>1/3</code>, <code>1/4</code> and <code>1/2</code>. Take the radius to be 1: the triangle's side is then <code>√3</code> and the longest chord, the diameter, is 2. (The old page prints a bare "3" in one sentence because its square-root image was lost; its red line and the applet both use <code>√3</code>.)</p>
+
+      <h2>Fixing one end</h2>
+      <p>Pick two points on the rim and join them, or keep one end fixed and pick only the other. Either way, if the angle between the two ends is <code>t</code>, the chord is <code>2·sin(t/2)</code>. That is longer than <code>√3</code> exactly when <code>t > 2π/3</code>. With one end held still, the free end must land in one third of the <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>, so the chance is <code>1/3</code>. The logic test walks 720 equally spaced positions of the free end and confirms this; it also confirms the page's claim that the two simulations have the same distribution.</p>
+
+      <h2>Looking at the midpoint instead</h2>
+      <p>A chord is also fixed by its midpoint <code>M</code>: it runs straight across, at right angles to the line from the centre to <code>M</code>. Its length is <code>2√(1−|M|²)</code>, so it is long exactly when <code>|M| < 1/2</code>. If <code>M</code> is spread evenly over the <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> of the circle, the favourable part is a circle of half the radius, with <code>1/4</code> of the area. If instead <code>|M|</code> is spread evenly from 0 to 1, the favourable part is half the radii, giving <code>1/2</code>. The page also says the favourable third of the endpoint arc sweeps <code>1/4</code> of the disc while the rest sweeps <code>3/4</code>, a ratio of 1:3 rather than 1:2; the logic test's grid over the disc bears that out.</p>
+
+      <h2>Reading the graph</h2>
+      <p>Each button draws chords the way the applet's <code>SHOULDFIX</code> option did: two random ends, one fixed end, a random radius, or a random spot. The line on the right is the running chance that a chord is no longer than a given length; the dashed red marker sits at <code>√3</code>, and its height is the chance of a <em>short</em> chord. Over 30,000 trials the four options approach <code>2/3, 2/3, 1/2, 3/4</code> there, the complements of the page's three answers. The long chords are green, short ones dark, so the two cases are easy to tell apart; nothing is won or lost in this illustration.</p>
+
+      <p class="tip">Try Draw 100 with one fixed end, then with a random spot. The graph settles near the same place for the first two options but not for the last two.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/bertrand.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bertrand-core.js"></script>
+<script src="bertrand.js"></script>
+</body>
+</html>
