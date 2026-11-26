@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cabart Collinearity &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and change the angle of its isosceles triangles: will two Kiepert points and the nine-point centre always fall on one straight line?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cabart-collinearity/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cabart Collinearity">
+<meta property="og:description" content="Drag the corners of a triangle and change the angle of its isosceles triangles: will two Kiepert points and the nine-point centre always fall on one straight line?">
+<meta property="og:url" content="https://coolmaths.ai/cabart-collinearity/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .apex-side.outer { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 6 5; }
+  #board .apex-side.inner { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 3 4; }
+  #board .cevian { fill: none; stroke-width: 1.6; stroke-dasharray: 2 5; }
+  #board .cevian.outer { stroke: var(--accent); }
+  #board .cevian.inner { stroke: var(--muted); }
+  #board .collinear-line { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .nine-circle { fill: var(--good); fill-opacity: 0.08; stroke: var(--good); stroke-width: 1.8; stroke-dasharray: 5 4; }
+  #board .apex-dot { stroke: var(--stage); stroke-width: 1.5; }
+  #board .outer-dot { fill: var(--accent); }
+  #board .inner-dot { fill: var(--muted); }
+  #board .kiepert-dot { stroke: var(--stage); stroke-width: 2; }
+  #board .center-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .center-label, #board .kp-label { fill: var(--good); }
+  #board .outer-label { fill: var(--accent); }
+  #board .inner-label { fill: var(--muted); }
+  #board .geom-handle { fill: var(--highlight); stroke: var(--ink); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem 0.75rem; }
+  .angle-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .angle-row input[type="range"] { width: 100%; max-width: 16rem; accent-color: var(--accent); }
+  .angle-row output { min-width: 3rem; font-variant-numeric: tabular-nums; }
+  .show-row { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .show-row label { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .show-row input { accent-color: var(--accent); width: 1.1rem; height: 1.1rem; }
+</style>
+</head>
+<body data-game="cabart-collinearity" data-kind="demo">
+<main id="main">
+  <h1>Cabart Collinearity</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the triangle's corners and change the angle: three special points always fall on one straight line.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a corner and use the arrow keys. Move the angle slider and tick the boxes to show the triangles, points and circle.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle with two triples of isosceles triangles, their Kiepert points, the nine-point circle and the straight line through all three centres"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="angle-row">
+      <label for="angle">Base angle</label>
+      <input id="angle" type="range" min="0" max="95" step="1" value="45"
+             aria-label="Base angle of the isosceles triangles, 0 to 95 degrees">
+      <output id="angleOut" for="angle">45°</output>
+      <button id="downBtn" type="button" aria-label="Decrease the base angle by 5 degrees">&minus;5°</button>
+      <button id="upBtn" type="button" aria-label="Increase the base angle by 5 degrees">+5°</button>
+    </div>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle and all options">Reset</button>
+    <div class="show-row">
+      <label><input id="showOuter" type="checkbox" aria-label="Show the outer triangles and their point">Show outer triangles</label>
+      <label><input id="showInner" type="checkbox" aria-label="Show the inner triangles and their point">Show inner triangles</label>
+      <label><input id="show9PC" type="checkbox" aria-label="Show the nine-point circle">Show nine-point circle</label>
+      <label><input id="showNames" type="checkbox" aria-label="Show the names of the points">Show names</label>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Stand an <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles triangle</a> on each side of a triangle. Lines from the corners to the three new tips meet in one point. Do it twice with angles a right angle apart, and that point, its partner and the centre of the nine-point circle turn out to be collinear — whatever shape the triangle has.</p>
+
+      <h2>Two angles that fit together</h2>
+      <p>The slider sets the base angle <code>x</code> of the outer triangles, from 0° to 95° (it starts at 45°, as in the applet). The inner triangles use <code>x − 90°</code>, the <em>algebraic</em> angle that puts them on the other side of each side. An apex angle is <code>180° − 2x</code>, so 45° gives the right-angled Vecten triangles and 30° gives the 120° apex triangles the original page mentions in connection with Napoleon. At 0° or 90° the tips run off to infinity and the applet draws no new points; this page hides them in the same cases. Which side counts as "outer" flips if you wind the triangle the other way, so the algebraic angle changes sign with the winding.</p>
+
+      <h2>A point from three cevians</h2>
+      <p>Each triple of tips gives three cevians; they concur at a <a class="wiki-term" data-wiki="Kiepert_hyperbola" href="https://en.wikipedia.org/wiki/Kiepert_hyperbola" target="_blank" rel="noopener">Kiepert point</a>. With side lengths <code>a = BC</code>, <code>b = CA</code>, <code>c = AB</code> and corner angles <code>A, B, C</code>, its <a class="wiki-term" data-wiki="Barycentric_coordinate_system" href="https://en.wikipedia.org/wiki/Barycentric_coordinate_system" target="_blank" rel="noopener">barycentric coordinates</a> are</p>
+      <blockquote><code>a / sin(A + x) : b / sin(B + x) : c / sin(C + x)</code>.</blockquote>
+      <p>Equivalently, after clearing denominators, they are <code>a[cos(B − C) − cos(B + C + 2x)]</code> and its cyclic partners. The core builds the point the applet's way — rotate a side by <code>x</code>, intersect the rays, and average the three intersections — and the logic test checks both weight formulas against it on hundreds of triangles.</p>
+
+      <h2>The centre of the nine-point circle</h2>
+      <p>The centre N comes from the midpoints of the three sides: it is their circumcenter, and the circle through all six notable points is the <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">nine-point circle</a>. In barycentrics N is <code>a cos(B − C) : b cos(C − A) : c cos(A − B)</code>. The applet uses the mean of its distances to the three midpoints as the radius; the test confirms that this is the same point as the barycentric formula.</p>
+
+      <h2>Why the three points line up</h2>
+      <p>Write <code>y = x − 90°</code>. Because <code>cos(B + C + 2y) = −cos(B + C + 2x)</code>, the sums of the two sets of weights obey <code>s₁ + s₂ = 2s₃</code>, where <code>s₃</code> is the sum of N's weights. Then</p>
+      <blockquote><code>2 s₃ · N = s₁ · K(x) + s₂ · K(y)</code>,</blockquote>
+      <p>so N is a weighted centre of the two Kiepert points and must lie on their line. The test measures the cross product of the three points over more than 600 configurations: it stays below <code>1e-9</code> board units after scaling.</p>
+
+      <p class="tip">Try 45° with both boxes ticked: those are the Vecten points. Then nudge one corner — the three dots keep sharing a line.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CabartCollinearity.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cabart-collinearity-core.js"></script>
+<script src="cabart-collinearity.js"></script>
+</body>
+</html>
