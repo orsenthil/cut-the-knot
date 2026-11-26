@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brahmagupta &mdash; coolmaths</title>
+<meta name="description" content="Four points sit on a circle. Drag two of them and watch the line from the crossing of the diagonals: what does it do to the opposite side?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/brahmagupta/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Brahmagupta">
+<meta property="og:description" content="Four points sit on a circle. Drag two of them and watch the line from the crossing of the diagonals: what does it do to the opposite side?">
+<meta property="og:url" content="https://coolmaths.ai/brahmagupta/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; margin: 0 auto; padding: 0.5rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board .circumcircle { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .quad { fill: var(--accent); fill-opacity: 0.12; stroke: var(--ink); stroke-width: 2.2; stroke-linejoin: round; }
+  #board .diagonal { fill: none; stroke: var(--muted); stroke-width: 1.8; stroke-dasharray: 5 4; }
+  #board .bisector { fill: none; stroke: var(--good); stroke-width: 2.6; }
+  #board .construction-point { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.2; }
+  #board .right-mark { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .point-label { fill: var(--text); font-size: 17px; font-weight: 700; pointer-events: none; }
+  #board .side-label { fill: var(--muted); font-size: 15px; font-weight: 650; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .handle-d { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 5; }
+  #readout {
+    margin: 0.3rem 0 0; text-align: center; font-size: 0.9rem;
+    font-variant-numeric: tabular-nums; overflow-wrap: anywhere; color: var(--text);
+  }
+</style>
+</head>
+<body data-game="brahmagupta" data-kind="demo">
+<main id="main">
+  <h1>Brahmagupta</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Four points sit on a circle and make a four-sided shape whose two corner-to-corner lines cross at right angles; there is nothing to win, only a surprising line to watch.<br>
+    <strong>How to play:</strong> Drag the blue point A or the green point D around the circle, or focus either one and use the arrow keys. Watch the green line, then press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 400" role="group"
+         aria-label="A circle with four points. A and D can be dragged; B and C follow, and a green line runs from the crossing of the diagonals through the middle of one side to the opposite side."></svg>
+    <p id="readout" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset points A and D to their starting positions on the circle">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the two points around the circle and the green line keeps doing the same thing. That is a theorem from the seventh-century mathematician Brahmagupta, and it is also the key to his formula for the area of a four-sided shape drawn inside a circle.</p>
+
+      <h2>Four corners on a circle</h2>
+      <p>Only A and D can be moved. B is D reflected across the upright line through the centre, and C is A reflected across the flat line through the centre, so all four stay on the circle. That makes a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>. The line A&ndash;C is upright and the line B&ndash;D is flat, so they meet at a right angle at T. These are its diagonals.</p>
+
+      <h2>Why the green line meets the far side square-on</h2>
+      <p>Q is halfway along B&ndash;C, and the green line runs from T through Q until it meets A&ndash;D at E. Put T at the centre of your axes and call the four pieces of the diagonals <code>p</code>, <code>q</code>, <code>m</code>, <code>n</code>. Because T is inside the circle, <code>pq = mn</code>. The slope of T&ndash;Q is <code>-q/m</code> and the slope of A&ndash;D is <code>p/n</code>; their product is <code>-1</code>, so the two lines are <a class="wiki-term" data-wiki="Perpendicular" href="https://en.wikipedia.org/wiki/Perpendicular" target="_blank" rel="noopener">perpendicular</a>. This is <a class="wiki-term" data-wiki="Brahmagupta%27s_theorem" href="https://en.wikipedia.org/wiki/Brahmagupta%27s_theorem" target="_blank" rel="noopener">Brahmagupta's theorem</a>: the line from the crossing of perpendicular diagonals to the middle of one side is perpendicular to the opposite side. The logic test checked it for more than a thousand pairs of dragged points.</p>
+
+      <h2>The area formula</h2>
+      <p>A related <a href="https://www.cut-the-knot.org/Generalization/Brahmagupta.shtml" target="_blank" rel="noopener">cut-the-knot article</a> states the formula. Write the four side lengths as <code>a</code>, <code>b</code>, <code>c</code>, <code>d</code> and half the perimeter as <code>s = (a+b+c+d)/2</code>. Brahmagupta's formula says the <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> is <code>S = sqrt((s-a)(s-b)(s-c)(s-d))</code>. The readout shows this beside the area measured from the picture, and the logic test checked that they agree whenever the four corners go around the circle in order. Let one side shrink to zero and the same formula becomes <a class="wiki-term" data-wiki="Heron%27s_formula" href="https://en.wikipedia.org/wiki/Heron%27s_formula" target="_blank" rel="noopener">Heron's formula</a> for a triangle. If you drag the corners into a crossed shape, the outline is no longer a quadrilateral and the two areas differ; drag back to see the theorem again.</p>
+
+      <h2>Not just one line</h2>
+      <p>The same argument works starting from any of the four sides, so all four middle-of-a-side lines pass through T at right angles to the opposite sides. A related <a href="https://www.cut-the-knot.org/Curriculum/Geometry/Brahmagupta2.shtml" target="_blank" rel="noopener">cut-the-knot page</a> notes an even wider version: when the diagonals are <em>not</em> perpendicular, the four lines still meet at one point, though not at T. This applet keeps the diagonals perpendicular, and the logic test checked all four lines in every configuration it tried.</p>
+
+      <p class="tip">Try moving A close to the left edge of the circle, then D close to A. The shape gets thin, but the green line still meets the far side at a right angle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Brahmagupta.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="brahmagupta-core.js"></script>
+<script src="brahmagupta.js"></script>
+</body>
+</html>
