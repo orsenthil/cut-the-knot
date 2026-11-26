@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arbelos Concyclic &mdash; coolmaths</title>
+<meta name="description" content="A circle sits in the knife-shaped gap between three half-circles. Drag the join between the two small arcs: do A, C, F and D always lie on one circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/arbelos-concyclic/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Arbelos Concyclic">
+<meta property="og:description" content="A circle sits in the knife-shaped gap between three half-circles. Drag the join between the two small arcs: do A, C, F and D always lie on one circle?">
+<meta property="og:url" content="https://coolmaths.ai/arbelos-concyclic/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .knife-big { fill: var(--accent); fill-opacity: 0.20; }
+  #board .knife-cut { fill: var(--stage); }
+  #board .incircle-fill { fill: var(--highlight); fill-opacity: 0.35; stroke: var(--accent); stroke-width: 2.5; }
+  #board .outline { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .diameter { stroke: var(--muted); stroke-width: 2; }
+  #board .radius-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .mirror-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  #board .claim-circle { fill: var(--good); fill-opacity: 0.08; stroke: var(--good); stroke-width: 2.5; stroke-dasharray: 7 4; }
+  #board .claim-circle-2 { fill: var(--accent); fill-opacity: 0.06; stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: 7 4; }
+  #board .extra-circle { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 3 5; }
+  #board .tangent-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .center-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label { fill: var(--text); font-size: 12px; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; min-width: 0; white-space: normal; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="arbelos-concyclic" data-kind="demo">
+<main id="main">
+  <h1>Arbelos Concyclic</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A big half-circle holds two smaller ones, and a circle fits in the gap between them. Move the join between the two small arcs and see four dots stay on one circle.<br>
+    <strong>How to play:</strong> Drag the dot C along the bottom line, or focus it and use the arrow keys. Press a button to jump to another place, and tick a box to show more circles or names.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="An arbelos on the line AB with a circle inscribed in it, the tangency points D, E and F, the tops M and N of the two small semicircles, two circles each passing through four of the points, and a draggable point C on AB."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Put C back at its starting place">Reset</button>
+    <button id="middleBtn" type="button" aria-label="Move C to the middle of AB">C in the middle</button>
+    <label class="option" for="namesChk"><input id="namesChk" type="checkbox" checked aria-label="Show or hide the point names"> Show names</label>
+    <label class="option" for="extraChk"><input id="extraChk" type="checkbox" aria-label="Show or hide the third circle about L1 and the line through L and L1"> Show the third circle</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move C and the whole picture changes shape. Yet the four dots A, C, F, D keep sitting on one circle, and B, C, E, D keep sitting on another. What fixes those circles in place?</p>
+
+      <h2>The three arcs and the circle in the gap</h2>
+      <p>The <a class="wiki-term" data-wiki="Arbelos" href="https://en.wikipedia.org/wiki/Arbelos" target="_blank" rel="noopener">arbelos</a> is bounded by three half-circles: on AB, on AC and on CB. The circle tucked into the gap touches them at D (the big arc), E (the left arc) and F (the right arc). Write <code>a = AC</code> and <code>b = CB</code>. Solving the three touching conditions gives its radius</p>
+      <blockquote><code>r = a&nbsp;b&nbsp;(a+b) / (2&nbsp;(a&sup2; + a&nbsp;b + b&sup2;))</code></blockquote>
+      <p>The point C can slide anywhere at least 10 units from A or B, just as the applet allowed. The logic test checks the three touches at every one of 321 positions.</p>
+
+      <h2>Two circles through four points</h2>
+      <p>Let M be the top of the half-circle on AC and N the top of the one on CB. Then <code>MC = a/&radic;2</code> and <code>NC = b/&radic;2</code>, and the two dashed circles drawn here are exactly the ones the page claims:</p>
+      <blockquote><code>A, C, F, D lie on the circle with centre M and radius MC.<br>B, C, E, D lie on the circle with centre N and radius NC.</code></blockquote>
+      <p>Both statements hold at all 321 draggable positions and at 1000 random ones. MA = MC and NB = NC are immediate; the surprising part is that the tangency points F and D (or E and D) land on those circles too.</p>
+
+      <h2>Why the fourth point belongs</h2>
+      <p>Invert about A with power <code>AB &times; AC</code>. This swaps B and C, leaves the small circle on CB where it is, and turns the big arc into an upright line at B. The <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">inscribed circle</a> becomes a circle touching two upright lines, and F becomes N. A line through B, N and the inverted point D′ comes back as a <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> through A, C, F and D: a line through the centre of an inversion always inverts to a circle through that centre. The angle at N is 45&deg;, so the returning circle meets AB at 45&deg; too, which puts its centre at M.</p>
+
+      <h2>A straightedge-and-compass build</h2>
+      <p>The same diagram gives an easy construction: draw the circles about M with radius MC and about N with radius NC. They meet at C and at D, the tangency point on the big arc. A third circle, centred at L1 (the mirror of the big arc's top L in AB) and through A and B, passes through E and F as well — tick <strong>Show the third circle</strong> to see it. All of this uses only a <a class="wiki-term" data-wiki="Straightedge_and_compass_construction" href="https://en.wikipedia.org/wiki/Straightedge_and_compass_construction" target="_blank" rel="noopener">straightedge and compass</a>, as noted by P. Y. Woo.</p>
+
+      <h2>About the original</h2>
+      <p>The Java applet offered two ticks, "names" and "hint", and one blue point to drag. Its drawing has one arithmetic slip: it built its helper for the big arc with radius AB instead of the drawn radius AB/2, so its own inscribed circle and its points E, F, D came out about twice too large for the gap. This page follows the construction stated on the cut-the-knot page, which is the true circle touching all three arcs; the logic test checks the applet's version against it and records the difference. The statement itself is due to L. Bankoff, with the proof here adapted from Woo.</p>
+
+      <p class="tip">Press <strong>C in the middle</strong>, then drag C close to A. One claim circle shrinks with the left half and the other grows with the right half, but each keeps its four dots.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ArbelosConcyclic.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="arbelos-concyclic-core.js"></script>
+<script src="arbelos-concyclic.js"></script>
+</body>
+</html>
