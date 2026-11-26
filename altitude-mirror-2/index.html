@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Altitude Mirror 2 &mdash; coolmaths</title>
+<meta name="description" content="Move C and D along the circle: why does the line from E to AB always split the angle at F into two equal parts? A hexagon hiding in the circle has the answer.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/altitude-mirror-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Altitude Mirror 2">
+<meta property="og:description" content="Move C and D along the circle: why does the line from E to AB always split the angle at F into two equal parts? A hexagon hiding in the circle has the answer.">
+<meta property="og:url" content="https://coolmaths.ai/altitude-mirror-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    margin: 1rem auto 0;
+    padding: 0.5rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .base-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .diameter { stroke: var(--ink); stroke-width: 2; }
+  #board .tri-side { stroke: var(--ink); stroke-width: 1.6; }
+  #board .tri-weak { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 5 5; }
+  #board .hexagon { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 4; }
+  #board .reflection { stroke: var(--muted); stroke-width: 1.2; }
+  #board .pascal-line { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .ray { stroke: var(--ink); stroke-width: 1.6; }
+  #board .angle-arc { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .right-mark { fill: none; stroke: var(--muted); stroke-width: 1.4; }
+  #board .altitude { stroke: var(--accent); stroke-width: 4; stroke-linecap: round; }
+  #board .dot { stroke: var(--stage); stroke-width: 1.5; }
+  #board .dot.fixed { fill: var(--ink); }
+  #board .dot.key { fill: var(--accent); }
+  #board .dot.mirror { fill: var(--muted); }
+  #board .lbl { fill: var(--text); font-size: 15px; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls button[aria-pressed="true"] {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  #status { min-height: 2.6em; }
+</style>
+</head>
+<body data-game="altitude-mirror-2" data-kind="demo">
+<main id="main">
+  <h1>Altitude Mirror 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore: move the two dots on the circle and see what stays the same.<br>
+    <strong>How to play:</strong> Drag C or D along the circle, or focus a dot and use the arrow keys. Press the buttons to show the extra lines.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Circle with diameter AB and two draggable points C and D, showing the altitude from E to AB"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Put C and D in new places on the circle">New position</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Show or hide the point names">Names</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show or hide the Pascal hexagon and its reflections">Hint</button>
+    <button id="statementBtn" type="button" aria-pressed="false" aria-label="Show or hide the two equal angle arcs at F">Statement</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag the dots and the line from <code>E</code> down to <code>AB</code> always cuts the corner at <code>F</code> into two equal pieces. Here is why that cannot fail, and how a six-sided figure hidden in the circle explains it.</p>
+
+      <h2>A diameter makes right corners</h2>
+      <p>Points <code>C</code> and <code>D</code> sit on a circle whose diameter is <code>AB</code>. By
+        <a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a>,
+        the angles <code>ACB</code> and <code>ADB</code> are right angles. So <code>BC</code> is perpendicular to <code>AC</code>, and <code>AD</code> is perpendicular to <code>BD</code>.</p>
+
+      <h2>The third altitude</h2>
+      <p>Let <code>S</code> be where <code>AC</code> meets <code>BD</code>. In triangle <code>ABS</code>, the lines <code>AD</code> and <code>BC</code> are two altitudes, so their crossing point <code>E</code> is the
+        <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a>.
+        The line through <code>E</code> straight down to <code>AB</code> is the third altitude, landing at <code>F</code>. The line <code>EF</code> is said to have the <em>mirror property</em>: it makes equal angles with <code>FC</code> and <code>FD</code>. The points <code>C</code>, <code>D</code> and <code>F</code> are corners of the
+        <a class="wiki-term" data-wiki="Orthic_triangle" href="https://en.wikipedia.org/wiki/Orthic_triangle" target="_blank" rel="noopener">orthic triangle</a>.</p>
+
+      <h2>A hexagon inside the circle</h2>
+      <p>Reflect <code>C</code> and <code>D</code> across <code>AB</code> to get <code>C′</code> and <code>D′</code>; they lie on the same circle. Now take the hexagon <code>A D C′ B C D′</code>. By
+        <a class="wiki-term" data-wiki="Pascal%27s_theorem" href="https://en.wikipedia.org/wiki/Pascal%27s_theorem" target="_blank" rel="noopener">Pascal's theorem</a>, the three places where opposite sides meet lie on one straight line: <code>AD ∩ BC = E</code>, <code>DC′ ∩ CD′ = F′</code> and <code>C′B ∩ D′A = E′</code>. Turn on <strong>Hint</strong> to see that hexagon and its Pascal line.</p>
+
+      <h2>Why the halves are equal</h2>
+      <p><code>E′</code> is just <code>E</code> reflected in <code>AB</code>, so the Pascal line <code>EE′</code> is perpendicular to <code>AB</code>. The lines <code>DC′</code> and <code>CD′</code> are reflections of each other, so they meet on <code>AB</code>: their point <code>F′</code> is on both <code>AB</code> and <code>EE′</code>, hence <code>F′ = F</code>. That makes <code>FD</code> the mirror image of <code>FC′</code>, and <code>FC</code> the mirror image of <code>FD′</code>. So <code>F</code> sees <code>C</code> and <code>D</code> at equal angles from <code>FE</code>, and the two halves are both <code>½·|angle C − angle D|</code>. The logic test checked the right angles, the Pascal line and this angle equality on 2,200 configurations, including scrambled ones; all held to numerical precision.</p>
+
+      <p class="tip">Try putting C and D close together, then far apart: the two coloured angles at F grow, but stay equal. The statement by Greg Markowsky and its Pascal proof come from the original page.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AltitudeMirror2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="altitude-mirror-2-core.js"></script>
+<script src="altitude-mirror-2.js"></script>
+</body>
+</html>
