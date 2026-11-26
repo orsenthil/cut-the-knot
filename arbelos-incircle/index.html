@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arbelos Incircle &mdash; coolmaths</title>
+<meta name="description" content="Drag the middle point of an arbelos and watch the circle tucked inside it. Where do the lines from the ends to the tops of the small half-circles meet, and is that point on the circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/arbelos-incircle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Arbelos Incircle">
+<meta property="og:description" content="Drag the middle point of an arbelos and watch the circle tucked inside it. Where do the lines from the ends to the tops of the small half-circles meet, and is that point on the circle?">
+<meta property="og:url" content="https://coolmaths.ai/arbelos-incircle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .arbelos-fill { fill: var(--accent); fill-opacity: 0.12; stroke: none; }
+  #board .arc { fill: none; stroke: var(--muted); stroke-width: 2.5; }
+  #board .arc-big { stroke: var(--ink); stroke-width: 3; }
+  #board .baseline { stroke: var(--ink); stroke-width: 1.5; }
+  #board .join { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; }
+  #board .join-cd { stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: none; }
+  #board .incircle { fill: var(--accent); fill-opacity: 0.18; stroke: var(--accent); stroke-width: 3; }
+  #board .dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1; }
+  #board .dot-touch { fill: var(--ink); stroke: var(--stage); stroke-width: 1; }
+  #board .dot-s { fill: var(--good); stroke: var(--stage); stroke-width: 1; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.85rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="arbelos-incircle" data-kind="demo">
+<main id="main">
+  <h1>Arbelos Incircle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: a big half-circle with two smaller ones cut out, and one circle tucked inside.<br>
+    <strong>How to play:</strong> Drag point C along the bottom line, or focus it and press the arrow keys. Tick the boxes to show the point names or the three joining lines, and press Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="An arbelos with its inscribed circle and the lines AN, BM and CD meeting on that circle"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox" checked> Point names</label>
+    <label><input id="guides" type="checkbox" checked> Joining lines</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the drawing">Reset drawing</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the middle point and the circle changes size and position. Yet three straight lines always meet at one point, and that point sits right on the circle. It even tells you where the circle touches the big arc.</p>
+
+      <h2>The shoemaker's knife</h2>
+      <p>An <a class="wiki-term" data-wiki="Arbelos" href="https://en.wikipedia.org/wiki/Arbelos" target="_blank" rel="noopener">arbelos</a> is what is left inside the big <a class="wiki-term" data-wiki="Semicircle" href="https://en.wikipedia.org/wiki/Semicircle" target="_blank" rel="noopener">semicircle</a> on AB after the two smaller ones on AC and CB are cut away. Write <code>r1 = AC/2</code>, <code>r2 = CB/2</code> and <code>R = r1 + r2</code>. The circle tucked into the gap is tangent to all three arcs. Its radius is <code>rho = r1*r2*(r1+r2)/(r1*r1 + r1*r2 + r2*r2)</code>, and its centre is <code>2*rho</code> above the baseline. The logic test checked both formulas at 1,200 positions.</p>
+
+      <h2>Where the circle touches</h2>
+      <p>Draw the line from the centre of each arc to the centre of the small <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>. Where that line meets the arc is exactly a touching point: D on the big arc, E on the left one and F on the right one. The distances to the three arc centres are <code>R - rho</code>, <code>r1 + rho</code> and <code>r2 + rho</code>. Woo's proof uses an <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">inversion</a> that swaps A and C (and another that swaps B and C), turning the arcs into straight lines.</p>
+
+      <h2>Three lines, one point</h2>
+      <p>Let M and N be the highest points of the left and right arcs. The page claims that AN, BM and CD all pass through one point S, and that S lies on the incircle. In words: S is where AN meets BM, and the line from C through S lands on the big arc exactly at D. This gives a way to draw the incircle without solving any equation. The test checked the three lines and the on-circle claim at all 1,200 positions; every one agreed to better than a millionth of a board unit.</p>
+
+      <h2>A note on the source</h2>
+      <p>The statement and proof are P. Y. Woo's, as the cut-the-knot page says. Two small differences from the old Java applet are deliberate. The applet nudges its big circle one screen unit downward to break a tangency at C, so its circle is up to about 1.5 units from the true one; this page uses the exact circle. The applet's first answer is also the mirror circle below the baseline, while the arbelos is above it, so this page draws the second answer. Finally, C is kept on the baseline here: the applet let it wander off the line, which stops the shape from being an arbelos.</p>
+
+      <p class="tip">Try putting C halfway between A and B: the circle is then as large as it gets, with radius AB/6.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ArbelosIncircle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="arbelos-incircle-core.js"></script>
+<script src="arbelos-incircle.js"></script>
+</body>
+</html>
