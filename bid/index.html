@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BID &mdash; coolmaths</title>
+<meta name="description" content="Slide the apex angle of an isosceles triangle and follow a chain of equal sides up to the top corner. When does it split the triangle into four smaller isosceles ones?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bid/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="BID">
+<meta property="og:description" content="Slide the apex angle of an isosceles triangle and follow a chain of equal sides up to the top corner. When does it split the triangle into four smaller isosceles ones?">
+<meta property="og:url" content="https://coolmaths.ai/bid/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .chain { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .chain-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1.5; }
+  #board .tick { stroke: var(--highlight); stroke-width: 2; stroke-linecap: round; }
+  #board .apex-arc { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .angle-label { fill: var(--accent); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .angle-control { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .angle-control label { font-size: 0.95rem; }
+  .angle-control input[type="range"] { width: min(14rem, 100%); accent-color: var(--accent); }
+  .angle-control output { font-size: 0.95rem; font-variant-numeric: tabular-nums; min-width: 3rem; }
+</style>
+</head>
+<body data-game="bid" data-kind="demo">
+<main id="main">
+  <h1>BID</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> An isosceles triangle has two equal sides, and this picture builds a staircase of more equal sides up to its top corner.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a corner and use the arrow keys. Slide the angle control to try David's question, or press Reset to start again.
+  </div>
+
+  <div class="angle-control">
+    <label for="angle">Apex angle</label>
+    <input type="range" id="angle" min="20" max="80" step="1" value="45" aria-label="Apex angle in degrees, from 20 to 80">
+    <output id="angleOut" for="angle">45°</output>
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="An isosceles triangle with a chain of equal sides climbing from its base to the apex"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to a 45 degree apex angle">Reset</button>
+    <button id="goldenBtn" type="button" aria-label="Set the apex angle to 36 degrees, the golden triangle">Try 36° (golden triangle)</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The puzzle asks for the apex angle of an <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles triangle</a> that allows a chain of equal sides. David Radcliffe's question had one answer, 45°, but the applet shows that the same chain works for nearly every angle below 60°.</p>
+
+      <h2>A staircase of equal sides</h2>
+      <p>Start with AB = AC and base BC. Put D on the right side so that <code>BD = BC</code> (two ticks in the picture). Put E on the left side on the <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a> of BD, so <code>BE = DE</code> (one tick). The applet then uses that same length twice more: <code>EF = DE</code> and <code>AF = EF</code>. The logic test checks all four equalities for 238 angles below 60° and for 300 random angles: they hold everywhere except a tiny gap just above 45°, where the circle at E misses the line and the applet simply puts F on top of D.</p>
+
+      <h2>Angle chasing</h2>
+      <p>Write <code>A</code> for the apex angle. Chasing the equal angles around the four triangles gives</p>
+      <blockquote><code>BCD: A, 90 − A/2, 90 − A/2</code><br>
+      <code>BDE: 90 − 3A/2, 90 − 3A/2, 3A</code><br>
+      <code>DEF: 2A, 180 − 4A, 2A</code><br>
+      <code>AEF: A, A, 180 − 2A</code></blockquote>
+      <p>These are the article's formulas (with B and C swapped to match the picture). The logic test compares them with the measured angles at every quarter degree under 60°. Above 45° the middle triangle turns over, so its base angles become <code>180 − 2A</code> and its third angle <code>4A − 180</code>; the test uses those values there.</p>
+
+      <h2>When is it really a decomposition?</h2>
+      <p>For <code>A &lt; 45°</code> the four triangles BCD, BDE, DEF and AEF fit together exactly: their areas add up to the area of the whole triangle. At <code>A = 45°</code> the points D and F coincide, leaving just three triangles. Between 45° and 60° the equal sides still match, but F lies past D, so the lines cross and the areas no longer add up. At 60° the chain collapses onto the apex; beyond that it stops at the base. Try the slider at 30°, 45° and 55° to see all three cases.</p>
+
+      <h2>Two pairs of similar triangles</h2>
+      <p>Using the angle table, the pair BDE, AEF is <a class="wiki-term" data-wiki="Similarity_(geometry)" href="https://en.wikipedia.org/wiki/Similarity_(geometry)" target="_blank" rel="noopener">similar</a> when <code>180 − 2A = 3A</code>, and the pair BCD, DEF is similar when <code>180 − 4A = A</code>. Both equations give <code>A = 36°</code>, the <a class="wiki-term" data-wiki="Golden_triangle_(mathematics)" href="https://en.wikipedia.org/wiki/Golden_triangle_(mathematics)" target="_blank" rel="noopener">golden triangle</a>. The article also says that CDE and AEF are the two obtuse triangles while BCD and DEF are acute; angle chasing shows that sentence is true only for <code>30° &lt; A &lt; 45°</code>. Outside that window a different triangle is obtuse, and the logic test checks the exact window.</p>
+
+      <p class="tip">Press the 36° button and compare the two pairs of triangles: each pair has the same three angles, even though the triangles have different sizes.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BID.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bid-core.js"></script>
+<script src="bid.js"></script>
+</body>
+</html>
