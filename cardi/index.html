@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cardi &mdash; coolmaths</title>
+<meta name="description" content="A small circle rolls around an equal circle. What shape does a point on its rim trace, and how many ways can you build that curve?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cardi/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cardi">
+<meta property="og:description" content="A small circle rolls around an equal circle. What shape does a point on its rim trace, and how many ways can you build that curve?">
+<meta property="og:url" content="https://coolmaths.ai/cardi/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .cardioid { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linejoin: round; }
+  #board .fixed-circle { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .moving-circle { fill: var(--highlight); fill-opacity: 0.12; stroke: var(--good); stroke-width: 2.5; }
+  #board .centres { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .tangent { stroke: var(--muted); stroke-width: 1.5; }
+  #board .am { stroke: var(--accent); stroke-width: 2; }
+  #board .bisector { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .rod { stroke: var(--good); stroke-width: 2; }
+  #board .rod.double { stroke: var(--bad); }
+  #board .fixed-dot { fill: var(--ink); }
+  #board .contact-dot { fill: var(--good); }
+  #board .moving-dot { fill: var(--good); }
+  #board .pedal-dot { fill: var(--accent); }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .handle-t { fill: var(--good); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="cardi" data-kind="demo">
+<main id="main">
+  <h1>Cardi</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A small circle rolls round a fixed circle, and a dot on its rim draws a heart-shaped curve.<br>
+    <strong>How to play:</strong> Drag the dot M or the touching point T. Press Play to roll the circle, pick a construction, or press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 390 350" role="group"
+         aria-label="A cardioid drawn by a point on a rolling circle, with the two circles and a draggable point M"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="playBtn" type="button" class="primary" aria-pressed="false" aria-label="Play or pause the rolling circle">Play</button>
+    <button id="stepBtn" type="button" aria-label="Roll the circle forward by two degrees">Step</button>
+    <button id="showBtn" type="button" aria-pressed="false" aria-label="Show or hide the construction lines">Show construction</button>
+    <button type="button" data-mode="cross" aria-pressed="true" aria-label="Show the tangent and mirror-line construction">Tangent</button>
+    <button type="button" data-mode="parallelogram" aria-pressed="false" aria-label="Show the hinged parallelogram construction">Parallelogram</button>
+    <button type="button" data-mode="double" aria-pressed="false" aria-label="Show the doubled parallelogram and the chord through the cusp">Chords</button>
+    <button id="resetBtn" type="button" aria-label="Reset the rolling circle to the starting picture">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A circle rolling round another circle of the same size makes a point on its rim draw a <a class="wiki-term" data-wiki="Cardioid" href="https://en.wikipedia.org/wiki/Cardioid" target="_blank" rel="noopener">cardioid</a>. The picture here shows four different ways to build that one curve.</p>
+
+      <h2>Two circles, one heart</h2>
+      <p>Let the fixed circle have centre O and radius r, and the rolling circle centre P and the same radius r. The centres are always 2r apart, so when P has turned through an angle t we have <code>P = O + 2r(cos t, sin t)</code>. Because the circles do not slip, the mark M turns twice as fast about P: its offset from P is <code>−r(cos 2t, sin 2t)</code>, and</p>
+      <blockquote><code>M = O + 2r(cos t, sin t) − r(cos 2t, sin 2t)</code>.</blockquote>
+      <p>At t = 0 the mark sits at the cusp A on the fixed circle. The logic test follows the applet's step-by-step rotation hundreds of times and finds exactly this formula. This is a special <a class="wiki-term" data-wiki="Epicycloid" href="https://en.wikipedia.org/wiki/Epicycloid" target="_blank" rel="noopener">epicycloid</a>: the equal radii are what give the single sharp point.</p>
+
+      <h2>A mirror in the tangent</h2>
+      <p>T is the point where the two circles touch, halfway between O and P. The arcs from T to A and from T to M are the same length, so the two chords <code>TA</code> and <code>TM</code> are equal too. That makes the <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> at T the <a class="wiki-term" data-wiki="Symmetry" href="https://en.wikipedia.org/wiki/Symmetry" target="_blank" rel="noopener">mirror line</a> of A and M: reflect A in every tangent of the fixed circle and you get every point of the cardioid. The midpoint of AM is the foot of the perpendicular from A to that tangent, which is why the cardioid is also the <a class="wiki-term" data-wiki="Pedal_curve" href="https://en.wikipedia.org/wiki/Pedal_curve" target="_blank" rel="noopener">pedal curve</a> of the circle.</p>
+
+      <h2>Chords through the cusp</h2>
+      <p>Extend the line from A through M until it meets the curve again at N. In this picture N is the mark half a turn later, and the <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord</a> <code>MN</code> is always <code>4r</code>: the two pieces have lengths <code>2r(1 − cos t)</code> and <code>2r(1 + cos t)</code>. Their midpoint goes round the fixed circle. The test checks both facts at more than six hundred angles, including the cusp itself.</p>
+
+      <h2>A hinged parallelogram</h2>
+      <p>Draw <code>OQ</code> equal and parallel to <code>PM</code>. Then OPMQ is a <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a> with <code>OP = 2·OQ</code>: Q simply runs twice as fast as P around O, and M = P + OQ lands on the cardioid. Doubling the rod MQ through Q gives the other end N of the chord above. The old applet also contains a formula-based drawing mode that Cardi never switches on; the test uses it to check the mark's positions, and notes that its moving centre is a quarter turn out — a leftover from another cycloid applet.</p>
+
+      <p class="tip">Try dragging M slowly towards the cusp: the mark nearly stops there, then speeds up as it moves away.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/Cardi.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cardi-core.js"></script>
+<script src="cardi.js"></script>
+</body>
+</html>
