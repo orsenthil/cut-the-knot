@@ -123,6 +123,12 @@ const SLUG_FALLBACK_URL = {
   "determinant-elimination": null,
   "ryser-formula": null,
   "perm-from-det": null,
+  "riskless-hedge": null,
+  "stock-price-paths": null,
+  "binomial-option-tree": null,
+  "payoff-heat-equation": null,
+  "black-scholes-formula": null,
+  "delta-hedging": null,
 };
 
 /* ----------------------------------------------------------- classification */

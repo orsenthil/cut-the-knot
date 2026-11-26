@@ -30,6 +30,30 @@ const REPO = join(HERE, "..");
  * Keep this list tiny and justified; it is not a place to park a sloppy port.
  */
 const EXEMPT = {
+  "riskless-hedge": {
+    checks: ["byline"],
+    why: "an original demo for the Black-Scholes path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "stock-price-paths": {
+    checks: ["byline"],
+    why: "an original demo for the Black-Scholes path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "binomial-option-tree": {
+    checks: ["byline"],
+    why: "an original demo for the Black-Scholes path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "payoff-heat-equation": {
+    checks: ["byline"],
+    why: "an original demo for the Black-Scholes path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "black-scholes-formula": {
+    checks: ["byline"],
+    why: "an original demo for the Black-Scholes path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "delta-hedging": {
+    checks: ["byline"],
+    why: "an original demo for the Black-Scholes path, not a port, so there is no cut-the-knot page to cite",
+  },
   "det-and-perm": {
     checks: ["byline"],
     why: "an original demo for the VP vs VNP path, not a port, so there is no cut-the-knot page to cite",

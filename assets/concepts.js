@@ -55,6 +55,7 @@ window.COOLMATHS_CONCEPTS = {
   "riemann-hypothesis": { label: "Riemann Hypothesis", prereqs: ["number-theory", "series", "complex-analysis"] },
   "unit-distance": { label: "Unit Distance Problem", prereqs: ["number-theory", "coordinates", "graph-theory"] },
   "vp-vnp": { label: "VP \u2260 VNP", prereqs: ["algebra", "algorithms", "counting"] },
+  "black-scholes": { label: "Black\u2013Scholes", prereqs: ["probability", "differential-equations", "limits"] },
   "differential-equations": { label: "Differential Equations", prereqs: ["algebra", "series"] },
   "fluid-dynamics": { label: "Fluid Dynamics", prereqs: ["differential-equations", "physics"] },
 };

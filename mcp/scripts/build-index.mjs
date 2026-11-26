@@ -461,6 +461,7 @@ const CORE_GLOBALS = {
   "determinant-elimination/determinant-elimination-core.js": ["DeterminantEliminationCore"],
   "ryser-formula/ryser-formula-core.js": ["RyserFormulaCore"],
   "perm-from-det/perm-from-det-core.js": ["PermFromDetCore"],
+  "riskless-hedge/riskless-hedge-core.js": ["RisklessHedgeCore"],
 };
 
 const games = [];

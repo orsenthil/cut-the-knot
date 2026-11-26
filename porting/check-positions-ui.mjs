@@ -901,6 +901,9 @@ const GAMES = {
   "perm-from-det": async (page) => {
     await page.click('#grid [data-k="1"]');
   },
+  "riskless-hedge": async (page) => {
+    for (let k = 0; k < 10; k++) await page.click("#moreBtn");
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

@@ -45,6 +45,7 @@ window.COOLMATHS = {
     "riemann-hypothesis": "Riemann Hypothesis",
     "unit-distance": "Unit Distance Problem",
     "vp-vnp": "VP ≠ VNP",
+    "black-scholes": "Black–Scholes",
     "differential-equations": "Differential Equations",
     "fluid-dynamics": "Fluid Dynamics",
   },
@@ -2472,6 +2473,13 @@ window.COOLMATHS = {
       blurb: "Put minus signs on letters to turn a determinant into a permanent. It works for 2 by 2 but never for 3 by 3. How big must a determinant be to hide a permanent? That is VP ≠ VNP.",
       tags: ["vp-vnp", "parity", "permutations"],
       level: 3,
+    },
+    {
+      slug: "riskless-hedge",
+      title: "The Riskless Hedge",
+      blurb: "A $100 stock will be $110 or $90 tomorrow. Sell an option on it and buy just enough shares that you cannot lose. What must the option cost, and why doesn't the chance of a rise matter?",
+      tags: ["black-scholes", "probability", "algebra"],
+      level: 1,
     },
   ],
 };

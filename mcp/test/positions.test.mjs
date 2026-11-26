@@ -2064,6 +2064,11 @@ check("perm-from-det: 3 x 3 with a minus on b", read["perm-from-det"]?.size === 
   const pd = at("perm-from-det", { n: 2, signs: [1, -1, 1, 1] });
   check("perm-from-det: 2 x 2 with -b: both products positive", pd.positive === 2 && pd.reachedBest === true);
 }
+check("riskless-hedge: half a share on the article's call is riskless", read["riskless-hedge"]?.sharesHeld === 0.5 && read["riskless-hedge"].riskless === true && read["riskless-hedge"].priceRight === false);
+{
+  const rh = at("riskless-hedge", { puzzle: "interest", delta: 0.5, p: 0.5, guess: 7.14 });
+  check("riskless-hedge: with 5% interest the call is $7.14", rh.riskless === true && rh.priceRight === true);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;
