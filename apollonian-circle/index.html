@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Apollonian Circle &mdash; coolmaths</title>
+<meta name="description" content="Two points A and B are fixed. Where can P stand so that its distance to A is always the same multiple of its distance to B? Drag the points and the ratio to find out.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/apollonian-circle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Apollonian Circle">
+<meta property="og:description" content="Two points A and B are fixed. Where can P stand so that its distance to A is always the same multiple of its distance to B? Drag the points and the ratio to find out.">
+<meta property="og:url" content="https://coolmaths.ai/apollonian-circle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .base { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .radius { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .inv-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .locus { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .bisector { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .image { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .family { fill: none; stroke: var(--accent); stroke-width: 1; opacity: 0.5; }
+  #board .bisector-leg { fill: none; stroke: var(--bad); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .cut-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .image-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label { fill: var(--text); font: 600 0.9rem var(--font); pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+  .controls .ratio-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .controls input[type="range"] { flex: 1 1 10rem; min-width: 8rem; }
+  .controls input[type="number"] { width: 4rem; }
+</style>
+</head>
+<body data-game="apollonian-circle" data-kind="demo">
+<main id="main">
+  <h1>Apollonian Circle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: it shows all the places that are the same number of times as far from A as from B.<br>
+    <strong>How to play:</strong> Drag A, B, P or the dot beside A, or focus one and use the arrow keys. Slide the ratio bar, tick the boxes, and press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Points A and B, the circle of points P with AP divided by BP equal to the chosen ratio, and its image under inversion"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="ratio-row">
+      <label for="ratio">Ratio AP/BP</label>
+      <input id="ratio" type="range" min="0.25" max="4" step="0.001" value="1.536" aria-label="Ratio AP divided by BP">
+      <output id="ratioOut" for="ratio">1.536</output>
+    </div>
+    <label for="n">Inverted circles <input id="n" type="number" min="1" max="15" step="1" value="1" aria-label="Number of inverted circles"></label>
+    <label><input id="names" type="checkbox" checked> Names</label>
+    <label><input id="hint" type="checkbox" checked> Hint</label>
+    <label><input id="extra" type="checkbox"> Extra construction</label>
+    <button id="resetBtn" type="button" class="primary">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag A or B and the orange circle moves, but P never leaves it: the number of times farther from A than from B stays the same all the way round.</p>
+
+      <h2>The ratio makes a circle</h2>
+      <p>Write the rule as <code>AP / BP = r</code> and square it. With P at <code>(x, y)</code>, the terms in <code>x²</code> and <code>y²</code> cancel only when they have the same coefficient, and what is left is the equation of a <a class="wiki-term" data-wiki="Apollonian_circle" href="https://en.wikipedia.org/wiki/Apollonian_circle" target="_blank" rel="noopener">circle of Apollonius</a>. For A at <code>a</code> and B at <code>b</code> on a line, its centre is <code>a + r²/(r²−1)·(b−a)</code> and its radius is <code>r·AB/|r²−1|</code>. The logic test checks both formulas against the drawing for hundreds of positions.</p>
+
+      <h2>Two points on the line AB</h2>
+      <p>The applet builds the circle from two points on the line AB: D between A and B, and E outside it, with <code>AD/BD = AE/BE = r</code>. These are the feet of the internal and external bisectors — the <a class="wiki-term" data-wiki="Angle_bisector_theorem" href="https://en.wikipedia.org/wiki/Angle_bisector_theorem" target="_blank" rel="noopener">angle bisector theorem</a> in action. The circle with DE as its diameter is exactly the locus above: the test checks that D and E lie on it and that every sampled point on it has ratio <code>r</code>. Tick <em>Hint</em> to see the two lines from P to D and E.</p>
+
+      <h2>What happens at r = 1</h2>
+      <p>At <code>r = 1</code> the formula divides by zero: there is no finite circle. The locus is the <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a> of AB — every point on it is equally far from A and B. The old applet faked this with a point a million pixels away; this page draws the exact line, as the verified cut-the-knot article states. The test samples forty points on that line and checks <code>AP = BP</code> at each one.</p>
+
+      <h2>Inversion makes rings</h2>
+      <p>Invert in the circle centred at A through the draggable dot R. Under this <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">inversion</a>, the locus circle becomes a circle centred at B′, the image of B, with radius <code>R²/(r·AB)</code>. That is why all the circles for different <code>r</code> are nested and never cross: their images are rings around one centre. Tick <em>Extra construction</em> to see those rings and the images of P. The test confirms the radius formula and the nesting. One sentence on the old page says smaller <code>r</code> brings the circle nearer to B; the formulas show the opposite — small <code>r</code> hugs A and large <code>r</code> hugs B. The inventory's page address is the inversion proof, which does not embed the applet; the byline links to the verified article describing this same construction.</p>
+
+      <p class="tip">Set the slider to 1 and drag A and B: P always stays on the line that cuts AB in half at a right angle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/LocusCircle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="apollonian-circle-core.js"></script>
+<script src="apollonian-circle.js"></script>
+</body>
+</html>
