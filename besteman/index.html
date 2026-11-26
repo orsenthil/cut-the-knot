@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Besteman &mdash; coolmaths</title>
+<meta name="description" content="Drag the ends of a segment and choose N: can two circles really cut off exactly 1/N of it? Watch where their common chord crosses the segment.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/besteman/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Besteman">
+<meta property="og:description" content="Drag the ends of a segment and choose N: can two circles really cut off exactly 1/N of it? Watch where their common chord crosses the segment.">
+<meta property="og:url" content="https://coolmaths.ai/besteman/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    touch-action: none;
+  }
+  #board .axis { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 5; }
+  #board .segment { stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; }
+  #board .construction { fill: none; stroke: var(--accent); stroke-width: 1.9; }
+  #board .hint { fill: none; stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .divider { stroke: var(--accent); stroke-width: 2.2; }
+  #board .mark { fill: var(--muted); }
+  #board .dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .answer-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .pt-label {
+    fill: var(--text); font-family: var(--font); font-size: 0.85rem;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .pt-label.good { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .control-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .control-row button { min-width: 2.5rem; }
+  #nOut { min-width: 5.5rem; text-align: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+</style>
+</head>
+<body data-game="besteman" data-kind="demo">
+<main id="main">
+  <h1>Besteman</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a><a class="tag" href="../index.html#fractions">Fractions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> See how two circles can cut a segment into exactly equal pieces, however you drag its ends.<br>
+    <strong>How to play:</strong> Drag the dots A and B, press + or − to choose how many pieces, and tick Show hint to reveal the triangles behind the trick.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Besteman's construction: the segment AB, the point C, two circles meeting at D and E, and the chord cutting off AP"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <button id="minusBtn" type="button" aria-label="Use one fewer equal part">&minus;</button>
+      <output id="nOut" aria-label="Number of equal parts">N = 3</output>
+      <button id="plusBtn" type="button" aria-label="Use one more equal part">+</button>
+    </div>
+    <label><input id="namesBox" type="checkbox"> Show names</label>
+    <label><input id="hintBox" type="checkbox"> Show hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>There is a way to cut a segment into N equal pieces without measuring any of them. Draw two circles, join the places where they cross, and the chord marks off exactly one N-th. Move the ends of the segment and it keeps working. Nathan Besteman found the construction; it appeared in <em>Mathematics Teacher</em> in 2005. Bogomolny's applet lets you drag it.</p>
+
+      <h2>Setting up the circles</h2>
+      <p>Start with the <a class="wiki-term" data-wiki="Line_segment" href="https://en.wikipedia.org/wiki/Line_segment" target="_blank" rel="noopener">segment</a> AB and its midpoint M. Put C on the same straight line so that <code>AC = N·AM = N·AB/2</code>. Now draw a <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> centred at A through B, and another centred at C through A. Their radii are <code>AB</code> and <code>AC</code>, and they meet at D and E. The small grey dots along AC mark the half-steps <code>AM, 2·AM, …, N·AM</code>.</p>
+
+      <h2>The chord stands straight up</h2>
+      <p>Both D and E are the same distance from A as from C, so the line DE is the <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a> of AC: it meets AC at right angles. Call that meeting point P. The right triangles APD and ACQ share the angle at A, so they are <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similar_triangles" target="_blank" rel="noopener">similar triangles</a>. Here Q is the midpoint of DA, just as the applet draws it.</p>
+
+      <h2>Two lines of the proof</h2>
+      <p>Similar triangles give the page's first equation, <code>AP/AQ = AD/AC</code>. But <code>AQ = AD/2</code> by construction, and <code>AD = AB</code> because both are radii of the circle centred at A. Substituting gives the page's second equation:</p>
+      <blockquote><code>AP = AB²/(2 AC)</code></blockquote>
+      <p>Nothing here depends on how long AB is or where the segment sits on the page — only on the ratio between the two radii.</p>
+
+      <h2>Choosing C finishes the trick</h2>
+      <p>Because C was placed so that <code>AC = N·AB/2</code>, the formula collapses to the page's final claim:</p>
+      <blockquote><code>AP = AB/N</code></blockquote>
+      <p>So the green dots at <code>AP, 2·AP, …, N·AP</code> really are the N equal <a class="wiki-term" data-wiki="Fraction_(mathematics)" href="https://en.wikipedia.org/wiki/Fraction_(mathematics)" target="_blank" rel="noopener">fractions</a> of AB. The logic test checks all three equations, the perpendicular chord and the equal spacing for every N from 2 to 20 and hundreds of placements of A and B, and compares the whole picture with a second transcription of the applet's own circle-intersection code. The claim holds in every case.</p>
+
+      <p class="tip">Try dragging B close to A and setting N to 20: the marked-off piece shrinks to one twentieth, yet all twenty dots stay evenly spaced.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Besteman.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="besteman-core.js"></script>
+<script src="besteman.js"></script>
+</body>
+</html>
