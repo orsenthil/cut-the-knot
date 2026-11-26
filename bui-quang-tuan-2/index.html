@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bui Quang Tuan 2 &mdash; coolmaths</title>
+<meta name="description" content="Six circles fit into a triangle and close back on themselves. Where do their touch points lie, and what happens when two triples of circles meet?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bui-quang-tuan-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Bui Quang Tuan 2">
+<meta property="og:description" content="Six circles fit into a triangle and close back on themselves. Where do their touch points lie, and what happens when two triples of circles meet?">
+<meta property="og:url" content="https://coolmaths.ai/bui-quang-tuan-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    margin: 0 auto;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .chain { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .chain.hot { stroke: var(--accent); stroke-width: 3; }
+  #board .edge { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .bisector { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .cevian { fill: none; stroke: var(--good); stroke-width: 1.6; stroke-dasharray: 5 5; }
+  #board .big-circle { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 4 4; }
+  #board .incircle { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .tan-dot { fill: var(--ink); }
+  #board .touch-dot { fill: var(--good); }
+  #board .ge-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .clabel { fill: var(--muted); font-size: 13px; }
+  #board .plabel { fill: var(--accent); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .p-handle { fill: var(--highlight); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="bui-quang-tuan-2" data-kind="demo">
+<main id="main">
+  <h1>Bui Quang Tuan 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Slide P or move the triangle's corners to build a ring of six circles that closes back on itself.<br>
+    <strong>How to play:</strong> Drag a point with a mouse or finger, or focus it and use the arrow keys. Press Check the claim to see what is true here, and use the buttons to show names or the special point.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle with six tangent circles, a draggable point P on an angle bisector, and an optional Gergonne point"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the diagram to its starting shape">Reset diagram</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show or hide the point and circle names">Show names</button>
+    <button id="gergonneBtn" type="button" aria-pressed="false" aria-label="Show or hide the Gergonne point and the incircle">Show Gergonne point</button>
+    <button id="checkBtn" type="button" aria-label="Check which claims hold in this diagram">Check the claim</button>
+  </div>
+  <div class="controls" role="group" aria-label="Which circles to highlight">
+    <button id="oddBtn" type="button" aria-pressed="false" aria-label="Highlight circles C1, C3 and C5">C1, C3, C5</button>
+    <button id="evenBtn" type="button" aria-pressed="false" aria-label="Highlight circles C2, C4 and C6">C2, C4, C6</button>
+    <button id="allBtn" type="button" aria-pressed="true" aria-label="Highlight every circle">Show all circles</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Bui Quang Tuan found a playful way to place six circles in a triangle: start with one circle in a corner, and let each circle decide where the next one touches a side. The chain comes back to where it started, and a hidden point in the triangle explains how the circles are related.</p>
+
+      <h2>Six circles that close</h2>
+      <p>P is the centre of C1 and sits on the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">bisector</a> of angle A1, so C1 touches both sides of that corner. Mark where it touches side A1A2: call that T12. The next circle, C2, touches the very same point while also fitting into corner A2. Its touch point on A2A3 is T23, and C3 fits into corner A3. Continuing gives C4, C5, C6 and then C7 — which lands exactly on C1 again. The logic test checks <code>C7 = C1</code> on every layout it tries, including all the ways you can drag P.</p>
+
+      <h2>The touch points share a circle</h2>
+      <p>The six points T12, T23, T34, T45, T56 and T61 are not scattered at random. They all lie on one <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> whose centre is the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> I of the triangle — the centre of its <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a>. The dashed green circle in the Gergonne view is the circle through those touch points; the solid blue one is the incircle. They are different circles unless P is chosen just right. The test checks the equal distances on more than 200 triangles.</p>
+
+      <h2>The point where three lines meet</h2>
+      <p>Let M1, M2 and M3 be the places where the incircle touches the sides opposite A1, A2 and A3. The lines A1M1, A2M2 and A3M3 always meet at one point: the <a class="wiki-term" data-wiki="Gergonne_point" href="https://en.wikipedia.org/wiki/Gergonne_point" target="_blank" rel="noopener">Gergonne point</a> Ge. Each of those lines is also a <a class="wiki-term" data-wiki="Radical_axis" href="https://en.wikipedia.org/wiki/Radical_axis" target="_blank" rel="noopener">radical axis</a> of two circles in the chain, so Ge is the radical centre of C2, C4 and C6. And here is the second theorem: if circles C1, C3 and C5 pass through a common point, that point must be Ge; the same goes for C2, C4 and C6.</p>
+      <p>The word <em>if</em> matters. At the starting P the two triples do not share a point — their radical centres are Ge, but Ge lies outside the circles. Slide P towards the corner A1 and C1, C3, C5 pass through Ge together; slide it away towards the far end of the bisector and C2, C4, C6 do. The logic test finds both positions by bisection and checks that the common point is Ge, then repeats on other triangles. The Java applet's highlight buttons are labelled for the two alternating triples, although its own colour test actually highlights the pairs of circles in one corner (C1 with C4, or C2 with C5); this page follows the labels and the theorem.</p>
+
+      <h2>What changed from the first theorem</h2>
+      <p>The earlier applet, <em>Six Circles Theorem (Bui Quang Tuan)</em>, shows the same ring of six circles and the concyclic touch points. This second applet keeps that picture and adds P, a handle that lets you choose the first circle instead of fixing it, plus the Gergonne construction and the two triples. That is what makes it a different theorem: the circle through the touch points, the incircle and the Gergonne point become visible together.</p>
+
+      <p class="tip">Try pressing Show Gergonne point, then slide P slowly and watch the dashed cevians keep meeting at the same little dot.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BuiQuangTuan2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bui-quang-tuan-2-core.js"></script>
+<script src="bui-quang-tuan-2.js"></script>
+</body>
+</html>
