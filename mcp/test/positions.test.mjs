@@ -2019,6 +2019,11 @@ check("turning-turtles: the saved row reads as 11 squares, the player to move", 
   const tt = at("turning-turtles", { x: [false, true, false, false, true, true, false, true, false, false, false], turn: "you", score: { me: 1, you: 2 } });
   check("turning-turtles: OXOOXXOXOOO has Nim-sum 1^3^4^7^9^10^11 and a move back to 0", tt.nimSum === (1 ^ 3 ^ 4 ^ 7 ^ 9 ^ 10 ^ 11) && tt.winningMove !== null && tt.score.player === 2);
 }
+check("chips-on-circle: two flips keep 8 and 8, a balanced half is found", read["chips-on-circle"]?.reds === 8 && read["chips-on-circle"].balancedHalf !== null);
+{
+  const cc = at("chips-on-circle", { n: 8, red: [true, true, true, true, false, false, false, false] });
+  check("chips-on-circle: RRRRGGGG is balanced from chip 3 (and 7)", cc.balancedHalf.from === 3 && cc.allBalancedStarts.join() === "3,7");
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

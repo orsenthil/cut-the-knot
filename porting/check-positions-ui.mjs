@@ -870,6 +870,9 @@ const GAMES = {
     await page.click("#moveBtn");
     await page.waitForTimeout(1000);
   },
+  "chips-on-circle": async (page) => {
+    for (const i of [0, 3]) await page.click(`#board .chip[data-i="${i}"]`);
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

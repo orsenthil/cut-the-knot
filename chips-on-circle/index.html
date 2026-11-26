@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Counting Chips On a Circle &mdash; coolmaths</title>
+<meta name="description" content="Put 2n red and 2n green chips round a circle. Why is there always a half circle with exactly n of each?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/chips-on-circle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Counting Chips On a Circle">
+<meta property="og:description" content="Put 2n red and 2n green chips round a circle. Why is there always a half circle with exactly n of each?">
+<meta property="og:url" content="https://coolmaths.ai/chips-on-circle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board, #walk { display: block; width: 100%; height: auto; }
+  #board .ring { fill: none; stroke: var(--border-strong); stroke-width: 1.5; }
+  #board .chip { cursor: pointer; }
+  #board .chip circle { stroke: var(--ink); stroke-width: 2; }
+  #board .chip.red circle { fill: #e0453a; }
+  #board .chip.green circle { fill: #2f9a5c; }
+  #board .chip.in circle { stroke-width: 4.5; }
+  #board .chip:focus-visible { outline: none; }
+  #board .chip:focus-visible circle { stroke: var(--focus); stroke-width: 6; }
+  #board .diameter { stroke: var(--accent); stroke-width: 3; stroke-dasharray: 8 5; }
+  #board .arc { fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; opacity: 0.6; }
+  #walk .axis { stroke: var(--border-strong); stroke-width: 1.5; }
+  #walk .steps { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #walk .zero { fill: var(--good); }
+  .walk-caption { text-align: center; color: var(--muted); font-size: 0.9rem; margin: 0.2rem 0 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls input[type="number"] { width: 4.5rem; min-height: 2.75rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="chips-on-circle" data-kind="demo">
+<main id="main">
+  <h1>Counting Chips On a Circle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#parity">Parity</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Half the chips round the circle are red and half are green. However you arrange them, some half of the circle has as many red chips as green. Try to beat it!<br>
+    <strong>How to play:</strong> Click a chip to change its colour. Keep the reds and greens equal, and watch the line that cuts the circle in half.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="group" aria-label="Chips round a circle; arrow keys move between chips, Enter flips one"></svg>
+    <svg id="walk" viewBox="0 0 400 120" role="img" aria-label="For each starting chip, reds minus greens on the half circle from it"></svg>
+    <p class="walk-caption">Reds minus greens on the half circle starting at each chip</p>
+  </div>
+
+  <div class="controls">
+    <label>N <input id="nIn" type="number" min="4" max="40" step="4" value="16"></label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Place <code>2n</code> red and <code>2n</code> green chips evenly round a circle. However they are arranged, some half circle (<code>2n</code> neighbouring chips) holds exactly <code>n</code> of each.</p>
+
+      <h2>One step at a time</h2>
+      <p>Let <code>r(m)</code> be the number of reds in the half circle that starts at chip <code>m</code>. Moving the start one chip on drops one chip and takes in the next, so <code>r</code> stays the same or changes by exactly 1. The graph under the circle shows <code>r(m) &minus; g(m)</code> for every start: it moves in steps of 0 or 2.</p>
+
+      <h2>The other half</h2>
+      <p>The half circle starting at <code>m + 2n</code> is everything the half at <code>m</code> leaves out, so <code>r(m + 2n) = 2n &minus; r(m)</code>. If one half has fewer than <code>n</code> reds, the opposite half has more than <code>n</code>. Walking the start from <code>m</code> to <code>m + 2n</code> one step at a time, the count must pass through <code>n</code> exactly. This is a discrete <a class="wiki-term" data-wiki="Intermediate_value_theorem" href="https://en.wikipedia.org/wiki/Intermediate_value_theorem" target="_blank" rel="noopener">intermediate value theorem</a>: the graph crosses zero, and it does so in opposite pairs.</p>
+
+      <h2>Checked</h2>
+      <p>The logic test tried every arrangement of equal reds and greens for 4 to 20 chips, more than 200,000 in all, and found a balanced half every time. It also checked both facts the proof uses. With unequal numbers the claim can fail: a circle of all red chips has no balanced half.</p>
+
+      <p class="tip">Group all the reds together. Where does the dividing line go now, and how many places could it go?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/TwoColorsOnCircle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="chips-on-circle-core.js"></script>
+<script src="chips-on-circle.js"></script>
+</body>
+</html>

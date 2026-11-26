@@ -2399,5 +2399,13 @@ window.COOLMATHS = {
       tags: ["game-strategy", "place-value", "invariants"],
       level: 2,
     },
+    {
+      slug: "chips-on-circle",
+      title: "Counting Chips On a Circle",
+      blurb: "Put 2n red and 2n green chips round a circle. Why is there always a half circle with exactly n of each?",
+      tags: ["invariants", "counting", "parity"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };
