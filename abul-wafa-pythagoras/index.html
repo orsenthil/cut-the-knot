@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Abul Wafa Pythagoras &mdash; coolmaths</title>
+<meta name="description" content="Two squares of different sizes are cut into seven pieces. Can they always be slid together to fill the square on a right triangle's sloping side?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/abul-wafa-pythagoras/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Abul Wafa Pythagoras">
+<meta property="og:description" content="Two squares of different sizes are cut into seven pieces. Can they always be slid together to fill the square on a right triangle's sloping side?">
+<meta property="og:url" content="https://coolmaths.ai/abul-wafa-pythagoras/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 46rem; margin: 0 auto; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board .outline { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .outline-big { stroke: var(--ink); stroke-width: 2.5; }
+  #board .outline-small { stroke: var(--accent); stroke-dasharray: 5 4; }
+  #board .outline-final { stroke: var(--ink); stroke-width: 2.5; }
+  #board .piece { stroke: var(--ink); stroke-width: 1.4; stroke-linejoin: round; }
+  #board .piece-big { fill: var(--highlight); }
+  #board .piece-small { fill: var(--accent); fill-opacity: 0.45; }
+  #board .triangle-fill { fill: var(--accent); fill-opacity: 0.12; }
+  #board .triangle-edge { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .right-mark { fill: none; stroke: var(--accent); stroke-width: 1.6; }
+  #board .dim { fill: var(--text); font-size: 16px; font-weight: 650; pointer-events: none; }
+  #board .caption { fill: var(--muted); font-size: 15px; text-anchor: middle; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .move-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 5; }
+  #readout {
+    margin: 0.4rem 0 0; text-align: center; font-size: 0.95rem;
+    font-variant-numeric: tabular-nums; overflow-wrap: anywhere; color: var(--text);
+  }
+</style>
+</head>
+<body data-game="abul-wafa-pythagoras" data-kind="demo">
+<main id="main">
+  <h1>Abul Wafa Pythagoras</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A big square and a small square are cut into seven pieces that slide across to fill the square on a right triangle's sloping side. There is nothing to win or lose: the pieces always fit.<br>
+    <strong>How to play:</strong> Drag the small square until its bottom-left corner meets the big square's corner. Drag the round points to change the two side lengths, then press Move them.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 680 380" role="group"
+         aria-label="Two squares sharing a corner, with a right triangle drawn in the larger square and the square on its sloping side. Drag the named points to change the squares."></svg>
+    <p id="readout" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <button id="moveBtn" type="button" class="primary" aria-label="Move the seven pieces into the square on the sloping side">Move them</button>
+    <button id="resetBtn" type="button" aria-label="Reset the squares to their starting sizes and positions">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Abul Wafa al-Buzjani, a mathematician in Baghdad about a thousand years ago, found a way to turn two squares of <em>different</em> sizes into one square. The trick is to cut them along the right triangle they share, then slide the pieces across. Try it at several sizes: it keeps working.</p>
+
+      <h2>The triangle hiding in the squares</h2>
+      <p>Put the small square's bottom-left corner on the big square's corner. Mark the point <code>E</code> on the big square's right side, the same distance <code>b</code> up as the small square is tall. The three points <code>A</code>, <code>B</code> and <code>E</code> form a <a class="wiki-term" data-wiki="Right_triangle" href="https://en.wikipedia.org/wiki/Right_triangle" target="_blank" rel="noopener">right triangle</a>: its legs are <code>a</code> and <code>b</code>, and its third side has length <code>c</code>. That third side is the side of the square on the right. The cuts use the line from <code>A</code> to <code>E</code> and the line up from the small square's corner.</p>
+
+      <h2>Seven pieces, two squares</h2>
+      <p>The big square is cut into five pieces and the small one into two. Every piece is a triangle or a four-sided shape whose edges are copied exactly from the cuts, so moving a piece never changes its <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> or shape. This is a <a class="wiki-term" data-wiki="Dissection_puzzle" href="https://en.wikipedia.org/wiki/Dissection_puzzle" target="_blank" rel="noopener">dissection</a>: cut one figure apart and put the same pieces down somewhere else. Press Move them and watch each piece travel from the left square to the right one.</p>
+
+      <h2>Why the sizes do not matter</h2>
+      <p>The seven pieces fill the square on the third side exactly, with no gaps and no overlaps. So the two starting squares have the same total area as that square: <code>a² + b² = c²</code>, the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a>. That is just <a class="wiki-term" data-wiki="Algebra" href="https://en.wikipedia.org/wiki/Algebra" target="_blank" rel="noopener">algebra</a> once you know <code>c</code> is the third side of a right triangle. The logic test checked the identity for every whole-number pair of sides in the applet's range and for hundreds of random sizes, and sampled the finished square to confirm that every point is covered once. The construction here follows the applet: its page asks you to make the lower-left corners meet, and its button moves the pieces one at a time.</p>
+
+      <p class="tip">Make <code>b</code> almost as large as <code>a</code>. The two little triangles near the crossing point get very thin, but the seven pieces still fill the square.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/AbulWafaPythagoras.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="abul-wafa-pythagoras-core.js"></script>
+<script src="abul-wafa-pythagoras.js"></script>
+</body>
+</html>
