@@ -1937,6 +1937,11 @@ check("sine-of-sum: alpha 62, beta 45, the rhombus's area is sin 107 = the two r
   const ss = at("sine-of-sum", { alpha: 30, beta: 60, labels: true, angles: false });
   check("sine-of-sum: 30 and 60 make a square of area 1 = 1/4 + 3/4", ss.rhombusArea === 1 && ss.emptyRectangles.sinAcosB === 0.25 && ss.emptyRectangles.cosAsinB === 0.75);
 }
+check("social-choice: ballot 3 now BCA, so B wins plurality with 18", read["social-choice"]?.results.Plurality.winners.join() === "B" && read["social-choice"].results.Plurality.scores.B === 18 && read["social-choice"].methodsTicked.join() === "Plurality,Elimination");
+{
+  const sc = at("social-choice", { ballots: [["A","B","C","D","E"],["C","B","D","E","A"],["D","C","B","E","A"],["B","D","C","E","A"],["E","C","D","B","A"]], counts: [14, 10, 8, 4, 1], methods: [] });
+  check("social-choice: the Math Club election has four winners A, B, D, C", ["Plurality","Borda","Elimination","Pairwise"].map((m) => sc.results[m].winners.join()).join() === "A,B,D,C");
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

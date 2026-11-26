@@ -800,6 +800,10 @@ const GAMES = {
     await page.focus('#boardL .handle[data-which="alpha"]');
     await page.keyboard.press("PageDown");
   },
+  "social-choice": async (page) => {
+    for (const m of [1, 3]) await page.check(`input[data-method="${m}"]`);
+    await page.click('[data-ballot="2"][data-index="1"]');
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

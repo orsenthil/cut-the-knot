@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Social Choice &mdash; coolmaths</title>
+<meta name="description" content="The same ballots, four fair-sounding ways to count them, and up to four different winners. Who really won?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/social-choice/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Social Choice">
+<meta property="og:description" content="The same ballots, four fair-sounding ways to count them, and up to four different winners. Who really won?">
+<meta property="og:url" content="https://coolmaths.ai/social-choice/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 46rem; padding: 0.8rem 0.5rem; }
+  .scroll { overflow-x: auto; max-width: 100%; }
+  #stage table { border-collapse: collapse; margin: 0 auto; font-variant-numeric: tabular-nums; }
+  #stage th, #stage td { border: 1px solid var(--border); padding: 0.25rem 0.35rem; text-align: center; }
+  #stage thead th { background: var(--surface-2); }
+  #stage tbody th { color: var(--muted); font-weight: 600; font-size: 0.85rem; }
+  .count { display: flex; align-items: center; gap: 0.15rem; justify-content: center; }
+  .count span { min-width: 2.2rem; font-weight: 700; }
+  .choice { display: flex; align-items: center; justify-content: center; gap: 0.2rem; }
+  .choice .letter { font-weight: 700; font-size: 1.15rem; min-width: 1.2rem; }
+  #stage button { min-width: 2.75rem; min-height: 2.75rem; padding: 0; }
+  #results { margin-top: 0.8rem; }
+  #results td.top { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+  #results .hint { text-align: center; color: var(--muted); margin: 0; }
+  .stepper { display: inline-flex; align-items: center; gap: 0.3rem; }
+  .stepper button { min-width: 2.75rem; min-height: 2.75rem; padding: 0; }
+  .stepper output { min-width: 1.6rem; text-align: center; font-weight: 700; }
+  .controls .group { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.2rem 0.8rem; width: 100%; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.3rem; min-height: 2.75rem; }
+</style>
+</head>
+<body data-game="social-choice" data-kind="demo">
+<main id="main">
+  <h1>Social Choice</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#permutations">Permutations</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Each column is a group of voters who list the choices from favourite down. Find out who wins under four different ways of counting, and see that they need not agree.<br>
+    <strong>How to play:</strong> Tick the counting methods. Change the voter numbers or press &uarr; to move a choice up a ballot, and watch the winners change.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="scroll" id="ballots" role="region" aria-label="The ballots" tabindex="0"></div>
+    <div class="scroll" id="results" role="region" aria-label="The results" aria-live="polite"></div>
+  </div>
+
+  <div class="controls">
+    <div class="group">
+      <label><input type="checkbox" data-method="1"> Plurality (1)</label>
+      <label><input type="checkbox" data-method="2"> Borda (2)</label>
+      <label><input type="checkbox" data-method="3"> Elimination (3)</label>
+      <label><input type="checkbox" data-method="4"> Pairwise (4)</label>
+    </div>
+    <div class="group">
+      <span class="stepper" role="group" aria-label="Number of choices">Choices
+        <button id="ncLess" type="button" aria-label="One choice fewer">&minus;</button><output id="ncOut">3</output><button id="ncMore" type="button" aria-label="One choice more">+</button>
+      </span>
+      <span class="stepper" role="group" aria-label="Number of different ballots">Ballots
+        <button id="nsLess" type="button" aria-label="One ballot fewer">&minus;</button><output id="nsOut">4</output><button id="nsMore" type="button" aria-label="One ballot more">+</button>
+      </span>
+    </div>
+    <div class="group">
+      <button id="backBtn" type="button" disabled>Reverse swap</button>
+      <button id="exampleBtn" type="button">Four winners example</button>
+      <button id="resetBtn" type="button" class="primary">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p><a class="wiki-term" data-wiki="Social_choice_theory" href="https://en.wikipedia.org/wiki/Social_choice_theory" target="_blank" rel="noopener">Social choice theory</a> studies how to turn many voters' preference ballots (ordered lists of the choices) into one winner or one ranking. Here are four methods, each sensible on its own.</p>
+
+      <h2>Four ways to count</h2>
+      <p><strong>Plurality</strong>: count only first places. <strong><a class="wiki-term" data-wiki="Borda_count" href="https://en.wikipedia.org/wiki/Borda_count" target="_blank" rel="noopener">Borda count</a></strong>: with <code>n</code> choices, a first place is worth <code>n</code> points, a second <code>n &minus; 1</code>, down to 1 for last. <strong>Plurality with elimination</strong>: if nobody has a majority of first places, strike out the choice with the fewest and count again. The scores shown are the last round's. <strong>Pairwise comparison</strong>: every two choices meet head to head, and the one more voters prefer scores 2 (a tie scores 1 each).</p>
+
+      <h2>Same ballots, different winners</h2>
+      <p>On the page's ballots (7 ABC, 8 BCA, 10 CBA, 4 ACB), plurality elects A, Borda and pairwise elect B, and elimination elects C. With COMAP's Math Club election (press Four winners example) each method elects someone different: A, B, D and C. The logic test checked both. A choice that beats every other head to head, a <a class="wiki-term" data-wiki="Condorcet_winner_criterion" href="https://en.wikipedia.org/wiki/Condorcet_winner_criterion" target="_blank" rel="noopener">Condorcet winner</a>, always wins the pairwise count but can lose the others. <a class="wiki-term" data-wiki="Arrow%27s_impossibility_theorem" href="https://en.wikipedia.org/wiki/Arrow%27s_impossibility_theorem" target="_blank" rel="noopener">Arrow's theorem</a> says that no method can satisfy every fairness condition you would like.</p>
+
+      <h2>Checking the totals</h2>
+      <p>Plurality scores add up to the number of voters. Borda scores add up to the voters times <code>1 + 2 + &hellip; + n = n(n+1)/2</code>. Pairwise scores add up to <code>n(n &minus; 1)</code>: 2 points for each of the <code>n(n&minus;1)/2</code> meetings. The test confirmed these totals in 3,000 random elections.</p>
+
+      <h2>A note on the original</h2>
+      <p>The applet's elimination count has a slip: once A has been struck out it stops early, before anyone has a majority. This page counts the way the method is described. In random elections where A survives, the two counts agree.</p>
+
+      <p class="tip">On the page's ballots, move one voter at a time from the 10 CBA voters to the 8 BCA voters. When does the elimination winner change?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/SocialScience/SocialChoice.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="social-choice-core.js"></script>
+<script src="social-choice.js"></script>
+</body>
+</html>

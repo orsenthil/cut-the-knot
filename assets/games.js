@@ -2276,5 +2276,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "social-choice",
+      title: "Social Choice",
+      blurb: "The same ballots, four fair-sounding ways to count them, and up to four different winners. Who really won?",
+      tags: ["logic", "counting", "permutations"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
