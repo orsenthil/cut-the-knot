@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Book of Lemmas VI &mdash; coolmaths</title>
+<meta name="description" content="Slide C along the base of an arbelos: how wide is the circle that touches all three semicircles, and why is it 6/19 of AB when AC = 3/2 CB?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bol-6/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Book of Lemmas VI">
+<meta property="og:description" content="Slide C along the base of an arbelos: how wide is the circle that touches all three semicircles, and why is it 6/19 of AB when AC = 3/2 CB?">
+<meta property="og:url" content="https://coolmaths.ai/bol-6/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .baseline, #board .semi.outer { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .semi.inner { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .inscribed { fill: var(--good); fill-opacity: 0.12; stroke: var(--good); stroke-width: 2.5; }
+  #board .diameter { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .measure { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  #board .aux-line { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 6; }
+  #board .marked-dot { fill: var(--accent); }
+  #board .aux-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 17px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .aux-label { fill: var(--muted); font-size: 14px; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="bol-6" data-kind="demo">
+<main id="main">
+  <h1>Book of Lemmas VI</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Slide the point C along the bottom line and watch the circle that fits between the three arcs.<br>
+    <strong>How to play:</strong> Drag C with a mouse or finger, or focus it and use the arrow keys. Press Check the claim to test how wide the circle is.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Three semicircles on one baseline with a circle touching all three; C can be dragged along the baseline"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset C to the 3 to 2 split">Reset to 3:2</button>
+    <button id="checkBtn" type="button" aria-label="Check the claim about GH and AB">Check the claim</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point names">Hide point names</button>
+    <button id="auxBtn" type="button" aria-pressed="false" aria-label="Toggle the auxiliary lines of the proof">Show auxiliary lines</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The three arcs make a shape the Greeks called an <a class="wiki-term" data-wiki="Arbelos" href="https://en.wikipedia.org/wiki/Arbelos" target="_blank" rel="noopener">arbelos</a>, or shoemaker's knife. A circle fits in the gap and touches all three arcs. Archimedes asked how its width GH compares with the whole line AB.</p>
+
+      <h2>Tangency pins down the circle</h2>
+      <p>Let AC = 2r and CB = 2s, so the big semicircle has radius r + s. If the little circle has radius &rho;, touching the three arcs means its centre is r + &rho; from one small centre, s + &rho; from the other, and r + s &minus; &rho; from the big centre. Solving those distances gives</p>
+      <blockquote><code>&rho; = r·s·(r+s) / (r² + r·s + s²)</code></blockquote>
+      <p>and puts the centre exactly one diameter, <code>2&rho;</code>, above AB. Finding a circle tangent to three given circles is the classical <a class="wiki-term" data-wiki="Apollonius_problem" href="https://en.wikipedia.org/wiki/Apollonius_problem" target="_blank" rel="noopener">Apollonius problem</a>. Bogomolny's applet solves it that way, nudging the big circle one pixel so its centre is not in line with the other two; this page uses the exact tangency above. The logic test transcribes the applet's own method and checks that the two circles agree to within 1% of AB over hundreds of positions.</p>
+
+      <h2>Three lengths in a row</h2>
+      <p>Drop G and H straight down to the baseline at N and P. The proof on the original page shows <code>AN : NP = NP : PB</code>, so the three lengths form a <a class="wiki-term" data-wiki="Geometric_progression" href="https://en.wikipedia.org/wiki/Geometric_progression" target="_blank" rel="noopener">geometric progression</a>. Writing k = AC/CB gives</p>
+      <blockquote><code>BP : PN : NA = 1 : k : k²</code></blockquote>
+      <p>Because GH is parallel to AB, its width equals NP, and <code>GH/AB = k/(1 + k + k²)</code>. Drag C and watch GH and NP stay equal while the three pieces keep this ratio; the logic test confirms all of it at every position.</p>
+
+      <h2>The 3:2 case</h2>
+      <p>For AC = 3/2·CB we have k = 3/2, so the pieces are in the ratio 4 : 6 : 9 and AB is 19 parts. Hence</p>
+      <blockquote><code>GH = NP = 6/19·AB</code></blockquote>
+      <p>The article cited below states this exact result, and gives the same general formula as the one above. <a class="wiki-term" data-wiki="Archimedes" href="https://en.wikipedia.org/wiki/Archimedes" target="_blank" rel="noopener">Archimedes</a> proves it with straight lines through the points of contact; press Show auxiliary lines to see those lines. That article is a page of prose and a still picture rather than a live applet, so the moving picture here follows Bogomolny's BOL6 applet.</p>
+
+      <p class="tip">Try sliding C almost to A or almost to B: the touching circle shrinks, but GH and NP stay equal.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BookOfLemmas/BOL6.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bol-6-core.js"></script>
+<script src="bol-6.js"></script>
+</body>
+</html>
