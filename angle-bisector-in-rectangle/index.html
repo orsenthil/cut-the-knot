@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Angle Bisector In Rectangle &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a rectangle and the point on its side: does the middle line always cut the angle at N exactly in half?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/angle-bisector-in-rectangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Angle Bisector In Rectangle">
+<meta property="og:description" content="Drag the corners of a rectangle and the point on its side: does the middle line always cut the angle at N exactly in half?">
+<meta property="og:url" content="https://coolmaths.ai/angle-bisector-in-rectangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .rect-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .cd-line, #board .diagonal, #board .mp-line { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .mp-line { stroke-dasharray: 6 5; }
+  #board .mn-line { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .angle-ray { fill: none; stroke: var(--accent); stroke-width: 3; }
+  #board .aux-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1.5; }
+  #board .hint-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 2; }
+  #board .half-arc { fill: none; stroke: var(--accent); stroke-width: 3; }
+  #board .half-arc.other { stroke: var(--good); }
+  #board .hint-line { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 17px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="angle-bisector-in-rectangle" data-kind="demo">
+<main id="main">
+  <h1>Angle Bisector In Rectangle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners of a rectangle and watch a line split an angle into two equal parts.<br>
+    <strong>How to play:</strong> Drag a corner or the point on the right side with a mouse or finger, or focus a point and use the arrow keys. Press Check the equality to test what you see.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A rectangle with its middle line, a point P on the right side, Q where two lines meet, and the two angles at N"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the rectangle and point P to their starting places">Reset</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show or hide the point names">Show names</button>
+    <button id="statementBtn" type="button" aria-pressed="false" aria-label="Show or hide the two angle arcs">Show angle marks</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show or hide the helper point K and its lines">Show hint</button>
+    <button id="checkBtn" type="button" aria-label="Check that angle QNM equals angle MNP">Check the equality</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Draw a rectangle, pick a point on its right side and join two of its corners. You get an angle at one corner's opposite midpoint, and the middle line of the rectangle appears to cut it exactly in half. Is that always true?</p>
+
+      <h2>The picture</h2>
+      <p>ABCD is a <a class="wiki-term" data-wiki="Rectangle" href="https://en.wikipedia.org/wiki/Rectangle" target="_blank" rel="noopener">rectangle</a>: A top left, B bottom left, C bottom right, D top right. M is the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> of AD and N is the midpoint of BC, so MN is the line halfway across. P sits on the right side CD, and Q is where MP crosses the diagonal AC. The claim is that MN is the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> of angle PNQ: <code>angle QNM = angle MNP</code>. That is exactly the equality the check button tests, in degrees, after each drag.</p>
+
+      <h2>Two matching ratios</h2>
+      <p>Let O be the centre of the rectangle, the midpoint of AC. Because MN is parallel to CD, triangles CPQ and OMQ are <a class="wiki-term" data-wiki="Similar_triangle" href="https://en.wikipedia.org/wiki/Similar_triangle" target="_blank" rel="noopener">similar</a>, giving</p>
+      <blockquote><code>MP / MQ = CO / OQ</code>.</blockquote>
+      <p>Now take K on NQ so that KO is parallel to BC. Triangles CNQ and OKQ are similar too, so</p>
+      <blockquote><code>CO / OQ = KN / KQ</code>.</blockquote>
+      <p>Putting those together gives <code>MP / MQ = KN / KQ</code>, which makes KM parallel to NP. The archived page prints <code>MP/MQ = KN/NQ</code> here; that is a slip of the pen (NQ instead of KQ). The logic test measures both: the printed ratio is not equal to MP/MQ, while the corrected one is, and it is the corrected one that yields the next step.</p>
+
+      <h2>An isosceles triangle finishes it</h2>
+      <p>O is the midpoint of MN and KO is perpendicular to MN, so K lies on the <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a> of MN. Hence <code>KM = KN</code> and triangle KMN is isosceles: <code>angle KMN = angle KNM</code>. Since KM is parallel to NP, the angle KMN equals the angle MNP. But K lies on NQ, so angle KNM is angle QNM. Therefore <code>angle QNM = angle MNP</code>. The hint button draws K and the two lines that make this visible.</p>
+
+      <h2>Where the statement needs care</h2>
+      <p>The old page just says "P lies on CD"; it does not say where. The equality above is true when P is above the middle of CD, which is where the applet puts P to begin with. Drag P below the middle and the ray NQ flips: the two angles then add to 180 degrees, so MN bisects the <em>outside</em> angle at N instead. At exactly the middle, MP is parallel to AC and Q does not exist. The logic test checks the page's equality on hundreds of rectangles with P above the middle, and the outside-angle relation on hundreds more below it, against a second transcription of the applet's own construction.</p>
+
+      <p class="tip">Try making the rectangle very wide, then very tall, and check the two angle readings each time. Then press Show hint to see the isosceles triangle behind them.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AngleBisectorInRectangle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="angle-bisector-in-rectangle-core.js"></script>
+<script src="angle-bisector-in-rectangle.js"></script>
+</body>
+</html>
