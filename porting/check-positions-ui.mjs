@@ -884,6 +884,10 @@ const GAMES = {
     await page.click('#grid .cell[data-k="0"]');
     await page.click('#grid .cell[data-k="8"]');
   },
+  "rook-placements": async (page) => {
+    const p = await page.evaluate(() => RookPlacementsCore.placements(RookPlacementsCore.board(4, 1))[0]);
+    for (let i = 0; i < p.length; i++) await page.click(`#board [data-i="${i}"][data-j="${p[i]}"]`);
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

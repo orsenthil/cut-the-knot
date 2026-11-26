@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rooks and Matchings &mdash; coolmaths</title>
+<meta name="description" content="Place rooks on a board with blocked squares, one in every row and column. Finding one way is easy, but how many ways are there? That count is the permanent.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/rook-placements/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Rooks and Matchings">
+<meta property="og:description" content="Place rooks on a board with blocked squares, one in every row and column. Finding one way is easy, but how many ways are there? That count is the permanent.">
+<meta property="og:url" content="https://coolmaths.ai/rook-placements/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+#stage { width: 100%; max-width: 30rem; padding: 0.8rem; }
+  #board { display: grid; gap: 3px; max-width: 22rem; margin: 0 auto; }
+  #board .sq { aspect-ratio: 1; min-width: 0; padding: 0; border-radius: 0.35rem; line-height: 0; background: var(--card); }
+  #board .sq svg { width: 62%; height: 62%; fill: currentColor; }
+  #board .sq.blocked { background: repeating-linear-gradient(45deg, var(--muted) 0 3px, transparent 3px 8px); opacity: 0.8; cursor: not-allowed; }
+  #board .sq.covered { background: var(--accent-soft); }
+  #board .sq.rook { background: var(--accent); color: var(--accent-text); }
+  #found { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin: 0.8rem 0 0; padding: 0; }
+  #found svg { display: block; border: 1px solid var(--border-strong); }
+  #found .op { fill: var(--card); }
+  #found .blk { fill: var(--muted); }
+  #found .rk { fill: var(--accent); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls select { min-height: 2.75rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="rook-placements" data-kind="game">
+<main id="main">
+  <h1>Rooks and Matchings</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#vp-vnp">VP ≠ VNP</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#graph-theory">Graph Theory</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Put one rook in every row and every column, only on the open squares, so that no rook can take another. Find every way to do it.<br>
+    <strong>How to play:</strong> Click an open square to place a rook, and click a rook to take it off. Each full answer you find is added to the list.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="board" role="group" aria-label="The board; striped squares are blocked"></div>
+    <ul id="found" aria-label="Placements found"></ul>
+  </div>
+
+  <div class="controls">
+    <label>Size <select id="sizeIn"><option value="4">4 × 4</option><option value="5">5 × 5</option><option value="6">6 × 6</option></select></label>
+    <button id="clearBtn" type="button">Clear rooks</button>
+    <button id="newBtn" type="button" class="primary">New board</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Write the board as a square of numbers: 1 for an open square, 0 for a blocked one. Each way of putting <code>n</code> rooks in different rows and columns is one of the <code>n!</code> products in the permanent. That product is 1 if all its squares are open and 0 if not. So the number of placements is exactly the <a class="wiki-term" data-wiki="Permanent_(mathematics)" href="https://en.wikipedia.org/wiki/Permanent_(mathematics)" target="_blank" rel="noopener">permanent</a> of the board.</p>
+
+      <h2>Matchings</h2>
+      <p>Think of the rows as people and the columns as jobs, with an open square meaning "this person can do this job". A placement gives everyone a different job: a perfect <a class="wiki-term" data-wiki="Matching_(graph_theory)" href="https://en.wikipedia.org/wiki/Matching_(graph_theory)" target="_blank" rel="noopener">matching</a>. The permanent counts the perfect matchings.</p>
+
+      <h2>Is there one? Easy. How many? Hard.</h2>
+      <p>Finding one placement, or proving there is none, is fast. Place rooks row by row, and when you get stuck, shuffle earlier rooks along an "augmenting path". This takes about <code>n&sup3;</code> steps. <a class="wiki-term" data-wiki="Hall%27s_marriage_theorem" href="https://en.wikipedia.org/wiki/Hall%27s_marriage_theorem" target="_blank" rel="noopener">Hall's theorem</a> says exactly when it fails: some set of <code>k</code> rows has fewer than <code>k</code> open columns between them. Counting all the placements is a different story. Leslie Valiant proved in 1979 that it is <a class="wiki-term" data-wiki="Sharp-P-complete" href="https://en.wikipedia.org/wiki/Sharp-P-completeness_of_01-permanent" target="_blank" rel="noopener">#P-complete</a>: a fast way to count them would give a fast way to count the solutions of every NP puzzle. This is the counting version of P versus NP, written FP versus #P.</p>
+
+      <h2>Checked</h2>
+      <p>The logic test counted the placements on 600 random boards and compared the count with the permanent worked out from its products. It also checked that the quick existence test and Hall's condition agree with "the count is not zero".</p>
+
+      <p class="tip">On a board made of two separate blocks, the count is the product of the blocks' counts. Can you see why?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original game for coolmaths, after Gil Fried's article
+    <a href="https://www.friedgil.com/vpvnp" target="_blank" rel="noopener">What VP &ne; VNP Means (In 3 Minutes)</a>
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="rook-placements-core.js"></script>
+<script src="rook-placements.js"></script>
+</body>
+</html>

@@ -2431,5 +2431,12 @@ window.COOLMATHS = {
       tags: ["vp-vnp", "permutations", "algebra"],
       level: 2,
     },
+    {
+      slug: "rook-placements",
+      title: "Rooks and Matchings",
+      blurb: "Place rooks on a board with blocked squares, one in every row and column. Finding one way is easy, but how many ways are there? That count is the permanent.",
+      tags: ["vp-vnp", "counting", "graph-theory"],
+      level: 1,
+    },
   ],
 };

@@ -2039,6 +2039,11 @@ check("det-and-perm: one swap of 1 and 9 from the article's square", read["det-a
   const dp = at("det-and-perm", { cells: [1, 4, 9, 6, 7, 3, 8, 5, 2], goal: "perm", swaps: 4 });
   check("det-and-perm: 149/673/852 reaches the largest permanent 947", dp.permanent === 947 && dp.reached === true);
 }
+check("rook-placements: one placement found on board 1", read["rook-placements"]?.found === 1 && read["rook-placements"].total >= 3);
+{
+  const rp = at("rook-placements", { n: 4, seed: 1, rooks: [-1, -1, -1, -1], found: [] });
+  check("rook-placements: board 1 rebuilt from its seed, nothing found yet", rp.board.length === 4 && rp.found === 0 && rp.allFound === false);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;
