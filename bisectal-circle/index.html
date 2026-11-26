@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bisectal Circle &mdash; coolmaths</title>
+<meta name="description" content="Drag two circles and the point between them: where is the special circle that meets both at the same angle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bisectal-circle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Bisectal Circle">
+<meta property="og:description" content="Drag two circles and the point between them: where is the special circle that meets both at the same angle?">
+<meta property="og:url" content="https://coolmaths.ai/bisectal-circle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .given-circle { fill: var(--accent); fill-opacity: 0.07; stroke: var(--ink); stroke-width: 2.5; }
+  #board .radius-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .tangent-line { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 7 6; }
+  #board .bisectal { fill: var(--good); fill-opacity: 0.09; stroke: var(--good); stroke-width: 2.5; stroke-dasharray: 9 6; }
+  #board .bisectal-line { stroke: var(--good); stroke-width: 2.5; stroke-dasharray: 9 6; }
+  #board .test-circle { fill: none; stroke: var(--highlight); stroke-width: 2; }
+  #board .bisectal-center { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .cross-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .angle-arc { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .center-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .aux-handle { fill: var(--highlight); stroke: var(--ink); }
+  #board .t-handle { fill: var(--good); stroke: var(--stage); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="bisectal-circle" data-kind="demo">
+<main id="main">
+  <h1>Bisectal Circle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Explore two circles and the special circle that sits between them, then watch a third circle meet both at the same angle.<br>
+    <strong>How to play:</strong> Drag the five dots with a mouse or finger, or focus a dot and use the arrow keys. Press Check the angles to test what you see; the other buttons show guide lines, names and angle marks.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Two draggable circles, their bisectal circle, and a test circle meeting both at equal angles"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the two circles and the test circle">Reset diagram</button>
+    <button id="modeBtn" type="button" aria-pressed="false" aria-label="Switch to the internal bisectal circle">Show internal bisectal circle</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the tangent guide lines">Show tangent lines</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point names">Hide names</button>
+    <button id="angleBtn" type="button" aria-pressed="false" aria-label="Toggle the two equal-angle marks">Show angle marks</button>
+    <button id="checkBtn" type="button" aria-label="Check whether the test circle meets both circles at the same angle">Check the angles</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two straight lines have an angle bisector. Two circles have something just like it: a special circle between them. Move the dots and watch what stays true.</p>
+
+      <h2>From lines to circles</h2>
+      <p>An <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> splits the gap between two lines into two equal parts. Do the same for two circles: there is a circle that plays the same role, and the old French name for it is <em>cercle bissecteur</em> — bisectal circle. Two lines actually have two bisectors, and two circles have two bisectal circles too. The applet shows the external one at first; the button here lets you see the other.</p>
+
+      <h2>Where the bisectal circle sits</h2>
+      <p>Call the centres O1 and O2 and the radii r1 and r2. The external <a class="wiki-term" data-wiki="Scaling_(geometry)" href="https://en.wikipedia.org/wiki/Scaling_(geometry)" target="_blank" rel="noopener">homothety</a> centre Q is the point from which one circle looks like a scaled copy of the other:</p>
+      <blockquote><code>Q = (r2·O1 &minus; r1·O2) / (r2 &minus; r1)</code></blockquote>
+      <p>The bisectal circle sits at Q with radius</p>
+      <blockquote><code>rho² = (dist(Q,O1) &minus; r1) · (dist(Q,O2) + r2)</code></blockquote>
+      <p>That number is the power of an <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">inversion</a> which swaps the two circles: invert any point of (O1) and it lands on (O2). The logic test checks this at hundreds of configurations, including circles that cross each other and circles of very different sizes.</p>
+
+      <h2>The equal-angle test</h2>
+      <p>Drag the dot T. A circle centred there and drawn <a class="wiki-term" data-wiki="Orthogonality" href="https://en.wikipedia.org/wiki/Orthogonality" target="_blank" rel="noopener">orthogonal</a> to the bisectal circle has radius <code>R = sqrt(dist(T,Q)² &minus; rho²)</code>. Inversion leaves this test circle where it is and keeps angles the same, so where it cuts the two given circles the angles must match:</p>
+      <blockquote><code>angle at S1 = angle at S2</code></blockquote>
+      <p>That is what Check the angles measures, in degrees, at the two crossing points S1 and S2. The page calls this being <em>isogonal</em>. The logic test found the two angles equal to within a tiny rounding error at every configuration where the test circle reaches both circles.</p>
+
+      <h2>Equal sizes, and the other circle</h2>
+      <p>The page says Q goes to infinity when the two circles have the same radius. Then the bisectal circle becomes a straight line: the perpendicular bisector between the centres. The original applet cannot draw this case and leaves the picture blank; this page draws the line so you can see what the page describes. Move a radius dot and the line bends into a circle.</p>
+      <p>The second circle sits at the internal homothety centre. Its inversion power is negative, so the equal-angle claim does not carry over to it: with T away from the line of symmetry the logic test found different angles there. The page itself notes that the applet only presents the external case, and this port says the same when you press Check the angles in that mode. The two contact points of a tangent test circle are in any case linked by <a class="wiki-term" data-wiki="Monge%27s_theorem" href="https://en.wikipedia.org/wiki/Monge%27s_theorem" target="_blank" rel="noopener">Monge's three-circles theorem</a>.</p>
+
+      <p class="tip">Try making one circle much bigger than the other: Q slides close to the small circle, and the bisectal circle shrinks with it.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BisectalCircle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bisectal-circle-core.js"></script>
+<script src="bisectal-circle.js"></script>
+</body>
+</html>
