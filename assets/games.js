@@ -2214,5 +2214,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "scoring",
+      title: "Scoring",
+      blurb: "Slide counters left with the computer; whoever moves the last one home wins. Which squares should you leave them on?",
+      tags: ["game-strategy", "divisibility"],
+      level: 2,
+    },
   ],
 };

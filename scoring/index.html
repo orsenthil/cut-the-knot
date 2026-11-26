@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scoring &mdash; coolmaths</title>
+<meta name="description" content="Slide counters left with the computer; whoever moves the last one home wins. Which squares should you leave them on?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/scoring/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Scoring">
+<meta property="og:description" content="Slide counters left with the computer; whoever moves the last one home wins. Which squares should you leave them on?">
+<meta property="og:url" content="https://coolmaths.ai/scoring/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; padding: 1rem 0.5rem; }
+  #boardScroll { width: 100%; overflow-x: auto; padding: 0.3rem 0.1rem; }
+  #board {
+    display: flex;
+    gap: 0.15rem;
+    margin: 0 auto;
+    width: max-content;
+    min-width: 100%;
+    justify-content: center;
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.2rem;
+    width: 2.75rem;
+    min-height: 10rem;
+    padding: 0.3rem 0;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    box-shadow: none;
+  }
+  .col:disabled { opacity: 1; cursor: default; }
+  .col.target { background: var(--accent-soft); border-color: var(--accent); }
+  .col.selected { border-color: var(--accent); border-width: 2px; }
+  .col.arrived .stack .chip:last-child { box-shadow: 0 0 0 4px var(--highlight); }
+  .col:first-child { border-color: var(--ink); }
+  .stack { display: flex; flex-direction: column-reverse; align-items: center; gap: 0.15rem; }
+  .chip {
+    display: block;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    border: 2px solid var(--ink);
+    background: radial-gradient(circle at 35% 30%, #fbbf24, #d97706 70%);
+  }
+  .chip.lifted { transform: translateY(-0.4rem); box-shadow: 0 0 0 3px var(--accent); }
+  .num { font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .hint { font-size: 0.85rem; min-height: 1.2em; color: var(--accent); font-weight: 700; letter-spacing: -0.1em; }
+  #scoreLine { text-align: center; color: var(--muted); font-size: 0.92rem; margin: 0.5rem 0 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls select { min-height: 2.75rem; font-size: 1rem; }
+  .col:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="scoring" data-kind="game">
+<main id="main">
+  <h1>Scoring</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#divisibility">Divisibility</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Take turns with the computer sliding counters left; whoever moves the last counter onto square 0 wins.<br>
+    <strong>How to play:</strong> Click a pile, then a lit square up to Max Step places to its left. You go first.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="boardScroll">
+      <div id="board" role="group" aria-label="The strip of squares, square 0 on the left"></div>
+    </div>
+    <p id="scoreLine" aria-live="off"></p>
+  </div>
+
+  <div class="controls">
+    <label>Hint
+      <select id="hintInput">
+        <option value="0">Empty</option>
+        <option value="1">Forward</option>
+        <option value="2">Backward</option>
+        <option value="3">Modular</option>
+      </select>
+    </label>
+    <label># Counters <select id="countersInput"></select></label>
+    <label>Max Step <select id="stepInput"></select></label>
+    <label>Heap size <select id="lengthInput"></select></label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Scoring is the doorway into the theory of <a class="wiki-term" data-wiki="Impartial_game" href="https://en.wikipedia.org/wiki/Impartial_game" target="_blank" rel="noopener">impartial games</a>: both players have the same moves, so a position, not a player, is good or bad. Number the squares from 0 on the left and let <code>M</code> be the Max Step.</p>
+
+      <h2>One counter</h2>
+      <p>From square 0 nothing can move, so the player to move has lost. From squares 1 to <code>M</code> you win in one move. From square <code>M+1</code> every move lands on 1..<code>M</code>, handing the win to the other player. Carrying on, the losing squares for the player to move (the <em>P-positions</em>) are exactly <code>0, M+1, 2(M+1), &hellip;</code>, the multiples of <code>M+1</code>. Winning means always moving to one of them.</p>
+
+      <h2>The mex rule</h2>
+      <p>With several counters, give each square a value by the <em>mex</em> rule: <code>g(0) = 0</code>, and <code>g(t)</code> is the smallest number not among the values of the squares you can reach from <code>t</code>. That gives <code>g(t) = t mod (M+1)</code>: 0, 1, 2, 3, 0, 1, 2, 3, &hellip; for <code>M = 3</code>. Hint &rarr; Modular shows it as dots.</p>
+
+      <h2>Adding games: the nim-sum</h2>
+      <p>The <a class="wiki-term" data-wiki="Sprague%E2%80%93Grundy_theorem" href="https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem" target="_blank" rel="noopener">Sprague&ndash;Grundy theorem</a> says that several counters together behave like a game of <a class="wiki-term" data-wiki="Nim" href="https://en.wikipedia.org/wiki/Nim" target="_blank" rel="noopener">Nim</a> with heaps <code>g(t)</code>: the position is lost for the player to move exactly when the xor (nim-sum) <code>g(t&#8321;) ^ g(t&#8322;) ^ &hellip;</code> is 0. Two counters on the same square cancel out, which is why copying your opponent's moves wins then. The logic test solved the game outright for every Max Step, strips of up to 12 squares and up to three counters, and found the rule true every time.</p>
+
+      <h2>How the computer plays</h2>
+      <p>When the nim-sum is not 0 the computer moves one counter to make it 0, and from then on it cannot lose. When the nim-sum is already 0 it has no good move and slides the leftmost free counter a random distance. So you can win only by reaching a nim-sum of 0 and keeping it there.</p>
+
+      <p class="tip">Start with one counter and Hint on Forward or Modular. Which squares do you want to leave the counter on?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/recurrence/Scoring.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="scoring-core.js"></script>
+<script src="scoring.js"></script>
+</body>
+</html>
