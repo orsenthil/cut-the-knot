@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Group Multiplication of Permutations &mdash; coolmaths</title>
+<meta name="description" content="Multiply two shuffles in both orders and conjugate one by the other. Why does the conjugate always have the same loops as the original, only renamed?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/perm-group/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Group Multiplication of Permutations">
+<meta property="og:description" content="Multiply two shuffles in both orders and conjugate one by the other. Why does the conjugate always have the same loops as the original, only renamed?">
+<meta property="og:url" content="https://coolmaths.ai/perm-group/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.8rem; }
+  dl.rows { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 0.8rem; align-items: baseline; }
+  dl.rows dt { font-weight: 700; font-family: var(--mono, ui-monospace, monospace); }
+  dl.rows dd { margin: 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+  dl.rows .sep { grid-column: 1 / -1; border-top: 1px solid var(--border); margin: 0.2rem 0; }
+  .controls label { display: inline-flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; max-width: 100%; }
+  .controls input[type=number] { width: 4.5rem; max-width: 100%; font: inherit; }
+</style>
+</head>
+<body data-game="perm-group" data-kind="demo">
+<main id="main">
+  <h1>Group Multiplication of Permutations</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#permutations">Permutations</a><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two random shuffles, f and g, are multiplied in both orders, and each one is also "conjugated" by the other.<br>
+    <strong>How to play:</strong> Press "Reset" for new shuffles. Tick "Show cycles" to write them as loops, and look at the loops of f&#8315;&sup1;gf and g.
+  </div>
+
+  <div id="stage" class="stage">
+    <dl id="rows" class="rows" aria-label="Two permutations, their products and their conjugates"></dl>
+  </div>
+
+  <div class="controls">
+    <label><input id="cycIn" type="checkbox"> Show cycles</label>
+    <label>N <input id="nIn" type="number" min="2" max="20" step="1" value="7" aria-label="How many numbers"></label>
+    <button id="newBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Permutations of <code>1, ..., N</code> can be multiplied: do one and then the other. Written as <code>fg</code>, the left one is carried out first, so <code>(fg)(k) = g(f(k))</code>. The page shows <code>fg</code>, <code>gf</code>, and the two conjugates <code>f<sup>-1</sup>gf</code> and <code>g<sup>-1</sup>fg</code>.</p>
+
+      <h2>Conjugates are the same loops, renamed</h2>
+      <p>Write <code>g</code> as a product of cycles, say <code>(a<sub>1</sub> a<sub>2</sub> ... a<sub>k</sub>)</code>. Then <code>f<sup>-1</sup>gf</code> has the cycle <code>(f(a<sub>1</sub>) f(a<sub>2</sub>) ... f(a<sub>k</sub>))</code>: every number is replaced by its image under <code>f</code>. To see it, start at <code>f(a<sub>i</sub>)</code>: <code>f<sup>-1</sup></code> takes it to <code>a<sub>i</sub></code>, <code>g</code> to <code>a<sub>i+1</sub></code>, and <code>f</code> to <code>f(a<sub>i+1</sub>)</code>. The test confirmed it for every pair of permutations of up to 5 numbers and for 20,000 random pairs up to 12 numbers.</p>
+
+      <h2>Same shape, different permutation</h2>
+      <p>So <code>g</code> and <code>f<sup>-1</sup>gf</code> have the same number of cycles of each length; they are <a class="wiki-term" data-wiki="Conjugacy_class" href="https://en.wikipedia.org/wiki/Conjugacy_class" target="_blank" rel="noopener">conjugate</a>. Since <code>gf = f<sup>-1</sup>(fg)f</code>, even <code>fg</code> and <code>gf</code> have the same shape of cycles, although as permutations they usually differ (the test found pairs with <code>fg &ne; gf</code> for every <code>N</code> from 3 to 5).</p>
+
+      <h2>Writing a cycle</h2>
+      <p>A cycle can start anywhere: <code>(1 3 8 4)</code>, <code>(3 8 4 1)</code>, <code>(8 4 1 3)</code> and <code>(4 1 3 8)</code> are one cycle. This page, like the applet, always starts with the smallest element.</p>
+
+      <p class="tip">Press Reset until f and g have different cycle shapes. Does f<sup>-1</sup>gf look like f or like g?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/do_you_know/PermGroup.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="perm-group-core.js"></script>
+<script src="perm-group.js"></script>
+</body>
+</html>

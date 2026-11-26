@@ -1991,5 +1991,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "perm-group",
+      title: "Group Multiplication of Permutations",
+      blurb: "Multiply two shuffles in both orders and conjugate one by the other. Why does the conjugate always have the same loops as the original, only renamed?",
+      tags: ["permutations", "algebra", "invariants"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };
