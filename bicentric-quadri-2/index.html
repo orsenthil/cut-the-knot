@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bicentric Quadri 2 &mdash; coolmaths</title>
+<meta name="description" content="Four dots sit on a circle and perpendiculars from where their diagonals cross make a new four-sided shape. When does that shape get a circle around it as well as one inside?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bicentric-quadri-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Bicentric Quadri 2">
+<meta property="og:description" content="Four dots sit on a circle and perpendiculars from where their diagonals cross make a new four-sided shape. When does that shape get a circle around it as well as one inside?">
+<meta property="og:url" content="https://coolmaths.ai/bicentric-quadri-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circle-w { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .diagonal { stroke: var(--bad); stroke-width: 1.6; stroke-dasharray: 6 4; }
+  #board .perp { stroke: var(--muted); stroke-width: 1.2; }
+  #board .feet-quad { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2.2; }
+  #board .incircle { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .circumcircle { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .right-angle { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .extend { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 5; }
+  #board .p-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1; }
+  #board .foot-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1; }
+  #board .extra-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1; }
+  #board .circum-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1; }
+  #board .point-label, #board .extra-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .extra-label { fill: var(--muted); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="bicentric-quadri-2" data-kind="demo">
+<main id="main">
+  <h1>Bicentric Quadri 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: four dots on a circle make a new four-sided shape, and we watch for a circle to appear around that new shape.<br>
+    <strong>How to play:</strong> Drag the four dots around the circle, or focus one and use the arrow keys. Press the button to make the two diagonals cross at right angles, and tick the boxes to show extra lines and names.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Four draggable points on a circle, the crossing P of their diagonals, and the four perpendicular feet K, L, M and N"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Show names</label>
+    <label><input id="incircle" type="checkbox"> Show incircle</label>
+    <label><input id="diagonals" type="checkbox"> Show diagonals</label>
+    <label><input id="extend" type="checkbox"> Extend lines</label>
+    <button id="makeBtn" type="button" class="primary" aria-label="Make the diagonals AC and BD perpendicular">Make diagonals perpendicular</button>
+    <button id="resetBtn" type="button" aria-label="Reset the diagram to the starting picture">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Take four points on a circle, cross their diagonals, and drop four perpendiculars from the crossing to the sides. The little quadrilateral you get already has a circle inside it. The surprise here is a second, different fact: it gets a circle around it exactly when the two diagonals are at right angles.</p>
+
+      <h2>The shape we are building</h2>
+      <p>Let ABCD be a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a> on the circle w, and let P be where AC meets BD. From P drop perpendiculars to AB, BC, CD and DA; their feet are K, L, M and N. The article's <strong>first</strong> claim is that KLMN has an <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a>: P is the point in the middle of it, and the four lines PK, PL, PM, PN halve its angles. That is true for every cyclic ABCD, whether or not the diagonals are perpendicular.</p>
+
+      <h2>The second claim: a circle around KLMN</h2>
+      <p>The <strong>second</strong> claim is about a different circle. KLMN is cyclic &mdash; it has a <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> through its four corners &mdash; <strong>if and only if</strong> ABCD is orthodiagonal, meaning AC and BD cross at right angles. This is not the same statement as the first: the incircle is already there in the starting picture, while the circumcircle is not. When the diagonals are perpendicular, the extensions of PK, PL, PM and PN meet the opposite sides at their midpoints; those midpoints form a rectangle (a <a class="wiki-term" data-wiki="Varignon%27s_theorem" href="https://en.wikipedia.org/wiki/Varignon%27s_theorem" target="_blank" rel="noopener">Varignon</a> rectangle), and K, L, M, N each sit on a circle with a diameter of that rectangle. Now KLMN has both circles, so it is <a class="wiki-term" data-wiki="Bicentric_quadrilateral" href="https://en.wikipedia.org/wiki/Bicentric_quadrilateral" target="_blank" rel="noopener">bicentric</a>.</p>
+
+      <h2>Why the right angle is necessary</h2>
+      <p>For the other direction, look at the angles of KLMN. The four small quadrilaterals around P have right angles, so the angle at K plus the angle at M equals the angle APB, and the angle at L plus the angle at N equals the angle CPD. These are equal vertical angles, so the two sums add to twice the angle APB. A quadrilateral can have a circumcircle only when opposite angles add to a straight angle, which forces the angle APB to be a right angle. The logic test confirms this on hundreds of pictures: the four distances from the new centre to K, L, M, N agree to better than a trillionth of the radius exactly in the perpendicular cases, and differ otherwise.</p>
+
+      <h2>Does ABCD itself have to be cyclic?</h2>
+      <p>No. The page notes that the converse does not use the circle w at all, and the logic test agrees: it builds many <a class="wiki-term" data-wiki="Orthodiagonal_quadrilateral" href="https://en.wikipedia.org/wiki/Orthodiagonal_quadrilateral" target="_blank" rel="noopener">orthodiagonal quadrilaterals</a> that are not cyclic and finds a circle through K, L, M, N in every one; nudging one corner off the right angle destroys it. This applet keeps ABCD on the circle so the picture is easy to drag. It also hints that the centre O of the new circle, the crossing P and the point E where KM meets LN lie on one straight line; the test finds that too. The small drawing tolerance in the applet (a dot product below 200) only decides when to paint the circle; the tests use a much tighter test for the exact claim.</p>
+
+      <p class="tip">Tick "Show diagonals", then press the button and watch the green circle appear as the red diagonals become perpendicular.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BicentricQuadri2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bicentric-quadri-2-core.js"></script>
+<script src="bicentric-quadri-2.js"></script>
+</body>
+</html>
