@@ -858,6 +858,12 @@ const GAMES = {
     await page.check('input[name="mode"][value="two"]');
     await page.click("#many");
   },
+  "tromino-monomino": async (page) => {
+    for (const [a, b] of [[[0, 0], [0, 2]], [[1, 0], [3, 0]]]) {
+      await page.click(`#board .cell[data-i="${a[0]}"][data-j="${a[1]}"]`);
+      await page.click(`#board .cell[data-i="${b[0]}"][data-j="${b[1]}"]`);
+    }
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

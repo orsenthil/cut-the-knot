@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Straight Tromino on a Chessboard &mdash; coolmaths</title>
+<meta name="description" content="Cover a chessboard with 21 straight trominoes and one single square. Where can that lonely square be?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/tromino-monomino/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Straight Tromino on a Chessboard">
+<meta property="og:description" content="Cover a chessboard with 21 straight trominoes and one single square. Where can that lonely square be?">
+<meta property="og:url" content="https://coolmaths.ai/tromino-monomino/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.6rem; }
+  .scroll { overflow-x: auto; }
+  #board { display: block; width: 100%; min-width: 15rem; height: auto; margin: 0 auto; }
+  #board .sq { stroke: var(--border-strong); stroke-width: 1; cursor: pointer; }
+  #board .sq.light { fill: var(--card); }
+  #board .sq.dark { fill: var(--board-b); }
+  #board .sq.c0 { fill: #f2a7a0; }
+  #board .sq.c1 { fill: #f4f1ea; }
+  #board .sq.c2 { fill: #8d93a3; }
+  #board .sq.picked { fill: var(--accent); }
+  #board .sq.mono { fill: var(--highlight); }
+  #board .piece { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 3; pointer-events: none; }
+  #board .stick { stroke: var(--accent); stroke-width: 7; stroke-linecap: round; pointer-events: none; }
+  #board .coord { fill: var(--muted); font: 13px var(--font); text-anchor: middle; }
+  #board .cell:focus-visible { outline: none; }
+  #board .cell:focus-visible .sq { stroke: var(--focus); stroke-width: 4; }
+  .controls .group { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3rem 0.8rem; width: 100%; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls input[type="number"] { width: 4.5rem; min-height: 2.75rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="tromino-monomino" data-kind="game">
+<main id="main">
+  <h1>Straight Tromino on a Chessboard</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Cover the chessboard with pieces three squares long, so that only one square is left over. Which squares can be the one left?<br>
+    <strong>How to play:</strong> Click a free square, then a free square two away in the same row or column, to lay a piece over them and the square between.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="scroll"><svg id="board" role="group" aria-label="The board; arrow keys move between squares, Enter picks one"></svg></div>
+  </div>
+
+  <div class="controls">
+    <div class="group">
+      <label><input type="radio" name="show" value="sticks" checked> Sticks</label>
+      <label><input type="radio" name="show" value="tromino"> Tromino</label>
+      <label><input id="colourBox" type="checkbox"> Show colours</label>
+    </div>
+    <div class="group">
+      <label><input type="radio" name="shape" value="nn" checked> NxN</label>
+      <label><input type="radio" name="shape" value="nm"> NxM</label>
+      <label>N <input id="nIn" type="number" min="3" max="20" value="8"></label>
+      <label>M <input id="mIn" type="number" min="3" max="20" value="8" disabled></label>
+    </div>
+    <div class="group">
+      <button id="removeBtn" type="button" disabled>Remove last</button>
+      <button id="resetBtn" type="button" class="primary">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A straight <a class="wiki-term" data-wiki="Tromino" href="https://en.wikipedia.org/wiki/Tromino" target="_blank" rel="noopener">tromino</a> covers three squares in a row. Twenty-one of them cover 63 of the 64 squares of a chessboard, leaving one square for a monomino. That square can only be c3, c6, f3 or f6. With L-shaped trominoes, by contrast, it could be anywhere.</p>
+
+      <h2>Golomb's three colours</h2>
+      <p>Colour the squares along the diagonals in three colours, repeating (Show colours). However a straight tromino lies, it covers one square of each colour. The board has 21 of two colours and 22 of the third, so the monomino must sit on the third colour. Colour along the other diagonals too, or turn and reflect the board (a covering stays a covering): the monomino must be on the extra colour every way. Only the four squares c3, c6, f3, f6 pass. This proof is Solomon Golomb's.</p>
+
+      <h2>Roberts's generating function</h2>
+      <p>Give square <code>(a, b)</code> (counting from 0) the term <code>x<sup>a</sup>y<sup>b</sup></code>. The board is then <code>f(x, y) = (1 + x + &hellip; + x<sup>7</sup>)(1 + y + &hellip; + y<sup>7</sup>)</code>, and each tromino is a multiple of <code>1 + x + x&sup2;</code> or <code>1 + y + y&sup2;</code>. Both vanish at a <a class="wiki-term" data-wiki="Root_of_unity" href="https://en.wikipedia.org/wiki/Root_of_unity" target="_blank" rel="noopener">cube root of unity</a> <code>w</code>. Putting in <code>(w, w)</code> and <code>(w&sup2;, w)</code> leaves only the monomino's term, and gives <code>a + b &equiv; 1</code> and <code>2a + b &equiv; 0 (mod 3)</code>, so <code>a, b &equiv; 2 (mod 3)</code>.</p>
+
+      <h2>Other boards</h2>
+      <p>The logic test tried every place for the monomino on boards 4, 5, 7, 8 and 10 squares wide. It found a covering exactly where the colours balance: c3, c6, f3, f6 on 8 &times; 8, and on 7 &times; 7 the nine squares with both coordinates 0, 3 or 6. When <code>NM</code> leaves remainder 2, two monominoes are needed. On 4 &times; 5 and 5 &times; 7 the colours still rule out most pairs, but they are not the whole story: a few pairs balance the colours and still cannot be completed, such as b4 and d4 on 4 &times; 5.</p>
+
+      <p class="tip">Leave c3 free and cover the rest of an 8 &times; 8 board. Then try to leave a1 free instead: where do you get stuck?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/TroMonomino.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="tromino-monomino-core.js"></script>
+<script src="tromino-monomino.js"></script>
+</body>
+</html>

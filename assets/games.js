@@ -2385,5 +2385,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "tromino-monomino",
+      title: "Straight Tromino on a Chessboard",
+      blurb: "Cover a chessboard with 21 straight trominoes and one single square. Where can that lonely square be?",
+      tags: ["invariants", "algebra", "counting"],
+      level: 3,
+    },
   ],
 };

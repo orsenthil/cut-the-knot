@@ -2009,6 +2009,11 @@ check("stick-in-square: 1000 two-step sticks, near 0.386", read["stick-in-square
   const sq = at("stick-in-square", { x: 1 / 3, y: 2 / 9, mode: "one", tries: 0, hits: 0 });
   check("stick-in-square: the applet's start is in a green corner, no triangle", sq.P.region === "green" && sq.P.makesTriangle === false && sq.exact === 0.25);
 }
+check("tromino-monomino: two trominoes on 8 x 8, 21 needed", read["tromino-monomino"]?.placed === 2 && read["tromino-monomino"].needed === 21 && read["tromino-monomino"].trominoes.join() === "a8-c8,a7-a5");
+{
+  const tm = at("tromino-monomino", { n: 4, m: 4, pieces: [[0, 0, 0, 2], [1, 0, 1, 2], [2, 0, 2, 2], [0, 3, 2, 3], [3, 1, 3, 3]] });
+  check("tromino-monomino: 4 x 4 finished with a1 free", tm.finished === true && tm.freeSquares.join() === "a1");
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;
