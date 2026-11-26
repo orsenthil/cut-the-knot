@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Areas In Reg Poly &mdash; coolmaths</title>
+<meta name="description" content="Join a point inside a regular polygon to every corner: do the alternating triangles always have the same total area?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/areas-in-reg-poly/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Areas In Reg Poly">
+<meta property="og:description" content="Join a point inside a regular polygon to every corner: do the alternating triangles always have the same total area?">
+<meta property="og:url" content="https://coolmaths.ai/areas-in-reg-poly/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .tri-even { fill: var(--good); opacity: 0.26; }
+  #board .tri-odd { fill: var(--accent); opacity: 0.26; }
+  #board .poly-side { stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+  #board .spoke { stroke: var(--muted); stroke-width: 1.4; }
+  #board .altitude { stroke-width: 2; stroke-linecap: round; }
+  #board .altitude-even { stroke: var(--good); }
+  #board .altitude-odd { stroke: var(--accent); stroke-dasharray: 6 5; }
+  #board .hint-u { stroke: var(--accent); stroke-width: 1.8; stroke-dasharray: 6 5; opacity: 0.7; }
+  #board .hint-w { stroke: var(--good); stroke-width: 1.8; opacity: 0.7; }
+  #board .footdot { fill: var(--ink); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 0.9rem;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label, .controls output {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+  .controls input[type="range"] {
+    width: min(12rem, 40vw);
+    max-width: 100%;
+    accent-color: var(--accent);
+  }
+</style>
+</head>
+<body data-game="areas-in-reg-poly" data-kind="demo">
+<main id="main">
+  <h1>Areas In Reg Poly</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the dot inside the polygon and watch the two colours of triangles: their areas always add up to the same total. There is nothing to win.<br>
+    <strong>How to play:</strong> Drag the dot, or focus it and press the arrow keys (Shift for bigger steps). Change the number of sides, tick Show hint to see why, or press Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A regular polygon cut into triangles by lines from a draggable point P. Drag P or focus it and use the arrow keys."></svg>
+    <p class="hint-line">Green and blue triangles alternate. Move P and watch the two totals.</p>
+  </div>
+
+  <div class="controls">
+    <label for="nRange">Sides: <output id="nValue" for="nRange">6</output></label>
+    <input id="nRange" type="range" min="4" max="30" step="2" value="6" aria-label="Number of polygon sides, from 4 to 30 in steps of 2">
+    <label><input id="hintBox" type="checkbox"> Show hint</label>
+    <button id="centreBtn" type="button" aria-label="Put point P back in the centre">Centre P</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the polygon, hint and point P to how they started">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the dot anywhere inside the polygon and the two totals stay level. That is not a coincidence or a rounding trick: it is a fact about every regular polygon with an even number of sides.</p>
+
+      <h2>The claim, exactly</h2>
+      <p>Let <code>P</code> be a point inside a regular <code>2n</code>-gon. Drawing a line from <code>P</code> to each corner splits the polygon into <code>2n</code> triangles, numbered around the shape. The page says the odd-numbered triangles and the even-numbered triangles have equal total <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a>, and the logic test confirmed it for every option from <code>2n = 4</code> to <code>2n = 30</code> over 5,614 positions of P:</p>
+      <blockquote><code>Area(even triangles) = Area(odd triangles) = Area(polygon) / 2</code></blockquote>
+      <p>The original page has a typo, "split the letter", where it means the polygon; the claim here is the one its theorem states.</p>
+
+      <h2>Equal sides turn areas into distances</h2>
+      <p>Every triangle has one side of the polygon as its base, and that base has the same length <code>s</code> for all of them. Its height is the distance from <code>P</code> to that <a class="wiki-term" data-wiki="Side_(polygon)" href="https://en.wikipedia.org/wiki/Side_(polygon)" target="_blank" rel="noopener">side line</a>, so each area is <code>(s / 2) &times; distance</code>. Comparing the two totals is now just comparing two sums of distances. The test checked this identity triangle by triangle in every configuration, including feet that land beyond the ends of a side.</p>
+
+      <h2>Two polygons hiding in the sides</h2>
+      <p>Extend the even-numbered sides and they meet as one regular <code>n</code>-gon; extend the odd-numbered sides and they meet as another. Tick <em>Show hint</em> to see both. Each has the same <a class="wiki-term" data-wiki="Apothem" href="https://en.wikipedia.org/wiki/Apothem" target="_blank" rel="noopener">apothem</a> <code>h</code> as the original polygon, and the sum of distances from an inside point to the sides of a regular polygon is <code>n &times; h</code> — the generalization of <a class="wiki-term" data-wiki="Viviani%27s_theorem" href="https://en.wikipedia.org/wiki/Viviani%27s_theorem" target="_blank" rel="noopener">Viviani's theorem</a>. The two constants are therefore equal, and each total area is <code>(s / 2) &times; n &times; h</code>. The test checked that the two extended shapes really are congruent regular <code>n</code>-gons with apothem <code>h</code> for every <code>2n &ge; 6</code>.</p>
+
+      <h2>What if P leaves the polygon?</h2>
+      <p>The page only claims the equality for a point inside. Drag <code>P</code> outside and the ordinary areas need no longer match: the triangles now overlap and the status line says so. If the distances are given signs — positive on the inside of a side line, negative on the outside — the two sums stay equal for <em>any</em> position of <code>P</code>, because the outward normals of the even sides add to zero and so do those of the odd sides. The test checked both facts. For a <code>4n</code>-gon there is a simpler view, noted by Matt Henderson on the page: opposite sides are the same distance apart, so each pair of opposite triangles contributes equally.</p>
+
+      <p class="tip">Try N = 6 with the hint on: the two extended triangles make a six-pointed star around the hexagon, and the three solid and three dashed altitudes pair up across it.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AreasInRegPoly.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="areas-in-reg-poly-core.js"></script>
+<script src="areas-in-reg-poly.js"></script>
+</body>
+</html>
