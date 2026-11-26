@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fast Power Indices &mdash; coolmaths</title>
+<meta name="description" content="How much say does California have in the Electoral College, or a permanent member in the UN Security Council? Count trillions of coalitions in an instant with a polynomial trick.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/power-indices/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Fast Power Indices">
+<meta property="og:description" content="How much say does California have in the Electoral College, or a permanent member in the UN Security Council? Count trillions of coalitions in an instant with a polynomial trick.">
+<meta property="og:url" content="https://coolmaths.ai/power-indices/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 42rem; padding: 0.9rem 0.5rem; }
+  .setup { display: flex; flex-wrap: wrap; gap: 0.6rem 1rem; align-items: center; justify-content: center; }
+  .setup label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.75rem; flex-wrap: wrap; max-width: 100%; }
+  .setup select { font-size: 1rem; max-width: 100%; }
+  .setup input { width: 5.5rem; font-size: 1rem; }
+  #summary { text-align: center; margin: 0.6rem 0; }
+  .table-wrap { max-height: 32rem; overflow: auto; }
+  #table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 0.9rem; }
+  #table th, #table td { padding: 0.3rem 0.25rem; border-bottom: 1px solid var(--border); text-align: right; vertical-align: top; }
+  #table thead th { position: sticky; top: 0; background: var(--stage); color: var(--muted); font-size: 0.9rem; }
+  #table tbody th, #table thead th:first-child { text-align: left; font-weight: 600; }
+  #table tbody th span { margin-right: 0.3rem; }
+  #table td input { width: 3.3rem; font-size: 1rem; text-align: right; }
+  #table .sub { display: block; font-size: 0.8rem; color: var(--muted); }
+  #table tr.dummy td { color: var(--bad); }
+  #table .remove { min-width: 2.2rem; padding: 0.1rem 0.5rem; vertical-align: middle; }
+  #note { margin: 0.6rem 0 0; min-height: 1.4rem; }
+</style>
+</head>
+<body data-game="power-indices" data-kind="demo">
+<main id="main">
+  <h1>Fast Power Indices</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#permutations">Permutations</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> See how much say each member of a real voting body has, like the states choosing a US president.<br>
+    <strong>How to play:</strong> Pick a voting body from the list, or change the votes and the number needed to win, and compare each member's share of votes with its share of power.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="setup">
+      <label>Data <select id="setSel"></select></label>
+      <label>Quota <input id="quotaIn" type="number" min="1" max="60000" step="1"></label>
+    </div>
+    <p id="summary" aria-live="polite"></p>
+    <div class="table-wrap">
+      <table id="table">
+        <thead><tr><th scope="col">Player</th><th scope="col">Weight</th><th scope="col">Banzhaf</th><th scope="col">Shapley-Shubik</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p id="note" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <button id="addBtn" type="button" class="primary">Add player</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The two power indices of <a href="../power-index/">Weighted Voting and Power Indices</a> are defined by counting: every coalition for Banzhaf, every order of joining for Shapley-Shubik. With the 51 votes of the US Electoral College there are 2⁵¹ coalitions and 51! orders, numbers far too large to list. Yet the answers come back at once.</p>
+
+      <h2>Counting with polynomials</h2>
+      <p>Multiply out <code>(1 + x^w₁)(1 + x^w₂)…</code>: each term picks, from each bracket, either 1 (the player stays out) or <code>x^w</code> (the player joins), so the coefficient of <code>x^s</code> is the number of coalitions weighing exactly <code>s</code>. This is a <a class="wiki-term" data-wiki="Generating_function" href="https://en.wikipedia.org/wiki/Generating_function" target="_blank" rel="noopener">generating function</a>. Leave player <code>i</code> out of the product, and player <code>i</code> swings exactly the coalitions of the others that weigh from <code>q − wᵢ</code> to <code>q − 1</code>: adding those coefficients gives the Banzhaf count. Only powers below <code>q</code> matter, so the work is about players × players × quota, not 2ⁿ.</p>
+
+      <h2>And with a second variable</h2>
+      <p>For Shapley-Shubik the size of the coalition matters too: a swing by a coalition of <code>k</code> others makes player <code>i</code> pivotal in <code>k!(n − 1 − k)!</code> orders. So the applet multiplies <code>(1 + y·x^w)</code> instead and keeps the coefficients by both size and weight. The test compared both indices with plain counting on over 6,000 small systems, and checked the applet's polynomial step for every player of every data set.</p>
+
+      <h2>What the numbers show</h2>
+      <p>In the <a class="wiki-term" data-wiki="United_Nations_Security_Council" href="https://en.wikipedia.org/wiki/United_Nations_Security_Council" target="_blank" rel="noopener">Security Council</a> (9 votes needed, each permanent member able to veto) a permanent member has Shapley-Shubik power <code>421/2145 ≈ 19.6%</code> and a non-permanent member <code>4/2145 ≈ 0.19%</code>, a hundred times less. In the <a class="wiki-term" data-wiki="United_States_Electoral_College" href="https://en.wikipedia.org/wiki/United_States_Electoral_College" target="_blank" rel="noopener">Electoral College</a> the big states' power is a little more than their share of the votes.</p>
+
+      <p class="tip">Choose the European Union and raise the quota from 62 towards 87. When do the small countries lose their power?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/SocialScience/PowerIndices.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="power-indices-core.js"></script>
+<script src="power-indices.js"></script>
+</body>
+</html>

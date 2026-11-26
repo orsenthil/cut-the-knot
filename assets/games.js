@@ -2070,5 +2070,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "power-indices",
+      title: "Fast Power Indices",
+      blurb: "How much say does California have in the Electoral College, or a permanent member in the UN Security Council? Count trillions of coalitions in an instant with a polynomial trick.",
+      tags: ["counting", "algebra", "permutations"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };
