@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plain Monty Hall &mdash; coolmaths</title>
+<meta name="description" content="Pick a door, watch the host open one with a goat, then stay or switch. Keep score over many rounds: is it really 50-50?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/plain-monty-hall/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Plain Monty Hall">
+<meta property="og:description" content="Pick a door, watch the host open one with a goat, then stay or switch. Keep score over many rounds: is it really 50-50?">
+<meta property="og:url" content="https://coolmaths.ai/plain-monty-hall/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 38rem; padding: 0.9rem; }
+  #doors { display: flex; justify-content: center; gap: clamp(0.4rem, 3vw, 1.2rem); }
+  .door { flex: 1 1 0; max-width: 10rem; min-width: 0; aspect-ratio: 3 / 4; border-radius: 0.6rem 0.6rem 0.2rem 0.2rem; border: 4px solid var(--ink); background: #a0693a; color: #fff; font: 700 2rem system-ui, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; overflow: hidden; transition: background 0.3s; }
+  .door:not(.open):hover { background: #8c5a30; color: #fff; }
+  .door.open, .door.open:hover { background: var(--surface); color: var(--ink); }
+  .door.first { box-shadow: 0 0 0 4px var(--accent); }
+  .door.final { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent); }
+  .door img { width: 92%; height: 92%; object-fit: contain; display: none; }
+  .door.open img { display: block; }
+  .door.open .num { display: none; }
+  .door:disabled { opacity: 1; cursor: default; }
+  .door:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  #prompt { text-align: center; font-weight: 600; min-height: 2.6rem; margin: 0.8rem 0 0.4rem; }
+  #tally { display: grid; gap: 0.35rem; }
+  .bar-row { display: grid; grid-template-columns: minmax(0, 9rem) 1fr 2.5rem; gap: 0.5rem; align-items: center; font-size: 0.95rem; }
+  .bar-track { height: 0.9rem; background: var(--border); border-radius: 0.45rem; overflow: hidden; }
+  .bar { display: block; height: 100%; width: 0; border-radius: 0.45rem; transition: width 0.3s; }
+  .bar.won { background: var(--good); }
+  .bar.lost { background: var(--bad); }
+  .bar-count { text-align: right; font-family: var(--mono); font-weight: 700; }
+</style>
+</head>
+<body data-game="plain-monty-hall" data-kind="game">
+<main id="main">
+  <h1>Plain Monty Hall</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#probability">Probability</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A car hides behind one of three doors and goats hide behind the other two: try to end up with the car.<br>
+    <strong>How to play:</strong> Pick a door. The host opens a goat door, then you pick again: stay with your door or switch to the other one.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="doors" role="group" aria-label="Three doors"></div>
+    <p id="prompt" aria-live="polite"></p>
+    <div id="tally" aria-label="Counts of every round"></div>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This is the <a class="wiki-term" data-wiki="Monty_Hall_problem" href="https://en.wikipedia.org/wiki/Monty_Hall_problem" target="_blank" rel="noopener">Monty Hall problem</a> played the plain way: you really click twice. Once the host has opened a goat door, two doors are left, and it is tempting to think each has a 50-50 chance. The four bars say otherwise.</p>
+
+      <h2>Two bars move every round</h2>
+      <p>Whatever you click the second time, the applet changes two counts. If your first door had the car, staying won and switching lost; if it had a goat, switching won and staying lost. So <code>switched and lost = stayed and won</code> and <code>switched and won = stayed and lost</code>, always, as the page with the original applet says: what you do only decides which of the two was your own result. The test checked this over 60,000 rounds of random clicking.</p>
+
+      <h2>Count the cases</h2>
+      <p>Your first door hides the car in 1 case out of 3. The host never changes that: he can always open a goat door, so opening one tells you nothing about your own door, which keeps its <code>1/3</code>. The other <code>2/3</code> now sits on the one closed door you did not pick. Counting the 9 equally likely pairs (where the car is, which door you pick), with the host's coin toss when he has two goats to choose from, staying wins 6 of 18 weighted cases and switching 12 of 18. This is <a class="wiki-term" data-wiki="Conditional_probability" href="https://en.wikipedia.org/wiki/Conditional_probability" target="_blank" rel="noopener">conditional probability</a>; <a class="wiki-term" data-wiki="Bayes'_theorem" href="https://en.wikipedia.org/wiki/Bayes%27_theorem" target="_blank" rel="noopener">Bayes' theorem</a> gives the same answer.</p>
+
+      <h2>A small change from the applet</h2>
+      <p>The applet let you click the host's open goat door as your second choice, and then counted a "switched and lost" and a "stayed and won" even when staying had lost. Its page asks you to click your first door or the other closed one, so here the open door cannot be chosen. Everything else, the host's random choice between two goats and the four counts, is as in the applet.</p>
+
+      <p class="tip">Play twenty rounds always staying, then press Reset and play twenty always switching. Which bars grow faster? See also <a href="../monty-hall/">The Monty Hall Problem</a>, which plays a round in one click.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Probability/PlainMontyHall.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="plain-monty-hall-core.js"></script>
+<script src="plain-monty-hall.js"></script>
+</body>
+</html>

@@ -36,6 +36,7 @@ window.COOLMATHS = {
     "permutations": "Permutations",
     "algorithms": "Algorithms",
     "graph-theory": "Graph Theory",
+    "probability": "Probability",
     "area": "Area",
     "paradoxes": "Paradoxes",
     "limits": "Limits",
@@ -2022,6 +2023,13 @@ window.COOLMATHS = {
       tags: ["area", "counting", "coordinates"],
       kind: "demo",
       level: 2,
+    },
+    {
+      slug: "plain-monty-hall",
+      title: "Plain Monty Hall",
+      blurb: "Pick a door, watch the host open one with a goat, then stay or switch. Keep score over many rounds: is it really 50-50?",
+      tags: ["probability", "counting", "paradoxes"],
+      level: 1,
     },
   ],
 };

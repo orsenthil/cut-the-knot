@@ -42,6 +42,7 @@ window.COOLMATHS_CONCEPTS = {
   "permutations": { label: "Permutations", prereqs: ["counting"] },
   "algorithms": { label: "Algorithms", prereqs: ["counting"] },
   "graph-theory": { label: "Graph Theory", prereqs: ["counting"] },
+  "probability": { label: "Probability", prereqs: ["counting"] },
 
   // Shape.
   "area": { label: "Area", prereqs: ["arithmetic"] },
