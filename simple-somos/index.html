@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simple Somos Sequence &mdash; coolmaths</title>
+<meta name="description" content="Square a number, add 2, divide by the one before: 1, 1, 3, 11, 41, ... Why does the division always come out even?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/simple-somos/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Simple Somos Sequence">
+<meta property="og:description" content="Square a number, add 2, divide by the one before: 1, 1, 3, 11, 41, ... Why does the division always come out even?">
+<meta property="og:url" content="https://coolmaths.ai/simple-somos/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 44rem; padding: 0.8rem; }
+  #terms {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    font-family: var(--mono);
+    font-size: 0.95rem;
+  }
+  #terms li {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    max-width: 100%;
+    padding: 0.2rem 0.5rem;
+    border-radius: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    overflow-wrap: anywhere;
+  }
+  #terms .idx { color: var(--muted); font-size: 0.75rem; white-space: nowrap; flex-shrink: 0; }
+  #terms .val { min-width: 0; overflow-wrap: anywhere; }
+  #terms li.alarm { border-color: var(--bad); color: var(--bad); font-weight: 700; }
+  #kLine { margin: 0.7rem 0 0; color: var(--muted); font-size: 0.9rem; text-align: center; }
+  .spin { display: inline-flex; align-items: center; gap: 0.3rem; }
+  .spin button { min-width: 2.75rem; min-height: 2.75rem; padding: 0; font-size: 1.1rem; }
+  .spin input { width: 4.5rem; min-height: 2.75rem; font-size: 1rem; text-align: center; }
+  .spin .name { font-style: italic; font-weight: 700; min-width: 1.2rem; text-align: right; }
+</style>
+</head>
+<body data-game="simple-somos" data-kind="demo">
+<main id="main">
+  <h1>Simple Somos Sequence</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#divisibility">Divisibility</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Each new number is made from the two before it: square the last one, add m, and divide by the one before. Do the divisions always come out even?<br>
+    <strong>How to play:</strong> Change m and the two starting numbers a and b, and watch the list.
+  </div>
+
+  <div id="stage" class="stage">
+    <ol id="terms" aria-label="The terms of the sequence"></ol>
+    <p id="kLine"></p>
+  </div>
+
+  <div class="controls">
+    <span class="spin" role="group" aria-label="m, the number added">
+      <span class="name">m</span>
+      <button type="button" data-bump="m:-1" aria-label="m minus one">&minus;</button>
+      <input id="mInput" type="number" min="1" max="100" step="1" aria-label="m, the number added">
+      <button type="button" data-bump="m:1" aria-label="m plus one">+</button>
+    </span>
+    <span class="spin" role="group" aria-label="a, the first term">
+      <span class="name">a</span>
+      <button type="button" data-bump="a:-1" aria-label="a minus one">&minus;</button>
+      <input id="aInput" type="number" min="1" max="100" step="1" aria-label="a, the first term">
+      <button type="button" data-bump="a:1" aria-label="a plus one">+</button>
+    </span>
+    <span class="spin" role="group" aria-label="b, the second term">
+      <span class="name">b</span>
+      <button type="button" data-bump="b:-1" aria-label="b minus one">&minus;</button>
+      <input id="bInput" type="number" min="1" max="100" step="1" aria-label="b, the second term">
+      <button type="button" data-bump="b:1" aria-label="b plus one">+</button>
+    </span>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>An old Russian olympiad problem: show that the numbers <code>a<sub>1</sub> = a<sub>2</sub> = 1</code>, <code>a<sub>n</sub> = (a<sub>n&minus;1</sub>&sup2; + 2) / a<sub>n&minus;2</sub></code> are all whole: 1, 1, 3, 11, 41, 153, &hellip; Each step divides, and it is a surprise that the division is always exact. Sequences built by such divisions are named after Michael Somos (<a class="wiki-term" data-wiki="Somos_sequence" href="https://en.wikipedia.org/wiki/Somos_sequence" target="_blank" rel="noopener">Somos sequences</a>).</p>
+
+      <h2>Something that does not change</h2>
+      <p>Take three terms in a row, <code>x, y, z</code>. The rule says <code>xz = y&sup2; + m</code>. Then</p>
+      <blockquote><code>k = (x&sup2; + y&sup2; + m) / (xy)</code></blockquote>
+      <p>is the same for <code>x, y</code> as for <code>y, z</code>: an <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>. (Subtract the two versions: <code>x&sup2; &minus; z&sup2;</code> must equal <code>k y (x &minus; z)</code>, which holds because <code>x + z = ky</code>.)</p>
+
+      <h2>No division needed</h2>
+      <p>So the rule can be rewritten as <code>z = k y &minus; x</code>: multiply and subtract, no division at all. With <code>a = b = 1</code>, <code>k = m + 2</code> is a whole number, and every term is too, for every <code>m</code>, as the page says. The logic test ran every <code>m</code> from 1 to 100 and checked the invariant term by term.</p>
+
+      <h2>Other starts</h2>
+      <p>Starting from other <code>a</code> and <code>b</code>, the terms stay whole exactly when the first division works (<code>a</code> divides <code>b&sup2; + m</code>) and <code>k</code> is a whole number; otherwise the applet raises an alarm. The test confirmed this rule on all 1,000,000 starts the controls allow.</p>
+
+      <p class="tip">Try a = 1, b = 2: for which m do all the terms come out whole?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/SimpleSomos.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="simple-somos-core.js"></script>
+<script src="simple-somos.js"></script>
+</body>
+</html>

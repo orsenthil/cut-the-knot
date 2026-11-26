@@ -2252,5 +2252,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "simple-somos",
+      title: "Simple Somos Sequence",
+      blurb: "Square a number, add 2, divide by the one before: 1, 1, 3, 11, 41, ... Why does the division always come out even?",
+      tags: ["sequences", "divisibility", "invariants"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
