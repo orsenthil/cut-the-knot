@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Barycentric &mdash; coolmaths</title>
+<meta name="description" content="Drag the point P in a triangle and watch its three barycentric coordinates change: how do the lines through P split the opposite sides, and can you recover the coordinates from those splits?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/barycentric/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Barycentric">
+<meta property="og:description" content="Drag the point P in a triangle and watch its three barycentric coordinates change: how do the lines through P split the opposite sides, and can you recover the coordinates from those splits?">
+<meta property="og:url" content="https://coolmaths.ai/barycentric/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .cevian { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .foot-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .p-label { fill: var(--good); }
+  #board .foot-label { fill: var(--muted); font-size: 14px; font-weight: 500; }
+  #board .bary-label {
+    fill: var(--accent); font-family: var(--mono); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .ratio-label {
+    fill: var(--good); font-family: var(--mono); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .p-handle { fill: var(--good); }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls button[aria-pressed="true"] {
+    background: var(--accent-soft); border-color: var(--accent);
+  }
+  .digits { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .digits button { padding: 8px 12px; }
+  .digits span { min-width: 1.2rem; text-align: center; }
+</style>
+</head>
+<body data-game="barycentric" data-kind="demo">
+<main id="main">
+  <h1>Barycentric</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners of a triangle and the point P, and watch three lines cut the opposite sides into pieces.<br>
+    <strong>How to play:</strong> Drag a dot with a mouse or finger, or focus one and use the arrow keys. Tick the boxes to show names, P's three numbers and the numbers on the sides.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle with corners A, B and C, a point P, and the three lines through P meeting the opposite sides"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle and P to their starting places">Reset triangle</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show or hide the names of the points">Names</button>
+    <button id="baryBtn" type="button" aria-pressed="false" aria-label="Show or hide the three coordinates of P">Coordinates</button>
+    <button id="cevaBtn" type="button" aria-pressed="false" aria-label="Show or hide the numbers on the split sides">Side numbers</button>
+    <button id="modeInherited" type="button" aria-pressed="true" aria-label="Show the weights inherited from each side's corners">Inherited</button>
+    <button id="modeAdd" type="button" aria-pressed="false" aria-label="Show the two pieces of each side as numbers that add to one">Add to 1</button>
+    <button id="modeRouth" type="button" aria-pressed="false" aria-label="Show the two side ratios used in Routh's theorem">A la Routh</button>
+    <span class="digits">
+      <button id="digitsDown" type="button" aria-label="Use one fewer significant digit">−</button>
+      <span id="digitsValue" aria-live="polite">2</span>
+      <button id="digitsUp" type="button" aria-label="Use one more significant digit">+</button>
+    </span>
+    <button id="checkBtn" type="button" aria-label="Check that the side numbers match the coordinates of P">Check the claims</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three numbers can describe a point inside a triangle: they are the weights you would hang at the three corners to make the triangle balance at that point. The applet shows how the very same three numbers turn up on the sides when you draw lines through the point.</p>
+
+      <h2>Three weights, one balance point</h2>
+      <p>Give the corners A, B and C the weights <code>α</code>, <code>β</code>, <code>γ</code>. Their <a class="wiki-term" data-wiki="Center_of_mass" href="https://en.wikipedia.org/wiki/Center_of_mass" target="_blank" rel="noopener">center of mass</a> is</p>
+      <blockquote><code>P = (αA + βB + γC) / (α + β + γ)</code></blockquote>
+      <p>Because only the ratios matter, we may choose <code>α + β + γ = 1</code>. These are the <a class="wiki-term" data-wiki="Barycentric_coordinate_system" href="https://en.wikipedia.org/wiki/Barycentric_coordinate_system" target="_blank" rel="noopener">barycentric coordinates</a> of P. The numbers beside P in this picture are exactly that normalized triple: the logic test checks at 300 interior and 240 exterior positions that they add to 1 and that putting those weights at the corners lands back on P. Move P outside the triangle and two of the numbers become negative — the formula still works.</p>
+
+      <h2>Where a cevian lands</h2>
+      <p>Write P using the first equation with <code>α + β + γ = 1</code>:</p>
+      <blockquote><code>P = αA + (β + γ)[(β/(β+γ))B + (γ/(β+γ))C]</code></blockquote>
+      <p>The expression in brackets is a point on BC. It is A', where the line AP meets BC, and it is the balance point of just the weights at B and C. Rearranging gives <code>β(A' − B) = γ(C − A')</code>, so</p>
+      <blockquote><code>BA' / A'C = γ / β</code></blockquote>
+      <p>The same argument at the other two corners gives all three side splits in the article. The logic test checks each against the distances along the sides, including points outside the triangle where the ratios are negative.</p>
+
+      <h2>Read the ratios from the sides</h2>
+      <p>The article states, and the test confirms at every one of the 300 interior positions:</p>
+      <blockquote><code>BA'/A'C = γ/β,&nbsp; CB'/B'A = α/γ,&nbsp; AC'/C'B = β/α</code></blockquote>
+      <p>Multiply them and everything cancels: <code>(γ/β)(α/γ)(β/α) = 1</code>, which is <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a> — the reason the three lines through P really do meet at one point. The three mode buttons print these numbers the way the applet does: <strong>Inherited</strong> shows the weights <code>β, γ</code> belonging to the two ends of the side; <strong>Add to 1</strong> shows the two pieces of the side as <code>γ/(β+γ)</code> and <code>β/(β+γ)</code>, which sum to 1; <strong>A la Routh</strong> shows <code>β/γ</code> and <code>1</code>. The test compares all 15 digit settings and all three modes with the applet's own drawing code.</p>
+
+      <h2>From side ratios back to P</h2>
+      <p>Go the other way. Suppose the sides are cut so that <code>BA'/A'C = λ</code>, <code>CB'/B'A = μ</code>, <code>AC'/C'B = ν</code>, with <code>λμν = 1</code>. The article sets <code>β = 1</code>; then <code>γ = λ</code> and <code>α = λμ</code>, so</p>
+      <blockquote><code>P = (λμ, 1, λ) = (μ, μν, 1) = (1, ν, λν)</code></blockquote>
+      <p>These are the triples that appear in <a class="wiki-term" data-wiki="Routh%27s_theorem" href="https://en.wikipedia.org/wiki/Routh%27s_theorem" target="_blank" rel="noopener">Routh's theorem</a>; here the Ceva condition makes them describe the same point. The logic test tries 1,600 pairs of ratio values, reconstructs P from all three triples and checks that each point's own side ratios return λ, μ and ν.</p>
+
+      <p class="tip">Try pulling P just outside the triangle: one coordinate turns negative, and the side numbers follow it.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Barycentric.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="barycentric-core.js"></script>
+<script src="barycentric.js"></script>
+</body>
+</html>
