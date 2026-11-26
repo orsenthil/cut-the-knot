@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>APMO 2009 Problem 3 &mdash; coolmaths</title>
+<meta name="description" content="A triangle keeps its base and its height fixed. Where should the top corner sit to make the product of the three heights as large as possible?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/apmo-2009-3/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="APMO 2009 Problem 3">
+<meta property="og:description" content="A triangle keeps its base and its height fixed. Where should the top corner sit to make the product of the three heights as large as possible?">
+<meta property="og:url" content="https://coolmaths.ai/apmo-2009-3/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .base-line { stroke: var(--ink); stroke-width: 3; }
+  #board .height-line { stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 7 5; }
+  #board .vertical-guide { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 4 4; }
+  #board .triangle { fill: var(--accent-soft); stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+  #board .circumcircle { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .circle1 { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .radiusmark { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 3 3; }
+  #board .hintsegment { stroke: var(--highlight); stroke-width: 1.8; }
+  #board .centerdot { fill: var(--muted); }
+  #board .middot { fill: var(--ink); }
+  #board .sidedot, #board .hintdot { fill: var(--muted); }
+  #board .extremedot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .height-handle { fill: var(--highlight); }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="apmo-2009-3" data-kind="demo">
+<main id="main">
+  <h1>APMO 2009 Problem 3</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move a triangle whose base and height stay the same, and see which shape makes the three heights multiply to the biggest number; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag A, B or C along its line, or drag the small handle on the height line. Focus a point and use the arrow keys; tick the boxes for the two hints.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 260" role="group"
+         aria-label="Triangle ABC on a fixed base, with its circumcircle. Drag A, B or C along its line, or the small handle on the height line to change the height."></svg>
+    <p class="hint-line">Drag a point, or focus it and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Names</label>
+    <label><input id="hint1Box" type="checkbox" data-label="hint 1"> Hint 1</label>
+    <label><input id="hint2Box" type="checkbox" data-label="hint 2"> Hint 2</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The triangle can slide its top corner A sideways without changing its base BC or its <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a> h. Yet the product of all three altitudes changes a lot. The surprising part is that the shape the original page names as the best is only the best for some base lengths.</p>
+
+      <h2>Turn heights into one side product</h2>
+      <p>Let A', B', C' be the feet of the three altitudes. The base and height of the triangle never change, so its <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> S is fixed. Twice that area can be written with any side as the base:</p>
+      <blockquote><code>2S = AA' · BC = BB' · AC = CC' · AB</code></blockquote>
+      <p>Multiply the last two forms. Because <code>(BB' · AC)(CC' · AB) = (2S)²</code> stays the same, making the altitude product <code>AA' · BB' · CC'</code> as big as possible is exactly the same as making the side product <code>AB · AC</code> as small as possible. The line through A is fixed, so only the sideways position of A matters.</p>
+
+      <h2>Where AB × AC is really smallest</h2>
+      <p>Put the middle of BC at 0, let half the base be <code>a</code>, the height be <code>h</code>, and let <code>u</code> be how far A is to one side of the middle. Then</p>
+      <blockquote><code>AB² · AC² = (u² + a² + h²)² − 4a²u²</code></blockquote>
+      <p>This is smallest at <code>u = 0</code> when <code>h ≥ a</code>, that is when the base BC is at most twice the height. Only then is the isosceles triangle with <code>AB = AC</code> the answer, as the page says. When the base is longer than twice the height, the smallest value is at <code>u² = a² − h²</code>: that is where the angle at A is a right angle (A lies on the circle with diameter BC), and <code>AB · AC = BC · h</code>. The logic test checked this over a grid of bases, heights and positions: in that long-base range the isosceles point actually gives the <em>smallest</em> product of altitudes among its neighbours. The page's claim is therefore false there, and the status line says so as you drag.</p>
+
+      <h2>What S above T does and does not prove</h2>
+      <p>The page uses the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>: <code>4R · S = AB · BC · AC</code>, so with BC and S fixed, a smaller side product means a smaller <a class="wiki-term" data-wiki="Circumcenter" href="https://en.wikipedia.org/wiki/Circumcenter" target="_blank" rel="noopener">circumradius</a> R. Let T be the position of A with <code>TB = TC</code> and S the topmost point of the circle through A, B, C. S really is always at or above T; with M the middle of BC this says <code>SM ≥ TM</code> (the page writes A'), with equality exactly at <code>AB = AC</code>. The test confirmed that for every position in the grid. But the page then reads off that R is smallest at T, and that step fails when the base exceeds twice the height: there the circle of a right triangle has its centre at A' itself and radius <code>a</code>, smaller than the radius at T.</p>
+
+      <p class="tip">Tick both hints, then drag B outward until the base is longer than twice the height. Slide A along its line and watch the percentage in the status line: it peaks at a right angle at A, not when S touches T.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/APMO2009_3.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="apmo-2009-3-core.js"></script>
+<script src="apmo-2009-3.js"></script>
+</body>
+</html>
