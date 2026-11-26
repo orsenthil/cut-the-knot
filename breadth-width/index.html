@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Breadth vs Width Illusion &mdash; coolmaths</title>
+<meta name="description" content="Two stacks of layers look quite different, yet both are drawn inside the very same square. Change the layers and measure each stack: are they really as tall as they are wide?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/breadth-width/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Breadth vs Width Illusion">
+<meta property="og:description" content="Two stacks of layers look quite different, yet both are drawn inside the very same square. Change the layers and measure each stack: are they really as tall as they are wide?">
+<meta property="og:url" content="https://coolmaths.ai/breadth-width/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .barrel-body { fill: var(--accent); fill-opacity: 0.16; }
+  #board .barrel-body.single { fill: var(--muted); fill-opacity: 0.12; }
+  #board .cap-top { fill: var(--highlight); fill-opacity: 0.38; }
+  #board .cap-bottom { fill: var(--muted); fill-opacity: 0.28; }
+  #board .barrel-side, #board .cap-rim {
+    fill: none; stroke: var(--ink); stroke-width: 2;
+  }
+  #board .probed { stroke: var(--good); stroke-width: 4; }
+  #board .layer-line {
+    fill: none; stroke: var(--accent); stroke-width: 2; stroke-opacity: 0.85;
+  }
+  #board .ruler-line, #board .ruler-tick {
+    stroke: var(--muted); stroke-width: 2;
+  }
+  #board .ruler-label, #board .measure-label {
+    fill: var(--text); font-family: var(--font); font-size: 13px;
+    text-anchor: middle; pointer-events: none;
+  }
+  #board .measure-bar { stroke: var(--good); stroke-width: 2.5; }
+  #board .measure-label { fill: var(--good); font-weight: 600; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .probe-handle { fill: var(--good); }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0 0; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="breadth-width" data-kind="demo">
+<main id="main">
+  <h1>Breadth vs Width Illusion</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two stacks of layers look different, but both are drawn inside the same square; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the dot on the ruler, or press the buttons, to change the number of layers. Drag the green dot onto a stack to see how wide and tall it really is.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Three barrels: an upright stack of layers, one single layer, and a stack of curved layers, with a layer ruler and a measuring probe"></svg>
+    <p class="hint">Drag the ruler dot or press the buttons for 1 to 20 layers. Focus either dot and use the arrow keys to move it.</p>
+  </div>
+
+  <div class="controls">
+    <button id="lessBtn" type="button" aria-label="Use one fewer layer">&minus; 1 layer</button>
+    <button id="moreBtn" type="button" class="primary" aria-label="Use one more layer">+ 1 layer</button>
+    <button id="resetBtn" type="button" aria-label="Reset to five layers and put the probe on the left stack">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The two outer stacks do not look the same size: one seems wide, the other tall. The drawing is tricking the eye, because the two stacks are built in exactly the same <a class="wiki-term" data-wiki="Square_(geometry)" href="https://en.wikipedia.org/wiki/Square_(geometry)" target="_blank" rel="noopener">square</a>.</p>
+
+      <h2>The claim, word for word</h2>
+      <p>Bogomolny's page says: <q>Both stacks are as tall as they are wide. However our perception is affected by the apparent number of layers in the stack.</q> That is the claim this page keeps. The logic test checks it for every layer count from 1 to 20 at thousands of canvas sizes: the body of each barrel is <code>S</code> units wide and <code>S</code> units tall, so width and height are equal every time. The rounded caps stick out by <code>30</code> units above and below, equally on all three barrels, and do not favour either direction.</p>
+
+      <h2>How the layers are drawn</h2>
+      <p>The middle barrel has one layer. The left stack has <code>N + 1</code> upright lines; the <code>i</code>-th one sits at <code>X0 + S/2 + round(S/2 · cos(−π + π·i/N))</code> and runs down the barrel. The right stack has <code>N</code> curved lines, the <code>i</code>-th one is the lower half of an <a class="wiki-term" data-wiki="Ellipse" href="https://en.wikipedia.org/wiki/Ellipse" target="_blank" rel="noopener">ellipse</a> whose top is at <code>Y0 + floor(S·i/N) − 30</code>. Both formulas, with their integer rounding, are taken from the applet's own code; the logic test compares every line and curve with a second transcription of that code, point by point, for all 20 layer counts at many canvas sizes.</p>
+
+      <h2>Why the eye is fooled</h2>
+      <p>Count the upright lines on the left and the curved lines on the right: the same number appears in two different directions. That makes one stack look broader and the other taller, even though the measuring brackets show equal sides. This is an <a class="wiki-term" data-wiki="Optical_illusion" href="https://en.wikipedia.org/wiki/Optical_illusion" target="_blank" rel="noopener">optical illusion</a> about how we read layers, not a change in <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> or length. The article credits R. N. Shepard and A. Seckel for the illusion and its references.</p>
+      <p class="note">The original applet used a scrollbar to set 1 to 20 layers. Here the dot on the ruler and the two buttons do that job; the drawing and the claim are unchanged.</p>
+
+      <p class="tip">Set the layers to 1, then to 20, and put the green probe on each outer stack in turn. The brackets always read the same two numbers.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BreadthWidth.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="breadth-width-core.js"></script>
+<script src="breadth-width.js"></script>
+</body>
+</html>
