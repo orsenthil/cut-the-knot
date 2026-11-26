@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Product of Simple Fractions &mdash; coolmaths</title>
+<meta name="description" content="Colour rows for one fraction and columns for another, then lay them together. Why is the product the tops times the tops over the bottoms times the bottoms?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/product-of-fractions/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Product of Simple Fractions">
+<meta property="og:description" content="Colour rows for one fraction and columns for another, then lay them together. Why is the product the tops times the tops over the bottoms times the bottoms?">
+<meta property="og:url" content="https://coolmaths.ai/product-of-fractions/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.9rem 0.6rem; }
+  .row3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem; align-items: start; }
+  .panel { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .panel svg { width: 100%; max-width: 11rem; height: auto; display: block; }
+  .paper { fill: var(--surface); }
+  .rows { fill: var(--good); fill-opacity: 0.45; }
+  .cols { fill: var(--accent); fill-opacity: 0.45; }
+  .lines line { stroke: var(--ink); stroke-width: 0.5; stroke-opacity: 0.6; }
+  .both { fill: none; stroke: var(--bad); stroke-width: 2.5; }
+  .frame { fill: none; stroke: var(--ink); stroke-width: 2; }
+  .frac { display: inline-flex; flex-direction: column; align-items: center; gap: 0.15rem; font-weight: 700; font-size: 1.3rem; }
+  .frac .bar { width: 100%; min-width: 3rem; height: 3px; background: currentColor; border-radius: 2px; }
+  .frac input { width: 3.6rem; font: inherit; font-size: 1.1rem; text-align: center; }
+  #prod { color: var(--bad); }
+  #reduced { font-size: 0.85rem; color: var(--muted); text-align: center; margin: 0; }
+  #info { margin: 0.8rem 0 0; }
+</style>
+</head>
+<body data-game="product-of-fractions" data-kind="demo">
+<main id="main">
+  <h1>Product of Simple Fractions</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#fractions">Fractions</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> See why multiplying two fractions means multiplying the tops and multiplying the bottoms.<br>
+    <strong>How to play:</strong> Change the two fractions on the left and right. The middle square puts them together and shows the answer in red.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="row3">
+      <div class="panel">
+        <svg id="left" viewBox="-2 -2 104 104" role="img" aria-label="First fraction"></svg>
+        <div class="frac"><input id="pIn" type="number" min="1" max="99" aria-label="Numerator p"><span class="bar"></span><input id="qIn" type="number" min="1" max="99" aria-label="Denominator q"></div>
+      </div>
+      <div class="panel">
+        <svg id="mid" viewBox="-2 -2 104 104" role="img" aria-label="Both fractions together"></svg>
+        <div class="frac" id="prod" aria-live="polite"><span class="num"></span><span class="bar"></span><span class="den"></span></div>
+        <p id="reduced"></p>
+      </div>
+      <div class="panel">
+        <svg id="right" viewBox="-2 -2 104 104" role="img" aria-label="Second fraction"></svg>
+        <div class="frac"><input id="rIn" type="number" min="1" max="99" aria-label="Numerator r"><span class="bar"></span><input id="sIn" type="number" min="1" max="99" aria-label="Denominator s"></div>
+      </div>
+    </div>
+    <p id="info" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <button id="simplifyBtn" type="button">Simplify fractions</button>
+    <button id="newBtn" type="button" class="primary">New fractions</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Why is <code>p/q × r/s = pr/qs</code>? The rule can look like a trick to memorise, but the picture makes it a matter of counting cells.</p>
+
+      <h2>A fraction is parts of a whole</h2>
+      <p>The fraction <code>p/q</code>, read "<code>p</code> <code>q</code>-ths", means <code>p</code> parts out of <code>q</code> equal ones. The left square is cut into <code>q</code> rows and <code>p</code> of them are green. The right square shows <code>r/s</code> the other way: <code>s</code> columns, <code>r</code> of them blue.</p>
+
+      <h2>Cutting the parts smaller</h2>
+      <p>Lay the rows over the columns. Every column is now cut into <code>q</code> cells, so <code>r/s = rq/sq</code>: <code>r</code> parts out of <code>s</code> are the same as <code>rq</code> parts out of <code>sq</code>. These are <a class="wiki-term" data-wiki="Equivalent_fractions" href="https://en.wikipedia.org/wiki/Fraction#Equivalent_fractions" target="_blank" rel="noopener">equivalent fractions</a>. Taking <code>p/q</code> <em>of</em> that means keeping <code>p</code> rows out of every <code>q</code>: in each blue column that is <code>p</code> cells, <code>pr</code> cells in all, out of the <code>qs</code> cells of the square. Those are the cells inside the red outline, coloured both ways.</p>
+      <blockquote><code>p/q × r/s = pr/qs</code></blockquote>
+      <p>The test counted the cells for every pair of fractions with denominators up to 20, 44,100 pairs.</p>
+
+      <h2>Simplifying</h2>
+      <p>The product the picture gives, <code>pr/qs</code>, may not be in lowest terms: <code>2/3 × 3/4 = 6/12 = 1/2</code>. "Simplify fractions" divides each fraction by the <a class="wiki-term" data-wiki="Greatest_common_divisor" href="https://en.wikipedia.org/wiki/Greatest_common_divisor" target="_blank" rel="noopener">greatest common divisor</a> of its two numbers; the value never changes. In the applet the button stayed on once pressed and went on simplifying every fraction you made; here it simplifies once.</p>
+
+      <p class="tip">Make both fractions 1/2. How much of the square is coloured both ways? Now try 2/4 and 3/6: the picture changes, the answer does not.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/ProductOfFractions.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="product-of-fractions-core.js"></script>
+<script src="product-of-fractions.js"></script>
+</body>
+</html>

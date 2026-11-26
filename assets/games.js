@@ -2086,5 +2086,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "product-of-fractions",
+      title: "Product of Simple Fractions",
+      blurb: "Colour rows for one fraction and columns for another, then lay them together. Why is the product the tops times the tops over the bottoms times the bottoms?",
+      tags: ["fractions", "area", "arithmetic"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };
