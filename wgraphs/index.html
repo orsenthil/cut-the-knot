@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WGraphs &mdash; coolmaths</title>
+<meta name="description" content="Mark the cheapest edges of a weighted graph: can you grow the lightest tree, or a round trip through every dot?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/wgraphs/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="WGraphs">
+<meta property="og:description" content="Mark the cheapest edges of a weighted graph: can you grow the lightest tree, or a round trip through every dot?">
+<meta property="og:url" content="https://coolmaths.ai/wgraphs/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.8rem; }
+  #graph { display: block; width: 100%; height: auto; touch-action: manipulation; }
+  #graph .edge { cursor: pointer; }
+  #graph .box { fill: none; pointer-events: none; }
+  #graph .halo { stroke: var(--highlight); stroke-width: 11; opacity: 0; pointer-events: none; }
+  #graph .wire { stroke: var(--ink); stroke-width: 2.5; pointer-events: none; }
+  #graph .hit { stroke: transparent; stroke-width: 15; pointer-events: stroke; }
+  #graph .weights, #graph .dots { pointer-events: none; }
+  #graph .edge.selected .wire { stroke: var(--good); stroke-width: 4.5; }
+  #graph .edge.disqualified .wire { stroke: var(--muted); opacity: 0.35; }
+  #graph .edge:focus-visible .halo { opacity: 0.75; }
+  #graph .weight-bg { fill: var(--stage); stroke: var(--border); stroke-width: 1; }
+  #graph .weight { fill: var(--ink); font: 9px var(--font); text-anchor: middle; }
+  #graph .weight.tiny { font-size: 7px; }
+  #graph .dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #graph .dot-label { fill: var(--muted); font: 10px var(--font); }
+  #count { text-align: center; margin: 0.4rem 0 0; color: var(--muted); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.75rem; flex-wrap: wrap; }
+  .controls select, .controls button { min-height: 2.75rem; font-size: 1rem; }
+  .controls select { max-width: 100%; }
+</style>
+</head>
+<body data-game="wgraphs" data-kind="demo">
+<main id="main">
+  <h1>WGraphs</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#graph-theory">Graph Theory</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Pick edges on the picture to grow the cheapest tree, or a round trip through every dot.<br>
+    <strong>How to play:</strong> Press the edge with the smallest number that is still unmarked. Switch between the two ways to pick, and press Reset to start again.
+  </div>
+
+  <div class="controls">
+    <label>Example <select id="graphIn">
+      <option value="small">Six dots</option>
+      <option value="large">Eighteen dots</option>
+    </select></label>
+    <button id="cheapestBtn" type="button" aria-pressed="true">Cheapest link</button>
+    <button id="kruskalBtn" type="button" aria-pressed="false">Kruskal</button>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="graph" role="group" aria-label="Weighted graph"></svg>
+    <p id="count"></p>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two very short rules, repeated over and over, can build one of the most useful things in a network. Try to see why the small number you are asked to press is always the right one to press next.</p>
+
+      <h2>Always take the cheapest edge</h2>
+      <p>Both methods are <a class="wiki-term" data-wiki="Greedy_algorithm" href="https://en.wikipedia.org/wiki/Greedy_algorithm" target="_blank" rel="noopener">greedy algorithms</a>: at every step they take the smallest number still on the board, and never go back to change an earlier choice. The number on an edge is its <em>weight</em>; adding up the weights of the edges you marked gives the weight of your picture. The applet sorts the edges from smallest to largest and only lets you press the first unused one (or another edge tied with it).</p>
+
+      <h2>Kruskal grows a tree</h2>
+      <p>Kruskal's rule refuses an edge that would close a loop. What is left, once every dot is joined, is a <a class="wiki-term" data-wiki="Tree_(graph_theory)" href="https://en.wikipedia.org/wiki/Tree_(graph_theory)" target="_blank" rel="noopener">tree</a> that reaches all the dots: a <a class="wiki-term" data-wiki="Spanning_tree" href="https://en.wikipedia.org/wiki/Spanning_tree" target="_blank" rel="noopener">spanning tree</a>. You can read why in <a class="wiki-term" data-wiki="Kruskal%27s_algorithm" href="https://en.wikipedia.org/wiki/Kruskal%27s_algorithm" target="_blank" rel="noopener">Kruskal's algorithm</a>: joining two separate pieces by the cheapest possible bridge is never worse than waiting for a dearer one. The page's claim is true. The logic test checked every graph on four and five dots with weights 1, 2 and 3 against a separate minimum-spanning-tree calculation; the totals agreed every time. In this port the six-dot tree weighs <code>16</code> and the eighteen-dot tree weighs <code>125</code>.</p>
+      <p>The original applet had a small counting mistake: its counter started at one, so it said "done" with one edge still missing (weight <code>12</code> and <code>113</code> on those two examples). Here the announcement waits until the tree really reaches every dot.</p>
+
+      <h2>Cheapest Link makes a round trip</h2>
+      <p>Here a loop is refused too, <em>except</em> for the very last edge, which closes a <a class="wiki-term" data-wiki="Hamiltonian_cycle" href="https://en.wikipedia.org/wiki/Hamiltonian_cycle" target="_blank" rel="noopener">Hamilton circuit</a> through every dot. A third edge at any dot is also refused, so the walk can keep going without getting stuck at a dot. Both of the applet's own examples work: the small one closes a six-dot circuit of weight <code>24</code>, the large one an eighteen-dot circuit of weight <code>157</code>.</p>
+      <p>The page also says this rule finds a circuit "if any exists". That is too strong: greedily taking the cheapest edge can leave you with a path whose last edge is gone. On five dots with edges <code>0-1:3, 0-3:3, 1-2:2, 2-3:1, 2-4:1, 3-4:1</code>, the circuit <code>0-1-2-4-3-0</code> exists, but the rule stops after four edges. The applet also counted one dot too many in a circuit, so on a four-dot graph it could call a three-dot loop "done"; this port insists on every dot, as the page describes.</p>
+
+      <p class="tip">Try Cheapest link on the six dots first. Then press Kruskal on the same graph: one gives a round trip of weight 24, the other a tree of weight 16.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/WGraphs.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="wgraphs-core.js"></script>
+<script src="wgraphs.js"></script>
+</body>
+</html>
