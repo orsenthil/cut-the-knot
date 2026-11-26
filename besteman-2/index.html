@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Besteman 2 &mdash; coolmaths</title>
+<meta name="description" content="Drag two points and watch two circles and an angle bisector split a long segment into equal pieces — why do the parts always come out even?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/besteman-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Besteman 2">
+<meta property="og:description" content="Drag two points and watch two circles and an angle bisector split a long segment into equal pieces — why do the parts always come out even?">
+<meta property="og:url" content="https://coolmaths.ai/besteman-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 0.75rem; }
+  .board-scroll { width: 100%; overflow-x: auto; overflow-y: hidden; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .base-seg { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .construct-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .construct-circle.alt { stroke: var(--accent); }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .bisector { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: 7 4; }
+  #board .part-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1; }
+  #board .p-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .aux-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1; }
+  #board .half-arc { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .half-arc.alt { stroke: var(--highlight); }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 17px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; min-width: 0; max-width: 100%; }
+  .n-control { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-width: 0; max-width: 100%; }
+  .n-control input { width: 3.2rem; max-width: 100%; font-size: 1rem; padding: 0.25rem; }
+</style>
+</head>
+<body data-game="besteman-2" data-kind="demo">
+<main id="main">
+  <h1>Besteman 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag two dots and watch circles and a slanted line split a long segment into equal pieces.<br>
+    <strong>How to play:</strong> Drag A or B with a mouse or finger, or focus a dot and use the arrow keys. Choose how many pieces you want, then press Check the claims.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="board-scroll">
+      <svg id="board" viewBox="0 0 400 250" role="group"
+           aria-label="A horizontal segment AC, two circles meeting at D, the angle bisector from D to P, and dots dividing AC into equal parts"></svg>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="n-control">
+      <button id="lessBtn" type="button" aria-label="Use one fewer equal part">−</button>
+      <label for="nInput">Parts (2 to 20)</label>
+      <input id="nInput" type="number" min="2" max="20" step="1" value="3" aria-label="Number of equal parts, from 2 to 20">
+      <button id="moreBtn" type="button" aria-label="Use one more equal part">+</button>
+    </div>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point names">Hide names</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the two equal angle marks at D">Show equal angles</button>
+    <button id="checkBtn" type="button" class="primary" aria-label="Check the angle-bisector claims for this diagram">Check the claims</button>
+    <button id="newBtn" type="button" aria-label="Reset the two draggable points">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Angle bisectors are usually used to cut angles in half. Bogomolny's second Besteman construction turns that fact around: it cuts a segment into any chosen number of equal parts, using only circles and one bisector.</p>
+
+      <h2>A bisector compares two sides</h2>
+      <p>In any <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a> ACD, let DP be the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> from D, meeting AC at P. Comparing the two smaller triangles by their heights and their shared half-angle gives the angle-bisector theorem:</p>
+      <blockquote><code>AP / PC = AD / CD</code>.</blockquote>
+      <p>The two coloured arcs at D in the picture show that the two angles are equal. This is claim (1) on the original page, and it holds no matter where D is.</p>
+
+      <h2>The second Besteman claim</h2>
+      <p>Now make the side from D to C exactly <code>m</code> times the side from D to A: <code>CD = m · AD</code>. The theorem gives <code>AP = PC/m</code>, so <code>PC = m · AP</code> and the whole segment is <code>AC = (m+1)·AP</code>. That is the page's second claim, written there with N in place of m:</p>
+      <blockquote><code>CD = N · AD</code> &nbsp;implies&nbsp; <code>AP = PC/N = AC/(N+1)</code>.</blockquote>
+      <p>This is <em>not</em> the first Besteman construction. That older page uses a perpendicular chord and <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similar_triangles" target="_blank" rel="noopener">similar right triangles</a> to get <code>AP = AB²/(2AC)</code>, and chooses <code>AC = N·AB/2</code> to make <code>AP = AB/N</code> — one Nth of the original segment AB. The second theorem instead uses the bisector and gives one Nth of the extended segment AC. For N = 2 both happen to find the midpoint; for N ≥ 3 they are different lengths.</p>
+
+      <h2>What this applet draws</h2>
+      <p>Here N means the number of equal parts. A and B are dragged along one horizontal line with <code>AB = d</code>; C is placed <code>N−1</code> steps from A, so <code>AC = (N−1)d</code>. Two <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circles</a> centred at A and C, of radii <code>d</code> and <code>(N−1)d</code>, meet at D. Therefore <code>AD = d</code> and <code>CD = (N−1)d</code>: this is the theorem above with <code>m = N−1</code>, giving <code>AP = AC/N</code>. The green dots are at <code>A + k·AP</code> for <code>k = 0, …, N−1</code>, with C as the last endpoint, so all N pieces are the same length.</p>
+      <p>The logic test checks every N from 2 to 20 and 80 random placements of A and B, in both directions. It also re-runs the applet's own arithmetic from its bytecode — circle intersection for D, rotate-and-intersect for the bisector foot — and compares every dot.</p>
+
+      <p class="tip">Try N = 2 first: the two circles have the same radius and P is the midpoint. Then press + a few times and watch C run off while the green dots stay evenly spaced.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Besteman2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="besteman-2-core.js"></script>
+<script src="besteman-2.js"></script>
+</body>
+</html>
