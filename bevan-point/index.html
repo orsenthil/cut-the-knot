@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bevan Point &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle to build the triangle outside it. Where does its circle's centre sit, and how big is that circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bevan-point/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Bevan Point">
+<meta property="og:description" content="Drag the corners of a triangle to build the triangle outside it. Where does its circle's centre sit, and how big is that circle?">
+<meta property="og:url" content="https://coolmaths.ai/bevan-point/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .ex-side { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .circumcircle { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .bevan-circle { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: 8 5; }
+  #board .incircle { fill: var(--good); fill-opacity: 0.08; stroke: var(--good); stroke-width: 1.5; }
+  #board .excircle { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: 2 5; }
+  #board .bisector { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .claim-line { stroke: var(--good); stroke-width: 2; }
+  #board .spoke { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 3 3; }
+  #board .right-mark { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .in-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .center-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 2; }
+  #board .bevan-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .ex-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .foot-dot { fill: var(--highlight); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .center-label { fill: var(--good); }
+  #board .bevan-label { fill: var(--accent); }
+  #board .ex-label { fill: var(--accent); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="bevan-point" data-kind="demo">
+<main id="main">
+  <h1>Bevan Point</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the corners of a triangle and watch a second triangle appear outside it. Its circle always lines up with the first triangle in a surprising way.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a corner and use the arrow keys. Press Check the claims to see what stays true.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle with its excentral triangle, its incircle and excircles, and the Bevan circle"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset triangle</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point names">Hide names</button>
+    <button id="claim1Btn" type="button" aria-pressed="false" aria-label="Toggle the right angles where the Bevan point meets the sides">Show claim 1</button>
+    <button id="claim2Btn" type="button" aria-pressed="false" aria-label="Toggle the line through the incenter, circumcenter and Bevan point">Show claim 2</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the angle bisectors">Show angle bisectors</button>
+    <button id="checkBtn" type="button" aria-label="Check the five claims for this triangle">Check the claims</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Every triangle has three <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisectors</a>. Extend the outside ones and their crossings form a bigger triangle around the original one. The centre of the big triangle's circle turns out to be exactly opposite the centre of the small triangle's circle.</p>
+
+      <h2>A triangle hidden in a triangle</h2>
+      <p>The three outside bisectors meet at the <a class="wiki-term" data-wiki="Excentral_triangle" href="https://en.wikipedia.org/wiki/Excentral_triangle" target="_blank" rel="noopener">excentres</a> I<sub>a</sub>, I<sub>b</sub>, I<sub>c</sub>. They form the <em>excentral triangle</em>. Each side of it is perpendicular to a bisector of the original triangle, so ABC is the <a class="wiki-term" data-wiki="Orthic_triangle" href="https://en.wikipedia.org/wiki/Orthic_triangle" target="_blank" rel="noopener">orthic triangle</a> of I<sub>a</sub>I<sub>b</sub>I<sub>c</sub>: A, B and C are the feet of its three altitudes.</p>
+      <p>The altitudes of the big triangle meet at its orthocentre, and that point is the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> I of ABC. Press Show angle bisectors to see the three lines that make this visible.</p>
+
+      <h2>One circle does two jobs</h2>
+      <p>A triangle's <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">nine-point circle</a> passes through the feet of its altitudes. The feet of the excentral triangle's altitudes are A, B and C, so its nine-point circle is the circle drawn through ABC. Its centre O is the midpoint of the segment from the big triangle's circumcentre V to its orthocentre I, and its radius is half the big circumradius:</p>
+      <blockquote><code>O = (I + V) / 2</code>, &nbsp; <code>radius(ABC's circle) = radius(Bevan circle) / 2</code>.</blockquote>
+      <p>The point V is the <em>Bevan point</em> and the big circle is the <em>Bevan circle</em>. Press Show claim 2 to see the line through I, O and V.</p>
+
+      <h2>The five claims on the article</h2>
+      <p>The archived applet page states them exactly as follows:</p>
+      <ol>
+        <li>I, O, V are collinear and <code>IO = OV</code>.</li>
+        <li>The circumradius of I<sub>a</sub>I<sub>b</sub>I<sub>c</sub> is twice the circumradius of ABC.</li>
+        <li>The lines joining V to the excentres are perpendicular to the respective sides of ABC.</li>
+        <li>I and V are equally far from the <a class="wiki-term" data-wiki="Euler_line" href="https://en.wikipedia.org/wiki/Euler_line" target="_blank" rel="noopener">Euler line</a> of ABC.</li>
+        <li>The circumcircle of ABC is the nine-point circle of I<sub>a</sub>I<sub>b</sub>I<sub>c</sub>.</li>
+      </ol>
+      <p>Press Show claim 1 for the right angles in claim 3. The logic test checks all five claims on hundreds of triangles, and compares every point and radius with a second, line-by-line transcription of the applet's own <code>GeoSDoub</code> geometry. All five hold throughout; the only approximation is the average of three distances the applet uses in place of an exact radius.</p>
+
+      <p class="tip">Try a triangle with a very long, thin shape: the excentres shoot far away, just as they do in the original applet, but O still stays exactly halfway between I and V.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BevanPoint.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bevan-point-core.js"></script>
+<script src="bevan-point.js"></script>
+</body>
+</html>
