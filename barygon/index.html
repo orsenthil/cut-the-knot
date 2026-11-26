@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Barygon &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a polygon and replace each by the average of a group of neighbouring vertices: can a group size other than half make the opposite sides match? Keep iterating and watch what happens.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/barygon/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Barygon">
+<meta property="og:description" content="Drag the corners of a polygon and replace each by the average of a group of neighbouring vertices: can a group size other than half make the opposite sides match? Keep iterating and watch what happens.">
+<meta property="og:url" content="https://coolmaths.ai/barygon/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .stage-poly { fill: none; stroke-linejoin: round; }
+  #board .original { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 5 5; }
+  #board .intermediate { stroke: var(--accent); stroke-width: 2; stroke-opacity: 0.45; }
+  #board .final { stroke: var(--good); stroke-width: 3.5; }
+  #board .centre-spoke { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 6; }
+  #board .centre-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 2; }
+  #board .vlabel, #board .centre-label {
+    fill: var(--text); font-family: var(--font); font-size: 18px;
+    pointer-events: none;
+  }
+  #board .centre-label { fill: var(--highlight); font-size: 15px; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .controls input { width: 4rem; min-height: 2.5rem; }
+  .controls button { min-height: 2.5rem; }
+  #status { min-height: 3rem; }
+</style>
+</head>
+<body data-game="barygon" data-kind="demo">
+<main id="main">
+  <h1>Barygon</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a><a class="tag" href="../index.html#limits">Limits</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners to change the polygon; each step moves every corner to the average of several of its neighbours.<br>
+    <strong>How to play:</strong> Drag a corner with a mouse or finger, or focus one and use the arrow keys. Change the three numbers, then press Check the theorem to see what happens.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="90 30 420 360" role="group"
+         aria-label="A polygon with draggable corners and the polygons made by repeatedly averaging neighbouring corners"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="nInput">Corners <input id="nInput" type="number" min="3" max="20" step="1" value="6" aria-label="Number of corners, from 3 to 20"></label>
+    <label for="naInput">Average over <input id="naInput" type="number" min="2" max="20" step="1" value="3" aria-label="How many neighbouring corners to average, from 2 to 20"></label>
+    <label for="niInput">Rounds <input id="niInput" type="number" min="1" max="20" step="1" value="1" aria-label="How many times to repeat the averaging, from 1 to 20"></label>
+    <button id="newBtn" type="button" class="primary" aria-label="Make a new random polygon with the current settings">New polygon</button>
+    <button id="checkBtn" type="button" aria-label="Check the paragon claim for this polygon">Check the theorem</button>
+    <button id="centreBtn" type="button" aria-pressed="false" aria-label="Show or hide the centre of the polygon">Show centre</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>There is a polygon whose opposite sides are parallel and equal. Start with any polygon and replace corners by averages of their neighbours, and you can make one. But is that only possible with one particular group size? The logic test checked every setting the applet offers.</p>
+
+      <h2>Averaging neighbouring corners</h2>
+      <p>Number the corners <code>P0</code> to <code>P(N-1)</code>, wrapping around. With a group of <code>K</code> neighbours, corner <code>i</code> becomes <code>Q[i] = (P[i] + P[i+1] + ... + P[i+K-1]) / K</code>. This is a <a class="wiki-term" data-wiki="Centroid" href="https://en.wikipedia.org/wiki/Centroid" target="_blank" rel="noopener">barycenter</a>, or centre of mass, of <code>K</code> consecutive corners. The new sides have a short formula, because almost all the terms cancel:</p>
+      <blockquote><code>Q[i+1] - Q[i] = (P[i+K] - P[i]) / K</code>.</blockquote>
+      <p>So a whole round of averaging needs only one subtraction per side. The test checks this identity for every <code>N</code> from 3 to 20 and every <code>K</code> from 2 to 20.</p>
+
+      <h2>What a paragon needs</h2>
+      <p>A paragon is a polygon with an even number of sides whose opposite sides are parallel and equal, like a <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a> with more sides. If <code>S[i]</code> is the side from corner <code>i</code> to corner <code>i+1</code>, the condition is <code>S[i+N/2] = -S[i]</code>. Averaging over half the corners works: with <code>N = 2n</code> and <code>K = n</code>, the formula above gives the opposite side as <code>(P[i] - P[i+n])/n</code>, exactly the negative of the first. The test confirms this for every even <code>N</code> and every group size divisible by <code>n</code>, starting with <code>K = n</code>.</p>
+
+      <h2>The answer to the page's question</h2>
+      <p>Yes, another group size can work. If <code>K</code> is an odd multiple of <code>n</code>, such as <code>K = 3n</code>, you get a paragon in one round too: the group wraps around an extra time and scales a paragon by a constant. For <code>n = 3</code>, <code>K = 9</code> works with six corners. If <code>K</code> is a multiple of <code>N = 2n</code>, every group contains whole laps, so every corner becomes the same centre of mass: a flat, degenerate paragon. For all other <code>K</code>, no finite number of rounds gives exactly a paragon, though the sides get closer each time.</p>
+
+      <h2>Why it never quite arrives</h2>
+      <p>Averaging shrinks every wiggle of a polygon by a factor smaller than 1, unless the wiggle has a whole number of laps in the group. The parts that stop a paragon shrink but never vanish in exact arithmetic; in a computer they can eventually round to zero. This is ordinary <a class="wiki-term" data-wiki="Limit_(mathematics)" href="https://en.wikipedia.org/wiki/Limit_(mathematics)" target="_blank" rel="noopener">convergence</a>, not a fixed number of rounds. The applet's Help checkbox drew lines toward the sum of the vertices, which is usually off the canvas; here the button shows the centre and draws to it instead. An odd <code>N</code> has no opposite side, so the paragon test does not apply, but the averaging still runs.</p>
+
+      <p class="tip">Try six corners with 9 neighbours and one round, then press Check the theorem. Now use 8 neighbours and raise Rounds to 20: watch the shape settle down without ever matching.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Barygon.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="barygon-core.js"></script>
+<script src="barygon.js"></script>
+</body>
+</html>
