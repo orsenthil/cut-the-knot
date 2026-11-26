@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Distance Between Strings &mdash; coolmaths</title>
+<meta name="description" content="How far apart are two words? Count the letters that differ, or the fewest edits between them. Why can H(abc, bca) be 3 while L(abc, bca) is 2?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/string-distance/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Distance Between Strings">
+<meta property="og:description" content="How far apart are two words? Count the letters that differ, or the fewest edits between them. Why can H(abc, bca) be 3 while L(abc, bca) is 2?">
+<meta property="og:url" content="https://coolmaths.ai/string-distance/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.8rem; }
+  .inputs { display: grid; gap: 0.5rem; }
+  .inputs label { display: grid; gap: 0.2rem; font-size: 0.9rem; color: var(--muted); }
+  .inputs input { min-height: 2.75rem; font: 1.1rem var(--mono); padding: 0.3rem 0.6rem; width: 100%; box-sizing: border-box; }
+  #list { margin: 0.8rem 0 0; padding: 0.5rem 0.5rem 0.5rem 2rem; max-height: 10rem; overflow-y: auto; background: var(--card); border: 1px solid var(--border); border-radius: 8px; font-family: var(--mono); font-size: 0.9rem; min-height: 3rem; overflow-wrap: anywhere; }
+  #table { overflow-x: auto; margin-top: 0.8rem; }
+  #table table { border-collapse: collapse; margin: 0 auto; font-family: var(--mono); font-size: 0.9rem; }
+  #table .cap { font-size: 0.85rem; color: var(--muted); text-align: center; margin: 0 0 0.4rem; }
+  #table th, #table td { border: 1px solid var(--border); padding: 0.15rem 0.4rem; text-align: center; min-width: 1.4rem; }
+  #table th { background: var(--surface-2); }
+  #table td.path { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+  #table .edits { text-align: center; font-size: 0.9rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+</style>
+</head>
+<body data-game="string-distance" data-kind="demo">
+<main id="main">
+  <h1>Distance Between Strings</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> How different are two words? Count the places where they differ, or the fewest letter changes that turn one into the other.<br>
+    <strong>How to play:</strong> Type two words, pick a way of measuring, and press Do it!
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="inputs">
+      <label>First string <input id="sIn" type="text" value="abc" autocomplete="off" spellcheck="false"></label>
+      <label>Second string <input id="tIn" type="text" value="bca" autocomplete="off" spellcheck="false"></label>
+    </div>
+    <ol id="list" aria-label="The distances found so far" aria-live="off"></ol>
+    <div id="table"></div>
+  </div>
+
+  <div class="controls">
+    <label><input type="radio" name="method" value="hamming" checked> Hamming</label>
+    <label><input type="radio" name="method" value="levenshtein"> Levenshtein</label>
+    <label><input id="caseBox" type="checkbox"> Case sensitive</label>
+    <button id="doBtn" type="button" class="primary">Do it!</button>
+    <button id="clearBtn" type="button">Clear list</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A spelling checker offers the words "nearest" to the one you mistyped. That needs a <a class="wiki-term" data-wiki="Metric_space" href="https://en.wikipedia.org/wiki/Metric_space" target="_blank" rel="noopener">distance</a> between strings: a number that is 0 only for equal strings, the same both ways round, and obeys the triangle inequality <code>D(s, t) &le; D(s, r) + D(r, t)</code>.</p>
+
+      <h2>Hamming distance</h2>
+      <p>For strings of the same length, the <a class="wiki-term" data-wiki="Hamming_distance" href="https://en.wikipedia.org/wiki/Hamming_distance" target="_blank" rel="noopener">Hamming distance</a> <code>H(s, t)</code> counts the places where they differ. Changing <code>s</code> into <code>t</code> by way of <code>r</code> can never need fewer changes than going straight there, which is the triangle inequality.</p>
+
+      <h2>Levenshtein distance</h2>
+      <p>The <a class="wiki-term" data-wiki="Levenshtein_distance" href="https://en.wikipedia.org/wiki/Levenshtein_distance" target="_blank" rel="noopener">Levenshtein distance</a> also allows inserting and deleting letters. Fill a table: <code>d(i, 0) = i</code>, <code>d(0, j) = j</code>, and</p>
+      <blockquote><code>d(i, j) = min( d(i&minus;1, j) + 1, d(i, j&minus;1) + 1, d(i&minus;1, j&minus;1) + r(s<sub>i</sub>, t<sub>j</sub>) )</code></blockquote>
+      <p>where <code>r</code> is 0 for equal letters and 1 otherwise. The three terms are: delete <code>s<sub>i</sub></code>, insert <code>t<sub>j</sub></code>, or replace <code>s<sub>i</sub></code> by <code>t<sub>j</sub></code> if needed. The corner of the table is the fewest edits that turn one string into the other. The highlighted path shows one such way. The logic test checked the table against a search over all edits for every pair of a-b strings up to length 4.</p>
+
+      <h2>Not the same number</h2>
+      <p>When both are defined, <code>L &le; H</code>, but they need not be equal: <code>H("abc", "bca") = 3</code> while <code>L("abc", "bca") = 2</code> (delete the a and add it at the end). Both distances passed the metric tests on thousands of random strings.</p>
+
+      <p class="tip">Find two strings of the same length whose Levenshtein distance is much smaller than their Hamming distance.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/do_you_know/Strings.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="string-distance-core.js"></script>
+<script src="string-distance.js"></script>
+</body>
+</html>

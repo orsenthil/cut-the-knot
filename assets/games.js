@@ -2324,5 +2324,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "string-distance",
+      title: "Distance Between Strings",
+      blurb: "How far apart are two words? Count the letters that differ, or the fewest edits between them. Why can H(abc, bca) be 3 while L(abc, bca) is 2?",
+      tags: ["algorithms", "counting", "logic"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

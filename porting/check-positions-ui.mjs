@@ -828,6 +828,11 @@ const GAMES = {
     await page.focus("#board .tile.waiting");
     await page.keyboard.press("Enter");
   },
+  "string-distance": async (page) => {
+    await page.check('input[value="levenshtein"]');
+    await page.fill("#sIn", "kitten"); await page.fill("#tIn", "sitting");
+    await page.click("#doBtn");
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

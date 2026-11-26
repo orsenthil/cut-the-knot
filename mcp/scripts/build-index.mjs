@@ -442,6 +442,7 @@ const CORE_GLOBALS = {
   "sorts/sorts-core.js": ["SortsCore"],
   "spigot-for-pi/spigot-for-pi-core.js": ["SpigotForPiCore"],
   "steinhaus-problem/steinhaus-problem-core.js": ["SteinhausProblemCore"],
+  "string-distance/string-distance-core.js": ["StringDistanceCore"],
 };
 
 const games = [];

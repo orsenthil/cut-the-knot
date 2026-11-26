@@ -1967,6 +1967,11 @@ check("steinhaus-problem: .30 and .50 are in different halves (0.5 opens the sec
   const st = at("steinhaus-problem", { places: [710, 90, 420, 850, 270, 540, 925, 170, 620, 355, 780, 30, 480, 970, 220, 660, 320] });
   check("steinhaus-problem: Guy's 17 pass", st.allPass === true && st.passesUpTo === 17);
 }
+check("string-distance: kitten to sitting is 3 edits, Hamming undefined", read["string-distance"]?.levenshtein === 3 && typeof read["string-distance"].hamming === "string" && read["string-distance"].oneShortestEdit.length === 3);
+{
+  const sd = at("string-distance", { s: "abc", t: "bca", method: "hamming", caseSensitive: false, lines: [] });
+  check("string-distance: H(abc, bca) = 3, L = 2", sd.hamming === 3 && sd.levenshtein === 2);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;
