@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Book of Lemmas IX &mdash; coolmaths</title>
+<meta name="description" content="Slide two perpendicular chords inside a circle and watch the four arcs between their ends. Are the two sums of opposite arcs always equal — and what is each sum?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bol-9/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Book of Lemmas IX">
+<meta property="og:description" content="Slide two perpendicular chords inside a circle and watch the four arcs between their ends. Are the two sums of opposite arcs always equal — and what is each sum?">
+<meta property="og:url" content="https://coolmaths.ai/bol-9/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+    overflow-x: auto;
+  }
+  #board { display: block; width: 100%; height: auto; min-width: 17rem; touch-action: none; }
+  #board .bol-circle { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .chord { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .arc { fill: none; stroke-width: 6; stroke-linecap: round; }
+  #board .arc-ad, #board .arc-bc { stroke: var(--accent); }
+  #board .arc-ac, #board .arc-bd { stroke: var(--good); }
+  #board .marked-dot { fill: var(--accent); }
+  #board .center-dot { fill: var(--muted); }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 18px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .center-label { fill: var(--muted); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="bol-9" data-kind="demo">
+<main id="main">
+  <h1>Book of Lemmas IX</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two straight lines cross inside a circle at a right angle. Look at the four curved pieces of the circle between their ends.<br>
+    <strong>How to play:</strong> Drag the horizontal or vertical line, or focus its handle and use the arrow keys. Press Check the claim to see whether the two sums stay the same.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A circle with a horizontal chord AB and a vertical chord CD crossing at right angles; each chord can be dragged"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Put the two chords back where they started">New arrangement</button>
+    <button id="checkBtn" type="button" aria-label="Check that the two sums of arcs are half a turn">Check the claim</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point names">Hide point names</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chords</a> cross at a right angle. The four <a class="wiki-term" data-wiki="Arc_(geometry)" href="https://en.wikipedia.org/wiki/Arc_(geometry)" target="_blank" rel="noopener">arcs</a> between their ends change size as you drag, but Archimedes found that two pairs of them always balance.</p>
+
+      <h2>The exact claim</h2>
+      <p>Name the ends so that A is left, B is right, C is below and D is above. The proposition says</p>
+      <blockquote><code>arc AD + arc CB = arc AC + arc DB</code></blockquote>
+      <p>The article below adds something stronger: each sum is a semicircle, <code>180°</code> or <code>&pi;</code> radians. Drag the chords and watch the two numbers in the status line stay at 180°, even when one chord passes through the centre.</p>
+
+      <h2>Why a half turn?</h2>
+      <p>The angle where two chords meet is half the sum of the arcs it cuts off. At the crossing O the angle AOD opens towards the arcs AD and CB, so</p>
+      <blockquote><code>arc AD + arc CB = 2&ang;AOD</code></blockquote>
+      <p>Because the chords are perpendicular, <code>&ang;AOD = 90°</code>, and the sum is a half turn. The other angle at O opens towards AC and DB and is also 90°, giving <code>arc AC + arc DB = 180°</code>. This is the <a class="wiki-term" data-wiki="Intersecting_chords_theorem" href="https://en.wikipedia.org/wiki/Intersecting_chords_theorem" target="_blank" rel="noopener">intersecting chords theorem</a> in its angular form. The logic test checks all of this on thousands of configurations, including chords that pass through the centre; the article excludes those in its wording, but the equality still holds.</p>
+
+      <h2>About this picture</h2>
+      <p>The article cited below is prose with a still drawing; it does not embed the applet. The moving picture here follows Bogomolny's BOL9 applet: the circle keeps its size, the chords stay horizontal and vertical, and each coloured arc uses the applet's own start angle and signed sweep. One harmless quirk of that applet is kept: because it measures angles from the rightmost point of the circle, its coloured strokes sit a half turn away from the endpoints they name. Their lengths, and therefore the sums, are exactly the same. The applet's drag stops when the crossing comes within 5 pixels of the circle; this page keeps that same limit.</p>
+
+      <p class="tip">Try sliding one chord almost to the edge of the circle: each sum still closes at 180°.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BookOfLemmas/BOL9.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bol-9-core.js"></script>
+<script src="bol-9.js"></script>
+</body>
+</html>
