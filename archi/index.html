@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Archimedes' Angle Trisection &mdash; coolmaths</title>
+<meta name="description" content="Can a sliding mark cut any angle into three equal parts? Drag B to choose the angle, then slide C until D lands on the circle.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/archi/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Archimedes' Angle Trisection">
+<meta property="og:description" content="Can a sliding mark cut any angle into three equal parts? Drag B to choose the angle, then slide C until D lands on the circle.">
+<meta property="og:url" content="https://coolmaths.ai/archi/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    touch-action: none;
+  }
+  #board .axis { stroke: var(--muted); stroke-width: 1.2; }
+  #board .circle-base { fill: none; stroke: var(--ink); stroke-width: 2; opacity: 0.8; }
+  #board .radius { stroke: var(--ink); stroke-width: 2; }
+  #board .neusis { stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round; }
+  #board .neusis.on-circle { stroke: var(--good); }
+  #board .dot-d { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .dot-d.on-circle { fill: var(--good); }
+  #board .ring { fill: none; stroke: var(--accent); stroke-width: 1.6; opacity: 0.7; }
+  #board .angle { fill: none; stroke: var(--ink); stroke-width: 1.6; opacity: 0.7; }
+  #board .third { fill: none; stroke: var(--good); stroke-width: 2.4; }
+  #board .pt-label { fill: var(--text); font-size: 0.9rem; font-weight: 600; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+</style>
+</head>
+<body data-game="archi" data-kind="demo">
+<main id="main">
+  <h1>Archimedes' Angle Trisection</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This drawing shows a way to cut an angle into three equal pieces.<br>
+    <strong>How to play:</strong> Drag B around the circle to choose the angle, then slide C along the line until D lands on the circle. You can also focus a dot and use the arrow keys.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 350" role="group"
+         aria-label="Archimedes' trisection: point B on the circle sets the angle, point C slides on the line through its centre, and point D follows C"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the picture to its opening position">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>For hundreds of years people tried to split an angle into three equal parts using only a straightedge and a compass; it cannot be done. Archimedes found a way if you are allowed to slide a marked ruler. Move the two dots and watch what happens when the marked point D reaches the circle.</p>
+
+      <h2>A segment as long as the radius</h2>
+      <p>The <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> has centre O and radius R. A is the point on the right, and B is the dot you drag around the circle; the angle to cut is <code>angle AOB</code>. The other dot, C, slides on the line through O to the left. D sits on the ray from C towards B so that <code>CD = R</code>, exactly the length of <code>OB</code>. That is the mark on the sliding ruler, and it is why this is called a <a class="wiki-term" data-wiki="Neusis_construction" href="https://en.wikipedia.org/wiki/Neusis_construction" target="_blank" rel="noopener">neusis construction</a>.</p>
+
+      <h2>Why a third appears</h2>
+      <p>Suppose D has reached the circle, so <code>OD = R</code> as well. Then triangle CDO is <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles</a>: write its two equal base angles as <code>q</code>. By the <a class="wiki-term" data-wiki="Exterior_angle_theorem" href="https://en.wikipedia.org/wiki/Exterior_angle_theorem" target="_blank" rel="noopener">exterior angle theorem</a> the angle at D next to it is <code>2q</code>. Triangle OBD is isosceles too, because <code>OB = OD = R</code>, so its angle at B is also <code>2q</code>. Now look at triangle COB: its angles at C and B are <code>q</code> and <code>2q</code>, so the exterior angle at O is <code>q + 2q = 3q</code>. But that exterior angle is <code>angle AOB</code>. Hence <code>angle DCO = q = angle AOB / 3</code>, exactly as <a class="wiki-term" data-wiki="Archimedes" href="https://en.wikipedia.org/wiki/Archimedes" target="_blank" rel="noopener">Archimedes</a> claimed.</p>
+
+      <h2>Where C has to sit</h2>
+      <p>The sliding dot is not free once the angle is chosen. If <code>angle AOB = t</code>, the isosceles triangle CDO has base <code>OC = 2R cos(t/3)</code>, so C must be that far to the left of O. The logic test checks this for every whole angle from 1 to 179 degrees and for 200 random <a class="wiki-term" data-wiki="Angle" href="https://en.wikipedia.org/wiki/Angle" target="_blank" rel="noopener">angles</a>, and compares every step with a second transcription of the applet's own integer arithmetic.</p>
+      <p>One honest caveat: the applet rounds its points to whole pixels and calls D "on the circle" when <code>OD</code> is within 0.6 pixels of R. D can also land there by collapsing onto B (when <code>CB = R</code> and the angle is past 90°); that is a real second solution of the slide, but <code>angle DCO</code> is then <em>not</em> a third. The page's claim holds for the non-degenerate placement, where D and B are different points, and the status line says so when the collapsed one is reached. The cut-the-knot article describes this Java applet but now shows a GeoGebra remake of the same figure, so the rules followed here come from the Java code.</p>
+
+      <p class="tip">Try 120°: the third is 40°, and C lands about 1.7 radii to the left of O. Then drag B past 150° and see how hard the true solution becomes to find with whole-pixel steps.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/archi.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="archi-core.js"></script>
+<script src="archi.js"></script>
+</body>
+</html>
