@@ -2078,5 +2078,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "primes-from-triangle",
+      title: "A Geometric Sieve of Eratosthenes",
+      blurb: "Copy each row of a triangle of dots onto the rows below by turning it about its ends. Why are the rows that stay empty exactly the prime rows?",
+      tags: ["number-theory", "divisibility", "algorithms"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

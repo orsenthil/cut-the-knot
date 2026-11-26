@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A Geometric Sieve of Eratosthenes &mdash; coolmaths</title>
+<meta name="description" content="Copy each row of a triangle of dots onto the rows below by turning it about its ends. Why are the rows that stay empty exactly the prime rows?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/primes-from-triangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="A Geometric Sieve of Eratosthenes">
+<meta property="og:description" content="Copy each row of a triangle of dots onto the rows below by turning it about its ends. Why are the rows that stay empty exactly the prime rows?">
+<meta property="og:url" content="https://coolmaths.ai/primes-from-triangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 42rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; height: auto; border-radius: 8px; cursor: pointer; touch-action: manipulation; }
+  #board:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  #info { margin: 0.6rem 0 0; min-height: 2.8rem; }
+  .legend { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; justify-content: center; font-size: 0.9rem; margin: 0.4rem 0 0; }
+  .legend span::before { content: ""; display: inline-block; width: 0.8rem; height: 0.8rem; border-radius: 50%; margin-right: 0.3rem; vertical-align: -0.1rem; background: var(--c); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls input[type=number] { width: 4.5rem; font-size: 1rem; }
+  .controls .group { display: flex; flex-wrap: wrap; gap: 0 1rem; justify-content: center; width: 100%; }
+</style>
+</head>
+<body data-game="primes-from-triangle" data-kind="demo">
+<main id="main">
+  <h1>A Geometric Sieve of Eratosthenes</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#divisibility">Divisibility</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch a simple copying rule mark dots in a triangle, and see the rows that stay empty: their numbers are the primes.<br>
+    <strong>How to play:</strong> Press Clear, then One step again and again. Click a dot to see which dots it is related to, or click between dots to see a step's triangle.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="640" height="560" tabindex="0" aria-label="A triangle of dots in rows. Arrow keys move a cursor, Enter picks a dot, T shows its row's triangle."></canvas>
+    <p class="legend"><span style="--c: var(--accent)">picked dot</span><span style="--c: var(--good)">siblings</span><span style="--c: var(--bad)">descendants</span><span style="--c: #d08700">ancestors</span></p>
+    <p id="info" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <div class="group">
+      <label><input id="primesBox" type="checkbox"> Shade prime rows</label>
+      <label><input id="descBox" type="checkbox"> descendants</label>
+      <label><input id="ancBox" type="checkbox"> ancestors</label>
+      <label><input id="sibBox" type="checkbox"> siblings</label>
+    </div>
+    <label>Visible rows <input id="rowsIn" type="number" min="10" max="100" value="20"></label>
+    <button id="stepBtn" type="button" class="primary">One step</button>
+    <button id="clearBtn" type="button">Clear</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Start with a triangle of dots whose two edges are marked. Take row 2, turn it 60° about its left end and about its right end: the row and its two turned copies make an upside-down triangle, and the dots under the two legs take on the row's marks. Do the same with row 3, row 4, and so on. When it is over, the rows left with nothing marked inside are rows 2, 3, 5, 7, 11, 13, …: the primes. The picture is a version of the <a class="wiki-term" data-wiki="Sieve_of_Eratosthenes" href="https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes" target="_blank" rel="noopener">sieve of Eratosthenes</a>, from a video by Javier Torres Suárez.</p>
+
+      <h2>Coordinates for the dots</h2>
+      <p>Call the dot in row <code>r</code> at place <code>k</code> (both counted from 0) <code>(r, k)</code>. Turning row <code>r</code> about its left end sends <code>(r, k)</code> to <code>L(r, k) = (r + k, k)</code>, and turning it about its right end sends it to <code>R(r, k) = (2r − k, r)</code>. Both keep the <a class="wiki-term" data-wiki="Greatest_common_divisor" href="https://en.wikipedia.org/wiki/Greatest_common_divisor" target="_blank" rel="noopener">greatest common divisor</a>: <code>gcd(r + k, k) = gcd(r, k)</code> and <code>gcd(2r − k, r) = gcd(r, k)</code>. So a dot only ever passes its mark to dots with the same gcd: its <em>descendants</em>; the dots that pass marks down to it are its <em>ancestors</em>.</p>
+
+      <h2>Where the marks come from</h2>
+      <p>Going back up with <code>L⁻¹(r, k) = (r − k, k)</code> or <code>R⁻¹(r, k) = (k, 2k − r)</code> keeps the gcd <code>g</code> and always ends at the top: at <code>(0, g)</code> and <code>(g, g)</code>, two edge dots, if <code>g &gt; 1</code>; at <code>(2, 1)</code>, which is never marked, if <code>g = 1</code>. So a dot inside the triangle ends up marked exactly when <code>gcd(r, k) &gt; 1</code>. In a prime row every inside dot has gcd 1, and the row stays clear. The test checked this on all 5,050 dots of the 100 rows, after comparing every step with the applet's own code.</p>
+
+      <h2>Siblings and the sieve</h2>
+      <p>Dots in one row with the same gcd <code>d</code>, the dots <code>(r, 0), (r, d), (r, 2d), …</code>, are <em>siblings</em>. Row 12 has four groups, for gcd 2, 3, 4 and 6, and <code>(12, 6)</code> belongs to three of them. Doing the steps for the even rows first, then the rows divisible by 3, then by 5, and so on gives the same final picture; that order is the sieve of Eratosthenes itself.</p>
+      <p>Two small changes from the applet: it froze when (0, 0) was clicked with “siblings” on, and when the mouse button was let go it left every lit-up dot marked, spoiling the picture. Here the lights stay until the next click and never change the marks.</p>
+
+      <p class="tip">Tick “ancestors” and click a marked dot, then an unmarked one. Where do their family trees start?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/PrimesFromTriangle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="primes-from-triangle-core.js"></script>
+<script src="primes-from-triangle.js"></script>
+</body>
+</html>
