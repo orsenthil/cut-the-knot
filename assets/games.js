@@ -2206,5 +2206,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "sam-loyd-son",
+      title: "Sam Loyd's Son's Dissection",
+      blurb: "The pieces of an 8×8 square go together into a shape of 25 + 13 + 25 = 63 cells. Where did the 64th cell go?",
+      tags: ["paradoxes", "area", "sequences"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sam Loyd's Son's Dissection &mdash; coolmaths</title>
+<meta name="description" content="The pieces of an 8×8 square go together into a shape of 25 + 13 + 25 = 63 cells. Where did the 64th cell go?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/sam-loyd-son/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Sam Loyd's Son's Dissection">
+<meta property="og:description" content="The pieces of an 8×8 square go together into a shape of 25 + 13 + 25 = 63 cells. Where did the 64th cell go?">
+<meta property="og:url" content="https://coolmaths.ai/sam-loyd-son/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 8px; touch-action: none; cursor: grab; }
+  #pieceBtns { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
+  #pieceBtns button { border-width: 2px; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls select { min-height: 2.75rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="sam-loyd-son" data-kind="demo">
+<main id="main">
+  <h1>Sam Loyd's Son's Dissection</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#sequences">Sequences</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A square of 64 cells is cut into four pieces that seem to make a shape of only 63 cells. Where did a cell go?<br>
+    <strong>How to play:</strong> Drag the pieces into the dashed shape, or press the buttons or Animate. Then try Cheat and other sizes.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="640" height="360" aria-label="On the left, a square cut into two triangles and two trapezoids. On the right, a dashed outline: a block, a long row and another block. Drag the pieces into the outline, or use the buttons below."></canvas>
+    <div id="pieceBtns"></div>
+  </div>
+
+  <div class="controls">
+    <button id="animBtn" type="button" class="primary">Animate</button>
+    <button id="resetBtn" type="button">Reset</button>
+    <label><input id="cheatBox" type="checkbox"> Cheat</label>
+    <label>Size <select id="sizeSel"></select></label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The pieces are the same as in the famous trick where an 8&nbsp;&times;&nbsp;8 square seems to make a 5&nbsp;&times;&nbsp;13 rectangle. Here they go together differently: a 5&nbsp;&times;&nbsp;5 block, a row of 13, and another 5&nbsp;&times;&nbsp;5 block, which counts <code>25 + 13 + 25 = 63</code> cells. Cutting and moving pieces cannot change their area, so something must be wrong.</p>
+
+      <h2>Two slopes that are almost equal</h2>
+      <p>The long slanted line of the figure is made of two cuts: the triangles' long side climbs 3 cells in 8, a slope of <code>3/8 = 0.375</code>; the trapezoids' slanted side climbs 2 in 5, <code>2/5 = 0.4</code>. They are so close that the eye sees one straight line, but they are not, and along that line the pieces overlap. The overlap has area exactly 1: the 64 cells of the pieces squeeze into 63.</p>
+
+      <h2>Fibonacci numbers and Cassini's identity</h2>
+      <p>3, 5, 8, 13 are consecutive <a class="wiki-term" data-wiki="Fibonacci_number" href="https://en.wikipedia.org/wiki/Fibonacci_number" target="_blank" rel="noopener">Fibonacci numbers</a>, and Size picks other runs of them. For a square of side <code>F</code> with neighbours <code>E</code> before and <code>G</code> after, the figure has <code>2E&sup2; + G&middot;(2D &minus; E)</code> cells, where <code>D</code> comes before <code>E</code>. By <a class="wiki-term" data-wiki="Cassini_and_Catalan_identities" href="https://en.wikipedia.org/wiki/Cassini_and_Catalan_identities" target="_blank" rel="noopener">Cassini's identity</a> this is always one more or one less than <code>F&sup2;</code>: 25 against 26, 64 against 63, 169 against 170, 441 against 440. When the figure is smaller the pieces overlap; when it is larger they leave a thin gap. The logic test checked every size the applet offers: the pieces always tile the square exactly, and the figure is always off by one. On the smallest size, 3&nbsp;&times;&nbsp;3, the middle row has no thickness at all and the pieces visibly do not fit.</p>
+
+      <h2>Cheating</h2>
+      <p>As the page says, this <a class="wiki-term" data-wiki="Missing_square_puzzle" href="https://en.wikipedia.org/wiki/Missing_square_puzzle" target="_blank" rel="noopener">dissection paradox</a> shows its flaw more than the 64&nbsp;=&nbsp;65 one. With Cheat on, the applet nudges one corner of each piece (by a fifth of a cell and a thirteenth of a cell for 8&nbsp;&times;&nbsp;8) so the slopes match and the overlap almost disappears. Those pieces no longer have the area they had in the square.</p>
+
+      <p class="tip">Put the pieces in with Cheat off and look closely where the two triangles meet the trapezoids. Then try 13&nbsp;&times;&nbsp;13: where is the extra cell now?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Fallacies/SamLoydSon.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="sam-loyd-son-core.js"></script>
+<script src="sam-loyd-son.js"></script>
+</body>
+</html>
