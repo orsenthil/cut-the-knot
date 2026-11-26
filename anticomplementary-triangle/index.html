@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anticomplementary Triangle &mdash; coolmaths</title>
+<meta name="description" content="Build two rounds of equilateral triangles on a triangle you can drag. Will the last triangle always have your first three corners at the middles of its sides?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/anticomplementary-triangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Anticomplementary Triangle">
+<meta property="og:description" content="Build two rounds of equilateral triangles on a triangle you can drag. Will the last triangle always have your first three corners at the middles of its sides?">
+<meta property="og:url" content="https://coolmaths.ai/anticomplementary-triangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The long title must still fit a phone at twice the text size. */
+  h1 { overflow-wrap: anywhere; }
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  .tri-abc { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2.5; }
+  .tri-xyz { fill: none; stroke: var(--bad); stroke-width: 2.5; }
+  .tri-pqr { fill: none; stroke: var(--good); stroke-width: 3.5; }
+  .spoke { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 3 4; }
+  .step-first { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; opacity: 0.7; }
+  .step-second { fill: var(--highlight); stroke: var(--highlight); stroke-width: 2; opacity: 0.7; }
+  .apex-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1; }
+  .outer-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1; }
+  .mid-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1; }
+  .pt-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    pointer-events: none;
+  }
+  .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2.5;
+    cursor: grab;
+  }
+  .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+  .controls input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--accent);
+  }
+  .controls button { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="anticomplementary-triangle" data-kind="demo">
+<main id="main">
+  <h1>Anticomplementary Triangle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the three corners of a triangle and watch the other triangles follow them.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a dot and press the arrow keys. Tick the boxes to name the points or to light up each building step.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 300" role="group"
+         aria-label="Triangle ABC with the equilateral triangles on its sides and the larger triangle PQR"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesCheck" type="checkbox"> Show names</label>
+    <label><input id="firstCheck" type="checkbox"> first step</label>
+    <label><input id="secondCheck" type="checkbox"> second step</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Make a new starting triangle">New triangle</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Start with any triangle and build two rounds of <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangles</a> on its sides. The last triangle you get is not just similar to the first: the three corners you started with sit exactly at the middles of its sides. Drag a corner and see if you can break that.</p>
+
+      <h2>Two rounds of equilateral triangles</h2>
+      <p>On the sides of <code>ABC</code> put <code>ABZ</code>, <code>BCX</code> and <code>CAY</code>, all turned the same way: those are the red points. This is the first half of <a class="wiki-term" data-wiki="Napoleon%27s_theorem" href="https://en.wikipedia.org/wiki/Napoleon%27s_theorem" target="_blank" rel="noopener">Napoleon's theorem</a>. Now turn the other way on the sides of <code>XYZ</code> to get <code>XYR</code>, <code>YZP</code> and <code>ZXQ</code>: those are the green points <code>P</code>, <code>Q</code>, <code>R</code>. Tick "first step" and "second step" to see the two rounds one at a time.</p>
+
+      <h2>Add the corners like numbers</h2>
+      <p>A turn of 60&deg; is multiplication by <code>c = (1 + i&radic;3) / 2</code> in <a class="wiki-term" data-wiki="Complex_number" href="https://en.wikipedia.org/wiki/Complex_number" target="_blank" rel="noopener">complex numbers</a>. So the first round gives <code>X = (1 &minus; c)B + cC</code>, <code>Y = (1 &minus; c)C + cA</code>, <code>Z = (1 &minus; c)A + cB</code>. The opposite turn on the second round gives <code>P = (1 &minus; c)Z + cY</code>, and the same pattern for <code>Q</code> and <code>R</code>. These are exactly the rotations the old Java applet performed.</p>
+
+      <h2>The surprise falls out</h2>
+      <p>Substitute one line into the next. Because <code>(1 &minus; c)<sup>2</sup> + c<sup>2</sup> = &minus;1</code> and <code>c(1 &minus; c) = 1</code>, everything cancels to <code>P = &minus;A + B + C</code>, <code>Q = A &minus; B + C</code> and <code>R = A + B &minus; C</code>. Then <code>Q &minus; P = 2(A &minus; B)</code>: side <code>PQ</code> is parallel to <code>AB</code> and twice as long, and <code>(P + Q) / 2 = C</code>. The same holds at the other two corners, so <code>ABC</code> is the <a class="wiki-term" data-wiki="Medial_triangle" href="https://en.wikipedia.org/wiki/Medial_triangle" target="_blank" rel="noopener">medial triangle</a> of <code>PQR</code> and the green triangle has four times its area.</p>
+
+      <h2>What was checked</h2>
+      <p>The logic test checks all of those claims on the starting triangle, seven hand-picked shapes and 600 random ones, and compares every point with both the article's complex formulas and the applet's own rotation method. It also checks the two rounds of triangles are equilateral and that the second round turns opposite to the first. One small wording detail: the article says the first three triangles have "similarly oriented" equilateral triangles. That means they match <em>each other</em> and the second round is opposite to them; it is not tied to which way <code>ABC</code> itself is drawn. The old Java applet is not embedded on its short droodle page any more &mdash; the theorem, proof and a newer interactive version are on the <a href="https://www.cut-the-knot.org/Curriculum/Geometry/AnticomplementaryTriangleSolution.shtml" target="_blank" rel="noopener">explanation page</a>.</p>
+
+      <p class="tip">Drag <code>C</code> across the line <code>AB</code>. The starting triangle now winds the other way, but the two building rounds keep their turns and <code>A</code>, <code>B</code>, <code>C</code> still sit at the middles of the green sides.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AnticomplementaryTriangleSolution.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="anticomplementary-triangle-core.js"></script>
+<script src="anticomplementary-triangle.js"></script>
+</body>
+</html>
