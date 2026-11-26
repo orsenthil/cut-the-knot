@@ -39,6 +39,7 @@ window.COOLMATHS_CONCEPTS = {
   "algebra": { label: "Algebra", prereqs: ["arithmetic"] },
   "invariants": { label: "Invariants", prereqs: ["parity"] },
   "induction": { label: "Induction", prereqs: ["counting"] },
+  "permutations": { label: "Permutations", prereqs: ["counting"] },
   "algorithms": { label: "Algorithms", prereqs: ["counting"] },
   "graph-theory": { label: "Graph Theory", prereqs: ["counting"] },
 

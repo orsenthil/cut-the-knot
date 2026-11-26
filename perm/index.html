@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Various Ways to Define a Permutation &mdash; coolmaths</title>
+<meta name="description" content="A shuffle of the numbers 1 to N can be drawn as a table, as lines, upside down, as cycles, or as a list of counts. How do they all say the same thing?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/perm/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Various Ways to Define a Permutation">
+<meta property="og:description" content="A shuffle of the numbers 1 to N can be drawn as a table, as lines, upside down, as cycles, or as a list of counts. How do they all say the same thing?">
+<meta property="og:url" content="https://coolmaths.ai/perm/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.6rem; overflow-x: auto; box-sizing: border-box; }
+  #board { width: 100%; min-width: 18rem; height: auto; display: block; }
+  #board .link { stroke: var(--accent); stroke-width: 2; fill: none; }
+  #board .node { fill: var(--stage); stroke: var(--ink); stroke-width: 1.4; }
+  #board text { font: 700 13px system-ui, sans-serif; fill: var(--ink); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+  .facts { margin: 0.6rem 0 0; font-size: 0.95rem; line-height: 1.6; overflow-wrap: anywhere; }
+  .facts b { font-variant-numeric: tabular-nums; }
+  .controls label { display: inline-flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; max-width: 100%; }
+  .controls input[type=number] { width: 4.5rem; max-width: 100%; font: inherit; }
+  .controls select { font: inherit; max-width: 100%; }
+</style>
+</head>
+<body data-game="perm" data-kind="demo">
+<main id="main">
+  <h1>Various Ways to Define a Permutation</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#permutations">Permutations</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A permutation shuffles the numbers 1 to N. See the same shuffle drawn as a table, as lines, upside down, as cycles and as a list of counts.<br>
+    <strong>How to play:</strong> Press "Reset" for a new shuffle and choose how to draw it. Press a number to see where it goes.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 180" role="img" aria-label="Two rows of numbers joined by lines: the permutation"></svg>
+    <p id="facts" class="facts"></p>
+  </div>
+
+  <div class="controls">
+    <label>Show <select id="viewSel" aria-label="How to draw the permutation">
+      <option value="table">Table</option><option value="lines">Lines</option><option value="upside">Upside down (the inverse)</option></select></label>
+    <label>N <input id="nIn" type="number" min="2" max="20" step="1" value="9" aria-label="How many numbers"></label>
+    <button id="newBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">permutation</a> of the numbers 1 to <code>N</code> is a one-to-one match of them with themselves. It can be written as the list <code>{f(1), ..., f(N)}</code>, as a two-row table, as lines joining the rows, or as a set of cycles.</p>
+
+      <h2>Upside down</h2>
+      <p>If the lower row is kept in the natural order and the upper row is rearranged so that all the lines are vertical, the upper row reads <code>f<sup>-1</sup>(1), ..., f<sup>-1</sup>(N)</code>: it shows the inverse permutation. The test confirmed that the inverse of the inverse is the original for every permutation of up to 8 numbers.</p>
+
+      <h2>Cycles</h2>
+      <p>Follow one number: where it goes, where that goes, and so on, until you are back. These loops are the cycles, and every permutation is a product of cycles that share no numbers. For the page's example <code>{5, 9, 1, 8, 2, 6, 4, 7, 3}</code> they are <code>(1 5 2 9 3)(4 8 7)(6)</code>.</p>
+
+      <h2>A list that says it all</h2>
+      <p>For each <code>i</code>, count the numbers bigger than <code>i</code> that stand to its left. This list of inversions, found by Marshall Hall, determines the permutation: write <code>N</code>, then put <code>N-1</code> to its right or left according to its count, and so on. The last count is always 0, the one before it 0 or 1, and in general <code>a<sub>i</sub></code> can be anything from 0 to <code>N-i</code>, independently, so there are <code>1&middot;2&middot;3&middot;...&middot;N = N!</code> lists, as many as permutations. The test checked every permutation up to <code>N = 8</code>: all lists are different and each rebuilds its permutation.</p>
+
+      <h2>A fair shuffle</h2>
+      <p>"Reset" goes backwards through the list and swaps each place with a random earlier one (or itself). For <code>N</code> places that is <code>N!</code> sequences of choices; the test ran all of them for <code>N</code> up to 7, and each permutation comes out exactly once, so no shuffle is favoured.</p>
+
+      <p class="tip">Set N to 3 and press Reset until you have seen all 6 permutations. Which one is its own inverse and which two are inverses of each other?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/do_you_know/Perm.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="perm-core.js"></script>
+<script src="perm.js"></script>
+</body>
+</html>
