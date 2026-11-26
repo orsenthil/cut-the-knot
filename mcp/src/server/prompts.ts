@@ -9,7 +9,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { completable } from "@modelcontextprotocol/sdk/server/completable.js";
 import { z } from "zod";
 
-import { games, tags, findGame, findTag, nearGames, gameMarkdown } from "../core/content.js";
+import { games, tags, allTags, findGame, findTag, nearGames, gameMarkdown } from "../core/content.js";
 import { ACTIONS } from "../games/registry.js";
 
 export function registerPrompts(server: McpServer): void {
@@ -117,7 +117,7 @@ export function registerPrompts(server: McpServer): void {
     ({ tag: given }) => {
       const typed = given ?? "";
       const tag = findTag(typed) ?? typed;
-      const matching = games.filter((g) => g.tags.includes(tag));
+      const matching = games.filter((g) => allTags(g).includes(tag));
       const label = tags[tag] ?? tag;
       if (!matching.length) {
         return {

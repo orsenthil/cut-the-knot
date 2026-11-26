@@ -84,6 +84,9 @@ const Recommend = (() => {
    * Per concept: points earned, and how many of its games exist, were tried
    * and were completed. `practised` is points >= PRACTISED.
    */
+  /** A game's shown tags plus its hidden ones (concepts it also illustrates). */
+  const allTags = (g) => (g.hiddenTags ? g.tags.concat(g.hiddenTags) : g.tags);
+
   function mastery(progress, games, concepts) {
     const out = {};
     for (const name of Object.keys(concepts)) {
@@ -91,7 +94,7 @@ const Recommend = (() => {
     }
     for (const game of games) {
       const doc = progress[game.slug];
-      for (const tag of game.tags) {
+      for (const tag of allTags(game)) {
         const m = out[tag];
         if (!m) continue;
         m.total++;
@@ -134,7 +137,7 @@ const Recommend = (() => {
       .filter(([slug, doc]) => bySlug.has(slug) && wasTried(doc))
       .sort((a, b) => (b[1].lastAt || 0) - (a[1].lastAt || 0))
       .slice(0, howMany);
-    return new Set(recent.flatMap(([slug]) => bySlug.get(slug).tags));
+    return new Set(recent.flatMap(([slug]) => allTags(bySlug.get(slug))));
   }
 
   /**
@@ -154,7 +157,7 @@ const Recommend = (() => {
       .filter(({ game }) => !wasTried(progress[game.slug]))
       .map(({ game, index }) => {
         const missing = missingFor(game, concepts, m);
-        const known = game.tags.filter((t) => m[t] && m[t].practised);
+        const known = allTags(game).filter((t) => m[t] && m[t].practised);
         return {
           game,
           missing,
@@ -165,7 +168,7 @@ const Recommend = (() => {
             missing.length,
             levelOf(game),
             Math.max(0, ...game.tags.map((t) => depth[t] || 0)),
-            -game.tags.filter((t) => recent.has(t)).length,
+            -allTags(game).filter((t) => recent.has(t)).length,
             index,
           ],
         };

@@ -50,6 +50,7 @@ for (const tag of Object.keys(tags)) check(`tag "${tag}" has a concept entry`, t
 for (const name of Object.keys(concepts)) check(`concept "${name}" is a tag`, name in tags);
 for (const g of games) {
   for (const t of g.tags) check(`${g.slug}: tag "${t}" has a concept entry`, t in concepts);
+  for (const t of g.hiddenTags ?? []) check(`${g.slug}: hidden tag "${t}" has a concept entry, and is not also shown`, t in concepts && !g.tags.includes(t));
   check(`${g.slug}: level is 1, 2 or 3`, [1, 2, 3].includes(g.level), String(g.level));
   check(`${g.slug}: kind is game or demo`, g.kind === undefined || g.kind === "demo" || g.kind === "game");
 }

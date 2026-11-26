@@ -7,7 +7,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
-import { games, tags, applets, bySlug, json, fail, gameMarkdown, haystack, manifest, unknownGame } from "../core/content.js";
+import { games, tags, allTags, applets, bySlug, json, fail, gameMarkdown, haystack, manifest, unknownGame } from "../core/content.js";
 import { ACTIONS, runGameLogic } from "../games/registry.js";
 
 /** list_games returns this many unless asked for another number. */
@@ -33,7 +33,7 @@ export function registerPublicTools(server: McpServer): void {
       if (tag && !(tag in tags)) {
         return fail(`No tag "${tag}". Known tags: ${Object.keys(tags).join(", ")}`);
       }
-      const matching = games.filter((g) => (!tag || g.tags.includes(tag)) && (!kind || g.kind === kind));
+      const matching = games.filter((g) => (!tag || allTags(g).includes(tag)) && (!kind || g.kind === kind));
       const from = offset ?? 0;
       const page = matching.slice(from, from + (limit ?? PAGE));
       const end = from + page.length;
@@ -46,6 +46,7 @@ export function registerPublicTools(server: McpServer): void {
           title: g.title,
           blurb: g.blurb,
           tags: g.tags,
+          ...(g.hiddenTags?.length ? { hiddenTags: g.hiddenTags } : {}),
           kind: g.kind,
           level: g.level,
           url: g.url,

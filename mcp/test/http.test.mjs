@@ -108,7 +108,10 @@ check("the 7 and 11 minute glasses boil a 15 minute egg in 3 flips", solved.flip
   }
   check("kind filters", demos.total >= 1 && demoGames.length === demos.total && demoGames.every((g) => g.kind === "demo"));
   const both = await list({ tag: "parity", kind: "game", limit: 100 });
-  check("tag and kind combine", both.games.every((g) => g.tags.includes("parity") && g.kind === "game"));
+  check("tag and kind combine", both.games.every((g) => (g.tags.includes("parity") || g.hiddenTags?.includes("parity")) && g.kind === "game"));
+  const vp = await list({ tag: "vp-vnp", limit: 100 });
+  const horner = vp.games.find((g) => g.slug === "horner-method");
+  check("a tag lists games that carry it hidden, and says so", vp.total >= 11 && horner && !horner.tags.includes("vp-vnp") && horner.hiddenTags.includes("vp-vnp"));
   check("an unknown tag is an error", (await call("list_games", { tag: "nonsense" })).isError);
   check("past the end is an empty page", (await list({ offset: 100000 })).games.length === 0);
 

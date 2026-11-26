@@ -71,6 +71,15 @@ try {
   const tricky = await page.evaluate(() => [...document.querySelectorAll(".card")].every((c) => /Tricky/.test(c.textContent) && /Game Strategy/.test(c.textContent)));
   check("a linked view opens as linked: tricky strategy games only", tricky && (await cards(page)) >= 1, await heading(page));
 
+  // Hidden tags: a game listed under a concept it also illustrates, without the pill on its card.
+  await page.goto(`${base}/#vp-vnp`);
+  await page.waitForSelector("#heading strong");
+  const horner = page.locator(".card", { hasText: "Horner's Method" });
+  check("hidden tag: Horner's Method is listed under VP ≠ VNP", (await horner.count()) === 1, await heading(page));
+  check("hidden tag: but its card shows only its own tags", !/VP ≠ VNP/.test(await horner.locator("footer").textContent()));
+  const count = await page.evaluate(() => Number((document.querySelector('#filters a[href="#vp-vnp"]')?.textContent.match(/\d+/) || [0])[0]));
+  check("hidden tag: the VP ≠ VNP count includes hidden-tag games", count === (await cards(page)) && count >= 11, String(count));
+
   await page.goto(`${base}/?q=zzzzzz`);
   await page.waitForSelector(".empty");
   check("no match: says so and offers a way back", /No games match/.test(await page.textContent(".empty")) && (await page.locator(".empty a").count()) === 1);

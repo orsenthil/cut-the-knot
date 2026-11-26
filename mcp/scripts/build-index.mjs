@@ -487,6 +487,7 @@ for (const entry of catalogue.games) {
     title: entry.title,
     blurb: entry.blurb,
     tags: entry.tags ?? [],
+    hiddenTags: entry.hiddenTags ?? [],
     level: entry.level ?? 2,
     kind: entry.kind ?? "game",
     url: `https://coolmaths.ai/${slug}/`,

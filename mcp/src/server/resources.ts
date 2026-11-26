@@ -9,7 +9,7 @@
 
 import { type McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-import { content, manifest, games, tags, findGame, findTag, gameMarkdown, unknownGame } from "../core/content.js";
+import { content, manifest, games, tags, allTags, findGame, findTag, gameMarkdown, unknownGame } from "../core/content.js";
 import { ACTIONS } from "../games/registry.js";
 
 export function registerResources(server: McpServer): void {
@@ -35,6 +35,7 @@ export function registerResources(server: McpServer): void {
                 title: g.title,
                 blurb: g.blurb,
                 tags: g.tags,
+                hiddenTags: g.hiddenTags,
                 url: g.url,
                 ctkUrl: g.ctkUrl,
                 hasRunnableLogic: Boolean(ACTIONS[g.slug]),
@@ -97,7 +98,7 @@ export function registerResources(server: McpServer): void {
     async (uri, { tag }) => {
       const typed = decodeURIComponent(String(tag));
       const t = findTag(typed) ?? typed;
-      const matching = games.filter((g) => g.tags.includes(t));
+      const matching = games.filter((g) => allTags(g).includes(t));
       const label = tags[t] ?? t;
       const body = matching.length
         ? matching.map((g) => gameMarkdown(g)).join("\n\n---\n\n")

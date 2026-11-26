@@ -35,7 +35,7 @@ import { dirname, join } from "node:path";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(REPO, "assets", "games.js");
-const KEYS = ["title", "blurb", "tags", "level", "kind", "applet", "order"];
+const KEYS = ["title", "blurb", "tags", "hiddenTags", "level", "kind", "applet", "order"];
 
 function readConcepts() {
   const window = {};
@@ -68,6 +68,16 @@ for (const entry of readdirSync(REPO, { withFileTypes: true })) {
   for (const tag of meta.tags || []) {
     if (!(tag in concepts)) bad(`tag "${tag}" is not defined in assets/concepts.js`);
   }
+  // hiddenTags: concepts the game also illustrates. They count for the tag
+  // filters, search and concept progress, but are not shown on the page or
+  // the card, and do not add prerequisites. At most 2, none repeating a tag.
+  if (meta.hiddenTags !== undefined) {
+    if (!Array.isArray(meta.hiddenTags) || meta.hiddenTags.length < 1 || meta.hiddenTags.length > 2) bad("hiddenTags, when given, needs 1 or 2 tags");
+    for (const tag of meta.hiddenTags || []) {
+      if (!(tag in concepts)) bad(`hidden tag "${tag}" is not defined in assets/concepts.js`);
+      if ((meta.tags || []).includes(tag)) bad(`hidden tag "${tag}" is already a tag`);
+    }
+  }
   if (![1, 2, 3].includes(meta.level)) bad("level must be 1, 2 or 3");
   if (meta.kind !== undefined && meta.kind !== "demo") bad('kind, when given, must be "demo"');
   if (!Number.isFinite(meta.order)) bad("needs a numeric order");
@@ -97,6 +107,7 @@ const gameBlocks = games.map((g) =>
     `      title: ${q(g.title)},`,
     `      blurb: ${q(g.blurb)},`,
     `      tags: [${g.tags.map(q).join(", ")}],`,
+    ...(g.hiddenTags ? [`      hiddenTags: [${g.hiddenTags.map(q).join(", ")}],`] : []),
     ...(g.kind ? [`      kind: ${q(g.kind)},`] : []),
     `      level: ${g.level},`,
     "    },",

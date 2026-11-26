@@ -280,7 +280,7 @@ function lintSlug(slug, catalogue) {
     const tags = entry.tags ?? [];
     if (tags.length === 0) fail("games.js entry has no tags");
     if (tags.length > 3) fail(`games.js entry has ${tags.length} tags; at most 3 are allowed`);
-    for (const t of tags) {
+    for (const t of tags.concat(entry.hiddenTags ?? [])) {
       if (!(t in catalogue.tags)) fail(`unknown tag "${t}"; add it to COOLMATHS.tags or reuse one`);
     }
 

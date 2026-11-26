@@ -18,6 +18,8 @@ export interface Game {
   title: string;
   blurb: string;
   tags: string[];
+  /** Concepts the game also illustrates; not shown on its page, but it belongs to them. */
+  hiddenTags: string[];
   /** 1 (anyone can start here) to 3. */
   level: number;
   /** "game" can be won or lost; "demo" is something to explore. */
@@ -61,13 +63,16 @@ export const fail = (message: string) => ({
   isError: true,
 });
 
+/** Every concept a game belongs to: its shown tags, then its hidden ones. */
+export const allTags = (g: Game): string[] => g.tags.concat(g.hiddenTags ?? []);
+
 /** A game as prose: what the tutor actually wants to read. */
 export function gameMarkdown(g: Game, { withSource = false } = {}): string {
   const out: string[] = [`# ${g.title}`, "", g.blurb, ""];
   out.push(`- Play: ${g.url}`);
   if (g.ctkUrl) out.push(`- Original: ${g.ctkUrl}`);
   if (g.applet) out.push(`- Applet: ${g.applet} in classes.zip`);
-  out.push(`- Concepts: ${g.tags.map((t) => tags[t] ?? t).join(", ")}`);
+  out.push(`- Concepts: ${allTags(g).map((t) => tags[t] ?? t).join(", ")}`);
   out.push("");
 
   if (g.rules) {
@@ -110,8 +115,8 @@ export const haystack = (g: Game): string =>
     g.slug,
     g.title,
     g.blurb,
-    g.tags.join(" "),
-    g.tags.map((t) => tags[t] ?? "").join(" "),
+    allTags(g).join(" "),
+    allTags(g).map((t) => tags[t] ?? "").join(" "),
     g.rules?.text ?? "",
     g.math?.intro ?? "",
     g.math?.sections.map((s) => `${s.heading} ${s.body}`).join(" ") ?? "",

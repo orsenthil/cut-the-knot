@@ -35,11 +35,13 @@
   const searchEl = document.getElementById("q");
   const levelButtons = [...document.querySelectorAll("#levels button")];
 
+  /** Every concept a game belongs to: its shown tags and its hidden ones. */
+  const conceptsOf = (g) => (g.hiddenTags ? g.tags.concat(g.hiddenTags) : g.tags);
   /** What each game can be found by, lower-cased once. */
   const haystack = new Map(
-    games.map((g) => [g, `${g.title} ${g.blurb} ${g.tags.map(tagLabel).join(" ")} ${g.tags.join(" ")}`.toLowerCase()]),
+    games.map((g) => [g, `${g.title} ${g.blurb} ${conceptsOf(g).map(tagLabel).join(" ")} ${conceptsOf(g).join(" ")}`.toLowerCase()]),
   );
-  const countFor = (tag) => games.filter((g) => g.tags.includes(tag)).length;
+  const countFor = (tag) => games.filter((g) => conceptsOf(g).includes(tag)).length;
   const tagsByUse = Object.keys(tags)
     .filter((t) => countFor(t) > 0)
     .sort((a, b) => countFor(b) - countFor(a) || tagLabel(a).localeCompare(tagLabel(b)));
@@ -73,7 +75,7 @@
     const words = query.toLowerCase().split(/\s+/).filter(Boolean);
     return games.filter(
       (g) =>
-        (!tag || g.tags.includes(tag)) &&
+        (!tag || conceptsOf(g).includes(tag)) &&
         (!level || g.level === level) &&
         words.every((word) => haystack.get(g).includes(word)),
     );
