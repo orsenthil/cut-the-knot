@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Any Quadri &mdash; coolmaths</title>
+<meta name="description" content="Drag the four corners of a quadrilateral. Do the three lines joining opposite side midpoints and the diagonal midpoints always meet at one dot?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/any-quadri/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Any Quadri">
+<meta property="og:description" content="Drag the four corners of a quadrilateral. Do the three lines joining opposite side midpoints and the diagonal midpoints always meet at one dot?">
+<meta property="og:url" content="https://coolmaths.ai/any-quadri/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .diag { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .bimedian { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .newton { fill: none; stroke: var(--good); stroke-width: 2.5; stroke-dasharray: 8 5; }
+  #board .hint-side { fill: none; stroke: var(--highlight); stroke-width: 8; }
+  #board .hint-diag { fill: none; stroke: var(--bad); stroke-width: 2; }
+  #board .midpoint { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .centroid { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.9rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="any-quadri" data-kind="demo">
+<main id="main">
+  <h1>Any Quadri</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: three lines drawn across a four-sided shape always meet at one dot.<br>
+    <strong>How to play:</strong> Drag the corners A, B, C and D, or focus a corner and use the arrow keys. Tick Hint to see the parallelogram that makes the lines meet.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A quadrilateral whose four corners can be dragged, the midpoints of its sides and diagonals, and the three lines joining them"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="hint" type="checkbox"> Hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag a corner and the whole shape changes, yet three lines keep passing through the same dot, and that dot is the middle of each one. Here is why that cannot fail.</p>
+
+      <h2>The three lines</h2>
+      <p>Call the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoints</a> of the sides AB, BC, CD, DA by K, L, M and N, and the midpoints of the diagonals AC and BD by F and E. The lines KM and LN join midpoints of opposite sides, and EF joins the midpoints of the diagonals; this last line is <a class="wiki-term" data-wiki="Newton%27s_line" href="https://en.wikipedia.org/wiki/Newton%27s_line" target="_blank" rel="noopener">Newton's line</a>. They all pass through one point <code>G = (A + B + C + D) / 4</code>. Watch the green dot: it sits exactly halfway along each of the three lines, no matter how you drag.</p>
+
+      <h2>Why they share a middle</h2>
+      <p>In triangle ABD, the segment from E (middle of BD) to N (middle of DA) is parallel to AB and half its length. In triangle ABC, the segment from F (middle of AC) to L (middle of BC) is also parallel to AB and half its length. So EN and LF are equal and parallel, which makes ENFL a <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a>. Its diagonals EF and NL therefore cut each other in half. The same argument with triangles ADC and BCD makes EKFM a parallelogram, so EF and KM cut each other in half as well. EF has only one middle, so all three lines share it: they are concurrent and each is divided in the ratio 1:1.</p>
+
+      <h2>The centre of gravity</h2>
+      <p>Put four equal weights at the corners. Combine them two at a time and you get three pairs, whose balance points are exactly those six side and diagonal midpoints. Combining each pair of balance points gives the same <a class="wiki-term" data-wiki="Barycenter" href="https://en.wikipedia.org/wiki/Barycenter" target="_blank" rel="noopener">barycenter</a> G: the centre of gravity of the four weights. The three bimedians are just the three ways of getting there, which is why they meet.</p>
+
+      <h2>True for every quadrilateral</h2>
+      <p>The page claims this for <em>any</em> quadrilateral, and the logic test confirms it: on a square, a rectangle, a tilted shape, a dart, a crossed shape and three thousand random quadrilaterals, all three segments have the same midpoint and the error stays around <code>1e-9</code> times the size of the drawing. No symmetry or circle is needed: the whole statement is a fact about averages, so it holds even for a crossed or non-convex four-sided shape.</p>
+
+      <p class="tip">Tick Hint and drag one corner far away: the yellow parallelogram stays a parallelogram, and the dot stays at the middle of every line.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AnyQuadri.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="any-quadri-core.js"></script>
+<script src="any-quadri.js"></script>
+</body>
+</html>
