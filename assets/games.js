@@ -2007,5 +2007,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "pigeonhole",
+      title: "The Puzzlers' Pigeonhole",
+      blurb: "Put five dots on the corners of a grid. Why do two of them always have a corner exactly halfway between them? Can four dots avoid it?",
+      tags: ["counting", "parity", "coordinates"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };

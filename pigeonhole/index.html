@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Puzzlers' Pigeonhole &mdash; coolmaths</title>
+<meta name="description" content="Put five dots on the corners of a grid. Why do two of them always have a corner exactly halfway between them? Can four dots avoid it?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/pigeonhole/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Puzzlers' Pigeonhole">
+<meta property="og:description" content="Put five dots on the corners of a grid. Why do two of them always have a corner exactly halfway between them? Can four dots avoid it?">
+<meta property="og:url" content="https://coolmaths.ai/pigeonhole/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.4rem; }
+  #board { width: 100%; height: auto; display: block; touch-action: none; }
+  #board .node { fill: var(--border-strong); }
+  #board .dot { fill: var(--accent); stroke: var(--ink); stroke-width: 1.5; cursor: grab; }
+  #board .dot:focus-visible { stroke-width: 3.5; }
+  #board .dot.hit { fill: var(--bad); }
+  #board .seg { stroke: var(--bad); stroke-width: 3; }
+  #board .mid { fill: var(--highlight); stroke: var(--ink); stroke-width: 2; }
+  .controls label { display: inline-flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; max-width: 100%; }
+  .controls select { font: inherit; max-width: 100%; }
+</style>
+</head>
+<body data-game="pigeonhole" data-kind="demo">
+<main id="main">
+  <h1>The Puzzlers' Pigeonhole</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#coordinates">Coordinates</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Dots stand on the corners of a grid. Look for two dots with a corner exactly halfway between them.<br>
+    <strong>How to play:</strong> Drag a dot to another corner, or use the arrow keys on a selected dot. Can you move four dots so that no two have a corner halfway between? Can you do it with five?
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 480 360" role="group" aria-label="A grid of corners with draggable dots"></svg>
+  </div>
+
+  <div class="controls">
+    <label>Dots <select id="nSel" aria-label="Number of dots"><option value="5">Five dots</option><option value="4">Four dots</option></select></label>
+    <button id="newBtn" type="button" class="primary">Scatter</button>
+    <button id="safeBtn" type="button">Show four that work</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>If you choose five corners of a square grid, some two of them always have a corner exactly halfway between them. With four it can be avoided. That is the <a class="wiki-term" data-wiki="Pigeonhole_principle" href="https://en.wikipedia.org/wiki/Pigeonhole_principle" target="_blank" rel="noopener">pigeonhole principle</a> at work: if more objects than boxes are put in boxes, some box gets two.</p>
+
+      <h2>When is the middle a corner?</h2>
+      <p>The midpoint of <code>(x<sub>1</sub>, y<sub>1</sub>)</code> and <code>(x<sub>2</sub>, y<sub>2</sub>)</code> is <code>((x<sub>1</sub>+x<sub>2</sub>)/2, (y<sub>1</sub>+y<sub>2</sub>)/2)</code>. It is a corner exactly when <code>x<sub>1</sub>+x<sub>2</sub></code> and <code>y<sub>1</sub>+y<sub>2</sub></code> are both even: that is, when the two x's are both odd or both even, and the same for the y's.</p>
+
+      <h2>Four boxes</h2>
+      <p>Each corner has one of four <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parities</a>: odd/odd, odd/even, even/odd or even/even. These are the four boxes. Five dots must put two in the same box, and two dots in one box have a corner halfway between them. The test confirmed it for every set of five corners of a 4&times;4 patch and for 200,000 random positions on this board. With four dots the only way to avoid a pair is one dot in each box: the test found exactly <code>9<sup>4</sup> = 6561</code> such sets of four on a 6&times;6 patch, and none other. Also, such a segment passes through other corners besides the midpoint when the differences share a common factor.</p>
+
+      <p class="tip">Place four dots with no halfway corner, then add a fifth: where can you put it so that there is only one pair?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/Pigeonhole.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="pigeonhole-core.js"></script>
+<script src="pigeonhole.js"></script>
+</body>
+</html>
