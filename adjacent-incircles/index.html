@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Adjacent Incircles &mdash; coolmaths</title>
+<meta name="description" content="Drag the points under a common apex: when the neighbouring triangles have equal incircles, what happens to the circles in the bigger triangles?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/adjacent-incircles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Adjacent Incircles">
+<meta property="og:description" content="Drag the points under a common apex: when the neighbouring triangles have equal incircles, what happens to the circles in the bigger triangles?">
+<meta property="og:url" content="https://coolmaths.ai/adjacent-incircles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .base-line { stroke: var(--muted); stroke-width: 2; }
+  #board .ray { stroke: var(--ink); stroke-width: 1.5; stroke-opacity: 0.5; }
+  #board .incircle { fill: var(--accent); fill-opacity: 0.08; stroke: var(--accent); stroke-width: 2.5; }
+  #board .level2 { stroke: var(--good); }
+  #board .level3 { stroke: var(--highlight); stroke-width: 4; }
+  #board .level-more { stroke: var(--muted); stroke-dasharray: 4 3; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .apex-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  #board .point-label { fill: var(--text); font-size: 11px; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; }
+  .controls button { min-height: 2.5rem; }
+  .controls input[type="number"] { width: 4rem; font-size: 1rem; padding: 0.35rem; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="adjacent-incircles" data-kind="demo">
+<main id="main">
+  <h1>Adjacent Incircles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> Triangles sharing one top point, each with a circle tucked inside it.<br>
+    <strong>How to play:</strong> Drag the dots along the bottom line, or focus a dot and use the arrow keys. Add or remove dots to make more triangles.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="A point A above a line of draggable points. Circles sit inside the triangles they form."></svg>
+  </div>
+
+  <div class="controls">
+    <label class="option" for="nInput">Points on the line
+      <input id="nInput" type="number" min="3" max="10" step="1" value="4" aria-label="Number of points on the base line, from 3 to 10">
+    </label>
+    <button id="minusBtn" type="button" aria-label="Use fewer points on the base line">&minus;</button>
+    <button id="plusBtn" type="button" aria-label="Use more points on the base line">+</button>
+    <button id="equalBtn" type="button" aria-label="Move the points so the level 1 circles are equal">Make incircles equal</button>
+    <label class="option" for="namesChk"><input id="namesChk" type="checkbox"> Show names</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Scatter the points again">New diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the bottom points and the circles change. Yet if the small neighbouring circles happen to be the same size, something surprising happens to all the bigger ones.</p>
+
+      <h2>A fan of triangles</h2>
+      <p>One point <code>A</code> sits above a straight line holding the points <code>M1, M2, ...</code>. Each pair of neighbours makes a triangle with <code>A</code>, and each triangle has an <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a>. Those are the level 1 circles. Taking points two gaps apart gives the level 2 circles, three gaps apart the level 3 circles, and so on. The applet shows the higher levels only when level 1 matches.</p>
+
+      <h2>The number that stays the same</h2>
+      <p>Let <code>h</code> be the <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a> from <code>A</code> to the line, and for each point let <code>g = (AM + offset from the foot of the altitude) / h</code>. A short calculation gives</p>
+      <blockquote><code>r(level 1 at Mi) = h/2 &times; (1 &minus; g(i)/g(i+1))</code></blockquote>
+      <p>So equal level 1 radii mean the numbers <code>g(i)</code> form a <a class="wiki-term" data-wiki="Geometric_progression" href="https://en.wikipedia.org/wiki/Geometric_progression" target="_blank" rel="noopener">geometric progression</a>: each one is the previous one times the same <code>q</code>. This is the invariant behind the picture.</p>
+
+      <h2>Why the bigger triangles match</h2>
+      <p>For a triangle spanning <code>k</code> gaps the same formula uses <code>g(i)/g(i+k) = q<sup>&minus;k</sup></code>, so its radius is <code>h/2 &times; (1 &minus; q<sup>&minus;k</sup>)</code> — independent of <code>i</code>. That is exactly the Equal Incircles Theorem on the original page: equal level 1 circles force equal level 2, level 3 and every later level. The logic test confirms it over many fans. It also confirms the wider Demir&ndash;Tabov version there: if level 1 radii merely match in pairs two apart, level 2 still comes out equal. Honsberger's restriction to groups of a power of two is narrower than necessary.</p>
+
+      <h2>The wooden tablet, and a quirk</h2>
+      <p>The 1897 tablet asks for the tangent from the top point when two neighbouring circles are equal. With <code>a</code> the whole bottom side of the two-triangle fan and <code>s</code> its <a class="wiki-term" data-wiki="Semiperimeter" href="https://en.wikipedia.org/wiki/Semiperimeter" target="_blank" rel="noopener">semiperimeter</a>, the page's answer <code>AM2 = &radic;(s(s &minus; a))</code> checks out. Two honest warnings: equal radii do <em>not</em> make neighbouring bottom lengths equal (try <code>q = 2</code>); and the old applet wrapped its point list, drawing one extra triangle across the whole fan, which hides its own "equal circles" signal. This page follows the fan the page describes instead.</p>
+
+      <p class="tip">Try <strong>Make incircles equal</strong>, then move one bottom point a little: watch every level change at once. Then change the number of points while the circles still match.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AdjacentIncircles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="adjacent-incircles-core.js"></script>
+<script src="adjacent-incircles.js"></script>
+</body>
+</html>
