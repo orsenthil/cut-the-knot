@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Signs in a Matrix &mdash; coolmaths</title>
+<meta name="description" content="Flip the signs of a whole row or column at a time. Can you always make every row and column add up to zero or more, and why does it never go on for ever?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/switching-signs/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Signs in a Matrix">
+<meta property="og:description" content="Flip the signs of a whole row or column at a time. Can you always make every row and column add up to zero or more, and why does it never go on for ever?">
+<meta property="og:url" content="https://coolmaths.ai/switching-signs/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 44rem; padding: 0.8rem 0.4rem; }
+  #grid { overflow-x: auto; }
+  #grid table { border-collapse: separate; border-spacing: 0.2rem; margin: 0 auto; font-variant-numeric: tabular-nums; }
+  #grid td { text-align: center; min-width: 2.75rem; height: 2.75rem; padding: 0; }
+  #grid td.num { background: var(--card); border: 1px solid var(--border); border-radius: 6px; font-weight: 600; }
+  #grid td.num.minus { color: var(--bad); }
+  #grid td.rsum { padding-left: 0.4rem; }
+  #grid td.csum { padding-top: 0.4rem; }
+  #grid td.total { color: var(--muted); font-size: 0.8rem; padding-left: 0.4rem; white-space: nowrap; }
+  #grid button.sum { min-width: 2.75rem; min-height: 2.75rem; padding: 0 0.3rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  #grid button.sum.neg { color: var(--bad); border-color: var(--bad); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls input[type="number"] { width: 4.5rem; min-height: 2.75rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="switching-signs" data-kind="game">
+<main id="main">
+  <h1>Signs in a Matrix</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Make every row total and every column total zero or more.<br>
+    <strong>How to play:</strong> Press a total to turn every number in its row or column from plus to minus and back.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="grid" role="region" aria-label="The numbers, with row sums on the right and column sums below" tabindex="0"></div>
+  </div>
+
+  <div class="controls">
+    <label>M (rows) <input id="rowsIn" type="number" min="1" max="15" value="4"></label>
+    <label>N (columns) <input id="colsIn" type="number" min="1" max="15" value="5"></label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Given any rectangular array of numbers, reverse the signs of whole rows or columns to make every row sum and every column sum non-negative. The puzzle is in Peter Winkler's <em>Mathematical Puzzles</em>. A natural plan is to keep flipping a line whose sum is negative. But fixing a row can spoil some columns, and fixing those can spoil rows again. Why should it ever stop?</p>
+
+      <h2>Something that only grows</h2>
+      <p>Watch the total of all the numbers (&Sigma;, in the corner). Flipping a line whose sum is <code>&minus;s</code> turns that part of the total from <code>&minus;s</code> into <code>+s</code>, so the total rises by exactly <code>2s &gt; 0</code>. Each such flip makes the total strictly bigger. This is a <a class="wiki-term" data-wiki="Monovariant" href="https://en.wikipedia.org/wiki/Monovariant" target="_blank" rel="noopener">monovariant</a>: a quantity that only moves one way.</p>
+
+      <h2>Why it must stop</h2>
+      <p>Flipping only changes signs, so the grid always shows the original numbers with some signs reversed. For an <code>m &times; n</code> grid that is at most <code>2<sup>m+n</sup></code> sign choices (and only half as many different grids, since flipping everything changes nothing). So the total can take only finitely many values, and a total that keeps strictly rising must stop. When no flip of a negative line is possible, no sum is negative: done. This is the <a class="wiki-term" data-wiki="Extremal_principle" href="https://en.wikipedia.org/wiki/Extremal_principle" target="_blank" rel="noopener">extremal principle</a> at work.</p>
+
+      <h2>What was checked</h2>
+      <p>The logic test flipped negative lines until none was left on 5,000 random grids of every size up to 15 &times; 15, and it always ended with every sum non-negative. On every small grid tried, flipping negative lines in any order always raised the total.</p>
+
+      <p class="tip">Flip lines with positive sums on purpose. The total goes down. Can you still finish?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/SwitchingSigns.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="switching-signs-core.js"></script>
+<script src="switching-signs.js"></script>
+</body>
+</html>

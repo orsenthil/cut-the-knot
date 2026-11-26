@@ -1972,6 +1972,11 @@ check("string-distance: kitten to sitting is 3 edits, Hamming undefined", read["
   const sd = at("string-distance", { s: "abc", t: "bca", method: "hamming", caseSensitive: false, lines: [] });
   check("string-distance: H(abc, bca) = 3, L = 2", sd.hamming === 3 && sd.levenshtein === 2);
 }
+check("switching-signs: a 4 x 5 grid after one flip", read["switching-signs"]?.rowSums.length === 4 && read["switching-signs"].columnSums.length === 5 && read["switching-signs"].flipsSoFar === 1);
+{
+  const sw = at("switching-signs", { nums: [[1, -2], [3, -4]], flips: 0 });
+  check("switching-signs: rows -1, -1, columns 4, -6, three negative lines", sw.negativeLines.length === 3 && sw.total === -2 && sw.solved === false);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

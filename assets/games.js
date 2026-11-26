@@ -2332,5 +2332,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "switching-signs",
+      title: "Signs in a Matrix",
+      blurb: "Flip the signs of a whole row or column at a time. Can you always make every row and column add up to zero or more, and why does it never go on for ever?",
+      tags: ["invariants", "arithmetic", "logic"],
+      level: 2,
+    },
   ],
 };

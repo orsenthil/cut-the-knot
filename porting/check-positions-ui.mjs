@@ -833,6 +833,9 @@ const GAMES = {
     await page.fill("#sIn", "kitten"); await page.fill("#tIn", "sitting");
     await page.click("#doBtn");
   },
+  "switching-signs": async (page) => {
+    await page.click('#grid [data-row="0"]');
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */
