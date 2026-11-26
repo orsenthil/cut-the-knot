@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bimedians In Tetrahedron &mdash; coolmaths</title>
+<meta name="description" content="Drag the four corners of a tetrahedron. Do the three lines joining midpoints of opposite edges always meet at one dot, and when are they at right angles?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bimedians-in-tetrahedron/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Bimedians In Tetrahedron">
+<meta property="og:description" content="Drag the four corners of a tetrahedron. Do the three lines joining midpoints of opposite edges always meet at one dot, and when are they at right angles?">
+<meta property="og:url" content="https://coolmaths.ai/bimedians-in-tetrahedron/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+
+  #board .cube-face {
+    fill: var(--muted); fill-opacity: 0.07;
+    stroke: var(--muted); stroke-opacity: 0.55; stroke-width: 1.2;
+  }
+  #board .cube-edge { stroke: var(--muted); stroke-width: 1.3; stroke-opacity: 0.75; }
+  #board .cube-edge.back { stroke-dasharray: 4 4; stroke-opacity: 0.35; }
+  #board .tetra-face {
+    fill: var(--accent); fill-opacity: 0.13;
+    stroke: var(--ink); stroke-opacity: 0.35; stroke-width: 1.2;
+  }
+  #board .tetra-edge { stroke: var(--ink); stroke-width: 2; stroke-opacity: 0.85; }
+  #board .tetra-edge.back { stroke-dasharray: 5 4; stroke-opacity: 0.4; }
+  #board .bimedian {
+    fill: none; stroke: var(--accent); stroke-width: 3.5; stroke-linecap: round;
+  }
+  #board .bimedian-2 { stroke-width: 3; }
+  #board .bimedian-3 { stroke-width: 2.5; }
+  #board .edge-midpoint { fill: var(--accent); stroke: var(--stage); stroke-width: 1.2; }
+  #board .barycenter { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.9rem var(--font); pointer-events: none;
+  }
+  #board .bimed-label {
+    fill: var(--accent); font: 600 0.85rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls button[aria-pressed="true"] {
+    background: var(--accent-soft); border-color: var(--accent);
+  }
+</style>
+</head>
+<body data-game="bimedians-in-tetrahedron" data-kind="demo">
+<main id="main">
+  <h1>Bimedians In Tetrahedron</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: three lines drawn across a tetrahedron can all pass through one dot.<br>
+    <strong>How to play:</strong> Drag the four corners, or focus one and use the arrow keys. Turn and tilt the shape with the buttons, and press Show cube to see the box around it.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 320" role="group"
+         aria-label="A tetrahedron with four draggable corners, its six edges, and the three lines joining midpoints of opposite edges"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the four corners back in a regular tetrahedron">Reset</button>
+    <button id="skewBtn" type="button" aria-label="Move one corner to make a non-regular tetrahedron">Skew</button>
+    <button id="cubeBtn" type="button" aria-pressed="false" aria-label="Show or hide the cube through the four corners">Show cube</button>
+    <button id="turnLeft" type="button" aria-label="Turn the tetrahedron to the left">&larr; turn</button>
+    <button id="turnRight" type="button" aria-label="Turn the tetrahedron to the right">turn &rarr;</button>
+    <button id="tiltUp" type="button" aria-label="Tilt the tetrahedron upwards">&uarr; tilt</button>
+    <button id="tiltDown" type="button" aria-label="Tilt the tetrahedron downwards">&darr; tilt</button>
+    <button id="zoomIn" type="button" aria-label="Make the tetrahedron bigger">Zoom in</button>
+    <button id="zoomOut" type="button" aria-label="Make the tetrahedron smaller">Zoom out</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag a corner of the <a class="wiki-term" data-wiki="Tetrahedron" href="https://en.wikipedia.org/wiki/Tetrahedron" target="_blank" rel="noopener">tetrahedron</a> and the three coloured lines move with it. They keep meeting at one dot, whatever shape you make. The surprise is that for the regular shape the three lines are at right angles, and that there is a simple way to see why.</p>
+
+      <h2>Three pairs of opposite edges</h2>
+      <p>A tetrahedron has six edges, and each edge has exactly one edge that does not touch it. So the six edges split into three pairs. Take the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> of each edge in a pair and join the two midpoints. Those are the three segments m1, m2 and m3 in the picture: their ends are marked with small violet dots.</p>
+
+      <h2>They always meet at the balance point</h2>
+      <p>Put equal weights at the four corners. Their <a class="wiki-term" data-wiki="Barycenter" href="https://en.wikipedia.org/wiki/Barycenter" target="_blank" rel="noopener">barycenter</a> is the average of the four positions, <code>G = (A + B + C + D) / 4</code>, shown as a green dot. The midpoint of AB and the midpoint of CD lie on opposite sides of G at the same distance, so G is the middle of the line between them. The same goes for the other two pairs. That is why the three bimedians always cross at G: the logic test checks all 3,000 randomly generated tetrahedra, and it holds every time.</p>
+
+      <h2>When are the angles right?</h2>
+      <p>The page claims that a regular tetrahedron's bimedians are pairwise <a class="wiki-term" data-wiki="Orthogonality" href="https://en.wikipedia.org/wiki/Orthogonality" target="_blank" rel="noopener">orthogonal</a>, and the test confirms it: all three angles are 90°. Here is the reason the page hints at. Measure from G, so the corner vectors satisfy <code>a + b + c + d = 0</code>. The three bimedian directions are <code>a + b</code>, <code>a + c</code> and <code>a + d</code>. If the four corners are equally far from G, then <code>(a+b)·(a+c) = |a|² + a·b + a·c + b·c = 0</code>, and the other two dots vanish in the same way.</p>
+      <p>The converse is true too. If a bimedian is square to the two edges it joins, its corners must be equally far from G; doing that for all three bimedians makes the four distances equal and the three angles right. The test compares both conditions on thousands of tetrahedra: they agree every time. Press Skew to break the equal distances and watch the angles leave 90°.</p>
+
+      <h2>The cube picture</h2>
+      <p>A regular tetrahedron sits inside a <a class="wiki-term" data-wiki="Cube" href="https://en.wikipedia.org/wiki/Cube" target="_blank" rel="noopener">cube</a> at four alternate corners. Each bimedian then joins the centres of two opposite cube faces, so it runs along one of the cube's three directions. Those directions are at right angles, which is the whole claim in one picture. Press Show cube to see it. The applet offsets the tetrahedron's corners by a tiny 0.005 so they stand just outside the cube; the test copies that offset exactly.</p>
+      <p>The page also notes the wider case of a tetrahedron in a <a class="wiki-term" data-wiki="Parallelepiped" href="https://en.wikipedia.org/wiki/Parallelepiped" target="_blank" rel="noopener">parallelepiped</a>: the three bimedians follow its three edge directions, so they are at right angles exactly when the box is rectangular — which happens exactly when each bimedian is square to the edges it joins.</p>
+
+      <p class="tip">Press Skew, then turn the shape: the three lines still cross at the green dot, but their angles are no longer 90°.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BimediansInTetrahedron.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bimedians-in-tetrahedron-core.js"></script>
+<script src="bimedians-in-tetrahedron.js"></script>
+</body>
+</html>
