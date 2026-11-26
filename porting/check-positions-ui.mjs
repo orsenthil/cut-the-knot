@@ -836,6 +836,10 @@ const GAMES = {
   "switching-signs": async (page) => {
     await page.click('#grid [data-row="0"]');
   },
+  "base-tables": async (page) => {
+    await page.check('input[value="x"]');
+    await page.fill("#radixIn", "12"); await page.dispatchEvent("#radixIn", "change");
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

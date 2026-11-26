@@ -444,6 +444,7 @@ const CORE_GLOBALS = {
   "steinhaus-problem/steinhaus-problem-core.js": ["SteinhausProblemCore"],
   "string-distance/string-distance-core.js": ["StringDistanceCore"],
   "switching-signs/switching-signs-core.js": ["SwitchingSignsCore"],
+  "base-tables/base-tables-core.js": ["BaseTablesCore"],
 };
 
 const games = [];

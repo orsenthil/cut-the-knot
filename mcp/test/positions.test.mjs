@@ -1977,6 +1977,11 @@ check("switching-signs: a 4 x 5 grid after one flip", read["switching-signs"]?.r
   const sw = at("switching-signs", { nums: [[1, -2], [3, -4]], flips: 0 });
   check("switching-signs: rows -1, -1, columns 4, -6, three negative lines", sw.negativeLines.length === 3 && sw.total === -2 && sw.solved === false);
 }
+check("base-tables: base 12 times table, 3 x 4 = 10", read["base-tables"]?.radix === 12 && read["base-tables"].entry === "3 x 4 = 10");
+{
+  const bt = at("base-tables", { radix: 16, op: "x", a: 15, b: 15 });
+  check("base-tables: F x F = E1 in base 16", bt.entry === "F x F = E1" && bt.inBase10 === "15 x 15 = 225");
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Addition and Multiplication Tables in Various Bases &mdash; coolmaths</title>
+<meta name="description" content="The + and × tables written in base 2, 7, 16 or 36. Which patterns stay the same whatever the base?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/base-tables/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Addition and Multiplication Tables in Various Bases">
+<meta property="og:description" content="The + and × tables written in base 2, 7, 16 or 36. Which patterns stay the same whatever the base?">
+<meta property="og:url" content="https://coolmaths.ai/base-tables/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 46rem; padding: 0.6rem 0.3rem; }
+  #table { overflow-x: auto; }
+  #table table { border-collapse: collapse; margin: 0 auto; font-variant-numeric: tabular-nums; font-family: var(--mono); }
+  #table th, #table td { border: 1px solid var(--border); padding: 0.2em 0.35em; text-align: center; min-width: 1.6em; }
+  #table th { background: var(--surface-2); color: var(--muted); }
+  #table th.op { color: var(--text); }
+  #table th.lit { background: var(--accent); color: var(--accent-text); }
+  #table td { cursor: pointer; }
+  #table td.diag { background: var(--surface); }
+  #table td.line { background: var(--accent-soft); }
+  #table td.sel { background: var(--accent); color: var(--accent-text); font-weight: 700; }
+  #table td:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls input[type="number"] { width: 4.5rem; min-height: 2.75rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="base-tables" data-kind="demo">
+<main id="main">
+  <h1>Addition and Multiplication Tables in Various Bases</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#place-value">Place Value</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> See the addition and times tables written in other number systems, and hunt for the patterns that stay the same in all of them.<br>
+    <strong>How to play:</strong> Pick + or &times; and a base. Click a cell, or use the arrow keys, to see what it says.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="table" role="region" aria-label="The table; arrow keys move between cells" tabindex="-1"></div>
+  </div>
+
+  <div class="controls">
+    <label><input type="radio" name="op" value="+" checked> +</label>
+    <label><input type="radio" name="op" value="x"> &times;</label>
+    <label>Base <input id="radixIn" type="number" min="2" max="36" step="1" value="10"></label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>"Many children grow superstitious, and think that you cannot carry except in tens," wrote Mary Everest Boole in 1909. The tables are just as orderly in any base. Looking at a whole table, and at many bases together, shows the rules that make arithmetic work, not only the facts. Bases above 10 use the letters A, B, &hellip; for the digits 10, 11, &hellip;</p>
+
+      <h2>Symmetry is commutativity</h2>
+      <p>Every table is a mirror image of itself in its main diagonal: the entry for <code>a, b</code> is the one for <code>b, a</code>. That is the <a class="wiki-term" data-wiki="Commutative_property" href="https://en.wikipedia.org/wiki/Commutative_property" target="_blank" rel="noopener">commutative law</a> <code>a + b = b + a</code>, <code>a &times; b = b &times; a</code>. It is why it is enough to learn half of each table.</p>
+
+      <h2>Patterns in the + table</h2>
+      <p>Each row of the addition table is the row above it moved one place, because <code>(a+1) + b = a + (b+1)</code>. Entries get a second digit, a carry, exactly below the diagonal where <code>a + b = r &minus; 1</code>, the base minus one.</p>
+
+      <h2>The last column of the &times; table</h2>
+      <p>In base ten the multiples of 9 are 09, 18, 27, &hellip;, 81: the digits always add up to 9. The same holds in every base <code>r</code> for the multiples of <code>r &minus; 1</code>: <code>(r&minus;1) &times; k</code> is written with the digits <code>k &minus; 1</code> and <code>r &minus; k</code>, because <code>(r&minus;1)k = (k&minus;1)r + (r&minus;k)</code>. In base 16, <code>F &times; 7 = 69</code>. The logic test checked every entry of both tables in every base from 2 to 36 (each read back is the true sum or product), along with the symmetry, the row shift, the carries and the last column.</p>
+
+      <p class="tip">Choose &times; and look at the last column in base 8, then base 12. Then look for the multiples of <code>r + 1</code>. What do their digits do?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/SysTable.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="base-tables-core.js"></script>
+<script src="base-tables.js"></script>
+</body>
+</html>

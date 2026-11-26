@@ -2339,5 +2339,13 @@ window.COOLMATHS = {
       tags: ["invariants", "arithmetic", "logic"],
       level: 2,
     },
+    {
+      slug: "base-tables",
+      title: "Addition and Multiplication Tables in Various Bases",
+      blurb: "The + and × tables written in base 2, 7, 16 or 36. Which patterns stay the same whatever the base?",
+      tags: ["place-value", "arithmetic", "algebra"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
