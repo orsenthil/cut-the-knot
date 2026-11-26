@@ -2024,6 +2024,11 @@ check("chips-on-circle: two flips keep 8 and 8, a balanced half is found", read[
   const cc = at("chips-on-circle", { n: 8, red: [true, true, true, true, false, false, false, false] });
   check("chips-on-circle: RRRRGGGG is balanced from chip 3 (and 7)", cc.balancedHalf.from === 3 && cc.allBalancedStarts.join() === "3,7");
 }
+check("two-perpendiculars: the saved picture is the cheating one, second puzzle", read["two-perpendiculars"]?.puzzle.startsWith("K") && read["two-perpendiculars"].angleBKC < 179);
+{
+  const tp = at("two-perpendiculars", { A: [120, 120], B: [180, 260], C: [230, 40], cheat: false, fallacy: 1 });
+  check("two-perpendiculars: drawn honestly, D = E = K = the foot", tp.distanceDE === 0 && tp.K.join() === tp.footFromA.join() && tp.angleADB === 90);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

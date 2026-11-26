@@ -453,6 +453,7 @@ const CORE_GLOBALS = {
   "tromino-monomino/tromino-monomino-core.js": ["TrominoMonominoCore"],
   "turning-turtles/turning-turtles-core.js": ["TurningTurtlesCore"],
   "chips-on-circle/chips-on-circle-core.js": ["ChipsOnCircleCore"],
+  "two-perpendiculars/two-perpendiculars-core.js": ["TwoPerpendicularsCore"],
 };
 
 const games = [];

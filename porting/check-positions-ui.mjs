@@ -873,6 +873,9 @@ const GAMES = {
   "chips-on-circle": async (page) => {
     for (const i of [0, 3]) await page.click(`#board .chip[data-i="${i}"]`);
   },
+  "two-perpendiculars": async (page) => {
+    await page.check('input[name="fallacy"][value="2"]');
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

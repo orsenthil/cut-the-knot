@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Two Perpendiculars From a Point to a Line &mdash; coolmaths</title>
+<meta name="description" content="Circles on two sides of a triangle seem to give two different perpendiculars from one point to one line. Where is the catch?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/two-perpendiculars/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Two Perpendiculars From a Point to a Line">
+<meta property="og:description" content="Circles on two sides of a triangle seem to give two different perpendiculars from one point to one line. Where is the catch?">
+<meta property="og:url" content="https://coolmaths.ai/two-perpendiculars/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri { fill: var(--accent-soft); fill-opacity: 0.5; stroke: var(--ink); stroke-width: 2; cursor: move; }
+  #board .circ { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .centre { fill: var(--muted); }
+  #board .perp { stroke: var(--accent); stroke-width: 2.5; }
+  #board .pt { fill: var(--bad); }
+  #board .corner { fill: none; stroke: var(--bad); stroke-width: 1.5; }
+  #board .handle { fill: var(--card); stroke: var(--ink); stroke-width: 2.5; cursor: grab; }
+  #board .handle:focus-visible { outline: none; stroke: var(--focus); stroke-width: 5; }
+  #board .name { fill: var(--text); font: italic 700 15px var(--font); text-anchor: middle; pointer-events: none; }
+  .controls .group { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3rem 0.8rem; width: 100%; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+</style>
+</head>
+<body data-game="two-perpendiculars" data-kind="demo">
+<main id="main">
+  <h1>Two Perpendiculars From a Point to a Line</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#curves">Curves</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> The picture seems to prove something impossible: two different lines from A that both meet BC at a right angle. Find the mistake.<br>
+    <strong>How to play:</strong> Drag the corners A, B, C or the whole triangle. Switch between the two puzzles, turn on the hint, and try the honest drawing.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="-30 -30 460 360" role="group" aria-label="Triangle ABC with circles drawn on AB and AC"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="group">
+      <label><input type="radio" name="fallacy" value="1" checked> Two perpendiculars</label>
+      <label><input type="radio" name="fallacy" value="2"> Two lines through B and C</label>
+    </div>
+    <div class="group">
+      <label><input id="namesBox" type="checkbox" checked> Show names</label>
+      <label><input id="hintBox" type="checkbox"> Show hint</label>
+      <label><input id="honestBox" type="checkbox"> Honest drawing</label>
+      <button id="resetBtn" type="button" class="primary">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Draw circles on <code>AB</code> and <code>AC</code> as diameters. Line <code>BC</code> meets the first circle again at <code>D</code> and the second at <code>E</code>. An angle inscribed in a semicircle is a right angle (<a class="wiki-term" data-wiki="Thales%27s_theorem" href="https://en.wikipedia.org/wiki/Thales%27s_theorem" target="_blank" rel="noopener">Thales's theorem</a>), so <code>ADB</code> and <code>AEC</code> are both right. Two perpendiculars from <code>A</code> to <code>BC</code>?</p>
+
+      <h2>The second puzzle</h2>
+      <p>The two circles also meet at a second point <code>K</code>. By the same theorem angles <code>AKB</code> and <code>AKC</code> are right, so <code>KB</code> and <code>KC</code> make one straight line. That would be a second straight line through <code>B</code> and <code>C</code>, besides <code>BC</code> itself.</p>
+
+      <h2>One point, not three</h2>
+      <p>Both puzzles fall to the same fact. Since angles <code>AKB</code> and <code>AKC</code> are right, <code>K</code> lies on line <code>BC</code>, and it is the foot of the perpendicular from <code>A</code>. Both circles pass through that foot, so <code>D</code>, <code>E</code> and <code>K</code> are all the same point. There is one perpendicular and one line through <code>B</code> and <code>C</code>. The logic test checked this on thousands of random triangles.</p>
+
+      <h2>How the picture cheats</h2>
+      <p>The original applet moved each circle's centre 5 pixels sideways, along the perpendicular bisector of <code>AB</code> or <code>AC</code>. The circles still pass through <code>A</code>, <code>B</code> and <code>C</code>, so the change is hard to see, but <code>AB</code> and <code>AC</code> are no longer diameters. The angles at <code>D</code> and <code>E</code> are then a little off (Show hint measures them), and the three points come apart. This kind of wrong figure is a classic route to a <a class="wiki-term" data-wiki="Mathematical_fallacy" href="https://en.wikipedia.org/wiki/Mathematical_fallacy" target="_blank" rel="noopener">mathematical fallacy</a>. Tick Honest drawing to see the true figure.</p>
+
+      <p class="tip">Turn on the hint and drag A. When do the angles come closest to 90 degrees?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Fallacies/TwoFallacies.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="two-perpendiculars-core.js"></script>
+<script src="two-perpendiculars.js"></script>
+</body>
+</html>

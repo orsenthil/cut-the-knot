@@ -2407,5 +2407,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "two-perpendiculars",
+      title: "Two Perpendiculars From a Point to a Line",
+      blurb: "Circles on two sides of a triangle seem to give two different perpendiculars from one point to one line. Where is the catch?",
+      tags: ["paradoxes", "logic", "curves"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
