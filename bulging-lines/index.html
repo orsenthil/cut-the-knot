@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bulging Lines &mdash; coolmaths</title>
+<meta name="description" content="The grey lines across a grid of circles look as though they bend. Are they really curved? Drag the see-through top layer over the bottom one and see the straight lines line up.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bulging-lines/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Bulging Lines">
+<meta property="og:description" content="The grey lines across a grid of circles look as though they bend. Are they really curved? Drag the see-through top layer over the bottom one and see the straight lines line up.">
+<meta property="og:url" content="https://coolmaths.ai/bulging-lines/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.5rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .square { stroke: none; }
+  #board .dot { stroke: none; }
+  #board .gridline { fill: none; stroke-width: 1; }
+  /* The illusion needs its own four greys: they are the picture, not the
+     site's chrome. Their order changes with the colour setting. */
+  #board .s0 { fill: #808080; stroke: #808080; }
+  #board .s1 { fill: #c0c0c0; stroke: #c0c0c0; }
+  #board .s2 { fill: #ffffff; stroke: #ffffff; }
+  #board .s3 { fill: #000000; stroke: #000000; }
+  /* The applet's top layer uses new Color(r, g, b, 128): about half opaque. */
+  #board .geom-layer-top { fill-opacity: 0.502; stroke-opacity: 0.502; }
+  #board .base-mark { fill: var(--accent); opacity: 0.65; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  .controls { gap: 0.5rem 1rem; max-width: 100%; }
+  .controls label { flex-wrap: wrap; white-space: normal; max-width: 100%; }
+  .controls select { max-width: 100%; }
+  .controls input[type="range"] { width: 8rem; max-width: 42vw; }
+  .controls output { min-width: 2em; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="bulging-lines" data-kind="demo">
+<main id="main">
+  <h1>Bulging Lines</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a grid of squares and circles crossed by straight lines. The lines can look bent even though they are not.<br>
+    <strong>How to play:</strong> Choose a colour order and a dot size, then drag the dot in the middle to slide the see-through top layer. You can focus that dot and use the arrow keys too.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 360" role="group"
+         aria-label="A grid of squares and circles crossed by straight lines, with a draggable dot that slides a see-through copy over the picture"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="order">Colours <select id="order" aria-label="Colour order: G is grey, L is light grey, W is white, B is black"></select></label>
+    <label for="radius">Dot radius <input id="radius" type="range" min="2" max="19" step="1" value="10" aria-label="Radius of the circles, from 2 to 19"><output id="radiusVal" for="radius">10</output></label>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the colour order, dot size and top-layer position">Reset the picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Akiyoshi Kitaoka's picture makes your eyes certain that the lines curve. The surprising thing is that no line in the drawing bends at all. A second, see-through copy of the picture sits on top of the first; sliding it makes the straight lines easy to pick out.</p>
+
+      <h2>The exact claim: every line is straight</h2>
+      <p>Eight upright and eight flat lines are drawn across the grid. An upright line is drawn from one fixed <code>x</code> to the same <code>x</code>; a flat one is drawn from one fixed <code>y</code> to the same <code>y</code>. The gaps between neighbours are all exactly one square wide, <code>Side = floor(min(width, height) / 10)</code>. Nothing in the drawing code ever computes a curve. The logic test checks all <code>24 × 18 × 6 × 4 = 10,368</code> colour-order, radius, offset and canvas combinations against a second reading of the applet's bytecode: the lines are <a class="wiki-term" data-wiki="Line_(geometry)" href="https://en.wikipedia.org/wiki/Line_(geometry)" target="_blank" rel="noopener">straight</a> and equally spaced in every one.</p>
+
+      <h2>Two copies, one shifted</h2>
+      <p>The applet paints the picture once, then paints it again with colours that have alpha <code>128</code> instead of <code>255</code> — about half transparent. The second copy is moved by two whole numbers, <code>dx</code> and <code>dy</code>, from the spot where you drag. Moving it is a <a class="wiki-term" data-wiki="Translation_(geometry)" href="https://en.wikipedia.org/wiki/Translation_(geometry)" target="_blank" rel="noopener">translation</a>: every square, circle and line moves by the same <code>(dx, dy)</code>, and none changes colour or shape. The test compares the two copies shape by shape over 1,296 offsets and colour orders, and they always match exactly. Drag the dot far enough and the straight lines of the top copy lie across the bottom copy, so your eye can follow them.</p>
+
+      <h2>Squares, circles and the four letters</h2>
+      <p>The bottom of the picture is a <code>9 × 9</code> grid. Square <code>(i, j)</code> uses the first colour when <code>i + j</code> is even and the second when it is odd, a plain <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a> test. The circles sit at the <code>8 × 8</code> inner grid points with diameter <code>2 × radius</code>; their black-and-white pattern comes from the applet's own table, whose two diagonals of four-by-four blocks have opposite phases. The 24 colour buttons are all the <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">permutations</a> of G (grey), L (light grey), W (white) and B (black). The radius slider covers the same <code>2…19</code> values as the original scrollbar.</p>
+
+      <h2>What the page says, and what a test can check</h2>
+      <p>The original page says the lines seem to bulge away from the centre with <code>GLWB</code> and towards it with <code>GLBW</code>. That is a claim about what people see, so no program can prove or disprove it; both orders have exactly the same straight-line geometry here, and a test confirms it. What the test can check is the geometric claim behind the trick: the lines are straight, the two copies differ only by a translation, and the half-transparent copy really is half transparent. See the <a class="wiki-term" data-wiki="Optical_illusion" href="https://en.wikipedia.org/wiki/Optical_illusion" target="_blank" rel="noopener">optical illusion</a> with your own eyes by switching between those two orders.</p>
+
+      <p class="tip">Try <code>GLWB</code> with radius 10, then switch to <code>GLBW</code> and drag the dot one square (about 32 steps) to the right: the circles of the top copy will sit over a new set of lines.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BulgingLines.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bulging-lines-core.js"></script>
+<script src="bulging-lines.js"></script>
+</body>
+</html>
