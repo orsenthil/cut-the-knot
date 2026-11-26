@@ -892,6 +892,9 @@ const GAMES = {
     await page.selectOption("#puzzleIn", "sq");
     await page.selectOption("#aIn", { index: 1 }); await page.selectOption("#opIn", "+"); await page.selectOption("#bIn", { index: 2 }); await page.click("#addBtn");
   },
+  "determinant-elimination": async (page) => {
+    await page.click("#stepBtn"); await page.click("#stepBtn");
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Determinant by Elimination &mdash; coolmaths</title>
+<meta name="description" content="A determinant is a sum of n! products, yet it takes only about n³ steps to find. Step through Gaussian elimination and watch the permanent fail to keep up.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/determinant-elimination/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Determinant by Elimination">
+<meta property="og:description" content="A determinant is a sum of n! products, yet it takes only about n³ steps to find. Step through Gaussian elimination and watch the permanent fail to keep up.">
+<meta property="og:url" content="https://coolmaths.ai/determinant-elimination/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+#stage { width: 100%; max-width: 40rem; padding: 0.8rem; }
+  .scroll { overflow-x: auto; }
+  #matrix { border-collapse: separate; border-spacing: 0.25rem; margin: 0 auto; font-family: var(--mono); font-size: 1rem; }
+  #matrix td { min-width: 2.6rem; padding: 0.35rem 0.4rem; text-align: center; border-radius: 0.4rem; background: var(--card); border: 1px solid var(--border); white-space: nowrap; }
+  #matrix tr.changed td { background: var(--highlight); }
+  #matrix tr.source td { background: var(--accent-soft); }
+  #matrix td.zero { color: var(--muted); }
+  #matrix td.pivot { outline: 3px solid var(--accent); outline-offset: -3px; }
+  #facts { margin: 0.8rem 0 0; padding-left: 1.2rem; overflow-wrap: anywhere; }
+  #facts li { margin: 0.25rem 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls select { min-height: 2.75rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="determinant-elimination" data-kind="demo">
+<main id="main">
+  <h1>Determinant by Elimination</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#vp-vnp">VP ≠ VNP</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch a computer find the determinant of a square of numbers in a few dozen steps instead of adding up hundreds of products.<br>
+    <strong>How to play:</strong> Press Step to do one row operation at a time, or Run to end. Try a bigger square, or a new one.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="scroll"><table id="matrix" aria-label="The matrix at this step"></table></div>
+    <ul id="facts" aria-live="polite"></ul>
+  </div>
+
+  <div class="controls">
+    <button id="stepBtn" type="button" class="primary">Step</button>
+    <button id="endBtn" type="button">Run to end</button>
+    <button id="newBtn" type="button">New matrix</button>
+    <label>Size <select id="sizeIn"><option value="3">3 × 3</option><option value="4" selected>4 × 4</option><option value="5">5 × 5</option><option value="6">6 × 6</option></select></label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The determinant of an <code>n &times; n</code> square is a sum of <code>n!</code> signed products, and 20! is about 2.4 &times; 10<sup>18</sup>. Yet computers find determinants of thousands of rows in moments. The trick is <a class="wiki-term" data-wiki="Gaussian_elimination" href="https://en.wikipedia.org/wiki/Gaussian_elimination" target="_blank" rel="noopener">Gaussian elimination</a>.</p>
+
+      <h2>Row operations</h2>
+      <p>Subtracting a multiple of one row from another does not change the determinant. The extra products it creates come in pairs with opposite signs and cancel. Swapping two rows only flips the sign. So make zeros below the diagonal, column by column. Once the square is triangular, only one of the <code>n!</code> products survives: the diagonal. Its product is the determinant.</p>
+
+      <h2>Counting the work</h2>
+      <p>Clearing column <code>c</code> takes one division and <code>n &minus; c &minus; 1</code> multiplications for each row below it. In all, that is about <code>n&sup3;/3</code> operations: 23 for a 4 &times; 4 square against 72 for the products, and 2,679 for 20 &times; 20 against about 4.6 &times; 10<sup>19</sup>. The logic test checked the count, and checked that elimination and the full sum give the same determinant for 160 squares, exactly, with fractions.</p>
+
+      <h2>No such luck for the permanent</h2>
+      <p>The permanent has no minus signs, so nothing cancels: watch its value change at every step above. No row trick is known that keeps the permanent, and no method at all is known that is not exponential. Divisions are not essential either. Stuart Berkowitz found in 1984 a way to compute the determinant with only additions and multiplications in polynomially many steps (<a href="https://www.sciencedirect.com/science/article/pii/0020019084900188" target="_blank" rel="noopener">the paper</a>). So the determinant has small arithmetic circuits: it is in VP.</p>
+
+      <p class="tip">Try a 6 &times; 6 square: at most 75 operations instead of 3,600 (fewer when zeros are already in place).</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original demo for coolmaths, after Gil Fried's article
+    <a href="https://www.friedgil.com/vpvnp" target="_blank" rel="noopener">What VP &ne; VNP Means (In 3 Minutes)</a>
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="determinant-elimination-core.js"></script>
+<script src="determinant-elimination.js"></script>
+</body>
+</html>

@@ -2049,6 +2049,11 @@ check("arithmetic-circuits: (x + y)² puzzle, first gate x + y", read["arithmeti
   const ac = at("arithmetic-circuits", { puzzle: "x8", gates: [["*", 1, 1], ["*", 2, 2], ["*", 3, 3]] });
   check("arithmetic-circuits: x⁸ in three squarings is at par", ac.atPar === true && ac.targetReachedAt === "g3");
 }
+check("determinant-elimination: two steps in, the permanent has moved", read["determinant-elimination"]?.step === "2 of 7" && read["determinant-elimination"].permanentNow !== read["determinant-elimination"].permanentAtStart);
+{
+  const de = at("determinant-elimination", { n: 3, seed: 1, step: 0 });
+  check("determinant-elimination: a 3 x 3 at the start", de.size === 3 && de.lastOperation === "start" && de.operationsSoFar === 0);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

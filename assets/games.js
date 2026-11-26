@@ -2445,5 +2445,13 @@ window.COOLMATHS = {
       tags: ["vp-vnp", "algebra", "algorithms"],
       level: 2,
     },
+    {
+      slug: "determinant-elimination",
+      title: "Determinant by Elimination",
+      blurb: "A determinant is a sum of n! products, yet it takes only about n³ steps to find. Step through Gaussian elimination and watch the permanent fail to keep up.",
+      tags: ["vp-vnp", "algorithms", "algebra"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

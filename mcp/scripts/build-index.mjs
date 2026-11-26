@@ -458,6 +458,7 @@ const CORE_GLOBALS = {
   "det-and-perm/det-and-perm-core.js": ["DetAndPermCore"],
   "rook-placements/rook-placements-core.js": ["RookPlacementsCore"],
   "arithmetic-circuits/arithmetic-circuits-core.js": ["ArithmeticCircuitsCore"],
+  "determinant-elimination/determinant-elimination-core.js": ["DeterminantEliminationCore"],
 };
 
 const games = [];
