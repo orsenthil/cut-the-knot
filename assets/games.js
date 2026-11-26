@@ -2244,5 +2244,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "sierpinski-dihedral",
+      title: "Sierpinski's Gasket and Dihedral Symmetry",
+      blurb: "One rule, applied to a grid again and again, draws Sierpinski triangles. Why is the picture so symmetric when the rule is not?",
+      tags: ["sequences", "divisibility", "counting"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

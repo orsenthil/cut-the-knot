@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sierpinski's Gasket and Dihedral Symmetry &mdash; coolmaths</title>
+<meta name="description" content="One rule, applied to a grid again and again, draws Sierpinski triangles. Why is the picture so symmetric when the rule is not?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/sierpinski-dihedral/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Sierpinski's Gasket and Dihedral Symmetry">
+<meta property="og:description" content="One rule, applied to a grid again and again, draws Sierpinski triangles. Why is the picture so symmetric when the rule is not?">
+<meta property="og:url" content="https://coolmaths.ai/sierpinski-dihedral/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; height: auto; border-radius: 8px; }
+  #stepBtns { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem; margin-top: 0.6rem; }
+  #stepBtns button { min-width: 2.75rem; min-height: 2.75rem; }
+  .controls fieldset { display: flex; flex-wrap: wrap; gap: 0.2rem 0.8rem; align-items: center; border: 0; margin: 0; padding: 0; }
+  .controls legend { float: left; margin-right: 0.4rem; color: var(--muted); font-size: 0.9rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls input[type="number"] { width: 5rem; min-height: 2.75rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="sierpinski-dihedral" data-kind="demo">
+<main id="main">
+  <h1>Sierpinski's Gasket and Dihedral Symmetry</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#divisibility">Divisibility</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Start with one coloured square in the corner and let a simple rule spread it over the grid. Watch the pattern it makes.<br>
+    <strong>How to play:</strong> Press +1 to take a step, or a bigger number for several. Try Add or Replace, and 2 or 3 prongs.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="640" height="640" aria-label="A grid of squares"></canvas>
+    <div id="stepBtns" role="group" aria-label="Take steps">
+      <button type="button" class="primary" data-steps="1">+1</button>
+      <button type="button" data-steps="2">+2</button>
+      <button type="button" data-steps="3">+3</button>
+      <button type="button" data-steps="4">+4</button>
+      <button type="button" data-steps="8">+8</button>
+      <button type="button" data-steps="16">+16</button>
+      <button type="button" data-steps="32">+32</button>
+      <button type="button" data-steps="1000">To corner</button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <fieldset>
+      <legend>Algorithm</legend>
+      <label><input type="radio" name="algo" value="add" checked> Add</label>
+      <label><input type="radio" name="algo" value="replace"> Replace</label>
+    </fieldset>
+    <fieldset>
+      <legend># prongs</legend>
+      <label><input type="radio" name="prongs" value="2" checked> 2</label>
+      <label><input type="radio" name="prongs" value="3"> 3</label>
+    </fieldset>
+    <label><input id="numBox" type="checkbox"> Show numbers</label>
+    <label>N <input id="nInput" type="number" min="2" max="128" step="1" value="32"></label>
+    <label>Modulo <input id="mInput" type="number" min="2" max="32" step="1" value="2"></label>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Number the rows <code>n</code> and the columns <code>m</code> from 0 at the top-left corner, which starts with a 1. At every step all cells change together:</p>
+      <blockquote><code>Add, 2 prongs:  S(n,m) + S(n&minus;1,m) + S(n,m&minus;1)</code><br><code>Replace, 2 prongs:  S(n&minus;1,m) + S(n,m&minus;1)</code><br><code>Add, 3 prongs:  S(n,m) + S(n&minus;1,m&minus;1) + S(n&minus;1,m) + S(n,m&minus;1)</code></blockquote>
+      <p>and the picture colours each cell by its value modulo <code>M</code>. Modulo 2 the coloured cells form the <a class="wiki-term" data-wiki="Sierpi%C5%84ski_triangle" href="https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle" target="_blank" rel="noopener">Sierpinski gasket</a>.</p>
+
+      <h2>Replace is Pascal's triangle</h2>
+      <p>With Replace each cell is the sum of the cell above and the cell to the left, the rule of <a class="wiki-term" data-wiki="Pascal%27s_triangle" href="https://en.wikipedia.org/wiki/Pascal%27s_triangle" target="_blank" rel="noopener">Pascal's triangle</a>, tipped on its side: cell <code>(n, m)</code> holds <code>C(n+m, n)</code> once the growing edge has passed it. On a grid of size <code>2<sup>p</sup></code>, run to the corner modulo 2, Add draws exactly the same picture; on other sizes the two are quite different. The test checked both for every size up to 64.</p>
+
+      <h2>A symmetry that should not be there</h2>
+      <p>The Add rule looks lopsided, yet at every step its triangle of colours is unchanged by the six symmetries of an equilateral triangle (once it is sheared into one). The reason is a formula: after <code>N</code> steps cell <code>(n, m)</code> holds</p>
+      <blockquote><code>C(N&minus;m, n) &middot; C(N, m) = N! / (n! m! k!)</code>, with <code>k = N &minus; n &minus; m</code>,</blockquote>
+      <p>a <a class="wiki-term" data-wiki="Multinomial_theorem" href="https://en.wikipedia.org/wiki/Multinomial_theorem" target="_blank" rel="noopener">multinomial coefficient</a>, which does not care which of <code>n</code>, <code>m</code>, <code>k</code> is which. With 3 prongs the cell holds <code>C(N, n) &middot; C(N, m)</code>, and the square picture has the eight symmetries of a square (the <a class="wiki-term" data-wiki="Dihedral_group" href="https://en.wikipedia.org/wiki/Dihedral_group" target="_blank" rel="noopener">dihedral group</a>).</p>
+
+      <h2>What was checked</h2>
+      <p>The logic test ran every rule on grids of 2 to 24 cells, for many moduli, step by step to the edge, and found the page's formulas exact in every cell, the triangle's six symmetries and the square's eight at every step, and Replace with 3 prongs giving the Delannoy numbers.</p>
+
+      <p class="tip">Set N to 27 and Modulo to 3, choose Add and run To corner. Then try N = 32 with Modulo 2 and compare Add and Replace.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/SierpinskiGasket.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="sierpinski-dihedral-core.js"></script>
+<script src="sierpinski-dihedral.js"></script>
+</body>
+</html>
