@@ -112,6 +112,9 @@ check("the 7 and 11 minute glasses boil a 15 minute egg in 3 flips", solved.flip
   const vp = await list({ tag: "vp-vnp", limit: 100 });
   const horner = vp.games.find((g) => g.slug === "horner-method");
   check("a tag lists games that carry it hidden, and says so", vp.total >= 11 && horner && !horner.tags.includes("vp-vnp") && horner.hiddenTags.includes("vp-vnp"));
+  const bs = await list({ tag: "black-scholes", limit: 100 });
+  const walk = bs.games.find((g) => g.slug === "random-walk");
+  check("Black-Scholes lists its six pages and five hidden-tag games", bs.total >= 11 && walk && walk.hiddenTags.includes("black-scholes"));
   check("an unknown tag is an error", (await call("list_games", { tag: "nonsense" })).isError);
   check("past the end is an empty page", (await list({ offset: 100000 })).games.length === 0);
 
