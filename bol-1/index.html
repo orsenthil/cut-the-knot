@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BOL1 &mdash; coolmaths</title>
+<meta name="description" content="Two circles touch at A. Drag their centres and parallel diameters: do A, D and F always lie on one straight line?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bol-1/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="BOL1">
+<meta property="og:description" content="Two circles touch at A. Drag their centres and parallel diameters: do A, D and F always lie on one straight line?">
+<meta property="og:url" content="https://coolmaths.ai/bol-1/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .bol-circle { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .diameter { fill: none; stroke: var(--accent); stroke-width: 3; }
+  #board .ray { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-opacity: 0.65; }
+  #board .marked-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .hint-line { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 19px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .center-label { fill: var(--accent); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="bol-1" data-kind="demo">
+<main id="main">
+  <h1>BOL1</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the dots to change two circles that meet at A and watch their parallel diameters.<br>
+    <strong>How to play:</strong> Drag A, O1, O2 or C with a mouse or finger, or focus a dot and use the arrow keys. Press Check the claim to test what you see.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 450" role="group"
+         aria-label="Two circles that meet at A, each with a diameter, and four draggable points"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the circles to their starting positions">Reset picture</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Show or hide the names of the points">Hide names</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show or hide the proof hint">Show hint</button>
+    <button id="checkBtn" type="button" aria-label="Check whether A, D and F lie on one line">Check the claim</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two circles share the point A. Each has a <a class="wiki-term" data-wiki="Diameter" href="https://en.wikipedia.org/wiki/Diameter" target="_blank" rel="noopener">diameter</a> drawn through it, and the two diameters are <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a>. Archimedes claimed that one end of each diameter and the meeting point A always fall on a single line. Drag the dots and see whether that is true.</p>
+
+      <h2>The claim in the Book of Lemmas</h2>
+      <p>Archimedes' Proposition 1 says: <em>If two circles touch at A, and CD, EF be parallel diameters in them, ADF is a straight line.</em> The applet draws the point C on the small circle, puts D opposite it, then draws the large circle's diameter EF parallel to CD. It keeps E on the same side as C and F opposite. The logic test checks this at 240 tangent circles with many sizes and angles: A, D and F line up every time, and so do A, C and E.</p>
+
+      <h2>One scaling explains it</h2>
+      <p>When the circles touch, their centres and A lie on one ray. Write the small radius as <code>r</code>, the large one as <code>R</code>, and let <code>u</code> point along the line of centres and <code>v</code> along the two diameters. Then</p>
+      <blockquote><code>D = A + r(u − v)</code> and <code>F = A + R(u − v)</code>.</blockquote>
+      <p>Both are the same direction from A, just scaled by <code>R/r</code>. This is a <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothety</a> centred at A: it fixes A and carries the small circle onto the large one, so it carries C to E and D to F. The test also checks the longer proof printed on the page: with H on EF and DH parallel to the line of centres, <code>O1H = O2D = O2A</code> and <code>HF = O1O2 = DH</code>, two pairs of <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles triangles</a>.</p>
+
+      <h2>Outside and off the line</h2>
+      <p>The page adds that the same proof works when the circles touch from the outside. There the centres lie on opposite sides of A, and the applet's names pair differently: the straight triples are A, C, F and A, D, E, while A, D and F are not on one line. The test checks both pairings. Finally, if you drag O2 away from the line through A and O1, the circles cross instead of touching: the claim's condition is gone and the three points need not line up.</p>
+
+      <p class="tip">Try Show hint, then drag C all the way around: the two diameters turn together and the straight line through A follows them.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BookOfLemmas/BOL1.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bol-1-core.js"></script>
+<script src="bol-1.js"></script>
+</body>
+</html>
