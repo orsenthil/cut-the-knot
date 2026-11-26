@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zeros and Nines &mdash; coolmaths</title>
+<meta name="description" content="A number S and its multiples are written in a table. Does every column really have to contain a 0 or a 9?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/zeros-and-nines/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Zeros and Nines">
+<meta property="og:description" content="A number S and its multiples are written in a table. Does every column really have to contain a 0 or a 9?">
+<meta property="og:url" content="https://coolmaths.ai/zeros-and-nines/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 46rem; padding: 0.6rem; }
+  #tableWrap { width: 100%; max-width: 100%; overflow-x: auto; }
+  #table { border-collapse: collapse; margin: 0 auto; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  #table th, #table td { border: 1px solid var(--border); padding: 0.15rem 0.2rem; text-align: center; min-width: 1.5rem; font-size: 1rem; }
+  #table thead th { background: var(--surface-2); color: var(--muted); font-weight: 500; }
+  #table tbody th { background: var(--surface); color: var(--muted); font-weight: 500; white-space: nowrap; padding-inline: 0.4rem; }
+  #table tr.source td { color: var(--accent); font-weight: 700; }
+  #table td.hit, #table th.hit { background: var(--highlight); }
+  #table td.gridline, #table th.gridline { border-left: 2px solid var(--border-strong); }
+  #table button { font: inherit; min-width: 1.9rem; min-height: 2.5rem; border: 1px solid transparent; border-radius: 8px; background: transparent; color: inherit; cursor: pointer; }
+  #table button:hover { background: var(--accent-soft); }
+  #table button:focus-visible { outline: 3px solid var(--focus); outline-offset: -2px; }
+  #table button.colBtn { min-width: 2.1rem; font-size: 0.9rem; color: var(--muted); }
+  #table button.digit { color: var(--accent); font-weight: 700; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls input[type="number"] { width: 4.5rem; min-height: 2.75rem; font-size: 1rem; }
+  .controls input[type="checkbox"] { width: 1.2rem; height: 1.2rem; }
+</style>
+</head>
+<body data-game="zeros-and-nines" data-kind="demo">
+<main id="main">
+  <h1>Zeros and Nines</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#place-value">Place Value</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Write a number and its multiples in a table, then look for a 0 or a 9 in one column.<br>
+    <strong>How to play:</strong> Click the right or left half of a blue digit to change it, then press Check column. You can also use the arrow keys.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="tableWrap" role="region" aria-label="Table of the number and its multiples; the blue digits can be edited" tabindex="0">
+      <table id="table"></table>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label><input id="digitsIn" type="number" min="1" max="18" step="1" value="6"> Number of digits</label>
+    <label><input id="baseIn" type="number" min="3" max="36" step="1" value="10"> Base</label>
+    <label><input id="autoIn" type="checkbox"> Autonomous digits</label>
+    <label><input id="colsIn" type="checkbox"> Show columns</label>
+    <button id="newBtn" type="button" class="primary">New number</button>
+    <label>Column <input id="colIn" type="number" min="0" max="6" step="1" value="0" aria-label="Column to check, counting from the right"></label>
+    <button id="checkBtn" type="button">Check column</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Write any number S, then its multiples 2S, 3S and so on underneath. The columns look messy, yet something always turns up. Try editing the blue digits and checking a column for yourself.</p>
+
+      <h2>Reading the table</h2>
+      <p>The blue top row is S. Beneath it are 2S through <code>base &times; S</code>, all written in the chosen <a class="wiki-term" data-wiki="Positional_notation" href="https://en.wikipedia.org/wiki/Positional_notation" target="_blank" rel="noopener">positional system</a>. Bases above ten use A for 10, B for 11 and so on. Columns are counted from the right: the units column is column 0, the tens column is column 1. Where a multiple is too short to reach a column, we fill the gap with a 0, just as the puzzle suggests.</p>
+
+      <h2>Why a 0 or a 9 must appear</h2>
+      <p>Among the ten rows S, 2S, &hellip;, 10S, suppose no digit in a column is 0 or 9. Only the eight digits 1 through 8 are left, so two rows must have the same digit there: this is the <a class="wiki-term" data-wiki="Pigeonhole_principle" href="https://en.wikipedia.org/wiki/Pigeonhole_principle" target="_blank" rel="noopener">pigeonhole principle</a>. Say they are aS and bS with a &gt; b. Their difference <code>(a &minus; b)S</code> is one of the rows in the table, because <code>a &minus; b</code> lies between 1 and 9. In that column, <code>aS &minus; bS</code> gives 0 when nothing is borrowed from the column to the right, and 9 when something is borrowed. Either way a 0 or a 9 is there after all.</p>
+
+      <h2>Where the warning goes wrong</h2>
+      <p>The page warns that for S = 1050 through 1089 (and 2050 through 2089, and so on) the hundreds column has neither 0 nor 9. That is true of the <em>nine</em> multiples 2S through 10S: for 1050 their hundreds digits are 1, 1, 2, 2, 3, 3, 4, 4, 5. It stops being true once the blue S row is included: S itself has a 0 there. The proof needs that row, since the matching pair can differ by 1. The logic test checked every column of S, 2S, &hellip;, 10S for all S up to 20,000 in base 10, and up to 150 in every base from 3 to 36; in base r the guaranteed pair is 0 or r &minus; 1. It also checked that all 1,600 hundreds-column exceptions below 20,000 are rescued by the S row.</p>
+
+      <p class="tip">Set the base to 3 and check a column: which two digits must appear? Then try S = 1050 and compare the hundreds column with and without the blue row.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/ZerosAndNines.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="zeros-and-nines-core.js"></script>
+<script src="zeros-and-nines.js"></script>
+</body>
+</html>
