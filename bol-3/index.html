@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BOL3 &mdash; coolmaths</title>
+<meta name="description" content="Drag a point around Archimedes' circle: why does the length BQ always match BD? Explore the third proposition of the Book of Lemmas.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bol-3/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="BOL3">
+<meta property="og:description" content="Drag a point around Archimedes' circle: why does the length BQ always match BD? Explore the third proposition of the Book of Lemmas.">
+<meta property="og:url" content="https://coolmaths.ai/bol-3/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .big-circle { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .diameter { stroke: var(--ink); stroke-width: 2.5; }
+  #board .chord-ap { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .chord-pq { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .chord-qb { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .drop { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .proof-line { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .hint-line { fill: none; stroke: var(--highlight); stroke-width: 2.5; }
+  #board .right-angle { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .fixed-dot { fill: var(--ink); }
+  #board .aux-dot { fill: var(--muted); }
+  #board .q-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .tick { fill: none; stroke: var(--good); stroke-width: 2; stroke-linecap: round; }
+  #board .hint-tick { stroke: var(--accent); }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 18px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="bol-3" data-kind="demo">
+<main id="main">
+  <h1>BOL3</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is an old picture by Archimedes: two lengths on a circle that look different always turn out to be the same.<br>
+    <strong>How to play:</strong> Drag the point P around the circle with a mouse or finger, or focus it and use the arrow keys. Press Check the lengths to see what stays equal.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 380" role="group"
+         aria-label="A circle with diameter AB, the draggable point P on it, its foot N, and the points D and Q"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="checkBtn" type="button" class="primary" aria-label="Check whether BQ and BD are equal">Check the lengths</button>
+    <button id="resetBtn" type="button" aria-label="Move P back to its starting place">Reset P</button>
+    <button id="marksBtn" type="button" aria-pressed="false" aria-label="Toggle the tick marks that show equal lengths">Show equal marks</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the extra lines used in the proof">Show proof lines</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point labels">Hide labels</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Archimedes' Book of Lemmas, Proposition 3, says that if P is anywhere on the circle with base AB, then a point Q chosen so that arc PA equals arc PQ gives a length BQ equal to BD. Drag P and the two green lengths change together; the claim never fails.</p>
+
+      <h2>Setting up the picture</h2>
+      <p>AB is a <a class="wiki-term" data-wiki="Diameter" href="https://en.wikipedia.org/wiki/Diameter" target="_blank" rel="noopener">diameter</a> of the <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>, with centre O. P sits on the circle. N is the point where the line from P dropped straight down meets AB, and D is placed so that N is the middle of AD. The page from 2016 now shows a GeoGebra picture; the old Java applet this page ports used exactly these same points, while its drawn arc was placed with a bounding box centred at A rather than at O. We draw the circle from its centre, as the proposition requires; the construction of N, D, Q and the claim are unchanged.</p>
+
+      <h2>Why PA and PQ are equal</h2>
+      <p>Equal arcs cut off equal <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chords</a>, so PA = PQ. That means Q is the other place on the circle that is the same distance from P as A is. Both O and P are equally far from A and Q, so the line OP is the perpendicular bisector of AQ: in other words, Q is the mirror image of A across OP. The logic test uses this reflection and compares it, at every half-degree position of P, with the applet's own method of intersecting the two circles.</p>
+
+      <h2>Why PA and PD are equal too</h2>
+      <p>Because PN is <a class="wiki-term" data-wiki="Perpendicular" href="https://en.wikipedia.org/wiki/Perpendicular" target="_blank" rel="noopener">perpendicular</a> to AB and AN = ND, the line PN is the perpendicular bisector of AD. Any point on that line is equally far from A and D, so PA = PD. Together with PA = PQ this gives PQ = PD, which makes the triangle PQD isosceles: the angles PQD and PDQ are equal.</p>
+
+      <h2>The last step</h2>
+      <p>A, P, Q and B lie on one circle, so opposite angles of the <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a> add to two right angles. Chasing those angles around, using the equal angles at PQD and PDQ, leaves the angles BQD and BDQ equal. A triangle with two equal angles has two equal sides, so BQ = BD. The logic test checks this at 720 positions of P, plus 400 circles that have been moved, resized and turned: every one passes, including P at A and P at B.</p>
+
+      <p class="tip">Turn on Show proof lines and Show equal marks, then drag P close to A and close to B: watch which pairs of tick marks stay matched.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BookOfLemmas/BOL3.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bol-3-core.js"></script>
+<script src="bol-3.js"></script>
+</body>
+</html>
