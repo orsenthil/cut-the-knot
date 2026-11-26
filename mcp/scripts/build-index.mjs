@@ -440,6 +440,7 @@ const CORE_GLOBALS = {
   "soroban/soroban-core.js": ["SorobanCore"],
   "suan-pan/suan-pan-core.js": ["SuanPanCore"],
   "sorts/sorts-core.js": ["SortsCore"],
+  "spigot-for-pi/spigot-for-pi-core.js": ["SpigotForPiCore"],
 };
 
 const games = [];

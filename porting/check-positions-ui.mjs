@@ -816,6 +816,11 @@ const GAMES = {
     await page.selectOption("#methodSel", "3");
     for (let i = 0; i < 4; i++) await page.click("#stepBtn");
   },
+  "spigot-for-pi": async (page) => {
+    await page.fill("#nIn", "50");
+    await page.click("#computeBtn");
+    await page.waitForFunction(() => document.getElementById("status").classList.contains("done"));
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

@@ -2308,5 +2308,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "spigot-for-pi",
+      title: "The Spigot Algorithm for Pi",
+      blurb: "Write pi as 2.2222... in a strange number system, then convert it to decimal one digit at a time. How do you print a digit before you know a carry will not change it?",
+      tags: ["algorithms", "place-value", "series"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

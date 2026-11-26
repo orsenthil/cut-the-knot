@@ -1957,6 +1957,11 @@ check("sorts: four shellsort steps on 20 random numbers", read.sorts?.method ===
   const so = at("sorts", { method: 0, order: 2, n: 10, same: false, steps: 45, swaps: 45, finished: true });
   check("sorts: insertion sort on 10 descending numbers takes 45 steps", so.totalSteps === 45 && so.finished === true && so.array === "10 numbers, Descending");
 }
+check("spigot-for-pi: 50 digits done, ending ...93993751", read["spigot-for-pi"]?.finished === true && read["spigot-for-pi"].lastDigits.endsWith("93993751") && read["spigot-for-pi"].placesInTheArray === 167);
+{
+  const sp = at("spigot-for-pi", { n: 1000, chunk: 5, font: 15, digitsSoFar: 10, done: false });
+  check("spigot-for-pi: stopped after 10 digits of 1000", sp.lastDigits === "3141592653" && sp.finished === false && sp.placesInTheArray === 3334);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;
