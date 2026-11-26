@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BOL12 &mdash; coolmaths</title>
+<meta name="description" content="Drag T around a circle: when AQ and BP cross at R, does the line from T to R always meet the diameter at a right angle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bol-12/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="BOL12">
+<meta property="og:description" content="Drag T around a circle: when AQ and BP cross at R, does the line from T to R always meet the diameter at a right angle?">
+<meta property="og:url" content="https://coolmaths.ai/bol-12/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circle-full { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .semicircle { fill: var(--accent); fill-opacity: 0.06; stroke: var(--ink); stroke-width: 2.5; }
+  #board .diameter { stroke: var(--ink); stroke-width: 2; }
+  #board .cross-line { stroke: var(--ink); stroke-width: 2; }
+  #board .chord { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .tangent { stroke: var(--accent); stroke-width: 2.5; }
+  #board .perpendicular { stroke: var(--good); stroke-width: 2.5; stroke-dasharray: 6 4; }
+  #board .hint-circle { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 5; }
+  #board .hint-guide { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  #board .right-mark { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .derived-dot { fill: var(--ink); }
+  #board .r-dot { fill: var(--good); }
+  #board .foot-dot { fill: var(--good); }
+  #board .hint-dot { fill: var(--accent); }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .hint-label { fill: var(--accent); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="bol-12" data-kind="demo">
+<main id="main">
+  <h1>BOL12</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#coordinates">Coordinates</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the yellow points and watch the green line: it always meets the diameter at a right angle.<br>
+    <strong>How to play:</strong> Drag T, the centre or the edge point with a mouse or finger, or focus one and use the arrow keys. Press the buttons to show labels, the hint and a check.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A circle with diameter AB, two tangents from T, the lines AQ and BP crossing at R, and the line TR meeting the diameter at M"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the picture to its starting arrangement">Reset picture</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point names">Hide names</button>
+    <button id="statementBtn" type="button" aria-pressed="false" aria-label="Toggle the right-angle marks at M">Show right angles</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the proof hint showing the circle through P, Q and R">Show hint</button>
+    <button id="checkBtn" type="button" aria-label="Check that TR is perpendicular to AB here">Check the claim</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Here is a drawing you can pull apart. Take a diameter AB of a circle, two lines from an outside point T that just touch the circle, and join the touch points crosswise to A and B. The point where those two lines meet always sits directly above T. The live cut-the-knot article now shows this figure as a still picture; the original applet, like this page, let you drag the points.</p>
+
+      <h2>What the picture says</h2>
+      <p>From T, the lines TP and TQ are <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangents</a>: each touches the circle at one point. Join A to Q and B to P; they cross at R. Proposition 12 of <a class="wiki-term" data-wiki="Book_of_Lemmas" href="https://en.wikipedia.org/wiki/Book_of_Lemmas" target="_blank" rel="noopener">Archimedes' Book of Lemmas</a> says that the line from T to R meets the diameter AB at a right angle. M is that meeting point.</p>
+
+      <h2>Put numbers on it</h2>
+      <p>Use <a class="wiki-term" data-wiki="Cartesian_coordinate_system" href="https://en.wikipedia.org/wiki/Cartesian_coordinate_system" target="_blank" rel="noopener">coordinates</a>: put the centre at (0, 0), take radius 1, so A = (−1, 0), B = (1, 0) and T = (u, v) with <code>u² + v² &gt; 1</code>. A point on the circle can be written with one number t as <code>((1−t²)/(1+t²), 2t/(1+t²))</code>. The tangent at it has equation <code>x·X + y·Y = 1</code>, so making T lie on that line gives</p>
+      <blockquote><code>(u + 1)t² − 2v·t + (1 − u) = 0</code>.</blockquote>
+      <p>The two roots t₁ and t₂ belong to P and Q. Their product is <code>(1−u)/(1+u)</code>, and that is all we need.</p>
+
+      <h2>Where R lands</h2>
+      <p>For the point with parameter t, the slope of the line from A is exactly t and the slope of the line from B is exactly <code>−1/t</code>. At <code>x = u</code> the two lines have the same height precisely because <code>t₁·t₂ = (1−u)/(1+u)</code>. So</p>
+      <blockquote><code>R = (u, v ± √(u² + v² − 1))</code>.</blockquote>
+      <p>R and T have the same x-coordinate: the line TR is upright while AB lies flat, which is the proposition. The logic test confirms this on thousands of arrangements, with T above, below and to either side of the circle.</p>
+
+      <h2>Why the lengths match</h2>
+      <p>The height difference between R and T is <code>√(u² + v² − 1)</code>, the same as the tangent length TP. That is the <a class="wiki-term" data-wiki="Power_of_a_point" href="https://en.wikipedia.org/wiki/Power_of_a_point" target="_blank" rel="noopener">power of the point</a> T: <code>TP² = TO² − r²</code>. Hence <code>TP = TQ = TR</code>, and O = 2T − P (P reflected in T) lies on that same circle, which is what the Hint button draws. The page's remark adds that M, P, T and Q are concyclic. A second proof joins AP and BQ at a point that is the triangle's <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a>, making TR an altitude and the right angle immediate.</p>
+
+      <p class="tip">Try putting T almost on the circle or directly above the centre: R shoots far away, but the line through T and R still points straight at the diameter.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BookOfLemmas/BOL12.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bol-12-core.js"></script>
+<script src="bol-12.js"></script>
+</body>
+</html>
