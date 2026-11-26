@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Asia Pacific Kite &mdash; coolmaths</title>
+<meta name="description" content="A four-sided shape has all sides equal and a 60° corner. Turn a line through D: where does the crossing point of CE and AF go? Follow M around its circle.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/asia-pacific-kite/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Asia Pacific Kite">
+<meta property="og:description" content="A four-sided shape has all sides equal and a 60° corner. Turn a line through D: where does the crossing point of CE and AF go? Follow M around its circle.">
+<meta property="og:url" content="https://coolmaths.ai/asia-pacific-kite/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .kite-fill { fill: var(--accent); fill-opacity: 0.10; }
+  #board .kite-side { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; }
+  #board .diagonal { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .secant { stroke: var(--good); stroke-width: 2.2; }
+  #board .cross-line { stroke: var(--accent); stroke-width: 2.2; }
+  #board .cross-line.alt { stroke: var(--accent); stroke-width: 1.8; stroke-dasharray: 7 5; }
+  #board .locus-circle { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 8 5; }
+  #board .small-circle { fill: none; stroke-width: 1.6; stroke-dasharray: 4 5; }
+  #board .small-circle.aem { stroke: var(--accent); }
+  #board .small-circle.cfm { stroke: var(--highlight); }
+  #board .mn-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  #board .computed-dot { stroke: var(--stage); stroke-width: 2; }
+  #board .computed-dot.m { fill: var(--good); }
+  #board .computed-dot.n { fill: var(--highlight); }
+  #board .premise-arc { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .hint-arc { fill: none; stroke: var(--highlight); stroke-width: 2.5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 18px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .glabel.computed-label { fill: var(--good); font-size: 17px; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+</style>
+</head>
+<body data-game="asia-pacific-kite" data-kind="demo">
+<main id="main">
+  <h1>Asia Pacific Kite</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move a line through one corner of a four-sided shape to see the path of the point where two diagonals cross.<br>
+    <strong>How to play:</strong> Drag E or F to turn the line, or drag A, B, C or D to change the shape. Focus a point and use the arrow keys, then press Check the claims to test what you see.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A four-sided shape with equal sides, a line through D meeting AB at E and BC at F, and the crossing point M of CE and AF"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the kite to its starting shape">Reset the kite</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point names">Hide names</button>
+    <button id="premiseBtn" type="button" aria-pressed="false" aria-label="Toggle the 60 degree angle marks">Show premise angles</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the path of M and the equal angles">Show hint</button>
+    <button id="checkBtn" type="button" aria-label="Check the kite's claims for this position">Check the claims</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Here is a shape made by gluing two <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangles</a> along AC. Turn a line through D and watch the crossing point M. It looks free, but it is stuck on one circle.</p>
+
+      <h2>A kite from two equilateral triangles</h2>
+      <p>The four sides AB, BC, CD and DA are the same length, and the angle at B is 60°. So triangle ABC is equilateral, and so is triangle ACD. That makes <code>AC = AB = BC = CD = DA</code>. The diagonals AC and BD cross at right angles, and the long diagonal is <code>BD = AC × √3</code>. When you drag a corner, the opposite corner moves to keep these facts true.</p>
+
+      <h2>The circle that M never leaves</h2>
+      <p>Put E on the line AB past A and F on the line BC past C, as in the original problem. Let M be where CE and AF meet. Then M sits on the arc AC of the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of ABC, away from B, and the angle at M in triangle AMC is 120°. If you slide E past B instead, the angle is 60° and M runs along the other arc. Both arcs are the same circle. The logic test checks this at thousands of line positions; dragging E from one side of A to the other really does take M around the whole circle.</p>
+
+      <h2>Why the two small circles just touch AC</h2>
+      <p>The discussion on the old page gives <code>CA² = CM × CE</code> and <code>CA² = AM × AF</code>. Look at the circle through A, E and M: the line from C cuts it at M and E, so <code>CM × CE</code> is the <a class="wiki-term" data-wiki="Power_of_a_point" href="https://en.wikipedia.org/wiki/Power_of_a_point" target="_blank" rel="noopener">power of C</a>. That power equals <code>CA²</code>, which is exactly the tangent length from C. So the circle touches AC at A. The same argument makes the circle through C, F and M touch AC at C.</p>
+
+      <h2>The third point N is on the same line</h2>
+      <p>The circles (AEM) and (CFM) already share M; call their other meeting point N. An angle chase with <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angles</a> gives <code>∠MNE + ∠MNF = 180°</code>. The two angles make a straight line, so E, N and F are in a row. Since the line through E and F also passes through D, N lies on that line too. The logic test finds N by intersecting the two circles and checks this for every position of the line.</p>
+
+      <p class="tip">Try dragging E just past A, then over toward B: watch M slide from the lower arc to the upper one and see the angle change from 120° to 60°.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AsiaPacificKite.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="asia-pacific-kite-core.js"></script>
+<script src="asia-pacific-kite.js"></script>
+</body>
+</html>
