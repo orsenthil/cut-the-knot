@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BOL13 &mdash; coolmaths</title>
+<meta name="description" content="A diameter cuts across a chord of a circle. Drop perpendiculars from the diameter's ends to the chord: are the two pieces left over always the same length?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bol-13/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="BOL13">
+<meta property="og:description" content="A diameter cuts across a chord of a circle. Drop perpendiculars from the diameter's ends to the chord: are the two pieces left over always the same length?">
+<meta property="og:url" content="https://coolmaths.ai/bol-13/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .main-circle { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .diameter, #board .chord { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .accent-seg { fill: none; stroke: var(--highlight); stroke-width: 5; stroke-linecap: round; }
+  #board .perp-seg { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .right-angle { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .hint-seg { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .derived-dot { fill: var(--accent); }
+  #board .foot-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .hint-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .end-dot { fill: var(--ink); }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 17px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .radius-handle { fill: var(--highlight); stroke: var(--ink); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="bol-13" data-kind="demo">
+<main id="main">
+  <h1>BOL13</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This picture shows a circle, a line across it, and two short lines that always turn out the same length.<br>
+    <strong>How to play:</strong> Drag the dots: O moves the circle, the dot beside it changes its size, and C and D swing the line. Use the buttons to show the names, the claim, or a hint.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 300" role="group"
+         aria-label="A circle with a horizontal diameter and a second chord, showing the feet of perpendiculars from the diameter's ends"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the circle and chord to their starting positions">Reset picture</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the letter names on the picture">Hide names</button>
+    <button id="statementBtn" type="button" aria-pressed="false" aria-label="Toggle the claim that the two short lines are equal">Show the claim</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the hint lines from the proof">Show the hint</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Here is a small surprise from <a class="wiki-term" data-wiki="Book_of_Lemmas" href="https://en.wikipedia.org/wiki/Book_of_Lemmas" target="_blank" rel="noopener">Archimedes' <em>Book of Lemmas</em></a>: however you tilt a chord of a circle, two lengths drawn from the ends of a <a class="wiki-term" data-wiki="Diameter" href="https://en.wikipedia.org/wiki/Diameter" target="_blank" rel="noopener">diameter</a> stay equal.</p>
+
+      <h2>What the page claims</h2>
+      <p>Let AB be a diameter and let a <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord</a> CD (not a diameter) meet it in E. Draw AM and BN <a class="wiki-term" data-wiki="Perpendicular" href="https://en.wikipedia.org/wiki/Perpendicular" target="_blank" rel="noopener">perpendicular</a> to the chord. Proposition 13 says:</p>
+      <blockquote><code>CN = DM.</code></blockquote>
+      <p>The logic test checks this at the starting picture, on a grid of chord directions, and on 600 random circles and chords. It holds for every chord that is not a diameter.</p>
+
+      <h2>The centre cuts the chord in half</h2>
+      <p>Drop OH perpendicular to CD from the centre O. The line from the centre perpendicular to a chord always cuts it in two equal pieces, so <code>CH = HD</code>. The E where the chord crosses the diameter can sit outside the circle; that makes no difference, because the construction only uses the two whole lines.</p>
+
+      <h2>Two midpoints in a row</h2>
+      <p>Join B to M and carry the line HO until it meets BM at K. Since O is the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> of AB and HO runs <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a> to AM, the midpoint theorem gives <code>BK = KM</code>. In the same way, the line through that midpoint parallel to the two perpendiculars meets MN at its midpoint, so <code>NH = HM</code>.</p>
+
+      <h2>Subtract equal pieces</h2>
+      <p>Now the chord is balanced twice: <code>CH = HD</code> and <code>NH = HM</code>. Taking the pieces between C and N and between D and M leaves the same length, so <code>CN = DM</code>. Another way to see it is to measure distances along the chord from H: C and D sit at <code>+a</code> and <code>-a</code>, while M and N sit at <code>-b</code> and <code>+b</code>, because O is midway between A and B. Both <code>CN</code> and <code>DM</code> are <code>|a - b|</code>.</p>
+      <p>One small quirk of the old applet is kept here: when a foot lands within about 0.3 units of C, its 0.1 squared-distance shortcut returns C's neighbour unmoved, so the drawn segments can differ by a hair. With exact feet the equality is exact; the test checks both.</p>
+
+      <p class="tip">Turn the hint on and drag D almost opposite C: when the chord becomes a diameter the whole construction disappears, just as it does in the applet.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BookOfLemmas/BOL13.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bol-13-core.js"></script>
+<script src="bol-13.js"></script>
+</body>
+</html>
