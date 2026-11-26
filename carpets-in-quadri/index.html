@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carpets In Quadri &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a quadrilateral. Will the blue middle carpet always have the same area as the two red triangles together?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/carpets-in-quadri/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Carpets In Quadri">
+<meta property="og:description" content="Drag the corners of a quadrilateral. Will the blue middle carpet always have the same area as the two red triangles together?">
+<meta property="og:url" content="https://coolmaths.ai/carpets-in-quadri/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .cevian { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 6 4; }
+  #board .carpet-blue {
+    fill: var(--accent); fill-opacity: 0.35; stroke: var(--accent); stroke-width: 2.5;
+    stroke-linejoin: round;
+  }
+  #board .carpet-red {
+    fill: var(--bad); fill-opacity: 0.5; stroke: var(--bad); stroke-width: 2;
+  }
+  #board .hint-orange { fill: var(--highlight); stroke: var(--accent); stroke-width: 1.5; }
+  #board .hint-pink {
+    fill: var(--bad); fill-opacity: 0.18; stroke: var(--bad); stroke-width: 1.5;
+    stroke-dasharray: 5 4;
+  }
+  #board .hint-height { stroke: var(--good); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .hint-extension { stroke: var(--good); stroke-width: 1.5; }
+  #board .derived-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label, #board .prime-label {
+    fill: var(--text); font: 600 0.85rem var(--font); pointer-events: none;
+  }
+  #board .prime-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .p-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="carpets-in-quadri" data-kind="demo">
+<main id="main">
+  <h1>Carpets In Quadri</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: the blue middle shape has exactly the same area as the two red pieces together.<br>
+    <strong>How to play:</strong> Drag the corners A, B, C and D, or the green point P on side AB; you can also focus a point and use the arrow keys. Tick Hint to see the heights that prove it.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A quadrilateral ABCD with points P on AB and Q on CD, the crossing lines AQ, BQ, CP and DP, a blue middle carpet and two red triangles; the corners and P can be dragged"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox" aria-label="Show point names"> Show names</label>
+    <label><input id="hint" type="checkbox" aria-label="Show the height proof"> Hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the diagram">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag any corner and the blue shape changes size, but it always matches the two red pieces put together. The reason is one shared fraction and one bit of cutting and pasting.</p>
+
+      <h2>The same fraction on two sides</h2>
+      <p>Point P sits on AB and Q sits on CD so that <code>AP/AB = CQ/CD = r</code>. In points, <code>P = rB + (1-r)A</code> and <code>Q = rD + (1-r)C</code>. The applet keeps the other fraction <code>t = BP/AB = 1-r</code>; drag P and it recomputes t from the distance to B, then places Q the same way on CD. This is why the two sides are always cut in matching <a class="wiki-term" data-wiki="Ratio" href="https://en.wikipedia.org/wiki/Ratio" target="_blank" rel="noopener">ratios</a>.</p>
+
+      <h2>A triangle split into two heights</h2>
+      <p>Turn the <a class="wiki-term" data-wiki="Quadrilateral" href="https://en.wikipedia.org/wiki/Quadrilateral" target="_blank" rel="noopener">quadrilateral</a> so AB is the base. Drop perpendiculars from C, Q and D to AB and call their lengths c, q and d. Because Q divides CD in the ratio r, its height is the same mixture: <code>q = r&middot;d + (1-r)&middot;c</code>. Every triangle on the base AB has <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> equal to base times height divided by two, so</p>
+      <blockquote><code>Area(AQB) = Area(ADP) + Area(BCP).</code></blockquote>
+      <p>Tick Hint to see the orange triangle AQB, the two pink triangles and the green heights QQ', DD' and CC' that give this equation.</p>
+
+      <h2>Cutting away the corners</h2>
+      <p>Now draw the crossing lines: R is where AQ meets DP, and S is where BQ meets CP. Take the equation above and cut the same two small triangles off both sides. On the left, triangle AQB loses APR and BPS and leaves the blue quadrilateral PSQR. On the right, triangle ADP loses APR and leaves ARD, while BCP loses BPS and leaves BSC. What is left is exactly the claim: <code>Area(PSQR) = Area(ARD) + Area(BSC)</code>. No measurement is needed — it is the same area rearranged.</p>
+
+      <h2>What the test found</h2>
+      <p>The page states this for a convex quadrilateral, and the logic test checks that case: the equality holds at every hundredth of r from 0 to 1 on six fixed shapes (606 configurations) and on 4,000 random convex shapes. It also re-computes the drawing from the applet's own bytecode and agrees on more than 1,500 configurations, including the applet's habit of hiding the carpets when the crossing lines are nearly parallel. For a crossed or dented quadrilateral the equality can fail; the page is right to ask for a convex one, and the status line says so.</p>
+
+      <p class="tip">Try dragging P close to A, then close to B: the blue carpet shrinks, but the two red pieces shrink with it, so the match never breaks.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CarpetsInQuadri.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="carpets-in-quadri-core.js"></script>
+<script src="carpets-in-quadri.js"></script>
+</body>
+</html>
