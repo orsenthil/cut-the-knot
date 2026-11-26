@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Angle On Diameter &mdash; coolmaths</title>
+<meta name="description" content="Drag a point around a circle whose diameter is AB. Can the angle at that point ever stop being a right angle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/angle-on-diameter/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Angle On Diameter">
+<meta property="og:description" content="Drag a point around a circle whose diameter is AB. Can the angle at that point ever stop being a right angle?">
+<meta property="og:url" content="https://coolmaths.ai/angle-on-diameter/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .diameter { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .chord { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .radius { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .corner { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .angle-blue { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .angle-red { fill: none; stroke: var(--bad); stroke-width: 2.5; }
+  #board .central-blue { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 4 3; }
+  #board .central-red { fill: none; stroke: var(--bad); stroke-width: 2; stroke-dasharray: 4 3; }
+  #board .fixed-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="angle-on-diameter" data-kind="demo">
+<main id="main">
+  <h1>Angle On Diameter</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: a straight line joins A to B across a circle, and another point P sits on the edge.<br>
+    <strong>How to play:</strong> Drag P around the circle, or focus it and use the arrow keys. Tick the boxes to show the names, the right-angle mark or the angle hint.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Circle with diameter AB and a draggable point P on the circle"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox" checked> Names</label>
+    <label><input type="radio" name="mode" value="plain" checked> Plain</label>
+    <label><input type="radio" name="mode" value="statement"> Right angle</label>
+    <label><input type="radio" name="mode" value="hint"> Angle hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag P as far as you like around the circle. The angle at P never
+        changes: it is always a quarter turn. Here is why that cannot fail.</p>
+
+      <h2>A line through the middle</h2>
+      <p>The line AB goes straight through the centre O, so it is a
+        <a class="wiki-term" data-wiki="Diameter" href="https://en.wikipedia.org/wiki/Diameter" target="_blank" rel="noopener">diameter</a>
+        of the <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>.
+        The three lengths <code>OA = OB = OP</code> are all radii, so they are
+        equal. The radius OP is drawn when you pick "Angle hint".</p>
+
+      <h2>Two isosceles triangles</h2>
+      <p>Because <code>OA = OP</code>, triangle AOP is
+        <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles</a>:
+        its base angles obey <code>∠OAP = ∠APO</code>. In triangle BOP,
+        <code>∠OBP = ∠BPO</code> for the same reason. An
+        <a class="wiki-term" data-wiki="Exterior_angle_theorem" href="https://en.wikipedia.org/wiki/Exterior_angle_theorem" target="_blank" rel="noopener">exterior angle</a>
+        of a triangle equals the two opposite inside angles added together, so
+        <code>∠OAP + ∠APO = ∠BOP</code> and <code>∠OBP + ∠BPO = ∠AOP</code>.
+        Since <code>∠OAP = ∠APO</code>, this gives <code>2∠APO = ∠BOP</code>;
+        likewise <code>2∠BPO = ∠AOP</code>.</p>
+
+      <h2>Half a straight angle</h2>
+      <p>A and B lie on opposite sides of O, so <code>∠AOP + ∠BOP = 180°</code>.
+        Adding the two doubled angles gives
+        <code>2(∠APO + ∠BPO) = 180°</code>, hence
+        <code>∠APB = ∠APO + ∠BPO = 90°</code>. This is
+        <a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a>:
+        an <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angle</a>
+        measures half the central angle over the same arc, and half of a
+        straight angle is a right angle.</p>
+
+      <h2>What the checks found</h2>
+      <p>The logic test tries 600 positions of P, all round the circle (skipping
+        only the two where P lands on A or B), and measures every angle
+        independently with the law of cosines. At each one
+        <code>∠APB = 90°</code>, the three radii are equal, the two central
+        angles add to <code>180°</code>, and every step of the chase above
+        holds to within a billionth. It also checks the converse: a point whose
+        angle is right really does lie on the circle. The old cut-the-knot page
+        cited below is an Outline Mathematics article that shows the same
+        theorem with a GeoGebra figure rather than the Java applet; the picture
+        and the options here follow the applet itself.</p>
+
+      <p class="tip">Try dragging P almost onto A or B: the angle at P stays a right angle right up to the end.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Outline/Geometry/AngleOnDiameter.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="angle-on-diameter-core.js"></script>
+<script src="angle-on-diameter.js"></script>
+</body>
+</html>
