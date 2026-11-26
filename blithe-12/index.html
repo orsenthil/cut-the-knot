@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blithe 12 &mdash; coolmaths</title>
+<meta name="description" content="Twelve counters sit on three overlapping circles. Turn a circle with its knobs and see why every scrambled order can be put back: is any starting arrangement solvable?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/blithe-12/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Blithe 12">
+<meta property="og:description" content="Twelve counters sit on three overlapping circles. Turn a circle with its knobs and see why every scrambled order can be put back: is any starting arrangement solvable?">
+<meta property="og:url" content="https://coolmaths.ai/blithe-12/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .ring { fill: none; stroke: var(--muted); stroke-width: 2.5; }
+  #board .ring.active { stroke: var(--accent); stroke-width: 4; }
+  #board .counter {
+    fill: var(--counter-fill, var(--accent));
+    stroke: var(--stage); stroke-width: 2;
+  }
+  #board .geom-handle {
+    fill: var(--counter-fill, var(--accent));
+    stroke: var(--stage); stroke-width: 2.5; cursor: grab;
+  }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5.5; }
+  #board .glyph {
+    fill: var(--stage); font-family: var(--font); font-size: 17px;
+    font-weight: 700; text-anchor: middle; pointer-events: none;
+  }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls select, .controls button { max-width: 100%; }
+  .controls label.check { display: inline-flex; align-items: center; gap: 0.25rem; }
+  #status { overflow-wrap: anywhere; }
+</style>
+</head>
+<body data-game="blithe-12" data-kind="demo">
+<main id="main">
+  <h1>Blithe 12</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#permutations">Permutations</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Twelve counters sit on three overlapping circles; turn a knob to spin its circle and see how every starting order can be put back.<br>
+    <strong>How to play:</strong> Drag a knob or press it, or focus it and use Enter and the arrow keys. Use Shuffle, Reset and the puzzle menu to explore.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 290" role="group"
+         aria-label="Twelve counters on three overlapping circles, with six draggable knobs that turn the circles"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="modeSelect">Puzzle</label>
+    <select id="modeSelect" aria-label="Choose one of the five puzzles">
+      <option value="0">2 color puzzle</option>
+      <option value="1">4 colors puzzle (middle)</option>
+      <option value="2">4 colors puzzle (border)</option>
+      <option value="3">6 colors puzzle</option>
+      <option value="4" selected>12 Numbers</option>
+    </select>
+    <label class="check"><input id="cyclesBox" type="checkbox" aria-label="Show the cycles that undo the shuffle"> Cycles</label>
+    <button id="shuffleBtn" type="button" class="primary" aria-label="Shuffle the counters with 36 turns">Shuffle</button>
+    <button id="cheatBtn" type="button" aria-label="Swap counters 1 and 4">Cheat</button>
+    <button id="newBtn" type="button" aria-label="Reset the counters to their home places">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three circles overlap, and twelve counters sit on the places where they pass. Turning one circle moves six counters at once. The surprising claim on the original page is that no matter how the counters are mixed up, some turns will put every counter back where it belongs.</p>
+
+      <h2>Six counters on each circle</h2>
+      <p>Circle one holds counters 1, 4, 8, 9, 6 and 2; circle two holds 2, 5, 9, 10, 7 and 3; circle three holds 5, 8, 11, 12, 10 and 6. Two counters on each circle are knobs: pressing 1 or 4 moves the first circle, 3 or 7 the second, and 11 or 12 the third. The two knobs of a circle move it in opposite directions, exactly as in the <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> applet. Drag a knob around its circle and it springs back after one turn.</p>
+
+      <h2>A turn is a cycle</h2>
+      <p>A turn sends each counter on a circle to the next seat, so it is a <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">permutation</a> of length six. The old applet printed these as cycles with no spaces, for example <code>(148962)</code>: counter 1 goes where counter 4 was, counter 4 where counter 8 was, and so on. Do the same turn six times and every counter is back. Tick <em>Cycles</em> in the 12 Numbers puzzle to see the cycles of the order on the board; those are the moves you need to undo it.</p>
+
+      <h2>Why every order can be undone</h2>
+      <p>One 6-cycle is an <a class="wiki-term" data-wiki="Parity_of_a_permutation" href="https://en.wikipedia.org/wiki/Parity_of_a_permutation" target="_blank" rel="noopener">odd</a> permutation, so there is no parity trap: odd and even orders are both reachable. Because the three circles share counters, the six turns link all twelve places together. The page states:</p>
+      <blockquote>“The Blithe12 puzzle is solvable for any starting configuration.”</blockquote>
+      <p>The logic test confirms it. It builds the group made from the six turns with a stabilizer chain and gets all <code>12! = 479,001,600</code> orders — the full <a class="wiki-term" data-wiki="Symmetric_group" href="https://en.wikipedia.org/wiki/Symmetric_group" target="_blank" rel="noopener">symmetric group</a> on twelve counters. It also finds and plays a solving sequence for 100 shuffled positions, in all five puzzles.</p>
+
+      <h2>Why five puzzles are one puzzle</h2>
+      <p>The menu only changes the labels on the counters. In the 6-colour puzzle the two outer seats of each circle share a pure colour and the crossings are mixed colours; in the 4-colour puzzles either the crossings or the outer seats share one colour. Counters with the same label are interchangeable, so sorting the numbered puzzle sorts every colour version too. The small “Cheat” button copies the applet's odd habit of swapping just counters 1 and 4.</p>
+
+      <p class="tip">Try this: shuffle, note the cycles, then press the knob named first in a cycle — watch that cycle shrink as the counters settle back into place.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/blithe12.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="blithe-12-core.js"></script>
+<script src="blithe-12.js"></script>
+</body>
+</html>
