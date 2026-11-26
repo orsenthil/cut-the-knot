@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Build an Arithmetic Circuit &mdash; coolmaths</title>
+<meta name="description" content="Make x⁸, (x + y)² or a 2 by 2 determinant from add, subtract and multiply gates. How few gates can you use? Circuit size is what VP is about.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/arithmetic-circuits/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Build an Arithmetic Circuit">
+<meta property="og:description" content="Make x⁸, (x + y)² or a 2 by 2 determinant from add, subtract and multiply gates. How few gates can you use? Circuit size is what VP is about.">
+<meta property="og:url" content="https://coolmaths.ai/arithmetic-circuits/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+#stage { width: 100%; max-width: 40rem; padding: 0.8rem; }
+  #target { text-align: center; font-size: 1.25rem; font-weight: 700; margin: 0 0 0.5rem; }
+  #diagram { display: block; width: 100%; height: auto; max-height: 26rem; }
+  #diagram .wire { stroke: var(--muted); stroke-width: 2; }
+  #diagram .node circle, #diagram .node rect { fill: var(--card); stroke: var(--ink); stroke-width: 2; }
+  #diagram .node.input rect { fill: var(--accent-soft); }
+  #diagram .node.hit circle { fill: var(--good); }
+  #diagram .node text { fill: var(--text); font: 700 16px var(--font); text-anchor: middle; }
+  #diagram .node text.tag { font-size: 12px; font-weight: 400; fill: var(--muted); text-anchor: start; }
+  #wires { list-style: none; padding: 0; margin: 0.5rem 0 0; font-family: var(--mono); font-size: 0.95rem; overflow-wrap: anywhere; }
+  #wires li { padding: 0.2rem 0.4rem; border-radius: 0.4rem; }
+  #wires li.hit { background: var(--highlight); }
+  #wires .deg { color: var(--muted); }
+  .controls .group { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.4rem 0.6rem; width: 100%; }
+  .controls select { min-height: 2.75rem; font-size: 1rem; max-width: 100%; }
+  #puzzleIn { width: 100%; min-width: 0; }
+  #aIn, #bIn { flex: 1 1 7rem; min-width: 0; width: 7rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; flex-wrap: wrap; max-width: 100%; }
+</style>
+</head>
+<body data-game="arithmetic-circuits" data-kind="game">
+<main id="main">
+  <h1>Build an Arithmetic Circuit</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#vp-vnp">VP ≠ VNP</a><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Make the target formula out of the inputs using as few steps as possible. Each step adds, subtracts or multiplies two things you already have.<br>
+    <strong>How to play:</strong> Choose two wires and an operation, then press Add gate. Reach the target in par to win.
+  </div>
+
+  <div class="controls">
+    <label>Puzzle <select id="puzzleIn"></select></label>
+  </div>
+
+  <div id="stage" class="stage">
+    <p id="target"></p>
+    <svg id="diagram" role="img" aria-label="The circuit: inputs at the bottom, gates above them"></svg>
+    <ul id="wires" aria-label="What each gate computes"></ul>
+  </div>
+
+  <div class="controls">
+    <div class="group">
+      <select id="aIn" aria-label="First wire"></select>
+      <select id="opIn" aria-label="Operation"><option value="*">×</option><option value="+">+</option><option value="-">−</option></select>
+      <select id="bIn" aria-label="Second wire"></select>
+      <button id="addBtn" type="button" class="primary">Add gate</button>
+    </div>
+    <div class="group">
+      <button id="undoBtn" type="button">Undo</button>
+      <button id="resetBtn" type="button">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>An <a class="wiki-term" data-wiki="Arithmetic_circuit_complexity" href="https://en.wikipedia.org/wiki/Arithmetic_circuit_complexity" target="_blank" rel="noopener">arithmetic circuit</a> is a recipe for computing a polynomial. It starts from the variables and constants, and each gate adds or multiplies two results it already has. Its size is the number of gates. This is the model of computation behind VP and VNP.</p>
+
+      <h2>Reuse is the trick</h2>
+      <p>Written out, <code>x&#8312;</code> is eight x's multiplied together, which takes 7 multiplications. A circuit can reuse a result instead: <code>x&middot;x = x&sup2;</code>, then <code>x&sup2;&middot;x&sup2; = x&#8308;</code>, then <code>x&#8308;&middot;x&#8308; = x&#8312;</code>. That is 3 gates. In the same way <code>(x + 1)&sup3;</code> has four terms but needs only 3 gates. The par for every puzzle here is the true minimum: the logic test tried every circuit with one gate fewer and none of them works. The page <a href="../horner-method/">Horner's Method</a> shows the same idea for any polynomial in one variable.</p>
+
+      <h2>VP and VNP</h2>
+      <p>Think of a family of polynomials, one for each size <code>n</code>, such as the determinants or the permanents of <code>n &times; n</code> squares. The family is in <a class="wiki-term" data-wiki="VP_(complexity)" href="https://en.wikipedia.org/wiki/VP_(complexity)" target="_blank" rel="noopener">VP</a> if circuits whose size grows only like a power of <code>n</code> compute it. The determinant is in VP. The family is in VNP if each coefficient is easy to work out, even when there are exponentially many terms. The permanent is in VNP, and Leslie Valiant proved in 1979 that it is complete for it: if the permanent had small circuits, so would every family in VNP. The question VP &ne; VNP asks whether the permanent really needs huge circuits.</p>
+
+      <h2>Two by two is too small to tell</h2>
+      <p>The 2 &times; 2 determinant <code>ad &minus; bc</code> and permanent <code>ad + bc</code> both take 3 gates. The difference only shows as the squares grow. The best known circuits for the determinant have about <code>n&sup3;</code> gates (see Determinant by Elimination). The best known for the permanent have about <code>2&#8319;</code> (see Ryser's Formula).</p>
+
+      <p class="tip">Try xy + yz + zx in 4 gates. Hint: two of the three products share a letter.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original game for coolmaths, after Gil Fried's article
+    <a href="https://www.friedgil.com/vpvnp" target="_blank" rel="noopener">What VP &ne; VNP Means (In 3 Minutes)</a>
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="arithmetic-circuits-core.js"></script>
+<script src="arithmetic-circuits.js"></script>
+</body>
+</html>

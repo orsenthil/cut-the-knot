@@ -888,6 +888,10 @@ const GAMES = {
     const p = await page.evaluate(() => RookPlacementsCore.placements(RookPlacementsCore.board(4, 1))[0]);
     for (let i = 0; i < p.length; i++) await page.click(`#board [data-i="${i}"][data-j="${p[i]}"]`);
   },
+  "arithmetic-circuits": async (page) => {
+    await page.selectOption("#puzzleIn", "sq");
+    await page.selectOption("#aIn", { index: 1 }); await page.selectOption("#opIn", "+"); await page.selectOption("#bIn", { index: 2 }); await page.click("#addBtn");
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

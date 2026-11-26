@@ -2044,6 +2044,11 @@ check("rook-placements: one placement found on board 1", read["rook-placements"]
   const rp = at("rook-placements", { n: 4, seed: 1, rooks: [-1, -1, -1, -1], found: [] });
   check("rook-placements: board 1 rebuilt from its seed, nothing found yet", rp.board.length === 4 && rp.found === 0 && rp.allFound === false);
 }
+check("arithmetic-circuits: (x + y)² puzzle, first gate x + y", read["arithmetic-circuits"]?.par === 2 && read["arithmetic-circuits"].gates[0] === "g1 = x + y = x + y" && read["arithmetic-circuits"].targetReachedAt === null);
+{
+  const ac = at("arithmetic-circuits", { puzzle: "x8", gates: [["*", 1, 1], ["*", 2, 2], ["*", 3, 3]] });
+  check("arithmetic-circuits: x⁸ in three squarings is at par", ac.atPar === true && ac.targetReachedAt === "g3");
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

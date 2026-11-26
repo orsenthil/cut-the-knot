@@ -2438,5 +2438,12 @@ window.COOLMATHS = {
       tags: ["vp-vnp", "counting", "graph-theory"],
       level: 1,
     },
+    {
+      slug: "arithmetic-circuits",
+      title: "Build an Arithmetic Circuit",
+      blurb: "Make x⁸, (x + y)² or a 2 by 2 determinant from add, subtract and multiply gates. How few gates can you use? Circuit size is what VP is about.",
+      tags: ["vp-vnp", "algebra", "algorithms"],
+      level: 2,
+    },
   ],
 };
