@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brick Wall &mdash; coolmaths</title>
+<meta name="description" content="The mortar lines in a brick wall really are parallel — so why do they look crooked when the bricks are staggered? Slide the rows and add mortar to find out.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/brick-wall/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Brick Wall">
+<meta property="og:description" content="The mortar lines in a brick wall really are parallel — so why do they look crooked when the bricks are staggered? Slide the rows and add mortar to find out.">
+<meta property="og:url" content="https://coolmaths.ai/brick-wall/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.5rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .brick { stroke: none; }
+  /* The applet's two grey levels, blended from the site's own theme tokens so
+     the wall stays legible in both light and dark mode. */
+  #board .brick.light { fill: color-mix(in srgb, var(--bg) var(--light-mix, 100%), var(--surface-2)); }
+  #board .brick.dark { fill: color-mix(in srgb, var(--ink) var(--dark-mix, 100%), var(--surface-2)); }
+  #board .mortar { stroke: var(--muted); stroke-width: var(--mortar-w, 1); }
+  #board .track { stroke: var(--border-strong); stroke-width: 2; stroke-dasharray: 5 6; }
+  #board .ctrl-label {
+    fill: var(--muted); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  .controls { gap: 0.5rem 1rem; max-width: 100%; }
+  .controls label { flex-wrap: wrap; white-space: normal; max-width: 100%; }
+  .controls input[type="range"] { width: 6.5rem; max-width: 28vw; }
+  .controls output { min-width: 2.5em; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="brick-wall" data-kind="demo">
+<main id="main">
+  <h1>Brick Wall</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a wall of straight, level rows of bricks. See whether the rows still look level when you slide the bricks about.<br>
+    <strong>How to play:</strong> Drag the two dots under the wall, or use the sliders, to change the shift and the mortar. You can also focus a dot and use the arrow keys.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 340" role="group"
+         aria-label="A wall of staggered bricks with horizontal mortar lines and two draggable dots that set the shift and the mortar"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="widthPct">Brick width <input id="widthPct" type="range" min="5" max="100" step="1" value="10" aria-label="Brick width, percent of the wall"><output id="widthPctVal" for="widthPct">10%</output></label>
+    <label for="heightPct">Row height <input id="heightPct" type="range" min="5" max="100" step="1" value="10" aria-label="Row height, percent of the wall"><output id="heightPctVal" for="heightPct">10%</output></label>
+    <label for="shiftPct">Shift <input id="shiftPct" type="range" min="0" max="99" step="1" value="0" aria-label="How far every other row is shifted, percent of a brick"><output id="shiftPctVal" for="shiftPct">0%</output></label>
+    <label for="separation">Mortar <input id="separation" type="range" min="0" max="10" step="1" value="0" aria-label="Mortar thickness between rows"><output id="separationVal" for="separation">0</output></label>
+    <label for="shadeDiff">Shade <input id="shadeDiff" type="range" min="0" max="255" step="1" value="255" aria-label="Difference between the two brick shades"><output id="shadeDiffVal" for="shadeDiff">255</output></label>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset all five settings to the starting values">Reset the wall</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The surprising thing about this picture is how certain your eyes can be about something that is not true. The grey lines across the wall are drawn straight and level; nothing in the picture tilts them.</p>
+
+      <h2>The lines are parallel</h2>
+      <p>This is the <a class="wiki-term" data-wiki="Caf%C3%A9_wall_illusion" href="https://en.wikipedia.org/wiki/Caf%C3%A9_wall_illusion" target="_blank" rel="noopener">café wall illusion</a>, also called the brick wall illusion. Every mortar line is painted from the left edge to the right edge at one fixed height, and the next one is exactly one row lower. So the lines are truly <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a>, whatever the sliders say. The logic test checks all 2,400 settings it tries against a second reading of the applet's own drawing code, and the lines are level in every one.</p>
+
+      <h2>Why the rows look crooked</h2>
+      <p>The bricks alternate between two shades, and every other row starts part of a brick across. At <code>Shift = 50%</code> the upright joints of one row land in the middle of the bricks in the next row. Your eye uses those upright joints as guide lines, and the level mortar lines appear to slope. Set <code>Shift = 0%</code> and the joints line up again: the test confirms that no joint crosses a row boundary then, while a half-brick shift makes plenty of them cross.</p>
+
+      <h2>Mortar makes the tilt fade</h2>
+      <p>The Mortar setting does not move the bricks. It only paints more grey lines on top of each row boundary: <code>2 × Mortar + 1</code> of them, from one thin line at 0 to twenty-one at 10. The original page says the illusion disappears as the mortar grows. That is a claim about what people see, so a computer cannot prove or disprove it; what the test can check is the geometry behind it — the grey band grows by two lines at every step and the lines stay level. Lowering the Shade slider brings the two brick shades closer together, which also weakens the effect.</p>
+
+      <h2>The five settings, exactly as in the applet</h2>
+      <p>Brick width and Row height are percentages of the wall's width and height, rounded down: <code>Width = floor(canvasWidth × width% / 100)</code>. Shift is a percentage of a brick's width, <code>Shift = floor(Width × shift% / 100)</code>. The first brick of an offset row starts far enough left that its joints interleave with the row below — the applet subtracts a whole brick until the x is not positive, then subtracts one more time. The greys are <code>dark = max(0, (255 − Shade) / 2)</code> and <code>light = min(255, dark + Shade)</code>. The page renders these as blends of its own theme colours so the wall reads in both light and dark mode.</p>
+
+      <p class="tip">Try <code>Shift = 50%</code> with a thin wall and no mortar, then drag Mortar all the way to 10 and watch the slope fade away.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BrickWall.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="brick-wall-core.js"></script>
+<script src="brick-wall.js"></script>
+</body>
+</html>
