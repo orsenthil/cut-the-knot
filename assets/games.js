@@ -1999,5 +1999,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "perm-by-trans",
+      title: "Permutations as a Product of Transpositions",
+      blurb: "Shuttles slide between pairs of poles and shuffle the numbers on top. How few swaps make a given shuffle, and why does their number always keep its parity?",
+      tags: ["permutations", "parity", "invariants"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

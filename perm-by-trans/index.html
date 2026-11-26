@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Permutations as a Product of Transpositions &mdash; coolmaths</title>
+<meta name="description" content="Shuttles slide between pairs of poles and shuffle the numbers on top. How few swaps make a given shuffle, and why does their number always keep its parity?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/perm-by-trans/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Permutations as a Product of Transpositions">
+<meta property="og:description" content="Shuttles slide between pairs of poles and shuffle the numbers on top. How few swaps make a given shuffle, and why does their number always keep its parity?">
+<meta property="og:url" content="https://coolmaths.ai/perm-by-trans/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 44rem; padding: 0.6rem; overflow-x: auto; box-sizing: border-box; }
+  #board { height: auto; display: block; margin: 0 auto; }
+  #board .pole { stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+  #board .bar { stroke: var(--bad); stroke-width: 6; stroke-linecap: round; }
+  #board .slot { fill: var(--border); cursor: pointer; opacity: 0.55; }
+  #board .slot:hover, #board .slot:focus-visible { opacity: 1; fill: var(--accent); }
+  #board .slot.sel { opacity: 1; fill: var(--accent); }
+  #board .path { stroke: var(--accent); stroke-width: 3; fill: none; stroke-linejoin: round; stroke-dasharray: 1 0; }
+  #board .num { fill: var(--stage); stroke: var(--ink); stroke-width: 1.6; cursor: pointer; }
+  #board .num.on { fill: var(--highlight); stroke: var(--accent); stroke-width: 3; }
+  #board text { font: 700 14px system-ui, sans-serif; fill: var(--ink); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+  .facts { margin: 0.6rem 0 0; font-size: 0.95rem; line-height: 1.6; overflow-wrap: anywhere; }
+  .facts b { font-variant-numeric: tabular-nums; }
+  .controls label { display: inline-flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; max-width: 100%; }
+  .controls input[type=number] { width: 4.5rem; max-width: 100%; font: inherit; }
+</style>
+</head>
+<body data-game="perm-by-trans" data-kind="demo">
+<main id="main">
+  <h1>Permutations as a Product of Transpositions</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#permutations">Permutations</a><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Poles stand in a row, and shuttles slide between two poles. Together the shuttles shuffle the numbers on top of the poles.<br>
+    <strong>How to play:</strong> Press a dot on one pole, then a dot at the same height on another pole, to put a shuttle there. Press a number to follow its slide down.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 200 400" role="img" aria-label="Poles with numbers on top and shuttles joining pairs of poles at different heights"></svg>
+    <p id="facts" class="facts"></p>
+  </div>
+
+  <div class="controls">
+    <label># Poles <input id="nIn" type="number" min="2" max="20" step="1" value="5" aria-label="Number of poles"></label>
+    <button id="removeBtn" type="button" disabled>Remove last</button>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Each shuttle between poles <code>a</code> and <code>b</code> swaps two numbers: it is a <a class="wiki-term" data-wiki="Transposition_(mathematics)" href="https://en.wikipedia.org/wiki/Transposition_(mathematics)" target="_blank" rel="noopener">transposition</a> <code>(a b)</code>. The whole row of shuttles, read from the top, is the product of those swaps.</p>
+
+      <h2>Following a slide</h2>
+      <p>Start at the top of a pole and slide down. At each shuttle that touches your pole, cross to its other end and go on down. Where you end up is where your number goes. The test compared sliding with carrying the numbers down and swapping at every shuttle, for all 12,000 or so placements of up to 4 shuttles on 4 poles, and the result was always a permutation, always the same.</p>
+
+      <h2>Every shuffle can be built</h2>
+      <p>Every permutation is a product of cycles, and a cycle of length <code>k</code> is a product of <code>k-1</code> transpositions. So a permutation with <code>c</code> cycles (counting fixed numbers) needs <code>N - c</code> shuttles, never more than <code>N - 1</code>. The test built every permutation of up to 6 poles this way, and checked that no placement of <code>k</code> shuttles makes anything that needs more than <code>k</code>.</p>
+
+      <h2>Even or odd</h2>
+      <p>A permutation can be made from different numbers of shuttles, but the <a class="wiki-term" data-wiki="Parity_of_a_permutation" href="https://en.wikipedia.org/wiki/Parity_of_a_permutation" target="_blank" rel="noopener">parity</a> of that number is fixed: even permutations always take an even number, odd ones an odd number. The test confirmed it on every placement.</p>
+
+      <p class="tip">Try to make the shuffle 2 3 1 with different numbers of shuttles. Can you do it with 3? With 4?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/PermByTrans.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="perm-by-trans-core.js"></script>
+<script src="perm-by-trans.js"></script>
+</body>
+</html>
