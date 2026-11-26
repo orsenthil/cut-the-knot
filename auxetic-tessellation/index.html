@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Auxetic Tessellation &mdash; coolmaths</title>
+<meta name="description" content="Drag the hinges of four rectangles: can a pattern get bigger in both directions when you stretch it, the way an auxetic material does?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/auxetic-tessellation/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Auxetic Tessellation">
+<meta property="og:description" content="Drag the hinges of four rectangles: can a pattern get bigger in both directions when you stretch it, the way an auxetic material does?">
+<meta property="og:url" content="https://coolmaths.ai/auxetic-tessellation/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 42rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .tile {
+    stroke: var(--ink);
+    stroke-width: 1.4;
+    stroke-linejoin: round;
+  }
+  #board .tile-one { fill: var(--accent); fill-opacity: 0.22; }
+  #board .tile-c0 { fill: var(--accent); fill-opacity: 0.24; }
+  #board .tile-c1 { fill: var(--good); fill-opacity: 0.24; }
+  #board .tile-c2 { fill: var(--highlight); fill-opacity: 0.30; }
+  #board .tile-c3 { fill: var(--muted); fill-opacity: 0.30; }
+  #board .tile-c4 { fill: var(--accent); fill-opacity: 0.12; }
+  #board .tile-c5 { fill: var(--good); fill-opacity: 0.14; }
+  #board .tile-c6 { fill: var(--highlight); fill-opacity: 0.18; }
+  #board .tile-c7 { fill: var(--muted); fill-opacity: 0.18; }
+  #board .tile-c8 { fill: var(--accent); fill-opacity: 0.34; }
+  #board .tile-c9 { fill: var(--good); fill-opacity: 0.34; }
+  #board .ring-edge { fill: none; stroke: var(--ink); stroke-width: 2; stroke-dasharray: 9 7; }
+  #board .ring-diagonal { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+  #board .d-dot { fill: var(--muted); }
+  #board .point-label {
+    fill: var(--text); font-family: var(--font); font-size: 20px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+
+  .controls { flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .controls > * { min-width: 0; max-width: 100%; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; max-width: 100%; }
+  .controls input[type="range"] { width: min(8rem, 40vw); max-width: 100%; }
+  .controls input[type="number"] { width: 4rem; }
+  .controls fieldset { display: inline-flex; gap: 0.75rem; border: 0; margin: 0; padding: 0; flex-wrap: wrap; min-width: 0; max-width: 100%; }
+  .controls legend { padding: 0; float: left; width: 100%; }
+  #alphaOut, #gammaOut { min-width: 2.6rem; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="auxetic-tessellation" data-kind="demo">
+<main id="main">
+  <h1>Auxetic Tessellation</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#physics">Physics</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Four stiff rectangles are hinged at their corners, and copies of the group tile the plane.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a dot and use the arrow keys. Change the sliders and press Stretch to see how the pattern reacts.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="-320 -230 1280 920" role="group"
+         aria-label="Four hinged rectangles with draggable corners A, B and C, and copies of them spreading across the plane"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="alphaInput">Side ratio A <input id="alphaInput" type="range" min="0" max="21" step="1" value="5" aria-label="First rectangle side ratio, from zero to two point one"><output id="alphaOut" for="alphaInput">0.500</output></label>
+    <label for="gammaInput">Side ratio B <input id="gammaInput" type="range" min="0" max="21" step="1" value="4" aria-label="Second rectangle side ratio, from zero to two point one"><output id="gammaOut" for="gammaInput">0.400</output></label>
+    <label for="layersInput">Layers <input id="layersInput" type="number" min="1" max="25" step="1" value="1" aria-label="How many repeating layers to draw, from one to twenty five"></label>
+    <fieldset>
+      <legend>Colour</legend>
+      <label for="oneColor"><input id="oneColor" type="radio" name="shade" checked aria-label="Draw every rectangle in one colour"> One colour</label>
+      <label for="colorLayers"><input id="colorLayers" type="radio" name="shade" aria-label="Colour successive layers differently"> Colour layers</label>
+    </fieldset>
+    <label for="lockHinges"><input id="lockHinges" type="checkbox" aria-label="Keep the three hinges at a fixed side length"> Lock hinges</label>
+    <button id="stretchBtn" type="button" aria-label="Open the hinge and stretch the pattern">Stretch</button>
+    <button id="relaxBtn" type="button" aria-label="Close the hinge and relax the pattern">Relax</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the pattern to its starting shape">Reset pattern</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The page calls this a model of an auxetic material: something that gets thicker, not thinner, when you pull it. The applet builds the model from four rectangles and asks what happens when their hinges turn.</p>
+
+      <h2>Four rectangles on a parallelogram</h2>
+      <p>Drag A, B or C. The fourth corner D is placed so that ABCD is a <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a>: <code>D = A + C &minus; B</code>. One rectangle hangs off each side. The applet turns a side through a quarter turn to get the second direction, then scales it by the slider value <code>alpha</code> on sides AB and CD and <code>gamma</code> on sides BC and DA. A quarter turn makes the two directions perpendicular, so every tile stays a <a class="wiki-term" data-wiki="Rectangle" href="https://en.wikipedia.org/wiki/Rectangle" target="_blank" rel="noopener">rectangle</a>, even while the hinge rhombus opens and the tiles swing. Setting the two sliders differently gives rectangles of two shapes, not just rotated copies of one.</p>
+
+      <h2>Why the copies fit exactly</h2>
+      <p>Write <code>u = B &minus; A</code> and <code>w = C &minus; B</code>. Comparing the corners of neighbouring tiles gives four translation steps; the logic test checks them for every slider pair and thousands of random hinges:</p>
+      <blockquote><code>v02 = (v01 + v03) / 2</code> &nbsp;and&nbsp; <code>v13 = (v01 &minus; v03) / 2</code>.</blockquote>
+      <p>Because the half-steps land on tile corners too, translating the group of four by the lattice vectors <code>v01</code> and <code>v03</code> fills the plane with no gaps. That is what the Layers control draws: more and more rings of the same <a class="wiki-term" data-wiki="Tessellation" href="https://en.wikipedia.org/wiki/Tessellation" target="_blank" rel="noopener">tessellation</a>.</p>
+
+      <h2>What stretching really does</h2>
+      <p>With the hinges locked, the sides AB and BC keep their lengths. Let <code>k = |u &times; w|</code> be the area of the hinge parallelogram; opening a narrow rhombus makes <code>k</code> grow. The four tiles inside one repeat cover <code>2(alpha|u|&sup2; + gamma|w|&sup2;)</code> of a cell whose area is</p>
+      <blockquote><code>cell = 2(alpha|u|&sup2; + gamma|w|&sup2;) + 2k(1 + alpha&middot;gamma)</code>.</blockquote>
+      <p>The covered part cannot change, so as the hinge opens the cell grows and the fraction of it covered falls. That is the page's "lowering density". The logic test checks this for all 22 &times; 22 slider pairs and 41 hinge angles: the cell grows and the density falls in every single case. With <code>alpha = gamma = 1</code> the dancing squares also grow in both lattice directions, which is the <a class="wiki-term" data-wiki="Poisson_ratio" href="https://en.wikipedia.org/wiki/Poisson_ratio" target="_blank" rel="noopener">negative Poisson ratio</a> the article describes.</p>
+
+      <h2>Where the applet is looser than the story</h2>
+      <p>The live page embeds the applet with <code>Loose=1</code>, so normally you may drag all three corners freely; tick Lock hinges to get the fixed-side model the article talks about. Also, the page says stretching always increases thickness. That is true for squares and for the starting sliders, but at extreme slider pairs one lattice direction eventually turns back while the cell still grows and the density still falls. The logic test finds that counterexample, so this page states the exact claim instead of the blanket one. (The applet also contains a second layer-growing routine that its Compute() never calls; it has no effect on what you see.)</p>
+
+      <p class="tip">Set both sliders to 1, tick Lock hinges, press Reset and then Stretch a few times: watch the spaces between the squares open in both directions.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AuxeticTessellation.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="auxetic-tessellation-core.js"></script>
+<script src="auxetic-tessellation.js"></script>
+</body>
+</html>
