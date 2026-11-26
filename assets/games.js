@@ -2221,5 +2221,13 @@ window.COOLMATHS = {
       tags: ["game-strategy", "divisibility"],
       level: 2,
     },
+    {
+      slug: "geometric-series-square",
+      title: "Geometric Series in a Square",
+      blurb: "Colour half a square, then half of what is left, and so on. How much is coloured in the end, and what if you take thirds or quarters?",
+      tags: ["series", "fractions", "limits"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

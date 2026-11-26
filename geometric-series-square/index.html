@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Geometric Series in a Square &mdash; coolmaths</title>
+<meta name="description" content="Colour half a square, then half of what is left, and so on. How much is coloured in the end, and what if you take thirds or quarters?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/geometric-series-square/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Geometric Series in a Square">
+<meta property="og:description" content="Colour half a square, then half of what is left, and so on. How much is coloured in the end, and what if you take thirds or quarters?">
+<meta property="og:url" content="https://coolmaths.ai/geometric-series-square/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.8rem; }
+  #board { display: block; width: 100%; height: auto; border-radius: 8px; }
+  #note { margin: 0.5rem 0 0; color: var(--muted); font-size: 0.9rem; text-align: center; min-height: 0; }
+  #note:empty { display: none; }
+  .stepper { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .stepper button { min-width: 2.75rem; min-height: 2.75rem; padding: 0; font-size: 1.2rem; }
+  #nValue { min-width: 2ch; text-align: center; font-weight: 700; font-variant-numeric: tabular-nums; font-size: 1.15rem; }
+  .controls fieldset { display: flex; flex-wrap: wrap; gap: 0.2rem 0.8rem; align-items: center; border: 0; margin: 0; padding: 0; }
+  .controls legend { float: left; margin-right: 0.4rem; color: var(--muted); font-size: 0.9rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.3rem; min-height: 2.75rem; font-size: 1.05rem; }
+  #status { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="geometric-series-square" data-kind="demo">
+<main id="main">
+  <h1>Geometric Series in a Square</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#series">Infinite Series</a><a class="tag" href="../index.html#fractions">Fractions</a><a class="tag" href="../index.html#limits">Limits</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A square is cut into smaller and smaller pieces, and some are coloured. Watch how much of the square gets coloured in the end.<br>
+    <strong>How to play:</strong> Press + to cut once more. Pick 2, 3 or 4 to see three different ways of cutting.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="480" height="480" aria-label="A square"></canvas>
+    <p id="note"></p>
+  </div>
+
+  <div class="controls">
+    <span class="stepper" role="group" aria-label="Number of terms N">
+      N
+      <button id="lessBtn" type="button" aria-label="One step fewer">&minus;</button>
+      <output id="nValue" aria-live="off">1</output>
+      <button id="moreBtn" type="button" class="primary" aria-label="One more step">+</button>
+    </span>
+    <fieldset>
+      <legend>Show</legend>
+      <label><input type="radio" name="kind" value="2" checked> 2</label>
+      <label><input type="radio" name="kind" value="3"> 3</label>
+      <label><input type="radio" name="kind" value="4"> 4</label>
+    </fieldset>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three <a class="wiki-term" data-wiki="Proof_without_words" href="https://en.wikipedia.org/wiki/Proof_without_words" target="_blank" rel="noopener">proofs without words</a> of sums of <a class="wiki-term" data-wiki="Geometric_series" href="https://en.wikipedia.org/wiki/Geometric_series" target="_blank" rel="noopener">geometric series</a>:</p>
+      <blockquote><code>1/2 + 1/4 + 1/8 + &hellip; = 1</code><br><code>1/3 + 1/9 + 1/27 + &hellip; = 1/2</code><br><code>1/4 + 1/16 + 1/64 + &hellip; = 1/3</code></blockquote>
+
+      <h2>Halves: the whole square</h2>
+      <p>Shade half the square, then half of what is left, then half of that. Every step shades half of the white part, so the white part after <code>k</code> steps is <code>1/2<sup>k</sup></code> and the shaded part is <code>1 &minus; 1/2<sup>k</sup></code>. Nothing white is safe for ever: the shading fills the square. (This picture is Warren Page's.)</p>
+
+      <h2>Thirds: half the square</h2>
+      <p>Cut the square into 3&nbsp;&times;&nbsp;3 and shade the three cells below the diagonal: <code>3/9 = 1/3</code>. Then do the same in each of the three cells on the diagonal: <code>3 &times; 3/81 = 1/9</code>, and so on. The cells above the diagonal are a mirror copy of the shaded ones, and between them they use up everything, since the diagonal cells shrink away. So the shaded part tends to exactly half.</p>
+
+      <h2>Quarters: a third of the square</h2>
+      <p>Cut into quarters and shade one; leave two more white, and cut the fourth again (Sunday A. Ajose's picture). At every size there are three equal quarters, one shaded and two white, so the shaded part is a third of everything except the shrinking corner: it tends to <code>1/3</code>.</p>
+
+      <h2>The formula</h2>
+      <p>With ratio <code>r</code>, <code>r + r&sup2; + &hellip; + r<sup>k</sup> = r(1 &minus; r<sup>k</sup>)/(1 &minus; r)</code>, which tends to <code>r/(1 &minus; r)</code>: 1, 1/2 and 1/3 for <code>r</code> = 1/2, 1/3, 1/4. The logic test checked, for every N the applet allows, that the coloured area is exactly the partial sum, that the coloured pieces never overlap, and (in exact whole-number arithmetic) that each partial sum falls short of its limit by <code>1/((q&minus;1)q<sup>k</sup>)</code>.</p>
+
+      <p class="tip">Pick 4 and press + a few times. Can you see the same L-shape of three quarters at every size?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/SequencesSquare.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="geometric-series-square-core.js"></script>
+<script src="geometric-series-square.js"></script>
+</body>
+</html>
