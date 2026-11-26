@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ratchet Effect &mdash; coolmaths</title>
+<meta name="description" content="Two staircases both slide downhill. How can the ball they pass between them climb?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/ratchet/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Ratchet Effect">
+<meta property="og:description" content="Two staircases both slide downhill. How can the ball they pass between them climb?">
+<meta property="og:url" content="https://coolmaths.ai/ratchet/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.8rem;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+  #readout { margin: 0.6rem 0 0; color: var(--muted); font-size: 0.9rem; text-align: center; }
+  .controls fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.9rem;
+    align-items: center;
+    border: 0;
+    margin: 0;
+    padding: 0;
+  }
+  .controls legend { float: left; margin-right: 0.4rem; color: var(--muted); font-size: 0.9rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.3rem; min-height: 2.75rem; }
+</style>
+</head>
+<body data-game="ratchet" data-kind="demo">
+<main id="main">
+  <h1>Ratchet Effect</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#probability">Probability</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two staircases both slide downhill, yet together they lift a ball up. Watch how.<br>
+    <strong>How to play:</strong> Press Go. Pick one staircase or both, and Fast or Slow, to compare.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="400" height="280" aria-label="Two staircases sliding down a slope, with a red ball resting on a step"></canvas>
+    <p id="readout" aria-live="off"></p>
+  </div>
+
+  <div class="controls">
+    <fieldset>
+      <legend>Speed</legend>
+      <label><input type="radio" name="speed" value="fast"> Fast</label>
+      <label><input type="radio" name="speed" value="slow" checked> Slow</label>
+    </fieldset>
+    <fieldset>
+      <legend>Show</legend>
+      <label><input type="radio" name="show" value="regular"> Regular</label>
+      <label><input type="radio" name="show" value="flashing"> Flashing</label>
+      <label><input type="radio" name="show" value="both" checked> Both</label>
+    </fieldset>
+    <button id="goBtn" type="button" class="primary" aria-pressed="false">Go</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two plates shaped like staircases move side by side. Each one, watched alone, moves downhill. Yet a ball passed between them climbs. This is the <a class="wiki-term" data-wiki="Brownian_ratchet" href="https://en.wikipedia.org/wiki/Brownian_ratchet" target="_blank" rel="noopener">ratchet effect</a>, the mechanical picture behind Parrondo's paradox.</p>
+
+      <h2>Two downward motions</h2>
+      <p>Call one step the distance <code>D</code> along the slope. The plain staircase slides down <code>D/30</code> every frame, so <code>0.8 D</code> in 24 frames. The flashing one slides the same way, and on top of that, for 12 frames it climbs one whole step while sliding half a tread sideways, then for 12 frames drops back. Over 24 frames it too ends <code>0.8 D</code> lower. Choose Regular or Flashing alone and the ball goes down.</p>
+
+      <h2>Passing the ball</h2>
+      <p>With Both, the flashing staircase carries the ball while it climbs and hands it to the plain one at the top of the climb. While the flashing staircase drops back, the plain one carries the ball down, only <code>12/30 = 0.4 D</code>. Then the flashing one takes it back. Per cycle of 24 frames the ball gains <code>D &minus; 0.4 D &minus; 0.4 D = 0.2 D</code> on the screen: up, although each plate went down. The logic test follows the ball frame by frame and finds exactly this rise in every cycle, and exactly <code>0.8 D</code> down for each staircase alone.</p>
+
+      <h2>Why it is not magic</h2>
+      <p>The trick is in the timing. The ball always rides the staircase that is moving the right way at that moment, and the sideways slide makes the hand-over possible: the treads of both plates lie on the same line, so the ball can step from one to the other. Two losing games played alternately can win in just the same way: see <a class="wiki-term" data-wiki="Parrondo%27s_paradox" href="https://en.wikipedia.org/wiki/Parrondo%27s_paradox" target="_blank" rel="noopener">Parrondo's paradox</a>.</p>
+
+      <p class="tip">Run Both on Slow and read the line under the picture: the ball changes hands every 12 frames. Then try Flashing alone.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Probability/Ratchet.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="ratchet-core.js"></script>
+<script src="ratchet.js"></script>
+</body>
+</html>

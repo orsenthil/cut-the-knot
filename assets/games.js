@@ -2190,5 +2190,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "ratchet",
+      title: "Ratchet Effect",
+      blurb: "Two staircases both slide downhill. How can the ball they pass between them climb?",
+      tags: ["paradoxes", "probability"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
