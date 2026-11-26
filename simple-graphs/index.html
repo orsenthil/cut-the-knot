@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simple Graphs &mdash; coolmaths</title>
+<meta name="description" content="Draw vertices and edges, repeat an edge, or add a loop. What must always be true about the degrees you see?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/simple-graphs/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Simple Graphs">
+<meta property="og:description" content="Draw vertices and edges, repeat an edge, or add a loop. What must always be true about the degrees you see?">
+<meta property="og:url" content="https://coolmaths.ai/simple-graphs/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 44rem;
+    padding: 0.8rem 1rem;
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    background: var(--surface);
+    border-radius: var(--radius);
+    touch-action: none;
+  }
+  .edge { stroke: var(--ink); }
+  .loop, .vertex { fill: var(--accent); }
+  .vertex { stroke: var(--card); stroke-width: 2; cursor: grab; }
+  .degree-label { fill: var(--text); font-family: var(--font); font-weight: 700; }
+  circle:focus-visible { outline: 3px solid var(--focus); }
+  #stats { margin: 0.7rem 0 0; color: var(--muted); font-size: 0.9rem; text-align: center; }
+  .controls .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    gap: 0.6rem 1rem;
+  }
+  .check { display: inline-flex; align-items: center; gap: 0.3rem; min-height: 2.75rem; color: var(--muted); font-size: 0.9rem; }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="simple-graphs" data-kind="demo">
+<main id="main">
+  <h1>Simple Graphs</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#graph-theory">Graph Theory</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Place dots on the board and join them with lines to build a graph. Watch how many lines meet at each dot. There is nothing to win &mdash; explore what every graph must satisfy.<br>
+    <strong>How to play:</strong> Click empty space to add a dot. Drag from one dot to another to add a line. Pop removes the last line; Reset clears the board.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="diagram" viewBox="0 0 600 400" role="img" aria-label="A drawing board for vertices and edges"></svg>
+    <p id="stats"></p>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label class="check"><input id="moving" type="checkbox"> Move dots</label>
+      <label class="check"><input id="showDegrees" type="checkbox"> Show degrees</label>
+      <label class="check"><input id="allowLoops" type="checkbox"> Allow loops</label>
+    </div>
+    <div class="control-row">
+      <button id="popBtn" type="button" disabled>Pop</button>
+      <button id="resetBtn" type="button" class="primary">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A graph is a collection of dots (vertices) joined by lines (edges). Drawing one more line changes two numbers at once, and that is where the interesting facts come from.</p>
+
+      <h2>Degrees</h2>
+      <p>The degree of a vertex is the number of lines that touch it. Tick Show degrees to see the numbers beside the dots. Drawing the same line twice is allowed here, so each copy adds one to both degrees. A loop, when enabled, starts and ends at the same dot and adds two to its degree.</p>
+
+      <h2>The handshaking fact</h2>
+      <p>Every edge has two ends, so adding up all the degrees counts each edge exactly twice. Therefore <code>total degree = 2 &times; number of edges</code>, whatever the graph looks like.</p>
+
+      <h2>Odd degrees come in pairs</h2>
+      <p>Because the total degree is even, the sum of the odd degrees must also be even. That can only happen if there is an even number of odd-degree vertices: 0, 2, 4, and so on. Try to draw a graph with exactly one odd vertex &mdash; you will not be able to.</p>
+
+      <h2>What was checked</h2>
+      <p>The logic test builds random graphs with repeated edges and loops both enabled and disabled, and checks the handshaking equality and the even number of odd vertices on each. It also checks that a loop counts twice, that loops are refused when the option is off, and that Pop and Reset behave as the applet does.</p>
+
+      <p class="tip">Draw three dots and join them in a triangle. Every degree is 2; add a fourth line from one dot to another and see which two degrees become odd.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/SimpleGraphs.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="simple-graphs-core.js"></script>
+<script src="simple-graphs.js"></script>
+</body>
+</html>

@@ -2182,5 +2182,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "simple-graphs",
+      title: "Simple Graphs",
+      blurb: "Draw vertices and edges, repeat an edge, or add a loop. What must always be true about the degrees you see?",
+      tags: ["graph-theory", "logic", "algorithms"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
