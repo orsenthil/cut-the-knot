@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Tesseract &mdash; coolmaths</title>
+<meta name="description" content="Build a four-dimensional cube, turn it through the fourth dimension, then glide a pair of arrows over its squares until they come home mirrored.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/tesseract/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Tesseract">
+<meta property="og:description" content="Build a four-dimensional cube, turn it through the fourth dimension, then glide a pair of arrows over its squares until they come home mirrored.">
+<meta property="og:url" content="https://coolmaths.ai/tesseract/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 44rem; padding: 0.6rem; }
+  #stage h2 { font-size: 1.05rem; margin: 0.2rem 0 0.5rem; text-align: center; }
+  #stage canvas { display: block; width: 100%; height: auto; border-radius: 8px; touch-action: none; }
+  #stepText, #here { margin: 0.5rem 0; text-align: center; color: var(--muted); font-size: 0.92rem; }
+  .row { display: grid; grid-template-columns: 2.5rem 1fr 3.5rem; align-items: center; gap: 0.5rem; }
+  .row[hidden] { display: none; }
+  .row .name { font-weight: 700; }
+  .row input { width: 100%; min-height: 2.75rem; }
+  .bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3rem 0.8rem; margin: 0.4rem 0; }
+  .bar label { display: inline-flex; align-items: center; gap: 0.3rem; min-height: 2.75rem; }
+  #dest { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.4rem; margin: 0.6rem 0; }
+  #dest button { min-height: 2.75rem; font-family: var(--mono); padding: 0 0.2rem; }
+  hr.split { border: 0; border-top: 1px solid var(--border); margin: 1rem 0; }
+</style>
+</head>
+<body data-game="tesseract" data-kind="game">
+<main id="main">
+  <h1>The Tesseract</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Build a four-dimensional cube step by step and turn it. Then take a little pair of arrows on a trip over its squares so that it comes home flipped over.<br>
+    <strong>How to play:</strong> Press Start and keep pressing Continue. In the puzzle below, press the square buttons to move the coloured arrows. You win when they come back reversed.
+  </div>
+
+  <div id="stage" class="stage">
+    <h2>Building and turning the tesseract</h2>
+    <canvas id="view" width="480" height="400" aria-label="A drawing of the tesseract, or of the step of its construction; drag it to turn it"></canvas>
+    <p id="stepText" aria-live="polite"></p>
+    <div class="bar">
+      <button id="goBtn" type="button" class="primary">Start</button>
+      <button id="skipBtn" type="button">Skip</button>
+    </div>
+    <div id="play" hidden>
+      <div class="bar">
+        <span>Move</span>
+        <label><input type="radio" name="move" value="cube" checked> Tesseract</label>
+        <label><input type="radio" name="move" value="plane"> Hyperplane</label>
+      </div>
+      <div id="sliders">
+        <div class="row"><span class="name">XY</span><input type="range"><output></output></div>
+        <div class="row"><span class="name">YZ</span><input type="range"><output></output></div>
+        <div class="row"><span class="name">XZ</span><input type="range"><output></output></div>
+        <div class="row"><span class="name">XH</span><input type="range"><output></output></div>
+        <div class="row"><span class="name">YH</span><input type="range"><output></output></div>
+        <div class="row"><span class="name">ZH</span><input type="range"><output></output></div>
+      </div>
+      <div class="bar">
+        <span>Show</span>
+        <label><input id="cubeBox" type="checkbox" checked> Cubes</label>
+        <label><input id="sectionBox" type="checkbox"> Cross section</label>
+        <label><input id="fixBox" type="checkbox"> Fix origin</label>
+      </div>
+    </div>
+
+    <hr class="split">
+    <h2>The reper puzzle</h2>
+    <canvas id="puzzle" width="480" height="380" aria-label="The tesseract with the fixed square shaded grey and the moving reper's square shaded in colour, each with its pair of arrows"></canvas>
+    <p id="here" aria-live="polite"></p>
+    <div id="dest" role="group" aria-label="Squares the moving reper can glide to"></div>
+    <div class="bar">
+      <button id="backBtn" type="button" disabled>Back</button>
+      <button id="repeatBtn" type="button">Repeat</button>
+      <button id="resetBtn" type="button">Reset</button>
+      <label><input id="pathBox" type="checkbox"> Highlight itinerary</label>
+    </div>
+  </div>
+
+  <div class="controls" hidden></div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A <a class="wiki-term" data-wiki="Tesseract" href="https://en.wikipedia.org/wiki/Tesseract" target="_blank" rel="noopener">tesseract</a> is the four-dimensional <a class="wiki-term" data-wiki="Hypercube" href="https://en.wikipedia.org/wiki/Hypercube" target="_blank" rel="noopener">hypercube</a>: all points <code>(x, y, z, h)</code> with every coordinate between 0 and 1. The picture is its shadow on the screen.</p>
+
+      <h2>Counting its parts</h2>
+      <p>Each step of the construction moves the last shape along a new direction. Every old part is then present twice, and every old part also sweeps out a new part one dimension higher. That doubling-plus-sweeping is exactly multiplication by <code>2x + 1</code>, so the n-dimensional cube's parts are the coefficients of <code>(2x + 1)<sup>n</sup></code>:</p>
+      <blockquote><code>(2x + 1)<sup>4</sup> = 16x<sup>4</sup> + 32x<sup>3</sup> + 24x<sup>2</sup> + 8x + 1</code></blockquote>
+      <p>Read from <code>x<sup>4</sup></code> down: 16 vertices, 32 edges, 24 squares, 8 cubes and 1 tesseract.</p>
+
+      <h2>Turning in four dimensions</h2>
+      <p>In 4D you turn about a plane, not a line, and there are six planes of rotation, one for each pair of axes. The cube drawn in colour can be turned through the fourth dimension until it shows its other side. A hyperplane <code>Ax + By + Cz + Dh = E</code> cuts the tesseract in a solid: a cube for <code>h = 1/2</code>, an octahedron for <code>x + y + z + h = 2</code>. The logic test checked both, and that every one of the six turns really is a rotation.</p>
+
+      <h2>Coming home reversed</h2>
+      <p>In a tesseract three squares meet at every edge. Glide the reper (without turning it) across the edge into the next square, then the next, and back into the first: it returns as a mirror image. Those three squares form a one-sided strip, like a <a class="wiki-term" data-wiki="M%C3%B6bius_strip" href="https://en.wikipedia.org/wiki/M%C3%B6bius_strip" target="_blank" rel="noopener">M&ouml;bius strip</a>. The logic test searched every route: three moves is the fewest from every square, the only three-move solutions go round one of the square's four edges, and no trip inside a single boundary cube can ever reverse the reper, because a cube's surface is two-sided.</p>
+
+      <p class="tip">Note the square's name, pick one of its edges, and visit the other two squares that share it.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/Tesseract.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="tesseract-core.js"></script>
+<script src="tesseract.js"></script>
+</body>
+</html>

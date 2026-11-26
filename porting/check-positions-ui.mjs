@@ -840,6 +840,10 @@ const GAMES = {
     await page.check('input[value="x"]');
     await page.fill("#radixIn", "12"); await page.dispatchEvent("#radixIn", "change");
   },
+  tesseract: async (page) => {
+    await page.click("#skipBtn");
+    await page.locator("#dest button").first().click();
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

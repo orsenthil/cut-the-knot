@@ -2347,5 +2347,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "tesseract",
+      title: "The Tesseract",
+      blurb: "Build a four-dimensional cube, turn it through the fourth dimension, then glide a pair of arrows over its squares until they come home mirrored.",
+      tags: ["counting", "logic", "invariants"],
+      level: 2,
+    },
   ],
 };

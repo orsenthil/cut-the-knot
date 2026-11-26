@@ -1982,6 +1982,13 @@ check("base-tables: base 12 times table, 3 x 4 = 10", read["base-tables"]?.radix
   const bt = at("base-tables", { radix: 16, op: "x", a: 15, b: 15 });
   check("base-tables: F x F = E1 in base 16", bt.entry === "F x F = E1" && bt.inBase10 === "15 x 15 = 225");
 }
+check("tesseract: built, the moving reper one square away", read.tesseract?.built === true && read.tesseract.puzzle.path.length === 1 && read.tesseract.puzzle.orientation === "not back home yet" && read.tesseract.puzzle.shortestWayHomeReversed.length >= 2);
+{
+  const ts = at("tesseract", { angles: {}, plane: {}, built: false, fixed: "XY00", moving: "XY00", reper: [[0, 1], [1, 1]], fixedReper: [[0, 1], [1, 1]], path: [] });
+  check("tesseract: from XY00 the shortest reversal takes 3 glides round an edge", ts.puzzle.shortestWayHomeReversed.length === 3 && ts.puzzle.shortestWayHomeReversed[2] === "XY00");
+  const tr = at("tesseract", { angles: {}, plane: {}, built: true, fixed: "XY00", moving: "XY00", reper: [[1, 1], [0, 1]], fixedReper: [[0, 1], [1, 1]], path: ["XY00", "X10H", "X1Z0"] });
+  check("tesseract: arrows swapped on the home square: solved", tr.puzzle.orientation === "reversed: solved");
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;
