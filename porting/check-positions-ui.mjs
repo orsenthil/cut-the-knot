@@ -1027,6 +1027,16 @@ const GAMES = {
   brianchon: (page) => dragFirstHandle(page),
   "brianchon-in-ellipse": (page) => dragFirstHandle(page),
   "brick-wall": (page) => dragFirstHandle(page),
+  "broken-chord": (page) => dragFirstHandle(page),
+  "broken-chord-mr-homm": (page) => dragFirstHandle(page),
+  "broken-chord-paper-folding": (page) => dragFirstHandle(page),
+  "building-bridge": (page) => dragFirstHandle(page),
+  "building-bridges": (page) => dragFirstHandle(page),
+  "bui-quang-tuan": (page) => dragFirstHandle(page),
+  "bui-quang-tuan-2": (page) => dragFirstHandle(page),
+  "bulging-lines": (page) => dragFirstHandle(page),
+  butterfly: (page) => dragFirstHandle(page),
+  "butterfly-in-ellipse": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

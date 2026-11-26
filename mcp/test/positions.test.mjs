@@ -2173,6 +2173,16 @@ check("breadth-width: both barrels are equal squares beneath the illusion", read
 check("brianchon: the main diagonals concur while the extra chords are listed", read.brianchon?.concurrency.holds === true && read.brianchon.chords.length === 3);
 check("brianchon-in-ellipse: the affine map carries the concurrence point", read["brianchon-in-ellipse"]?.SAgreesWithSaved === true && read["brianchon-in-ellipse"].reading.concurrent === true);
 check("brick-wall: mortar lines stay parallel while the joints stagger", read["brick-wall"]?.brickCount === 100 && read["brick-wall"].rows === 10);
+check("broken-chord: the perpendicular from the arc midpoint halves the broken chord", read["broken-chord"]?.valid === true && Object.values(read["broken-chord"].core.checks).every(Boolean) === true);
+check("broken-chord-mr-homm: the saved branch satisfies the same equality", read["broken-chord-mr-homm"]?.savedMatchesCore === true && read["broken-chord-mr-homm"].branch.longSide === "AC");
+check("broken-chord-paper-folding: folding gives CF = CB and M the midpoint of AF", Object.values(read["broken-chord-paper-folding"]?.reading.claims || {}).every(Boolean) === true);
+check("building-bridge: the two translations give the same optimal bridge", read["building-bridge"]?.checks.twoTranslations === true && read["building-bridge"].checks.triangleInequality === true);
+check("building-bridges: the two-river construction gives three parallel land pieces", read["building-bridges"]?.drawingValid === true && read["building-bridges"].landSegments.length === 3);
+check("bui-quang-tuan: the seventh circle returns to the first", read["bui-quang-tuan"]?.core.closure.holds === true && read["bui-quang-tuan"].core.concyclic.holds === true);
+check("bui-quang-tuan-2: the saved P reproduces the six-circle chain", read["bui-quang-tuan-2"]?.savedPMatchesCore === true && read["bui-quang-tuan-2"].core.valid === true);
+check("bulging-lines: every line is straight and the layers are translations", read["bulging-lines"]?.illustration === true && read["bulging-lines"].metrics.side === 32);
+check("butterfly: the off-axis saved nexus breaks the reciprocal-sum equality", read.butterfly?.checks.reciprocal === false && read.butterfly.checks.midpoint === false);
+check("butterfly-in-ellipse: the even polygon keeps every side crossing pinned", read["butterfly-in-ellipse"]?.claims.holds === true && read["butterfly-in-ellipse"].savedReadable === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);

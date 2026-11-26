@@ -567,6 +567,16 @@ const CORE_GLOBALS = {
   "brianchon/brianchon-core.js": ["BrianchonCore"],
   "brianchon-in-ellipse/brianchon-in-ellipse-core.js": ["BrianchonCore"],
   "brick-wall/brick-wall-core.js": ["BrickWallCore"],
+  "broken-chord/broken-chord-core.js": ["BrokenChordCore"],
+  "broken-chord-mr-homm/broken-chord-mr-homm-core.js": ["BrokenChordMrHommCore"],
+  "broken-chord-paper-folding/broken-chord-paper-folding-core.js": ["BrokenChordPaperFoldingCore"],
+  "building-bridge/building-bridge-core.js": ["BuildingBridgeCore"],
+  "building-bridges/building-bridges-core.js": ["BuildingBridgesCore"],
+  "bui-quang-tuan/bui-quang-tuan-core.js": ["BuiQuangTuanCore"],
+  "bui-quang-tuan-2/bui-quang-tuan-2-core.js": ["BuiQuangTuan2Core"],
+  "bulging-lines/bulging-lines-core.js": ["BulgingLinesCore"],
+  "butterfly/butterfly-core.js": ["ButterflyCore"],
+  "butterfly-in-ellipse/butterfly-in-ellipse-core.js": ["ButterflyInEllipseCore"],
 };
 
 const games = [];
