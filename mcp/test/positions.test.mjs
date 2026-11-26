@@ -2118,6 +2118,11 @@ check("angles-in-circle: the angle matches the half-arc rule", read["angles-in-c
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
 }
 
+check("binomial-option-tree: 6 steps explored", read["binomial-option-tree"]?.steps === 6 && read["binomial-option-tree"].explored === true && read["binomial-option-tree"].blackScholes === 10.4506);
+{
+  const bt = at("binomial-option-tree", { n: 1, K: 100, sigma: 0.2, r: 0.05, type: "call", american: false, explored: false });
+  check("binomial-option-tree: one step is the hedge, far from the formula", bt.steps === 1 && Math.abs(bt.treePrice - bt.blackScholes) > 0.5);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

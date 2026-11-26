@@ -503,6 +503,7 @@ const CORE_GLOBALS = {
   "angle-on-diameter/angle-on-diameter-core.js": ["AngleOnDiameterCore"],
   "angle-property/angle-property-core.js": ["AnglePropertyCore"],
   "angles-in-circle/angles-in-circle-core.js": ["AnglesInCircleCore"],
+  "binomial-option-tree/binomial-option-tree-core.js": ["BinomialOptionTreeCore"],
 };
 
 const games = [];

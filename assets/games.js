@@ -2494,6 +2494,14 @@ window.COOLMATHS = {
       level: 2,
     },
     {
+      slug: "binomial-option-tree",
+      title: "Binomial Option Tree",
+      blurb: "Chop a year into steps where the stock only goes up or down, and price an option by working backwards from the end. Add steps and watch the answer zigzag towards the Black–Scholes price.",
+      tags: ["black-scholes", "probability", "algorithms"],
+      kind: "demo",
+      level: 2,
+    },
+    {
       slug: "two-numbers",
       title: "Two Numbers",
       blurb: "I show you two numbers, one even and one odd. You multiply one by an odd number and the other by an even number, then tell me the sum. Can I really guess which number you picked?",

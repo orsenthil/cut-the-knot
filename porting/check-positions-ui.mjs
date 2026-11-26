@@ -967,6 +967,9 @@ const GAMES = {
   "angle-on-diameter": (page) => dragFirstHandle(page),
   "angle-property": (page) => dragFirstHandle(page),
   "angles-in-circle": (page) => dragFirstHandle(page),
+  "binomial-option-tree": async (page) => {
+    await page.selectOption("#nIn", "6");
+  },
 };
 
 /** Move the first draggable point of an illustration with the keyboard. */

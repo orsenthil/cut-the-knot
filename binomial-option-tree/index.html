@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Binomial Option Tree &mdash; coolmaths</title>
+<meta name="description" content="Chop a year into steps where the stock only goes up or down, and price an option by working backwards from the end. Add steps and watch the answer zigzag towards the Black–Scholes price.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/binomial-option-tree/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Binomial Option Tree">
+<meta property="og:description" content="Chop a year into steps where the stock only goes up or down, and price an option by working backwards from the end. Add steps and watch the answer zigzag towards the Black–Scholes price.">
+<meta property="og:url" content="https://coolmaths.ai/binomial-option-tree/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+#stage { width: 100%; max-width: 38rem; padding: 0.8rem; }
+  #tree, #conv { display: block; width: 100%; height: auto; }
+  svg .edge { stroke: var(--border-strong); stroke-width: 1.5; }
+  svg .node { fill: var(--card); stroke: var(--ink); stroke-width: 2; }
+  svg .node.pays { fill: var(--good); }
+  svg .node.zero { fill: var(--muted); }
+  svg text { font-family: var(--font); text-anchor: middle; }
+  svg .stock { fill: var(--muted); font-size: 11px; }
+  svg .value { fill: var(--accent); font-size: 12px; font-weight: 700; }
+  svg .bs { stroke: var(--good); stroke-width: 2; stroke-dasharray: 6 4; }
+  svg .trace { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+  svg .here { fill: var(--bad); }
+  svg .axis { fill: var(--muted); font-size: 12px; text-anchor: end; }
+  svg .axis.start { text-anchor: start; }
+  .caption { text-align: center; color: var(--muted); font-size: 0.9rem; margin: 0.2rem 0 0.6rem; }
+  #facts { text-align: center; margin: 0.5rem 0 0; overflow-wrap: anywhere; }
+  .controls .group { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3rem 0.8rem; width: 100%; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 8rem; max-width: 100%; }
+  .controls select { min-height: 2.75rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="binomial-option-tree" data-kind="demo">
+<main id="main">
+  <h1>Binomial Option Tree</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#black-scholes">Black–Scholes</a><a class="tag" href="../index.html#probability">Probability</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Price an option by chopping a year into steps where the stock can only go up or down, then working backwards from the end. How many steps until the answer stops changing?<br>
+    <strong>How to play:</strong> Choose the number of steps and the option, and watch the tree and the graph below it.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="tree" viewBox="0 0 420 300" role="img" aria-label="The tree: stock prices above each node, option values below"></svg>
+    <p class="caption">Stock price above each node, the option's value below it.</p>
+    <svg id="conv" viewBox="0 0 420 150" role="img" aria-label="The tree's price for 1 to 100 steps, against the Black-Scholes price"></svg>
+    <p class="caption">The tree's price for 1 to 100 steps; dashed: Black&ndash;Scholes.</p>
+    <p id="facts" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <div class="group">
+      <label>Steps <select id="nIn"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option><option>8</option></select></label>
+      <label>Option <select id="typeIn"><option value="call">Call</option><option value="put">Put</option></select></label>
+      <label><input id="amIn" type="checkbox"> American (exercise any time)</label>
+    </div>
+    <div class="group">
+      <label>Strike <input id="kIn" type="range" min="60" max="140" step="5" value="100"> <span id="kOut"></span></label>
+      <label>Volatility <input id="sigmaIn" type="range" min="0.05" max="0.6" step="0.01" value="0.2"> <span id="sigmaOut"></span></label>
+      <label>Interest <input id="rIn" type="range" min="0" max="0.1" step="0.005" value="0.05"> <span id="rOut"></span></label>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>One step of up-or-down is too crude for a real stock, so use many short ones. This is the <a class="wiki-term" data-wiki="Binomial_options_pricing_model" href="https://en.wikipedia.org/wiki/Binomial_options_pricing_model" target="_blank" rel="noopener">binomial model</a> of Cox, Ross and Rubinstein (1979). The stock here starts at $100, and the option ends in one year.</p>
+
+      <h2>Steps that match the volatility</h2>
+      <p>Split the year into <code>n</code> steps of length <code>dt</code>. In each step the stock goes up by a factor <code>u = e<sup>&sigma;&radic;dt</sup></code> or down by <code>d = 1/u</code>. That makes the spread of its log grow like <code>&sigma;&sup2;</code> per year, just as in the Stock Price Paths page. After <code>n</code> steps the end prices are <code>S u<sup>j</sup> d<sup>n&minus;j</sup></code>: a <a class="wiki-term" data-wiki="Binomial_distribution" href="https://en.wikipedia.org/wiki/Binomial_distribution" target="_blank" rel="noopener">binomial</a> spread of outcomes.</p>
+
+      <h2>Working backwards</h2>
+      <p>At the end the option is worth its payoff. One step earlier, the riskless hedge of the previous page prices each node from the two after it: the discounted average with the risk-neutral chance <code>q = (e<sup>r dt</sup> &minus; d)/(u &minus; d)</code>. Repeat back to today. At every node the hedge is <code>&Delta; = (V<sub>up</sub> &minus; V<sub>down</sub>)/(S<sub>up</sub> &minus; S<sub>down</sub>)</code> shares, so the hedge must be adjusted at every step. An American put can also be exercised early, so each node takes the larger of holding on and exercising now.</p>
+
+      <h2>The limit is Black&ndash;Scholes</h2>
+      <p>As the steps get shorter, the binomial spread becomes a normal one (the <a class="wiki-term" data-wiki="De_Moivre%E2%80%93Laplace_theorem" href="https://en.wikipedia.org/wiki/De_Moivre%E2%80%93Laplace_theorem" target="_blank" rel="noopener">de Moivre&ndash;Laplace theorem</a>), and the tree's price tends to</p>
+      <blockquote><code>C = S N(d<sub>1</sub>) &minus; K e<sup>&minus;rT</sup> N(d<sub>2</sub>)</code></blockquote>
+      <p>The graph shows the tree's price zigzagging above and below the formula as the steps alternate odd and even. The logic test checked a 10,000-step tree to within 0.001 of $10.4506. It also checked that every node's hedge copies the option exactly one step later, and that calls and puts satisfy <code>C &minus; P = S &minus; K e<sup>&minus;rT</sup></code>.</p>
+
+      <p class="tip">Choose a put with 10% interest and tick American. Where in the tree is it worth exercising early?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original demo for coolmaths, after David Alvarez Rosa's article
+    <a href="https://david.alvarezrosa.com/posts/deriving-black-scholes/" target="_blank" rel="noopener">Deriving Black-Scholes</a>
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="binomial-option-tree-core.js"></script>
+<script src="binomial-option-tree.js"></script>
+</body>
+</html>
