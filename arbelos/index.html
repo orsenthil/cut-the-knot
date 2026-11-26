@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arbelos &mdash; coolmaths</title>
+<meta name="description" content="A big semicircle holds two smaller ones that touch at a point you can drag. Does the knife-shaped gap always have the same area as the circle standing on the upright through that point?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/arbelos/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Arbelos">
+<meta property="og:description" content="A big semicircle holds two smaller ones that touch at a point you can drag. Does the knife-shaped gap always have the same area as the circle standing on the upright through that point?">
+<meta property="og:url" content="https://coolmaths.ai/arbelos/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .arbelos-big { fill: var(--accent); fill-opacity: 0.20; }
+  #board .arbelos-cut { fill: var(--stage); }
+  #board .outline { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .diameter { stroke: var(--muted); stroke-width: 2; }
+  #board .upright { stroke: var(--good); stroke-width: 3; }
+  #board .tangent-tail { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .right-angle { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+  #board .twin-circle { fill: var(--accent); fill-opacity: 0.14; stroke: var(--good); stroke-width: 2.5; stroke-dasharray: 6 3; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  #board .point-label { fill: var(--text); font-size: 12px; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; min-width: 0; white-space: normal; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="arbelos" data-kind="demo">
+<main id="main">
+  <h1>Arbelos</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> A big half-circle holding two smaller ones, with a knife-shaped gap between them.<br>
+    <strong>How to play:</strong> Drag the dot N along the bottom line, or focus it and use the arrow keys. Press a button to jump to another spot.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="A large semicircle on the line AB, two smaller semicircles on AN and NB, a movable point N, and the upright PN with a circle drawn on PN."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Put N back at its starting place">Reset</button>
+    <button id="middleBtn" type="button" aria-label="Move N to the middle of AB">N in the middle</button>
+    <label class="option" for="circleChk"><input id="circleChk" type="checkbox" checked aria-label="Show or hide the circle on PN"> Show the circle on PN</label>
+    <label class="option" for="chordChk"><input id="chordChk" type="checkbox" aria-label="Show or hide the whole tangent chord t"> Show the whole tangent</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the dot N and the knife changes shape. Yet the number written beside the circle on the upright PN always matches the number for the knife. Why should a circle and a curved gap agree?</p>
+
+      <h2>The upright at the join</h2>
+      <p>Write <code>AN = a</code> and <code>NB = b</code>. The big semicircle has radius <code>(a + b)/2</code>. A point on a circle is a <a class="wiki-term" data-wiki="Geometric_mean" href="https://en.wikipedia.org/wiki/Geometric_mean" target="_blank" rel="noopener">geometric mean</a> of the two parts of a diameter through it: a short use of similar triangles gives</p>
+      <blockquote><code>PN = &radic;(a &times; b)</code></blockquote>
+      <p>That is also the height of the whole chord through N: the full tangent <code>t</code> in the article is <code>2 &times; PN</code>. The logic test checks this at a thousand positions of N, and again with the applet's own square-root formula from its bytecode.</p>
+
+      <h2>Area: the circle matches the knife</h2>
+      <p>The knife is the big half-circle minus the two small ones. Its <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> is</p>
+      <blockquote><code>&frac12;&pi;((a+b)/2)&sup2; &minus; &frac12;&pi;(a/2)&sup2; &minus; &frac12;&pi;(b/2)&sup2; = &pi;ab/4</code></blockquote>
+      <p>The circle drawn on PN has radius <code>PN/2</code>, so its area is <code>&pi;PN&sup2;/4 = &pi;ab/4</code> too. This is Archimedes' Proposition 4. The article's problem uses the three complete circles instead of the three half-circles: there the gap is twice as big, and with <code>t = 2PN</code> it becomes <code>S = &pi;t&sup2;/8</code> — the same number for any radii that give the same tangent, as the test confirms.</p>
+
+      <h2>The boundary arcs</h2>
+      <p>The <a class="wiki-term" data-wiki="Arc_(geometry)" href="https://en.wikipedia.org/wiki/Arc_(geometry)" target="_blank" rel="noopener">arc</a> of a semicircle of diameter <code>d</code> is <code>&pi;d/2</code>. So the big arc is <code>&pi;(a+b)/2</code>, which is exactly the left arc <code>&pi;a/2</code> plus the right arc <code>&pi;b/2</code>. The page calls this obvious, and the test verifies it for every N.</p>
+
+      <h2>About the original</h2>
+      <p>The Java applet drew a red big semicircle, two grey small ones, a black upright and a draggable blue point at N — the same construction shown here in the site's colours. The cut-the-knot article it came from now carries a GeoGebra figure rather than the Java applet, and the applet's own "about" string was a leftover from a polygon applet; neither changes the mathematics. One tiny applet quirk is not copied: it only accepted a mouse release a couple of pixels above the diameter line, although its point sat on the line. Here you can drop N anywhere along AB.</p>
+
+      <p class="tip">Press <strong>N in the middle</strong>, then drag N close to A or B. The knife and its circle change size together, but their two numbers stay equal.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/proofs/arbelos.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="arbelos-core.js"></script>
+<script src="arbelos.js"></script>
+</body>
+</html>
