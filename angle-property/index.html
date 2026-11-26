@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Angle Property &mdash; coolmaths</title>
+<meta name="description" content="Drag the circles and the line: when one circle is turned inside out into the other, do the angles where the line crosses them stay the same?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/angle-property/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Angle Property">
+<meta property="og:description" content="Drag the circles and the line: when one circle is turned inside out into the other, do the angles where the line crosses them stay the same?">
+<meta property="og:url" content="https://coolmaths.ai/angle-property/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .op-line { stroke: var(--border); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .ot-line { stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; }
+  #board .inv-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .target-circle { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .image-circle { fill: none; stroke: var(--highlight); stroke-width: 3; }
+  #board .image-line { stroke: var(--highlight); stroke-width: 3; }
+  #board .tangent-line { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 4 3; }
+  #board .cross-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1.2; }
+  #board .pt-label {
+    fill: var(--text);
+    font-size: 1rem;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem 1rem;
+  }
+  .control-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+  .control-row input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--accent);
+  }
+</style>
+</head>
+<body data-game="angle-property" data-kind="demo">
+<main id="main">
+  <h1>Angle Property</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the dots and watch the green circle turn into the red one while the two slanted lines keep the same tilt.<br>
+    <strong>How to play:</strong> Drag O, S, P, R or T with a mouse or finger, or focus a dot and press the arrow keys. Tick "Show names" to label the crossing dots, or "Hint" to draw the slanted lines.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A circle of inversion, a second circle and its red image, cut by a line through O"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label><input id="namesCheck" type="checkbox" aria-label="Show the names of the crossing dots"> Show names</label>
+      <label><input id="hintCheck" type="checkbox" aria-label="Draw the tangent lines at the crossings"> Hint</label>
+      <button id="resetBtn" type="button" class="primary" aria-label="Put all five dots back where they started">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This picture turns a circle inside out. Every point hops along a line through the centre O, yet the tilt of the lines that cross the circle does not change. Drag a dot and watch the two angle readings: they move together and stay equal.</p>
+
+      <h2>Every point hops along a line through O</h2>
+      <p>In <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">inversion</a> in a circle of radius R, a point X and its image X′ lie on the same ray from O and satisfy <code>OX &times; OX′ = R&sup2;</code>. A circle that misses O becomes another circle; a circle that passes through O becomes a straight line. Two circles touching at O become parallel lines, and two circles crossing at O become crossing lines with the same angle. The logic test checked all four statements on hundreds of circles. The applet switches to the straight-line picture when <code>|OP&sup2; &minus; r&sup2;| &le; 100</code>; that drawing tolerance is kept here.</p>
+
+      <h2>Why the angles stay the same</h2>
+      <p>Let P and Q go to P′ and Q′. Since <code>OP &times; OP′ = OQ &times; OQ′ = R&sup2;</code>, triangles OPQ and OQ′P′ are <a class="wiki-term" data-wiki="Similarity_(geometry)" href="https://en.wikipedia.org/wiki/Similarity_(geometry)" target="_blank" rel="noopener">similar</a>. The turn at O is the same and the sides around it scale the same way, so the angle where a line meets a circle is copied to where it meets the image circle. Maps with this property are called <a class="wiki-term" data-wiki="Conformal_map" href="https://en.wikipedia.org/wiki/Conformal_map" target="_blank" rel="noopener">conformal</a> or isogonal. The green and red <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> lines in the hint make equal angles with OT in every tested position, to within a billionth of a degree.</p>
+
+      <h2>A formula for every pair of points</h2>
+      <p>The similarity gives <code>P&prime;Q&prime; = R&sup2; &times; PQ / (OP &times; OQ)</code>. If the inversion is followed by a reflection, its power k is negative and the same rule becomes <code>P&prime;Q&prime; = |k| &times; PQ / (OP &times; OQ)</code>. Both formulae were checked on hundreds of random triples of points. The old applet offered only a positive power, so the negative case is checked in the code test but has no control on this page.</p>
+
+      <h2>Homologous and antihomologous dots</h2>
+      <p>Any two circles can be inverted into one another: take a centre of <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothety</a> of the two circles as O and choose the power to match the sizes. The applet's red circle is a homothetic copy of the green one as well as its inverse. Along the line OT the dots pair in two ways: A and B′ are homologous (joined by the homothety), while A and A′ are antihomologous (joined by the inversion). Both pairings were checked over the whole sample.</p>
+
+      <p class="tip">Tick Hint, drag T until the line cuts both circles, then drag S: the two angle readings change together but never differ. Now pull R towards O until the green circle passes through it and watch its red image become a straight line.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AngleProperty.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="angle-property-core.js"></script>
+<script src="angle-property.js"></script>
+</body>
+</html>
