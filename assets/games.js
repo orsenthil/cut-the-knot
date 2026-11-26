@@ -2166,5 +2166,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "simpson-paradox",
+      title: "Simpson Paradox",
+      blurb: "Two green lines are steeper than their blue partners, but adding the greens together makes a shallower line. How can the totals reverse the comparisons?",
+      tags: ["algebra", "probability", "paradoxes"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

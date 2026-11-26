@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simpson Paradox &mdash; coolmaths</title>
+<meta name="description" content="Two green lines are steeper than their blue partners, but adding the greens together makes a shallower line. How can the totals reverse the comparisons?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/simpson-paradox/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Simpson Paradox">
+<meta property="og:description" content="Two green lines are steeper than their blue partners, but adding the greens together makes a shallower line. How can the totals reverse the comparisons?">
+<meta property="og:url" content="https://coolmaths.ai/simpson-paradox/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 42rem;
+    padding: 0.8rem 1rem;
+  }
+  svg { display: block; width: 100%; height: auto; max-width: 100%; touch-action: none; }
+  .axis { stroke: var(--border-strong); stroke-width: 1; }
+  .line-a { stroke: var(--accent); stroke-width: 2.5; }
+  .line-b { stroke: var(--good); stroke-width: 2.5; }
+  .point-a { fill: var(--accent); cursor: grab; }
+  .point-b { fill: var(--good); cursor: grab; }
+  .label-a { fill: var(--accent); }
+  .label-b { fill: var(--good); }
+  text { font-family: var(--font); font-weight: 600; }
+  circle:focus-visible { outline: 3px solid var(--focus); }
+  #verdict { margin: 0.6rem 0 0; color: var(--muted); font-size: 0.9rem; text-align: center; }
+  .controls .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    gap: 0.75rem;
+  }
+  .check { display: inline-flex; align-items: center; gap: 0.3rem; min-height: 2.75rem; color: var(--muted); font-size: 0.9rem; }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="simpson-paradox" data-kind="demo">
+<main id="main">
+  <h1>Simpson Paradox</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#probability">Probability</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two blue lines and two green lines start from the same corner. Each green line is steeper than its blue partner, yet adding the two greens together can give a shallower line. There is nothing to win &mdash; see if you can make that happen.<br>
+    <strong>How to play:</strong> Drag the four dots, or focus one and use the arrow keys (Shift for bigger steps). Tick names to label the dots; press Reset for the starting picture.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="diagram" viewBox="0 0 320 200" role="img" aria-label="Four movable points A1, A2, B1 and B2 joined to the origin"></svg>
+    <p id="verdict"></p>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label class="check"><input id="namesBox" type="checkbox"> Show names</label>
+      <button id="resetBtn" type="button" class="primary">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two groups are compared twice, once piece by piece and once in total. The piece-by-piece winner can lose the total comparison. That is Simpson's paradox, seen here as the slopes of four vectors.</p>
+
+      <h2>Slopes of the four lines</h2>
+      <p>A point <code>(x, y)</code> joined to the corner has slope <code>y / x</code>: the steeper the line, the bigger the slope. In the starting picture <code>B1</code> is steeper than <code>A1</code>, and <code>B2</code> is steeper than <code>A2</code>.</p>
+
+      <h2>Adding the vectors</h2>
+      <p>Adding two vectors means adding their coordinates, so the combined slope is <code>(y1 + y2) / (x1 + x2)</code>. In the starting picture the two green vectors add to <code>(250, 170)</code>, with slope <code>0.68</code>, while the blue ones add to <code>(110, 90)</code>, with slope about <code>0.82</code>. The greens were steeper separately but shallower together &mdash; the paradox.</p>
+
+      <h2>Why it is possible</h2>
+      <p>The combined slope is an <em>x-weighted average</em> of the two slopes: <code>(x1&middot;s1 + x2&middot;s2) / (x1 + x2)</code>. It must lie between <code>s1</code> and <code>s2</code>, but it is much closer to whichever slope has the larger <code>x</code>. Drag one steep green point to have a very large horizontal distance and the other comparisons can reverse in the total.</p>
+
+      <h2>What was checked</h2>
+      <p>The logic test checks the starting slopes and, over 20,000 seeded random positions, verifies that each combined slope really is the weighted average of its pair. It also finds positions where the paradox happens and positions where it does not, showing that two individual wins do not force a win in the sum. Dragging and keyboard moves, option clamping and messages are checked too.</p>
+
+      <p class="tip">Drag B1 far to the right while keeping its height, then watch how little its steep slope counts in the green total.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/SimpsonParadox.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="simpson-paradox-core.js"></script>
+<script src="simpson-paradox.js"></script>
+</body>
+</html>
