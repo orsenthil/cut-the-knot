@@ -2038,5 +2038,13 @@ window.COOLMATHS = {
       tags: ["coordinates", "algebra", "logic"],
       level: 2,
     },
+    {
+      slug: "polygonal-numbers",
+      title: "Polygonal Numbers",
+      blurb: "Triangles, squares, pentagons and more, built from dots and grown one row at a time. How many dots does each shape need, and how many does each new layer add?",
+      tags: ["sequences", "algebra", "counting"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };
