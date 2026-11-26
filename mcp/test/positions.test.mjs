@@ -2074,6 +2074,30 @@ check("stock-price-paths: 100 paths drawn once, median theory below average", re
   const sp = at("stock-price-paths", { mu: 0, sigma: 0.8, count: 10, seed: 1, runs: 1 });
   check("stock-price-paths: no growth, 80% volatility: median 72.61", sp.theory.average === 100 && sp.theory.median === 72.61);
 }
+check("quadratic-roots: the circle's crossings give the roots of 2x² − 5x + 3", read["quadratic-roots"]?.discriminant === 1 && read["quadratic-roots"].xRoots.join() === "2,3" && read["quadratic-roots"].roots.join() === "1,1.5");
+check("random-walk: nine steps from 3 to 4 have 126 routes, nine touch the axis", read["random-walk"]?.steps === 9 && read["random-walk"].routes === 126 && read["random-walk"].touchingAxisRoutes === 9);
+check("right-replacement: LT settles into a fixed row", read["right-replacement"]?.fixedPoint === true && read["right-replacement"].finalRow.join() === read["right-replacement"].lastRow.join());
+check("sealed-bids: the highest bidder takes every item and the cash balances", read["sealed-bids"]?.winners.join() === "1,1,1" && read["sealed-bids"].analysis.finalCashSumsToZero === true && Math.abs(read["sealed-bids"].surplus - 16) < 1e-9);
+check("self-descriptive: a written 11 makes the count wrong by one", read["self-descriptive"]?.true === false && read["self-descriptive"].digitCounts[1] === 12 && read["self-descriptive"].mismatches.length === 1);
+check("simple-graphs: one isolated vertex has degree zero and no odd degrees", read["simple-graphs"]?.savedStatsAgree === true && read["simple-graphs"].stats.totalDegree === 0 && read["simple-graphs"].stats.odd === 0);
+check("simpson-paradox: B is steeper twice yet shallower together", read["simpson-paradox"]?.reversal === true && read["simpson-paradox"].combined.b.slope < read["simpson-paradox"].combined.a.slope);
+check("reflection-principle: nine of 126 walks from 3 to 4 touch zero", read["reflection-principle"]?.allWalks === 126 && read["reflection-principle"].badPaths === 9 && read["reflection-principle"].reflectionMatchesSaved === true);
+check("s1089: reversing 334 and adding gives 1089", read.s1089?.answer === "1089" && read.s1089.lines.join() === "334,433,99,990,1089" && read.s1089.palindrome === false);
+check("simple-automaton: one step of rule 2n leaves 25 cells alive", read["simple-automaton"]?.alive === 25 && read["simple-automaton"].need === 2 && read["simple-automaton"].steps === 1);
+check("upc: a changed first digit keeps the check digit valid", read.upc?.code === "112345678902" && read.upc.valid === true && read.upc.weightedSum === 88);
+check("universal-coloring: two clicks give four of sixteen ordered pairs", read["universal-coloring"]?.found === 4 && read["universal-coloring"].complete === false && read["universal-coloring"].clicks === 2);
+check("up-and-down: the hidden run is a rising four", read["up-and-down"]?.hiddenRun.length === 4 && read["up-and-down"].hiddenRun.rising === true && read["up-and-down"].finished === true);
+check("arith-magic: a completed diagonal reaches the invariant total", read["arith-magic"]?.isTransversal === true && read["arith-magic"].runningTotal === read["arith-magic"].invariantTotal && read["arith-magic"].coreResult === "done");
+check("zeros-and-nines: the units column contains a zero", read["zeros-and-nines"]?.checked.hasZero === true && read["zeros-and-nines"].result === "done");
+check("very-tiles: one misplaced answer makes the patterns disagree", read["very-tiles"]?.answersPlaced === 1 && read["very-tiles"].patternsAgree === false && read["very-tiles"].wrong.length === 1);
+check("voting: Borda gives B the most points on the saved schedule", read.voting?.method === "borda" && read.voting.current.winners.join() === "B" && read.voting.finished === false);
+check("two-numbers: an even sum names the even number 8", read["two-numbers"]?.agreesWithSaved === true && read["two-numbers"].reading.honestPick === 8 && read["two-numbers"].finished === true);
+check("water: six pours from the start, five from the saved position", read.water?.fewestPoursFromFreshStart === 6 && read.water.poursToTargetFromHere === 5 && read.water.target === 4);
+{
+  const wg = read.wgraphs;
+  check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

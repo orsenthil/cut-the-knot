@@ -907,6 +907,46 @@ const GAMES = {
   "stock-price-paths": async (page) => {
     await page.click("#newBtn");
   },
+  "quadratic-roots": async (page) => {
+    await page.locator("#slider-a").evaluate((el) => {
+      el.value = "2";
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+  },
+  "random-walk": (page) => page.click("#oneBtn"),
+  "reflection-principle": (page) => page.click("#oneBtn"),
+  "right-replacement": (page) => page.click("#computeBtn"),
+  s1089: (page) => page.click("#randomBtn"),
+  "sealed-bids": (page) => page.click("#newBidsBtn"),
+  "self-descriptive": (page) => page.click("#iterateBtn"),
+  "simple-automaton": (page) => page.click("#stepBtn"),
+  "simple-graphs": (page) => page.locator("#diagram").click({ position: { x: 12, y: 12 } }),
+  "simpson-paradox": (page) => page.check("#namesBox"),
+  "two-numbers": async (page) => {
+    await page.click("#numA");
+    await page.fill("#sumIn", "12");
+    await page.click("#guessBtn");
+  },
+  upc: (page) => page.locator("button.digit[data-i='0']").click({ position: { x: 4, y: 8 } }),
+  water: (page) => page.click(".pour[data-from='2'][data-to='1']"),
+  "arith-magic": async (page) => {
+    for (let i = 0; i < 5; i++) await page.click(`.cell[data-r="${i}"][data-c="${i}"]`);
+  },
+  "universal-coloring": async (page) => {
+    await page.click("#board .dot[data-i='0']");
+    await page.click("#board .dot[data-i='1']");
+  },
+  "zeros-and-nines": (page) => page.click("#checkBtn"),
+  "very-tiles": async (page) => {
+    await page.click("#tilesGrid .cell[data-pos='0']");
+    await page.click("#problemsGrid .cell[data-pos='0']");
+  },
+  "up-and-down": (page) => page.click("#hiddenBtn"),
+  voting: (page) => page.selectOption("#methodIn", "borda"),
+  wgraphs: async (page) => {
+    await page.click("#kruskalBtn");
+    await page.click('[data-edge="0"]');
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */
