@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Apollonius &mdash; coolmaths</title>
+<meta name="description" content="Move three circles and watch the circles that touch all of them. How many can you keep at once?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/apollonius/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Apollonius">
+<meta property="og:description" content="Move three circles and watch the circles that touch all of them. How many can you keep at once?">
+<meta property="og:url" content="https://coolmaths.ai/apollonius/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .given { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .solution { fill: none; stroke-width: 2; stroke-opacity: 0.9; }
+  #board .sol-0 { stroke: var(--bad); }
+  #board .sol-1 { stroke: var(--accent); }
+  #board .sol-2 { stroke: var(--highlight); stroke-width: 3; }
+  #board .sol-3 { stroke: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  #newBtn { min-height: 2.5rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="apollonius" data-kind="demo">
+<main id="main">
+  <h1>Apollonius</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> Three circles you can change, and every circle that touches all three.<br>
+    <strong>How to play:</strong> Drag a circle's middle dot to move it, or its edge dot to make it bigger or smaller. With the keyboard, focus a dot and use the arrow keys.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Three circles with a draggable centre dot and rim dot each, and the circles tangent to all three."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the three circles to the starting diagram">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three circles sit on the page. Move them and coloured circles appear, each one touching all three. This is the oldest famous circle puzzle: the <a class="wiki-term" data-wiki="Problem_of_Apollonius" href="https://en.wikipedia.org/wiki/Problem_of_Apollonius" target="_blank" rel="noopener">Problem of Apollonius</a>.</p>
+
+      <h2>Eight ways to touch</h2>
+      <p>A new circle can touch a given one from the outside or from inside it. Write <code>+1</code> for one choice and <code>&minus;1</code> for the other. There are three given circles, so there are <code>2 &times; 2 &times; 2 = 8</code> choices of signs. Each choice can give up to two circles, but the applet draws one for each choice, at most eight in all. The logic test checked over 1,500 arrangements: eight really happen, and fewer happen too.</p>
+
+      <h2>Turning the puzzle into algebra</h2>
+      <p>If the wanted circle has centre <code>(x, y)</code>, radius <code>r</code> and sign <code>s<sub>i</sub></code> for circle <code>i</code>, touching means <code>(x &minus; x<sub>i</sub>)<sup>2</sup> + (y &minus; y<sub>i</sub>)<sup>2</sup> = (r &minus; s<sub>i</sub>r<sub>i</sub>)<sup>2</sup></code>. Subtracting one equation from the other two cancels the <code>r<sup>2</sup></code> terms and leaves two straight-line equations: <code>x = v r + G</code> and <code>y = w r + I</code>. Put those back into the first equation and you get one quadratic in <code>r</code>.</p>
+      <p>A quadratic is solved with square roots, which is why the answer can be built with a <a class="wiki-term" data-wiki="Straightedge_and_compass_construction" href="https://en.wikipedia.org/wiki/Straightedge_and_compass_construction" target="_blank" rel="noopener">straightedge and compass</a>. The applet uses exactly this algebra; the test compares its arithmetic instruction by instruction with the port's core.</p>
+
+      <h2>When the count changes</h2>
+      <p>A negative number under the square root means no circle for that choice of signs. Three <a class="wiki-term" data-wiki="Concentric_objects" href="https://en.wikipedia.org/wiki/Concentric_objects" target="_blank" rel="noopener">concentric</a> circles have no answer at all: the two straight-line equations cannot be separated. Make the three circles almost points and all eight answers crowd around their <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>. One of the eight can also be enormous, so most of it lies outside the board.</p>
+      <p>The original page notes that if three circles all touch at one point there are infinitely many answers, and that lines and points can be treated as circles too. This applet draws only proper circles and cannot show an infinity of them; that is its choice, not a claim about the puzzle.</p>
+
+      <p class="tip">Try shrinking all three circles until they look like dots. How many coloured circles can you still tell apart?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ApolloniusSolution.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="apollonius-core.js"></script>
+<script src="apollonius.js"></script>
+</body>
+</html>
