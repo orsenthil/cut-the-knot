@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carpet With Hole &mdash; coolmaths</title>
+<meta name="description" content="A rectangular carpet has a hole. Can two pieces cut from it slide together into a square with no hole?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/carpet-with-hole/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Carpet With Hole">
+<meta property="og:description" content="A rectangular carpet has a hole. Can two pieces cut from it slide together into a square with no hole?">
+<meta property="og:url" content="https://coolmaths.ai/carpet-with-hole/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .grid-line { stroke: var(--muted); stroke-width: 1; }
+  #board .piece { stroke: var(--ink); stroke-width: 2.2; stroke-linejoin: round; }
+  #board .piece-left { fill: var(--accent); fill-opacity: 0.30; }
+  #board .piece-right { fill: var(--good); fill-opacity: 0.26; }
+  #board .carpet-outline { fill: none; stroke: var(--ink); stroke-width: 2.6; }
+  #board .hole-outline { fill: var(--stage); stroke: var(--ink); stroke-width: 2.2; }
+  #board .square-outline { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .corner-dot { fill: var(--ink); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .handle-right { fill: var(--good); }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  #board .piece-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .size-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .nxBtn {
+    min-height: 2.75rem;
+    padding: 8px 12px;
+  }
+  .nxBtn[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-text);
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="carpet-with-hole" data-kind="demo">
+<main id="main">
+  <h1>Carpet With Hole</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A carpet has a hole in the middle. It is cut into two pieces: can you slide them together to make a square carpet with no hole? There is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the dot on either piece, or focus it and use the arrow keys (Shift for bigger steps), until the piece clicks into the square. Pick a size, tick the grid, or press Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A rectangular carpet with a hole, cut into two staircase pieces. Drag the dot on either piece to slide it into a square."></svg>
+    <p class="hint-line">Drag a dot, or focus one and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <div class="size-row" role="group" aria-label="Carpet size">
+      <button type="button" class="nxBtn" data-nx="6" aria-label="Carpet size 3 by 6">3&times;6</button>
+      <button type="button" class="nxBtn" data-nx="8" aria-label="Carpet size 5 by 8">5&times;8</button>
+      <button type="button" class="nxBtn" data-nx="10" aria-label="Carpet size 7 by 10">7&times;10</button>
+      <button type="button" class="nxBtn" data-nx="12" aria-label="Carpet size 9 by 12">9&times;12</button>
+      <button type="button" class="nxBtn" data-nx="14" aria-label="Carpet size 11 by 14">11&times;14</button>
+      <button type="button" class="nxBtn" data-nx="16" aria-label="Carpet size 13 by 16">13&times;16</button>
+      <button type="button" class="nxBtn" data-nx="18" aria-label="Carpet size 15 by 18">15&times;18</button>
+    </div>
+    <label><input id="gridBox" type="checkbox" checked> Show grid</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A carpet with a hole is cut into two staircase pieces. Slide one piece and the hole disappears, yet nothing has been added or taken away. Here is why the <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> has to work out exactly.</p>
+
+      <h2>The cut and the hole</h2>
+      <p>Write N for the long side of the rectangle. The carpet is N cells by N-3 cells, and the hole is N-4 cells by one cell. The cut is a staircase: every step goes two cells across and one cell up. It splits the rectangle into two pieces with the same number of cells. The button marked 9&times;12 is the applet's opening picture: N = 12, a 108-cell rectangle with an 8-cell hole and two pieces of 50 cells each.</p>
+
+      <h2>The one-line identity</h2>
+      <p>Take away the hole and the carpet material is left over. Compare that with the square the two pieces make, whose side is N-2:</p>
+      <blockquote><code>N(N-3) - (N-4) = (N-2)&sup2;</code></blockquote>
+      <p>For N = 12 that reads 108 - 8 = 100 = 10&sup2;. This is an <a class="wiki-term" data-wiki="Algebra" href="https://en.wikipedia.org/wiki/Algebra" target="_blank" rel="noopener">algebra</a> identity, so it holds for every N, not just the seven sizes on the buttons. The logic test checked all seven sizes and 200 random board sizes, and confirmed cell by cell that the two pieces fill the cut carpet at the start and the square after the slide, with no gap and no overlap.</p>
+
+      <h2>Why the staircase fits</h2>
+      <p>Move the right piece two cells left and one cell up (or the left piece two cells right and one cell down). The staircase teeth then mesh in the other direction: the small notches line up with the small tabs. Each piece keeps its area while it moves, so the new shape must have the same area as the old one &mdash; an <a class="wiki-term" data-wiki="Equidecomposition" href="https://en.wikipedia.org/wiki/Equidecomposition" target="_blank" rel="noopener">equidecomposition</a> of a rectangle and a square. The grid shows the cells that make the counting easy.</p>
+
+      <h2>A very old puzzle</h2>
+      <p>Bogomolny's page credits both Sam Loyd and Henry Dudeney with versions of this carpet puzzle; it appears in Frederickson's book on dissections. The general fact behind it is the <a class="wiki-term" data-wiki="Wallace%E2%80%93Bolyai%E2%80%93Gerwien_theorem" href="https://en.wikipedia.org/wiki/Wallace%E2%80%93Bolyai%E2%80%93Gerwien_theorem" target="_blank" rel="noopener">Wallace&ndash;Bolyai&ndash;Gerwien theorem</a>: any two polygons of the same area can be cut up and rearranged into one another. The rules and cell geometry here follow Bogomolny's applet; the drawing and snapping were written afresh for this page.</p>
+
+      <p class="tip">Try 3&times;6 first and count the cells by hand, then jump to 15&times;18 and watch the same identity hold.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CarpetWithHole.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="carpet-with-hole-core.js"></script>
+<script src="carpet-with-hole.js"></script>
+</body>
+</html>
