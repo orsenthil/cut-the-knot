@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brianchon In Ellipse &mdash; coolmaths</title>
+<meta name="description" content="Six dots sit on an ellipse and straight lines just touch it at each dot. Do the three long diagonals always meet at a single point?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/brianchon-in-ellipse/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Brianchon In Ellipse">
+<meta property="og:description" content="Six dots sit on an ellipse and straight lines just touch it at each dot. Do the three long diagonals always meet at a single point?">
+<meta property="og:url" content="https://coolmaths.ai/brianchon-in-ellipse/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .ellipse { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .rect-guide { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  #board .tangent { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 6 5; }
+  #board .diagonal { stroke: var(--accent); stroke-width: 2.5; }
+  #board .vertex-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .center-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .point-label {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .s-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .rect-handle { fill: var(--highlight); stroke: var(--ink); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="brianchon-in-ellipse" data-kind="demo">
+<main id="main">
+  <h1>Brianchon In Ellipse</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore: six dots sit on an oval and straight lines only brush past it at each dot.<br>
+    <strong>How to play:</strong> Drag a dot along the oval, or drag a corner of the faint box to change its shape. You can also focus a dot and use the arrow keys; press Check the theorem to test what you see.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="An ellipse with six draggable touching points, their tangents and three long diagonals"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" aria-label="Reset the ellipse and its six dots to the start">Reset</button>
+    <button id="checkBtn" type="button" class="primary" aria-label="Check whether the three diagonals meet at one point">Check the theorem</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show the names of the six dots">Show names</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag the dots and the oval changes shape, yet the three long lines keep finding the same spot. That is the surprise behind this picture.</p>
+
+      <h2>Lines that only just touch</h2>
+      <p>At each dot there is a <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a>: a line that grazes the <a class="wiki-term" data-wiki="Ellipse" href="https://en.wikipedia.org/wiki/Ellipse" target="_blank" rel="noopener">ellipse</a> without crossing it. The applet makes one by drawing a tangent to a circle and stretching the circle into the ellipse. In board units, with centre <code>(cx, cy)</code> and half-widths <code>a, b</code>, the tangent at dot <code>(xA, yA)</code> obeys <code>(x−cx)(xA−cx)/a² + (y−cy)(yA−cy)/b² = 1</code>. The logic test checks this at both ends of every tangent on 400 different ellipses.</p>
+
+      <h2>Six corners and three long lines</h2>
+      <p>Neighbouring tangents meet at six corners that wrap a <a class="wiki-term" data-wiki="Hexagon" href="https://en.wikipedia.org/wiki/Hexagon" target="_blank" rel="noopener">hexagon</a> around the ellipse. Join each pair of opposite corners: <code>AB—DE</code>, <code>BC—EF</code> and <code>CD—FA</code>. <a class="wiki-term" data-wiki="Brianchon%27s_theorem" href="https://en.wikipedia.org/wiki/Brianchon%27s_theorem" target="_blank" rel="noopener">Brianchon's theorem</a> says these three long lines always pass through one point, called <code>S</code> here. The test tried 400 shapes, including very stretched ellipses: all three lines met every time, and the point agreed with the applet's own calculation.</p>
+
+      <h2>Why an ellipse is no harder than a circle</h2>
+      <p>The cut-the-knot page says the theorem is of a <a class="wiki-term" data-wiki="Projective_geometry" href="https://en.wikipedia.org/wiki/Projective_geometry" target="_blank" rel="noopener">projective</a> nature, so proving it for one proper <a class="wiki-term" data-wiki="Conic_section" href="https://en.wikipedia.org/wiki/Conic_section" target="_blank" rel="noopener">conic</a> proves it for them all. Stretching and sliding a circle by an <a class="wiki-term" data-wiki="Affine_transformation" href="https://en.wikipedia.org/wiki/Affine_transformation" target="_blank" rel="noopener">affine map</a> gives a tilted ellipse while keeping tangents and intersections. The logic test makes such a map and finds that the three lines still meet; the page's claim held in every case tried.</p>
+
+      <h2>The other side of the story</h2>
+      <p>Each tangent here is the <a class="wiki-term" data-wiki="Pole_and_polar" href="https://en.wikipedia.org/wiki/Pole_and_polar" target="_blank" rel="noopener">polar</a> of the dot it touches. Turn the picture inside out — points become lines and lines become points — and Brianchon's theorem becomes <a class="wiki-term" data-wiki="Pascal%27s_theorem" href="https://en.wikipedia.org/wiki/Pascal%27s_theorem" target="_blank" rel="noopener">Pascal's theorem</a> about six points on a conic. That is another way to see why the oval's exact shape cannot matter. When two dots are almost neighbours their tangents are nearly parallel, so the applet refuses to draw a point for them; move them apart and the meeting point comes back.</p>
+
+      <p class="tip">Try dragging one dot almost onto its neighbour: the lines get close to parallel and S runs far away. Then drag it back and watch all three lines cross at one dot again.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BrianchonInEllipse.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="brianchon-in-ellipse-core.js"></script>
+<script src="brianchon-in-ellipse.js"></script>
+</body>
+</html>
