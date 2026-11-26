@@ -2094,5 +2094,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "pyth-triple-calculator",
+      title: "Pythagorean Triples Calculator",
+      blurb: "Pick three whole numbers and get a right triangle whose sides are whole numbers too, like 3, 4, 5. Can every such triangle be made this way?",
+      tags: ["number-theory", "algebra", "area"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
