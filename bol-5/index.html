@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BOL5 &mdash; coolmaths</title>
+<meta name="description" content="Drag C along the diameter of a semicircle: why are the two circles touching the tall perpendicular always the same size? Discover the formula behind Archimedes' twin circles.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bol-5/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="BOL5">
+<meta property="og:description" content="Drag C along the diameter of a semicircle: why are the two circles touching the tall perpendicular always the same size? Discover the formula behind Archimedes' twin circles.">
+<meta property="og:url" content="https://coolmaths.ai/bol-5/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .big-semi { fill: none; stroke: var(--ink); stroke-width: 3; }
+  #board .small-semi { fill: none; stroke: var(--muted); stroke-width: 2.5; }
+  #board .diameter { stroke: var(--ink); stroke-width: 3; }
+  #board .perpendicular { stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: 6 5; }
+  #board .twin-circle { fill: var(--good); fill-opacity: 0.12; stroke: var(--good); stroke-width: 2.5; }
+  #board .twin-right { fill: var(--accent); fill-opacity: 0.12; stroke: var(--accent); }
+  #board .proof-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  #board .proof-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 17px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .proof-label { fill: var(--accent); font-size: 15px; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="bol-5" data-kind="demo">
+<main id="main">
+  <h1>BOL5</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore: drag the point C and watch the two circles beside the tall line stay the same size.<br>
+    <strong>How to play:</strong> Drag C with a mouse or finger, or focus it and use the arrow keys. Press Show hint for the proof lines and Check the claim for the answer.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 55 250 160" role="group"
+         aria-label="A large semicircle with two smaller semicircles inside it, a perpendicular through the movable point C, and one equal circle on each side of it"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset point C to its starting place">Reset C</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the names of the points">Hide names</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the hint lines of the proof">Show hint</button>
+    <button id="checkBtn" type="button" aria-label="Check that the two circles are equal">Check the claim</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Archimedes' fifth lemma draws a circle on each side of the upright line through C. They look different, because one leans into the left semicircle and the other into the right, but they are exactly the same size. Drag C to see it, then read why.</p>
+
+      <h2>The figure</h2>
+      <p>AB is the diameter of the big semicircle. C is any point on AB, and CD goes straight up from C. Inside the big semicircle sit two more semicircles, one with diameter AC and one with diameter CB. Together they form the shape Archimedes called the <a class="wiki-term" data-wiki="Arbelos" href="https://en.wikipedia.org/wiki/Arbelos" target="_blank" rel="noopener">arbelos</a>. Each little circle touches the upright line CD, one <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> circle on the left and one on the right.</p>
+
+      <h2>The radius that fits</h2>
+      <p>Write AC = 2r₁, CB = 2r₂ and the radius of a little circle as r. Because C lies on AB, the big radius is r₁ + r₂. A circle of radius r whose centre is r from CD and 2√(r₁r) above AB touches CD, the small semicircle and the big semicircle all at once; the same calculation on the other side uses r₂. It works exactly when</p>
+      <blockquote><code>1 / r = 1 / r₁ + 1 / r₂</code> &nbsp;that is&nbsp; <code>r = r₁ r₂ / (r₁ + r₂)</code>.</blockquote>
+      <p>So r is half the <a class="wiki-term" data-wiki="Harmonic_mean" href="https://en.wikipedia.org/wiki/Harmonic_mean" target="_blank" rel="noopener">harmonic mean</a> of r₁ and r₂. The left and right circles use the same r₁ and r₂, just swapped, so their radii are equal. The logic test checks all three tangencies and this formula at hundreds of positions of C, including tilted and rescaled diameters.</p>
+
+      <h2>The diameter HE</h2>
+      <p>Let E be where the left circle touches CD and H the far end of its diameter. Then HE = 2r, and substituting the formula above gives</p>
+      <blockquote><code>AC · CB = AB · HE</code>.</blockquote>
+      <p>The right circle gives the same product, so its diameter equals HE too: the two circles are equal, as <a class="wiki-term" data-wiki="Book_of_Lemmas" href="https://en.wikipedia.org/wiki/Book_of_Lemmas" target="_blank" rel="noopener">Archimedes' Book of Lemmas</a>, Proposition 5, says. The hint draws the straight lines of his proof, which link the touch points to the ends A and B. One quirk of the old Java applet is kept: its hint labels the crossing of those lines "D" as well as the top of the upright line, but the claim is about the circles, not that label.</p>
+
+      <p class="tip">Try dragging C close to A or B: both circles shrink to nothing together. Drag it to the middle: they grow to the same largest size.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BookOfLemmas/BOL5.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bol-5-core.js"></script>
+<script src="bol-5.js"></script>
+</body>
+</html>
