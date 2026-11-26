@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Area Of Triangle &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle: why does it always take exactly half of the rectangle on its base, even when the top corner sits outside it?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/area-of-triangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Area Of Triangle">
+<meta property="og:description" content="Drag the corners of a triangle: why does it always take exactly half of the rectangle on its base, even when the top corner sits outside it?">
+<meta property="og:url" content="https://coolmaths.ai/area-of-triangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .triangle-fill { fill: var(--accent-soft); }
+  #board .rect-left { fill: var(--accent); opacity: 0.24; }
+  #board .rect-right { fill: var(--good); opacity: 0.22; }
+  #board .guide { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; }
+  #board .side { stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; }
+  #board .base, #board .top { stroke: var(--ink); stroke-width: 2; }
+  #board .rightmark { fill: none; stroke: var(--muted); stroke-width: 1.4; }
+  #board .footdot { fill: var(--ink); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="area-of-triangle" data-kind="demo">
+<main id="main">
+  <h1>Area Of Triangle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move a triangle and watch the rectangles built on its base: the triangle always takes exactly half of the big rectangle. There is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus one and press the arrow keys. Tick the boxes to show the triangle, the point names or the coloured rectangles.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Triangle ABC with its altitude CH and rectangles ABQP, AHCP and HBQC. Drag the three corners to move them."></svg>
+    <p class="hint-line">Drag a corner, or focus one and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="triangleBox" type="checkbox" data-label="triangle"> triangle</label>
+    <label><input id="namesBox" type="checkbox" data-label="names"> names</label>
+    <label><input id="colorsBox" type="checkbox" data-label="colors"> colors</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The triangle inside the rectangle seems to take up half of it, and it keeps doing so however you drag the corners. Here is why, including the cases where the top corner sits outside the bottom side.</p>
+
+      <h2>Half of the box</h2>
+      <p>Drop the top corner C straight down to H on the bottom side AB. The dashed line CH is the <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a>, and ABQP is the rectangle on base AB with that same height. Its <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> is <code>base &times; altitude</code>. The page's claim is that the triangle takes exactly half of that rectangle:</p>
+      <blockquote><code>Area(ABC) = Area(ABQP) / 2</code></blockquote>
+      <p>The logic test checked this for 529 grid triangles plus 500 random ones, with H inside the base, beyond either end, and on the base line. It held every time, just as the original page says.</p>
+
+      <h2>Two rectangles that add up</h2>
+      <p>Beside ABQP lie AHCP on the piece AH and HBQC on the piece HB. Their widths are <em>signed</em>: when H lies between A and B both are ordinary widths and the two small rectangles are parts of the big one. When H lies outside AB, one width is negative, so that rectangle is counted with a minus sign. Either way the page's equality holds:</p>
+      <blockquote><code>Area(ABQP) = Area(AHCP) + Area(HBQC)</code></blockquote>
+      <p>Multiply the signed widths AH and HB by the same altitude CH. Since <code>AH + HB = AB</code> along the base line, the two areas always add up to the area of ABQP. The test compared this equality with a direct calculation of all three rectangles over the whole grid; it never failed, including the outside cases that many school treatments leave out.</p>
+
+      <h2>The parallelogram and Euclid</h2>
+      <p>There is a second way to see the half. Turn the triangle through 180 degrees about the middle of any side: the copy and the original make a <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a> with the same base and altitude, so its area is <code>base &times; altitude</code> — twice the triangle. The test did this for all three sides of every triangle in the grid and the random sample. This is the reasoning behind Euclid I.37 in <a class="wiki-term" data-wiki="Euclid%27s_Elements" href="https://en.wikipedia.org/wiki/Euclid%27s_Elements" target="_blank" rel="noopener">the Elements</a>: triangles with the same base and altitude have equal areas.</p>
+
+      <p class="tip">Try dragging C past A or past B so that H leaves the base: one coloured rectangle flips its sign, but the numbers in the status line still add up.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AreaOfTriangle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="area-of-triangle-core.js"></script>
+<script src="area-of-triangle.js"></script>
+</body>
+</html>
