@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Barlotti &mdash; coolmaths</title>
+<meta name="description" content="Stretch a regular polygon and build regular polygons on its sides: will their centres always form a regular polygon? Drag a corner and find out.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/barlotti/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Barlotti">
+<meta property="og:description" content="Stretch a regular polygon and build regular polygons on its sides: will their centres always form a regular polygon? Drag a corner and find out.">
+<meta property="og:url" content="https://coolmaths.ai/barlotti/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .base-poly { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 5; }
+  #board .affine-poly { fill: none; stroke: var(--ink); stroke-width: 3.5; stroke-linejoin: round; }
+  #board .erected-poly { fill: var(--accent); fill-opacity: 0.07; stroke: var(--accent); stroke-width: 1.6; stroke-opacity: 0.75; }
+  #board .centers-poly { fill: var(--good); fill-opacity: 0.16; stroke: var(--good); stroke-width: 3; stroke-linejoin: round; }
+  #board .center-dot { fill: var(--good); }
+  #board .origin-dot { fill: var(--muted); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .sliders { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 0.5rem 1rem; width: 100%; }
+  .sliders label { display: flex; flex-direction: column; gap: 0.15rem; font-size: 0.9rem; color: var(--muted); }
+  .sliders input[type="range"] { width: 100%; accent-color: var(--accent); min-height: 1.6rem; }
+  .nRow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .nRow input { width: 5rem; min-height: 2.4rem; font-size: 1rem; accent-color: var(--accent); }
+</style>
+</head>
+<body data-game="barlotti" data-kind="demo">
+<main id="main">
+  <h1>Barlotti</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#complex-analysis">Complex Analysis</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a contest: stretch a regular polygon and watch the shapes built on its sides.<br>
+    <strong>How to play:</strong> Move the four sliders, change N, or drag the two dots on the dashed polygon. Press Check the centres to test the pattern.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A dashed regular polygon, its stretched copy, regular polygons built on its sides and the polygon of their centres"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="nRow">
+      <label for="nInput">Sides (N, 3 to 30)</label>
+      <input id="nInput" type="number" min="3" max="30" step="1" value="6"
+             aria-label="Number of sides, from 3 to 30">
+    </div>
+    <div class="sliders">
+      <label for="a11">a11 <span id="a11Val">+0.40</span>
+        <input id="a11" type="range" min="-100" max="105" step="1" value="40" aria-label="Matrix entry a11, from minus one to 1.05">
+      </label>
+      <label for="a12">a12 <span id="a12Val">+0.60</span>
+        <input id="a12" type="range" min="-100" max="105" step="1" value="60" aria-label="Matrix entry a12, from minus one to 1.05">
+      </label>
+      <label for="a21">a21 <span id="a21Val">-0.50</span>
+        <input id="a21" type="range" min="-100" max="105" step="1" value="-50" aria-label="Matrix entry a21, from minus one to 1.05">
+      </label>
+      <label for="a22">a22 <span id="a22Val">+0.50</span>
+        <input id="a22" type="range" min="-100" max="105" step="1" value="50" aria-label="Matrix entry a22, from minus one to 1.05">
+      </label>
+    </div>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put all controls back to their starting values">Reset picture</button>
+    <button id="checkBtn" type="button" aria-label="Check the centres for this polygon">Check the centres</button>
+    <button id="toggleBtn" type="button" aria-pressed="true" aria-label="Hide the regular polygons built on the sides">Hide built shapes</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Already surprised? Stretch a regular polygon any way you like, build a fresh regular polygon on each of its sides, and the centres of those new shapes still sit at the corners of a regular polygon. Nothing about the stretch seems to survive — except this pattern.</p>
+
+      <h2>A stretched regular polygon</h2>
+      <p>Start with a <a class="wiki-term" data-wiki="Regular_polygon" href="https://en.wikipedia.org/wiki/Regular_polygon" target="_blank" rel="noopener">regular polygon</a> Q: all its sides and angles are equal. Push every point through the same <a class="wiki-term" data-wiki="Affine_transformation" href="https://en.wikipedia.org/wiki/Affine_transformation" target="_blank" rel="noopener">affine transformation</a> — here the four sliders are the matrix <code>[[a11, a12], [a21, a22]]</code>, each value divided by 100. The dashed shape becomes the thick one. Its sides may be different lengths, but the two halves still match: every triangle is a stretched equilateral triangle, and every parallelogram is a stretched square.</p>
+      <p>The applet draws the thick polygon as the affine image of the dashed one, so both shapes are always related exactly, whatever the sliders say.</p>
+
+      <h2>Build a regular polygon on every side</h2>
+      <p>On each side of the thick polygon, put up a regular N-gon of its own. To draw one, turn the incoming edge by <code>180° − 360°/N</code> at every corner; after N turns you arrive back where you started. The applet only draws one orientation; the theorem also holds when every new polygon faces the other way. The logic test builds both.</p>
+
+      <h2>The centres make a regular polygon</h2>
+      <p>This is the Napoleon–Barlotti theorem. Write the corners of the dashed polygon as complex numbers <code>O + r·e^(iθ)·η^j</code> with <code>η = e^(2πi/N)</code>. An affine map sends them to <code>O + u·η^j + v·η^(−j)</code>, where <code>u = (r/2)((a11+a22) + i(a21−a12))e^(iθ)</code>. Adding the N corners of the erected polygon and dividing by N cancels the <code>v</code> part completely: its centre is <code>O + u(1+η)η^j</code>. Those are the corners of a genuine regular N-gon — the <code>v</code> term, the part that makes the stretch lopsided, has disappeared.</p>
+      <p>Its radius is <code>r·|(a11+a22) + i(a21−a12)|·cos(π/N)</code>. The logic test checks this formula for every N from 3 to 30, at the slider extremes and on hundreds of random matrices, and it also checks the theorem for <a class="wiki-term" data-wiki="Napoleon%27s_theorem" href="https://en.wikipedia.org/wiki/Napoleon%27s_theorem" target="_blank" rel="noopener">Napoleon's theorem</a> (N = 3) and the parallelogram–square case (N = 4). If the matrix is a reflection (<code>a11+a22 = 0</code> and <code>a21 = a12</code>), <code>u = 0</code> and all the centres fall on top of one another — a regular polygon shrunk to a point.</p>
+
+      <h2>What the old applet drew</h2>
+      <p>The Java applet rounded every centre to a whole screen pixel; this page keeps the exact numbers, so the green corner dots can sit between pixels. Its bytecode also contains drag code that never received any draggable points, so here the two dots turn the dashed polygon instead: turning it changes nothing about the theorem. The live cut-the-knot article now embeds a GeoGebra illustration in place of the old Java applet; the words printed beside it are still the same theorem checked on this page.</p>
+
+      <p class="tip">Try setting a11 = +1, a12 = 0, a21 = 0, a22 = −1: the thick polygon flips, and all the green centres collapse into the middle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Barlotti.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="barlotti-core.js"></script>
+<script src="barlotti.js"></script>
+</body>
+</html>
