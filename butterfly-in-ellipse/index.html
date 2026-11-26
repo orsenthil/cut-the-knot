@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Butterfly In Ellipse &mdash; coolmaths</title>
+<meta name="description" content="Four dots on an oval make a crossed shape whose sides cross a straight line at four spots. If you move one dot and keep three of those crossings, must the fourth side still cross at the fourth spot?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/butterfly-in-ellipse/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Butterfly In Ellipse">
+<meta property="og:description" content="Four dots on an oval make a crossed shape whose sides cross a straight line at four spots. If you move one dot and keep three of those crossings, must the fourth side still cross at the fourth spot?">
+<meta property="og:url" content="https://coolmaths.ai/butterfly-in-ellipse/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .ellipse { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .rect-guide { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 3 5; }
+  #board .cross-line { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 8 5; }
+  #board .side { stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; }
+  #board .f-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label { fill: var(--text); font-family: var(--font); font-size: 14px; font-weight: 600; pointer-events: none; }
+  #board .f-label { fill: var(--good); }
+  #board .line-label { fill: var(--muted); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .rect-handle { fill: var(--highlight); stroke: var(--ink); }
+  #board .f-handle { fill: var(--good); stroke: var(--stage); }
+  #board .line-handle { fill: var(--muted); stroke: var(--ink); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .n-control { display: inline-flex; align-items: center; gap: 0.5rem; }
+  .n-control output { min-width: 1.5rem; text-align: center; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="butterfly-in-ellipse" data-kind="demo">
+<main id="main">
+  <h1>Butterfly In Ellipse</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore: dots on an oval make a crossed shape, and more dots sit on a straight line where its sides cross it.<br>
+    <strong>How to play:</strong> Drag any dot on the oval or on the straight line, or focus a dot and use the arrow keys. Press Check the theorem to test what you see.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="An ellipse with a crossed polygon on it and a straight line with dots where the sides cross it"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" aria-label="Draw a new butterfly picture">New picture</button>
+    <button id="checkBtn" type="button" class="primary" aria-label="Check that every side still crosses the line at its own dot">Check the theorem</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show the names of the four dots and crossings">Show names</button>
+    <span class="n-control">
+      <button id="nMinus" type="button" aria-label="Use fewer sides on the polygon">−</button>
+      <output id="nValue" aria-label="Number of sides">4</output>
+      <button id="nPlus" type="button" aria-label="Use more sides on the polygon">+</button>
+    </span>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag a dot on the oval and five of the six dots on the line stay exactly where they were. The last side of the shape quietly swings around to keep the sixth crossing too. That is the butterfly porism.</p>
+
+      <h2>A crossed four-sided figure</h2>
+      <p>With four dots <code>A, B, C, D</code> on the <a class="wiki-term" data-wiki="Conic_section" href="https://en.wikipedia.org/wiki/Conic_section" target="_blank" rel="noopener">conic</a>, the sides are <code>DA, AB, BC, CD</code> — the shape crosses itself like a butterfly. Each side meets the straight line at one dot: <code>F da</code>, <code>F ab</code>, <code>F bc</code>, <code>F cd</code>. Make a new four-dot shape and keep three of those crossings. The page says the fourth side must still cross the line at the fourth dot. The logic test builds hundreds of such pictures by the applet's own rule and finds the fourth crossing in every well-behaved case.</p>
+
+      <h2>Why Pascal's hexagon proves it</h2>
+      <p>Take the six dots <code>A, B, C, A', B', C'</code>. By <a class="wiki-term" data-wiki="Pascal%27s_theorem" href="https://en.wikipedia.org/wiki/Pascal%27s_theorem" target="_blank" rel="noopener">Pascal's theorem</a>, the crossings of the opposite pairs <code>AB</code> with <code>A'B'</code>, <code>BC</code> with <code>B'C'</code>, and <code>AC</code> with <code>A'C'</code> all lie on one line — and the first two are <code>F ab</code> and <code>F bc</code>. A second hexagon <code>A, D, C, A', D', C'</code> puts <code>AC ∩ A'C'</code> and <code>CD ∩ C'D' = F cd</code> on the same line, so <code>AD</code> and <code>A'D'</code> meet there too. Since <code>AD</code> already passes through <code>F da</code>, so does <code>A'D'</code>. That is the whole theorem.</p>
+
+      <h2>Why the oval's shape does not matter</h2>
+      <p>The proof only asks which lines cross where, never how far apart the dots are. Such statements are <a class="wiki-term" data-wiki="Projective_geometry" href="https://en.wikipedia.org/wiki/Projective_geometry" target="_blank" rel="noopener">projective</a>, so a proof for a circle works for every proper conic. In test form: stretch a circle by <code>x → 200 + 1.4x</code>, <code>y → 150 + 0.8y</code> (an <a class="wiki-term" data-wiki="Affine_transformation" href="https://en.wikipedia.org/wiki/Affine_transformation" target="_blank" rel="noopener">affine map</a>) and the crossings still match. The applet draws an <a class="wiki-term" data-wiki="Ellipse" href="https://en.wikipedia.org/wiki/Ellipse" target="_blank" rel="noopener">ellipse</a> by stretching a unit circle the same way: a dot at angle <code>t</code> becomes <code>(cx + A cos t, cy + B sin t)</code>, and the code uses that map for every intersection.</p>
+
+      <h2>More sides, and an even number</h2>
+      <p>The page says the number four can be replaced by any <em>even</em> number, and the applet lets you choose 4 to 20 sides. The test checks 6, 8, 10 and 20 sides: after dragging a vertex, each side still meets the line at its own dot. It also checks 5 sides and finds the claim fails there — the even-number qualification is real, not decoration. When a side is almost parallel to the line its crossing runs far off the board and the applet's own <code>|det| &lt; 1</code> guard returns no point; the page does not cover that degenerate case.</p>
+
+      <p class="tip">Try this: turn on names, drag <code>A</code> a long way around the oval, then press Check the theorem. Now press + twice to make an eight-sided butterfly and drag one vertex again.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ButterflyInEllipse.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="butterfly-in-ellipse-core.js"></script>
+<script src="butterfly-in-ellipse.js"></script>
+</body>
+</html>
