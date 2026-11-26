@@ -987,6 +987,16 @@ const GAMES = {
   "archimedes-triangle": (page) => dragFirstHandle(page),
   "area-of-parallelogram": (page) => dragFirstHandle(page),
   "area-of-triangle": (page) => dragFirstHandle(page),
+  "areas-in-reg-poly": (page) => dragFirstHandle(page),
+  "areas-in-square": (page) => dragFirstHandle(page),
+  "arrange-pyth": (page) => dragFirstHandle(page),
+  "asia-pacific-kite": (page) => dragFirstHandle(page),
+  "auxetic-tessellation": (page) => dragFirstHandle(page),
+  "balls-in-jar": (page) => dragFirstHandle(page),
+  "baltic-darij-1": (page) => dragFirstHandle(page),
+  barlotti: (page) => dragFirstHandle(page),
+  barycentric: (page) => dragFirstHandle(page),
+  barygon: (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

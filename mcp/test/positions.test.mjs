@@ -2133,6 +2133,16 @@ check("archimedes-quadruplets: the four circles match the twins' radius and touc
 check("archimedes-triangle: the parabolic segment is two thirds of the tangent triangle", read["archimedes-triangle"]?.core.isTwoThirds === true);
 check("area-of-parallelogram: the cut-and-paste area matches base times height", read["area-of-parallelogram"]?.reading.matchesSavedArea === true && read["area-of-parallelogram"].area === read["area-of-parallelogram"].base * read["area-of-parallelogram"].height);
 check("area-of-triangle: the half-turn parallelogram doubles the triangle", read["area-of-triangle"]?.halfTurn.parallelogramArea === 2 * read["area-of-triangle"].reading.triangleArea);
+check("areas-in-reg-poly: alternating triangles each have half the area", Object.values(read["areas-in-reg-poly"]?.reading.claims || {}).every(Boolean) === true);
+check("areas-in-square: the dissection ratio is 1:2:4:5 at N = 2", read["areas-in-square"]?.n === 2 && read["areas-in-square"].reading.ratio.IV === 5 && read["areas-in-square"].reading.ratio.I === 1);
+check("arrange-pyth: both rearrangements leave the same Pythagorean remainder", read["arrange-pyth"]?.reading.a + read["arrange-pyth"].reading.b === read["arrange-pyth"].reading.side && read["arrange-pyth"].reading.cancellation.holds === true);
+check("asia-pacific-kite: M lies on the circumcircle and the rhombus is 60 degrees", read["asia-pacific-kite"]?.reading.MOnCircumcircleOfABC.holds === true && read["asia-pacific-kite"].reading.angleAtBIs60 === true);
+check("auxetic-tessellation: the half-step translation identities hold", Object.values(read["auxetic-tessellation"]?.reading.halfStepIdentities || {}).every(Boolean) === true && read["auxetic-tessellation"].reading.cellAreaFromFormula.matches === true);
+check("balls-in-jar: the saved rack has a level top row", read["balls-in-jar"]?.savedMatchesCore === true && read["balls-in-jar"].valid === true);
+check("baltic-darij-1: the altitude foot, bisector feet and midpoint are concyclic", read["baltic-darij-1"]?.claims.allHold === true && read["baltic-darij-1"].computable === true);
+check("barlotti: the erected polygons' centres form a regular polygon", read.barlotti?.centersAreRegular === true && read.barlotti.everyErectedPolygonRegular === true);
+check("barycentric: the cevian feet satisfy all the page's identities", Object.values(read.barycentric?.reading.claims || {}).every(Boolean) === true && read.barycentric.stateIsIllustration === true);
+check("barygon: averaging N/2 vertices yields an exact paragon", read.barygon?.reading.paragon.isParagon === true && read.barygon.reading.paragon.paragonDefect === 0);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);

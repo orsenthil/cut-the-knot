@@ -527,6 +527,16 @@ const CORE_GLOBALS = {
   "archimedes-triangle/archimedes-triangle-core.js": ["ArchimedesTriangleCore"],
   "area-of-parallelogram/area-of-parallelogram-core.js": ["AreaOfParallelogramCore"],
   "area-of-triangle/area-of-triangle-core.js": ["AreaOfTriangleCore"],
+  "areas-in-reg-poly/areas-in-reg-poly-core.js": ["AreasInRegPolyCore"],
+  "areas-in-square/areas-in-square-core.js": ["AreasInSquareCore"],
+  "arrange-pyth/arrange-pyth-core.js": ["ArrangePythCore"],
+  "asia-pacific-kite/asia-pacific-kite-core.js": ["AsiaPacificKiteCore"],
+  "auxetic-tessellation/auxetic-tessellation-core.js": ["AuxeticTessellationCore"],
+  "balls-in-jar/balls-in-jar-core.js": ["BallsInJarCore"],
+  "baltic-darij-1/baltic-darij-1-core.js": ["BalticDarij1Core"],
+  "barlotti/barlotti-core.js": ["BarlottiCore"],
+  "barycentric/barycentric-core.js": ["BarycentricCore"],
+  "barygon/barygon-core.js": ["BarygonCore"],
 };
 
 const games = [];
