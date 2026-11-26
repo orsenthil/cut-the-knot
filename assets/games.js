@@ -2369,5 +2369,13 @@ window.COOLMATHS = {
       tags: ["parity", "counting", "graph-theory"],
       level: 2,
     },
+    {
+      slug: "stick-in-three",
+      title: "Stick Broken Into Three Pieces",
+      blurb: "Break a stick into three pieces at random. How often can they make a triangle, and why does the answer change with the way you break it?",
+      tags: ["probability", "coordinates", "paradoxes"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

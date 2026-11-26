@@ -850,6 +850,10 @@ const GAMES = {
   "triangle-chain": async (page) => {
     for (const [k, p] of [[0, 0], [1, 1], [1, 0]]) await page.click(`#board .cell[data-k="${k}"][data-p="${p}"]`);
   },
+  "stick-in-three": async (page) => {
+    await page.selectOption("#method", "longer");
+    await page.click("#many");
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

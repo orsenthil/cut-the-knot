@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stick Broken Into Three Pieces &mdash; coolmaths</title>
+<meta name="description" content="Break a stick into three pieces at random. How often can they make a triangle, and why does the answer change with the way you break it?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/stick-in-three/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Stick Broken Into Three Pieces">
+<meta property="og:description" content="Break a stick into three pieces at random. How often can they make a triangle, and why does the answer change with the way you break it?">
+<meta property="og:url" content="https://coolmaths.ai/stick-in-three/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .big { fill: var(--card); stroke: var(--ink); stroke-width: 2; cursor: crosshair; }
+  #board .medial { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; cursor: crosshair; }
+  #board .piece { stroke-width: 4; stroke-linecap: round; }
+  #board .piece.stick { stroke-width: 9; stroke-linecap: butt; }
+  #board .p0 { stroke: #e0453a; }
+  #board .p1 { stroke: #3b74e0; }
+  #board .p2 { stroke: #d89a12; }
+  #board .half { stroke: var(--ink); stroke-width: 2; stroke-dasharray: 3 3; }
+  #board .handle { fill: var(--accent); stroke: var(--ink); stroke-width: 2; cursor: grab; }
+  #board .handle:focus-visible { outline: none; stroke: var(--focus); stroke-width: 5; }
+  #board .name { fill: var(--text); font: italic 700 18px var(--font); text-anchor: middle; }
+  #board .name.small { font-size: 14px; }
+  #board .nope { fill: var(--muted); font: 15px var(--font); text-anchor: middle; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls .method { flex-wrap: wrap; justify-content: center; width: 100%; }
+  .controls select { min-height: 2.75rem; font-size: 1rem; width: 100%; max-width: 22rem; }
+  #tally { text-align: center; margin: 0.4rem 0 0; }
+</style>
+</head>
+<body data-game="stick-in-three" data-kind="demo">
+<main id="main">
+  <h1>Stick Broken Into Three Pieces</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#probability">Probability</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Break a stick into three pieces. Can the pieces always be put together into a triangle? Find out where they can and how often they do.<br>
+    <strong>How to play:</strong> Drag the point P: its three coloured lines are the pieces. Or pick a way of breaking and break sticks at random.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 535" role="group" aria-label="An equilateral triangle with a point P; its three distances to the sides are the three pieces of the stick shown below"></svg>
+  </div>
+
+  <div class="controls">
+    <label class="method">Break <select id="method">
+      <option value="uniform">at two random points</option>
+      <option value="longer">once, then the longer piece</option>
+      <option value="coin">once, then a piece by coin toss</option>
+      <option value="proportional">once, then a piece by its length</option>
+    </select></label>
+    <button id="one" type="button">Break 1</button>
+    <button id="many" type="button" class="primary">Break 1000</button>
+    <button id="resetBtn" type="button">Reset count</button>
+    <label><input id="namesBox" type="checkbox"> Show names</label>
+  </div>
+  <p id="tally" aria-live="polite"></p>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three pieces make a triangle only when each is shorter than the other two together, that is, shorter than half the stick (the <a class="wiki-term" data-wiki="Triangle_inequality" href="https://en.wikipedia.org/wiki/Triangle_inequality" target="_blank" rel="noopener">triangle inequality</a>). How likely that is depends on how you break the stick.</p>
+
+      <h2>Every break is a point</h2>
+      <p>Make the stick as long as the height of an equilateral triangle. From any point P inside, the three perpendiculars to the sides always add up to the height: that is <a class="wiki-term" data-wiki="Viviani%27s_theorem" href="https://en.wikipedia.org/wiki/Viviani%27s_theorem" target="_blank" rel="noopener">Viviani's theorem</a>. So each P cuts the stick into three pieces, and each way of cutting it is exactly one P. The three lengths are P's <a class="wiki-term" data-wiki="Trilinear_coordinates" href="https://en.wikipedia.org/wiki/Trilinear_coordinates" target="_blank" rel="noopener">trilinear coordinates</a>. A piece is half the stick on the line joining the midpoints of two sides. So the pieces make a triangle exactly when P is inside the middle triangle, which covers a quarter of the area.</p>
+
+      <h2>Two random breaks: 1/4</h2>
+      <p>If both break points are uniform on the stick, P is uniform over the big triangle, and the chance is the middle triangle's share of the area: <code>1/4</code>.</p>
+
+      <h2>Break the longer piece: 2 ln 2 &minus; 1</h2>
+      <p>Break once, then break the longer piece. A triangle is still needed in one of three equal small triangles, so it is tempting to answer <code>1/3</code>. Martin Gardner printed that, and corrected it later. P is no longer spread evenly. If the short piece has length <code>h</code>, the second break succeeds with chance <code>h/(1&minus;h)</code>. Averaging over <code>h</code> from 0 to 1/2 gives</p>
+      <blockquote><code>2 &int;<sub>0</sub><sup>1/2</sup> h/(1&minus;h) dh = 2 ln 2 &minus; 1 &asymp; 0.386</code></blockquote>
+      <p>If a coin decides which piece to break, half the time it is the short one and no triangle can come out, so the chance is <code>ln 2 &minus; 1/2 &asymp; 0.193</code>. If a piece is picked with chance equal to its length, the answer is <code>1/4</code> again: that is just another way of choosing two uniform points. The logic test integrated all four over a fine grid and broke 100,000 random sticks each way; the results matched.</p>
+
+      <p class="tip">Choose &ldquo;once, then the longer piece&rdquo; and press Break 1000 a few times. Does the count settle near 1/3 or near 0.386?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Probability/TriProbability.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="stick-in-three-core.js"></script>
+<script src="stick-in-three.js"></script>
+</body>
+</html>

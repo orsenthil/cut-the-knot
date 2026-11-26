@@ -1999,6 +1999,11 @@ check("triangle-chain: three counted from the top, best 21", read["triangle-chai
   const tc = at("triangle-chain", { n: 3, stack: [{ k: 0, p: 0, x: false }, { k: 2, p: 0, x: true }] });
   check("triangle-chain: a refused click is not counted", tc.counted === 1 && tc.lastClickRefused === true && tc.best === 7);
 }
+check("stick-in-three: 1000 sticks the longer-piece way, near 0.386", read["stick-in-three"]?.sticksBroken === 1000 && read["stick-in-three"].breaking === "longer" && Math.abs(read["stick-in-three"].fraction - 0.386) < 0.05);
+{
+  const st = at("stick-in-three", { pieces: [0.6, 0.3, 0.1], method: "uniform", tries: 0, hits: 0 });
+  check("stick-in-three: a piece over half the stick makes no triangle", st.point.makesTriangle === false && st.point.longestPiece === 1 && st.fraction === null);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;
