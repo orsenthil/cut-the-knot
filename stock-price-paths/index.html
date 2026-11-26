@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stock Price Paths &mdash; coolmaths</title>
+<meta name="description" content="Send a hundred stock prices wandering for a year. They grow on average, yet the typical one falls behind. Why do ups and downs of the same size not cancel?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/stock-price-paths/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Stock Price Paths">
+<meta property="og:description" content="Send a hundred stock prices wandering for a year. They grow on average, yet the typical one falls behind. Why do ups and downs of the same size not cancel?">
+<meta property="og:url" content="https://coolmaths.ai/stock-price-paths/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+#stage { width: 100%; max-width: 36rem; padding: 0.8rem; }
+  #paths, #hist { display: block; width: 100%; height: auto; }
+  svg .path { fill: none; stroke: var(--accent); stroke-width: 1; opacity: 0.35; }
+  svg .mean { fill: none; stroke: var(--good); stroke-width: 3; }
+  svg .median { fill: none; stroke: var(--bad); stroke-width: 3; stroke-dasharray: 7 4; }
+  svg .grid { stroke: var(--border-strong); stroke-width: 1; }
+  svg .bar { fill: var(--accent-soft); }
+  svg .curve { fill: none; stroke: var(--ink); stroke-width: 2; }
+  svg .axis { fill: var(--muted); font: 12px var(--font); text-anchor: end; }
+  svg .axis.start { text-anchor: start; }
+  svg .axis.mid { text-anchor: middle; }
+  .legend { text-align: center; font-size: 0.9rem; margin: 0.2rem 0 0.6rem; }
+  .legend .g { color: var(--good); font-weight: 700; }
+  .legend .r { color: var(--bad); font-weight: 700; }
+  #stats { text-align: center; margin: 0.5rem 0 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 9rem; max-width: 100%; }
+  .controls select { min-height: 2.75rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="stock-price-paths" data-kind="demo">
+<main id="main">
+  <h1>Stock Price Paths</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#black-scholes">Black–Scholes</a><a class="tag" href="../index.html#probability">Probability</a><a class="tag" href="../index.html#limits">Limits</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch a stock price wander for a year, a hundred times over. On average it grows, but does the typical stock grow just as fast?<br>
+    <strong>How to play:</strong> Set how fast the stock grows on average and how wildly it moves, then press New paths and compare the two curves.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="paths" viewBox="0 0 400 220" role="img" aria-label="Simulated price paths over one year, starting at 100"></svg>
+    <p class="legend"><span class="g">solid: the average</span> &middot; <span class="r">dashed: the median</span></p>
+    <svg id="hist" viewBox="0 0 400 150" role="img" aria-label="Where the paths end: a histogram with the lognormal curve"></svg>
+    <p id="stats" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label>Growth μ <input id="muIn" type="range" min="-0.2" max="0.4" step="0.01" value="0.1"> <span id="muOut"></span></label>
+    <label>Volatility σ <input id="sigmaIn" type="range" min="0.05" max="0.8" step="0.01" value="0.3"> <span id="sigmaOut"></span></label>
+    <label>Paths <select id="countIn"><option>1</option><option>10</option><option selected>100</option><option>1000</option></select></label>
+    <button id="newBtn" type="button" class="primary">New paths</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Black and Scholes model the <em>returns</em> of a stock, not its price. In each short time <code>dt</code> the price changes by a small fraction with a steady part and a random part:</p>
+      <blockquote><code>dS / S = &mu; dt + &sigma; dW</code></blockquote>
+      <p>Here <code>&mu;</code> is the growth rate, <code>&sigma;</code> the volatility, and <code>dW</code> a tiny normal shock with variance <code>dt</code>: <a class="wiki-term" data-wiki="Geometric_Brownian_motion" href="https://en.wikipedia.org/wiki/Geometric_Brownian_motion" target="_blank" rel="noopener">geometric Brownian motion</a>. Many small independent shocks add up to a normal one; that is the <a class="wiki-term" data-wiki="Central_limit_theorem" href="https://en.wikipedia.org/wiki/Central_limit_theorem" target="_blank" rel="noopener">central limit theorem</a>.</p>
+
+      <h2>Up 10%, down 10%</h2>
+      <p>A stock that rises 10% and then falls 10% ends at 99%, not 100%. Ups and downs of the same size do not cancel: they cost about half the square of their size. Over a year of small moves the cost adds up to <code>&sigma;&sup2;/2</code>, and the exact solution is</p>
+      <blockquote><code>S<sub>T</sub> = S<sub>0</sub> e<sup>(&mu; &minus; &sigma;&sup2;/2)T + &sigma;W<sub>T</sub></sup></code></blockquote>
+      <p>So the median path grows at <code>&mu; &minus; &sigma;&sup2;/2</code>. The average still grows at <code>&mu;</code>, because a few huge winners pull it up. The end prices follow a <a class="wiki-term" data-wiki="Log-normal_distribution" href="https://en.wikipedia.org/wiki/Log-normal_distribution" target="_blank" rel="noopener">lognormal</a> curve, skewed to the right.</p>
+
+      <h2>Itô's correction</h2>
+      <p>For an ordinary function, a small change <code>dx</code> squared is negligible. But <code>dW</code> is about <code>&radic;dt</code>, so <code>(dW)&sup2;</code> is about <code>dt</code>, the same size as the steady part. A Taylor expansion must keep that term: this is <a class="wiki-term" data-wiki="It%C3%B4%27s_lemma" href="https://en.wikipedia.org/wiki/It%C3%B4%27s_lemma" target="_blank" rel="noopener">Itô's lemma</a>. Applied to <code>log S</code>, it is exactly the <code>&minus;&sigma;&sup2;/2</code>. The same term gives the <code>&frac12;&sigma;&sup2;S&sup2; &part;&sup2;V/&part;S&sup2;</code> in the Black&ndash;Scholes equation. The logic test simulated 20,000 paths and found the average, the median and the spread where the formulas put them.</p>
+
+      <p class="tip">Set the growth to 0 and the volatility to 80%. The average stays at 100, but where is the typical stock after a year?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original demo for coolmaths, after David Alvarez Rosa's article
+    <a href="https://david.alvarezrosa.com/posts/deriving-black-scholes/" target="_blank" rel="noopener">Deriving Black-Scholes</a>
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="stock-price-paths-core.js"></script>
+<script src="stock-price-paths.js"></script>
+</body>
+</html>

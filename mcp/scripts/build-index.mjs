@@ -462,6 +462,7 @@ const CORE_GLOBALS = {
   "ryser-formula/ryser-formula-core.js": ["RyserFormulaCore"],
   "perm-from-det/perm-from-det-core.js": ["PermFromDetCore"],
   "riskless-hedge/riskless-hedge-core.js": ["RisklessHedgeCore"],
+  "stock-price-paths/stock-price-paths-core.js": ["StockPricePathsCore"],
 };
 
 const games = [];

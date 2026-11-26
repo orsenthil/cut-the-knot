@@ -904,6 +904,9 @@ const GAMES = {
   "riskless-hedge": async (page) => {
     for (let k = 0; k < 10; k++) await page.click("#moreBtn");
   },
+  "stock-price-paths": async (page) => {
+    await page.click("#newBtn");
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

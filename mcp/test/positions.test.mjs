@@ -2069,6 +2069,11 @@ check("riskless-hedge: half a share on the article's call is riskless", read["ri
   const rh = at("riskless-hedge", { puzzle: "interest", delta: 0.5, p: 0.5, guess: 7.14 });
   check("riskless-hedge: with 5% interest the call is $7.14", rh.riskless === true && rh.priceRight === true);
 }
+check("stock-price-paths: 100 paths drawn once, median theory below average", read["stock-price-paths"]?.runs === 1 && read["stock-price-paths"].theory.median < read["stock-price-paths"].theory.average);
+{
+  const sp = at("stock-price-paths", { mu: 0, sigma: 0.8, count: 10, seed: 1, runs: 1 });
+  check("stock-price-paths: no growth, 80% volatility: median 72.61", sp.theory.average === 100 && sp.theory.median === 72.61);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

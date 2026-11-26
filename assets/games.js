@@ -2481,5 +2481,13 @@ window.COOLMATHS = {
       tags: ["black-scholes", "probability", "algebra"],
       level: 1,
     },
+    {
+      slug: "stock-price-paths",
+      title: "Stock Price Paths",
+      blurb: "Send a hundred stock prices wandering for a year. They grow on average, yet the typical one falls behind. Why do ups and downs of the same size not cancel?",
+      tags: ["black-scholes", "probability", "limits"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
