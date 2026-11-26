@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BOL10 &mdash; coolmaths</title>
+<meta name="description" content="Two tangents, a secant and a chord: does the perpendicular from E always cut BD exactly in half? Drag the dots and find out.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bol-10/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="BOL10">
+<meta property="og:description" content="Two tangents, a secant and a chord: does the perpendicular from E always cut BD exactly in half? Drag the dots and find out.">
+<meta property="og:url" content="https://coolmaths.ai/bol-10/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .main-circle { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .secant { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .secant-chord { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .tangent { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .chord { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .construction { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .bisector { fill: none; stroke: var(--bad); stroke-width: 2.5; }
+  #board .hint-line { fill: none; stroke: var(--highlight); stroke-width: 1.5; stroke-dasharray: 3 4; }
+  #board .plain-dot { fill: var(--ink); }
+  #board .mid-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .tick { stroke: var(--good); stroke-width: 3; stroke-linecap: round; }
+  #board .right-angle { fill: none; stroke: var(--bad); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .mid-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="bol-10" data-kind="demo">
+<main id="main">
+  <h1>BOL10</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the four dots to change a circle and the lines around it, and see whether the red line always cuts the green chord in half.<br>
+    <strong>How to play:</strong> Drag O, Bo, T or C with a mouse or finger, or focus a dot and use the arrow keys. Press Check the claim to test what you see.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A circle with two tangents from T, a secant through C, the chord BD parallel to it, and the perpendicular from E to BD"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the diagram to its starting shape">Reset diagram</button>
+    <button id="randomBtn" type="button" aria-label="Put C at a random place on the circle">Move C at random</button>
+    <button id="checkBtn" type="button" aria-label="Check whether H is the midpoint of BD">Check the claim</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point names">Hide names</button>
+    <button id="statementBtn" type="button" aria-pressed="true" aria-label="Toggle the equal-length marks">Hide equal marks</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the auxiliary lines from the proof">Show hint</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This is Proposition 10 of Archimedes' Book of Lemmas. Two lines from T just touch the circle; a third line through T crosses it. A chord drawn parallel to that third line looks ordinary, but the perpendicular dropped from a certain point always lands on its exact middle. Drag the dots and see if you can break it.</p>
+
+      <h2>The lines in the picture</h2>
+      <p>O is the centre and Bo fixes the radius. T is outside the circle, so exactly two <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangents</a> from it touch the circle at A and B. The line TC cuts the circle at C and again at C₂. BD is the <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord</a> through B <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a> to TC, and AD meets TC at E. EH is drawn perpendicular to BD.</p>
+      <blockquote><code>TA and TB touch the circle &nbsp;·&nbsp; BD ∥ TC &nbsp;·&nbsp; E = AD ∩ TC &nbsp;·&nbsp; EH ⊥ BD</code></blockquote>
+
+      <h2>Angles that keep appearing</h2>
+      <p>The angle between a tangent and a chord equals the angle in the opposite arc: <code>∠TAB = ∠ADB</code>. Because BD is parallel to TC, that same angle is <code>∠AET</code>. The two tangents from one point are equal, so <code>∠ABT = ∠TAB</code>. Those equal angles put A, E, B and T on one circle — the shorter version of the proof that Nathan Bowler suggested on the original page.</p>
+
+      <h2>E is as far from B as from D</h2>
+      <p>Triangles EAT and AFT share the angle at T and have <code>∠TAB = ∠AET</code>, so they are <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similar_triangles" target="_blank" rel="noopener">similar</a>. That gives <code>ET · TF = TA²</code>, and the tangent lengths give <code>TA² = TB²</code>. This is the <a class="wiki-term" data-wiki="Power_of_a_point" href="https://en.wikipedia.org/wiki/Power_of_a_point" target="_blank" rel="noopener">power of the point</a> T. It makes triangles EBT and BFT similar, so <code>∠TEB = ∠TBF = ∠TAB</code>. With the parallels this becomes <code>∠EDB = ∠EBD</code>.</p>
+
+      <h2>The altitude of an isosceles triangle</h2>
+      <p>So triangle EBD has two equal base angles and therefore <code>EB = ED</code>. In an <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles triangle</a> the perpendicular from the top corner is also the <a class="wiki-term" data-wiki="Median_(geometry)" href="https://en.wikipedia.org/wiki/Median_(geometry)" target="_blank" rel="noopener">median</a>: <code>BH = HD</code>. The logic test checks that equality and every angle above over hundreds of configurations. It skips secants so close to a tangent that the chord is under two units long: the original applet's own "other intersection" routine works to one pixel and cannot tell the two ends apart there. The applet also chooses which tangent is called A and which B by an axis-based order; the claim holds with either naming.</p>
+
+      <p class="tip">Try dragging C almost onto A or B. The chord shrinks and the marks crowd together — then pull T far away and try again.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BookOfLemmas/BOL10.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bol-10-core.js"></script>
+<script src="bol-10.js"></script>
+</body>
+</html>
