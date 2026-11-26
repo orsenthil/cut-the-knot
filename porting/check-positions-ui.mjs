@@ -1017,6 +1017,16 @@ const GAMES = {
   "bol-3": (page) => dragFirstHandle(page),
   "bol-5": (page) => dragFirstHandle(page),
   "bol-6": (page) => dragFirstHandle(page),
+  "bol-9": (page) => dragFirstHandle(page),
+  bottema: (page) => dragFirstHandle(page),
+  "bqt-lemma": (page) => dragFirstHandle(page),
+  bqtn: (page) => dragFirstHandle(page),
+  brahmagupta: (page) => dragFirstHandle(page),
+  "brahmagupta-2": (page) => dragFirstHandle(page),
+  "breadth-width": (page) => dragFirstHandle(page),
+  brianchon: (page) => dragFirstHandle(page),
+  "brianchon-in-ellipse": (page) => dragFirstHandle(page),
+  "brick-wall": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

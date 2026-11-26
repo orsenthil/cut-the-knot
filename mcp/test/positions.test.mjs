@@ -2163,6 +2163,16 @@ check("bol-2: F is the midpoint of DE", read["bol-2"]?.reading.claims.bisected =
 check("bol-3: the equal arc gives BQ = BD", Math.abs(read["bol-3"]?.saved.lengths.BQ - read["bol-3"].saved.lengths.BD) < 1e-6 && read["bol-3"].onCircle === true);
 check("bol-5: the two tangent circles have equal harmonic radius", read["bol-5"]?.core.checks.allHold === true && read["bol-5"].core.radii.matchesFormula === true && read["bol-5"].core.radii.leftTwin === read["bol-5"].core.radii.rightTwin);
 check("bol-6: the arbelos tangent circle has GH/AB = r/(1+r+r²)", Object.values(read["bol-6"]?.core.claims || {}).every(Boolean) === true && read["bol-6"].savedMatchesCore === true);
+check("bol-9: perpendicular chords give two semicircle arc sums", read["bol-9"]?.core.allClaimsHold === true && read["bol-9"].savedMatchesCore === true);
+check("bottema: the square midpoint stays fixed as C moves", read.bottema?.reading.claims.allHold === true && read.bottema.reading.distanceMtoSquareCentre === 0);
+check("bqt-lemma: the saved midpoint F is the midpoint of AC", read["bqt-lemma"]?.midpointMatchesSavedF === true);
+check("bqtn: the odd-sided incircle chain closes at 2n", read.bqtn?.core.odd === true && read.bqtn.valid === true && read.bqtn.core.n === 3);
+check("brahmagupta: the power identity holds at the diagonal crossing", read.brahmagupta?.reading.power.holds === true && read.brahmagupta.reading.area.matches === true);
+check("brahmagupta-2: the four maltitudes meet at the anticenter without perpendicular diagonals", read["brahmagupta-2"]?.reading.concurrence.allFourMeetAtT === true && read["brahmagupta-2"].reading.diagonals.perpendicular === false);
+check("breadth-width: both barrels are equal squares beneath the illusion", read["breadth-width"]?.barrels.left.square === true && read["breadth-width"].barrels.right.square === true);
+check("brianchon: the main diagonals concur while the extra chords are listed", read.brianchon?.concurrency.holds === true && read.brianchon.chords.length === 3);
+check("brianchon-in-ellipse: the affine map carries the concurrence point", read["brianchon-in-ellipse"]?.SAgreesWithSaved === true && read["brianchon-in-ellipse"].reading.concurrent === true);
+check("brick-wall: mortar lines stay parallel while the joints stagger", read["brick-wall"]?.brickCount === 100 && read["brick-wall"].rows === 10);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);

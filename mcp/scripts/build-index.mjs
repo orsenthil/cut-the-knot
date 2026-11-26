@@ -557,6 +557,16 @@ const CORE_GLOBALS = {
   "bol-3/bol-3-core.js": ["Bol3Core"],
   "bol-5/bol-5-core.js": ["Bol5Core"],
   "bol-6/bol-6-core.js": ["Bol6Core"],
+  "bol-9/bol-9-core.js": ["Bol9Core"],
+  "bottema/bottema-core.js": ["BottemaCore"],
+  "bqt-lemma/bqt-lemma-core.js": ["BqtLemmaCore"],
+  "bqtn/bqtn-core.js": ["BqtnCore"],
+  "brahmagupta/brahmagupta-core.js": ["BrahmaguptaCore"],
+  "brahmagupta-2/brahmagupta-2-core.js": ["Brahmagupta2Core"],
+  "breadth-width/breadth-width-core.js": ["BreadthWidthCore"],
+  "brianchon/brianchon-core.js": ["BrianchonCore"],
+  "brianchon-in-ellipse/brianchon-in-ellipse-core.js": ["BrianchonCore"],
+  "brick-wall/brick-wall-core.js": ["BrickWallCore"],
 };
 
 const games = [];
