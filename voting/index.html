@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Voting &mdash; coolmaths</title>
+<meta name="description" content="The same voters rank the same choices, yet four fair-looking ways of counting can pick different winners. Can you make each method choose someone new?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/voting/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Voting">
+<meta property="og:description" content="The same voters rank the same choices, yet four fair-looking ways of counting can pick different winners. Can you make each method choose someone new?">
+<meta property="og:url" content="https://coolmaths.ai/voting/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 46rem; padding: 0.8rem 0.5rem; }
+  .scroll { overflow-x: auto; max-width: 100%; }
+  #schedule { border-collapse: collapse; margin: 0 auto; font-variant-numeric: tabular-nums; }
+  #schedule caption { text-align: left; color: var(--muted); font-size: 0.9rem; padding-bottom: 0.4rem; }
+  #schedule th, #schedule td { border: 1px solid var(--border); padding: 0.25rem 0.35rem; text-align: center; }
+  #schedule thead th { background: var(--surface-2); }
+  #schedule tbody th { color: var(--muted); font-weight: 600; font-size: 0.85rem; }
+  #schedule button { min-width: 2.75rem; min-height: 2.75rem; padding: 0.15rem 0.3rem; }
+  #schedule button.weak { outline: 2px solid var(--accent); outline-offset: -2px; }
+  #schedule .count { width: 4.5rem; min-height: 2.75rem; font-size: 1rem; }
+  #output { margin-top: 0.8rem; overflow-wrap: anywhere; font-size: 0.95rem; }
+  #output .line { padding: 0.1rem 0; }
+  #output .blank { height: 0.4rem; }
+  #output .caption { font-weight: 700; color: var(--accent); }
+  #output .sub { color: var(--muted); padding-left: 1rem; }
+  #output .weak-text { color: var(--bad); }
+  #output .winner { color: var(--good); font-weight: 700; }
+  .controls, .controls .group, .controls label { min-width: 0; max-width: 100%; }
+  .controls .group { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.2rem 0.8rem; width: 100%; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; flex-wrap: wrap; white-space: normal; }
+  .controls select, .controls input[type="text"] { min-height: 2.75rem; font-size: 1rem; max-width: 100%; min-width: 0; flex: 1 1 8rem; }
+  .stepper { display: inline-flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; max-width: 100%; }
+  .stepper button { min-width: 2.75rem; min-height: 2.75rem; padding: 0; }
+  .stepper output { min-width: 1.6rem; text-align: center; font-weight: 700; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body data-game="voting" data-kind="demo">
+<main id="main">
+  <h1>Voting</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#permutations">Permutations</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Groups of voters rank the same choices, and four different ways of counting can pick different winners. Find out who wins each time and whether the methods agree.<br>
+    <strong>How to play:</strong> Type how many voters are in a column and click a name to move it up that ballot. Choose a method, then press its button to see the scores.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="scroll" id="schedule" role="region" aria-label="Preference schedule" tabindex="0"></div>
+    <div id="output" aria-live="polite"></div>
+  </div>
+
+  <div class="controls">
+    <div class="group">
+      <label for="methodIn">Method
+        <select id="methodIn">
+          <option value="plurality">Plurality</option>
+          <option value="borda">Borda</option>
+          <option value="elimination">Plurality with elimination</option>
+          <option value="pairwise">Pairwise comparison</option>
+        </select>
+      </label>
+    </div>
+    <div class="group">
+      <span class="stepper" role="group" aria-label="Number of candidates">Candidates
+        <button id="candLess" type="button" aria-label="One candidate fewer">&minus;</button><output id="candOut">3</output><button id="candMore" type="button" aria-label="One candidate more">+</button>
+      </span>
+      <span class="stepper" role="group" aria-label="Number of ballots">Ballots
+        <button id="ballotLess" type="button" aria-label="One ballot fewer">&minus;</button><output id="ballotOut">2</output><button id="ballotMore" type="button" aria-label="One ballot more">+</button>
+      </span>
+    </div>
+    <div class="group">
+      <label for="namesIn">Candidate names
+        <input id="namesIn" type="text" value="A,B,C" aria-label="Candidate names, separated by commas">
+      </label>
+      <button id="readNamesBtn" type="button">Read choices</button>
+    </div>
+    <div class="group" id="pickWrap">
+      <label for="pickIn">Show a candidate
+        <select id="pickIn"></select>
+      </label>
+      <button id="revealBtn" type="button">Show score</button>
+    </div>
+    <div class="group" id="elimWrap" hidden>
+      <button id="elimBtn" type="button">Eliminate weakest candidate</button>
+    </div>
+    <div class="group" id="pairWrap" hidden>
+      <label for="pairA">First
+        <select id="pairA"></select>
+      </label>
+      <label for="pairB">Second
+        <select id="pairB"></select>
+      </label>
+      <button id="compareBtn" type="button">Compare</button>
+    </div>
+    <div class="group">
+      <button id="newBtn" type="button" class="primary">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The four methods all use the same preference schedule: each column is a ballot, with the number of voters who cast it on top. Counting is easy; deciding what a fair count means is not. Here are the four rules the applet uses.</p>
+
+      <h2>Counting first places, and counting every place</h2>
+      <p><strong>Plurality</strong> looks only at the top row: a candidate gets the voters whose ballot lists them first. The scores always add up to the number of voters. <strong><a class="wiki-term" data-wiki="Borda_count" href="https://en.wikipedia.org/wiki/Borda_count" target="_blank" rel="noopener">Borda count</a></strong> uses every place: with <code>n</code> candidates a first place is worth <code>n</code> points, the next <code>n &minus; 1</code>, down to 1 for last. One ballot gives out <code>n(n+1)/2</code> points in all. On the starting schedule, plurality elects A (5 to 4) but Borda elects B (22 to 19 to 13): counting the lower places changed the answer. The applet calls the final Borda list "first place votes" too; those numbers are Borda points.</p>
+
+      <h2>Strike out the weakest, one round at a time</h2>
+      <p>In <strong>plurality with elimination</strong>, each round every ballot gives its voters to the highest candidate still in the running. The weakest candidate is struck out and the round is counted again. When two are left, the one with more votes wins; equal votes give "Tied elections" and nobody wins. The applet's button then says "Restore", which walks back through the rounds. A candidate with more than half of all votes keeps them in every round and cannot be eliminated.</p>
+
+      <h2>Head-to-head points</h2>
+      <p>In <strong><a class="wiki-term" data-wiki="Pairwise_comparison_method" href="https://en.wikipedia.org/wiki/Pairwise_comparison_method" target="_blank" rel="noopener">pairwise comparison</a></strong>, every pair of candidates meets once. Whoever is higher on more ballots gets 1 point; a tie gives each <span class="nowrap">.5</span> point. There are <code>n(n&minus;1)/2</code> meetings and exactly that many points to hand out. A candidate who beats every other candidate head to head, a <a class="wiki-term" data-wiki="Condorcet_winner_criterion" href="https://en.wikipedia.org/wiki/Condorcet_winner_criterion" target="_blank" rel="noopener">Condorcet winner</a>, always tops this count, but can still lose a plurality vote. <a class="wiki-term" data-wiki="Arrow%27s_impossibility_theorem" href="https://en.wikipedia.org/wiki/Arrow%27s_impossibility_theorem" target="_blank" rel="noopener">Arrow's theorem</a> explains why no simple rule can honour every fairness wish at once.</p>
+
+      <h2>Checking the counts</h2>
+      <p>The logic test scores all 19,152 schedules with three candidates, two or three ballots and up to six voters a second time, straight from the applet's bytecode: every first-place count, every <code>(n &minus; rank) &times; voters</code> term, every head-to-head point and every elimination round agrees. Ties keep the applet's order, including the order of <code>java.util.Hashtable</code> keys when a weakest candidate must be chosen. The applet was made for Peter Tannenbaum's <em>Excursions in Modern Mathematics</em> and is reproduced with permission; its rules are used here, but this counting code is newly written.</p>
+
+      <p class="tip">Start with the 5-to-4 schedule, then move one B from the second ballot to the top of the first. Which method changes its winner first?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/SocialScience/Voting.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>); applet by Peter Tannenbaum, reproduced with permission.
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="voting-core.js"></script>
+<script src="voting.js"></script>
+</body>
+</html>
