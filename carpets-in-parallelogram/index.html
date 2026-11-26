@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carpets In Parallelogram &mdash; coolmaths</title>
+<meta name="description" content="Points P, Q and R slide along the sides of a slanted box. Drag them and the lines draw a colourful carpet: why does the red minus the blue never change?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/carpets-in-parallelogram/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Carpets In Parallelogram">
+<meta property="og:description" content="Points P, Q and R slide along the sides of a slanted box. Drag them and the lines draw a colourful carpet: why does the red minus the blue never change?">
+<meta property="og:url" content="https://coolmaths.ai/carpets-in-parallelogram/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .red { fill: var(--bad); opacity: 0.42; }
+  #board .blue { fill: var(--accent); opacity: 0.42; }
+  #board .orange { fill: var(--highlight); stroke: var(--bad); stroke-width: 1.5; }
+  #board .pink {
+    fill: var(--bad); opacity: 0.22; stroke: var(--bad); stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+  }
+  #board .outline { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .cut { stroke: var(--ink); stroke-width: 1.5; opacity: 0.65; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="carpets-in-parallelogram" data-kind="demo">
+<main id="main">
+  <h1>Carpets In Parallelogram</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: the coloured parts change when you drag the points, but the difference between the red and the blue never changes.<br>
+    <strong>How to play:</strong> Drag the corners A, B, C and D or the points P, Q and R, or focus one and use the arrow keys. Tick “Hint” to see the pink and orange pieces, and “Names” to label the points.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A parallelogram ABCD with points P, Q and R on three sides and five lines that cut out red, blue, pink and orange pieces"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="hint" type="checkbox"> Hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag any point and the coloured pieces change shape: some grow, some shrink. Yet when you take the blue piece away from all the red pieces, the number left over is always half the parallelogram. Here is why.</p>
+
+      <h2>Two big triangles</h2>
+      <p>Forget P and R for a moment. Point Q sits on the top side CD. The <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a> ADQ has the same base as the whole box and reaches from top to bottom, so it covers exactly half. The triangle BCQ does the same. Together they cover half the <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a>:</p>
+      <blockquote><code>RED = Area(ADQ) + Area(BCQ) = Area(ABCD) / 2</code></blockquote>
+      <p>This is the page's first claim, and the logic test checks it for thousands of shapes.</p>
+
+      <h2>The carpet pieces</h2>
+      <p>The cutting lines divide those two big triangles into four red pieces, with a pink triangle cut out of each. In between them sits the blue pentagon STUVW, and below them the orange triangle ABW. Tick “Hint” to see the two pink triangles and the orange one. The <a class="wiki-term" data-wiki="Trapezoid" href="https://en.wikipedia.org/wiki/Trapezoid" target="_blank" rel="noopener">trapezoid</a> ABPR is a carpet: its diagonals swap equal <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">areas</a>. The page calls this equation (1):</p>
+      <blockquote><code>Area(RST) + BLUE + Area(PUV) = Area(ABW)</code></blockquote>
+      <p>So the pink pieces together with the blue pentagon make exactly the orange triangle. The logic test checks this equality on every drawn picture in its sample.</p>
+
+      <h2>Why the difference is constant</h2>
+      <p>The four red pieces plus the orange triangle are what is left of the two big triangles after the pink pieces are removed. Taking away the blue pentagon gives</p>
+      <blockquote><code>RED − Area(RST) − Area(PUV) + Area(ABW) − BLUE = RED</code></blockquote>
+      <p>because of (1). And RED is half the parallelogram. That is the exact claim on the page: <code>painted red minus blue = Area(ABCD) / 2</code>, whatever the positions of P, Q and R. The test also moves P, Q and R through 500 fresh positions on one parallelogram and gets the same number every time.</p>
+
+      <h2>Small details</h2>
+      <p>When two cutting lines run parallel, the applet's intersection routine returns “not a number” and the Java version hides the carpet. This page does the same; the status line says so. One deliberate change: the applet let P, Q and R slide along the whole side line and hid the drawing when a point left its side, while here they stay on the side segments, so the carpet remains as the page describes it. The checkboxes also start unchecked, as in the applet: tick “Hint” to see the pink and orange pieces used in the proof.</p>
+
+      <p class="tip">Try this: tick “Names”, drag Q towards D, then drag the bottom-left corner sideways. The coloured pieces rearrange, but the two numbers in the status line still match.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CarpetsInParallelogram.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="carpets-in-parallelogram-core.js"></script>
+<script src="carpets-in-parallelogram.js"></script>
+</body>
+</html>
