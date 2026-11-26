@@ -880,6 +880,10 @@ const GAMES = {
     await page.focus('#board .handle[data-i="1"]');
     await page.keyboard.press("ArrowUp");
   },
+  "det-and-perm": async (page) => {
+    await page.click('#grid .cell[data-k="0"]');
+    await page.click('#grid .cell[data-k="8"]');
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

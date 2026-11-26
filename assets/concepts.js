@@ -54,6 +54,7 @@ window.COOLMATHS_CONCEPTS = {
   "complex-analysis": { label: "Complex Analysis", prereqs: ["algebra"] },
   "riemann-hypothesis": { label: "Riemann Hypothesis", prereqs: ["number-theory", "series", "complex-analysis"] },
   "unit-distance": { label: "Unit Distance Problem", prereqs: ["number-theory", "coordinates", "graph-theory"] },
+  "vp-vnp": { label: "VP \u2260 VNP", prereqs: ["algebra", "algorithms", "counting"] },
   "differential-equations": { label: "Differential Equations", prereqs: ["algebra", "series"] },
   "fluid-dynamics": { label: "Fluid Dynamics", prereqs: ["differential-equations", "physics"] },
 };

@@ -117,6 +117,12 @@ const SLUG_FALLBACK_URL = {
   "grid-spacing-dial": null,
   "unit-distance-growth": null,
   "roots-of-unity-lattice": null,
+  "det-and-perm": null,
+  "rook-placements": null,
+  "arithmetic-circuits": null,
+  "determinant-elimination": null,
+  "ryser-formula": null,
+  "perm-from-det": null,
 };
 
 /* ----------------------------------------------------------- classification */

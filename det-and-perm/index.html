@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Determinant and Permanent &mdash; coolmaths</title>
+<meta name="description" content="Two numbers built from the same six products of a 3 by 3 square: one adds them all, the other gives half a minus sign. Arrange 1 to 9 to make each as big as it can be.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/det-and-perm/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Determinant and Permanent">
+<meta property="og:description" content="Two numbers built from the same six products of a 3 by 3 square: one adds them all, the other gives half a minus sign. Arrange 1 to 9 to make each as big as it can be.">
+<meta property="og:url" content="https://coolmaths.ai/det-and-perm/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+#stage { width: 100%; max-width: 40rem; padding: 0.8rem; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: flex-start; }
+  #grid { display: grid; grid-template-columns: repeat(3, 3.6rem); gap: 0.35rem; }
+  #grid .cell { width: 3.6rem; height: 3.6rem; font-size: 1.6rem; font-weight: 800; padding: 0; border-radius: 0.6rem; }
+  #grid .cell.picked { background: var(--accent); color: var(--accent-text); }
+  #grid .cell.lit { box-shadow: 0 0 0 4px var(--highlight) inset; }
+  #terms { list-style: none; margin: 0; padding: 0; font-family: var(--mono); font-size: 1rem; min-width: 0; }
+  #terms li { padding: 0.25rem 0.5rem; border-radius: 0.4rem; cursor: default; }
+  #terms li:hover, #terms li:focus-visible { background: var(--highlight); outline: none; }
+  #terms .sign { display: inline-block; width: 1.2rem; font-weight: 800; }
+  #terms .plus { color: var(--good); }
+  #terms .minus { color: var(--bad); }
+  #totals { text-align: center; margin: 0.6rem 0 0; width: 100%; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+</style>
+</head>
+<body data-game="det-and-perm" data-kind="game">
+<main id="main">
+  <h1>Determinant and Permanent</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#vp-vnp">VP ≠ VNP</a><a class="tag" href="../index.html#permutations">Permutations</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Arrange the digits 1 to 9 in the square to make one number, the permanent (or the determinant), as big as it can possibly be.<br>
+    <strong>How to play:</strong> Click two digits to swap them. The list shows the six products that the numbers are made of.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="grid" role="group" aria-label="The 3 by 3 square of digits; pick two to swap them"></div>
+    <ul id="terms" aria-label="The six products"></ul>
+    <p id="totals" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label><input type="radio" name="goal" value="perm" checked> Biggest permanent</label>
+    <label><input type="radio" name="goal" value="det"> Biggest determinant</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This page starts a path towards one of the big open questions about computation, <a class="wiki-term" data-wiki="VP_(complexity)" href="https://en.wikipedia.org/wiki/VP_(complexity)" target="_blank" rel="noopener">VP</a> versus VNP. It is the algebraic cousin of P versus NP. At its heart are two polynomials that look almost the same: the determinant and the permanent.</p>
+
+      <h2>Same products, different signs</h2>
+      <p>Choose one entry from every row of a square, no two in the same column, like rooks that cannot take each other. Multiply them. A 3 &times; 3 square has 3! = 6 such products, and an <code>n &times; n</code> square has <code>n!</code>. The <a class="wiki-term" data-wiki="Permanent_(mathematics)" href="https://en.wikipedia.org/wiki/Permanent_(mathematics)" target="_blank" rel="noopener">permanent</a> simply adds them all. The <a class="wiki-term" data-wiki="Determinant" href="https://en.wikipedia.org/wiki/Determinant" target="_blank" rel="noopener">determinant</a> first gives each product a sign, + or &minus;, according to whether its columns are an even or odd <a class="wiki-term" data-wiki="Parity_of_a_permutation" href="https://en.wikipedia.org/wiki/Parity_of_a_permutation" target="_blank" rel="noopener">permutation</a>. For the digits in order:</p>
+      <blockquote><code>det = 1(45 &minus; 48) &minus; 2(36 &minus; 42) + 3(32 &minus; 35) = 0<br>perm = 1(45 + 48) + 2(36 + 42) + 3(32 + 35) = 450</code></blockquote>
+
+      <h2>The best squares</h2>
+      <p>The logic test tried all 9! = 362,880 ways to place the digits. The largest permanent is 947 and the largest determinant is 412. The smallest permanent is 436, since every product is positive. A big permanent wants big digits multiplied together, so the 9, 8 and 7 should share one of the six products. A big determinant also needs the three minus products to stay small.</p>
+
+      <h2>Why the signs matter so much</h2>
+      <p>With <code>n!</code> terms, adding them up one by one is hopeless for large squares: 20! is about 2.4 &times; 10<sup>18</sup>. Yet the determinant can be found in about <code>n&sup3;</code> steps, because the signs make it behave well when rows are combined. For the permanent nobody knows any way that is not exponential. The next pages show why.</p>
+
+      <p class="tip">Can you find a square where the determinant is negative but the permanent is over 900?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original game for coolmaths, after Gil Fried's article
+    <a href="https://www.friedgil.com/vpvnp" target="_blank" rel="noopener">What VP &ne; VNP Means (In 3 Minutes)</a>
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="det-and-perm-core.js"></script>
+<script src="det-and-perm.js"></script>
+</body>
+</html>

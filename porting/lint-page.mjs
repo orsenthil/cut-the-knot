@@ -30,6 +30,30 @@ const REPO = join(HERE, "..");
  * Keep this list tiny and justified; it is not a place to park a sloppy port.
  */
 const EXEMPT = {
+  "det-and-perm": {
+    checks: ["byline"],
+    why: "an original demo for the VP vs VNP path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "rook-placements": {
+    checks: ["byline"],
+    why: "an original demo for the VP vs VNP path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "arithmetic-circuits": {
+    checks: ["byline"],
+    why: "an original demo for the VP vs VNP path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "determinant-elimination": {
+    checks: ["byline"],
+    why: "an original demo for the VP vs VNP path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "ryser-formula": {
+    checks: ["byline"],
+    why: "an original demo for the VP vs VNP path, not a port, so there is no cut-the-knot page to cite",
+  },
+  "perm-from-det": {
+    checks: ["byline"],
+    why: "an original demo for the VP vs VNP path, not a port, so there is no cut-the-knot page to cite",
+  },
   "maths-quiz": {
     checks: ["math", "byline", "hovercard"],
     why: "the arithmetic quiz, not a ported applet: it has no single puzzle to explain and no cut-the-knot page",

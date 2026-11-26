@@ -2034,6 +2034,11 @@ check("two-men-of-tibet: the saved range has 7 corners and a walk", read["two-me
   const tb = at("two-men-of-tibet", { heights: [0, 0.3, 0.1, 0.9, 0], walking: false });
   check("two-men-of-tibet: on 0, .3, .1, .9, 0 the walk goes from (A, I) to (I, A) and the white man turns back", tb.walk[0] === "(A, I)" && tb.walk[tb.walk.length - 1] === "(I, A)" && tb.turnsBack.white >= 1);
 }
+check("det-and-perm: one swap of 1 and 9 from the article's square", read["det-and-perm"]?.square[0][0] === 9 && read["det-and-perm"].goal === "largest permanent" && read["det-and-perm"].target === 947);
+{
+  const dp = at("det-and-perm", { cells: [1, 4, 9, 6, 7, 3, 8, 5, 2], goal: "perm", swaps: 4 });
+  check("det-and-perm: 149/673/852 reaches the largest permanent 947", dp.permanent === 947 && dp.reached === true);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

@@ -44,6 +44,7 @@ window.COOLMATHS = {
     "complex-analysis": "Complex Analysis",
     "riemann-hypothesis": "Riemann Hypothesis",
     "unit-distance": "Unit Distance Problem",
+    "vp-vnp": "VP ≠ VNP",
     "differential-equations": "Differential Equations",
     "fluid-dynamics": "Fluid Dynamics",
   },
@@ -2422,6 +2423,13 @@ window.COOLMATHS = {
       tags: ["graph-theory", "parity", "invariants"],
       kind: "demo",
       level: 3,
+    },
+    {
+      slug: "det-and-perm",
+      title: "Determinant and Permanent",
+      blurb: "Two numbers built from the same six products of a 3 by 3 square: one adds them all, the other gives half a minus sign. Arrange 1 to 9 to make each as big as it can be.",
+      tags: ["vp-vnp", "permutations", "algebra"],
+      level: 2,
     },
   ],
 };
