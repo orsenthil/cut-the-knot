@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Soroban in Various Number Systems &mdash; coolmaths</title>
+<meta name="description" content="One bead worth five above the bar, four worth one below. Why does that work just as well in base 4, 12 or 20?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/soroban/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Soroban in Various Number Systems">
+<meta property="og:description" content="One bead worth five above the bar, four worth one below. Why does that work just as well in base 4, 12 or 20?">
+<meta property="og:url" content="https://coolmaths.ai/soroban/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 44rem; padding: 0.8rem 0.4rem; }
+  .scroll { overflow-x: auto; }
+  #board { display: block; width: 100%; min-width: 15rem; height: auto; margin: 0 auto; }
+  #board .frame { fill: var(--surface-2); stroke: var(--ink); stroke-width: 3; }
+  #board .wire { stroke: var(--muted); stroke-width: 3; }
+  #board .bar { fill: var(--ink); }
+  #board .bead { fill: #c58b4c; stroke: #6b4423; stroke-width: 1.5; cursor: pointer; opacity: 0.6; }
+  #board .bead.on { opacity: 1; fill: #a86a2a; }
+  #board .bead:focus-visible { outline: none; stroke: var(--accent); stroke-width: 4; }
+  #board .digit { fill: var(--text); font: 700 22px var(--font); text-anchor: middle; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls select { min-height: 2.75rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="soroban" data-kind="demo">
+<main id="main">
+  <h1>Soroban in Various Number Systems</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#place-value">Place Value</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A Japanese counting frame. Each bead that touches the middle bar counts; the top bead counts as five ones.<br>
+    <strong>How to play:</strong> Click a bead to slide it to the bar or away. Choose another radix to count in other number systems.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="scroll">
+      <svg id="board" viewBox="0 0 410 330" role="group" aria-label="The soroban. Arrow keys move between beads; Enter moves a bead."></svg>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label>Radix <select id="radixSel"></select></label>
+    <label># wires <select id="wiresSel"></select></label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The <a class="wiki-term" data-wiki="Soroban" href="https://en.wikipedia.org/wiki/Soroban" target="_blank" rel="noopener">soroban</a> came to Japan from China, probably in the 16th century. A bar divides it into heaven, above, and earth, below. Each wire is one place of a number, the rightmost the units, and the beads touching the bar give that place's digit.</p>
+
+      <h2>Five is half of ten</h2>
+      <p>On a decimal soroban each wire has one heaven bead worth 5 and four earth beads worth 1 each. That makes every digit from 0 to 9 in exactly one way: <code>7 = 5 + 1 + 1</code>. (Old sorobans had a fifth earth bead, which was never needed and was dropped around 1920.) The trick works for any even base <code>r</code>: one heaven bead worth <code>r/2</code> and <code>r/2 &minus; 1</code> earth beads give each digit from 0 to <code>r &minus; 1</code> exactly once. The logic test checked this for every base from 2 to 20.</p>
+
+      <h2>Place value</h2>
+      <p>In base <code>r</code> each wire is worth <code>r</code> times the wire to its right, so the digits <code>d&#8326; d&#8325; &hellip; d&#8320;</code> mean <code>d&#8326;r&#8310; + &hellip; + d&#8321;r + d&#8320;</code>, as in any <a class="wiki-term" data-wiki="Positional_notation" href="https://en.wikipedia.org/wiki/Positional_notation" target="_blank" rel="noopener">positional number system</a>. Bases above 10 use letters for the digits 10, 11, &hellip; (A, B, &hellip;). The line under the frame gives the number in base 10 too.</p>
+
+      <h2>Trading four ones for a five</h2>
+      <p>When all the earth beads on a wire are up and you push the heaven bead down, the earth beads drop away: four ones are traded for one five (in base <code>r</code>, <code>r/2 &minus; 1</code> ones for one <code>r/2</code>). This is how the applet behaves. A soroban user does the same with fingers.</p>
+
+      <p class="tip">Set the radix to 2. With no earth beads at all, the soroban becomes a row of binary switches. What number do all seven heaven beads down make?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/Soroban.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="soroban-core.js"></script>
+<script src="soroban.js"></script>
+</body>
+</html>

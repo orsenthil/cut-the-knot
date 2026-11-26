@@ -2284,5 +2284,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "soroban",
+      title: "Soroban in Various Number Systems",
+      blurb: "One bead worth five above the bar, four worth one below. Why does that work just as well in base 4, 12 or 20?",
+      tags: ["place-value", "counting", "arithmetic"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

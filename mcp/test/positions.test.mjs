@@ -1942,6 +1942,11 @@ check("social-choice: ballot 3 now BCA, so B wins plurality with 18", read["soci
   const sc = at("social-choice", { ballots: [["A","B","C","D","E"],["C","B","D","E","A"],["D","C","B","E","A"],["B","D","C","E","A"],["E","C","D","B","A"]], counts: [14, 10, 8, 4, 1], methods: [] });
   check("social-choice: the Math Club election has four winners A, B, D, C", ["Plurality","Borda","Elimination","Pairwise"].map((m) => sc.results[m].winners.join()).join() === "A,B,D,C");
 }
+check("soroban: 53 on a decimal soroban", read.soroban?.inRadix === "53" && read.soroban.decimal === 53 && read.soroban.wires[5].heavenBeadDown === true);
+{
+  const so = at("soroban", { radix: 16, digits: [0, 0, 0, 0, 15, 0, 10] });
+  check("soroban: base 16 F0A is 3850, F is the heaven bead and 7 earth beads", so.decimal === 3850 && so.wires[4].earthBeadsUp === 7 && so.wires[4].heavenBeadDown === true);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

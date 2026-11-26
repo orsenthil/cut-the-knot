@@ -804,6 +804,10 @@ const GAMES = {
     for (const m of [1, 3]) await page.check(`input[data-method="${m}"]`);
     await page.click('[data-ballot="2"][data-index="1"]');
   },
+  soroban: async (page) => {
+    await page.click('#board .bead[data-wire="6"][data-bead="1"]');
+    await page.click('#board .bead[data-wire="5"][data-bead="heaven"]');
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */
