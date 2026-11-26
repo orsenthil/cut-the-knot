@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Balls In Jar &mdash; coolmaths</title>
+<meta name="description" content="Stack thirteen equal bottles in a rack and slide the middle one: will the top row always be perfectly level? Try the smallest bottles and see what the applet really does.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/balls-in-jar/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Balls In Jar">
+<meta property="og:description" content="Stack thirteen equal bottles in a rack and slide the middle one: will the top row always be perfectly level? Try the smallest bottles and see what the applet really does.">
+<meta property="og:url" content="https://coolmaths.ai/balls-in-jar/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 1rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .rack-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; }
+  #board .bottle { fill: var(--stage); stroke: var(--ink); stroke-width: 2; }
+  #board .bottle-row-0 { fill: var(--accent-soft); stroke: var(--accent); }
+  #board .bottle-row-2 { fill: var(--surface-2); }
+  #board .bottle-row-4 { fill: var(--accent-soft); }
+  #board .bottle-label {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; text-anchor: middle; pointer-events: none;
+  }
+  #board .level-line { stroke: var(--good); stroke-width: 2.5; stroke-dasharray: 6 4; }
+  #board .hint-circle { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 3; stroke-dasharray: 3 4; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem 0.75rem; }
+  .size-row {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem;
+    width: 100%; min-width: 0;
+  }
+  .size-row label { font-size: 0.9rem; color: var(--muted); }
+  .size-row input[type="range"] {
+    flex: 1 1 8rem; min-width: 7rem; accent-color: var(--accent);
+  }
+  .size-row output { min-width: 8rem; font-family: var(--mono); font-size: 0.85rem; }
+</style>
+</head>
+<body data-game="balls-in-jar" data-kind="demo">
+<main id="main">
+  <h1>Balls In Jar</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Thirteen equal bottles are stacked in a rack; watch what happens to the top three when the spacing below changes.<br>
+    <strong>How to play:</strong> Drag the middle bottle sideways, or drag an outside bottle to change the bottle size. You can also use the slider, the buttons, or the arrow keys when a bottle is focused.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 -40 400 340" role="group"
+         aria-label="Thirteen touching bottles stacked inside a rack, with the top row highlighted"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="size-row">
+      <label for="sizeInput">Bottle size</label>
+      <input id="sizeInput" type="range" min="0" max="105" step="1" value="50"
+             aria-label="Bottle size, from 0, smallest, to 105, largest">
+      <output id="sizeOut" for="sizeInput">50%</output>
+    </div>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the bottles to their starting spacing and size">Reset</button>
+    <button id="hintsBtn" type="button" aria-pressed="false" aria-label="Show the helper circles from the proof">Show proof hint</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Hide the bottle names">Hide names</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The story says that however you space the three bottles on the floor, the top three always end up perfectly level. Try it here and you will find a twist: the applet sometimes disagrees with the story, and the logic test says exactly when.</p>
+
+      <h2>Touching bottles build a lattice</h2>
+      <p>All bottles share one radius <code>r</code>. Two touching bottles have their centres exactly <code>2r</code> apart, so the next bottle's centre is found by drawing <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circles</a> of radius <code>2r</code> around its two parents and taking the upper crossing. A bottle against a side is found the same way from the wall line and one parent. That is all this page computes; the shapes are only a drawing of those centres.</p>
+      <p>The rack is <code>200</code> units wide between its inner walls. The slider covers 0–105, which makes <code>r</code> run from <code>200/8 + 0.05</code> to a little past <code>200/6</code>. Dragging an outside bottle uses the applet's own rule: the size is accepted only when <code>6r &lt; 200 &lt; 8r</code>, so three bottles fit along the floor but a fourth does not. The slider still reaches just past that range.</p>
+
+      <h2>Why the top row should be level</h2>
+      <p>Write <code>y(X)</code> for the height of a bottle's centre. If both F and H really lean on the walls, the four quadrilaterals around G are rhombi, so BFLH is a rhombus too. Its sides are equal and parallel: <code>BF = EH = IL</code>. Thus I is the midpoint of BH, and the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of triangle FKL has FL as a diameter. By <a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a> the angle FKL is right; since AK is vertical, KL is horizontal. The same argument on the right gives LM horizontal, so K, L and M share one height.</p>
+      <p>The logic test checks the construction against a second transcription of the applet's bytecode at every slider value and 21 positions of B, plus 500 random cases. In nearly all of them the three heights agree to within a billionth of a unit.</p>
+
+      <h2>Where the claim breaks</h2>
+      <p>The article itself notes the catch: at the smallest sizes H no longer rests against the wall as the proof assumes. The applet's Compute has a repair step — when H would overlap C, it lifts H to sit directly above C. Then the top row tilts. At slider 0 with B pushed against A, the gaps are <code>|y(K) − y(L)| = 6.64</code> and <code>|y(M) − y(L)| = 11.29</code>: not one of the three pairs is level. Push B against C instead and LM is exactly level while KL is off by <code>23.84</code>.</p>
+      <p>So the old "always perfectly horizontal" claim is false, and the article's gentler claim that at least one of KL or LM is horizontal is false too at the extreme. What the applet does guarantee is weaker: it highlights the nearer pair when the gaps differ by more than one unit (green K–L or L–M line), and the proof hint shows the helper circle for that pair. The repair only moves H, never F, so at the smallest sizes the picture is not even mirror-symmetric.</p>
+
+      <h2>The middle bottle stays centred</h2>
+      <p>One thing does survive every change: the centre of G always has <code>x = 200</code>, the axis of the rack, even while the rows are sloping. This is the small case of A. Brown's circle-stacking theorem: in a pyramid with any number of bottles at the bottom, the top bottle projects to the midpoint of the base. Drag B far left and far right and watch G stay put; the <a class="wiki-term" data-wiki="Symmetry" href="https://en.wikipedia.org/wiki/Symmetry" target="_blank" rel="noopener">symmetry</a> of the middle is not the symmetry of the whole stack.</p>
+
+      <p class="tip">Try slider 0, push B all the way left, then all the way right: the highlighted pair switches from K–L to L–M, while G never moves.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BallsInJar.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="balls-in-jar-core.js"></script>
+<script src="balls-in-jar.js"></script>
+</body>
+</html>
