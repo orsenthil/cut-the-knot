@@ -1898,6 +1898,40 @@ const at = (slug, state) => describePosition(slug, state, 1);
 }
 }
 
+// Ten more ports, on positions saved by their own pages, then on positions built here.
+check("ratchet: the plain staircase alone, at the start", read.ratchet?.mode === "regular" && read.ratchet.frame === 0 && read.ratchet.ballRoseSteps === 0);
+check("more-less-equal: 1 + 2 > 2", read["more-less-equal"]?.equation === "1 + 2 > 2" && read["more-less-equal"].relation === ">" && read["more-less-equal"].true === false);
+check("sam-loyd-son: 8 x 8, figure 63, one piece in", read["sam-loyd-son"]?.squareCells === 64 && read["sam-loyd-son"].figureCells === 63 && read["sam-loyd-son"].piecesInFigure.length === 1 && read["sam-loyd-son"].allPlaced === false);
+check("scoring: one counter, its value is its square mod 4, nim-sum matches", read.scoring?.counters.length === 1 && read.scoring.nimSum === read.scoring.counters[0] % 4 && read.scoring.over === false);
+check("geometric-series-square: thirds after 3 cuts, 13/27 shaded", read["geometric-series-square"]?.shaded === "13/27" && read["geometric-series-square"].limit === "1/2");
+check("shuttle-practice: 5 poles, one shuttle (1,2) drawn", read["shuttle-practice"]?.poles === 5 && read["shuttle-practice"].shuttlesSoFar === "(1,2)" && read["shuttle-practice"].topsReachNow.join() === "2,1,3,4,5");
+check("sierpinski-chaos-game: some dots drawn", read["sierpinski-chaos-game"]?.dotsDrawn > 0);
+check("sierpinski-dihedral: 4 steps of Add mod 2 on 32 x 32", read["sierpinski-dihedral"]?.steps === 4 && read["sierpinski-dihedral"].rule === "Add, 2 prongs" && read["sierpinski-dihedral"].nonZeroCells > 0);
+check("simple-somos: m = 3 from 1, 1 gives 1, 1, 4, 19 with k = 5", read["simple-somos"]?.terms.slice(0, 4).join() === "1,1,4,19" && read["simple-somos"].k === "5" && read["simple-somos"].alarm === null);
+check("sine-cosine-derivatives: 30 degrees, velocity (-1/2, cos 30)", read["sine-cosine-derivatives"]?.degrees === 30 && read["sine-cosine-derivatives"].velocity.x === -0.5 && read["sine-cosine-derivatives"].sinIs === "growing");
+{
+  const sc = at("scoring", { maxStep: 3, length: 8, towers: [5, 7], turn: "you", over: false, winner: null });
+  check("scoring: counters on 5 and 7, values 1 and 3, nim-sum 2, winning move to a nim-sum of 0", sc.nimSum === 2 && sc.winningMove && (sc.winningMove.to % 4 ^ ((sc.winningMove.from === 5 ? 7 : 5) % 4)) === 0);
+  const sc0 = at("scoring", { maxStep: 3, length: 8, towers: [4], turn: "you", over: false, winner: null });
+  check("scoring: one counter on 4 is lost for the player to move", sc0.nimSum === 0 && !sc0.winningMove);
+  const sh = at("shuttle-practice", { n: 3, goal: [2, 1, 3], bars: [{ a: 0, b: 1, h: 10 }], verdict: "yes" });
+  check("shuttle-practice: one shuttle solves 2, 1, 3", sh.solved === true && sh.fewestShuttles === 1 && sh.verified === "Great! You did it!");
+  const ml = at("more-less-equal", { a: 6, b: 0, c: 1, op: "/" });
+  check("more-less-equal: 6 / 0 has no value", ml.relation === "no value (division by 0)");
+  const sl = at("sam-loyd-son", { n: 6, cheat: true, placed: [true, true, true, true], explored: true });
+  check("sam-loyd-son: 13 x 13 leaves a one-cell gap", sl.figureCells === 170 && sl.difference === 1 && sl.allPlaced === true);
+  const so = at("simple-somos", { m: 2, a: 2, b: 1 });
+  check("simple-somos: 2, 1 raises the alarm 3/2", so.alarm === "Alarm: 3/2" && so.kIsWhole === false);
+  const sd = at("sierpinski-dihedral", { n: 8, m: 2, add: false, prongs: 2, steps: 3 });
+  check("sierpinski-dihedral: Replace is Pascal's triangle", sd.formula.startsWith("Pascal"));
+  const gs = at("geometric-series-square", { kind: 2, n: 4 });
+  check("geometric-series-square: halves after 3 cuts, 7/8, 1/8 short", gs.shaded === "7/8" && gs.shortOfLimitBy === "1/8");
+  const sn = at("sine-cosine-derivatives", { a: 180, speed: "fast" });
+  check("sine-cosine-derivatives: at 180 degrees sin is falling and cos is turning", sn.sinIs === "falling" && sn.cosIs === "turning");
+  const rt = at("ratchet", { mode: "both", frame: 48, climbedSteps: 0.4 });
+  check("ratchet: both staircases read back", rt.mode === "both" && rt.ballRoseSteps === 0.4);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

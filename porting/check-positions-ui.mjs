@@ -761,6 +761,41 @@ const GAMES = {
   "fourth-degree": (page) => page.locator("#c3").evaluate((e) => { e.value = "2"; e.dispatchEvent(new Event("input", { bubbles: true })); }),
   "fraction-comparison-exercise": (page) => page.click("#sign1"),
   "futurama": (page) => page.locator("#ring g.body").first().click({ force: true }),
+  ratchet: (page) => page.check('input[name="show"][value="regular"]'),
+  "more-less-equal": (page) => page.click('[data-nudge="b:1"]'),
+  "sam-loyd-son": (page) => page.click('#pieceBtns button[data-id="0"]'),
+  scoring: async (page) => {
+    const at = await page.evaluate(() => [...document.querySelectorAll("#board .col")].findIndex((c) => c.querySelector(".chip") && c.dataset.square !== "0"));
+    await page.click(`#board [data-square="${at}"]`);
+    await page.click(`#board [data-square="${at - 1}"]`);
+    await page.waitForFunction(() => /Your move|won/.test(document.getElementById("status").textContent));
+  },
+  "geometric-series-square": async (page) => {
+    await page.check('input[name="kind"][value="3"]');
+    for (let i = 0; i < 3; i++) await page.click("#moreBtn");
+  },
+  "shuttle-practice": async (page) => {
+    const box = await page.locator("#board").boundingBox();
+    const y = box.y + (180 / 600) * box.height;
+    await page.mouse.move(box.x + (1 / 6) * box.width, y);
+    await page.mouse.down();
+    await page.mouse.move(box.x + (2 / 6) * box.width, y, { steps: 5 });
+    await page.mouse.up();
+  },
+  "sierpinski-chaos-game": async (page) => {
+    await page.fill("#delayInput", "0");
+    await page.dispatchEvent("#delayInput", "change");
+    await page.click("#startBtn");
+    await page.waitForTimeout(400);
+    await page.click("#stopBtn");
+  },
+  "sierpinski-dihedral": (page) => page.click('#stepBtns [data-steps="4"]'),
+  "simple-somos": (page) => page.click('[data-bump="m:1"]'),
+  "sine-cosine-derivatives": async (page) => {
+    await page.focus("#board .handle");
+    await page.keyboard.press("PageUp");
+    await page.keyboard.press("PageUp");
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

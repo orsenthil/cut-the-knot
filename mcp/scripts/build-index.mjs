@@ -425,6 +425,16 @@ const CORE_GLOBALS = {
   "product-of-fractions/product-of-fractions-core.js": ["ProductOfFractionsCore"],
   "pyth-triple-calculator/pyth-triple-calculator-core.js": ["PythTripleCalculatorCore"],
   "quadratic-polynomial/quadratic-polynomial-core.js": ["QuadraticPolynomialCore"],
+  "ratchet/ratchet-core.js": ["RatchetCore"],
+  "more-less-equal/more-less-equal-core.js": ["MoreLessEqualCore"],
+  "sam-loyd-son/sam-loyd-son-core.js": ["SamLoydSonCore"],
+  "scoring/scoring-core.js": ["ScoringCore"],
+  "geometric-series-square/geometric-series-square-core.js": ["GeometricSeriesSquareCore"],
+  "shuttle-practice/shuttle-practice-core.js": ["ShuttlePracticeCore"],
+  "sierpinski-chaos-game/sierpinski-chaos-game-core.js": ["SierpinskiChaosGameCore"],
+  "sierpinski-dihedral/sierpinski-dihedral-core.js": ["SierpinskiDihedralCore"],
+  "simple-somos/simple-somos-core.js": ["SimpleSomosCore"],
+  "sine-cosine-derivatives/sine-cosine-derivatives-core.js": ["SineCosineDerivativesCore"],
 };
 
 const games = [];
