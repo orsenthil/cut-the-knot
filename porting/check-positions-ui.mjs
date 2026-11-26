@@ -808,6 +808,10 @@ const GAMES = {
     await page.click('#board .bead[data-wire="6"][data-bead="1"]');
     await page.click('#board .bead[data-wire="5"][data-bead="heaven"]');
   },
+  "suan-pan": async (page) => {
+    await page.click('#board .bead[data-wire="6"][data-bead="2"]');
+    await page.click('#board .bead[data-wire="5"][data-bead="h0"]');
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

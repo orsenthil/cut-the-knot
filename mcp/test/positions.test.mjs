@@ -1947,6 +1947,11 @@ check("soroban: 53 on a decimal soroban", read.soroban?.inRadix === "53" && read
   const so = at("soroban", { radix: 16, digits: [0, 0, 0, 0, 15, 0, 10] });
   check("soroban: base 16 F0A is 3850, F is the heaven bead and 7 earth beads", so.decimal === 3850 && so.wires[4].earthBeadsUp === 7 && so.wires[4].heavenBeadDown === true);
 }
+check("suan-pan: 53 on the frame", read["suan-pan"]?.numberOnFrame === 53 && read["suan-pan"].tidyingPending === false);
+{
+  const sp = at("suan-pan", { radix: 10, values: [0, 0, 0, 0, 0, 9, 12] });
+  check("suan-pan: 9 and 12 tidy to 1, 0, 2: the frame holds 102", sp.numberOnFrame === 102 && sp.tidyingPending === true && sp.afterTidying.slice(4).join() === "1,0,2");
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

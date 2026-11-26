@@ -438,6 +438,7 @@ const CORE_GLOBALS = {
   "sine-of-sum/sine-of-sum-core.js": ["SineOfSumCore"],
   "social-choice/social-choice-core.js": ["SocialChoiceCore"],
   "soroban/soroban-core.js": ["SorobanCore"],
+  "suan-pan/suan-pan-core.js": ["SuanPanCore"],
 };
 
 const games = [];

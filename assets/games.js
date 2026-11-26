@@ -2292,5 +2292,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "suan-pan",
+      title: "Suan Pan in Various Number Systems",
+      blurb: "Five beads below the bar and two above: more than ten digits need. Watch the frame trade five ones for a five and two fives for a carry.",
+      tags: ["place-value", "counting", "arithmetic"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

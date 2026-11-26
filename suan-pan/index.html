@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Suan Pan in Various Number Systems &mdash; coolmaths</title>
+<meta name="description" content="Five beads below the bar and two above: more than ten digits need. Watch the frame trade five ones for a five and two fives for a carry.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/suan-pan/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Suan Pan in Various Number Systems">
+<meta property="og:description" content="Five beads below the bar and two above: more than ten digits need. Watch the frame trade five ones for a five and two fives for a carry.">
+<meta property="og:url" content="https://coolmaths.ai/suan-pan/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 44rem; padding: 0.8rem 0.4rem; }
+  .scroll { overflow-x: auto; }
+  #board { display: block; width: 100%; min-width: 15rem; height: auto; margin: 0 auto; }
+  #board .frame { fill: var(--surface-2); stroke: var(--ink); stroke-width: 3; }
+  #board .busy { fill: var(--highlight); }
+  #board .wire { stroke: var(--muted); stroke-width: 3; }
+  #board .bar { fill: var(--ink); }
+  #board .bead { fill: #c58b4c; stroke: #6b4423; stroke-width: 1.5; cursor: pointer; opacity: 0.6; }
+  #board .bead.on { opacity: 1; fill: #a86a2a; }
+  #board .bead:focus-visible { outline: none; stroke: var(--accent); stroke-width: 4; }
+  #board .digit { fill: var(--text); font: 700 20px var(--font); text-anchor: middle; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls select { min-height: 2.75rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="suan-pan" data-kind="demo">
+<main id="main">
+  <h1>Suan Pan in Various Number Systems</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#place-value">Place Value</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A Chinese counting frame. Beads touching the middle bar count: ones below, fives above. Five ones turn into a five, and two fives into one on the next wire.<br>
+    <strong>How to play:</strong> Click a bead to slide it. Watch the frame tidy up after you. Choose another radix to count in other number systems.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="scroll">
+      <svg id="board" viewBox="0 0 410 360" role="group" aria-label="The suan pan. Arrow keys move between beads; Enter moves a bead."></svg>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label>Radix <select id="radixSel"></select></label>
+    <label># wires <select id="wiresSel"></select></label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The <a class="wiki-term" data-wiki="Suanpan" href="https://en.wikipedia.org/wiki/Suanpan" target="_blank" rel="noopener">suan pan</a> is the Chinese <a class="wiki-term" data-wiki="Abacus" href="https://en.wikipedia.org/wiki/Abacus" target="_blank" rel="noopener">abacus</a>. A bar splits it into heaven and earth. Every wire has five earth beads worth one each and two heaven beads worth five each. A bead counts when it touches the bar.</p>
+
+      <h2>More beads than digits need</h2>
+      <p>Four ones and one five already make every digit from 0 to 9, as on the Japanese <a href="../soroban/">soroban</a>. The suan pan's extra earth bead and extra heaven bead let a wire hold up to <code>5 + 5 + 5 = 15</code>. The same layout works in any even base <code>r</code>, with <code>r/2</code> earth beads and heaven beads worth <code>r/2</code>, so a wire can hold up to <code>3r/2</code>. Some values can then be shown in two ways (five ones, or one five), and the logic test checked that every value from 0 to <code>3r/2</code> occurs, for every base from 2 to 20.</p>
+
+      <h2>Trading and carrying</h2>
+      <p>The applet tidies up after you, as an abacus user would. Five ones become one five. Two fives become one bead on the next wire to the left, the <a class="wiki-term" data-wiki="Carry_(arithmetic)" href="https://en.wikipedia.org/wiki/Carry_(arithmetic)" target="_blank" rel="noopener">carry</a>, because that wire is worth <code>r</code> times as much. Trades never change the number on the frame, except that a carry from the leftmost wire has nowhere to go. The test tried 16,000 clicks in every base and found the number kept every time.</p>
+
+      <h2>Three repairs</h2>
+      <p>The original applet could lose value while tidying. A wire that had once traded five ones would later put a five back instead of carrying. A carry also cleared the wire's ones. And a carry on any wire but the rightmost busy one could be dropped. This page makes the same trades in the same order, without those slips.</p>
+
+      <p class="tip">Make 9 on the units wire, then push one more earth bead up and watch the 10 ripple along.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/SuanPan.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="suan-pan-core.js"></script>
+<script src="suan-pan.js"></script>
+</body>
+</html>
