@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Two Numbers &mdash; coolmaths</title>
+<meta name="description" content="I show you two numbers, one even and one odd. You multiply one by an odd number and the other by an even number, then tell me the sum. Can I really guess which number you picked?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/two-numbers/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Two Numbers">
+<meta property="og:description" content="I show you two numbers, one even and one odd. You multiply one by an odd number and the other by an even number, then tell me the sum. Can I really guess which number you picked?">
+<meta property="og:url" content="https://coolmaths.ai/two-numbers/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 1rem; text-align: center; }
+  #numbers { display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center; margin: 0.6rem 0 1.2rem; }
+  #numbers button.number {
+    min-width: 4.5rem; min-height: 4rem; font-size: 1.8rem; font-weight: 750;
+    font-variant-numeric: tabular-nums; transition: none;
+  }
+  #numbers button.number.picked { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+  .instruction { margin: 0.3rem 0; font-size: 1rem; }
+  .entry { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; justify-content: center; margin-top: 0.9rem; }
+  .entry label { font-size: 0.95rem; }
+  .entry input { width: 7rem; min-height: 2.75rem; font-size: 1rem; text-align: center; }
+  .entry button { min-height: 2.75rem; }
+  #answer { min-height: 1.5em; margin: 0.9rem 0 0; font-size: 1.15rem; font-weight: 700; color: var(--bad); }
+  .hint { margin: 0.5rem 0 0; font-size: 0.9rem; color: var(--muted); }
+  .facts { border-collapse: collapse; margin: 0.6rem auto; font-size: 0.9rem; }
+  .facts th, .facts td { border: 1px solid var(--border); padding: 0.35rem 0.6rem; text-align: left; }
+  .facts th { background: var(--surface-2); }
+</style>
+</head>
+<body data-game="two-numbers" data-kind="demo">
+<main id="main">
+  <h1>Two Numbers</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#mental-math">Mental Math</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> I show you two numbers, one even and one odd. Pick one in your head, do the multiplications I ask, and see if I can name your number.<br>
+    <strong>How to play:</strong> Multiply the number you pick by the kind of number shown and the other by the other kind. Add the two products, type the sum and press Guess or Enter; press Try again for new numbers.
+  </div>
+
+  <div id="stage" class="stage">
+    <p class="prompt">Choose one of the numbers:</p>
+    <div id="numbers" role="group" aria-label="The two numbers; arrow keys move between them">
+      <button id="numA" class="number" type="button" aria-label="Mark the first number as your choice"></button>
+      <button id="numB" class="number" type="button" aria-label="Mark the second number as your choice"></button>
+    </div>
+    <p class="instruction">Multiply the number you chose by any <span id="chosenWord">odd</span> number.</p>
+    <p class="instruction">Multiply the other number by any <span id="otherWord">even</span> number.</p>
+    <p class="instruction">Add the two products and type in the sum below.</p>
+    <form id="guessForm" class="entry">
+      <label for="sumIn">Your sum</label>
+      <input id="sumIn" type="text" inputmode="numeric" aria-label="The sum of your two products" autocomplete="off">
+      <button id="guessBtn" type="submit" class="primary" aria-label="Ask the computer to name your number" disabled>Guess</button>
+    </form>
+    <p id="answer" aria-live="polite"></p>
+    <p id="hint" class="hint"></p>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" aria-label="Try again with two new numbers">Try again</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>You pick one of two numbers in secret, yet the computer can name it from a single sum. It is not mind reading: even and odd numbers behave differently when you multiply them.</p>
+
+      <h2>An even product and a maybe-odd one</h2>
+      <p>An even number is a multiple of 2, so <code>even &times; k = 2 &times; (n &times; k)</code> is always even. An odd number stays odd only when its multiplier is odd; multiply it by an even number and it becomes even too. This is an <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>: multiplying by an even number always destroys <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a>, while multiplying by an odd number keeps it. So of the two products, one is certainly even and the other is odd exactly when the odd number got the odd multiplier.</p>
+
+      <h2>Reading the sum</h2>
+      <p>Adding an even number does not change the parity of the other product: <code>even + odd = odd</code> and <code>even + odd&times;odd = odd</code>. The sum is odd precisely when the odd number received the odd multiplier. The applet's instructions tell you whether that multiplier went to your number or to the other one:</p>
+      <table class="facts">
+        <thead><tr><th>Instruction</th><th>Odd sum</th><th>Even sum</th></tr></thead>
+        <tbody>
+          <tr><td>Your number &times; odd</td><td>you picked the odd number</td><td>you picked the even number</td></tr>
+          <tr><td>Your number &times; even</td><td>you picked the even number</td><td>you picked the odd number</td></tr>
+        </tbody>
+      </table>
+      <p>The logic test checked all 5,000 honest plays: five even numbers (2 to 10), five odd numbers (1 to 9), both orders, both instructions, and every small odd or even multiplier. The announced number was the chosen one every time. The page's claim holds; the applet does not name the other number.</p>
+
+      <h2>What the applet actually reads</h2>
+      <p>Its <code>Guess(sum)</code> compares <code>sum % 2</code> (Java's <a class="wiki-term" data-wiki="Modulo" href="https://en.wikipedia.org/wiki/Modulo" target="_blank" rel="noopener">remainder</a>) with whether your number was meant to get the odd multiplier. If they match it says the odd number; if not, the even number. That is the table above, written in code. But it never checks how big your sum is: type a sum with the opposite parity and it will confidently name the other number. It reads what you typed, not your working. Java's remainder also keeps a minus sign, so a negative odd sum such as <code>-3</code> falls down the "even" branch, unlike <code>+3</code>; the logic test checks that quirk too.</p>
+
+      <p class="tip">Pick a number, work out the real sum, and then type a sum with the other parity. Which number does the computer name? Now try a negative sum and see whether it agrees.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/arithmetic/rapid/TwoNumbers.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="two-numbers-core.js"></script>
+<script src="two-numbers.js"></script>
+</body>
+</html>
