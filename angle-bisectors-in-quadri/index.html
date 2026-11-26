@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Angle Bisectors In Quadri &mdash; coolmaths</title>
+<meta name="description" content="Drag the four corners of a quadrilateral. Do the lines that halve its angles ever stop putting three points in a row?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/angle-bisectors-in-quadri/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Angle Bisectors In Quadri">
+<meta property="og:description" content="Drag the four corners of a quadrilateral. Do the lines that halve its angles ever stop putting three points in a row?">
+<meta property="og:url" content="https://coolmaths.ai/angle-bisectors-in-quadri/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .diag { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .bisector { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 7 5; }
+  #board .circum { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .angle-mark { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .construction-point { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .extra-point { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="angle-bisectors-in-quadri" data-kind="demo">
+<main id="main">
+  <h1>Angle Bisectors In Quadri</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: four corners make a shape, and the lines that split angles in half keep three points in a straight line.<br>
+    <strong>How to play:</strong> Drag the corners A, B, C and D, or focus a corner and use the arrow keys. Tick the boxes to show angle marks, names or the extra points.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A quadrilateral with its four angle bisectors, the points X and Y where they meet, and the points U, G and V on one line"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="angles" type="checkbox"> Angle marks</label>
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="extra" type="checkbox"> Extra points</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move a corner and the picture changes completely, yet three points stay on one straight line. When the four corners sit on a circle, two more points land on that circle. The old article explains these two facts; its live page now shows still pictures where the Java applet used to be, so the same article is cited below.</p>
+
+      <h2>Four angles, four bisectors</h2>
+      <p>X is where the lines halving angles CAD and CBD meet; Y is where the lines halving ACB and ADB meet. These are <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisectors</a> of angles made by a side and a diagonal, not of the four corners of the shape. U is AX ∩ DY, V is BX ∩ CY and G is where the diagonals AC and BD cross.</p>
+
+      <h2>Why U, G and V line up</h2>
+      <p>G lies on both diagonals, so the angle at G in triangle ADG is one of a pair of <a class="wiki-term" data-wiki="Vertical_angles" href="https://en.wikipedia.org/wiki/Vertical_angles" target="_blank" rel="noopener">vertical angles</a>. U is the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> of ADG and V is the incenter of BCG: each is where two of the triangle's angle bisectors meet. So GU and GV halve vertical angles, which makes them one straight line through G. The logic test finds <code>U, G, V</code> collinear to within a tiny drawing error on every convex quadrilateral it tries.</p>
+
+      <h2>When the corners lie on a circle</h2>
+      <p>If ABCD is a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>, the bisector of angle CAD meets its <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> again at the midpoint of the arc CD. The bisector of angle CBD picks out that same midpoint, so their meeting point X is on the circle. The same argument with arc AB puts Y on the circle too. The page's claim is confirmed: X and Y lie on the circumcircle whenever ABCD is cyclic. The drawing shows that circle when D is within one pixel of the circle through A, B and C, just as the applet did.</p>
+
+      <h2>Even without the circle</h2>
+      <p>The old page adds a stronger version: take the circle through B, C and D. X lies on it exactly when A does, and then Y lies on it as well. In other words, the two facts above are really one fact about circles. The logic test checks this on hundreds of random quadrilaterals as well as on exactly cyclic ones; it holds in every case tried.</p>
+
+      <p class="tip">Try ticking "Extra points" and dragging a corner until the circle appears: U, G and V stay in a row the whole time.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AngleBisectorsInQuadri.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="angle-bisectors-in-quadri-core.js"></script>
+<script src="angle-bisectors-in-quadri.js"></script>
+</body>
+</html>
