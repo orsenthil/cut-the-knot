@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Very Tiles &mdash; coolmaths</title>
+<meta name="description" content="Twelve sums are missing one number, and the answer tiles sit in a row above them. Can you match them all so the two hidden patterns agree?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/very-tiles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Very Tiles">
+<meta property="og:description" content="Twelve sums are missing one number, and the answer tiles sit in a row above them. Can you match them all so the two hidden patterns agree?">
+<meta property="og:url" content="https://coolmaths.ai/very-tiles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.9rem 0.6rem; }
+  .board-title {
+    margin: 0.55rem 0 0.3rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  .board-title:first-child { margin-top: 0; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.3rem;
+  }
+  .cell {
+    min-width: 0;
+    min-height: 3rem;
+    padding: 0.2rem 0.1rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.55rem;
+    background: var(--surface);
+    color: var(--ink);
+    font: 600 clamp(0.72rem, 2.6vw, 1rem) / 1.15 var(--font);
+    overflow-wrap: anywhere;
+    text-align: center;
+  }
+  .cell:hover { background: var(--accent-soft); }
+  .cell.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--focus); }
+  .cell.used { background: var(--surface-2); color: var(--muted); }
+  .cell .glyph { display: none; position: relative; height: 2.6rem; }
+  .grid.pattern .cell .label { display: none; }
+  .grid.pattern .cell .glyph { display: block; }
+  .glyph i {
+    position: absolute;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: var(--accent);
+    clip-path: polygon(50% 0%, 100% 88%, 0% 88%);
+  }
+  .glyph i + i { transform: rotate(180deg); }
+  .glyph[data-color="green"] i { background: var(--good); }
+  .glyph[data-color="red"] i { background: var(--bad); }
+  .glyph[data-corner="tl"] i { top: 0; left: 0; }
+  .glyph[data-corner="tr"] i { top: 0; right: 0; }
+  .glyph[data-corner="bl"] i { bottom: 0; left: 0; }
+  .glyph[data-corner="br"] i { bottom: 0; right: 0; }
+  .controls { flex-wrap: wrap; }
+  .controls button { min-height: 2.75rem; }
+  .controls button:disabled { opacity: 0.55; }
+</style>
+</head>
+<body data-game="very-tiles" data-kind="demo">
+<main id="main">
+  <h1>Very Tiles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#permutations">Permutations</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Twelve sums each have one number rubbed out. Match every sum with the answer tile that goes in the gap.<br>
+    <strong>How to play:</strong> Click an answer tile, then the sum it belongs to. To take an answer back, click the sum and then the empty tile. Press Pattern to check your work.
+  </div>
+
+  <div id="stage" class="stage">
+    <p class="board-title">Answer tiles</p>
+    <div id="tilesGrid" class="grid" role="group" aria-label="Answer tiles, in two rows of six"></div>
+    <p class="board-title">Problems &mdash; one number is missing</p>
+    <div id="problemsGrid" class="grid" role="group" aria-label="Problems, in two rows of six"></div>
+  </div>
+
+  <div class="controls">
+    <button id="tilesBtn" type="button" aria-label="Show the numbers on the tiles">Tiles</button>
+    <button id="patternBtn" type="button" aria-label="Show the two secret patterns">Pattern</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Start a new puzzle with a new shuffle">New Game</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Every tile is the answer to exactly one sum. The puzzle checks itself: once all the gaps are filled, a hidden picture on the tiles and a hidden picture on the sums either match or they do not.</p>
+
+      <h2>One number is missing</h2>
+      <p>Each problem is an <a class="wiki-term" data-wiki="Addition" href="https://en.wikipedia.org/wiki/Addition" target="_blank" rel="noopener">addition</a> with one number rubbed out. It appears in one of three shapes: <code>a + b = ?</code>, <code>b + ? = a</code>, or <code>? + b = a</code>. The missing number is always a whole number from 1 to 12, and no sum has two different answers. So once you know the two printed numbers, only one tile can be right.</p>
+
+      <h2>The same tiles, a new order</h2>
+      <p>The answer tiles stay neatly in order, 1 to 12. The sums are placed in a different order: the applet keeps 21 fixed <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">permutations</a> of the twelve places and picks a new one each game, never the one it just used. This is why the sums look scrambled while the answers do not. The logic test compared all 21 shuffles with a second, literal copy of the applet's own shuffle table.</p>
+
+      <h2>A pattern that checks itself</h2>
+      <p>In Pattern view each number becomes a six-pointed star. Its colour comes from the number divided by 6 (remainder 1 or 2 is blue, 3 or 4 is green, the rest are red) and its corner comes from the number itself: 1, 3, 5 sit top right; 2, 4, 6 top left; 7, 9, 11 bottom right; 8, 10, 12 bottom left. These twelve stars are all different. The upper row draws the number hidden on each tile; the lower row draws the number in the gap. The pictures agree exactly when each gap holds its own tile's number.</p>
+      <p>The puzzle's page advises solving the hardest sums first. That works because every sum still has its answer tile available: if the tile you need is gone, an earlier match was wrong. A second transcription of the applet's star-drawing method and of its expression maker agreed with this port on all 21 shuffles and twelve seeds; every wrong match, including every swap of two answers, made the patterns differ. The two pictures would also match before any answers are placed, but the applet only lets you press Pattern once all twelve gaps are filled.</p>
+
+      <p class="tip">Try the shortest sums first. If a needed tile has already been used, look back at an earlier match rather than guessing.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/VeryTiles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="very-tiles-core.js"></script>
+<script src="very-tiles.js"></script>
+</body>
+</html>
