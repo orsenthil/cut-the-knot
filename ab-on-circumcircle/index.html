@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ABOn Circumcircle &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle drawn inside a circle. Where do its angle bisectors meet the circle again, and why is one of them perpendicular to the line joining the other two points?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/ab-on-circumcircle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="ABOn Circumcircle">
+<meta property="og:description" content="Drag the corners of a triangle drawn inside a circle. Where do its angle bisectors meet the circle again, and why is one of them perpendicular to the line joining the other two points?">
+<meta property="og:url" content="https://coolmaths.ai/ab-on-circumcircle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .bisector { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .chord { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .arc-point { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .cross-point { fill: var(--ink); stroke: var(--stage); stroke-width: 1.5; }
+  #board .incenter { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .corner { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .angle-b { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .angle-half { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .angle-fim { fill: none; stroke: var(--bad); stroke-width: 2.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="ab-on-circumcircle" data-kind="demo">
+<main id="main">
+  <h1>ABOn Circumcircle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: a triangle sits on a circle, and the lines that split its corners in half meet the circle again.<br>
+    <strong>How to play:</strong> Drag the corners A, B and C, or focus one and use the arrow keys. Tick the boxes to show the names, the right angle or the hint.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Triangle on its circumcircle, with the three angle bisectors meeting the circle at D, E and F"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox" checked> Names</label>
+    <label><input id="statement" type="checkbox"> Right angle</label>
+    <label><input id="hint" type="checkbox"> Hint angles</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag a corner and the whole picture changes, yet three things stay true:
+        each line that halves a corner cuts an arc exactly in half, all three
+        lines pass through one point, and one of them meets the line joining
+        the other two points at a right angle.</p>
+
+      <h2>Halving an arc</h2>
+      <p>The line that splits the corner at A in half meets the
+        <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>
+        again at D. Because the two small angles at A are equal, the two arcs
+        they cut off are equal: D is the midpoint of the arc BC. The same goes
+        for E and F. Equal arcs give equal chords, so <code>BD = CD</code>,
+        <code>CE = AE</code> and <code>AF = BF</code>. This is the
+        <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angle</a>
+        idea: angles that stand on equal arcs are equal.</p>
+
+      <h2>Where the three lines meet</h2>
+      <p>Intersection of the three <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisectors</a>
+        is the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> I.
+        It lies on all three lines AD, BE and CF, and it is the same distance
+        from each side of the triangle. Here I is found as the
+        side-length-weighted average of the corners, and the logic test checks
+        that it really lies on all three bisectors.</p>
+
+      <h2>Why AD is perpendicular to EF</h2>
+      <p>Let M be where AD crosses EF. In the triangle FIM, the angle at F is
+        <code>∠IFM = ∠CFE = ∠CBE = B/2</code> — equal inscribed angles again.
+        The <a class="wiki-term" data-wiki="Exterior_angle_theorem" href="https://en.wikipedia.org/wiki/Exterior_angle_theorem" target="_blank" rel="noopener">exterior angle</a>
+        at I is <code>∠FIM = ∠ACI + ∠CAI = C/2 + A/2</code>. So two angles of
+        triangle FIM add to <code>A/2 + B/2 + C/2 = 90&deg;</code>, and the
+        last angle, at M, must be a right angle. The old page's claim is true:
+        AD ⟂ EF, and its two siblings BE ⟂ FD and CF ⟂ DE hold too.</p>
+
+      <h2>What the checks found</h2>
+      <p>The logic test tries seven exact triangles and hundreds of generated
+        ones, including obtuse and almost flat ones. On every one it finds the
+        equal arcs, the common incenter, the right angle at M and the angle
+        identities above, all to within a millionth. It also rebuilds the
+        whole construction a second way, straight from the old applet's
+        bytecode, and checks that both ways give the same D, E, F, I and M.</p>
+
+      <p class="tip">Try dragging B down until the triangle is nearly flat: AD and EF still meet at a right angle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ABOnCircumcircle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="ab-on-circumcircle-core.js"></script>
+<script src="ab-on-circumcircle.js"></script>
+</body>
+</html>
