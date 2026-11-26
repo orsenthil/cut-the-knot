@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Angle Bisector Ratio &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and watch where the line that splits the top corner in half lands on the far side. Will AB/AC always equal DB/DC?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/angle-bisector-ratio/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Angle Bisector Ratio">
+<meta property="og:description" content="Drag the corners of a triangle and watch where the line that splits the top corner in half lands on the far side. Will AB/AC always equal DB/DC?">
+<meta property="og:url" content="https://coolmaths.ai/angle-bisector-ratio/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .bisector { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .extra-line { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .hint-line { fill: none; stroke: var(--highlight); stroke-width: 1.5; opacity: 0.75; }
+  #board .half-arc { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .half-arc.alt { stroke: var(--good); }
+  #board .iso-arc { fill: none; stroke: var(--muted); stroke-width: 2.5; }
+  #board .iso-arc.alt { stroke: var(--accent); }
+  #board .foot-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .extra-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 18px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .foot-label { fill: var(--accent); }
+  #board .extra-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="angle-bisector-ratio" data-kind="demo">
+<main id="main">
+  <h1>Angle Bisector Ratio</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners of a triangle and see where the line that splits the top corner in half lands on the far side.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a corner and use the arrow keys. Turn on Hint or Extra construction, then press Check the ratio.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle with the bisector of angle A, its foot D on side BC, and the two side ratios shown underneath"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset triangle</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point names">Hide names</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the hint that draws equal steps along the sides">Show hint</button>
+    <button id="extraBtn" type="button" aria-pressed="false" aria-label="Toggle the extra construction with point E">Extra construction</button>
+    <button id="checkBtn" type="button" aria-label="Check that the two ratios match for this triangle">Check the ratio</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A line that cuts a corner of a triangle exactly in half always lands on the far side in a very particular spot. Drag the corners and compare the two numbers below the picture: one stays equal to the other however you stretch the triangle.</p>
+
+      <h2>The bisector and where it lands</h2>
+      <p>An <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> splits an angle into two equal parts. Here the line from A meets the far side BC at D, and the two small arcs at A show the matching halves: <code>angle BAD = angle DAC</code>. The foot D slides along BC as you drag the corners, but it never leaves that side.</p>
+
+      <h2>The ratio on the far side</h2>
+      <p>The applet's page makes one exact claim: if AD bisects angle A, then the two side lengths beside A compare in the same way as the two pieces of BC:</p>
+      <blockquote><code>AB / AC = DB / DC</code></blockquote>
+      <p>This is the <a class="wiki-term" data-wiki="Angle_bisector_theorem" href="https://en.wikipedia.org/wiki/Angle_bisector_theorem" target="_blank" rel="noopener">Angle Bisector Theorem</a>. The logic test checks it on hundreds of triangles — acute, right, very obtuse and in both drawing orders — and the two numbers agree every time. When the triangle is isosceles at A, both ratios are 1 and D is the midpoint of BC.</p>
+
+      <h2>Why it works: an isosceles triangle</h2>
+      <p>Draw the line through C parallel to AD and let it meet the line AB at E. Turning on <em>Extra construction</em> shows it. Because the line is parallel, the angle at C equals the half angle <code>CAD</code>, which equals <code>BAD</code>, which also equals the angle at E; so triangle AEC is <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles</a> and <code>AE = AC</code>. The two <a class="wiki-term" data-wiki="Similar_triangle" href="https://en.wikipedia.org/wiki/Similar_triangle" target="_blank" rel="noopener">similar triangles</a> BEC and BAD then give <code>BE / BA = BC / BD</code>, which is the same statement as <code>DB / DC = AB / AC</code>.</p>
+
+      <h2>The outside bisector and the converse</h2>
+      <p>The outside bisector of angle A obeys the same rule, but it cuts the line BC outside the segment: the lengths from that point to B and to C still compare as AB to AC. The converse is just as neat — on a segment there is only one spot that divides it in a given ratio, so a point that splits BC as AB splits AC must be the foot of the bisector. Multiplying the three such ratios at A, B and C gives 1, which is <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a>: the three bisectors meet at one point.</p>
+
+      <p class="tip">Try making AB much longer than AC, then turn on Hint to see the equal steps that carry the ratio from one side to the other.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AngleBisectorRatio.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="angle-bisector-ratio-core.js"></script>
+<script src="angle-bisector-ratio.js"></script>
+</body>
+</html>
