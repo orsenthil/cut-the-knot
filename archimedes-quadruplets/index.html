@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Archimedes Quadruplets &mdash; coolmaths</title>
+<meta name="description" content="In an arbelos — a big semicircle holding two smaller ones — Power built four circles that touch the big arc and a slanted line. Do they really have the same radius and area as Archimedes' twins, wherever you drag the join?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/archimedes-quadruplets/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Archimedes Quadruplets">
+<meta property="og:description" content="In an arbelos — a big semicircle holding two smaller ones — Power built four circles that touch the big arc and a slanted line. Do they really have the same radius and area as Archimedes' twins, wherever you drag the join?">
+<meta property="og:url" content="https://coolmaths.ai/archimedes-quadruplets/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .arbelos-big { fill: var(--accent); fill-opacity: 0.12; }
+  #board .arbelos-cut { fill: var(--stage); }
+  #board .outline { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .diameter { stroke: var(--muted); stroke-width: 2; }
+  #board .guide { stroke: var(--muted); stroke-width: 1.8; stroke-dasharray: 5 4; }
+  #board .quad-circle { fill: var(--good); fill-opacity: 0.16; stroke: var(--good); stroke-width: 2.2; }
+  #board .twin-circle { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 3; }
+  #board .contact-dot { fill: var(--good); }
+  #board .apex-dot { fill: var(--ink); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  #board .point-label { fill: var(--text); font-size: 0.75rem; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; min-width: 0; white-space: normal; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="archimedes-quadruplets" data-kind="demo">
+<main id="main">
+  <h1>Archimedes Quadruplets</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> A big half-circle holding two smaller ones, with four little circles tucked against its arc.<br>
+    <strong>How to play:</strong> Drag the three dots along the bottom line, or focus a dot and use the arrow keys. Press a button to move the middle dot or start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="A large semicircle on AB with two smaller semicircles on AC and CB, the four equal Power circles touching the large arc, and draggable points A, C and B."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the three points back where they started">Reset</button>
+    <button id="midBtn" type="button" aria-label="Move C to the middle of AB">C in the middle</button>
+    <label class="option" for="twinsChk"><input id="twinsChk" type="checkbox" checked aria-label="Show or hide Archimedes' twin circles"> Show the twins</label>
+    <label class="option" for="linesChk"><input id="linesChk" type="checkbox" checked aria-label="Show or hide the construction lines OD and OE"> Show construction lines</label>
+    <label class="option" for="labelsChk"><input id="labelsChk" type="checkbox" aria-label="Show or hide the point labels"> Show point labels</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the middle dot and every circle changes size. Yet the four small circles always have exactly the same radius and area as the two dashed twin circles. Why must that be true?</p>
+
+      <h2>Three semicircles</h2>
+      <p>The big semicircle has diameter <code>AB</code>, and the two small ones have diameters <code>AC</code> and <code>CB</code>. Write their radii as <code>r1</code> and <code>r2</code>. Then the <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">radius</a> of the big one is</p>
+      <blockquote><code>r = r1 + r2</code></blockquote>
+      <p>Book of Lemmas, Proposition 5, gives the common radius of <a class="wiki-term" data-wiki="Archimedes" href="https://en.wikipedia.org/wiki/Archimedes" target="_blank" rel="noopener">Archimedes'</a> two twin circles:</p>
+      <blockquote><code>t = r1 &times; r2 / (r1 + r2)</code></blockquote>
+
+      <h2>Power's four circles</h2>
+      <p>Let <code>O</code> be the centre of the big semicircle, and <code>D</code> the top of the left small one. The horizontal step from <code>O</code> to <code>O1</code> is <code>r2</code> and the vertical step is <code>r1</code>, so the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a> gives</p>
+      <blockquote><code>OD&sup2; = r1&sup2; + r2&sup2;</code></blockquote>
+      <p>Two circles of radius <code>x</code> touch the line <code>OD</code> at <code>D</code> and touch the big arc at <code>K</code>. Their centres are <code>x</code> from <code>D</code> at right angles to <code>OD</code>, so</p>
+      <blockquote><code>OL&sup2; = x&sup2; + OD&sup2; = x&sup2; + r1&sup2; + r2&sup2;</code></blockquote>
+      <p>Because each circle is <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> inside the big one, <code>OL = r &minus; x</code>. Squaring and cancelling <code>x&sup2;</code> leaves <code>2x(r1 + r2) = 2r1r2</code>, so</p>
+      <blockquote><code>x = r1 &times; r2 / (r1 + r2) = t</code></blockquote>
+      <p>The same construction at <code>E</code> gives two more. The logic test checks this at a thousand positions of <code>C</code> and a thousand random drags, including that every circle really touches its line at <code>D</code> or <code>E</code> and its dot <code>K</code> lies on the big arc.</p>
+
+      <h2>Equal areas</h2>
+      <p>A circle's <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> depends only on its radius. Since <code>x = t</code>, each of Power's four circles has area <code>&pi;x&sup2;</code>, exactly the area of either twin; all four together cover <code>4&pi;x&sup2;</code>. The radius is largest when <code>C</code> is halfway along <code>AB</code>, where <code>x = r/4</code>, and tends to zero as <code>C</code> approaches an end.</p>
+
+      <h2>About the original</h2>
+      <p>The Java applet drew the same three semicircles and four small circles, with a checkbox for the point names; its "about" text was a leftover from a polygon applet. The cut-the-knot article it came from now shows a GeoGebra figure rather than the Java program, so this port cites that article, which states and proves the equal-radius claim exactly. One applet detail is deliberately not copied: its helper circle was built with radius <code>|AB| = 2r</code> while the drawn arc has radius <code>r</code>, making its four circles half the stated size and its tangency dots miss the arc. Here the article's algebra is followed. Its unused <code>TangentPoint</code> and <code>Other</code> methods are harmless leftovers.</p>
+
+      <p class="tip">Press <strong>C in the middle</strong>, then drag <code>C</code> close to <code>A</code>. Watch the four circles shrink together with the twins, while the two radius numbers in the status line stay equal.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ArchimedesQuadruplets.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="archimedes-quadruplets-core.js"></script>
+<script src="archimedes-quadruplets.js"></script>
+</body>
+</html>
