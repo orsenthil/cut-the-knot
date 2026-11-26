@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carpets In Square &mdash; coolmaths</title>
+<meta name="description" content="In a square, one blue patch and three red patches are cut out by four lines. Slide the points M and N along the sides: why do the blue and the red always cover the same area?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/carpets-in-square/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Carpets In Square">
+<meta property="og:description" content="In a square, one blue patch and three red patches are cut out by four lines. Slide the points M and N along the sides: why do the blue and the red always cover the same area?">
+<meta property="og:url" content="https://coolmaths.ai/carpets-in-square/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .carpet-blue { fill: var(--accent); opacity: 0.32; }
+  #board .carpet-red { fill: var(--bad); opacity: 0.30; }
+  #board .square { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; }
+  #board .cut { stroke: var(--ink); stroke-width: 1.7; stroke-linecap: round; }
+  #board .corner-dot { fill: var(--ink); }
+  #board .cross-dot { fill: var(--accent); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 16px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+</style>
+</head>
+<body data-game="carpets-in-square" data-kind="demo">
+<main id="main">
+  <h1>Carpets In Square</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A square holds one blue patch and three red patches. Slide the two points and see whether the blue area still matches the red area. There is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag M down the left side or N along the bottom, or focus one and use the arrow keys (Shift for bigger steps). Tick “Show names” to label the points, and press Reset to go back to the start.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 450 400" role="group"
+         aria-label="A square ABCD with M on the left side and N on the bottom side. Four lines enclose one blue region and three red regions. Drag M or N, or focus one and use the arrow keys."></svg>
+    <p class="hint-line">Drag a coloured point, or focus it and press the arrow keys (Shift moves further).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Show names</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Slide M or N and the coloured patches change shape in every way you can imagine, but the blue area keeps matching the red area. Here is the exact claim and the short reason behind it.</p>
+
+      <h2>What the applet shows</h2>
+      <p>This is one case of the Carpets Theorem. In a square ABCD, M sits on side AB and N on side BC. The four lines AN, DN, DM and CM cut out one blue quadrilateral DPQR and three red pieces: AMP, BMQN and CNR. The page's exact claim is</p>
+      <blockquote><code>Area(DPQR) = Area(AMP) + Area(BMQN) + Area(CNR)</code></blockquote>
+      <p>The logic test checked it for all 440 positions of M and N on a 21 by 21 grid where the crossings exist, for 500 random positions and canvas sizes, and against a second transcription of the applet's own three crossings. It held every time. The one leftover grid position puts M at A and N at C: AN and CM become the same line, the applet's Intersect returns NaN and Draw leaves those two fills out. An old 2008 copy of the article says N is on side CD; the current article and the applet both put N on BC, so this port follows BC.</p>
+
+      <h2>Two ways to cover half a square</h2>
+      <p>With a <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a> as a carpet, each of the two coverings is exactly half the square. Triangle ADN has base AD equal to a whole side S, and N is another side S away from it, so its <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> is S&sup2;/2. If M is m units down from A, triangles ADM and BCM have areas S&times;m/2 and S&times;(S&minus;m)/2; together they are also S&sup2;/2.</p>
+      <blockquote><code>Area(ADN) = Area(ADM) + Area(BCM) = S&sup2;/2</code></blockquote>
+
+      <h2>Take away what they share</h2>
+      <p>The two coverings overlap in triangles ADP and NQR. Subtract that shared part from both halves and the leftovers have to match:</p>
+      <blockquote><code>blue = S&sup2;/2 &minus; overlap</code><br><code>red = S&sup2;/2 &minus; overlap</code><br><code>therefore blue = red</code></blockquote>
+      <p>The article's simpler picture makes the same point without any formulas: triangles BMD and BMC share the base BM and the same height, so after removing their common piece BMR, triangles DMR and BCR are equal. That is a well-known fact about the diagonals of a <a class="wiki-term" data-wiki="Trapezoid" href="https://en.wikipedia.org/wiki/Trapezoid" target="_blank" rel="noopener">trapezoid</a>.</p>
+
+      <h2>The floor version</h2>
+      <p>Imagine a floor covered exactly by carpet pieces with no gaps. Slide one piece: it now lies on top of another carpet and leaves an uncovered patch behind. Those two patches always have equal area, because the moved piece itself did not change size. Tick “Show names” to watch P, Q and R travel as you drag M and N.</p>
+
+      <p class="tip">Try the midpoints: the blue quadrilateral covers 24,000 square units, and the three red pieces cover 4,500, 15,000 and 4,500.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CarpetsInSquare.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="carpets-in-square-core.js"></script>
+<script src="carpets-in-square.js"></script>
+</body>
+</html>
