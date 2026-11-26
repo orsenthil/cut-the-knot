@@ -9,9 +9,11 @@ in [README.md](README.md); the rules a port follows are in [../CLAUDE.md](../CLA
 - **Inventory:** `porting/manifest.json` lists all 1,288 applets in `classes.zip`:
   100 games, 218 demos, 931 illustrations and 39 helper libraries (never ported).
   Run `node porting/build-manifest.mjs` for the current counts by status.
-- **Ports:** 38 done. The 13 hand-made originals; about 20 from a parallel cloud run on
+- **Ports:** 338 done. The 13 hand-made originals; about 20 from a parallel cloud run on
   2026-11-05 (six lanes, which ended when the credits ran out); then one an hour from a
-  local loop.
+  local loop, followed by batches of ten run in parallel lanes in November 2026. All
+  `game`-kind applets are ported; two `demo` applets (MorleyConc, SimpsonParrondo) are
+  deferred, and 920 illustrations remain.
 - **Gate:** `porting/verify.sh` stands in for review. Every push to `web` goes live on
   GitHub Pages and there are no pull requests.
 - **MCP tutor:** `mcp/`, a Cloudflare Worker at
@@ -35,14 +37,12 @@ One porter, locally, one applet per step, committing straight to `web`:
 
 ## Order of work
 
-1. **Games** (`kind: "game"`, 62 left), in manifest order. Most are classic
-   combinatorial games and puzzles; they follow the closest reference port.
+1. **Games** (`kind: "game"`): all ported.
 2. **Demos.** Interactive demonstrations with nothing to win. Same page format, with the
-   "Game:" line describing what to explore.
-3. **Illustrations** (931, mostly geometry with draggable points). Before the first batch,
-   port two or three by hand and extract a shared `assets/geom.js` from them (draggable
-   points on an SVG, lines, circles, intersections, redraw on drag), so later ports are
-   short.
+   "Game:" line describing what to explore. Only the two deferred ones remain.
+3. **Illustrations** (920, mostly geometry with draggable points). The shared
+   `assets/geom.js` is in place (see `porting/GEOM.md`): focusable point handles,
+   lines, circles, angle arcs and redraw on drag/theme change, so later ports are short.
 4. **Articles** without an applet, last, listed in the manifest as `kind: "article"`.
    The "Look for the math" text is always an original, concise explanation that links
    to the cut-the-knot page; Bogomolny's article text is not copied.
