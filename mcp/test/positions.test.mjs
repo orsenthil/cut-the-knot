@@ -2123,6 +2123,16 @@ check("apollonian-circle: the sampled point has AP/BP equal to the ratio", read[
 check("apollonius: eight tangent circles match the saved picture", read.apollonius?.count === 8 && read.apollonius.agreesWithSaved === true && read.apollonius.closestSavedGap.every((g) => g < 0.001));
 check("arbelos: the arbelos area equals the circle on the upright", read.arbelos?.archimedesProposition4 === true && read.arbelos.arcsEqual === true && read.arbelos.savedMatchesCore === true);
 check("arbelos-bui: both new circles share the twins' radius", Object.values(read["arbelos-bui"]?.savedMatchesCore || {}).every(Boolean) === true && read["arbelos-bui"].core.twins.matchesFormula === true && read["arbelos-bui"].core.chords.sumIsTwinDiameter === true);
+check("arbelos-concyclic: the tangency points lie on the three stated circles", Object.values(read["arbelos-concyclic"]?.claimsHold || {}).every(Boolean) === true && read["arbelos-concyclic"].savedMatchesCore === true);
+check("arbelos-incircle: AN, BM and CD meet on the incircle", read["arbelos-incircle"]?.core.concurrency.allThreeMeet === true && Object.values(read["arbelos-incircle"].savedMatchesCore).every(Boolean) === true);
+check("arbelos-pww: the arbelos equals the circle on the upright", read["arbelos-pww"]?.equalAreas === true && read["arbelos-pww"].isGeometricMean === true && read["arbelos-pww"].savedMatchesCore === true);
+check("arbelos-rect: CEDF is a rectangle with EF tangent to both arcs", read["arbelos-rect"]?.core.isRectangle === true && read["arbelos-rect"].savedMatchesCore === true);
+check("archi: the saved position really trisects the angle", read.archi?.reading.matchesSaved.trisects === true && read.archi.reading.collapsed === false);
+check("archimedes-lever: equal turning effects balance the lever", read["archimedes-lever"]?.leftTurn === read["archimedes-lever"].rightTurn && typeof read["archimedes-lever"].balanceAt === "number");
+check("archimedes-quadruplets: the four circles match the twins' radius and touch the big arc", read["archimedes-quadruplets"]?.core.tangency.dotsOnBigArc === true && read["archimedes-quadruplets"].savedMatchesCore === true);
+check("archimedes-triangle: the parabolic segment is two thirds of the tangent triangle", read["archimedes-triangle"]?.core.isTwoThirds === true);
+check("area-of-parallelogram: the cut-and-paste area matches base times height", read["area-of-parallelogram"]?.reading.matchesSavedArea === true && read["area-of-parallelogram"].area === read["area-of-parallelogram"].base * read["area-of-parallelogram"].height);
+check("area-of-triangle: the half-turn parallelogram doubles the triangle", read["area-of-triangle"]?.halfTurn.parallelogramArea === 2 * read["area-of-triangle"].reading.triangleArea);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);

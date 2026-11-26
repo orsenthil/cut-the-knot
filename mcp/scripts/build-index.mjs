@@ -517,6 +517,16 @@ const CORE_GLOBALS = {
   "apollonius/apollonius-core.js": ["ApolloniusCore"],
   "arbelos/arbelos-core.js": ["ArbelosCore"],
   "arbelos-bui/arbelos-bui-core.js": ["ArbelosBuiCore"],
+  "arbelos-concyclic/arbelos-concyclic-core.js": ["ArbelosConcyclicCore"],
+  "arbelos-incircle/arbelos-incircle-core.js": ["ArbelosIncircleCore"],
+  "arbelos-pww/arbelos-pww-core.js": ["ArbelosPwwCore"],
+  "arbelos-rect/arbelos-rect-core.js": ["ArbelosRectCore"],
+  "archi/archi-core.js": ["ArchiCore"],
+  "archimedes-lever/archimedes-lever-core.js": ["ArchimedesLeverCore"],
+  "archimedes-quadruplets/archimedes-quadruplets-core.js": ["ArchimedesQuadrupletsCore"],
+  "archimedes-triangle/archimedes-triangle-core.js": ["ArchimedesTriangleCore"],
+  "area-of-parallelogram/area-of-parallelogram-core.js": ["AreaOfParallelogramCore"],
+  "area-of-triangle/area-of-triangle-core.js": ["AreaOfTriangleCore"],
 };
 
 const games = [];

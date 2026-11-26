@@ -977,6 +977,16 @@ const GAMES = {
   apollonius: (page) => dragFirstHandle(page),
   arbelos: (page) => dragFirstHandle(page),
   "arbelos-bui": (page) => dragFirstHandle(page),
+  "arbelos-concyclic": (page) => dragFirstHandle(page),
+  "arbelos-incircle": (page) => dragFirstHandle(page),
+  "arbelos-pww": (page) => dragFirstHandle(page),
+  "arbelos-rect": (page) => dragFirstHandle(page),
+  archi: (page) => dragFirstHandle(page),
+  "archimedes-lever": (page) => dragFirstHandle(page),
+  "archimedes-quadruplets": (page) => dragFirstHandle(page),
+  "archimedes-triangle": (page) => dragFirstHandle(page),
+  "area-of-parallelogram": (page) => dragFirstHandle(page),
+  "area-of-triangle": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },
