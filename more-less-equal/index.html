@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>More, Less or Equal &mdash; coolmaths</title>
+<meta name="description" content="Start from 1 + 1 = 2 and nudge the numbers. Add one on the left: what must happen on the right to keep it equal?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/more-less-equal/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="More, Less or Equal">
+<meta property="og:description" content="Start from 1 + 1 = 2 and nudge the numbers. Add one on the left: what must happen on the right to keep it equal?">
+<meta property="og:url" content="https://coolmaths.ai/more-less-equal/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 1rem 0.5rem;
+  }
+  .equation {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem 0.3rem;
+    font-size: 2rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .number { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+  .number button.step {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0;
+    font-size: 1.3rem;
+  }
+  .number button.value {
+    min-width: 2em;
+    padding: 0.1em 0.3em;
+    font: inherit;
+    border-radius: var(--radius);
+    background: var(--card);
+    border: 2px solid var(--border-strong);
+    color: var(--text);
+    cursor: ew-resize;
+    touch-action: none;
+  }
+  .sym { color: var(--muted); min-width: 1ch; text-align: center; }
+  .sign { min-width: 1.4ch; text-align: center; }
+  .sign.eq { color: var(--good); }
+  .sign.ineq { color: var(--accent); }
+  .sign.none { color: var(--bad); }
+  .controls fieldset { display: flex; flex-wrap: wrap; gap: 0.2rem 0.8rem; align-items: center; border: 0; margin: 0; padding: 0; }
+  .controls legend { float: left; margin-right: 0.4rem; color: var(--muted); font-size: 0.9rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.3rem; min-height: 2.75rem; font-size: 1.2rem; }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="more-less-equal" data-kind="demo">
+<main id="main">
+  <h1>More, Less or Equal</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Change the numbers and see whether the left side is more than, less than or equal to the right.<br>
+    <strong>How to play:</strong> Press + or &minus; by a number, or click its right half to go up and its left half to go down. Pick +, &minus;, &times; or &divide; below.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="equation" aria-label="The equation">
+      <div class="number">
+        <button type="button" class="step" data-nudge="a:1" aria-label="Add one to the first number">+</button>
+        <button type="button" class="value" id="num-a">1</button>
+        <button type="button" class="step" data-nudge="a:-1" aria-label="Take one from the first number">&minus;</button>
+      </div>
+      <span class="sym" id="op" aria-hidden="true">+</span>
+      <div class="number">
+        <button type="button" class="step" data-nudge="b:1" aria-label="Add one to the second number">+</button>
+        <button type="button" class="value" id="num-b">1</button>
+        <button type="button" class="step" data-nudge="b:-1" aria-label="Take one from the second number">&minus;</button>
+      </div>
+      <span class="sign eq" id="sign" aria-hidden="true">=</span>
+      <div class="number">
+        <button type="button" class="step" data-nudge="c:1" aria-label="Add one to the right-hand number">+</button>
+        <button type="button" class="value" id="num-c">1</button>
+        <button type="button" class="step" data-nudge="c:-1" aria-label="Take one from the right-hand number">&minus;</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <fieldset>
+      <legend>Operation</legend>
+      <label><input type="radio" name="op" value="+" checked> +</label>
+      <label><input type="radio" name="op" value="-"> &minus;</label>
+      <label><input type="radio" name="op" value="x"> &times;</label>
+      <label><input type="radio" name="op" value="/"> &divide;</label>
+    </fieldset>
+    <button id="resetBtn" type="button" class="primary">Back to 1 + 1 = 2</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Counting comes first; adding is a quicker way to count, and the signs <code>&gt;</code>, <code>&lt;</code> and <code>=</code> record what a count shows. Here you start from the plain fact <code>1 + 1 = 2</code> and change it one step at a time.</p>
+
+      <h2>Keeping the balance</h2>
+      <p>An <a class="wiki-term" data-wiki="Equality_(mathematics)" href="https://en.wikipedia.org/wiki/Equality_(mathematics)" target="_blank" rel="noopener">equality</a> is like a balance. Put one more thing in either group on the left and the left becomes more: <code>1 + 2 &gt; 2</code>. To make it equal again, the right side must grow by one too: <code>1 + 2 = 3</code>. The logic test tried every true sum <code>a + b = c</code> with <code>a</code> and <code>b</code> from &minus;20 to 20 and found this always.</p>
+
+      <h2>Below zero</h2>
+      <p>Nothing stops a number at zero: keep pressing &minus; and you meet the negative numbers. A negative number in the middle is written in brackets, <code>3 &minus; (&minus;2) &gt; 1</code>, so the two minus signs do not run together. Taking away a negative number makes the left side bigger.</p>
+
+      <h2>Dividing, and dividing by zero</h2>
+      <p>For <code>a &divide; b</code> the sign compares the exact <a class="wiki-term" data-wiki="Fraction" href="https://en.wikipedia.org/wiki/Fraction" target="_blank" rel="noopener">fraction</a> <code>a/b</code> with <code>c</code>: <code>7 &divide; 2 &gt; 3</code>, because 7/2 is three and a half. The applet never divides: it compares <code>a</code> with <code>b &times; c</code>, and turns the answer round when <code>b</code> is negative. When <code>b = 0</code> there is no answer at all (<a class="wiki-term" data-wiki="Division_by_zero" href="https://en.wikipedia.org/wiki/Division_by_zero" target="_blank" rel="noopener">division by zero</a>), so the sign becomes <code>&ne;</code>. The test compared every equation with all three numbers from &minus;25 to 25 against the applet's own method and against exact arithmetic.</p>
+
+      <p class="tip">With &times;, make <code>a &times; b = c</code> true, then add one to <code>a</code>. How much must <code>c</code> grow now?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/arithmetic/Rote.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="more-less-equal-core.js"></script>
+<script src="more-less-equal.js"></script>
+</body>
+</html>

@@ -2198,5 +2198,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "more-less-equal",
+      title: "More, Less or Equal",
+      blurb: "Start from 1 + 1 = 2 and nudge the numbers. Add one on the left: what must happen on the right to keep it equal?",
+      tags: ["arithmetic", "counting"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };
