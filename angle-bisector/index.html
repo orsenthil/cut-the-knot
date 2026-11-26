@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Angle Bisector &mdash; coolmaths</title>
+<meta name="description" content="Drag the two rays of an angle and watch the line halfway between them. Is every point on that line really equally far from both sides?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/angle-bisector/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Angle Bisector">
+<meta property="og:description" content="Drag the two rays of an angle and watch the line halfway between them. Is every point on that line really equally far from both sides?">
+<meta property="og:url" content="https://coolmaths.ai/angle-bisector/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circle-a { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 5; }
+  #board .circle-two { fill: var(--accent); fill-opacity: 0.07; stroke: var(--accent); stroke-width: 2; }
+  #board .ray { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+  #board .bisector { fill: none; stroke: var(--good); stroke-width: 3; stroke-dasharray: 8 5; }
+  #board .radius-guide { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 4; }
+  #board .hint-edge { fill: none; stroke: var(--highlight); stroke-width: 2.5; }
+  #board .construction-dot { fill: var(--muted); }
+  #board .intersection-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .half-angle { fill: none; stroke: var(--accent); stroke-width: 3; }
+  #board .half-angle.alt { stroke: var(--good); }
+  #board .pt-label {
+    fill: var(--text); font-family: var(--font); font-size: 1.05rem;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .pt-label.small { font-size: 0.95rem; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .aux-handle { fill: var(--highlight); stroke: var(--ink); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls button { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="angle-bisector" data-kind="demo">
+<main id="main">
+  <h1>Angle Bisector</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the two sides of an angle and watch a line that always sits exactly halfway between them.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a dot and use the arrow keys. Drag D along the side or R to change the circles, then press Check the claims.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Two rays from A, a circle copying AD onto the other ray, two equal circles at D and E, their crossing F, and the line from A through F"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the angle bisector diagram to its starting shape">Reset</button>
+    <button id="checkBtn" type="button" aria-label="Check the angle bisector claims for this diagram">Check the claims</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show the equal segments that make the two triangles match">Show hint</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Hide the names of the points">Hide names</button>
+    <button id="euclidBtn" type="button" aria-label="Set the circle radius to DE, as in Euclid's construction">Use DE (Euclid)</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>An angle can be split exactly in half with just a circle and a pair of equal circles. The line you get turns out to be much more than a way to cut the angle: it is the path of every point that is equally far from the two sides.</p>
+
+      <h2>Copy the length to the other ray</h2>
+      <p>Start with the corner <code>A</code> and two rays through <code>B</code> and <code>C</code>. Pick <code>D</code> on the first ray, then draw the dotted circle centred at <code>A</code> through <code>D</code>. Its crossing with the other ray is <code>E</code>, so <code>AD = AE</code>. This is Euclid's step (I.9), and it is why <code>E</code> sits on the same ray as <code>C</code> rather than behind <code>A</code>.</p>
+
+      <h2>Two equal circles make a common chord</h2>
+      <p>Now draw two circles of the <em>same</em> radius, centred at <code>D</code> and <code>E</code>. Drag <code>R</code> to change that radius together for both. Their two crossings are <code>P</code> and <code>F</code>, and the line through them is the perpendicular bisector of <code>DE</code>. Because <code>AD = AE</code>, that line passes through <code>A</code>. Because <code>DF = EF</code>, the triangles <code>ADF</code> and <code>AEF</code> have three matching sides, so they are <a class="wiki-term" data-wiki="Congruence_(geometry)" href="https://en.wikipedia.org/wiki/Congruence_(geometry)" target="_blank" rel="noopener">congruent</a>. The two angles at <code>A</code> match, and <code>AF</code> is the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a>. The applet picks <code>F</code>, the crossing farther from <code>A</code>. When its drawn bisector is more than three pixels off, the applet draws the common chord itself instead — the same line, found a surer way.</p>
+
+      <h2>Equally far from both sides</h2>
+      <p>Drop a perpendicular from <code>F</code> to each ray. Triangle <code>ADF</code> has base <code>AD</code> and triangle <code>AEF</code> has base <code>AE</code>; those bases are equal and the triangles are congruent, so their areas match and the two heights — the distances from <code>F</code> to the rays — match too: <code>dist(F, AB) = dist(F, AC)</code>. The same argument works for every point on the line, which is what makes the bisector a <a class="wiki-term" data-wiki="Locus_(mathematics)" href="https://en.wikipedia.org/wiki/Locus_(mathematics)" target="_blank" rel="noopener">locus</a> of points equally far from the two <a class="wiki-term" data-wiki="Line_(geometry)" href="https://en.wikipedia.org/wiki/Line_(geometry)" target="_blank" rel="noopener">lines</a>. The logic test checks this at <code>F</code> and at four more points on the line, over hundreds of angles. Drag <code>B</code> or <code>C</code> yourself and press Check the claims to see the two distances stay equal.</p>
+
+      <h2>Euclid's special radius, and the real minimum</h2>
+      <p>Euclid made <code>DEF</code> <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral</a>, which means the common radius is <code>DE</code>; press Use DE (Euclid) to see it. The article says a radius greater than <code>AD</code> is a sure choice, and the test confirms that. It is sure, but not the smallest possible: the circles first touch at <code>DE/2 = AD&middot;sin(A/2)</code>, which is always less than <code>AD</code> for an angle below 180&deg;. Shrink <code>R</code> past that bound and <code>F</code> disappears.</p>
+
+      <p class="tip">Try dragging R inward until the two circles just kiss, then press Use DE (Euclid) and watch F jump outward again.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Outline/Geometry/AngleBisector.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="angle-bisector-core.js"></script>
+<script src="angle-bisector.js"></script>
+</body>
+</html>
