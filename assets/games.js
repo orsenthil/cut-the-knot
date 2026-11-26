@@ -2502,6 +2502,14 @@ window.COOLMATHS = {
       level: 2,
     },
     {
+      slug: "payoff-heat-equation",
+      title: "From Payoff to Heat Equation",
+      blurb: "On its last day an option's value has a sharp corner at the strike. With time left the corner rounds off. Why does it spread exactly like heat?",
+      tags: ["black-scholes", "differential-equations", "probability"],
+      kind: "demo",
+      level: 3,
+    },
+    {
       slug: "two-numbers",
       title: "Two Numbers",
       blurb: "I show you two numbers, one even and one odd. You multiply one by an odd number and the other by an even number, then tell me the sum. Can I really guess which number you picked?",

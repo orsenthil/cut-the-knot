@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>From Payoff to Heat Equation &mdash; coolmaths</title>
+<meta name="description" content="On its last day an option's value has a sharp corner at the strike. With time left the corner rounds off. Why does it spread exactly like heat?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/payoff-heat-equation/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="From Payoff to Heat Equation">
+<meta property="og:description" content="On its last day an option's value has a sharp corner at the strike. With time left the corner rounds off. Why does it spread exactly like heat?">
+<meta property="og:url" content="https://coolmaths.ai/payoff-heat-equation/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+#stage { width: 100%; max-width: 36rem; padding: 0.8rem; }
+  #value, #kernel { display: block; width: 100%; height: auto; }
+  svg .grid { stroke: var(--border-strong); stroke-width: 1; }
+  svg .axis { fill: var(--muted); font: 12px var(--font); text-anchor: end; }
+  svg .axis.mid { text-anchor: middle; }
+  svg .payoff { fill: none; stroke: var(--muted); stroke-width: 2.5; stroke-dasharray: 7 5; }
+  svg .formula { fill: none; stroke: var(--accent); stroke-width: 3; }
+  svg .heat { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  svg .bell { fill: none; stroke: var(--ink); stroke-width: 2; }
+  svg .shade { fill: var(--good); opacity: 0.3; }
+  svg .strike { stroke: var(--bad); stroke-width: 2; stroke-dasharray: 4 3; }
+  .caption { text-align: center; color: var(--muted); font-size: 0.9rem; margin: 0.2rem 0 0.6rem; }
+  #facts { text-align: center; margin: 0.5rem 0 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 8rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="payoff-heat-equation" data-kind="demo">
+<main id="main">
+  <h1>From Payoff to Heat Equation</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#black-scholes">Black–Scholes</a><a class="tag" href="../index.html#differential-equations">Differential Equations</a><a class="tag" href="../index.html#probability">Probability</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> An option's value on its last day has a sharp corner. Watch it round off as more time is left, exactly the way heat spreads out from a hot edge.<br>
+    <strong>How to play:</strong> Slide the time left, or press Play, and compare the curve, the dots and the bell curve below.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="value" viewBox="0 0 400 230" role="img" aria-label="The call's value against the stock price: payoff, formula and heat-equation dots"></svg>
+    <p class="caption">Value of a $100 call. Dashed: the payoff on the last day. Line: Black&ndash;Scholes. Dots: the heat equation, solved step by step.</p>
+    <svg id="kernel" viewBox="0 0 400 130" role="img" aria-label="The bell curve that spreads out the payoff, with the part above the strike shaded"></svg>
+    <p class="caption">The heat kernel for a stock at $100, on a log scale; red: the strike.</p>
+    <p id="facts" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label>Time left <input id="tauIn" type="range" min="0" max="2" step="0.05" value="0.5"> <span id="tauOut"></span></label>
+    <label>Volatility <input id="sigmaIn" type="range" min="0.1" max="0.6" step="0.01" value="0.3"> <span id="sigmaOut"></span></label>
+    <label>Interest <input id="rIn" type="range" min="0" max="0.1" step="0.005" value="0.05"> <span id="rOut"></span></label>
+    <button id="playBtn" type="button" class="primary">Play</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>In the article, the riskless hedge leads to a <a class="wiki-term" data-wiki="Black%E2%80%93Scholes_equation" href="https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_equation" target="_blank" rel="noopener">partial differential equation</a> for the option's value <code>V(t, S)</code>. Hold <code>&Delta; = &part;V/&part;S</code> shares against one option sold. Itô's lemma shows that the random part and the growth rate <code>&mu;</code> both cancel. Riskless means earning the bank's rate <code>r</code>:</p>
+      <blockquote><code>&part;V/&part;t + rS &part;V/&part;S + &frac12;&sigma;&sup2;S&sup2; &part;&sup2;V/&part;S&sup2; = rV</code></blockquote>
+      <p>On the last day the value is the payoff, <code>max(S &minus; K, 0)</code>.</p>
+
+      <h2>Changing variables</h2>
+      <p>Measure time backwards, <code>&tau; = T &minus; t</code>. Use the log price, shifted to follow the bank rate, <code>x = ln S + (r &minus; &sigma;&sup2;/2)&tau;</code>. And take out the discounting, <code>V = e<sup>&minus;r&tau;</sup> w</code>. Every extra term cancels and what is left is the <a class="wiki-term" data-wiki="Heat_equation" href="https://en.wikipedia.org/wiki/Heat_equation" target="_blank" rel="noopener">heat equation</a>:</p>
+      <blockquote><code>&part;w/&part;&tau; = &frac12;&sigma;&sup2; &part;&sup2;w/&part;x&sup2;,&nbsp;&nbsp; w(0, x) = max(e<sup>x</sup> &minus; K, 0)</code></blockquote>
+      <p>The payoff plays the part of the starting temperature, and the time left is how long the heat has had to spread. The dots on the graph come from solving this equation by brute force on a grid, then changing back to dollars. They sit on the formula's curve.</p>
+
+      <h2>Spreading with a bell curve</h2>
+      <p>The heat equation's solution averages the starting temperature with a bell curve of variance <code>&sigma;&sup2;&tau;</code>, the <a class="wiki-term" data-wiki="Heat_kernel" href="https://en.wikipedia.org/wiki/Heat_kernel" target="_blank" rel="noopener">heat kernel</a>. Averaging the payoff that way and completing the square gives the formula of the next page. The part of the bell curve above the strike is <code>N(d<sub>2</sub>)</code>, the risk-neutral chance that the option ends up being used. The logic test checked the formula against the equation, the change of variables, the heat-kernel average and the brute-force solution.</p>
+
+      <p class="tip">Raise the volatility: the corner rounds off faster, just as heat spreads faster in a better conductor.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original demo for coolmaths, after David Alvarez Rosa's article
+    <a href="https://david.alvarezrosa.com/posts/deriving-black-scholes/" target="_blank" rel="noopener">Deriving Black-Scholes</a>
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="payoff-heat-equation-core.js"></script>
+<script src="payoff-heat-equation.js"></script>
+</body>
+</html>

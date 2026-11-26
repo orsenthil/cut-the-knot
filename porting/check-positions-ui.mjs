@@ -970,6 +970,9 @@ const GAMES = {
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },
+  "payoff-heat-equation": async (page) => {
+    await page.fill("#tauIn", "1"); await page.dispatchEvent("#tauIn", "input");
+  },
 };
 
 /** Move the first draggable point of an illustration with the keyboard. */

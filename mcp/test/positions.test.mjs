@@ -2123,6 +2123,11 @@ check("binomial-option-tree: 6 steps explored", read["binomial-option-tree"]?.st
   const bt = at("binomial-option-tree", { n: 1, K: 100, sigma: 0.2, r: 0.05, type: "call", american: false, explored: false });
   check("binomial-option-tree: one step is the hedge, far from the formula", bt.steps === 1 && Math.abs(bt.treePrice - bt.blackScholes) > 0.5);
 }
+check("payoff-heat-equation: a year left, the grid agrees with the formula", read["payoff-heat-equation"]?.timeLeft === 1 && Math.abs(read["payoff-heat-equation"].blackScholes - read["payoff-heat-equation"].heatEquationGrid) < 0.03);
+{
+  const ph = at("payoff-heat-equation", { tau: 0.5, sigma: 0.3, r: 0.05, seen: false });
+  check("payoff-heat-equation: half a year, 30%, 5%: $9.6349", ph.blackScholes === 9.6349 && ph.payoffNow === 0);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

@@ -504,6 +504,7 @@ const CORE_GLOBALS = {
   "angle-property/angle-property-core.js": ["AnglePropertyCore"],
   "angles-in-circle/angles-in-circle-core.js": ["AnglesInCircleCore"],
   "binomial-option-tree/binomial-option-tree-core.js": ["BinomialOptionTreeCore"],
+  "payoff-heat-equation/payoff-heat-equation-core.js": ["PayoffHeatEquationCore"],
 };
 
 const games = [];
