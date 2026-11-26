@@ -414,6 +414,17 @@ const CORE_GLOBALS = {
   "perm-product/perm-product-core.js": ["PermProductCore"],
   "pick/pick-core.js": ["PickCore"],
   "pigeonhole/pigeonhole-core.js": ["PigeonholeCore"],
+  "plain-monty-hall/plain-monty-hall-core.js": ["PlainMontyHallCore"],
+  "play-hex-design/play-hex-design-core.js": ["PlayHexDesignCore"],
+  "polygonal-numbers/polygonal-numbers-core.js": ["PolygonalNumbersCore"],
+  "polynomial-degree-3/polynomial-degree-3-core.js": ["PolynomialDegree3Core"],
+  "polynomial-roots/polynomial-roots-core.js": ["PolynomialRootsCore"],
+  "power-index/power-index-core.js": ["PowerIndexCore"],
+  "power-indices/power-indices-core.js": ["PowerIndicesCore"],
+  "primes-from-triangle/primes-from-triangle-core.js": ["PrimesFromTriangleCore"],
+  "product-of-fractions/product-of-fractions-core.js": ["ProductOfFractionsCore"],
+  "pyth-triple-calculator/pyth-triple-calculator-core.js": ["PythTripleCalculatorCore"],
+  "quadratic-polynomial/quadratic-polynomial-core.js": ["QuadraticPolynomialCore"],
 };
 
 const games = [];

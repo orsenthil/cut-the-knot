@@ -587,6 +587,45 @@ const GAMES = {
     for (const [x, y] of [[2, 2], [8, 2], [8, 6], [2, 6]]) await page.mouse.click(box.x + ((24 + x * 32) / 464) * box.width, box.y + ((24 + y * 32) / 336) * box.height);
   },
   pigeonhole: null,
+  "plain-monty-hall": async (page) => {
+    await page.locator(".door").nth(0).click();
+  },
+  "play-hex-design": async (page) => {
+    await page.locator("#board .dot").nth(4).click();
+    await page.locator("#board .dot").nth(5).click();
+  },
+  "polygonal-numbers": async (page) => {
+    await page.fill("#sides", "6"); await page.dispatchEvent("#sides", "change");
+  },
+  "polynomial-degree-3": async (page) => {
+    for (const [n, v] of [["a", 1], ["b", -6], ["c", 11], ["d", -6]]) await page.fill("#s" + n, String(v));
+  },
+  "polynomial-roots": async (page) => {
+    const box = (i) => page.locator("#formula input").nth(i);
+    for (const [i, v] of [[0, 2], [1, -3], [2, 1], [3, 1]]) { await box(i).fill(String(v)); await box(i).dispatchEvent("change"); }
+  },
+  "power-index": async (page) => {
+    await page.check("#computeBox");
+  },
+  "power-indices": async (page) => {
+    await page.selectOption("#setSel", "Security Council");
+  },
+  "primes-from-triangle": async (page) => {
+    await page.check("#ancBox");
+    await page.focus("#board");
+    for (let i = 0; i < 8; i++) await page.keyboard.press("ArrowDown");
+    for (let i = 0; i < 6; i++) await page.keyboard.press("ArrowRight");
+    await page.keyboard.press("Enter");
+  },
+  "product-of-fractions": async (page) => {
+    for (const [id, v] of [["#pIn", 1], ["#rIn", 1], ["#qIn", 3], ["#pIn", 2], ["#sIn", 4], ["#rIn", 3]]) { await page.fill(id, String(v)); await page.dispatchEvent(id, "change"); }
+  },
+  "pyth-triple-calculator": async (page) => {
+    await page.fill("#nIn", "3"); await page.dispatchEvent("#nIn", "change");
+  },
+  "quadratic-polynomial": async (page) => {
+    for (const [n, v] of [["a", 1], ["b", 2], ["c", 4]]) await page.fill("#s" + n, String(v));
+  },
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

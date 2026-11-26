@@ -202,6 +202,18 @@ check("perm-on-circle: one swap made, so the parity is odd or even by cycle coun
 check("perm-product: fg has the same length as f and g", read["perm-product"]?.fg.length === read["perm-product"].n && typeof read["perm-product"].commute === "boolean");
 check("pick: the 6 by 4 rectangle has B = 20, I = 15 and area 24", read.pick?.simple === true && read.pick.B === 20 && read.pick.I === 15 && read.pick.area === "24");
 check("pigeonhole: five dots always have a pair with a lattice midpoint", read.pigeonhole?.dots === 5 && read.pigeonhole.pair?.length === 2 && read.pigeonhole.noPair === false);
+// Eleven more ports, on positions saved by their own pages.
+check("plain-monty-hall: one door picked, the host opened a goat, the car hidden", read["plain-monty-hall"]?.stage === "stay or switch" && read["plain-monty-hall"].firstPick === 0 && read["plain-monty-hall"].hostOpened !== 0 && read["plain-monty-hall"].car === "hidden");
+check("play-hex-design: two clicks fill two dots of the 3 x 3 board", read["play-hex-design"]?.n === 3 && read["play-hex-design"].filled + read["play-hex-design"].missteps === 2 && read["play-hex-design"].aClickThatFillsANewDot !== null);
+check("polygonal-numbers: 6 sides, size 2 is the hexagonal number 15", read["polygonal-numbers"]?.dots === 15 && read["polygonal-numbers"].distinctDotsDrawn === 15);
+check("polynomial-degree-3: x^3 - 6x^2 + 11x - 6 has roots 1, 2, 3 and inflection at 2", Math.abs(read["polynomial-degree-3"]?.roots.real - 1) < 1e-3 && read["polynomial-degree-3"].roots.complexPair === false && Math.abs(read["polynomial-degree-3"].inflection.x - 2) < 1e-12);
+check("polynomial-roots: 2(x + 3)(x - 1)^2 crosses at -3 and touches at 1", read["polynomial-roots"]?.roots.length === 2 && read["polynomial-roots"].roots[0].crosses === true && read["polynomial-roots"].roots[1].times === 2 && read["polynomial-roots"].rightEnd === "+infinity");
+check("power-index: [6: 4, 3, 2, 1] has Banzhaf 5, 3, 3, 1 and Shapley-Shubik 10, 6, 6, 2", read["power-index"]?.banzhaf.counts.join() === "5,3,3,1" && read["power-index"].shapleyShubik.counts.join() === "10,6,6,2");
+check("power-indices: the Security Council, a permanent member has 421/2145", read["power-indices"]?.set === "Security Council" && Math.abs(read["power-indices"].table[0].shapleyShubik - 421 / 2145) < 1e-12);
+check("primes-from-triangle: dot (12, 8) has gcd 4 and is marked", read["primes-from-triangle"]?.picked?.gcd === 4 && read["primes-from-triangle"].picked.marked === true && read["primes-from-triangle"].finished === true);
+check("product-of-fractions: 2/3 of 3/4 is 6/12 = 1/2", read["product-of-fractions"]?.product === "6/12" && read["product-of-fractions"].lowestTerms === "1/2");
+check("pyth-triple-calculator: N = 3, M = 1 gives 8, 6, 10, not primitive", read["pyth-triple-calculator"]?.a === 8 && read["pyth-triple-calculator"].c === 10 && read["pyth-triple-calculator"].primitive === false);
+check("quadratic-polynomial: x^2 + 2x + 4 has complex roots on the circle of radius 2", read["quadratic-polynomial"]?.kind === "complex" && Math.abs(read["quadratic-polynomial"].complexRootsOnCircleOfRadius - 2) < 1e-12);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1857,6 +1869,30 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("pigeonhole: the four dots in four boxes have no pair", ph.noPair === true && ph.distinctBoxes === 4);
   const ph5 = at("pigeonhole", { n: 5, points: [{ x: 2, y: 2 }, { x: 5, y: 2 }, { x: 2, y: 5 }, { x: 5, y: 5 }, { x: 4, y: 4 }] });
   check("pigeonhole: a fifth dot in the (even, even) box makes a pair with (2,2)", ph5.pair.join() === "1,5" && ph5.midpoint.x === 3 && ph5.midpoint.y === 3);
+  {
+    const pm = at("plain-monty-hall", { prize: 1, first: 1, opened: 0, final: 2, trials: 9, stayedWon: 3, stayedLost: 6, switchedWon: 6, switchedLost: 3 });
+    check("plain-monty-hall: after the reveal the car is shown and switching has won 2/3", pm.car === 1 && Math.abs(pm.shareSwitchWon - 2 / 3) < 1e-12);
+    const hx = at("play-hex-design", { n: 3, moves: [[1, 1], [0, 2]], missed: 1, alert: null });
+    check("play-hex-design: the suggested click fills the dot it says", hx.aClickThatFillsANewDot && hx.filled === 2 && hx.missteps === 1);
+    const pn = at("polygonal-numbers", { sides: 4, size: 4 });
+    check("polygonal-numbers: 4 sides, size 4 is the square 25", pn.dots === 25);
+    const cu = at("polynomial-degree-3", { c: [-1, 1, -1, 1], tangent: true });
+    check("polynomial-degree-3: x^3 - x^2 + x - 1 has the complex pair +/- i", cu.roots.complexPair === true && Math.abs(Math.abs(cu.roots.others[0].im) - 1) < 1e-3);
+    const pr = at("polynomial-roots", { a: -1, roots: [0, 0] });
+    check("polynomial-roots: -x^2 goes down at both ends and touches at 0", pr.leftEnd === "-infinity" && pr.rightEnd === "-infinity" && pr.roots[0].crosses === false);
+    const pw = at("power-index", { quota: 5, votes: [3, 2, 1], compute: true });
+    check("power-index: [5: 3, 2, 1] has the dummy 3", pw.dummies.join() === "3");
+    const pi = at("power-indices", { set: "Custom", quota: 11, players: [["A", 3], ["B", 2]] });
+    check("power-indices: a quota above all the votes has no winning coalition", pi.noWinningCoalition === true);
+    const pt = at("primes-from-triangle", { rows: 20, step: 1, showPrimes: false, show: {}, picked: [13, 5], frame: null });
+    check("primes-from-triangle: after Clear (13, 5) is not marked, gcd 1, progenitor (2, 1)", pt.picked.marked === false && pt.picked.topProgenitors[0].join() === "2,1" && pt.finished === false);
+    const pf = at("product-of-fractions", { p: 1, q: 2, r: 1, s: 2 });
+    check("product-of-fractions: half of a half is 1/4", pf.product === "1/4");
+    const py = at("pyth-triple-calculator", { n: 5, m: 2, k: 1 });
+    check("pyth-triple-calculator: N = 5, M = 2 gives the primitive 21, 20, 29", py.a === 21 && py.b === 20 && py.c === 29 && py.primitive === true);
+    const qp = at("quadratic-polynomial", { c: [1, -2, 1] });
+    check("quadratic-polynomial: x^2 - 2x + 1 has the double root 1", qp.kind === "double" && qp.roots[0].re === 1 && qp.discriminant === 0);
+  }
 }
 }
 }
