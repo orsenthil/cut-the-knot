@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Binary Color Device &mdash; coolmaths</title>
+<meta name="description" content="Sixteen squares hold four-bit numbers. Combine them with AND, OR, XOR or NOT to fill the grid from 0 to 15 — can you complete the device?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bicolor/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Binary Color Device">
+<meta property="og:description" content="Sixteen squares hold four-bit numbers. Combine them with AND, OR, XOR or NOT to fill the grid from 0 to 15 — can you complete the device?">
+<meta property="og:url" content="https://coolmaths.ai/bicolor/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 26rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .cell { fill: var(--stage); stroke: var(--ink); stroke-width: 2; pointer-events: none; }
+  #board .cell.blank { stroke: var(--border-strong); stroke-dasharray: 4 3; }
+  #board .cell.selected { stroke: var(--good); stroke-width: 4; }
+  #board .cell.target { stroke: var(--accent); stroke-width: 4; }
+  #board .number {
+    font-family: var(--mono); font-size: 22px; font-weight: 600;
+    text-anchor: middle; dominant-baseline: central; pointer-events: none;
+  }
+  #board .ghost { stroke: var(--ink); stroke-width: 2; opacity: 0.85; pointer-events: none; }
+  #board .geom-handle { fill: transparent; stroke: transparent; pointer-events: all; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; fill: none; stroke: var(--good); stroke-width: 4; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .op-label { align-self: center; color: var(--muted); }
+  button.op[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+</style>
+</head>
+<body data-game="bicolor" data-kind="demo">
+<main id="main">
+  <h1>Binary Color Device</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Fill all sixteen squares with their numbers, from 0 in the top left to 15 in the bottom right.<br>
+    <strong>How to play:</strong> Pick AND, OR, XOR or NOT, then drag a numbered square onto another one. With a keyboard, focus a square, press Enter to pick it, move with the arrow keys and press Enter again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 300 300" role="group"
+         aria-label="A four by four grid of sixteen squares with draggable numbers"></svg>
+  </div>
+
+  <div class="controls" role="group" aria-label="Bitwise operation">
+    <span class="op-label">Operation:</span>
+    <button class="op" type="button" data-op="0" aria-pressed="true" aria-label="Use AND on two squares">&amp; (AND)</button>
+    <button class="op" type="button" data-op="1" aria-pressed="false" aria-label="Use OR on two squares">V (OR)</button>
+    <button class="op" type="button" data-op="2" aria-pressed="false" aria-label="Use XOR on two squares">^ (XOR)</button>
+    <button class="op" type="button" data-op="3" aria-pressed="false" aria-label="Use NOT on one square">~ (NOT)</button>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Start a new puzzle">New Puzzle</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The page calls this the Binary Color Device. It uses the two values of <a class="wiki-term" data-wiki="Boolean_algebra" href="https://en.wikipedia.org/wiki/Boolean_algebra" target="_blank" rel="noopener">Boolean algebra</a>, 0 and 1, and shows how a whole number can stand for a list of them. The surprising part is that ordinary arithmetic on those lists is enough to build the whole grid, one square at a time.</p>
+
+      <h2>Sixteen squares, four bits</h2>
+      <p>Four <a class="wiki-term" data-wiki="Bit" href="https://en.wikipedia.org/wiki/Bit" target="_blank" rel="noopener">bits</a> give 2&nbsp;&times;&nbsp;2&nbsp;&times;&nbsp;2&nbsp;&times;&nbsp;2 = 16 lists, so the numbers 0 to 15 are enough to name every square. Written as <a class="wiki-term" data-wiki="Binary_number" href="https://en.wikipedia.org/wiki/Binary_number" target="_blank" rel="noopener">binary</a>, 13 is 1101 and 6 is 110. The page asks for the numbers written left to right, top to bottom: square 0 is the upper left, square 15 the lower right. The applet's own rectangles use exactly that order, and its finished test asks for square <code>i</code> to hold <code>i</code>.</p>
+
+      <h2>The three operations</h2>
+      <p><a class="wiki-term" data-wiki="Bitwise_operation" href="https://en.wikipedia.org/wiki/Bitwise_operation" target="_blank" rel="noopener">Bitwise operations</a> compare matching bits. AND gives 1 only when both bits are 1, OR gives 1 when either is 1, and XOR gives 1 when the bits differ:</p>
+      <blockquote><code>0&amp;0 = 0&nbsp; 0&amp;1 = 0&nbsp; 1&amp;0 = 0&nbsp; 1&amp;1 = 1</code><br><code>0V0 = 0&nbsp; 0V1 = 1&nbsp; 1V0 = 1&nbsp; 1V1 = 1</code><br><code>0^0 = 0&nbsp; 0^1 = 1&nbsp; 1^0 = 1&nbsp; 1^1 = 0</code></blockquote>
+      <p>The page's worked example is exact: <code>13 &amp; 6 = 1101 &amp; 0110 = 0100 = 4</code>. Dropping onto an empty square just copies the number, and NOT replaces <code>a</code> with <code>15 - a</code> (the page's <code>~</code> on four bits).</p>
+
+      <h2>The XOR trick</h2>
+      <p>The page notes that a shimmering selection rectangle can be drawn by applying <a class="wiki-term" data-wiki="Exclusive_or" href="https://en.wikipedia.org/wiki/Exclusive_or" target="_blank" rel="noopener">XOR</a> twice: <code>a ^ b ^ b = a</code>. The logic test tries all 256 pairs of numbers from 0 to 15, and the identity holds every time. It holds bit by bit: <code>b ^ b</code> is 0 whatever <code>b</code> is, and XOR with 0 changes nothing.</p>
+
+      <h2>Where the puzzle starts</h2>
+      <p>The applet picks one of three patterns at random: three single-bit numbers; three numbers made from one, two and three bits; or two numbers made from two bits each. Each new number is a sum of different powers of two, which is the same as combining their bits with OR. Try switching between operations on the same two squares: the four buttons give four different ways to fill the target, and the check in the logic test compares all 1,024 cases with the applet's own computation.</p>
+      <p class="tip">Try XOR on a square and itself, then use NOT on the result: what number do you get back?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/bicolor.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bicolor-core.js"></script>
+<script src="bicolor.js"></script>
+</body>
+</html>
