@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Archimedes Lever &mdash; coolmaths</title>
+<meta name="description" content="Move two weights along a beam and see where its support must go. Can you find the point that balances 3 against 4?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/archimedes-lever/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Archimedes Lever">
+<meta property="og:description" content="Move two weights along a beam and see where its support must go. Can you find the point that balances 3 against 4?">
+<meta property="og:url" content="https://coolmaths.ai/archimedes-lever/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .beam { stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+  #board .beam-low { opacity: 0.55; }
+  #board .guide-line { stroke: var(--muted); stroke-width: 1.5; }
+  #board .distance { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 3 4; }
+  #board .unit { stroke: var(--stage); stroke-width: 1; }
+  #board .unit-p { fill: var(--accent); }
+  #board .unit-q { fill: var(--good); }
+  #board .tick { stroke: var(--muted); stroke-width: 1.5; }
+  #board .low-weight { stroke: var(--ink); stroke-width: 1; opacity: 0.55; }
+  #board .low-p { fill: var(--accent); }
+  #board .low-q { fill: var(--good); }
+  #board .fulcrum { fill: var(--bad); stroke: var(--ink); stroke-width: 1; }
+  #board .weight-number { fill: var(--accent-text); font-size: 1rem; font-weight: 700; text-anchor: middle; pointer-events: none; }
+  #board .measure-label { fill: var(--accent); font-size: 0.9rem; text-anchor: middle; pointer-events: none; }
+  #board .caption { fill: var(--muted); font-size: 0.95rem; text-anchor: middle; pointer-events: none; }
+  #board .geom-handle { stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .p-handle { fill: var(--accent); }
+  #board .q-handle { fill: var(--good); }
+  #board .f-handle { fill: var(--bad); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  .controls { align-items: center; }
+  .controls button { min-height: 2.5rem; min-width: 2.5rem; }
+  .controls output { min-width: 1.5rem; text-align: center; font-variant-numeric: tabular-nums; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+  #gcdBox { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+</style>
+</head>
+<body data-game="archimedes-lever" data-kind="demo">
+<main id="main">
+  <h1>Archimedes Lever</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#physics">Physics</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move two weights and their support and watch when the beam balances.<br>
+    <strong>How to play:</strong> Drag a coloured weight or the red support, or focus a dot and use the arrow keys. Press + or − to change a weight, tick the box to use the biggest common unit, then press Balance it.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 260" role="group"
+         aria-label="Two weights on a beam, their unit weights spread evenly below, and a draggable red fulcrum"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="minusP" type="button" aria-label="Make the left weight one unit lighter">&minus;</button>
+    <label for="pOut">Left weight</label><output id="pOut" aria-label="Left weight">3</output>
+    <button id="plusP" type="button" aria-label="Make the left weight one unit heavier">+</button>
+    <button id="minusQ" type="button" aria-label="Make the right weight one unit lighter">&minus;</button>
+    <label for="qOut">Right weight</label><output id="qOut" aria-label="Right weight">4</output>
+    <button id="plusQ" type="button" aria-label="Make the right weight one unit heavier">+</button>
+  </div>
+  <div class="controls">
+    <label><input id="gcdBox" type="checkbox" aria-label="Use the largest common unit when the weights share a factor"> Use the biggest common unit</label>
+    <button id="snapBtn" type="button" class="primary" aria-label="Move the fulcrum to the balancing point">Balance it</button>
+    <button id="newBtn" type="button" aria-label="Reset the weights and the fulcrum">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A heavy weight close to the support can balance a lighter one further away. The applet shows why: split both weights into equal unit weights, spread them out evenly, and the balancing point becomes the middle of the row.</p>
+
+      <h2>The turning effect</h2>
+      <p>A <a class="wiki-term" data-wiki="Lever" href="https://en.wikipedia.org/wiki/Lever" target="_blank" rel="noopener">lever</a> balances when the turning effects on the two sides match. If the left weight is <code>NP</code> and the right one is <code>NQ</code>, and their distances from the support are <code>dP</code> and <code>dQ</code>, then balance means <code>NP &times; dP = NQ &times; dQ</code>. So the bigger weight must sit closer in: the distances are in the ratio <code>NQ : NP</code>. That support is exactly the <a class="wiki-term" data-wiki="Center_of_mass" href="https://en.wikipedia.org/wiki/Center_of_mass" target="_blank" rel="noopener">centre of gravity</a> of the two weights.</p>
+
+      <h2>Split each weight into unit weights</h2>
+      <p>For weights 3 and 4, put one unit where the 3 was and two more on either side of it, at equal gaps; do the same with four units for the 4. Each little group has its centre of gravity at the old weight, so nothing about the balance changes. Now the seven units sit in one evenly spaced row. The checks try every pair of weights from 1 to 25: the units always stay evenly spaced and their combined turning effect always equals that of the two original weights.</p>
+
+      <h2>The middle unit is the support</h2>
+      <p>The middle of a row of evenly spaced, equal weights is the halfway point between the two end weights. Putting the support there balances all seven units, and therefore the original 3 and 4 too. For 3 and 4 the support cuts the gap between the weights in the ratio <code>4 : 3</code>, as <a class="wiki-term" data-wiki="Archimedes" href="https://en.wikipedia.org/wiki/Archimedes" target="_blank" rel="noopener">Archimedes</a> proved in Proposition 6. The page's turning-area claim was checked for all 1,250 diagrams: at the middle unit the two sides' weight-times-distance sums are equal; move the support either way and the side with the bigger sum tips down.</p>
+
+      <h2>Which unit should you choose?</h2>
+      <p>For 6 and 8, one unit gives 6 + 8 = 14 equal weights; using the <a class="wiki-term" data-wiki="Greatest_common_divisor" href="https://en.wikipedia.org/wiki/Greatest_common_divisor" target="_blank" rel="noopener">greatest common divisor</a> 2 gives 3 + 4 = 7 units of weight two. Both put the support at the same fraction, <code>8 : 6 = 4 : 3</code>, of the way from the left weight to the right one. The old applet redraws the whole row to fit when the number of units changes, so the pixel position shifts a little; the point <em>between the two weights</em> is the same. Unlike the applet, this page lets you drag the weights and the support, and adds a button to put the support back; the coloured dots are drawn smaller than the applet's circles so the largest weights still fit.</p>
+
+      <p class="tip">Try 3 and 4, drag the red support away, then press Balance it. Now change to 6 and 8 and tick the box: the support still sits at the same fraction of the gap.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ArchimedesLever.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="archimedes-lever-core.js"></script>
+<script src="archimedes-lever.js"></script>
+</body>
+</html>
