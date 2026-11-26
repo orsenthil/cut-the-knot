@@ -1942,5 +1942,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "pascal-triangle",
+      title: "Pascal's Triangle",
+      blurb: "How many ways are there to walk from the top dot of a triangle to any other dot, going down left or right? The answers make Pascal's triangle.",
+      tags: ["counting", "sequences"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };

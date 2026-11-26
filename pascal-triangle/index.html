@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pascal's Triangle &mdash; coolmaths</title>
+<meta name="description" content="How many ways are there to walk from the top dot of a triangle to any other dot, going down left or right? The answers make Pascal's triangle.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/pascal-triangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Pascal's Triangle">
+<meta property="og:description" content="How many ways are there to walk from the top dot of a triangle to any other dot, going down left or right? The answers make Pascal's triangle.">
+<meta property="og:url" content="https://coolmaths.ai/pascal-triangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.4rem; }
+  #board { width: 100%; height: auto; display: block; }
+  #board .arrow { stroke: var(--border-strong); stroke-width: 1.2; fill: none; }
+  #board .dot { fill: var(--stage); stroke: var(--ink); stroke-width: 1.2; cursor: pointer; }
+  #board .dot.parent { fill: var(--highlight); stroke: var(--accent); stroke-width: 2.4; }
+  #board .dot.pick { fill: var(--accent); }
+  #board text { font: 600 13px system-ui, sans-serif; fill: var(--ink); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+  #board .dot.pick + text { fill: #fff; }
+  .readout { font-size: 0.95rem; margin: 0.5rem 0 0; }
+  .controls label { display: inline-flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; max-width: 100%; }
+  .controls input[type=range] { width: min(12rem, 100%); }
+  .controls select { font: inherit; max-width: 100%; }
+</style>
+</head>
+<body data-game="pascal-triangle" data-kind="demo">
+<main id="main">
+  <h1>Pascal's Triangle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#sequences">Sequences</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Every dot in a triangle of dots has a number: how many ways there are to walk to it from the top dot.<br>
+    <strong>How to play:</strong> Press any dot to see the two dots it is reached from, and add their numbers. Change the shape or the number of rows.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="img" aria-label="Pascal's triangle: rows of dots, each with the number of ways to walk to it from the top dot"></svg>
+    <p id="readout" class="readout"></p>
+  </div>
+
+  <div class="controls">
+    <label>Shape <select id="formSel" aria-label="Arrangement of the dots">
+      <option value="symmetric">Symmetric</option><option value="pascals">Pascal's</option><option value="right">Right triangle</option></select></label>
+    <label>Rows <input id="rowsIn" type="range" min="2" max="16" step="1" value="11" aria-label="Number of rows"></label>
+    <label><input id="arrowsIn" type="checkbox"> Show arrows</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Walk down from the top dot, stepping left or right at every dot. The number at a dot is the number of different walks that end there. The numbers are the entries of Pascal's triangle, and they turn out to be the binomial coefficients.</p>
+
+      <h2>Adding the two dots above</h2>
+      <p>A dot that is not at the end of a row can only be reached from the two dots just above it, and each walk to one of them continues in exactly one way. So <code>C(n, m) = C(n-1, m-1) + C(n-1, m)</code>, with <code>C(n, 0) = C(n, n) = 1</code>. Press a dot to see the sum. The test built the triangle this way up to 16 rows.</p>
+
+      <h2>Counting by choosing</h2>
+      <p>A walk of <code>n</code> steps ending at dot <code>m</code> has <code>m</code> steps to the right and <code>n - m</code> to the left, so the walks are the ways to choose which <code>m</code> of the <code>n</code> steps go right: <a class="wiki-term" data-wiki="Binomial_coefficient" href="https://en.wikipedia.org/wiki/Binomial_coefficient" target="_blank" rel="noopener">n choose m</a>. The test also counted every walk of up to 16 steps one by one and got the same rows. The rule above is <a class="wiki-term" data-wiki="Pascal%27s_triangle" href="https://en.wikipedia.org/wiki/Pascal%27s_triangle" target="_blank" rel="noopener">Pascal's identity</a>.</p>
+
+      <h2>Two checks to try</h2>
+      <p>Row <code>n</code> adds up to <code>2<sup>n</sup></code>, because there are <code>2<sup>n</sup></code> walks of <code>n</code> steps and each ends somewhere. Every row reads the same backwards, since <code>C(n, m) = C(n, n-m)</code>. The test confirmed both for all 16 rows.</p>
+
+      <p class="tip">Choose "Pascal's" and look along the diagonals. Why do the numbers on a diagonal add up to a number in the next row?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/PascalTriangle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="pascal-triangle-core.js"></script>
+<script src="pascal-triangle.js"></script>
+</body>
+</html>
