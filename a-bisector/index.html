@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ABisector &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle: do its three angle bisectors always meet at one point? Find the incenter and the circle that touches every side.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/a-bisector/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="ABisector">
+<meta property="og:description" content="Drag the corners of a triangle: do its three angle bisectors always meet at one point? Find the incenter and the circle that touches every side.">
+<meta property="og:url" content="https://coolmaths.ai/a-bisector/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .bisector { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .foot-dot { fill: var(--muted); }
+  #board .half-arc { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .half-arc.alt { stroke: var(--muted); }
+  #board .incircle { fill: var(--good); fill-opacity: 0.10; stroke: var(--good); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .incenter-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .tangent-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 18px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .center-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .aux-handle { fill: var(--highlight); stroke: var(--ink); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="a-bisector" data-kind="demo">
+<main id="main">
+  <h1>ABisector</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners of a triangle and watch its three angle bisectors meet in one spot.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a corner and use the arrow keys. Press Check the claims to test what you see.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle with its three angle bisectors, the incenter and a circle touching all three sides"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset triangle</button>
+    <button id="circlesBtn" type="button" aria-pressed="true" aria-label="Toggle the circles that touch two sides">Hide tangent circles</button>
+    <button id="checkBtn" type="button" aria-label="Check the angle bisector claims for this triangle">Check the claims</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Every corner of a triangle has a line that cuts its angle exactly in half. The surprising part is that the three lines always meet at one point, and that point is the centre of a circle touching all three sides.</p>
+
+      <h2>One line, two equal angles</h2>
+      <p>An <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> is the line that splits an angle into two equal parts. In the picture, the two small arcs at each corner are coloured differently but have the same angle: <code>angle(B,A,D) = angle(D,A,C)</code>, and the same at B and C. The logic test measures all three pairs on hundreds of triangles, including very obtuse ones, and the two halves agree every time.</p>
+
+      <h2>Where the bisector cuts the far side</h2>
+      <p>Let the bisector from A meet BC at D, and call the side lengths <code>a = BC</code>, <code>b = CA</code>, <code>c = AB</code>. Comparing the <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">areas</a> of triangles ABD and ACD in two ways gives the bisector theorem:</p>
+      <blockquote><code>AB / AC = BD / DC</code> &nbsp;that is&nbsp; <code>c / b = BD / DC</code>.</blockquote>
+      <p>Both ways use the same altitude for one comparison and the same half-angle for the other, so everything cancels. The old archived page printed <code>AB / BC</code> in this line by mistake; the live article, and this page, give the correct <code>AB / AC</code>.</p>
+
+      <h2>All three lines meet at one point</h2>
+      <p>Apply the same ratio at the other two corners. The three ratios multiply to <code>(c/b)(a/c)(b/a) = 1</code>, which is exactly <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a>, so the three bisectors must pass through a single point. That point is the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a>. It is equally far from all three sides, so it is the centre of the <a class="wiki-term" data-wiki="Incircle_and_excircles" href="https://en.wikipedia.org/wiki/Incircle_and_excircles" target="_blank" rel="noopener">incircle</a> drawn here.</p>
+      <p>Drag one of the small dots along a bisector toward the centre: its circle touches one side, and at the incenter it just touches all three.</p>
+
+      <h2>Side lengths as weights</h2>
+      <p>There is a short way to find both points. Put weights <code>a, b, c</code> at the corners <code>A, B, C</code>. Their balance point is the incenter, and leaving out one weight gives the foot on the opposite side: <code>D = (b·B + c·C)/(b+c)</code>. The radius is <code>r = area / s</code>, where <code>s = (a+b+c)/2</code>. The logic test checks these formulas against the applet's own construction — rotate a ray by half the angle and intersect two lines — on hundreds of triangles.</p>
+
+      <p class="tip">Try making a very long, thin, obtuse triangle: the three lines still meet, and the circle still fits inside.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/triangle/ABisector.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="a-bisector-core.js"></script>
+<script src="a-bisector.js"></script>
+</body>
+</html>
