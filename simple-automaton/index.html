@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simple Automaton &mdash; coolmaths</title>
+<meta name="description" content="Live cells follow one of five tiny rules and change all at once. Why does every finite population die out, and why does rule 2n take no more steps than there were cells at the start?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/simple-automaton/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Simple Automaton">
+<meta property="og:description" content="Live cells follow one of five tiny rules and change all at once. Why does every finite population die out, and why does rule 2n take no more steps than there were cells at the start?">
+<meta property="og:url" content="https://coolmaths.ai/simple-automaton/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 42rem;
+    padding: 0.9rem 1rem;
+  }
+  .scroll { overflow-x: auto; }
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(var(--side, 10), 2rem);
+    gap: 2px;
+    width: max-content;
+    margin: 0 auto;
+  }
+  .cell {
+    width: 2rem;
+    height: 2rem;
+    min-width: 2rem;
+    min-height: 2rem;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--stage);
+    cursor: pointer;
+  }
+  .cell.live { background: var(--accent); border-color: var(--accent); }
+  .cell:hover { border-color: var(--focus); }
+  #count { margin: 0.7rem 0 0; color: var(--muted); font-size: 0.9rem; text-align: center; }
+  .controls .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    gap: 0.6rem 1rem;
+  }
+  .rules {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 100%;
+    gap: 0.3rem;
+  }
+  .rules label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    min-height: 2.75rem;
+    padding: 0 0.35rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.9rem;
+  }
+  .rules label:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+  .spinner {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    gap: 0.35rem;
+  }
+  .controls .spinner label { white-space: normal; color: var(--muted); font-size: 0.9rem; }
+  .spinner input {
+    width: 3.75rem;
+    min-height: 2.75rem;
+    padding: 0.25rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--card);
+    color: var(--text);
+    font: inherit;
+    text-align: center;
+  }
+  #ruleHint { width: 100%; color: var(--muted); font-size: 0.85rem; text-align: center; }
+  button:focus-visible, input:focus-visible, .cell:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 1px;
+  }
+</style>
+</head>
+<body data-game="simple-automaton" data-kind="demo">
+<main id="main">
+  <h1>Simple Automaton</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#sequences">Sequences</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Some squares are alive. Each tick, a square comes to life only if enough squares in its little pattern are alive. Watch every population eventually vanish. There is nothing to win &mdash; try to make it last.<br>
+    <strong>How to play:</strong> Click squares to draw living cells, pick a rule, then press Step or Run. Clear, Random and the grid size start a new experiment.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="scroll"><div id="grid" role="grid" aria-label="The automaton's square grid"></div></div>
+    <p id="count"></p>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <div class="rules" role="radiogroup" aria-label="Transition rule">
+        <label><input id="rule-2n" type="radio" name="rule" value="2n"> 2n</label>
+        <label><input id="rule-3n" type="radio" name="rule" value="3n"> 3n</label>
+        <label><input id="rule-3d" type="radio" name="rule" value="3d"> 3d</label>
+        <label><input id="rule-4n" type="radio" name="rule" value="4n"> 4n</label>
+        <label><input id="rule-4d" type="radio" name="rule" value="4d"> 4d</label>
+      </div>
+      <div class="spinner">
+        <label for="sideInput">Side</label>
+        <input id="sideInput" type="number" min="3" max="20" step="1" inputmode="numeric" aria-label="Number of cells along one side">
+      </div>
+    </div>
+    <div class="control-row">
+      <button id="stepBtn" type="button" class="primary">Step</button>
+      <button id="runBtn" type="button">Run</button>
+      <button id="randomBtn" type="button">Random</button>
+      <button id="clearBtn" type="button">Clear</button>
+    </div>
+    <p id="ruleHint"></p>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A <a class="wiki-term" data-wiki="Cellular_automaton" href="https://en.wikipedia.org/wiki/Cellular_automaton" target="_blank" rel="noopener">cellular automaton</a> applies the same simple rule to every square at once. Here the rules differ only in which neighbouring squares they look at and how many must be alive.</p>
+
+      <h2>The five rules</h2>
+      <p>Every count includes the square itself. Rule <code>2n</code> looks above and to the right and needs two live squares; <code>3n</code> also looks below and needs three; <code>3d</code> looks at three squares stretching rightwards and needs three; <code>4n</code> looks up, down, left and right and needs four; <code>4d</code> looks at the four diagonal squares and needs four. Nothing wraps around the edge of the grid.</p>
+
+      <h2>Why everything dies</h2>
+      <p>The rules are monotone: adding live cells to a population can never turn a surviving cell into a dead one. For four of the five rules, a population inside a rectangle stays inside that rectangle. Starting from a full rectangle, the pattern of extinction is easy to see, and every smaller population dies at least as fast. The exception is <code>3d</code>, which looks to the right, but a direct argument still shows that finite populations vanish.</p>
+
+      <h2>The two-step bound</h2>
+      <p>For rule <code>2n</code> there is a sharper result from a 1973 olympiad: a population of <code>n</code> live cells dies out in at most <code>n</code> steps. The proof uses <a class="wiki-term" data-wiki="Mathematical_induction" href="https://en.wikipedia.org/wiki/Mathematical_induction" target="_blank" rel="noopener">induction</a>: remove the bottom row and the left column of the smallest rectangle containing the population; each smaller rectangle expires in time bounded by its live cells, leaving at most one corner survivor, which dies in one more step.</p>
+
+      <h2>What was checked</h2>
+      <p>The test transcribes all five rule branches again from the bytecode and compares every cell over seeded grids. It checks that every finite random population dies under every rule, that rule <code>2n</code> meets the live-cell bound on every 3×3 population and on seeded 6×6 grids, and that the rules are monotone. It also checks the options, clicking, stepping and the messages.</p>
+
+      <p class="tip">Clear the grid, then draw a diagonal line of five cells and run rule 2n. How many steps does it take?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/SimpleAutomaton.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="simple-automaton-core.js"></script>
+<script src="simple-automaton.js"></script>
+</body>
+</html>

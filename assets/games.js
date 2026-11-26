@@ -2174,5 +2174,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "simple-automaton",
+      title: "Simple Automaton",
+      blurb: "Live cells follow one of five tiny rules and change all at once. Why does every finite population die out, and why does rule 2n take no more steps than there were cells at the start?",
+      tags: ["algorithms", "logic", "sequences"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };
