@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bender &mdash; coolmaths</title>
+<meta name="description" content="Small shapes spin at the corners of a bigger one. Turn the picture, change the shapes, and see why straight sides can look bent.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bender/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Bender">
+<meta property="og:description" content="Small shapes spin at the corners of a bigger one. Turn the picture, change the shapes, and see why straight sides can look bent.">
+<meta property="og:url" content="https://coolmaths.ai/bender/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .guide { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 6; opacity: 0.65; }
+  #board .fixed-side { stroke: var(--bad); stroke-width: 3; stroke-linecap: round; }
+  #board .small-poly { stroke: var(--ink); stroke-opacity: 0.3; stroke-width: 1; stroke-linejoin: round; }
+  #board .vertex-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .centre-handle { fill: var(--good); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .sliders { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr)); gap: 0.5rem 1rem; width: 100%; }
+  .sliders label { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; max-width: 100%; font-size: 0.9rem; color: var(--muted); }
+  .sliders input[type="range"] { width: 100%; min-width: 0; min-height: 1.6rem; accent-color: var(--accent); }
+  .controls .choices label, .controls .sliders label { white-space: normal; }
+  .choices { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; max-width: 100%; }
+  .choices label { display: flex; align-items: center; gap: 0.4rem; max-width: 100%; font-size: 0.95rem; color: var(--muted); }
+  .choices select { min-height: 2.4rem; max-width: 100%; font-size: 1rem; accent-color: var(--accent); }
+  .choices input[type="checkbox"] { width: 1.2rem; height: 1.2rem; accent-color: var(--accent); }
+</style>
+</head>
+<body data-game="bender" data-kind="demo">
+<main id="main">
+  <h1>Bender</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a contest: little shapes spin at the corners of a bigger one and fool your eyes.<br>
+    <strong>How to play:</strong> Drag the marked corner to turn the picture, or the middle dot to move it. Change the choices, press Start to spin, and press Check the pattern when you want to test it.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A stationary polygon with a smaller spinning polygon at each corner; two draggable dots move its centre and turn it"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="choices">
+      <label for="fixedSel">Big shape
+        <select id="fixedSel" aria-label="Stationary shape: triangle, square, pentagon or hexagon">
+          <option value="3">Triangle</option>
+          <option value="4" selected>Square</option>
+          <option value="5">Pentagon</option>
+          <option value="6">Hexagon</option>
+        </select>
+      </label>
+      <label for="rotSel">Spinning shape
+        <select id="rotSel" aria-label="Spinning shape: triangle, square, pentagon or hexagon">
+          <option value="3">Triangle</option>
+          <option value="4" selected>Square</option>
+          <option value="5">Pentagon</option>
+          <option value="6">Hexagon</option>
+        </select>
+      </label>
+      <label for="shiftInput">
+        <input id="shiftInput" type="checkbox" aria-label="Shift the small shapes off the corners">
+        Shift off the corners
+      </label>
+    </div>
+    <div class="sliders">
+      <label for="sideInput">Size of spinning shapes: <span id="sideVal">40</span>
+        <input id="sideInput" type="range" min="0" max="80" step="1" value="40"
+               aria-label="Size of the spinning shapes, from 0 to 80">
+      </label>
+      <label for="speedInput">Pause between steps: <span id="speedVal">40 ms</span>
+        <input id="speedInput" type="range" min="0" max="200" step="1" value="160"
+               aria-label="Pause between animation steps; the slider runs from 0 to 200">
+      </label>
+      <label for="tintInput">Strength of the green: <span id="tintVal">100%</span>
+        <input id="tintInput" type="range" min="0" max="100" step="1" value="100"
+               aria-label="Strength of the green covering shapes, from 0 to 100 percent">
+      </label>
+    </div>
+    <button id="playBtn" type="button" aria-label="Start the spinning polygons">Start</button>
+    <button id="stepBtn" type="button" aria-label="Move the spinning shapes on by one step">One step</button>
+    <button id="checkBtn" type="button" aria-label="Check the symmetry of this picture">Check the pattern</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put all controls back to their starting values">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The shape in the middle never moves. The little shapes at its corners do, and their motion makes perfectly straight sides look bent or even curved. Nothing is actually bent: the picture is exactly the same kind of <a class="wiki-term" data-wiki="Regular_polygon" href="https://en.wikipedia.org/wiki/Regular_polygon" target="_blank" rel="noopener">regular polygon</a> at every frame.</p>
+
+      <h2>Where every corner is</h2>
+      <p>Put the centre at <code>C</code> and let the big shape have <code>n</code> corners. Its corners are <code>C + R·(cos(a + 2πk/n), sin(a + 2πk/n))</code> for <code>k = 0, 1, …, n−1</code>, where <code>R</code> is one third of the shorter side of the picture (rounded down to a whole pixel, as in the old Java code) and <code>a</code> is the angle set by the marked corner. Equal steps around a circle: that is all a regular polygon is.</p>
+      <p>The applet used four choices for the big shape (3, 4, 5 or 6 corners) and the same four for the little ones. Its size slider runs from 0 to 80, its speed slider from 0 to 200 — the pause is <code>200 − slider</code> milliseconds — and its colour slider from 0 to 100 percent green.</p>
+
+      <h2>All the little shapes turn together</h2>
+      <p>At corner <code>k</code>, a small <a class="wiki-term" data-wiki="Regular_polygon" href="https://en.wikipedia.org/wiki/Regular_polygon" target="_blank" rel="noopener">regular polygon</a> with <code>m</code> corners and radius <code>s</code> has vertices <code>V<sub>k</sub> + s·(cos(π/m + 2πj/m + 2πk/n), sin(π/m + 2πj/m + 2πk/n))</code>. At step <code>I</code> of the applet's 100 steps, every one of them is turned through the same angle <code>2πI/100</code> about its own corner. So all the small shapes stay alike, and turning the whole picture by <code>360°/n</code> about <code>C</code> carries it onto itself — <a class="wiki-term" data-wiki="Rotational_symmetry" href="https://en.wikipedia.org/wiki/Rotational_symmetry" target="_blank" rel="noopener">rotational symmetry</a> survives every frame. The logic test checks this for all 4 × 4 pairs of shapes, all 81 sizes, all 100 steps and both modes.</p>
+
+      <h2>The displaced setting</h2>
+      <p>Ticked, the old applet's checkbox moved each small shape a little way off its corner. Reading the bytecode, the shift puts the midpoint of the shape's first edge two units farther out along the radius through that corner. The code rounded the shape to whole pixels before shifting it, so the symmetry can be off by a few pixels; the test allows that. The control here is named for what it does, because the original checkbox said "Centered" while ticking it switched the displaced mode on.</p>
+
+      <h2>What is really an illusion</h2>
+      <p>The page says the sides can seem misoriented, that a hexagon can look round, and that a triangle is the least troublesome big shape but the most useful little one. Those are claims about what people see, not about the points: the <a class="wiki-term" data-wiki="Optical_illusion" href="https://en.wikipedia.org/wiki/Optical_illusion" target="_blank" rel="noopener">illusion</a> is in the eye, and the geometry never breaks its rules. The original hexagon with six small triangles was invented by Walter Gerbino; try that pair with the shift turned on. The logic test does not try to measure how convincing an illusion looks.</p>
+
+      <p class="tip">Try a hexagon with six triangles as the spinning shapes, then press One step slowly and watch the red sides appear to tilt.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Bender.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bender-core.js"></script>
+<script src="bender.js"></script>
+</body>
+</html>
