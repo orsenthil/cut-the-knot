@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Angle Bisector In Equilateral Trapezoid &mdash; coolmaths</title>
+<meta name="description" content="A trapezoid sits inside a circle. When do four new points built from a dot inside it lie on one circle? Move the corners and find out.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/angle-bisector-in-equilateral-trapezoid/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Angle Bisector In Equilateral Trapezoid">
+<meta property="og:description" content="A trapezoid sits inside a circle. When do four new points built from a dot inside it lie on one circle? Move the corners and find out.">
+<meta property="og:url" content="https://coolmaths.ai/angle-bisector-in-equilateral-trapezoid/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .trapezoid { fill: var(--accent-soft); stroke: none; }
+  #board .circumcircle { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .pqrs-circle { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .side { stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; fill: none; }
+  #board .diagonal { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; fill: none; }
+  #board .ray { stroke: var(--accent); stroke-width: 2; fill: none; }
+  #board .parallel { stroke: var(--highlight); stroke-width: 2.5; stroke-dasharray: 7 4; fill: none; }
+  #board .hint-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 4; fill: none; }
+  #board .pqrs { fill: var(--good); fill-opacity: 0.12; stroke: var(--accent); stroke-width: 2; }
+  #board .constructed-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .hint-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.2; }
+  #board .half-arc { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .half-arc.alt { stroke: var(--highlight); }
+  #board .pt-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2.5;
+    cursor: grab;
+  }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .control-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.9rem; }
+  .control-row label { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.95rem; }
+  .control-row input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="angle-bisector-in-equilateral-trapezoid" data-kind="demo">
+<main id="main">
+  <h1>Angle Bisector In Equilateral Trapezoid</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the four corners of a trapezoid and the dot inside it, and watch when four new dots land on one circle.<br>
+    <strong>How to play:</strong> Drag A, B, C, D or G with a mouse or finger, or focus a dot and use the arrow keys. Press the middle-line button to see the special case.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 280" role="group"
+         aria-label="A trapezoid in a circle, a point G inside it, and the four points P, Q, R, S that may lie on one circle"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label><input type="radio" name="mode" value="circle" checked> Move points</label>
+      <label><input type="radio" name="mode" value="free"> Adjust circle</label>
+      <label><input id="names" type="checkbox" checked> Show names</label>
+      <label><input id="hint" type="checkbox" disabled> Show hint</label>
+    </div>
+    <div class="control-row">
+      <button id="bisectorBtn" type="button" class="primary" aria-label="Put G on the line that splits the angle at B into two equal parts">Put G on the middle line</button>
+      <button id="offBtn" type="button" aria-label="Move G away from the middle line">Move G off the line</button>
+      <button id="resetBtn" type="button" aria-label="Reset the trapezoid and G to their starting places">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This is problem 5 from the 2009 USA Mathematical Olympiad. Four new points are built from a trapezoid inside a circle. The surprise is that they lie on one circle precisely when one line at B cuts an angle exactly in half — move any point and the two events always happen together.</p>
+
+      <h2>A trapezoid that fits a circle</h2>
+      <p>The trapezoid <code>ABCD</code> has <code>AB</code> parallel to <code>CD</code> and all four corners on one <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>. Such a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a> must be isosceles: its two sloping sides are equal, <code>AD = BC</code>. The centre of the circle sits on the same middle line as the centres of both parallel sides, so reflecting one end of a base in that line gives the other end. The core uses this to keep the picture a true trapezoid after every drag, and the logic test checked it on hundreds of shapes.</p>
+
+      <h2>How the four points are made</h2>
+      <p>The point <code>G</code> lies inside triangle <code>BCD</code>. The line from <code>A</code> through <code>G</code> meets the circle again at <code>P</code>, and the line from <code>B</code> through <code>G</code> meets it again at <code>Q</code>. Through <code>G</code> draw a line parallel to <code>AB</code>: it meets <code>BD</code> at <code>R</code> and <code>BC</code> at <code>S</code>. That is all — the question is only when <code>P</code>, <code>Q</code>, <code>R</code>, <code>S</code> are <a class="wiki-term" data-wiki="Concyclic_points" href="https://en.wikipedia.org/wiki/Concyclic_points" target="_blank" rel="noopener">concyclic</a>.</p>
+
+      <h2>When BG cuts the angle in half</h2>
+      <p>Let <code>BG</code> split <code>CBD</code> into two equal parts. Then <code>Q</code> is the midpoint of the arc <code>CD</code>, so it lies directly above the circle's centre — this is exactly when the applet turns on its hint box, and the status line here says the hint is unlocked. Let <code>T</code> be where <code>BQ</code> meets <code>CD</code>. Triangles <code>DTB</code> and <code>QCB</code> are <a class="wiki-term" data-wiki="Similarity_(geometry)" href="https://en.wikipedia.org/wiki/Similarity_(geometry)" target="_blank" rel="noopener">similar</a>, which makes triangles <code>DGB</code> and <code>QSB</code> similar as well, so <code>BDG = BQS</code>. Equal <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angles</a> give <code>GPD = BDC = BRS</code>, making <code>DRGP</code> cyclic; putting the equal angles together gives <code>RQS = RPS</code>, so <code>PQRS</code> is cyclic.</p>
+
+      <h2>And only then</h2>
+      <p>Conversely, assume <code>PQRS</code> is cyclic. Both <code>ABPQ</code> and <code>RSPQ</code> are cyclic, so <code>AQR = BPS</code>; with <code>AQB = APB</code> this gives <code>BQR = SPG</code>. Since <code>GSC = GPC</code>, the quadrilateral <code>GSPC</code> is cyclic and <code>SPQ = SCG</code>, hence <code>BQR = BCG</code>. If <code>DBQ</code> were bigger than <code>CBQ</code>, triangles <code>BRQ</code> and <code>BGC</code> would force <code>BQ/BC &gt; BD/BM</code> by the <a class="wiki-term" data-wiki="Law_of_sines" href="https://en.wikipedia.org/wiki/Law_of_sines" target="_blank" rel="noopener">sine rule</a>, while triangles <code>BDM</code> and <code>BCQ</code> force the opposite inequality — a contradiction. The other case is the same argument reversed, so the two parts of <code>CBD</code> must be equal.</p>
+      <p>The logic test checks the whole "if and only if" on hundreds of random trapezoids: with <code>G</code> on the bisector the four points are cyclic to within <code>1e-7</code> of the circle's radius; with <code>G</code> clearly off it they are not. It also reproduces every constructed point from a second transcription of the applet's own bytecode.</p>
+
+      <p class="tip">Press Put G on the middle line, then drag A or B: the green circle through P, Q, R, S follows every change. Now drag G just a little away and watch the circle vanish.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AngleBisectorInEquilateralTrapezoid.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="angle-bisector-in-equilateral-trapezoid-core.js"></script>
+<script src="angle-bisector-in-equilateral-trapezoid.js"></script>
+</body>
+</html>
