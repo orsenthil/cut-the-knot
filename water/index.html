@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Water &mdash; coolmaths</title>
+<meta name="description" content="Three jugs hold 3, 5 and 8 cups, and the big one starts full. Can you pour until one jug holds exactly 4?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/water/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Water">
+<meta property="og:description" content="Three jugs hold 3, 5 and 8 cups, and the big one starts full. Can you pour until one jug holds exactly 4?">
+<meta property="og:url" content="https://coolmaths.ai/water/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  .setup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    max-width: 100%;
+  }
+  .setup label, .setup fieldset { display: inline-flex; flex-wrap: wrap; gap: 0.35rem 0.75rem; align-items: center; }
+  .setup fieldset { border: 1px solid var(--border); border-radius: 10px; padding: 0.35rem 0.6rem; }
+  .setup legend { padding: 0 0.25rem; color: var(--muted); font-size: 0.85rem; }
+  .setup input[type="number"] { width: 3.5rem; max-width: 100%; }
+  #levelFields[hidden] { display: none; }
+
+  #jugs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0.5rem 1rem;
+    width: 100%;
+    max-width: 32rem;
+    padding: 1rem 0.75rem;
+  }
+  .jugcol { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; min-width: 4.5rem; }
+  .jug {
+    display: block;
+    width: 100%;
+    max-width: 5rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    border-radius: 10px;
+  }
+  .jug svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .jug .glass, .jug .rim { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; }
+  .jug .rim { stroke-width: 3; }
+  .jug .water { fill: #4a90b8; }
+  .jug.selected .glass, .jug.selected .rim { stroke: var(--accent); stroke-width: 3.5; }
+  .jug:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .jugname { font-weight: 650; }
+  .jugamount { font-size: 0.9rem; color: var(--muted); white-space: nowrap; }
+
+  #pourControls { justify-content: center; margin-top: 12px; }
+  #pourControls button { min-width: 3.5rem; }
+  #hint { max-width: 32rem; margin: 8px auto 0; padding-left: 1.5em; color: var(--muted); font-size: 0.9rem; }
+  #hint[hidden] { display: none; }
+  #moves { color: var(--muted); font-size: 0.9rem; }
+  #status { margin-top: 10px; }
+</style>
+</head>
+<body data-game="water" data-kind="demo">
+<main id="main">
+  <h1>Water</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Three jugs hold 3, 5 and 8 cups of water, and the biggest one starts full. Pour until a jug holds exactly 4 cups.<br>
+    <strong>How to play:</strong> Choose a jug, then choose another to pour into. Pouring stops when the first jug is empty or the second is full. Use the arrow buttons to pour in one press, or Back to undo.
+  </div>
+
+  <div class="controls setup">
+    <fieldset>
+      <legend>Change</legend>
+      <label><input type="radio" name="mode" value="play" checked> Pour water</label>
+      <label><input type="radio" name="mode" value="capacity"> Jug sizes</label>
+      <label><input type="radio" name="mode" value="water"> Water level</label>
+    </fieldset>
+    <label>Jug sizes (0&ndash;20)
+      <input type="number" id="capA" min="0" max="20" step="1" value="3" aria-label="Size of jug A">
+      <input type="number" id="capB" min="0" max="20" step="1" value="5" aria-label="Size of jug B">
+      <input type="number" id="capC" min="0" max="20" step="1" value="8" aria-label="Size of jug C">
+    </label>
+    <span id="levelFields" hidden>
+      <label>Water in A <input type="number" id="lvlA" min="0" max="3" step="1" value="0" aria-label="Water in jug A"></label>
+      <label>B <input type="number" id="lvlB" min="0" max="5" step="1" value="0" aria-label="Water in jug B"></label>
+      <label>C <input type="number" id="lvlC" min="0" max="8" step="1" value="8" aria-label="Water in jug C"></label>
+    </span>
+    <label>I want <input type="number" id="targetIn" min="0" max="20" step="1" value="4" aria-label="Amount to measure"> cups</label>
+  </div>
+
+  <div id="jugs" class="stage">
+    <div class="jugcol" id="colA">
+      <button type="button" class="jug" data-jug="0"></button>
+      <div class="jugname">A</div><div class="jugamount" id="amtA"></div>
+    </div>
+    <div class="jugcol" id="colB">
+      <button type="button" class="jug" data-jug="1"></button>
+      <div class="jugname">B</div><div class="jugamount" id="amtB"></div>
+    </div>
+    <div class="jugcol" id="colC">
+      <button type="button" class="jug" data-jug="2"></button>
+      <div class="jugname">C</div><div class="jugamount" id="amtC"></div>
+    </div>
+  </div>
+
+  <div class="controls" id="pourControls">
+    <button type="button" class="pour" data-from="0" data-to="1">A &rarr; B</button>
+    <button type="button" class="pour" data-from="0" data-to="2">A &rarr; C</button>
+    <button type="button" class="pour" data-from="1" data-to="0">B &rarr; A</button>
+    <button type="button" class="pour" data-from="1" data-to="2">B &rarr; C</button>
+    <button type="button" class="pour" data-from="2" data-to="0">C &rarr; A</button>
+    <button type="button" class="pour" data-from="2" data-to="1">C &rarr; B</button>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button">New Game</button>
+    <button id="backBtn" type="button">Back</button>
+    <button id="resetBtn" type="button">Reset</button>
+    <button id="hintBtn" type="button" class="primary">Show a way</button>
+    <span id="moves">Pours: 0</span>
+  </div>
+
+  <ol id="hint" hidden></ol>
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        This is Alexander Bogomolny's <em>three jugs problem</em>. Two friends have a jug
+        with 8 quarts of water and want to share it evenly; they also have empty jugs of
+        5 and 3 quarts. The surprising part is that the same simple pouring rule can
+        measure <em>every</em> whole amount from 0 up to 8, not just 4.
+      </p>
+
+      <h2>What one pour does</h2>
+      <p>
+        Call the amounts in the three jugs <code>x</code>, <code>y</code>, <code>z</code>.
+        Pouring from one jug into another moves the smaller of two numbers: what is in
+        the first jug, and the space left in the second. So one of them always ends
+        empty or full. Water is never spilled, which gives an
+        <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>:
+      </p>
+      <blockquote><code>x + y + z = C = 8</code></blockquote>
+      <p>
+        Every state is a point on this small grid of whole-number triples, and a pour is
+        a step along one of its lines. Press "Show a way" to watch the search find a
+        shortest route to the amount you asked for &mdash; six pours for 4 with 3, 5 and 8.
+      </p>
+
+      <h2>Why every amount can turn up</h2>
+      <p>
+        The page claims that if <code>C = A + B</code> and <code>A</code> and <code>B</code>
+        are <a class="wiki-term" data-wiki="Coprime_integers" href="https://en.wikipedia.org/wiki/Coprime_integers" target="_blank" rel="noopener">coprime</a>,
+        every amount <code>0 &le; q &le; C</code> can be measured. The reason is
+        <a class="wiki-term" data-wiki="Modular_arithmetic" href="https://en.wikipedia.org/wiki/Modular_arithmetic" target="_blank" rel="noopener">modular arithmetic</a>:
+        filling the small jug and emptying it into the middle one changes the water in
+        the big jug by <code>&minus;A</code> modulo <code>C</code>. Because
+        <code>A</code> and <code>C</code> share no factor, the remainders
+        <code>0, &minus;A, &minus;2A, &hellip;, &minus;(C&minus;1)A</code> are all different.
+        They must therefore be <em>all</em> the remainders <code>0</code> to
+        <code>C&minus;1</code>, and the big jug visits every amount. The logic test
+        checks this exhaustively: for every coprime <code>A, B &le; 12</code> with
+        <code>A + B &le; 20</code> (the applet's capacity limit), all amounts
+        <code>0 &hellip; C</code> really are reachable, and each one appears in jug C.
+      </p>
+
+      <h2>When it cannot be done</h2>
+      <p>
+        A pour only adds or removes a whole jugful, so if the sizes share a
+        <a class="wiki-term" data-wiki="Greatest_common_divisor" href="https://en.wikipedia.org/wiki/Greatest_common_divisor" target="_blank" rel="noopener">greatest common divisor</a>
+        <code>g</code>, every amount you can ever hold is a multiple of <code>g</code>.
+        With sizes 4, 6 and 10, <code>g = 2</code>, so 5 cups is impossible; the test
+        confirms that no other amount turns up either. Coprime sizes are not enough by
+        themselves: the extra condition <code>C = A + B</code> does real work. Jugs of
+        1, 1 and 5 have no common factor, yet with only two cups of room in the small
+        jugs you can never isolate 2 cups in the big one. The page says such anomalies
+        arise with "rather big" jugs; this tiny example shows they can appear early too.
+      </p>
+
+      <h2>The triangular picture</h2>
+      <p>
+        Because <code>x + y + z</code> is fixed, a triple can be drawn as one point in an
+        equilateral triangle: move toward one corner and the amount in that jug grows.
+        The page calls these
+        <a class="wiki-term" data-wiki="Barycentric_coordinate_system" href="https://en.wikipedia.org/wiki/Barycentric_coordinate_system" target="_blank" rel="noopener">barycentric coordinates</a>.
+        A basic pour is a little inverted V in the picture, and the modular argument
+        above says that repeating it walks the line <code>z = const</code> through every
+        possible remainder before returning to the start.
+      </p>
+
+      <p class="tip">Try sizes 4, 6 and 10 with a target of 5. Then try 1, 1 and 5 with a target of 2. Why do neither work, for different reasons?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/Water.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="water-core.js"></script>
+<script src="water.js"></script>
+</body>
+</html>
