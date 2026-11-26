@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sierpinski Gasket via Chaos Game &mdash; coolmaths</title>
+<meta name="description" content="Hop halfway towards a corner picked at random, over and over. Why do the dots draw a perfect pattern full of holes?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/sierpinski-chaos-game/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Sierpinski Gasket via Chaos Game">
+<meta property="og:description" content="Hop halfway towards a corner picked at random, over and over. Why do the dots draw a perfect pattern full of holes?">
+<meta property="og:url" content="https://coolmaths.ai/sierpinski-chaos-game/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; height: auto; border-radius: 8px; touch-action: none; cursor: grab; }
+  #count { margin: 0.4rem 0 0; text-align: center; color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+  #cornerBtns { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem; margin-top: 0.4rem; font-size: 0.9rem; color: var(--muted); align-items: center; }
+  #cornerBtns button { min-width: 2.75rem; min-height: 2.75rem; padding: 0 0.6rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls input[type="number"] { width: 5.5rem; min-height: 2.75rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="sierpinski-chaos-game" data-kind="demo">
+<main id="main">
+  <h1>Sierpinski Gasket via Chaos Game</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#probability">Probability</a><a class="tag" href="../index.html#sequences">Sequences</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A dot hops halfway towards a corner picked at random, again and again. Watch what picture the dots make.<br>
+    <strong>How to play:</strong> Press Start, and lower the Delay to go faster. Drag a corner to change the triangle.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="600" height="450" aria-label="Triangle ABC. Dots appear inside it as the chaos game runs. Drag a corner or the whole triangle to change it."></canvas>
+    <p id="count" aria-live="off"></p>
+    <div id="cornerBtns" role="group" aria-label="Move a corner with the arrow keys">
+      Move with arrow keys:
+      <button type="button" data-corner="A">A</button>
+      <button type="button" data-corner="B">B</button>
+      <button type="button" data-corner="C">C</button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label><input id="iterBox" type="checkbox"> Show iterations</label>
+    <button id="startBtn" type="button" class="primary">Start</button>
+    <button id="stopBtn" type="button" disabled>Stop</button>
+    <button id="contBtn" type="button" disabled>Continue</button>
+    <label>Delay (ms) <input id="delayInput" type="number" min="0" max="5000" step="10" value="200"></label>
+    <label>Pixel size <input id="pixelInput" type="number" min="1" max="11" step="1" value="2"></label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The <a class="wiki-term" data-wiki="Chaos_game" href="https://en.wikipedia.org/wiki/Chaos_game" target="_blank" rel="noopener">chaos game</a> draws a perfectly regular picture, the <a class="wiki-term" data-wiki="Sierpi%C5%84ski_triangle" href="https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle" target="_blank" rel="noopener">Sierpinski gasket</a>, by random means.</p>
+
+      <h2>Three maps</h2>
+      <p>For a point <code>x</code> let <code>F<sub>A</sub>(x) = (x + A)/2</code>, the point halfway from <code>x</code> to <code>A</code>, and likewise <code>F<sub>B</sub></code> and <code>F<sub>C</sub></code>. Each shrinks the whole triangle to half its size in one corner. The three half-size copies cover the triangle except for a hole in the middle; doing it again leaves nine copies and four holes, and so on for ever. What survives is the gasket: the one shape made of three half-size copies of itself.</p>
+
+      <h2>Why the dots avoid the holes</h2>
+      <p>The game starts at a corner, which is in the gasket, and each map sends the gasket into itself, so every later dot is in the gasket too. The logic test tried all 59,049 runs of ten random choices: every dot passed the test of belonging to the gasket twelve levels deep, and the middle hole was never touched.</p>
+
+      <h2>Why the dots fill it</h2>
+      <p>The last <code>k</code> choices decide which of the <code>3<sup>k</sup></code> small copies the dot is in: the last corner picked is the big copy, the one before it the copy inside that, and so on. Since every string of choices turns up sooner or later, every small copy gets dots. This is Elton's <a class="wiki-term" data-wiki="Ergodic_theory" href="https://en.wikipedia.org/wiki/Ergodic_theory" target="_blank" rel="noopener">ergodic</a> theorem for <a class="wiki-term" data-wiki="Iterated_function_system" href="https://en.wikipedia.org/wiki/Iterated_function_system" target="_blank" rel="noopener">iterated function systems</a> in miniature; the test found 40,000 dots enough to visit all 729 copies of size 1/64.</p>
+
+      <p class="tip">Turn on Show iterations with a long delay to follow single moves, then set the delay to 0 and squash the triangle flat.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/SierpinskiChaosGame.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="sierpinski-chaos-game-core.js"></script>
+<script src="sierpinski-chaos-game.js"></script>
+</body>
+</html>

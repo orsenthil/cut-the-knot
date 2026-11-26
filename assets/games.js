@@ -2236,5 +2236,13 @@ window.COOLMATHS = {
       tags: ["permutations", "parity"],
       level: 2,
     },
+    {
+      slug: "sierpinski-chaos-game",
+      title: "Sierpinski Gasket via Chaos Game",
+      blurb: "Hop halfway towards a corner picked at random, over and over. Why do the dots draw a perfect pattern full of holes?",
+      tags: ["probability", "sequences"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
