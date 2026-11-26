@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bui Quang Tuan &mdash; coolmaths</title>
+<meta name="description" content="Fit six circles one after another into a triangle: why does the seventh land on the first, and where do the touching points sit?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bui-quang-tuan/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Bui Quang Tuan">
+<meta property="og:description" content="Fit six circles one after another into a triangle: why does the seventh land on the first, and where do the touching points sit?">
+<meta property="og:url" content="https://coolmaths.ai/bui-quang-tuan/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    margin: 0 auto;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .edge { fill: none; stroke: var(--ink); stroke-width: 2.2; }
+  #board .bisector { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 6 6; }
+  #board .chain-circle { fill: none; stroke: var(--muted); stroke-width: 1.6; }
+  #board .chain-circle.hot { stroke: var(--accent); stroke-width: 3.2; }
+  #board .big-circle { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 8 6; }
+  #board .centre-link { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .centre-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .incenter-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .touch-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 17px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .label-c { fill: var(--accent); }
+  #board .label-t { fill: var(--highlight); }
+  #board .label-i { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; min-width: 0; }
+  .controls label { display: block; width: 100%; min-width: 0; }
+  .controls select { display: block; width: 100%; max-width: 100%; min-width: 0; }
+</style>
+</head>
+<body data-game="bui-quang-tuan" data-kind="demo">
+<main id="main">
+  <h1>Bui Quang Tuan</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners of a triangle and watch six circles fit into it, one after another.<br>
+    <strong>How to play:</strong> Drag A1, A2, A3 or the point P, or focus one and use the arrow keys. Use the buttons to show names or join the circle centres.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 440" role="group"
+         aria-label="A triangle with a chain of six inscribed circles, their touching points, and four draggable points A1, A2, A3 and P"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the diagram to its starting shape">Reset diagram</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show or hide the point and circle names">Show names</button>
+    <button id="joinBtn" type="button" aria-pressed="false" aria-label="Show or hide the lines joining the circle centres">Join centers</button>
+    <label for="pairSel">Highlight a pair of circles
+      <select id="pairSel" aria-label="Which pair of touching circles to highlight">
+        <option value="0">All circles</option>
+        <option value="1">Pair 1</option>
+        <option value="2">Pair 2</option>
+        <option value="3">Pair 3</option>
+        <option value="4">Pair 4</option>
+        <option value="5">Pair 5</option>
+        <option value="6">Pair 6</option>
+      </select>
+    </label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Bui Quang Tuan found a surprising loop inside an ordinary triangle. Put one circle in a corner, then fit the next one against it in the next corner, and keep going. After six circles you are back where you started. This is a new twist on an old puzzle of H. Eves.</p>
+
+      <h2>Six circles that close up</h2>
+      <p>Start with a circle touching the two sides of <code>angle A3-A1-A2</code>. Mark where it touches side <code>A1A2</code>: call that point <code>T12</code>. The second circle is <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> to the first at <code>T12</code> and sits in the next corner, so it also touches <code>A2A3</code> at <code>T23</code>. Continue around the corners <code>A3, A1, A2, A3, A1, A2</code>. The article's claim is that the seventh circle is exactly the first: <code>C7 = C1</code>. The logic test checks the centre and the radius of that seventh circle on the starting picture and on 300 other triangles; both come back the same.</p>
+
+      <h2>The touching points make one circle</h2>
+      <p>The six common points of tangency are <a class="wiki-term" data-wiki="Concyclic_points" href="https://en.wikipedia.org/wiki/Concyclic_points" target="_blank" rel="noopener">concyclic</a>: one circle passes through all six. Even better, its centre is the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> of the triangle — the point equally far from all three sides. The test measures those distances independently and confirms the claim. The green dashed circle on the picture is this circle of tangency points.</p>
+
+      <h2>A hexagon made of centres</h2>
+      <p>Join the six circle centres in order. The article says they form a <em>parahexagon</em>: opposite sides are <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a> and the same length. Walking round the hexagon, side 1 is the opposite of side 4, side 2 of side 5 and side 3 of side 6; the test compares all three pairs over the same 300 triangles. Press Join centers to see the hexagon.</p>
+
+      <p class="tip">Try dragging P far along the angle bisector: the circles change size, but the seventh still lands on the first.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BuiQuangTuan.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bui-quang-tuan-core.js"></script>
+<script src="bui-quang-tuan.js"></script>
+</body>
+</html>
