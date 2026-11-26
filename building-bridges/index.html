@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Building Bridges &mdash; coolmaths</title>
+<meta name="description" content="Two towns sit on opposite sides of two rivers. Where should you build two straight bridges so the whole road is as short as possible?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/building-bridges/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Building Bridges">
+<meta property="og:description" content="Two towns sit on opposite sides of two rivers. Where should you build two straight bridges so the whole road is as short as possible?">
+<meta property="og:url" content="https://coolmaths.ai/building-bridges/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .river-strip { fill: var(--muted); fill-opacity: 0.18; }
+  #board .bank { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .guide { fill: none; stroke: var(--highlight); stroke-width: 1.8; stroke-dasharray: 7 5; }
+  #board .guide.soft { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 3 6; }
+  #board .try-road { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .try-bridge { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 2 3; }
+  #board .best-road { fill: none; stroke: var(--good); stroke-width: 3.5; stroke-linejoin: round; }
+  #board .best-bridge { fill: none; stroke: var(--accent); stroke-width: 5; }
+  #board .best-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .try-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .glabel.prime { fill: var(--highlight); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 4; }
+  #board .c-handle { fill: var(--highlight); stroke: var(--ink); }
+  #board .mid-handle { fill: var(--good); }
+  #board .bank-handle { fill: var(--muted); stroke: var(--stage); stroke-width: 1.5; cursor: grab; }
+  #board .bank-handle:active { cursor: grabbing; }
+  #board .bank-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 3.5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="building-bridges" data-kind="demo">
+<main id="main">
+  <h1>Building Bridges</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a><a class="tag" href="../index.html#coordinates">Coordinates</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two towns sit on opposite sides of two rivers. Find where to put two straight bridges so the whole road between the towns is as short as possible.<br>
+    <strong>How to play:</strong> Drag the towns, the river banks or the small C dots with a mouse or finger; you can also focus a dot and use the arrow keys. Press Check the construction to test what you see.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Two rivers, two towns, the shortest road with two bridges, and the road through two draggable bridge points"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="checkBtn" type="button" class="primary" aria-label="Check the bridge construction and the claim about parallel road pieces">Check the construction</button>
+    <button id="newBtn" type="button" aria-label="Start a fresh layout of the two rivers and towns">New layout</button>
+    <button id="labelsBtn" type="button" aria-pressed="true" aria-label="Show or hide the names of the points">Hide names</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>With one river you slide just one town by the width of the river. With two rivers you slide <em>both</em> towns, and the stretch of road between the rivers has to line up as well. The trick that makes this easy is a <a class="wiki-term" data-wiki="Translation_(geometry)" href="https://en.wikipedia.org/wiki/Translation_(geometry)" target="_blank" rel="noopener">translation</a>: sliding a whole picture without turning it.</p>
+
+      <h2>One river: slide one town</h2>
+      <p>For a single river the bridge is always a fixed vector <code>V</code>, from the near bank to the far bank. If the bridge starts at C on the near bank, its other end is <code>C' = C + V</code>, so the land part of the road is <code>AC + C'B = AC + CB'</code>, where <code>B' = B - V</code>. The <a class="wiki-term" data-wiki="Triangle_inequality" href="https://en.wikipedia.org/wiki/Triangle_inequality" target="_blank" rel="noopener">triangle inequality</a> says <code>AC + CB' ≥ AB'</code>, with equality exactly when C lies on the straight segment AB'. That is the whole one-river puzzle: cross where AB' meets the near bank.</p>
+
+      <h2>Two rivers: slide both towns</h2>
+      <p>The two-river page states the construction exactly like this: let A' be A translated in the bridge direction of the river nearest to A, toward that river; let B' be B translated toward the second river. Join A' and B'. The intersections of A'B' with the banks farthest from A' and B' show where the bridges go. Its precise claim is that, if the bridges are CC' and C''C''', then for the shortest route <code>AC ∥ C'C'' ∥ C'''B</code> — the three land pieces are <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a>. Here the two bridge vectors are d0 and d1, so <code>A' = A + d0</code> and <code>B' = B - d1</code>; the solid road is drawn at the two crossings of A'B' with the far banks, and its other two ends are straight across the rivers.</p>
+
+      <h2>Why this road is the shortest</h2>
+      <p>Both bridges have a fixed length, so only the land pieces can change. Replacing each land-plus-bridge pair by a translation turns the route into a broken line from A' to B' with the same total length. A straight line is the shortest broken line, so the minimum is exactly <code>|A'B'| + |d0| + |d1|</code>. The logic test checks the parallel claim and this formula on hundreds of layouts, then searches about twenty thousand positions for each of 80 of them: no pair of bridge positions makes a shorter road. The page's claim holds.</p>
+
+      <h2>When the picture stops making sense</h2>
+      <p>The old page warns that the question is meaningless if a town ends up inside a river, if the two rivers are dragged over each other, or if the two banks of one river are swapped: they play different roles. Those arrangements are detected here and the construction is hidden. Dragging a bank near one of its ends turns the whole river, and its partner turns with it; dragging near the middle slides both banks together without turning them. This is the two-river version of Building Bridge: there only one town is translated and only one crossing is needed.</p>
+
+      <p class="tip">Try dragging C and C'' onto the dashed straight line: the dashed road should settle exactly on top of the solid shortest road.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BuildingBridges.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="building-bridges-core.js"></script>
+<script src="building-bridges.js"></script>
+</body>
+</html>
