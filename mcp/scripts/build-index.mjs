@@ -506,6 +506,7 @@ const CORE_GLOBALS = {
   "binomial-option-tree/binomial-option-tree-core.js": ["BinomialOptionTreeCore"],
   "payoff-heat-equation/payoff-heat-equation-core.js": ["PayoffHeatEquationCore"],
   "black-scholes-formula/black-scholes-formula-core.js": ["BlackScholesFormulaCore"],
+  "delta-hedging/delta-hedging-core.js": ["DeltaHedgingCore"],
 };
 
 const games = [];

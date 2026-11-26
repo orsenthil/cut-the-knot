@@ -2133,6 +2133,11 @@ check("black-scholes-formula: strike moved to 110", read["black-scholes-formula"
   const bf = at("black-scholes-formula", { S: 100, K: 100, r: 0.05, sigma: 0.2, T: 1, mu: 0.15, runs: 0 });
   check("black-scholes-formula: the textbook 10.4506 and 5.5735", bf.call === 10.4506 && bf.put === 5.5735 && bf.parity.callMinusPut === bf.parity.stockMinusDiscountedStrike);
 }
+check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day === "1 of 20" && read["delta-hedging"].sharesHeld === 0.52 && read["delta-hedging"].finished === null);
+{
+  const dh = at("delta-hedging", { seed: 3, holdings: new Array(20).fill(0), shares: 0 });
+  check("delta-hedging: a month without shares has a result", dh.finished !== null && dh.finished.noHedge === dh.finished.you);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

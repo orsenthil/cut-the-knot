@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Delta Hedging &mdash; coolmaths</title>
+<meta name="description" content="You sold an option that costs you if the stock soars. Hold shares and adjust them every day for a month. Can you finish as close to even as the Black–Scholes hedge?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/delta-hedging/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Delta Hedging">
+<meta property="og:description" content="You sold an option that costs you if the stock soars. Hold shares and adjust them every day for a month. Can you finish as close to even as the Black–Scholes hedge?">
+<meta property="og:url" content="https://coolmaths.ai/delta-hedging/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+#stage { width: 100%; max-width: 34rem; padding: 0.8rem; }
+  #chart { display: block; width: 100%; height: auto; }
+  svg .price { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  svg .now { fill: var(--accent); }
+  svg .strike { stroke: var(--bad); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  svg .grid { stroke: var(--border-strong); stroke-width: 1; }
+  svg .bar { fill: var(--accent-soft); }
+  svg .comp { stroke: var(--good); stroke-width: 2.5; }
+  svg .axis { fill: var(--muted); font: 12px var(--font); text-anchor: end; }
+  .caption { text-align: center; color: var(--muted); font-size: 0.9rem; margin: 0.2rem 0 0.6rem; }
+  #panel { border-collapse: collapse; margin: 0 auto; }
+  #panel th, #panel td { padding: 0.25rem 0.6rem; border-bottom: 1px solid var(--border); }
+  #panel th { text-align: left; font-weight: 500; color: var(--muted); }
+  #panel td { text-align: right; white-space: nowrap; }
+  .controls .group { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.35rem 0.5rem; width: 100%; }
+  #sharesIn { width: 5.5rem; min-height: 2.75rem; font-size: 1rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+</style>
+</head>
+<body data-game="delta-hedging" data-kind="game">
+<main id="main">
+  <h1>Delta Hedging</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#black-scholes">Black–Scholes</a><a class="tag" href="../index.html#probability">Probability</a><a class="tag" href="../index.html#game-strategy">Game Strategy</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> You sold an option that will cost you money if the stock rises. Hold shares to protect yourself, adjusting them every day for a month, so that whatever happens you end up close to even.<br>
+    <strong>How to play:</strong> Set your shares with the buttons, then press Next day. After 20 days, see how close to zero you ended, compared with the computer.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="chart" viewBox="0 0 400 220" role="img" aria-label="The stock price so far, with the shares held each day as bars below"></svg>
+    <p class="caption">The stock so far (red: the strike). Bars: your shares each day; at the end, green marks show the computer's.</p>
+    <table id="panel" aria-live="polite"></table>
+  </div>
+
+  <div class="controls">
+    <div class="group">
+      <button type="button" data-step="-0.1" aria-label="0.1 fewer shares">−0.1</button>
+      <button type="button" data-step="-0.01" aria-label="0.01 fewer shares">−0.01</button>
+      <input id="sharesIn" type="number" step="0.01" min="-1" max="2" aria-label="Shares to hold">
+      <button type="button" data-step="0.01" aria-label="0.01 more shares">+0.01</button>
+      <button type="button" data-step="0.1" aria-label="0.1 more shares">+0.1</button>
+    </div>
+    <div class="group">
+      <button id="nextBtn" type="button" class="primary">Next day</button>
+      <button id="newBtn" type="button">New game</button>
+      <label><input id="hintBox" type="checkbox"> Show delta</label>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The whole Black&ndash;Scholes argument rests on one trade. Sell an option, hold <code>&Delta;</code> shares, and the risk disappears. This game asks you to do it for real. You sell a one-month call with strike $100 on a $100 stock with 30% volatility, and the bank pays 5%.</p>
+
+      <h2>Hold delta</h2>
+      <p>The call's value moves by about <code>&Delta; = N(d<sub>1</sub>)</code> dollars for each dollar the stock moves. Holding <code>&Delta;</code> shares cancels those moves. As the stock and the time left change, so does <code>&Delta;</code>, so the hedge must be adjusted: buy when the stock rises, sell when it falls. Turn on Show delta to see the value the formula gives. Or work it out: delta is near 1 when the call is sure to be used, near 0 when it is sure not to be, and about one half at the strike.</p>
+
+      <h2>Why the price is fair</h2>
+      <p>The premium you collected is exactly what this hedging costs on average. That is why the <a class="wiki-term" data-wiki="Delta_neutral" href="https://en.wikipedia.org/wiki/Delta_neutral" target="_blank" rel="noopener">delta-neutral</a> seller ends near zero, whether the stock soars or sinks. The stock in this game drifts up at 8% a year, but the hedge doesn't care: only volatility matters. Without a hedge, the result swings by several dollars, and a big rise costs you dearly.</p>
+
+      <h2>Why not exactly zero?</h2>
+      <p>The formula assumes the hedge is adjusted continuously. Adjusting once a day leaves a small error, larger on days when the stock jumps near the strike, where gamma is largest. The logic test ran 2,000 months. The daily delta hedge averaged almost zero with a spread of about 65 cents, against several dollars unhedged, and adjusting four times as often halved the spread. That is why the game compares you with the computer's own daily delta hedge.</p>
+
+      <p class="tip">Play one month without hedging at all, then one following delta. Which would you rather be paid to do?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original game for coolmaths, after David Alvarez Rosa's article
+    <a href="https://david.alvarezrosa.com/posts/deriving-black-scholes/" target="_blank" rel="noopener">Deriving Black-Scholes</a>
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="delta-hedging-core.js"></script>
+<script src="delta-hedging.js"></script>
+</body>
+</html>

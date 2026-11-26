@@ -976,6 +976,10 @@ const GAMES = {
   "black-scholes-formula": async (page) => {
     await page.fill("#KIn", "110"); await page.dispatchEvent("#KIn", "input");
   },
+  "delta-hedging": async (page) => {
+    await page.fill("#sharesIn", "0.52"); await page.dispatchEvent("#sharesIn", "change");
+    await page.click("#nextBtn");
+  },
 };
 
 /** Move the first draggable point of an illustration with the keyboard. */
