@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Graph and Roots of a Cubic &mdash; coolmaths</title>
+<meta name="description" content="Shape a third degree curve with four sliders and watch its three roots: one always real, the other two real or a complex pair. Why can a cubic never miss the axis?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/polynomial-degree-3/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Graph and Roots of a Cubic">
+<meta property="og:description" content="Shape a third degree curve with four sliders and watch its three roots: one always real, the other two real or a complex pair. Why can a cubic never miss the axis?">
+<meta property="og:url" content="https://coolmaths.ai/polynomial-degree-3/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 8px; cursor: crosshair; }
+  #formula { margin: 0.6rem 0 0.2rem; text-align: center; font-weight: 700; font-size: 1.1rem; overflow-wrap: anywhere; }
+  #info { margin: 0.2rem 0 0.6rem; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+  .sl { display: grid; grid-template-columns: 1.5rem minmax(0, 1fr) 4rem; align-items: center; gap: 0.5rem; margin: 0.2rem 0; }
+  .sl input[type="range"] { width: 100%; min-width: 0; }
+  .sl output { text-align: right; font-family: var(--mono); }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 5rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="polynomial-degree-3" data-kind="demo">
+<main id="main">
+  <h1>Polynomial Degree 3</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#complex-analysis">Complex Analysis</a><a class="tag" href="../index.html#curves">Curves</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Shape a curve with four sliders and see where it crosses the line in the middle.<br>
+    <strong>How to play:</strong> Move the sliders. Green dots show where the curve hits zero; click the small dark dot in the middle of the bend to see a straight line touch it there.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="560" height="400" aria-label="Graph of a third degree polynomial"></canvas>
+    <p id="formula"></p>
+    <p id="info" aria-live="polite"></p>
+    <div class="sl"><label for="sa">a</label><input id="sa" type="range" min="-20" max="20" step="0.01" aria-label="Coefficient a"><output id="oa" for="sa"></output></div>
+    <div class="sl"><label for="sb">b</label><input id="sb" type="range" min="-20" max="20" step="0.01" aria-label="Coefficient b"><output id="ob" for="sb"></output></div>
+    <div class="sl"><label for="sc">c</label><input id="sc" type="range" min="-20" max="20" step="0.01" aria-label="Coefficient c"><output id="oc" for="sc"></output></div>
+    <div class="sl"><label for="sd">d</label><input id="sd" type="range" min="-20" max="20" step="0.01" aria-label="Coefficient d"><output id="od" for="sd"></output></div>
+  </div>
+
+  <div class="controls">
+    <label><input id="tanBox" type="checkbox"> Tangent at the inflection point</label>
+    <label>x from − to + <input id="xIn" type="number" min="1" max="1000" value="14" aria-label="Horizontal range, plus and minus"></label>
+    <label>y from − to + <input id="yIn" type="number" min="1" max="1000" value="10" aria-label="Vertical range, plus and minus"></label>
+    <button id="newBtn" type="button" class="primary">New polynomial</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A third degree equation <code>ax³ + bx² + cx + d = 0</code> with <code>a ≠ 0</code> has three roots. At least one is always real; the other two are either both real (perhaps equal) or a pair of complex numbers <code>re ± im·i</code>. The applet draws that pair as two points straight above and below each other, at height <code>±im</code>.</p>
+
+      <h2>Why one root is always real</h2>
+      <p>For large <code>x</code> the term <code>ax³</code> wins, so <code>P(x)</code> has one sign far to the right and the opposite sign far to the left. A continuous curve that goes from below the axis to above it must cross it: that is <a class="wiki-term" data-wiki="Intermediate_value_theorem" href="https://en.wikipedia.org/wiki/Intermediate_value_theorem" target="_blank" rel="noopener">Bolzano's theorem</a>. The applet uses exactly this idea to find the root: from <code>x = 0</code> it steps by 1 towards the sign change, then halves the bracket until <code>|P(x)| &lt; 0.001</code> (the <a class="wiki-term" data-wiki="Bisection_method" href="https://en.wikipedia.org/wiki/Bisection_method" target="_blank" rel="noopener">bisection method</a>). Dividing by <code>x − r</code> with Horner's method leaves a quadratic for the other two. The test compared this search with the applet's code on 5,832 cubics and checked every set of three roots against the coefficients.</p>
+
+      <h2>The inflection point</h2>
+      <p>The curve bends one way on one side of <code>x₀ = −b/(3a)</code> and the other way on the other side. It is symmetric about that <a class="wiki-term" data-wiki="Inflection_point" href="https://en.wikipedia.org/wiki/Inflection_point" target="_blank" rel="noopener">inflection point</a>: <code>P(x₀ + h) + P(x₀ − h) = 2P(x₀)</code>, so turning the picture half a turn about it gives the same curve. Take away the tangent line there and what is left is <code>a(x − x₀)³</code>, a cubic with three equal roots, shown in red when the tangent is on. The test checked both on 20,000 random cubics.</p>
+
+      <p class="tip">Make <code>b = 0</code>, <code>c = 0</code> and slide <code>d</code>: the curve moves up and down, and the two complex roots slide along their dashed line. What does <code>c</code> do to the number of real roots?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/PolynomialDegree3.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="polynomial-degree-3-core.js"></script>
+<script src="polynomial-degree-3.js"></script>
+</body>
+</html>

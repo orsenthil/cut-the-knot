@@ -2046,5 +2046,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "polynomial-degree-3",
+      title: "Graph and Roots of a Cubic",
+      blurb: "Shape a third degree curve with four sliders and watch its three roots: one always real, the other two real or a complex pair. Why can a cubic never miss the axis?",
+      tags: ["algebra", "complex-analysis", "curves"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
