@@ -46,6 +46,10 @@ window.COOLMATHS_CONCEPTS = {
 
   // Shape.
   "area": { label: "Area", prereqs: ["arithmetic"] },
+  "geometry": { label: "Geometry", prereqs: ["coordinates"] },
+  "triangles": { label: "Triangles", prereqs: ["geometry"] },
+  "circles": { label: "Circles", prereqs: ["geometry"] },
+  "constructions": { label: "Constructions", prereqs: ["geometry"] },
   "paradoxes": { label: "Paradoxes", prereqs: ["area"] },
 
   // Continuous mathematics.
