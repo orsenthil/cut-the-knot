@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bisector Circle Triad &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle: do the three circles through its reflected corners always come out the same size? Find the point where their centers go.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bisector-circle-triad/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Bisector Circle Triad">
+<meta property="og:description" content="Drag the corners of a triangle: do the three circles through its reflected corners always come out the same size? Find the point where their centers go.">
+<meta property="og:url" content="https://coolmaths.ai/bisector-circle-triad/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .triad-circle { fill: var(--accent); fill-opacity: 0.08; stroke: var(--accent); stroke-width: 2.5; }
+  #board .small-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .big-circle { fill: none; stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 7 5; }
+  #board .big-circle.alt { stroke: var(--bad); }
+  #board .bisector { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 4; }
+  #board .reflect-line { fill: none; stroke: var(--highlight); stroke-width: 1.5; }
+  #board .iso-line { fill: none; stroke: var(--bad); stroke-width: 1.5; stroke-dasharray: 3 4; }
+  #board .aux-tri { fill: var(--highlight); fill-opacity: 0.08; stroke: var(--highlight); stroke-width: 1.5; }
+  #board .xyz-tri { fill: var(--good); fill-opacity: 0.07; stroke: var(--good); stroke-width: 2; }
+  #board .incenter-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .circum-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .aux-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1; }
+  #board .primed-dot { fill: var(--muted); stroke: var(--ink); stroke-width: 1; }
+  #board .xyz-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .iso-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls button[aria-pressed="true"] { border-color: var(--accent); }
+</style>
+</head>
+<body data-game="bisector-circle-triad" data-kind="demo">
+<main id="main">
+  <h1>Bisector Circle Triad</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners of a triangle and watch three circles that always come out the same size.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a corner and use the arrow keys. Press the buttons to show extra lines and circles, then press Check the claims.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle with three congruent circles through reflected corner points; drag A, B or C"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset triangle</button>
+    <button id="checkBtn" type="button" aria-label="Check the circle claims for this triangle">Check the claims</button>
+    <button id="namesBtn" type="button" data-label="names" aria-pressed="true"></button>
+    <button id="bisectorsBtn" type="button" data-label="angle bisectors" aria-pressed="false"></button>
+    <button id="reflectionsBtn" type="button" data-label="reflections" aria-pressed="false"></button>
+    <button id="smallBtn" type="button" data-label="small circles" aria-pressed="false"></button>
+    <button id="trianglesBtn" type="button" data-label="triangles" aria-pressed="false"></button>
+    <button id="bigBtn" type="button" data-label="big circles" aria-pressed="false"></button>
+    <button id="isogonalBtn" type="button" data-label="isogonal point" aria-pressed="false"></button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Start with any triangle. Mirror each corner in the two angle bisectors through the other corners, and draw a circle through three of the new points. The surprising part is that the three circles you get are always the same size, however you drag the triangle.</p>
+
+      <h2>Mirroring a corner</h2>
+      <p>An <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> is the line that splits a corner angle in half. The three bisectors of a triangle meet at the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> L. Reflect A in the bisector through B to get A<sub>b</sub>, and in the bisector through C to get A<sub>c</sub>; the other four points B<sub>a</sub>, B<sub>c</sub>, C<sub>a</sub>, C<sub>b</sub> are made the same way. Press <em>Show reflections</em> to see the mirror lines.</p>
+
+      <h2>The exact claim</h2>
+      <p>The article states: the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircles</a> of A&nbsp;C<sub>b</sub>&nbsp;B<sub>c</sub>, B&nbsp;A<sub>c</sub>&nbsp;C<sub>a</sub> and C&nbsp;B<sub>a</sub>&nbsp;A<sub>b</sub> are <a class="wiki-term" data-wiki="Congruence_(geometry)" href="https://en.wikipedia.org/wiki/Congruence_(geometry)" target="_blank" rel="noopener">congruent</a>. That is confirmed here: all three radii are equal, and they equal the distance from L to the circumcenter O. The logic test checks this at the applet's own start, at right and obtuse triangles and at 2,000 random triangles: it holds every time.</p>
+      <blockquote><code>radius(A C_b B_c) = radius(B A_c C_a) = radius(C B_a A_b) = |LO|</code></blockquote>
+      <p>Reflect the six mirrored points once more in the other bisector and you get three more circles of that same radius. Press <em>Show small circles</em> to see them; all six circles are congruent, not just three.</p>
+
+      <h2>Why the sizes match</h2>
+      <p>Each second reflection is a translation: for instance the vector from B to C'<sub>a</sub> equals the vector from C to B'<sub>a</sub>. So the triangle O&nbsp;X&nbsp;Y is just a shifted copy of C&nbsp;B'<sub>a</sub>&nbsp;A'<sub>b</sub>, and similarly for the other two. Translations keep circumcircles the same size, so it is enough to show that O, X, Y and Z lie on one circle. The bisectors make L the midpoint owner of the relevant segments, which gives <code>LO = LX = LY = LZ</code>: the four points sit on the circle centered at L through O, whose radius is exactly the radius of the three circles.</p>
+
+      <h2>Where the centers go</h2>
+      <p>The article adds two facts. First, the centers of all six circles lie on the circle centered at L with radius R, the circumradius of ABC; press <em>Show big circles</em>. Second, the lines from A, B and C to the three circle centers meet at a single point on the circumcircle: this is the <a class="wiki-term" data-wiki="Isogonal_conjugate" href="https://en.wikipedia.org/wiki/Isogonal_conjugate" target="_blank" rel="noopener">isogonal conjugate</a> of a point at infinity, drawn when you press <em>Show isogonal point</em>. Both facts hold in the test as well.</p>
+      <p>One honest caveat: for an exactly equilateral triangle L is O, so the triad circles shrink to points of radius 0, and the old applet's fixed numeric cut-offs stop drawing them. This page hides them there too; move a corner a little and they appear.</p>
+
+      <p class="tip">Try making a long, thin triangle, then press <em>Show angle bisectors</em> and <em>Show triangles</em>: the circles move a lot, but the three radii stay equal.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BisectorCircleTriad.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bisector-circle-triad-core.js"></script>
+<script src="bisector-circle-triad.js"></script>
+</body>
+</html>
