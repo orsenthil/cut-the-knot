@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carnot &mdash; coolmaths</title>
+<meta name="description" content="Drag four points around a circle and slant three lines from P at the same angle. Do the three places where they cross the sides always fall on one straight line?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/carnot/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Carnot">
+<meta property="og:description" content="Drag four points around a circle and slant three lines from P at the same angle. Do the three places where they cross the sides always fall on one straight line?">
+<meta property="og:url" content="https://coolmaths.ai/carnot/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 29rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circum-circle { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 4 5; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .slant { stroke: var(--accent); stroke-width: 2; stroke-opacity: 0.85; }
+  #board .rule-line { stroke: var(--good); stroke-width: 3; stroke-linecap: round; }
+  #board .foot-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .slant-arc { fill: none; stroke: var(--highlight); stroke-width: 2; }
+  #board .similar-fill { fill: var(--accent); fill-opacity: 0.14; stroke: none; }
+  #board .similar-fill.alt { fill: var(--good); fill-opacity: 0.14; }
+  #board .pair-circle { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  #board .pair-circle.alt { stroke: var(--good); }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 18px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .point-label { fill: var(--accent); }
+  #board .foot-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls label { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; min-width: 0; }
+  .controls input[type="range"] { width: min(9rem, 55vw); min-width: 0; accent-color: var(--accent); }
+  .controls output { min-width: 1.6rem; text-align: center; font-weight: 600; }
+  button:disabled { opacity: 0.55; cursor: not-allowed; }
+</style>
+</head>
+<body data-game="carnot" data-kind="demo">
+<main id="main">
+  <h1>Carnot</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Four dots sit on one circle and three sloping lines leave the point P. Watch the three places where they cross the sides of the triangle.<br>
+    <strong>How to play:</strong> Drag A, B, C or P with a mouse or finger, or focus a dot and use the arrow keys. Move the angle slider, tick the boxes to see the matching triangles and circles, and press Next pair.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 500" role="group"
+         aria-label="A triangle inscribed in a circle with a fourth point P on the circle, three equally inclined lines from P and their three feet joined by one straight line"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="angleRange">Angle: <input id="angleRange" type="range" min="5" max="160" step="1" value="90" aria-label="Angle of the three lines, from 5 to 160 degrees"></label>
+    <output id="angleOut" for="angleRange" aria-label="Current angle in degrees">90</output>
+    <label><input id="similarBox" type="checkbox" aria-label="Show the matching triangles"> Similar triangles</label>
+    <label><input id="circlesBox" type="checkbox" aria-label="Show the pairs of circles"> Circle pairs</label>
+    <label><input id="namesBox" type="checkbox" checked aria-label="Show the point names"> Names</label>
+    <button id="pairBtn" type="button" aria-label="Show the next pair of matching triangles or circles" disabled>Next pair (1/3)</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the points and the options to the start">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move P anywhere on the circle and tilt the three lines as you like: the three crossing points still fall on one straight line. That is the little theorem behind this drawing.</p>
+
+      <h2>Three feet, one line</h2>
+      <p>Let A', B' and C' be the points where the lines from P meet the sides BC, CA and AB. Every line leaves P at the same angle to its side. The theorem due to Lazare Carnot says those three feet are <a class="wiki-term" data-wiki="Collinearity" href="https://en.wikipedia.org/wiki/Collinearity" target="_blank" rel="noopener">collinear</a> whenever P lies on the triangle's <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>. The logic test measures the signed area of triangle A'B'C' on more than a thousand drawings, at every slider angle, and it is zero each time. Push P off the circle and the line breaks — the circle is really needed.</p>
+
+      <h2>Why they line up</h2>
+      <p>The angle at P between two of the lines equals the angle at the matching vertex of the triangle, so P, two feet and two vertices form <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilaterals</a>. Equal angles in those circles give equal angles at the feet, and then <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similarity_(geometry)" target="_blank" rel="noopener">similar triangles</a> give three length ratios. Multiplied together they cancel:</p>
+      <blockquote><code>AC'/C'B &times; BA'/A'C &times; CB'/B'A = 1</code></blockquote>
+      <p>in ordinary lengths, or <code>&minus;1</code> with directed lengths. That is exactly the <a class="wiki-term" data-wiki="Menelaus%27s_theorem" href="https://en.wikipedia.org/wiki/Menelaus%27s_theorem" target="_blank" rel="noopener">Menelaus theorem</a>, so the feet must lie on a line. Tick the two boxes and press Next pair to see the circles and shaded triangles that carry the equal angles.</p>
+
+      <h2>Turning the lines</h2>
+      <p>At 90° the three lines are perpendicular to the sides and the line through the feet is the <a class="wiki-term" data-wiki="Simson_line" href="https://en.wikipedia.org/wiki/Simson_line" target="_blank" rel="noopener">Simson line</a> (also called Wallace's line). The applet's slider goes from 5° to 160° (its Java scrollbar has maximum 170 with a visible amount of 10): the feet still line up because "equally inclined" does not have to mean "at right angles". The original applet keeps A, B, C and P on its starting circle, and this page does the same.</p>
+
+      <h2>A different Carnot theorem</h2>
+      <p>Another cut-the-knot article, <a href="https://www.cut-the-knot.org/pythagoras/Carnot.shtml" target="_blank" rel="noopener">Carnot's Theorem</a>, states a different result about perpendiculars meeting at one point: <code>AC'&sup2; &minus; BC'&sup2; + BA'&sup2; &minus; CA'&sup2; + CB'&sup2; &minus; AB'&sup2; = 0</code>. The logic test confirms that identity at 90°, where the three lines here do meet at P, and confirms that it fails at other angles. This page follows the applet's own page, which is about the line through the feet, not that squared-length sum.</p>
+
+      <p class="tip">Set the slider to 90°, drag P round the circle and watch the green line swing. Then try 5° and press Next pair to find the equal angles in the circles.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Carnot.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="carnot-core.js"></script>
+<script src="carnot.js"></script>
+</body>
+</html>
