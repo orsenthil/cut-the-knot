@@ -449,6 +449,7 @@ const CORE_GLOBALS = {
   "party-acquaintances/party-acquaintances-core.js": ["PartyAcquaintancesCore"],
   "triangle-chain/triangle-chain-core.js": ["TriangleChainCore"],
   "stick-in-three/stick-in-three-core.js": ["StickInThreeCore"],
+  "stick-in-square/stick-in-square-core.js": ["StickInSquareCore"],
 };
 
 const games = [];

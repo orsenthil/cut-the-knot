@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stick Broken Into Three Pieces (Cartesian) &mdash; coolmaths</title>
+<meta name="description" content="Two break points make one point in a square. Where must it land for the three pieces to make a triangle, and why is the answer not 1/3?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/stick-in-square/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Stick Broken Into Three Pieces (Cartesian)">
+<meta property="og:description" content="Two break points make one point in a square. Where must it land for the three pieces to make a triangle, and why is the answer not 1/3?">
+<meta property="og:url" content="https://coolmaths.ai/stick-in-square/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .square { fill: var(--card); stroke: var(--ink); stroke-width: 2; cursor: crosshair; }
+  #board .pink { fill: #f08aa8; fill-opacity: 0.55; stroke: #d0406a; stroke-width: 1.5; pointer-events: none; }
+  #board .green { fill: #5cc98a; fill-opacity: 0.45; stroke: #2f9a5c; stroke-width: 1.5; pointer-events: none; }
+  #board .dots { pointer-events: none; }
+  #board .dot { fill: var(--muted); fill-opacity: 0.55; }
+  #board .dot.hit { fill: var(--accent); fill-opacity: 0.8; }
+  #board .foot { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 4 3; pointer-events: none; }
+  #board .piece { stroke-width: 4; stroke-linecap: round; }
+  #board .piece.stick { stroke-width: 10; stroke-linecap: butt; }
+  #board .p0 { stroke: #e0453a; }
+  #board .p1 { stroke: #3b74e0; }
+  #board .p2 { stroke: #d89a12; }
+  #board .half { stroke: var(--ink); stroke-width: 2; stroke-dasharray: 3 3; }
+  #board .tick { stroke: var(--ink); stroke-width: 2.5; }
+  #board .handle { fill: var(--accent); stroke: var(--ink); stroke-width: 2; cursor: grab; }
+  #board .handle:focus-visible { outline: none; stroke: var(--focus); stroke-width: 5; }
+  #board .name { fill: var(--text); font: italic 700 18px var(--font); text-anchor: middle; }
+  #board .name.small { font-size: 14px; }
+  #board .name.start { text-anchor: start; }
+  #board .name.end { text-anchor: end; }
+  #board .nope { fill: var(--muted); font: 15px var(--font); text-anchor: middle; }
+  .controls .group { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3rem 0.8rem; width: 100%; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  #tally { text-align: center; margin: 0.4rem 0 0; }
+</style>
+</head>
+<body data-game="stick-in-square" data-kind="demo">
+<main id="main">
+  <h1>Stick Broken Into Three Pieces (Cartesian)</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#probability">Probability</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Break a stick in two places. Each pair of break points is a point in a square: find where the three pieces make a triangle, and how often that happens.<br>
+    <strong>How to play:</strong> Drag the point P. Or choose an experiment and break sticks at random to see where the points land.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 500" role="group" aria-label="The unit square of break points with the point P, and the stick broken at P's two coordinates"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="group">
+      <label><input type="radio" name="mode" value="one" checked> One step experiment</label>
+      <label><input type="radio" name="mode" value="two"> Two steps experiment</label>
+    </div>
+    <div class="group">
+      <button id="one" type="button">Break 1</button>
+      <button id="many" type="button" class="primary">Break 1000</button>
+      <button id="resetBtn" type="button">Reset count</button>
+      <label><input id="namesBox" type="checkbox"> Show names</label>
+    </div>
+  </div>
+  <p id="tally" aria-live="polite"></p>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Break a stick of length 1 at two points, <code>x</code> and <code>y</code>, measured from its lower end. Each experiment is one point <code>P = (x, y)</code> of a unit square, in <a class="wiki-term" data-wiki="Cartesian_coordinate_system" href="https://en.wikipedia.org/wiki/Cartesian_coordinate_system" target="_blank" rel="noopener">Cartesian coordinates</a>. (The <a href="../stick-in-three/">triangle version</a> of this puzzle uses trilinear coordinates instead.)</p>
+
+      <h2>The pink triangles</h2>
+      <p>If <code>x &lt; y</code> the pieces are <code>x</code>, <code>y &minus; x</code> and <code>1 &minus; y</code>. The three <a class="wiki-term" data-wiki="Triangle_inequality" href="https://en.wikipedia.org/wiki/Triangle_inequality" target="_blank" rel="noopener">triangle inequalities</a> come down to</p>
+      <blockquote><code>x &lt; 1/2, &nbsp; y &minus; x &lt; 1/2, &nbsp; 1 &minus; y &lt; 1/2</code></blockquote>
+      <p>and the same with <code>x</code> and <code>y</code> swapped. Those points fill the two pink triangles, which join the centre of the square to the midpoints of two neighbouring sides. They cover <code>1/4</code> of the square. In the one-step experiment P is spread evenly over the square, so the chance of a triangle is <code>1/4</code>.</p>
+
+      <h2>Two steps: why not 1/3?</h2>
+      <p>Break once at <code>x</code>, then break the longer piece. Points where the shorter piece was broken second (the green triangles, another quarter) can no longer happen. Pink is <code>1/3</code> of the rest, so the answer looks like <code>1/3</code>. But it is not: the second break is spread over a piece shorter than the stick, so P is no longer even. Break 1000 sticks and the dots crowd near the sides. When the first piece has length <code>h &lt; 1/2</code>, the chance is <code>h/(1&minus;h)</code>, and averaging gives</p>
+      <blockquote><code>2 &int;<sub>0</sub><sup>1/2</sup> h/(1&minus;h) dh = 2 ln 2 &minus; 1 &asymp; 0.386</code></blockquote>
+
+      <h2>Asimov's thorn</h2>
+      <p>Daniel Asimov always breaks the left piece again, at a fraction <code>y</code> of its length. Then the pieces are <code>xy</code>, <code>x(1&minus;y)</code> and <code>1&minus;x</code>, and <code>(x, y)</code> is uniform in the square. The triangle region is a thorn between the line <code>x = 1/2</code> and the <a class="wiki-term" data-wiki="Hyperbola" href="https://en.wikipedia.org/wiki/Hyperbola" target="_blank" rel="noopener">hyperbolas</a> <code>xy = 1/2</code> and <code>x(1&minus;y) = 1/2</code>, with area <code>ln 2 &minus; 1/2 &asymp; 0.193</code>. The original page offers this as the answer to the two-step problem. But breaking the left piece means half the time breaking the shorter one, so it answers a different question: which piece is broken is left to chance. Breaking always the longer piece doubles it to <code>2 ln 2 &minus; 1</code>. The logic test measured the regions and both chances on a fine grid, and ran 100,000 experiments of each kind.</p>
+
+      <p class="tip">Choose the two steps experiment and break 1000 sticks a few times. Where do the dots crowd, and where are there none at all?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Probability/TriProbCartesian.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="stick-in-square-core.js"></script>
+<script src="stick-in-square.js"></script>
+</body>
+</html>

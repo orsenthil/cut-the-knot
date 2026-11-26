@@ -2377,5 +2377,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "stick-in-square",
+      title: "Stick Broken Into Three Pieces (Cartesian)",
+      blurb: "Two break points make one point in a square. Where must it land for the three pieces to make a triangle, and why is the answer not 1/3?",
+      tags: ["probability", "coordinates", "paradoxes"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

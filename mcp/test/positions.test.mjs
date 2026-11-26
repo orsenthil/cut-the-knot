@@ -2004,6 +2004,11 @@ check("stick-in-three: 1000 sticks the longer-piece way, near 0.386", read["stic
   const st = at("stick-in-three", { pieces: [0.6, 0.3, 0.1], method: "uniform", tries: 0, hits: 0 });
   check("stick-in-three: a piece over half the stick makes no triangle", st.point.makesTriangle === false && st.point.longestPiece === 1 && st.fraction === null);
 }
+check("stick-in-square: 1000 two-step sticks, near 0.386", read["stick-in-square"]?.sticksBroken === 1000 && Math.abs(read["stick-in-square"].fraction - 0.386) < 0.05);
+{
+  const sq = at("stick-in-square", { x: 1 / 3, y: 2 / 9, mode: "one", tries: 0, hits: 0 });
+  check("stick-in-square: the applet's start is in a green corner, no triangle", sq.P.region === "green" && sq.P.makesTriangle === false && sq.exact === 0.25);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

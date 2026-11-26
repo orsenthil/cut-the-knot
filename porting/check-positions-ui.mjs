@@ -854,6 +854,10 @@ const GAMES = {
     await page.selectOption("#method", "longer");
     await page.click("#many");
   },
+  "stick-in-square": async (page) => {
+    await page.check('input[name="mode"][value="two"]');
+    await page.click("#many");
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */
