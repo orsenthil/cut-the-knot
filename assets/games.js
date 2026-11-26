@@ -2453,5 +2453,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "ryser-formula",
+      title: "Ryser's Formula",
+      blurb: "The permanent adds n! products, but inclusion–exclusion gets it from just 2ⁿ. Watch the running total overshoot and undershoot until it lands. Why is that still too slow?",
+      tags: ["vp-vnp", "counting", "algorithms"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ryser's Formula &mdash; coolmaths</title>
+<meta name="description" content="The permanent adds n! products, but inclusion–exclusion gets it from just 2ⁿ. Watch the running total overshoot and undershoot until it lands. Why is that still too slow?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/ryser-formula/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Ryser's Formula">
+<meta property="og:description" content="The permanent adds n! products, but inclusion–exclusion gets it from just 2ⁿ. Watch the running total overshoot and undershoot until it lands. Why is that still too slow?">
+<meta property="og:url" content="https://coolmaths.ai/ryser-formula/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+#stage { width: 100%; max-width: 40rem; padding: 0.8rem; }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; margin: 0 auto; font-family: var(--mono); font-size: 0.95rem; }
+  #matrix th, #matrix td { padding: 0.3rem 0.6rem; text-align: center; }
+  #matrix td { border: 1px solid var(--border); background: var(--card); min-width: 2rem; }
+  #matrix .on { background: var(--accent-soft); }
+  #matrix th.on { color: var(--accent); }
+  #ryser { margin-top: 0.8rem; }
+  #ryser { font-size: 0.85rem; }
+  #ryser th, #ryser td { padding: 0.2rem 0.35rem; text-align: right; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  #ryser th { color: var(--muted); font-weight: 600; }
+  #ryser tr.hidden { opacity: 0.25; }
+  #ryser tr.now td { background: var(--highlight); }
+  #ryser .plus { color: var(--good); }
+  #ryser .minus { color: var(--bad); }
+  #total { text-align: center; margin: 0.6rem 0 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls select { min-height: 2.75rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="ryser-formula" data-kind="demo">
+<main id="main">
+  <h1>Ryser&rsquo;s Formula</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#vp-vnp">VP ≠ VNP</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Find the permanent of a square, which adds up all of its rook products, using a clever shortcut that needs far fewer products.<br>
+    <strong>How to play:</strong> Press Next term to add one line at a time and watch the running total. Change the size, or get a new square.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="scroll"><table id="matrix" aria-label="The matrix; columns in the current set are shaded"></table></div>
+    <div class="scroll"><table id="ryser" aria-label="Ryser's terms">
+      <thead><tr><th>columns</th><th>row sums</th><th>term</th><th>total</th></tr></thead>
+      <tbody id="terms"></tbody>
+    </table></div>
+    <p id="total"></p>
+  </div>
+
+  <div class="controls">
+    <button id="nextBtn" type="button" class="primary">Next term</button>
+    <button id="allBtn" type="button">Show all</button>
+    <button id="newBtn" type="button">New square</button>
+    <label>Size <select id="sizeIn"><option value="2">2 × 2</option><option value="3" selected>3 × 3</option><option value="4">4 × 4</option></select></label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The permanent adds <code>n!</code> products. In 1963 Herbert Ryser found a way with only <code>2&#8319;</code> terms, one for each set of columns. It is still the fastest general method known.</p>
+      <blockquote><code>perm(A) = (&minus;1)&#8319; &sum;<sub>S</sub> (&minus;1)<sup>|S|</sup> &prod;<sub>i</sub> (&sum;<sub>j&isin;S</sub> a<sub>ij</sub>)</code></blockquote>
+
+      <h2>Too much, then take some back</h2>
+      <p>Multiply out the row sums for a set <code>S</code> of columns. You get every way to pick one entry from each row using columns in <code>S</code>, repeats allowed. The full set gives every pick, including ones that use a column twice. Subtract the picks that avoid one column, add back those that avoid two, and so on. That is <a class="wiki-term" data-wiki="Inclusion%E2%80%93exclusion_principle" href="https://en.wikipedia.org/wiki/Inclusion%E2%80%93exclusion_principle" target="_blank" rel="noopener">inclusion&ndash;exclusion</a>. What survives are the picks that use every column, and since there are <code>n</code> rows, each column exactly once: the rook products of the permanent.</p>
+
+      <h2>Faster, but still exponential</h2>
+      <p>With <code>n &minus; 1</code> multiplications per term, Ryser needs about <code>n&middot;2&#8319;</code> multiplications against <code>n&middot;n!</code>. That is 9,207 against 32,659,200 at <code>n = 10</code>. But <code>2&#8319;</code> still doubles with every extra row. Compare the determinant's <code>n&sup3;/3</code>: VP &ne; VNP says, roughly, that no circuit for the permanent can be anywhere near that small. The logic test checked Ryser's formula against the full sum on 600 matrices, and the inclusion&ndash;exclusion count itself.</p>
+
+      <p class="tip">Watch the 3 &times; 3 total: the three single columns and the three pairs overshoot and undershoot before the last term lands on the permanent.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original demo for coolmaths, after Gil Fried's article
+    <a href="https://www.friedgil.com/vpvnp" target="_blank" rel="noopener">What VP &ne; VNP Means (In 3 Minutes)</a>
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="ryser-formula-core.js"></script>
+<script src="ryser-formula.js"></script>
+</body>
+</html>

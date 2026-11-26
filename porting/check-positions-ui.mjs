@@ -895,6 +895,9 @@ const GAMES = {
   "determinant-elimination": async (page) => {
     await page.click("#stepBtn"); await page.click("#stepBtn");
   },
+  "ryser-formula": async (page) => {
+    await page.click("#nextBtn"); await page.click("#nextBtn"); await page.click("#nextBtn");
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

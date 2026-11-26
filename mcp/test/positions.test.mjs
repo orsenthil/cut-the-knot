@@ -2054,6 +2054,11 @@ check("determinant-elimination: two steps in, the permanent has moved", read["de
   const de = at("determinant-elimination", { n: 3, seed: 1, step: 0 });
   check("determinant-elimination: a 3 x 3 at the start", de.size === 3 && de.lastOperation === "start" && de.operationsSoFar === 0);
 }
+check("ryser-formula: three of seven terms shown, the last set {A, B}", read["ryser-formula"]?.termsShown === "3 of 7" && read["ryser-formula"].lastSet === "AB");
+{
+  const rf = at("ryser-formula", { n: 3, seed: 1, shown: 7 });
+  check("ryser-formula: all seven terms add up to the permanent", rf.runningTotal === rf.permanent);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;
