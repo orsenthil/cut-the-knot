@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Product of Permutations &mdash; coolmaths</title>
+<meta name="description" content="Do one shuffle and then another: the result is a single shuffle. Which one? And does the order you do them in matter?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/perm-product/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Product of Permutations">
+<meta property="og:description" content="Do one shuffle and then another: the result is a single shuffle. Which one? And does the order you do them in matter?">
+<meta property="og:url" content="https://coolmaths.ai/perm-product/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 44rem; padding: 0.6rem; }
+  .trio { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+  .pane { flex: 1 1 11rem; min-width: 0; max-width: 14rem; text-align: center; }
+  .pane h2 { font-size: 1rem; margin: 0.2rem 0; }
+  .pane svg { width: 100%; height: auto; display: block; }
+  .pane .arrow { stroke: var(--accent); stroke-width: 2; fill: none; marker-end: url(#head); }
+  .head { fill: var(--accent); }
+  .pane .node { fill: var(--stage); stroke: var(--ink); stroke-width: 1.6; }
+  .pane .node.sel { fill: var(--highlight); stroke: var(--accent); stroke-width: 3.5; }
+  .pane .live .node { cursor: pointer; }
+  .pane text { font: 700 14px system-ui, sans-serif; fill: var(--ink); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+  .pane .cyc { font-size: 0.85rem; margin: 0.2rem 0 0; overflow-wrap: anywhere; }
+  .controls label { display: inline-flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; max-width: 100%; }
+  .controls input[type=number] { width: 4.5rem; max-width: 100%; font: inherit; }
+</style>
+</head>
+<body data-game="perm-product" data-kind="demo">
+<main id="main">
+  <h1>Product of Permutations</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#permutations">Permutations</a><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#parity">Parity</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two shuffles, f and g, are done one after the other. The third picture shows the single shuffle that does the same.<br>
+    <strong>How to play:</strong> Press two numbers in f or in g to swap them and watch the third picture change.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><marker id="head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0 L10 5 L0 10 z"/></marker></defs></svg>
+    <div class="trio">
+      <div class="pane"><h2>f</h2><svg id="svgF" viewBox="0 0 300 300" role="img" aria-label="The permutation f on a circle"></svg><p id="cycF" class="cyc"></p></div>
+      <div class="pane"><h2>g</h2><svg id="svgG" viewBox="0 0 300 300" role="img" aria-label="The permutation g on a circle"></svg><p id="cycG" class="cyc"></p></div>
+      <div class="pane"><h2>fg (f first, then g)</h2><svg id="svgP" viewBox="0 0 300 300" role="img" aria-label="The product fg on a circle"></svg><p id="cycP" class="cyc"></p></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label>N <input id="nIn" type="number" min="2" max="20" step="1" value="6" aria-label="How many numbers"></label>
+    <button id="newBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Doing one shuffle after another is itself a shuffle. If <code>f</code> is done first and <code>g</code> second, the <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">product</a> <code>fg</code> sends <code>k</code> to <code>g(f(k))</code>. The page uses this left-to-right order, and so does this one.</p>
+
+      <h2>Reading the product</h2>
+      <p>To find where <code>k</code> goes in <code>fg</code>, follow the arrow from <code>k</code> in the first picture to <code>f(k)</code>, then the arrow from that number in the second. The test compared the picture with this rule for every pair of permutations of up to 5 numbers.</p>
+
+      <h2>Order matters</h2>
+      <p>With two numbers <code>fg = gf</code> always, but with three or more it often is not: the test found pairs with <code>fg &ne; gf</code> for every <code>N</code> from 3 to 5. Still, <code>(fg)h = f(gh)</code> always (checked up to 4 numbers), the do-nothing shuffle is a unit, and every permutation has an inverse with <code>(fg)<sup>-1</sup> = g<sup>-1</sup>f<sup>-1</sup></code>. These facts make the permutations a <a class="wiki-term" data-wiki="Group_(mathematics)" href="https://en.wikipedia.org/wiki/Group_(mathematics)" target="_blank" rel="noopener">group</a>.</p>
+
+      <h2>Swaps and parity</h2>
+      <p>Pressing two numbers multiplies a permutation by their transposition. Each swap flips whether a permutation is even or odd, and the test confirmed that <code>sign(fg) = sign(f)&middot;sign(g)</code> for all pairs: an even and an odd permutation always give an odd product, and two odd ones give an even product.</p>
+
+      <p class="tip">Swap two numbers in f and see which arrows of the product change. How many are they?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/PermProduct.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="perm-product-core.js"></script>
+<script src="perm-product.js"></script>
+</body>
+</html>

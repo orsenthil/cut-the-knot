@@ -1983,5 +1983,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "perm-product",
+      title: "Product of Permutations",
+      blurb: "Do one shuffle and then another: the result is a single shuffle. Which one? And does the order you do them in matter?",
+      tags: ["permutations", "algebra", "parity"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
