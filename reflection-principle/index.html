@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reflection Principle &mdash; coolmaths</title>
+<meta name="description" content="A walk from A to B, and a second one from its mirror image A'. How does reflecting the first part of a walk turn a tricky counting problem into an easy one?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/reflection-principle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Reflection Principle">
+<meta property="og:description" content="A walk from A to B, and a second one from its mirror image A'. How does reflecting the first part of a walk turn a tricky counting problem into an easy one?">
+<meta property="og:url" content="https://coolmaths.ai/reflection-principle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 42rem;
+    padding: 0.8rem 1rem;
+  }
+  svg { display: block; width: 100%; height: auto; max-width: 100%; }
+  .axis { stroke: var(--border-strong); stroke-width: 0.02; }
+  .grid-line { stroke: var(--border); stroke-width: 0.01; }
+  .walk, .reflected-walk { fill: none; stroke-linejoin: round; stroke-linecap: round; }
+  .walk { stroke: var(--accent); }
+  .reflected-walk { stroke: var(--good); stroke-dasharray: 0.18 0.12; }
+  .start-dot { fill: var(--accent); }
+  .mirror-dot { fill: var(--good); }
+  .end-dot { fill: var(--ink); }
+  .point-label { fill: var(--text); font-family: var(--font); }
+  #walkSummary { margin: 0.4rem 0 0; color: var(--muted); font-size: 0.9rem; text-align: center; }
+  .controls .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    gap: 0.75rem 1.25rem;
+  }
+  .slider-group { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+  .slider-group label { color: var(--muted); font: italic 1rem var(--font); }
+  .slider-group output { min-width: 2.2rem; font-family: var(--mono); text-align: right; }
+  input[type="range"] { width: 7rem; max-width: 35vw; accent-color: var(--accent); }
+  .check { display: inline-flex; align-items: center; gap: 0.3rem; min-height: 2.75rem; color: var(--muted); font-size: 0.9rem; }
+  button:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="reflection-principle" data-kind="demo">
+<main id="main">
+  <h1>Reflection Principle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#probability">Probability</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#sequences">Sequences</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A walker takes up-and-down steps from A to B. A second walker starts at the mirror point A' and copies the first one backwards until it reaches the middle line. There is nothing to win &mdash; compare the two paths.<br>
+    <strong>How to play:</strong> Move the sliders to choose the start, finish and number of steps. Press One walk to see both paths; tick Show names to label A, A' and B.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="diagram" viewBox="-1 -10 12 24" role="img" aria-label="A walk from A to B and its reflected walk from A prime"></svg>
+    <p id="walkSummary"></p>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <div class="slider-group">
+        <label for="slider-a">a</label>
+        <input id="slider-a" type="range" min="-10" max="10" step="1" value="3" aria-label="Starting height a">
+        <output id="value-a" for="slider-a">3</output>
+      </div>
+      <div class="slider-group">
+        <label for="slider-b">b</label>
+        <input id="slider-b" type="range" min="-10" max="10" step="1" value="4" aria-label="Ending height b">
+        <output id="value-b" for="slider-b">4</output>
+      </div>
+      <div class="slider-group">
+        <label for="slider-n">n</label>
+        <input id="slider-n" type="range" min="1" max="20" step="1" value="9" aria-label="Number of steps">
+        <output id="value-n" for="slider-n">9</output>
+      </div>
+    </div>
+    <div class="control-row">
+      <button id="oneBtn" type="button" class="primary">One walk</button>
+      <label class="check"><input id="namesBox" type="checkbox"> Show names</label>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Counting walks is hard when you add a condition such as "must touch the axis". The reflection trick turns those walks into ordinary walks, which are much easier to count.</p>
+
+      <h2>The two walks</h2>
+      <p>Each step goes one place right and one place up or down. The purple walk starts at <code>A = (0, a)</code> above the axis. The green one starts at its mirror image <code>A' = (0, &minus;a)</code>. Until the green walk touches the axis it takes the opposite step from the purple one; after that it copies the purple walk step for step. Press One walk until the two lines overlap.</p>
+
+      <h2>Why the pairing works</h2>
+      <p>Take a purple walk that touches the axis, and let its first touch be at step <code>k</code>. Reflect the first <code>k</code> steps in the axis; leave the rest alone. The new walk starts at <code>A'</code> and ends at <code>B</code>. Conversely, every walk from <code>A'</code> to <code>B</code> must cross the axis, so reflecting its first part gives back a unique touching walk from <code>A</code>.</p>
+
+      <h2>Counting them</h2>
+      <p>Write <code>N<sub>n</sub>(a, b)</code> for all walks from <code>(0,a)</code> to <code>(n,b)</code> and <code>M<sub>n</sub>(a, b)</code> for those that touch or cross the axis. The pairing gives <code>M<sub>n</sub>(a, b) = N<sub>n</sub>(&minus;a, b)</code> for positive <code>a</code> and <code>b</code>. The number on the right is a <a class="wiki-term" data-wiki="Binomial_coefficient" href="https://en.wikipedia.org/wiki/Binomial_coefficient" target="_blank" rel="noopener">binomial coefficient</a>: with <code>u = (n + b + a)/2</code> up-steps, it is <code>C(n, u)</code>. If <code>n</code> and <code>b &minus; a</code> have different <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a>, the applet quietly uses one fewer step.</p>
+
+      <h2>What was checked</h2>
+      <p>The test lists every up/down sequence for small lengths and compares the counts with the binomial formula. It writes the applet's two walk rules a second time and checks every step of both paths on seeded walks, and it verifies the touching-walk correspondence by brute force for small positive heights. One quirk is kept: when <code>a = 0</code> the reflected walk waits for <em>itself</em> to reach zero before copying, so the reflection is not the textbook one; the lemma is only claimed for <code>a &gt; 0</code>.</p>
+
+      <p class="tip">Set <code>a = 3</code>, <code>b = 4</code> and <code>n = 9</code>, then press One walk several times until the two paths meet partway across.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/ReflectionPrinciple.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="reflection-principle-core.js"></script>
+<script src="reflection-principle.js"></script>
+</body>
+</html>

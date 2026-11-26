@@ -2150,5 +2150,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "reflection-principle",
+      title: "Reflection Principle",
+      blurb: "A walk from A to B, and a second one from its mirror image A'. How does reflecting the first part of a walk turn a tricky counting problem into an easy one?",
+      tags: ["probability", "counting", "sequences"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };
