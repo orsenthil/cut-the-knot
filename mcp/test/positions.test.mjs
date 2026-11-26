@@ -2153,6 +2153,16 @@ check("bicolor: the Boolean board is not yet solved", read.bicolor?.solved === f
 check("bid: the saved 45-degree triangle is the three-triangle case", read.bid?.reading.regime === "three_at_45" && read.bid.angle === 45);
 check("bimedians-in-tetrahedron: the three bimedians meet at the barycentre", read["bimedians-in-tetrahedron"]?.reading.claims.concurrent === true && read["bimedians-in-tetrahedron"].reading.claims.barycenter === true);
 check("bisectal-circle: inversion by the bisectal circle swaps the two circles", Object.values(read["bisectal-circle"]?.checks || {}).every(Boolean) === true);
+check("bisector-circle-triad: all six reflected circles have radius LO", read["bisector-circle-triad"]?.reading.allHold === true && read["bisector-circle-triad"].valid === true);
+check("blithe-12: the saved board is six turns from nowhere near home", read["blithe-12"]?.allHome === false && read["blithe-12"].misplaced.length === 6);
+check("bol-1: the parallel-diameter claim fails for the slightly off-line saved dots", read["bol-1"]?.claimHolds === false && read["bol-1"].diametersAreParallel === true);
+check("bol-10: EH bisects the chord BD and the power identity holds", read["bol-10"]?.midpoint.holds === true && read["bol-10"].powerOfPoint.holds === true);
+check("bol-12: TR is perpendicular to AB and TP = TQ = TR", read["bol-12"]?.allClaimsHold === true && read["bol-12"].checks.TR_perpendicular_AB.holds === true);
+check("bol-13: a diameter's perpendicular feet give CN = DM", read["bol-13"]?.claims.cnEqualsDm === true && read["bol-13"].claims.chordBisected === true);
+check("bol-2: F is the midpoint of DE", read["bol-2"]?.reading.claims.bisected === true && Math.abs(read["bol-2"].reading.DF_over_FE - 1) < 1e-6);
+check("bol-3: the equal arc gives BQ = BD", Math.abs(read["bol-3"]?.saved.lengths.BQ - read["bol-3"].saved.lengths.BD) < 1e-6 && read["bol-3"].onCircle === true);
+check("bol-5: the two tangent circles have equal harmonic radius", read["bol-5"]?.core.checks.allHold === true && read["bol-5"].core.radii.matchesFormula === true && read["bol-5"].core.radii.leftTwin === read["bol-5"].core.radii.rightTwin);
+check("bol-6: the arbelos tangent circle has GH/AB = r/(1+r+r²)", Object.values(read["bol-6"]?.core.claims || {}).every(Boolean) === true && read["bol-6"].savedMatchesCore === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);

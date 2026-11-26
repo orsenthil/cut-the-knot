@@ -547,6 +547,16 @@ const CORE_GLOBALS = {
   "bid/bid-core.js": ["BidCore"],
   "bimedians-in-tetrahedron/bimedians-in-tetrahedron-core.js": ["BimediansInTetrahedronCore"],
   "bisectal-circle/bisectal-circle-core.js": ["BisectalCircleCore"],
+  "bisector-circle-triad/bisector-circle-triad-core.js": ["BisectorCircleTriadCore"],
+  "blithe-12/blithe-12-core.js": ["Blithe12Core"],
+  "bol-1/bol-1-core.js": ["Bol1Core"],
+  "bol-10/bol-10-core.js": ["Bol10Core"],
+  "bol-12/bol-12-core.js": ["Bol12Core"],
+  "bol-13/bol-13-core.js": ["Bol13Core"],
+  "bol-2/bol-2-core.js": ["Bol2Core"],
+  "bol-3/bol-3-core.js": ["Bol3Core"],
+  "bol-5/bol-5-core.js": ["Bol5Core"],
+  "bol-6/bol-6-core.js": ["Bol6Core"],
 };
 
 const games = [];

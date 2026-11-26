@@ -1007,6 +1007,16 @@ const GAMES = {
   bid: (page) => dragFirstHandle(page),
   "bimedians-in-tetrahedron": (page) => dragFirstHandle(page),
   "bisectal-circle": (page) => dragFirstHandle(page),
+  "bisector-circle-triad": (page) => dragFirstHandle(page),
+  "blithe-12": (page) => dragFirstHandle(page),
+  "bol-1": (page) => dragFirstHandle(page),
+  "bol-10": (page) => dragFirstHandle(page),
+  "bol-12": (page) => dragFirstHandle(page),
+  "bol-13": (page) => dragFirstHandle(page),
+  "bol-2": (page) => dragFirstHandle(page),
+  "bol-3": (page) => dragFirstHandle(page),
+  "bol-5": (page) => dragFirstHandle(page),
+  "bol-6": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },
