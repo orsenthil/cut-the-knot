@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Graph and Roots of a Quadratic Polynomial &mdash; coolmaths</title>
+<meta name="description" content="Slide three coefficients and watch a parabola's two roots run along the axis, meet, and leave it as a complex pair. Why do they then move on a circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/quadratic-polynomial/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Graph and Roots of a Quadratic Polynomial">
+<meta property="og:description" content="Slide three coefficients and watch a parabola's two roots run along the axis, meet, and leave it as a complex pair. Why do they then move on a circle?">
+<meta property="og:url" content="https://coolmaths.ai/quadratic-polynomial/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 8px; }
+  #formula { margin: 0.6rem 0 0.2rem; text-align: center; font-weight: 700; font-size: 1.1rem; overflow-wrap: anywhere; }
+  #info { margin: 0.2rem 0 0.6rem; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+  .sl { display: grid; grid-template-columns: 1.5rem minmax(0, 1fr) 4rem; align-items: center; gap: 0.5rem; margin: 0.2rem 0; }
+  .sl input[type="range"] { width: 100%; min-width: 0; }
+  .sl output { text-align: right; font-family: var(--mono); }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 5rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="quadratic-polynomial" data-kind="demo">
+<main id="main">
+  <h1>Graph and Roots of a Quadratic Polynomial</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#complex-analysis">Complex Analysis</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Shape a curve like a bowl with three sliders and see where it crosses the line in the middle.<br>
+    <strong>How to play:</strong> Move the sliders. Green dots show the two answers; when the bowl misses the line, they jump off it, one above and one below.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="560" height="400" aria-label="Graph of a quadratic polynomial"></canvas>
+    <p id="formula"></p>
+    <p id="info" aria-live="polite"></p>
+    <div class="sl"><label for="sa">a</label><input id="sa" type="range" min="-10" max="10" step="0.01" aria-label="Coefficient a"><output id="oa" for="sa"></output></div>
+    <div class="sl"><label for="sb">b</label><input id="sb" type="range" min="-10" max="10" step="0.01" aria-label="Coefficient b"><output id="ob" for="sb"></output></div>
+    <div class="sl"><label for="sc">c</label><input id="sc" type="range" min="-10" max="10" step="0.01" aria-label="Coefficient c"><output id="oc" for="sc"></output></div>
+  </div>
+
+  <div class="controls">
+    <label>x from − to + <input id="xIn" type="number" min="1" max="1000" value="14" aria-label="Horizontal range, plus and minus"></label>
+    <label>y from − to + <input id="yIn" type="number" min="1" max="1000" value="10" aria-label="Vertical range, plus and minus"></label>
+    <button id="newBtn" type="button" class="primary">New polynomial</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The equation <code>ax² + bx + c = 0</code> with <code>a ≠ 0</code> has two roots, given by the <a class="wiki-term" data-wiki="Quadratic_formula" href="https://en.wikipedia.org/wiki/Quadratic_formula" target="_blank" rel="noopener">quadratic formula</a></p>
+      <blockquote><code>x = (−b ± √(b² − 4ac)) / 2a</code></blockquote>
+      <p>The number under the square root, the <a class="wiki-term" data-wiki="Discriminant" href="https://en.wikipedia.org/wiki/Discriminant" target="_blank" rel="noopener">discriminant</a> <code>D = b² − 4ac</code>, decides what kind they are: two different real roots if <code>D &gt; 0</code>, one double root if <code>D = 0</code>, two complex conjugate roots if <code>D &lt; 0</code>. Complex roots are drawn as points above and below the axis.</p>
+
+      <h2>The parabola and its axis</h2>
+      <p>The graph is a parabola that opens up if <code>a &gt; 0</code> and down if <code>a &lt; 0</code>. Both roots sit on either side of the dashed line <code>x = −b/2a</code> through its lowest or highest point: real roots on the x-axis, complex ones on the dashed line itself, mirror images in the x-axis.</p>
+
+      <h2>Vieta's formulas</h2>
+      <p>If <code>x₁</code> and <code>x₂</code> are the roots, <code>P(x) = a(x − x₁)(x − x₂)</code>, and multiplying out gives <a class="wiki-term" data-wiki="Vieta's_formulas" href="https://en.wikipedia.org/wiki/Vieta%27s_formulas" target="_blank" rel="noopener">Vieta's formulas</a>: <code>x₁ + x₂ = −b/a</code> and <code>x₁x₂ = c/a</code>. When the roots are complex, <code>α ± βi</code>, their product is <code>α² + β²</code>, the square of their distance from 0. So if <code>a</code> and <code>c</code> stay fixed, the complex roots move along a circle of radius <code>√(c/a)</code> as <code>b</code> changes; the faint circle shows it. The test checked all of this on 67,240 polynomials across the sliders.</p>
+
+      <h2>Moving c</h2>
+      <p>Changing <code>c</code> just lifts or lowers the parabola. Start with two real roots and <code>a &gt; 0</code>, and raise <code>c</code>: at <code>c = b²/4a</code>, when <code>ax² + bx + c</code> is a perfect square, the parabola touches the axis and the two roots meet; after that they split into a complex pair.</p>
+
+      <p class="tip">Set <code>a = 1</code> and <code>c = 4</code>, then slide <code>b</code> from −10 to 10. Watch the roots run along the x-axis, meet, go round the circle and meet again.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/QuadraticPolynomial.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="quadratic-polynomial-core.js"></script>
+<script src="quadratic-polynomial.js"></script>
+</body>
+</html>

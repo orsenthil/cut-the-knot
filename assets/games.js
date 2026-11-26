@@ -2102,5 +2102,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "quadratic-polynomial",
+      title: "Graph and Roots of a Quadratic Polynomial",
+      blurb: "Slide three coefficients and watch a parabola's two roots run along the axis, meet, and leave it as a complex pair. Why do they then move on a circle?",
+      tags: ["algebra", "curves", "complex-analysis"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
