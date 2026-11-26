@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Angles In Circle &mdash; coolmaths</title>
+<meta name="description" content="Drag two secants across a circle: why is the angle where they meet half the sum—or half the difference—of the arcs they cut off?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/angles-in-circle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Angles In Circle">
+<meta property="og:description" content="Drag two secants across a circle: why is the angle where they meet half the sum—or half the difference—of the arcs they cut off?">
+<meta property="og:url" content="https://coolmaths.ai/angles-in-circle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .sec-circle { fill: none; stroke: var(--border); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .center-dot { fill: var(--muted); }
+  #board .secant-one { stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; }
+  #board .secant-two { stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
+  #board .arc-bc { fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; }
+  #board .arc-de { fill: none; stroke: var(--good); stroke-width: 5; stroke-linecap: round; }
+  #board .angle-mark { fill: none; stroke: #d97706; stroke-width: 3.5; }
+  #board .cut-near { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .cut-far { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .pt-label { fill: var(--text); font-size: 1.05rem; font-weight: 600; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .sec-handle { stroke-width: 2.5; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls button { min-height: 2.6rem; min-width: 2.6rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .controls input[type="checkbox"] { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+  #status { overflow-wrap: anywhere; line-height: 1.5; }
+</style>
+</head>
+<body data-game="angles-in-circle" data-kind="demo">
+<main id="main">
+  <h1>Angles In Circle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the lines and watch how the angle where they meet matches the arcs they cut from the circle.<br>
+    <strong>How to play:</strong> Drag the dot where the lines meet, or a dot on either line. You can also focus a dot and use the arrow keys, tick the boxes, or slide a line sideways.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="A circle with two draggable secants, the arcs they cut off, and the angle where they meet"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" aria-label="Show the names of the points">names</label>
+    <label><input id="arcsBox" type="checkbox" aria-label="Show the intercepted arcs">arcs</label>
+    <label><input id="anglesBox" type="checkbox" aria-label="Show the angle at A">angles</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the lines to their starting positions">Reset</button>
+  </div>
+
+  <div class="controls" aria-label="Slide a line sideways">
+    <button id="slide1Back" type="button" data-slide="-6" data-which="C" aria-label="Slide line 1 six units to the left">&minus; line 1</button>
+    <button id="slide1Fwd" type="button" data-slide="6" data-which="C" aria-label="Slide line 1 six units to the right">line 1 +</button>
+    <button id="slide2Back" type="button" data-slide="-6" data-which="B" aria-label="Slide line 2 six units to the left">&minus; line 2</button>
+    <button id="slide2Fwd" type="button" data-slide="6" data-which="B" aria-label="Slide line 2 six units to the right">line 2 +</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two straight lines cross a <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> and meet at A. The angle at A never seems to match just one arc. It matches two at once — and whether you add or subtract them depends only on where A sits.</p>
+
+      <h2>Two arcs, one angle</h2>
+      <p>Each <a class="wiki-term" data-wiki="Secant_line" href="https://en.wikipedia.org/wiki/Secant_line" target="_blank" rel="noopener">secant</a> cuts the circle twice. The points nearest A are called B and C; the far ones are D and E. When A is inside the circle, the angle at A is <code>half of (arc BC + arc DE)</code>. When A is outside, it is <code>half of (arc DE − arc BC)</code>, taking the positive difference. Drag A across the circle and watch the status line switch from one rule to the other. The old applet's formula was checked on thousands of random positions and holds in every one.</p>
+
+      <h2>A tangent is just a collapsed secant</h2>
+      <p>If a line only touches the circle, its two cutting points merge into one and that arc shrinks to zero. The outside rule still works: the angle is <code>half of (arc DE − arc BC)</code>. This is the usual <a class="wiki-term" data-wiki="Tangent_line" href="https://en.wikipedia.org/wiki/Tangent_line" target="_blank" rel="noopener">tangent</a>–secant angle rule, and the check tries hundreds of exact tangents to confirm it.</p>
+
+      <h2>What if A is on the circle?</h2>
+      <p>Then one of the intercepts is A itself, so arc BC is <code>0</code> and the outside rule becomes <code>half of arc DE</code>. That is the <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angle</a> theorem in disguise. Put A at the centre instead: the two lines are diameters, the arcs are equal, and the angle equals its own <a class="wiki-term" data-wiki="Central_angle" href="https://en.wikipedia.org/wiki/Central_angle" target="_blank" rel="noopener">central angle</a> — exactly the special case the page starts from.</p>
+
+      <h2>Why sliding a line changes nothing</h2>
+      <p>Press a slide button: one line moves sideways without turning, so the angle at A stays the same. The two cut-off arcs grow or shrink by equal amounts, which leaves their sum (inside) or difference (outside) unchanged. The page gives a neater proof by signing the arcs: going with the chosen direction round the circle counts positive, going against it counts negative. A parallel shift adds the same signed amount to both arcs, so the total cannot change.</p>
+
+      <p class="tip">Try this: put A inside, note the angle, then slide line 1 all the way across until A is outside. The rule flips from a sum to a difference, yet the angle on the status line keeps the same value until you turn a line.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AnglesInCircle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="angles-in-circle-core.js"></script>
+<script src="angles-in-circle.js"></script>
+</body>
+</html>
