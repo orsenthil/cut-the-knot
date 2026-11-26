@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BQTN &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a polygon and watch a chain of touching circles grow around it. After an odd number of sides, does the last circle land back on the first?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bqtn/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="BQTN">
+<meta property="og:description" content="Drag the corners of a polygon and watch a chain of touching circles grow around it. After an odd number of sides, does the last circle land back on the first?">
+<meta property="og:url" content="https://coolmaths.ai/bqtn/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .polygon {
+    fill: var(--accent-soft); stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round;
+  }
+  #board .bisector { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .chain-circle { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-opacity: 0.7; }
+  #board .chain-circle.emph { stroke: var(--good); stroke-width: 3; stroke-opacity: 1; }
+  #board .touch-dot { fill: var(--accent); }
+  #board .vlabel {
+    fill: var(--muted); font-family: var(--font); font-size: 14px; pointer-events: none;
+  }
+  #board .clabel, #board .plabel {
+    fill: var(--good); font-family: var(--font); font-size: 15px; font-weight: 600;
+    pointer-events: none;
+  }
+  #board .plabel { fill: var(--accent); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .start-handle { fill: var(--highlight); stroke: var(--ink); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls label {
+    display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0.35rem;
+    font-size: 0.95rem; min-width: 0;
+  }
+  .controls input[type="number"] { width: 3.5rem; min-width: 0; max-width: 100%; }
+</style>
+</head>
+<body data-game="bqtn" data-kind="demo">
+<main id="main">
+  <h1>BQTN</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners of a shape and watch a chain of touching circles grow around it.<br>
+    <strong>How to play:</strong> Drag a corner or the point P with a mouse or finger, or focus a point and use the arrow keys. Change the number of sides, then press Check the chain.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A polygon with a chain of touching circles, draggable corners and a draggable starting point P"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="nInput">Sides:
+      <input id="nInput" type="number" min="3" max="21" step="1" value="3"
+             aria-label="Number of sides, from 3 to 21">
+    </label>
+    <label for="whichInput">Emphasize pair #:
+      <input id="whichInput" type="number" min="0" max="6" step="1" value="6"
+             aria-label="Which pair of circles to emphasize, from 0 to twice the number of sides">
+    </label>
+    <button id="newBtn" type="button" class="primary"
+            aria-label="Reset the polygon and the starting point">Reset polygon</button>
+    <button id="checkBtn" type="button"
+            aria-label="Check whether the chain returns to its first circle">Check the chain</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This illustration shows a theorem of Bui Quang Tuan: a chain of circles inscribed in the corners of a polygon comes back to where it started. Drag the corners and the chain changes with them, but the closing never does — as long as the number of sides is odd.</p>
+
+      <h2>Where each circle's centre sits</h2>
+      <p>Point P starts the chain on the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> at the first corner. The first circle is centred at P and touches the first side at a point called T. To draw the next circle, follow the perpendicular to that side through T: its centre must lie there to touch the side at the same spot. It must also lie on the angle bisector at the next corner, so that it fits that corner. The two lines meet in exactly one place, and that is the next centre. The radius is just the distance from the new centre to T.</p>
+
+      <h2>Why the circles touch</h2>
+      <p>Two circles in a row share the same touch point T on a side, so their centres lie on one line through T. If their radii are <code>r</code> and <code>R</code>, the centres are <code>r + R</code> apart when they sit on opposite sides of T, and <code>|R - r|</code> apart when one sits inside the other. Either way they touch at T, which is why the picture looks like a chain. The logic test checks this, and that every centre really lies on its corner's bisector, on hundreds of shapes.</p>
+
+      <h2>The chain closes — for odd sides</h2>
+      <blockquote><code>after 2n steps, the last circle returns to the first: C<sub>2n</sub> = C<sub>1</sub></code></blockquote>
+      <p>That is the claim on the original page, and the logic test confirms it on dozens of odd-sided polygons from 3 to 21 sides, with the corners dragged into many different shapes. The page only promises this for odd <code>n</code>, and that matters: the same test finds even-sided chains that do <em>not</em> close. Try switching sides from 5 to 6 and press Check the chain to see it happen. Very flat shapes can also make the construction break down, because two of the applet's own lines become parallel; the page says nothing about those.</p>
+
+      <h2>Regular shapes and the pair counter</h2>
+      <p>For a <a class="wiki-term" data-wiki="Regular_polygon" href="https://en.wikipedia.org/wiki/Regular_polygon" target="_blank" rel="noopener">regular polygon</a>, the page says the chain may have length 1 or <code>2N</code>. Both happen here: with a triangle, dragging P to the centre makes every circle the triangle's <a class="wiki-term" data-wiki="Incircle_and_excircles" href="https://en.wikipedia.org/wiki/Incircle_and_excircles" target="_blank" rel="noopener">incircle</a>, so the chain repeats after one step; otherwise all <code>2N</code> steps are needed. The pair counter mirrors the applet: it marks the touching pair numbered from 0 to <code>2n - 1</code>, and at <code>2n</code> every circle gets the same colour.</p>
+
+      <p class="tip">Try a triangle with P at its centre, then drag P to a corner: watch one circle shrink as the rest grow, and check that the chain still closes.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BQTN.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bqtn-core.js"></script>
+<script src="bqtn.js"></script>
+</body>
+</html>
