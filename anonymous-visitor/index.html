@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anonymous Visitor &mdash; coolmaths</title>
+<meta name="description" content="D slides along the line that bisects AB while two little equilateral triangles flex with it. Does the point C ever move, or is it fixed?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/anonymous-visitor/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Anonymous Visitor">
+<meta property="og:description" content="D slides along the line that bisects AB while two little equilateral triangles flex with it. Does the point C ever move, or is it fixed?">
+<meta property="og:url" content="https://coolmaths.ai/anonymous-visitor/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    touch-action: none;
+  }
+  #board .tri-abd { fill: var(--accent); opacity: 0.10; }
+  #board .tri-small { fill: var(--accent); opacity: 0.18; }
+  #board .rhombus { fill: var(--highlight); opacity: 0.45; }
+  #board .tri-abc { fill: var(--good); opacity: 0.14; }
+  #board .base { stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+  #board .side { stroke: var(--muted); stroke-width: 1.6; stroke-linecap: round; }
+  #board .rhomb-edge { stroke: var(--accent); stroke-width: 1.8; stroke-linecap: round; }
+  #board .abc-edge { stroke: var(--good); stroke-width: 2.8; stroke-linecap: round; }
+  #board .bisector { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 6; opacity: 0.8; }
+  #board .premise-line { stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 5 5; }
+  #board .tick { stroke: var(--accent); stroke-width: 2; stroke-linecap: round; }
+  #board .proof-circle { fill: none; stroke: var(--muted); stroke-width: 1.3; opacity: 0.8; }
+  #board .pt-label { fill: var(--text); font-size: 0.85rem; font-weight: 600; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="anonymous-visitor" data-kind="demo">
+<main id="main">
+  <h1>Anonymous Visitor</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch a point that stays put while the rest of the picture bends around it.<br>
+    <strong>How to play:</strong> Drag the dots A, B or D; D slides along the upright line. Drag D first to unlock the Premise and Proof switches, and press Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 260" role="group"
+         aria-label="Isosceles triangle ABD on base AB, equilateral triangles ADF and BDE, rhombus DFCE, and the equilateral triangle ABC. Drag A, B or D."></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" aria-label="Show point names"> Names</label>
+    <label><input id="premiseBox" type="checkbox" aria-label="Show the premise: the rhombus and equal lengths" disabled> Premise</label>
+    <label><input id="proofBox" type="checkbox" aria-label="Show the proof: the five equal circles" disabled> Proof</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the picture">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The picture behaves like a hinge. As D slides along the line through the middle of AB, both little triangles swing and the diamond between them changes shape. Yet the corner marked C never moves at all.</p>
+
+      <h2>Two triangles that turn by a third of a turn</h2>
+      <p>AB is fixed. D may move anywhere on the <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a> of AB, so AD and BD are always equal. On those two sides we build <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangles</a>: turn AD by 60° about A to find F, and turn BD by 60° about B to find E. Since D is on the bisector, F and E are mirror images in it, and the line FE is parallel to AB.</p>
+
+      <h2>The rhombus is really a reflection</h2>
+      <p>C is chosen so that DFCE is a <a class="wiki-term" data-wiki="Rhombus" href="https://en.wikipedia.org/wiki/Rhombus" target="_blank" rel="noopener">rhombus</a>. The diagonals of a rhombus cross at their midpoints and at right angles, so C is just the <a class="wiki-term" data-wiki="Reflection_(mathematics)" href="https://en.wikipedia.org/wiki/Reflection_(mathematics)" target="_blank" rel="noopener">reflection</a> of D in the line FE. Tick <em>Premise</em> to see that line and the equal-length marks. The cut-the-knot page adds that the small triangles need not be built outside ABD: if both are built inside instead, the conclusion is still true. That is exactly what happens when D crosses to the other side of AB.</p>
+
+      <h2>Why C cannot move</h2>
+      <p>Let M be the midpoint of AB, <code>s</code> the length of AB, <code>n</code> the unit direction from M towards D, and <code>h</code> how far D sits from M along <code>n</code>. The 60° turns put F and E at height <code>h/2 − √3·s/2</code> along <code>n</code>. Reflecting D in FE changes its height to twice that, minus <code>h</code>:</p>
+      <blockquote><code>2(h/2 − √3·s/2) − h = −√3·s/2</code></blockquote>
+      <p>The height <code>h</code> cancels, so C is always <code>M − (√3/2)·s·n</code>. That is one of the two points which make ABC equilateral: its distance to both A and B is <code>s</code>. This is the old <a class="wiki-term" data-wiki="Geometric_construction" href="https://en.wikipedia.org/wiki/Geometric_construction" target="_blank" rel="noopener">construction</a> of an equilateral triangle with a rusty compass. The logic test confirms the claim on a grid of bases and many heights of D, on both sides of AB, and compares every picture with a second transcription of the Java applet's own rotate, intersect and reflect methods. One small change from the Java: it snapped D onto the bisector only while D was being dragged, whereas this page keeps D on the line at all times, as the puzzle states.</p>
+
+      <p class="tip">Drag D across AB: the little triangles flip from outside to inside, but C does not budge. Then tick <em>Proof</em> to see the five equal circles behind the construction.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AnonymousVisitor.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="anonymous-visitor-core.js"></script>
+<script src="anonymous-visitor.js"></script>
+</body>
+</html>
