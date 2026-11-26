@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Areas In Square &mdash; coolmaths</title>
+<meta name="description" content="A square is split into four coloured pieces by two lines through a point E on one side. Move E and change N: what ratio do the four areas always keep?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/areas-in-square/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Areas In Square">
+<meta property="og:description" content="A square is split into four coloured pieces by two lines through a point E on one side. Move E and change N: what ratio do the four areas always keep?">
+<meta property="og:url" content="https://coolmaths.ai/areas-in-square/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .region-1 { fill: var(--accent); opacity: 0.32; }
+  #board .region-2 { fill: var(--good); opacity: 0.30; }
+  #board .region-3 { fill: var(--bad); opacity: 0.30; }
+  #board .region-4 { fill: var(--highlight); }
+  #board .square { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; }
+  #board .cut { stroke: var(--ink); stroke-width: 2; stroke-linecap: round; }
+  #board .dissect { stroke: var(--muted); stroke-width: 1.1; }
+  #board .corner-dot { fill: var(--ink); }
+  #board .cross-dot { fill: var(--accent); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .resize-handle { fill: var(--good); }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label, #board .region-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  #board .point-label { font-size: 13px; }
+  #board .region-label { font-size: 16px; }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+  .controls input[type="number"] { width: 5em; }
+</style>
+</head>
+<body data-game="areas-in-square" data-kind="demo">
+<main id="main">
+  <h1>Areas In Square</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A square is split into four coloured parts. Move the point on the left side to see how their sizes compare. There is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag E up or down, or focus it and use the arrow keys. Set N in the box, drag the top-right corner to change the size, and tick the boxes to see the colours or the little grid.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="group"
+         aria-label="A square ABCD split by two lines into four coloured regions I, II, III and IV. Drag E along the left side to change N, or corner C to resize the square."></svg>
+    <p class="hint-line">Drag E or corner C, or focus one and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label for="nInput">N (2 to 20) <input id="nInput" type="number" min="2" max="20" step="1" value="2" aria-label="N, a whole number from 2 to 20"></label>
+    <label><input id="colorsBox" type="checkbox" data-label="colors"> colors</label>
+    <label><input id="dissectionBox" type="checkbox" data-label="dissection"> dissection</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A square is cut by two lines into four pieces. Move the point E and the pieces change shape, but their <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">areas</a> keep the same pattern. Here is the pattern and the reason for it.</p>
+
+      <h2>The four pieces</h2>
+      <p>The page starts with a <a class="wiki-term" data-wiki="Quadrilateral" href="https://en.wikipedia.org/wiki/Quadrilateral" target="_blank" rel="noopener">quadrilateral</a> ABCD that is a square and a point E on AD with DE = AD/N, where N is at least 2. Draw the two lines DB and CE. They cross at M and cut out the four pieces I, II, III and IV. The page's exact claim, which the applet generalises, is</p>
+      <blockquote><code>I : II : III : IV = 1 : N : N&sup2; : N&sup2; + N - 1</code></blockquote>
+      <p>Set N = 2 and E is the midpoint of AD: the original puzzle asks for the ratios and the answer is 1 : 2 : 4 : 5. The logic test checked the formula for every whole N from 2 to 20 (every value the applet's spinner allows) and for hundreds of random board sizes, E positions and square sizes. It held every time. Dragging E also stops between whole numbers; the very same formula holds there, though the N&sup2; grid only makes sense for a whole N.</p>
+
+      <h2>Where the crossing point lands</h2>
+      <p>Take the side of the square to be S, put D at (0,0), C at (S,0), B at (S,S) and A at (0,S). Then E is at (0,S/N). The line DB is <code>y = x</code>; the line CE meets it at <code>M = (S/(N+1), S/(N+1))</code>. Now the four areas follow by simple triangles:</p>
+      <blockquote><code>I = S&sup2; / (2N(N+1))</code><br><code>II = N&times;I</code><br><code>III = N&sup2;&times;I</code><br><code>IV = S&sup2; - (1 + N + N&sup2;)I = (N&sup2; + N - 1)&times;I</code></blockquote>
+      <p>The triangles on either side of M are <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similar_triangles" target="_blank" rel="noopener">similar triangles</a>: their matching sides differ by a factor of N, so their areas differ by N&sup2;. That is why the third piece grows as N&sup2; while the first stays smallest.</p>
+
+      <h2>Why N&sup2; appears</h2>
+      <p>Mark the sides of a triangle into N equal parts and join the marks by lines parallel to the sides: the triangle splits into N&sup2; equal little triangles. Stretching every side by N multiplies the area by N&sup2;, not N. Tick “dissection” to see those parallel lines in the square — they are the same idea Euclid used in his second proof of the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a>.</p>
+
+      <h2>The applet's letters</h2>
+      <p>The applet turns the page's figure a quarter turn: its A is the page's D, its B is the page's C and its C is the page's B. Its line AC is the page's DB and its line BE is the page's CE. It puts E one N-th of the way up from its A, which is the page's D, so that is exactly DE = AD/N. The colours, from the smallest piece to the largest, are still I, II, III, IV in that order.</p>
+
+      <p class="tip">Try N = 2 for the original puzzle's 1 : 2 : 4 : 5, then drag corner C: the square changes size, but the four ratios never do.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AreasInSquare.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="areas-in-square-core.js"></script>
+<script src="areas-in-square.js"></script>
+</body>
+</html>
