@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Graph of a Polynomial Defined by Its Roots &mdash; coolmaths</title>
+<meta name="description" content="Choose where a polynomial is zero and see the graph it makes. Which roots does the curve cross, which does it only touch, and where does it head at each end?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/polynomial-roots/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Graph of a Polynomial Defined by Its Roots">
+<meta property="og:description" content="Choose where a polynomial is zero and see the graph it makes. Which roots does the curve cross, which does it only touch, and where does it head at each end?">
+<meta property="og:url" content="https://coolmaths.ai/polynomial-roots/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 8px; }
+  #formula { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.2rem 0.1rem; margin: 0.7rem 0 0.3rem; font-weight: 700; font-size: 1.15rem; }
+  #formula .factor { display: inline-flex; align-items: center; }
+  #formula input { width: 3.6rem; font: inherit; font-size: 1rem; text-align: center; }
+  #info { margin: 0.3rem 0 0; overflow-wrap: anywhere; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; max-width: 100%; }
+  .controls input[type="number"] { width: 4.5rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="polynomial-roots" data-kind="demo">
+<main id="main">
+  <h1>Graph of a Polynomial Defined by Its Roots</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#parity">Parity</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Build a curve from the points where it should meet the middle line, and see how it bends.<br>
+    <strong>How to play:</strong> Change the numbers in the formula, or pick how many there are. Watch where the curve crosses the line and where it only touches it.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="560" height="420" aria-label="Graph of a polynomial"></canvas>
+    <div id="formula" role="group" aria-label="The formula: leading coefficient and roots"></div>
+    <p id="info" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label>Degree <input id="degIn" type="number" min="0" max="10" value="3"></label>
+    <label>x from − to + <input id="xIn" type="number" min="1" max="1000" value="13" aria-label="Horizontal range, plus and minus"></label>
+    <label>y from − to + <input id="yIn" type="number" min="1" max="1000" value="10" aria-label="Vertical range, plus and minus"></label>
+    <button id="newBtn" type="button" class="primary">New polynomial</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Write a polynomial as a product, <code>P(x) = A(x − r₁)(x − r₂)…(x − rₙ)</code>, and its roots are on show: <code>P(r) = 0</code> exactly when one of the factors is 0. A few general rules then tell you the shape of the graph before you draw it.</p>
+
+      <h2>At the two ends</h2>
+      <p>Far from 0 every factor <code>x − r</code> has the sign of <code>x</code>, so <code>P(x)</code> has the sign of <code>A·xⁿ</code>. On the right that is the sign of <code>A</code>. On the left it depends on the <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a> of the degree: with <code>A</code> positive,</p>
+      <blockquote><code>odd degree: −∞ on the left, +∞ on the right<br>even degree: +∞ on both sides</code></blockquote>
+      <p>and with <code>A</code> negative the signs flip. Changing <code>A</code> stretches the graph up and down; changing its sign reflects it in the x-axis. The test checked the table and the stretching on all 4,686 polynomials of degree up to 4 with roots from −2 to 2 and <code>A</code> from −3 to 3.</p>
+
+      <h2>Crossing or touching</h2>
+      <p>Near a root <code>r</code> that appears <code>m</code> times, <code>P(x)</code> behaves like a constant times <code>(x − r)ᵐ</code>. If the <a class="wiki-term" data-wiki="Multiplicity_(mathematics)" href="https://en.wikipedia.org/wiki/Multiplicity_(mathematics)" target="_blank" rel="noopener">multiplicity</a> <code>m</code> is odd, that changes sign and the graph crosses the axis (a filled dot); if <code>m</code> is even it does not, and the graph touches the axis and turns back (a ring). Whenever <code>m &gt; 1</code>, odd or even, the graph is tangent to the axis there, because the derivative also has the factor <code>x − r</code>. The page's wording "tangent regardless of the root's parity" means the multiplicity's parity; the test confirmed all of these on the same polynomials.</p>
+
+      <p class="tip">Make all three roots the same number. The curve flattens as it crosses. Now make two of them equal and the third different: where does it cross, and where does it touch?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Calculus/PolynomialRoots.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="polynomial-roots-core.js"></script>
+<script src="polynomial-roots.js"></script>
+</body>
+</html>

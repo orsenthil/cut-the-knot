@@ -2054,5 +2054,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "polynomial-roots",
+      title: "Graph of a Polynomial Defined by Its Roots",
+      blurb: "Choose where a polynomial is zero and see the graph it makes. Which roots does the curve cross, which does it only touch, and where does it head at each end?",
+      tags: ["algebra", "curves", "parity"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
