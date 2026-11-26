@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brianchon &mdash; coolmaths</title>
+<meta name="description" content="Drag six dots around a circle: do the three long diagonals of the hexagon their tangents make always meet in one point?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/brianchon/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Brianchon">
+<meta property="og:description" content="Drag six dots around a circle: do the three long diagonals of the hexagon their tangents make always meet in one point?">
+<meta property="og:url" content="https://coolmaths.ai/brianchon/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circumcircle { fill: var(--accent); fill-opacity: 0.06; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .side { fill: none; stroke: var(--muted); stroke-width: 1.6; }
+  #board .hexagon { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .diagonal { stroke: var(--accent); stroke-width: 2.5; }
+  #board .extension { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 6; }
+  #board .chord { stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 4 4; }
+  #board .meeting-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="brianchon" data-kind="demo">
+<main id="main">
+  <h1>Brianchon</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Six dots sit on a circle and make a hexagon around it; watch its three long diagonals meet in one spot.<br>
+    <strong>How to play:</strong> Drag a dot with a mouse or finger, or focus one and use the arrow keys. Press Check the theorem to find the meeting point, and try the two checkboxes.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Six draggable dots on a circle, the hexagon their tangents make, and its three long diagonals"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the six dots to their starting positions">Reset diagram</button>
+    <button id="checkBtn" type="button" aria-label="Check whether the three long diagonals meet in one point">Check the theorem</button>
+    <button id="addonsBtn" type="button" aria-pressed="false" aria-label="Additional Concurrencies: toggle the chords joining opposite dots">Additional Concurrencies</button>
+    <button id="extendBtn" type="button" aria-pressed="false" aria-label="Extend Lines: toggle lines drawn across the whole picture">Extend Lines</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This is a picture with a surprise. Move any of the six dots on the circle and the shape changes completely, yet three long lines inside it still meet at the same kind of single point.</p>
+
+      <h2>A hexagon wrapped around a circle</h2>
+      <p>At each dot there is just one line that touches the circle without cutting it: the <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a>. Two neighbouring tangents cross at a corner of a <a class="wiki-term" data-wiki="Hexagon" href="https://en.wikipedia.org/wiki/Hexagon" target="_blank" rel="noopener">hexagon</a>, so every side of that hexagon touches the circle. The logic test checks this on hundreds of different arrangements: all six dots stay on the circle, and every side stays a tangent.</p>
+
+      <h2>The three long diagonals</h2>
+      <p>Join each corner to the corner opposite it. These are the "major" diagonals, drawn here in the accent colour. <a class="wiki-term" data-wiki="Brianchon%27s_theorem" href="https://en.wikipedia.org/wiki/Brianchon%27s_theorem" target="_blank" rel="noopener">Brianchon's theorem</a> says the three always meet at one point. The test drew 500 random hexagons around the circle and measured how far the third diagonal is from the crossing of the first two; it is zero to the last decimal place.</p>
+      <blockquote><code>diagonal 0 &cap; diagonal 1 = diagonal 2 &cap; (any of the three)</code></blockquote>
+      <p>The original page states the theorem for any conic, not just a circle: an ellipse, say, is a circle seen through a <a class="wiki-term" data-wiki="Projective_transformation" href="https://en.wikipedia.org/wiki/Projective_transformation" target="_blank" rel="noopener">projective map</a>, and such a map keeps lines straight and keeps meeting points together. This port draws the circle case the Java applet drew.</p>
+
+      <h2>Why they meet: poles and polars</h2>
+      <p>Join the six points where the sides touch the circle. That makes a second hexagon, now inside the circle. Its three pairs of opposite sides meet in three points that lie on one line, which is <a class="wiki-term" data-wiki="Pascal%27s_theorem" href="https://en.wikipedia.org/wiki/Pascal%27s_theorem" target="_blank" rel="noopener">Pascal's theorem</a>. With respect to the circle, each of those three points has a <a class="wiki-term" data-wiki="Pole_and_polar" href="https://en.wikipedia.org/wiki/Pole_and_polar" target="_blank" rel="noopener">polar</a> line, and those polars are exactly the three long diagonals of the outer hexagon. Points on one line give lines through one point, so the diagonals meet. The test computes Pascal's line and its pole and confirms that the pole is the very point where the blue diagonals cross.</p>
+      <p>A quadrilateral around a circle is the same story with two pairs of dots pulled together: the test checks that case too, and the lines still concur.</p>
+
+      <h2>The two extra checkboxes</h2>
+      <p><strong>Extend Lines</strong> draws the three diagonals all the way across the picture, as the old applet did. <strong>Additional Concurrencies</strong> adds the three chords joining dot A to D, B to E and C to F. Despite the checkbox's name, those chords are not forced to meet: near the starting dots they almost do, and after a good drag they clearly do not. The test measures this and reports the honest result; the page's theorem is only about the three diagonals of the circumscribed hexagon.</p>
+
+      <p class="tip">Try dragging one dot very close to its neighbour. The corner between them flies far away, and Extend Lines shows where its diagonal went.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Brianchon.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="brianchon-core.js"></script>
+<script src="brianchon.js"></script>
+</body>
+</html>
