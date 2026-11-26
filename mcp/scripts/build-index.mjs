@@ -441,6 +441,7 @@ const CORE_GLOBALS = {
   "suan-pan/suan-pan-core.js": ["SuanPanCore"],
   "sorts/sorts-core.js": ["SortsCore"],
   "spigot-for-pi/spigot-for-pi-core.js": ["SpigotForPiCore"],
+  "steinhaus-problem/steinhaus-problem-core.js": ["SteinhausProblemCore"],
 };
 
 const games = [];

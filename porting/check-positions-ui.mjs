@@ -821,6 +821,13 @@ const GAMES = {
     await page.click("#computeBtn");
     await page.waitForFunction(() => document.getElementById("status").classList.contains("done"));
   },
+  "steinhaus-problem": async (page) => {
+    await page.focus("#board .tile.waiting");
+    await page.keyboard.press("Enter");
+    for (let i = 0; i < 4; i++) await page.keyboard.press("Shift+ArrowLeft");
+    await page.focus("#board .tile.waiting");
+    await page.keyboard.press("Enter");
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

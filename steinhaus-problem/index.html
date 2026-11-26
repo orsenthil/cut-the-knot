@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Steinhaus' Problem &mdash; coolmaths</title>
+<meta name="description" content="Place numbers so that the first two are in different halves, the first three in different thirds, and so on. How far can you get? Nobody can go past 17.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/steinhaus-problem/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Steinhaus' Problem">
+<meta property="og:description" content="Place numbers so that the first two are in different halves, the first three in different thirds, and so on. How far can you get? Nobody can go past 17.">
+<meta property="og:url" content="https://coolmaths.ai/steinhaus-problem/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 46rem; padding: 0.6rem 0.3rem; }
+  .scroll { overflow-x: auto; }
+  #board { display: block; width: 100%; min-width: 34rem; height: auto; touch-action: none; }
+  #board .piece { fill: var(--accent-soft); }
+  #board .piece.odd { fill: var(--surface-2); }
+  #board .axis { stroke: var(--ink); stroke-width: 3; }
+  #board .tick, #board .lead { stroke: var(--muted); stroke-width: 1.5; }
+  #board .end, #board .value { fill: var(--text); font: 600 15px var(--font); text-anchor: middle; }
+  #board .value { font-size: 13px; fill: var(--muted); }
+  #board .box { fill: var(--surface-2); stroke: var(--border-strong); stroke-dasharray: 4 3; }
+  #board .tile { cursor: grab; }
+  #board .tile rect { fill: var(--accent); stroke: var(--ink); stroke-width: 1.5; }
+  #board .tile text { fill: var(--accent-text); font: 700 15px var(--font); text-anchor: middle; pointer-events: none; }
+  #board .tile:focus-visible { outline: none; }
+  #board .tile:focus-visible rect { stroke: var(--focus); stroke-width: 5; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; flex-wrap: wrap; }
+  .controls select { min-height: 2.75rem; font-size: 1rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="steinhaus-problem" data-kind="demo">
+<main id="main">
+  <h1>Steinhaus' Problem</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#fractions">Fractions</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Put numbered tiles on a line so that the first two are in different halves, the first three in different thirds, and so on. How many can you place?<br>
+    <strong>How to play:</strong> Drag the next tile from the box onto the line; drag placed tiles to move them. The line shows the pieces for the tiles placed so far.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="scroll">
+      <svg id="board" viewBox="0 0 700 290" role="group" aria-label="The segment from 0 to 1 with the tiles placed on it, and the next tile in a box at the left"></svg>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="removeBtn" type="button" disabled>Remove last</button>
+    <button id="clearBtn" type="button">Clear</button>
+    <label>Examples <select id="exampleSel"></select></label>
+    <button id="exampleBtn" type="button" class="primary">Show</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Hugo Steinhaus, in <em>One Hundred Problems in Elementary Mathematics</em>, asked for numbers <code>x&#8321;, x&#8322;, &hellip;</code> in <code>[0, 1]</code> such that for every <code>k</code> the first <code>k</code> of them lie in different <code>k</code>-ths of the interval. He gave two solutions with ten numbers and asked whether ten could be beaten.</p>
+
+      <h2>Only the pieces matter</h2>
+      <p>Whether a list works depends only on which piece each number falls in, for each <code>k</code>: <code>x</code> is in the <code>&lfloor;kx&rfloor;</code>-th <code>k</code>-th. So each new number narrows down the places every earlier number may still go, and a computer can try every possibility exactly, with all the fractions written over the common denominator <code>lcm(1, &hellip;, 18)</code>.</p>
+
+      <h2>Seventeen is the limit</h2>
+      <p>M. Warmus proved that 17 numbers are possible and 18 are not. Berlekamp and Graham later proved a general theorem on the <a class="wiki-term" data-wiki="Low-discrepancy_sequence" href="https://en.wikipedia.org/wiki/Low-discrepancy_sequence" target="_blank" rel="noopener">irregularity of distribution</a> that implies it, and Richard Guy published the 17 in the Examples list. The logic test ran that exact search: it found a list for every length up to 17 and proved, in a complete search, that no list of 18 exists. The page's five examples all pass the applet's check.</p>
+
+      <h2>Why it gets hard</h2>
+      <p>Spreading numbers evenly is easy for one <code>k</code> at a time: put them in the middles of the pieces. The difficulty is that the same first numbers must be well spread for every <code>k</code> at once. Each new number has to fill the one piece left empty, and that keeps pushing the early numbers into ever narrower slots, as in the <a class="wiki-term" data-wiki="Pigeonhole_principle" href="https://en.wikipedia.org/wiki/Pigeonhole_principle" target="_blank" rel="noopener">pigeonhole principle</a>.</p>
+
+      <p class="tip">Start Steinhaus's second ten (.06, .55, .77, &hellip;) and try to add an eleventh number yourself before looking at the fourteen.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/SteinhausProblem.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="steinhaus-problem-core.js"></script>
+<script src="steinhaus-problem.js"></script>
+</body>
+</html>

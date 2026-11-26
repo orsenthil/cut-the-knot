@@ -2316,5 +2316,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "steinhaus-problem",
+      title: "Steinhaus' Problem",
+      blurb: "Place numbers so that the first two are in different halves, the first three in different thirds, and so on. How far can you get? Nobody can go past 17.",
+      tags: ["fractions", "logic", "counting"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

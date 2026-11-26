@@ -1962,6 +1962,11 @@ check("spigot-for-pi: 50 digits done, ending ...93993751", read["spigot-for-pi"]
   const sp = at("spigot-for-pi", { n: 1000, chunk: 5, font: 15, digitsSoFar: 10, done: false });
   check("spigot-for-pi: stopped after 10 digits of 1000", sp.lastDigits === "3141592653" && sp.finished === false && sp.placesInTheArray === 3334);
 }
+check("steinhaus-problem: .30 and .50 are in different halves (0.5 opens the second)", read["steinhaus-problem"]?.numbers.join() === ".30,.50" && read["steinhaus-problem"].allPass === true && read["steinhaus-problem"].firstFailure === null);
+{
+  const st = at("steinhaus-problem", { places: [710, 90, 420, 850, 270, 540, 925, 170, 620, 355, 780, 30, 480, 970, 220, 660, 320] });
+  check("steinhaus-problem: Guy's 17 pass", st.allPass === true && st.passesUpTo === 17);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;
