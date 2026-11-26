@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bottema &mdash; coolmaths</title>
+<meta name="description" content="Drag the top corner of a triangle while squares grow on two of its sides. Does the dot halfway between the squares' far corners ever move? See why Bottema's theorem says no.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bottema/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Bottema">
+<meta property="og:description" content="Drag the top corner of a triangle while squares grow on two of its sides. Does the dot halfway between the squares' far corners ever move? See why Bottema's theorem says no.">
+<meta property="og:url" content="https://coolmaths.ai/bottema/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .flank-square {
+    fill: var(--accent); fill-opacity: 0.10;
+    stroke: var(--ink); stroke-width: 1.8; stroke-linejoin: round;
+  }
+  #board .flank-square.alt { fill: var(--highlight); fill-opacity: 0.13; }
+  #board .base-line { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 5; }
+  #board .treasure-line { fill: none; stroke: var(--bad); stroke-width: 2.5; }
+  #board .proof-line { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .proof-line.guide { stroke: var(--bad); stroke-width: 1.6; stroke-dasharray: 4 4; }
+  #board .mid-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .hint-right { fill: none; stroke: var(--text); stroke-width: 1.6; }
+  #board .hint-right.alt { stroke: var(--accent); }
+  #board .hint-tick { fill: none; stroke: var(--text); stroke-width: 1.6; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 14px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .mid-label { fill: var(--good); }
+  #board .flank-label { fill: var(--muted); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="bottema" data-kind="demo">
+<main id="main">
+  <h1>Bottema</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two squares share one corner of a triangle. Watch the orange dot: it is the middle of the line between two far corners of the squares.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a point and use the arrow keys. Press Show lines, Show hint and Check the claims to see why the dot stays put.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Two squares on the sides of a triangle, the segment joining their far corners, and its midpoint"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the three points to their starting positions">Reset</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Toggle the point names">Show names</button>
+    <button id="linesBtn" type="button" aria-pressed="false" aria-label="Toggle the proof lines">Show lines</button>
+    <button id="hintBtn" type="button" aria-pressed="false" disabled aria-label="Toggle the right-angle and equal-length hint marks">Show hint</button>
+    <button id="checkBtn" type="button" aria-label="Check that the midpoint does not move when C does">Check the claims</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Build a square on each of two sides of a triangle. The far corners of those squares move as you drag the triangle's top corner, but the dot halfway between them does not. Bottema's theorem says that dot stays fixed.</p>
+
+      <h2>The two squares</h2>
+      <p>Start with triangle <code>ABC</code>. On side <code>BC</code> the square has far corners <code>A_b</code> and <code>A_c</code>; on side <code>CA</code> the square has far corners <code>B_a</code> and <code>B_c</code>. Each is made by a quarter <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a>: <code>A_b</code> is <code>C</code> turned a quarter turn about <code>B</code>, and <code>B_a</code> is <code>C</code> turned a quarter turn the other way about <code>A</code>. The red line joins <code>A_b</code> to <code>B_a</code>, and the orange dot is its midpoint <code>M</code>.</p>
+
+      <h2>Why C disappears</h2>
+      <p>Write a quarter turn as <code>R</code> and the opposite turn as <code>R⁻¹</code>. Then <code>A_b = B + R(C − B)</code> and <code>B_a = A + R⁻¹(C − A)</code>. Since a turn and its opposite undo each other, <code>R(v) + R⁻¹(v) = 0</code>. Adding the two far corners cancels every term with <code>C</code> in it:</p>
+      <blockquote><code>M = (A_b + B_a) / 2 = (A + B) / 2 + R⁻¹(B − A) / 2.</code></blockquote>
+      <p>Only <code>A</code> and <code>B</code> remain. The logic test checks this formula against the applet's own rotate-and-average calculation on 600 random positions, and checks that <code>M</code> stays put over a grid of 240 positions of <code>C</code>.</p>
+
+      <h2>A right angle at M</h2>
+      <p>The formula says <code>M</code> is the centre of the <a class="wiki-term" data-wiki="Square_(geometry)" href="https://en.wikipedia.org/wiki/Square_(geometry)" target="_blank" rel="noopener">square</a> built on <code>AB</code>. So <code>MA = MB</code> and the angle at <code>M</code> is a right angle: <code>AMB</code> is an <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles triangle</a>. The hint marks this right angle and puts matching tick marks on equal lengths; the other two far corners give a second right isosceles triangle, <code>A_c M B_c</code>.</p>
+
+      <h2>The elementary proof</h2>
+      <p>Drop perpendiculars from <code>B_a</code>, <code>A_b</code>, <code>M</code> and <code>C</code> onto <code>AB</code>. The right angles in the squares give <code>B_aU = AZ</code> and <code>A_bV = BZ</code>. The middle line of the trapezoid <code>B_aUVA_b</code> is therefore <code>MW = (AZ + BZ) / 2 = AB / 2</code> — half the length of <code>AB</code>, independent of <code>C</code>. This is exactly the article's claim, and the logic test confirms it for tilted triangles too.</p>
+
+      <p class="tip">Try dragging <code>C</code> onto the line <code>AB</code>, then far away on the other side. The squares change completely, but <code>M</code> never moves.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/Bottema.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bottema-core.js"></script>
+<script src="bottema.js"></script>
+</body>
+</html>
