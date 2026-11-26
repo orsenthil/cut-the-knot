@@ -1952,6 +1952,11 @@ check("suan-pan: 53 on the frame", read["suan-pan"]?.numberOnFrame === 53 && rea
   const sp = at("suan-pan", { radix: 10, values: [0, 0, 0, 0, 0, 9, 12] });
   check("suan-pan: 9 and 12 tidy to 1, 0, 2: the frame holds 102", sp.numberOnFrame === 102 && sp.tidyingPending === true && sp.afterTidying.slice(4).join() === "1,0,2");
 }
+check("sorts: four shellsort steps on 20 random numbers", read.sorts?.method === "Shellsort" && read.sorts.stepsSoFar === 4 && read.sorts.finished === false);
+{
+  const so = at("sorts", { method: 0, order: 2, n: 10, same: false, steps: 45, swaps: 45, finished: true });
+  check("sorts: insertion sort on 10 descending numbers takes 45 steps", so.totalSteps === 45 && so.finished === true && so.array === "10 numbers, Descending");
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

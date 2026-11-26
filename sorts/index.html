@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sorting Algorithms &mdash; coolmaths</title>
+<meta name="description" content="Five ways to put numbers in order, compare by compare. Which takes the fewest steps, and why does it depend on how the numbers start?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/sorts/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Sorting Algorithms">
+<meta property="og:description" content="Five ways to put numbers in order, compare by compare. Which takes the fewest steps, and why does it depend on how the numbers start?">
+<meta property="og:url" content="https://coolmaths.ai/sorts/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; height: auto; border-radius: 8px; }
+  #counts { margin: 0.4rem 0 0; text-align: center; color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+  .controls .group { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3rem 0.8rem; width: 100%; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls select, .controls input[type="number"] { min-height: 2.75rem; font-size: 1rem; }
+  .controls input[type="number"] { width: 5rem; }
+</style>
+</head>
+<body data-game="sorts" data-kind="demo">
+<main id="main">
+  <h1>Sorting Algorithms</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#permutations">Permutations</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch five different ways of putting a row of numbers in order, from smallest to largest, and see which is quickest.<br>
+    <strong>How to play:</strong> Pick a method and press Run, or One step to go slowly. Tick Same array to race the methods on the same numbers.
+  </div>
+
+  <div id="stage" class="stage">
+    <canvas id="board" width="600" height="320" aria-label="The array: one stick or circle per number, its height the number's size. The two places being compared are red."></canvas>
+    <p id="counts" aria-live="off"></p>
+  </div>
+
+  <div class="controls">
+    <div class="group">
+      <label>Method <select id="methodSel"></select></label>
+      <button id="runBtn" type="button" class="primary">Run</button>
+      <button id="stepBtn" type="button">One step</button>
+    </div>
+    <div class="group">
+      <label>Array <select id="orderSel"></select></label>
+      <label>Size <input id="sizeIn" type="number" min="2" max="100" step="1" value="20"></label>
+      <label><input id="sameBox" type="checkbox"> Same array</label>
+    </div>
+    <div class="group">
+      <label><input type="radio" name="look" value="sticks" checked> Sticks</label>
+      <label><input type="radio" name="look" value="circles"> Circles</label>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A <a class="wiki-term" data-wiki="Sorting_algorithm" href="https://en.wikipedia.org/wiki/Sorting_algorithm" target="_blank" rel="noopener">sorting algorithm</a> puts a list in order using only two moves: compare two entries, and swap them. Methods differ in which pairs they compare, and so in how many comparisons and swaps they need. Here one step is one comparison.</p>
+
+      <h2>Swaps and inversions</h2>
+      <p>An <a class="wiki-term" data-wiki="Inversion_(discrete_mathematics)" href="https://en.wikipedia.org/wiki/Inversion_(discrete_mathematics)" target="_blank" rel="noopener">inversion</a> is a pair of entries in the wrong order. Swapping two neighbours that are out of order removes exactly one inversion, so <a class="wiki-term" data-wiki="Insertion_sort" href="https://en.wikipedia.org/wiki/Insertion_sort" target="_blank" rel="noopener">insertion sort</a> and <a class="wiki-term" data-wiki="Bubble_sort" href="https://en.wikipedia.org/wiki/Bubble_sort" target="_blank" rel="noopener">bubblesort</a> each make exactly as many swaps as the array has inversions: none for Ascending, <code>n(n&minus;1)/2</code> for Descending. The logic test confirmed this on hundreds of random arrays.</p>
+
+      <h2>Counting comparisons</h2>
+      <p>As written here (after the applet), the inner loops never stop early, so insertion sort and bubblesort always take <code>n(n&minus;1)/2</code> steps, and selection sort <code>n(n+1)/2</code>, however the numbers start. That grows like <code>n&sup2;</code>: twice the size, four times the work. <a class="wiki-term" data-wiki="Shellsort" href="https://en.wikipedia.org/wiki/Shellsort" target="_blank" rel="noopener">Shellsort</a> first sorts entries 13 or 4 apart, so that far-flung entries travel in a few long jumps. <a class="wiki-term" data-wiki="Heapsort" href="https://en.wikipedia.org/wiki/Heapsort" target="_blank" rel="noopener">Heapsort</a> arranges the array as a heap (every entry at least as big as its two children), then repeatedly moves the top to the end. Here each of its steps is a whole sift, so it needs about <code>3n/2</code> steps, though each one does more work.</p>
+
+      <h2>Two repairs</h2>
+      <p>Two of the applet's methods misbehave. Its bubblesort never announces that it has finished. Its heapsort, copied from code that counts places from 1, never touches the first entry, and so often leaves the array unsorted. The test checked both against a copy of the applet's code. This page mends them; the other three methods are the applet's own, step for step.</p>
+
+      <p class="tip">Tick Same array, then run every method on Descending numbers. Which makes the most swaps, and which the fewest?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algorithms/Sorts.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="sorts-core.js"></script>
+<script src="sorts.js"></script>
+</body>
+</html>

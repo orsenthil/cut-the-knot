@@ -439,6 +439,7 @@ const CORE_GLOBALS = {
   "social-choice/social-choice-core.js": ["SocialChoiceCore"],
   "soroban/soroban-core.js": ["SorobanCore"],
   "suan-pan/suan-pan-core.js": ["SuanPanCore"],
+  "sorts/sorts-core.js": ["SortsCore"],
 };
 
 const games = [];

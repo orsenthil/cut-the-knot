@@ -812,6 +812,10 @@ const GAMES = {
     await page.click('#board .bead[data-wire="6"][data-bead="2"]');
     await page.click('#board .bead[data-wire="5"][data-bead="h0"]');
   },
+  sorts: async (page) => {
+    await page.selectOption("#methodSel", "3");
+    for (let i = 0; i < 4; i++) await page.click("#stepBtn");
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

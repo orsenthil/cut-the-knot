@@ -2300,5 +2300,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "sorts",
+      title: "Sorting Algorithms",
+      blurb: "Five ways to put numbers in order, compare by compare. Which takes the fewest steps, and why does it depend on how the numbers start?",
+      tags: ["algorithms", "permutations", "counting"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
