@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arbelos Rect &mdash; coolmaths</title>
+<meta name="description" content="Three semicircles nest inside one another. Drag the point on the bottom line: does the four-sided shape between them always stay a rectangle, and does its far edge always touch both small arcs?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/arbelos-rect/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Arbelos Rect">
+<meta property="og:description" content="Three semicircles nest inside one another. Drag the point on the bottom line: does the four-sided shape between them always stay a rectangle, and does its far edge always touch both small arcs?">
+<meta property="og:url" content="https://coolmaths.ai/arbelos-rect/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .arbelos-big { fill: var(--accent); fill-opacity: 0.18; }
+  #board .arbelos-cut { fill: var(--stage); }
+  #board .rect-fill { fill: var(--good); fill-opacity: 0.12; }
+  #board .arc { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .base { stroke: var(--muted); stroke-width: 2; }
+  #board .upright { stroke: var(--good); stroke-width: 2.5; }
+  #board .rect-edge { stroke: var(--ink); stroke-width: 2.5; }
+  #board .tangent { stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: 6 4; }
+  #board .radius { stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 4 3; }
+  #board .right-mark, #board .angle-mark { fill: none; stroke: var(--highlight); stroke-width: 1.5; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  #board .point-label { fill: var(--text); font-size: 13px; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; min-width: 0; white-space: normal; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="arbelos-rect" data-kind="demo">
+<main id="main">
+  <h1>Arbelos Rect</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> A big half-circle with two smaller ones inside it, and a four-sided shape drawn between them.<br>
+    <strong>How to play:</strong> Drag C along the bottom line or D on the big curve. Focus a point and use the arrow keys to nudge it, or press a button. Tick the boxes to show names or hints.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Three semicircles on the line AB, with a draggable point C on that line, a draggable point D on the big arc, and the rectangle CEDF whose far edge touches both small arcs."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Put C back at its starting place">Reset</button>
+    <button id="middleBtn" type="button" aria-label="Move C to the middle of AB">C in the middle</button>
+    <button id="leftBtn" type="button" aria-label="Move C close to A">C near A</button>
+    <button id="rightBtn" type="button" aria-label="Move C close to B">C near B</button>
+    <label class="option" for="namesChk"><input id="namesChk" type="checkbox" aria-label="Show or hide the point names"> Show names</label>
+    <label class="option" for="hint1Chk"><input id="hint1Chk" type="checkbox" aria-label="Show or hide hint one, the right angles"> Hint 1: right angles</label>
+    <label class="option" for="hint2Chk"><input id="hint2Chk" type="checkbox" aria-label="Show or hide hint two, the radii and angles"> Hint 2: radii</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move C along the bottom line. The four-sided shape CEDF tilts and changes size, yet two things never fail: it stays a rectangle, and its far edge keeps touching both small half-circles. Why?</p>
+
+      <h2>The upright through C</h2>
+      <p>Write <code>AC = a</code> and <code>CB = b</code>. D sits on the big semicircle, so the upright CD is the <a class="wiki-term" data-wiki="Geometric_mean" href="https://en.wikipedia.org/wiki/Geometric_mean" target="_blank" rel="noopener">geometric mean</a> of the two pieces of the diameter:</p>
+      <blockquote><code>CD&sup2; = AC &times; CB</code>, so <code>CD = &radic;(ab)</code>.</blockquote>
+      <p>The applet finds D with exactly this square root. Our logic test checks it at 1001 positions of C and against the applet's own formula at 2000 more.</p>
+
+      <h2>Why CEDF is a rectangle</h2>
+      <p>An angle drawn across a full diameter is a right angle (<a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a>). So AEC, ADB and CFB are all right angles. These make EC perpendicular to ED, and make the opposite sides match in pairs: CEDF is a parallelogram with a right corner, hence a rectangle. Its two diagonals are equal, so <code>EF = CD = &radic;(ab)</code> at every position. That is the page's first claim, and the test checks all of it.</p>
+
+      <h2>The common tangent</h2>
+      <p>Let Oa be the middle of AC. The triangle AOaE has two equal sides, so its two angles at A and E match. Chasing those angles through the rectangle shows that OaE is perpendicular to EF. The same argument at the other circle gives ObF perpendicular to EF. A line perpendicular to a radius at its end is a <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a>, so EF touches both small semicircles. The page's remark adds another neat equality: if O is the middle of the rectangle, then <code>OE = OC</code>. The test checks the angle chain, both tangencies and that equality.</p>
+
+      <h2>The area equality</h2>
+      <p>From <code>CD&sup2; = ab</code> comes the area result familiar from the companion page about the <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> of the arbelos: the half-circle on AB minus the two half-circles on AC and CB has area</p>
+      <blockquote><code>&pi;(a+b)&sup2;/8 &minus; &pi;a&sup2;/8 &minus; &pi;b&sup2;/8 = &pi;ab/4 = &pi;CD&sup2;/4</code>.</blockquote>
+      <p>That last number is exactly the area of the circle with CD as its diameter. The rectangle's own area is <code>ab &times; CD / (a+b)</code>. The logic test confirms all three area formulas at 1001 positions and 2000 random ones.</p>
+
+      <h2>About the original</h2>
+      <p>The Java applet let you drag only C along the bottom line; D was computed above it. Here you can also drag D along the big arc, which sets the same position. Its three checkboxes (names, hint 1, hint 2) are kept. One harmless leftover is not copied: the applet's "about" text described a regular polygon demonstration. The page's two numbered claims are reproduced exactly, and no behaviour was dropped.</p>
+
+      <p class="tip">Press <strong>C in the middle</strong>, then tick both hints. Drag C towards A and watch the rectangle keeps its right corners while EF keeps touching both arcs.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ArbelosRect.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="arbelos-rect-core.js"></script>
+<script src="arbelos-rect.js"></script>
+</body>
+</html>
