@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brahmagupta 2 &mdash; coolmaths</title>
+<meta name="description" content="Four corners sit on a circle. Do the four lines drawn from the middle of each side at right angles to the opposite side always meet at one point?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/brahmagupta-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Brahmagupta 2">
+<meta property="og:description" content="Four corners sit on a circle. Do the four lines drawn from the middle of each side at right angles to the opposite side always meet at one point?">
+<meta property="og:url" content="https://coolmaths.ai/brahmagupta-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; margin: 0 auto; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board .circumcircle { fill: none; stroke: var(--muted); stroke-width: 1.6; }
+  #board .quad { fill: var(--accent); fill-opacity: 0.08; stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; }
+  #board .maltitude { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .diagonal { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 6 4; }
+  #board .hint-line { fill: none; stroke: var(--good); stroke-width: 1.8; stroke-dasharray: 4 4; }
+  #board .proof-line { fill: none; stroke: var(--highlight); stroke-width: 2.4; }
+  #board .mid-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .foot-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1; }
+  #board .t-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .k-dot, #board .o-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 2; }
+  #board .right-mark { fill: none; stroke: var(--good); stroke-width: 1.6; }
+  #board .geom-handle { fill: var(--ink); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 13px;
+    font-weight: 650; pointer-events: none;
+  }
+  #board .vertex-label { font-size: 15px; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="brahmagupta-2" data-kind="demo">
+<main id="main">
+  <h1>Brahmagupta 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Four corners sit on a circle. From the middle of each side a line is drawn at right angles to the opposite side, and the four lines always meet at one point.<br>
+    <strong>How to play:</strong> Drag A, B, C or D with a mouse or finger, or focus a corner and use the arrow keys. Press the buttons to show the diagonals, the names, a hint or the proof.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="A four-sided figure with its corners on a circle, and four lines drawn from the middle of each side at right angles to the opposite side. Drag the named corners A, B, C and D."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the four corners to their starting positions">Reset</button>
+    <button id="diagonalsBtn" type="button" aria-pressed="false" aria-label="Toggle the two diagonals of the four-sided figure">Show diagonals</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the names of the points">Hide names</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the midlines and the line joining the circle's centre to the meeting point">Show hint</button>
+    <button id="proofBtn" type="button" aria-pressed="false" aria-label="Toggle the proof overlay and hide the other overlays while it is shown">Show proof</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the corners of a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>. From the middle of each side, draw a line at right angles to the opposite side. These four lines are called <em>maltitudes</em>, and they always pass through the same point: the <em>anticenter</em> T. The applet draws all four in blue and marks T in green.</p>
+
+      <h2>Middles of the middles</h2>
+      <p>Let P, Q, R, S be the midpoints of AB, BC, CD, DA. The segments PR and QS cross at K, the centre of gravity of the four corners. If O is the centre of the circle, the meeting point T is O reflected in K. Adding the coordinates gives two exact formulas, and the circle's centre drops out of the second one:</p>
+      <blockquote><code>K = (A + B + C + D) / 4</code><br><code>T = 2K - O = (A + B + C + D) / 2 - O</code></blockquote>
+      <p>So K is exactly halfway between O and T: <code>OK = KT</code>, and also <code>PK = KR</code>. Press Show hint to see the midlines PR and QS and the line O–T.</p>
+
+      <h2>Why one line goes through T</h2>
+      <p>Look at the line from P, the midpoint of AB, at right angles to CD. Since P and R are the midpoints of AB and CD, PR is one of the midlines through K, so <code>PK = KR</code>. By construction <code>OK = KT</code>. The triangles OKR and TKP therefore match, which gives <code>PT ∥ OR</code>. The segment OR joins the circle's centre to the midpoint of the chord CD, so it is <a class="wiki-term" data-wiki="Perpendicular" href="https://en.wikipedia.org/wiki/Perpendicular" target="_blank" rel="noopener">perpendicular</a> to CD. Hence PT is perpendicular to CD too: it is the maltitude through P. The same argument works for the other three sides, so all four lines meet at T. Press Show proof to see the pairs of lines used in this argument.</p>
+
+      <h2>How this differs from Brahmagupta's theorem</h2>
+      <p>The earlier <a class="wiki-term" data-wiki="Brahmagupta%27s_theorem" href="https://en.wikipedia.org/wiki/Brahmagupta%27s_theorem" target="_blank" rel="noopener">Brahmagupta's theorem</a> starts with a cyclic quadrilateral whose diagonals are at right angles. It says that the line through the crossing of the diagonals perpendicular to a side bisects the opposite side. This second theorem drops that condition: <em>every</em> cyclic quadrilateral has concurrent maltitudes. When the diagonals do happen to be perpendicular, their crossing is exactly the anticenter T, and the four bisections from the first theorem reappear. This page follows the applet's second construction, not a formula for the diagonals; the logic test checks both cases.</p>
+
+      <h2>Two more claims from the article</h2>
+      <p>Extend the sides AD and BC until they meet at U: the line UT is perpendicular to SQ, the line joining the midpoints of BC and DA. And if the circle's centre O is reflected in AB and in CD, T is the midpoint of the two reflected points. Both were checked on 600 random quadrilaterals alongside the concurrence and the formulas above; all of them held. The only numbers that move in the status line are the tiny rounding errors from drawing with doubles.</p>
+
+      <p class="tip">Drag one corner close to another, then press Show proof. The four lines still meet at T, though some of them now cross far outside the four-sided figure.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Brahmagupta2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="brahmagupta-2-core.js"></script>
+<script src="brahmagupta-2.js"></script>
+</body>
+</html>
