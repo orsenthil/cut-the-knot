@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Self-Descriptive Sentences &mdash; coolmaths</title>
+<meta name="description" content="Can you fill in a sentence that says how many 0s, 1s, 2s and so on it contains, so that every count is true? Iterating may help — or it may loop forever.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/self-descriptive/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Self-Descriptive Sentences">
+<meta property="og:description" content="Can you fill in a sentence that says how many 0s, 1s, 2s and so on it contains, so that every count is true? Iterating may help — or it may loop forever.">
+<meta property="og:url" content="https://coolmaths.ai/self-descriptive/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 44rem;
+    padding: 0.9rem 1rem;
+  }
+  .sentence { margin: 0; font-size: 1.05rem; line-height: 2.2; }
+  .number-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .count {
+    min-width: 3rem;
+    min-height: 2.75rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--card);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 1.05rem;
+    cursor: pointer;
+  }
+  .count:hover { background: var(--accent-soft); border-color: var(--accent); }
+  .digit-labels { color: var(--muted); font-family: var(--mono); }
+  .divider { margin: 0.9rem 0 0.6rem; border: 0; border-top: 1px solid var(--border); }
+  .panel-title { margin: 0 0 0.4rem; color: var(--muted); font-size: 0.85rem; }
+  #history { max-height: 11rem; overflow-y: auto; font-family: var(--mono); font-size: 0.85rem; }
+  .history-row { padding: 0.12rem 0.3rem; border-bottom: 1px solid var(--border); }
+  .controls .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    gap: 0.75rem;
+  }
+  .spinner {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    gap: 0.35rem;
+  }
+  .controls .spinner label { white-space: normal; color: var(--muted); font-size: 0.9rem; }
+  .step {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  .step:hover { background: var(--accent-soft); border-color: var(--accent); }
+  .spinner input {
+    width: 3.75rem;
+    min-height: 2.75rem;
+    padding: 0.25rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--card);
+    color: var(--text);
+    font: inherit;
+    text-align: center;
+  }
+  button:focus-visible, input:focus-visible, .count:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="self-descriptive" data-kind="demo">
+<main id="main">
+  <h1>Self-Descriptive Sentences</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#place-value">Place Value</a><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#sequences">Sequences</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Fill the blanks in a sentence that says how many 0s, 1s, 2s and so on it contains. When the sentence tells the truth, you have found a solution. There is nothing to win &mdash; hunt for true sentences.<br>
+    <strong>How to play:</strong> Click the left or right half of a blue count to change it, or use arrow keys. Press Iterate, or Auto to keep going; Clear empties the list of past tries.
+  </div>
+
+  <div id="stage" class="stage">
+    <p class="sentence">This sentence contains
+      <span class="number-row"><span id="sentence" role="group" aria-label="The counts in the sentence"></span>
+      <span class="digit-labels" id="digitLabels"></span></span>
+    </p>
+    <hr class="divider">
+    <p class="panel-title">Earlier rows</p>
+    <div id="history" aria-live="polite"></div>
+    <p class="hint">Tap the left half of a count to lower it, the right half to raise it. The counts and the digit labels are written in the chosen base.</p>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <div class="spinner">
+        <button id="baseDown" type="button" class="step" aria-label="Use a smaller base">&minus;</button>
+        <label for="baseInput">Base</label>
+        <input id="baseInput" type="number" min="2" max="10" step="1" inputmode="numeric">
+        <button id="baseUp" type="button" class="step" aria-label="Use a larger base">+</button>
+      </div>
+    </div>
+    <div class="control-row">
+      <button id="iterateBtn" type="button" class="primary">Iterate</button>
+      <button id="autoBtn" type="button">Auto</button>
+      <button id="clearBtn" type="button">Clear</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Here is a sentence with blanks: "This sentence contains _ 0's, _ 1's, _ 2's, and so on." Can you fill the blanks so that every number is correct?</p>
+
+      <h2>What gets counted</h2>
+      <p>Write every count in the chosen <a class="wiki-term" data-wiki="Radix" href="https://en.wikipedia.org/wiki/Radix" target="_blank" rel="noopener">base</a>, then count how many times each digit appears. The labels 0, 1, 2, ... are part of the sentence too, so every digit gets one free occurrence from its own label. A sentence is true when each count equals one plus the number of times its digit appears in the written counts.</p>
+
+      <h2>Iterating towards a solution</h2>
+      <p>Start with any counts. Count the digits, write the answers back into the blanks, and repeat. In base three, starting from <code>1 1 1</code> gives <code>1 4 1</code>, then <code>1 5 1</code>, then <code>1 4 2</code> &mdash; which is true, because in base three that last line reads <code>1 11 2</code>. Iterations do not always find a solution: some starting rows fall into cycles, and some true sentences repel the iteration, so no amount of clicking will reach them.</p>
+
+      <h2>The families of solutions</h2>
+      <p>In base three there are exactly three solutions: <code>1 11 2</code>, <code>2 2 10</code> and <code>10 10 2</code>. For every base <code>b &gt; 2</code>, the counts <code>1, 11, 2, 1, 1, ...</code> solve the puzzle, where <code>11</code> means <code>b + 1</code> and the rest are ones. For bases greater than six there is a second family beginning <code>1, b &minus; 3, 3, 2, ...</code>. Try them by hand with the count buttons.</p>
+
+      <h2>What was checked</h2>
+      <p>The test compares the digit counting with a second transcription of the applet's method, and checks every count row up to 15 in bases two to five. It confirms the three base-three solutions, both solution families in every base the applet offers, and the existence of cycles. The logic test counts 43 separate checks in all.</p>
+
+      <p class="tip">In base three, set the counts to <code>0 0 4</code> and press Auto: the rows repeat instead of settling down.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/SelfDescriptive.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="self-descriptive-core.js"></script>
+<script src="self-descriptive.js"></script>
+</body>
+</html>

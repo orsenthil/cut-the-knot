@@ -2158,5 +2158,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "self-descriptive",
+      title: "Self-Descriptive Sentences",
+      blurb: "Can you fill in a sentence that says how many 0s, 1s, 2s and so on it contains, so that every count is true? Iterating may help — or it may loop forever.",
+      tags: ["place-value", "number-theory", "sequences"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };
