@@ -2229,5 +2229,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "shuttle-practice",
+      title: "Shuttle Puzzle Practice",
+      blurb: "Each top number must slide down to the pole marked with it. Which bridges between the poles do the job, and how few will do?",
+      tags: ["permutations", "parity"],
+      level: 2,
+    },
   ],
 };
