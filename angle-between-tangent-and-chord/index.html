@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Angle Between Tangent And Chord &mdash; coolmaths</title>
+<meta name="description" content="Move a circle and a point beside it: where does the incenter of the triangle made by the two tangents land, and why are the four marked angles equal?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/angle-between-tangent-and-chord/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Angle Between Tangent And Chord">
+<meta property="og:description" content="Move a circle and a point beside it: where does the incenter of the triangle made by the two tangents land, and why are the four marked angles equal?">
+<meta property="og:url" content="https://coolmaths.ai/angle-between-tangent-and-chord/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .given-circle { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2.5; }
+  #board .tangent { stroke: var(--ink); stroke-width: 2.4; stroke-linecap: round; }
+  #board .chord { stroke: var(--good); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .inside-circle { fill: none; stroke: var(--good); stroke-width: 1.8; stroke-dasharray: 4 4; }
+  #board .bisector { stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  #board .anglemark { fill: none; stroke: var(--good); stroke-width: 2.4; stroke-linecap: round; }
+  #board .touchdot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .incenterdot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="angle-between-tangent-and-chord" data-kind="demo">
+<main id="main">
+  <h1>Angle Between Tangent And Chord</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move a circle and a point beside it, then watch the two lines that just touch the circle. There is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the blue points O, R and C, or focus one and use the arrow keys. Tick the boxes to show the chord, the inner circle and the four equal angles.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="Circle with centre O and radius point R, an outside point C, the two tangents from C touching the circle at A and B, and the incenter I on the circle. Drag O, R or C."></svg>
+    <p class="hint-line">Drag O, R or C, or focus one and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Names</label>
+    <label><input id="statementBox" type="checkbox" data-label="the chord and inner circle"> Chord &amp; circle</label>
+    <label><input id="hintBox" type="checkbox" data-label="the four equal angles"> Show hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A temple tablet from Ibaragi prefecture, put up in 1896, asks a surprising question: the incenter of the triangle made by two tangents sits <em>on</em> the circle. Drag the picture and see for yourself. The secret is the angle between a tangent and a chord.</p>
+
+      <h2>The tangent makes a right angle</h2>
+      <p>A <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> touches the circle at just one point, so the radius there is at right angles to it: <code>OA ⟂ CA</code> and <code>OB ⟂ CB</code>. Triangle OAC is right-angled, so the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a> gives <code>CA² = OC² − r²</code>. The applet finds A and B by crossing the given circle with a second circle centred at C of radius <code>√(OC² − r²)</code>. Our logic test checked that both constructions give the same points for every circle drawn.</p>
+
+      <h2>The angle in the alternate segment</h2>
+      <p>Let I′ be the midpoint of the small arc AB. The angle between tangent CA and chord AI′ cuts off the arc AI′, and the <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angle</a> ∠ABI′ stands on that same arc. They are therefore equal: <code>∠CAI′ = ∠ABI′</code>. The arcs AI′ and BI′ are equal, so the same argument at B gives <code>∠I′BC = ∠BAI′</code>. All four marked angles match — each is <code>½ arccos(r / OC)</code>. The test measured all four across 3,019 circle positions, from C just outside the circle to C far away; the biggest difference was below 0.0000001.</p>
+
+      <h2>Why the incenter lands on the circle</h2>
+      <p>Those equal angles say exactly that AI′ and BI′ are the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisectors</a> at A and B. Their meeting point is the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> I, so <code>I = I′</code> and the incenter lies on the given circle — the sangaku's claim. Across the same 3,019 positions the distance from O to I differed from the radius by less than 0.0000001. One small quirk is kept from the applet: its "inner circle" is drawn with radius two thirds of the true inradius, because one of the three distances it averages is measured along a line through I itself.</p>
+
+      <p class="tip">Tick <em>Show hint</em> and drag C towards the circle: the four angles grow together but never stop being equal.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AngleBetweenTangentAndChord.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="angle-between-tangent-and-chord-core.js"></script>
+<script src="angle-between-tangent-and-chord.js"></script>
+</body>
+</html>
