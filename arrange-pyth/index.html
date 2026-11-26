@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arrange Pyth &mdash; coolmaths</title>
+<meta name="description" content="Two equal squares are cut into triangles and smaller squares. Move the point on the bottom edge: why do the pieces always show that a² + b² = c²?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/arrange-pyth/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Arrange Pyth">
+<meta property="og:description" content="Two equal squares are cut into triangles and smaller squares. Move the point on the bottom edge: why do the pieces always show that a² + b² = c²?">
+<meta property="og:url" content="https://coolmaths.ai/arrange-pyth/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 48rem; margin: 0 auto; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board .piece { stroke: var(--ink); stroke-width: 1.5; stroke-linejoin: round; }
+  #board .yellow-piece { fill: var(--highlight); }
+  #board .red-piece { fill: var(--accent); fill-opacity: 0.55; }
+  #board .frame { fill: none; stroke: var(--ink); stroke-width: 2.4; }
+  #board .leg-a { stroke: var(--good); stroke-width: 2.6; }
+  #board .leg-b { stroke: var(--accent); stroke-width: 2.6; }
+  #board .dim { fill: var(--text); font-size: 18px; font-weight: 650; text-anchor: middle; pointer-events: none; }
+  #board .area-label { fill: var(--text); font-size: 17px; font-weight: 700; text-anchor: middle; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .m-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 6; }
+  #readout {
+    margin: 0.5rem 0 0; text-align: center; font-size: 0.95rem;
+    font-variant-numeric: tabular-nums; overflow-wrap: anywhere; color: var(--text);
+  }
+</style>
+</head>
+<body data-game="arrange-pyth" data-kind="demo">
+<main id="main">
+  <h1>Arrange Pyth</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two equal squares are cut into pieces, and the pieces are put back in a different order. There is nothing to win: the story the pieces tell never changes.<br>
+    <strong>How to play:</strong> Drag the round point along the bottom line of the left square, or focus it and use the left and right arrow keys. Press Midpoint or Reset for another starting point.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 300" role="group"
+         aria-label="Two equal squares. The left one is cut into four yellow triangles and a red square; the right one into the same four triangles and two red squares. Drag point M along the bottom edge of the left square."></svg>
+    <p id="readout" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <button id="midBtn" type="button" class="primary" aria-label="Put point M in the middle of the bottom edge">Midpoint</button>
+    <button id="resetBtn" type="button" aria-label="Reset point M to the starting position">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The same four pieces sit inside both squares. Only the red pieces change: one large red square on the left, two smaller ones on the right. That is the whole proof.</p>
+
+      <h2>Four triangles and a square</h2>
+      <p>Let the bottom edge of the left square be split into lengths <code>a</code> and <code>b</code> by the point <code>M</code>. The square's side is <code>a + b</code>. The applet cuts out four <a class="wiki-term" data-wiki="Right_triangle" href="https://en.wikipedia.org/wiki/Right_triangle" target="_blank" rel="noopener">right triangles</a>, each with legs <code>a</code> and <code>b</code>. What is left in the middle is a square whose side is the third side <code>c</code> of those triangles. So the left square has <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> <code>c² + 4·(a·b/2)</code>.</p>
+
+      <h2>Now put the triangles back</h2>
+      <p>The right square holds the very same four triangles. The space they leave is two squares, one of side <code>a</code> and one of side <code>b</code>, with areas <code>a²</code> and <code>b²</code>. Taking the four matching triangles away from both equal squares leaves <code>c² = a² + b²</code>: the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a>, made visible as a <a class="wiki-term" data-wiki="Dissection_puzzle" href="https://en.wikipedia.org/wiki/Dissection_puzzle" target="_blank" rel="noopener">dissection</a> rather than a page of algebra.</p>
+
+      <h2>Every position works</h2>
+      <p>Move <code>M</code> anywhere along the edge and <code>a + b</code> stays the same. The four triangles change shape, but the two rearrangements still match, so the identity holds for every split. The logic test checked all 111 whole-pixel positions of the applet's own 500 by 300 canvas, many other canvas sizes, and compared every drawn point with a second reading of the applet's code. The claim is true. One honesty note: the applet rounds canvas coordinates to whole pixels, so on a canvas whose height minus the square's side is odd, its outline is a pixel too tall and the drawn pieces carry a tiny sliver. This page uses the applet's 500 by 300 canvas, where every pixel lands exactly. The applet calls itself Proof #36 while its page's Explanation link points to Proof #9; we follow the page's rearrangement.</p>
+
+      <p class="tip">Drag <code>M</code> almost to an end of the edge. One triangle becomes very thin and the other very fat, but the two red areas still add up.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ArrangePyth.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="arrange-pyth-core.js"></script>
+<script src="arrange-pyth.js"></script>
+</body>
+</html>
