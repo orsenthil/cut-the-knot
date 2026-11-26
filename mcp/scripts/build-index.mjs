@@ -435,6 +435,7 @@ const CORE_GLOBALS = {
   "sierpinski-dihedral/sierpinski-dihedral-core.js": ["SierpinskiDihedralCore"],
   "simple-somos/simple-somos-core.js": ["SimpleSomosCore"],
   "sine-cosine-derivatives/sine-cosine-derivatives-core.js": ["SineCosineDerivativesCore"],
+  "sine-of-sum/sine-of-sum-core.js": ["SineOfSumCore"],
 };
 
 const games = [];

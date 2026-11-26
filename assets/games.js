@@ -2268,5 +2268,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "sine-of-sum",
+      title: "Sine of the Sum Formula",
+      blurb: "Move four triangles around inside a box and the sine of a sum splits in two. Can you see why sin(α + β) = sin α cos β + cos α sin β?",
+      tags: ["area", "algebra", "curves"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

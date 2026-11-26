@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sine of the Sum Formula &mdash; coolmaths</title>
+<meta name="description" content="Move four triangles around inside a box and the sine of a sum splits in two. Can you see why sin(α + β) = sin α cos β + cos α sin β?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/sine-of-sum/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Sine of the Sum Formula">
+<meta property="og:description" content="Move four triangles around inside a box and the sine of a sum splits in two. Can you see why sin(α + β) = sin α cos β + cos α sin β?">
+<meta property="og:url" content="https://coolmaths.ai/sine-of-sum/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 46rem; padding: 0.6rem; }
+  .pair { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+  .board { display: block; flex: 1 1 16rem; max-width: 22rem; width: 100%; height: auto; touch-action: none; background: var(--surface); border-radius: 8px; }
+  .board .rect { fill: none; stroke: var(--ink); stroke-width: 2; }
+  .board .tri { stroke: var(--ink); stroke-width: 1; }
+  .board .tri.alpha { fill: var(--accent-soft); }
+  .board .tri.beta { fill: var(--highlight); }
+  .board .rhombus { fill: none; stroke: var(--bad); stroke-width: 2.5; }
+  .board .empty { fill: var(--surface-2); stroke: var(--muted); stroke-dasharray: 4 3; }
+  .board .lbl { fill: var(--text); font: italic 600 14px var(--font); pointer-events: none; }
+  .board .handle { fill: var(--card); stroke: var(--bad); stroke-width: 3; cursor: ns-resize; }
+  .board .handle:focus-visible { outline: none; stroke: var(--accent); stroke-width: 5; }
+  #readout { margin: 0.5rem 0 0; text-align: center; font-family: var(--mono); font-size: 0.85rem; color: var(--muted); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+</style>
+</head>
+<body data-game="sine-of-sum" data-kind="demo">
+<main id="main">
+  <h1>Sine of the Sum Formula</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#curves">Curves</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A diamond sits in a box. Move its four corner triangles around, and the space they leave is two smaller boxes with the same area as the diamond.<br>
+    <strong>How to play:</strong> Drag the diamond's right or left corner up and down, and compare the two pictures.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="pair">
+      <svg id="boardL" class="board" viewBox="0 0 330 310" role="img" aria-label="A rhombus with sides 1 inside a rectangle, cutting off four right triangles"></svg>
+      <svg id="boardR" class="board" viewBox="0 0 330 310" role="img" aria-label="The same rectangle with the four triangles moved into two corners, leaving two empty rectangles"></svg>
+    </div>
+    <p id="readout" aria-live="off"></p>
+  </div>
+
+  <div class="controls">
+    <span>Show</span>
+    <label><input id="labelsBox" type="checkbox"> labels</label>
+    <label><input id="anglesBox" type="checkbox"> angles</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A <a class="wiki-term" data-wiki="Proof_without_words" href="https://en.wikipedia.org/wiki/Proof_without_words" target="_blank" rel="noopener">proof without words</a> by Volker Priebe and Edgar A. Ramos of the sine of a sum, one of the <a class="wiki-term" data-wiki="List_of_trigonometric_identities" href="https://en.wikipedia.org/wiki/List_of_trigonometric_identities#Angle_sum_and_difference_identities" target="_blank" rel="noopener">angle sum identities</a>:</p>
+      <blockquote><code>sin(&alpha; + &beta;) = sin &alpha; cos &beta; + cos &alpha; sin &beta;</code></blockquote>
+
+      <h2>The rhombus</h2>
+      <p>The <a class="wiki-term" data-wiki="Rhombus" href="https://en.wikipedia.org/wiki/Rhombus" target="_blank" rel="noopener">rhombus</a> has sides of length 1 and touches each side of the rectangle. It cuts off two pairs of equal right triangles with hypotenuse 1: one pair with acute angle <code>&alpha;</code> and legs <code>cos &alpha;</code>, <code>sin &alpha;</code>, the other with <code>&beta;</code> and legs <code>cos &beta;</code>, <code>sin &beta;</code>. The rhombus's angle at its right and left corners is <code>&alpha; + &beta;</code>, and a rhombus of side 1 with angle <code>&theta;</code> has area <code>sin &theta;</code>. So the rhombus has area <code>sin(&alpha; + &beta;)</code>.</p>
+
+      <h2>Moving the triangles</h2>
+      <p>The rectangle is <code>cos &alpha; + cos &beta;</code> wide and <code>sin &alpha; + sin &beta;</code> tall. Put the two <code>&alpha;</code> triangles together into a <code>cos &alpha; &times; sin &alpha;</code> box in one corner, and the two <code>&beta;</code> triangles into a <code>cos &beta; &times; sin &beta;</code> box in the opposite corner. What is left is two boxes, <code>sin &alpha; &times; cos &beta;</code> and <code>cos &alpha; &times; sin &beta;</code>. The same triangles were taken from the same rectangle both times, so the leftover areas are equal: that is the formula.</p>
+
+      <h2>What was checked</h2>
+      <p>The logic test built both pictures for all 7,921 pairs of whole-degree angles from 1&deg; to 89&deg;. It checked that the rhombus has four sides of length 1 and angle <code>&alpha; + &beta;</code>, that the moved triangles are the same triangles and fill two corners exactly, and that the two areas agree every time. That includes angles with <code>&alpha; + &beta;</code> over 90&deg;.</p>
+
+      <p class="tip">Make the rhombus a square (&alpha; + &beta; = 90&deg;). What happens to the two empty boxes?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/SineInRhombus.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="sine-of-sum-core.js"></script>
+<script src="sine-of-sum.js"></script>
+</body>
+</html>

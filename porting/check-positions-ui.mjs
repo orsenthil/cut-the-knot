@@ -796,6 +796,10 @@ const GAMES = {
     await page.keyboard.press("PageUp");
     await page.keyboard.press("PageUp");
   },
+  "sine-of-sum": async (page) => {
+    await page.focus('#boardL .handle[data-which="alpha"]');
+    await page.keyboard.press("PageDown");
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

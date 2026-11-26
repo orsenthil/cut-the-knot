@@ -1932,6 +1932,11 @@ check("sine-cosine-derivatives: 30 degrees, velocity (-1/2, cos 30)", read["sine
   check("ratchet: both staircases read back", rt.mode === "both" && rt.ballRoseSteps === 0.4);
 }
 
+check("sine-of-sum: alpha 62, beta 45, the rhombus's area is sin 107 = the two rectangles", read["sine-of-sum"]?.alpha === 62 && read["sine-of-sum"].rhombusAngle === 107 && Math.abs(read["sine-of-sum"].rhombusArea - Math.sin(107 * Math.PI / 180)) < 1e-6);
+{
+  const ss = at("sine-of-sum", { alpha: 30, beta: 60, labels: true, angles: false });
+  check("sine-of-sum: 30 and 60 make a square of area 1 = 1/4 + 3/4", ss.rhombusArea === 1 && ss.emptyRectangles.sinAcosB === 0.25 && ss.emptyRectangles.cosAsinB === 0.75);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;
