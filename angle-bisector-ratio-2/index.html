@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Angle Bisector Ratio 2 &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and watch how the bisector from A cuts the opposite side. Does the ratio of the two pieces always match the ratio of the two sides?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/angle-bisector-ratio-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Angle Bisector Ratio 2">
+<meta property="og:description" content="Drag the corners of a triangle and watch how the bisector from A cuts the opposite side. Does the ratio of the two pieces always match the ratio of the two sides?">
+<meta property="og:url" content="https://coolmaths.ai/angle-bisector-ratio-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
+  #board .bisector { fill: none; stroke: var(--accent); stroke-width: 3; }
+  #board .hint-line { stroke: var(--muted); stroke-width: 1.4; opacity: 0.75; }
+  #board .extra-line { fill: none; stroke: var(--good); stroke-width: 2.5; stroke-dasharray: 7 5; }
+  #board .extra-line.faint { stroke: var(--muted); stroke-width: 1.8; stroke-dasharray: 4 5; }
+  #board .foot-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .extra-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .tick { stroke: var(--good); stroke-width: 3; }
+  #board .half-arc { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .half-arc.alt { stroke: var(--good); }
+  #board .proof-arc { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .proof-arc.alt { stroke: var(--accent); }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 22px;
+    font-weight: 650; pointer-events: none;
+  }
+  #board .foot-label { fill: var(--accent); }
+  #board .extra-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="angle-bisector-ratio-2" data-kind="demo">
+<main id="main">
+  <h1>Angle Bisector Ratio 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners of a triangle and watch where the line from A cuts the opposite side.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a corner and use the arrow keys. Press the buttons to show names, hint lines and the extra construction.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 550" role="group"
+         aria-label="A triangle with the bisector from A meeting the opposite side at D, and an optional extra point E"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset triangle</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point names (on)">Hide names</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the parallel hint lines (off)">Show hint</button>
+    <button id="extraBtn" type="button" aria-pressed="false" aria-label="Toggle the extra point E and the equal segments (off)">Show extra construction</button>
+    <button id="checkBtn" type="button" aria-label="Check the ratio for this triangle">Check the ratio</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The line that splits an angle in half seems to know something about the lengths of the sides. Drag a corner: the two ratios in the status line stay equal, however skew the triangle becomes.</p>
+
+      <h2>The exact claim</h2>
+      <p>If the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">bisector</a> of angle A meets the opposite side at D, the page states</p>
+      <blockquote><code>AB / AC = DB / DC</code>.</blockquote>
+      <p>That is the same statement as in the first applet. The difference is the proof: the first applet draws a line through C parallel to AD and mentions the external bisector as well, while this one builds a point E on AD. The logic test checks the printed ratio on hundreds of random triangles, including very flat ones, and also checks the first applet's external-bisector note. No error was found in the claim.</p>
+
+      <h2>A second triangle inside the picture</h2>
+      <p>Press <em>Show extra construction</em>. The point E sits on the line AD (sometimes beyond the side) so that <code>angle ACB = angle ABE</code>. Then triangles ACD and ABE are <a class="wiki-term" data-wiki="Similarity_(geometry)" href="https://en.wikipedia.org/wiki/Similarity_(geometry)" target="_blank" rel="noopener">similar</a>, because they also share the angle at A after the bisector splits it. Corresponding sides give</p>
+      <blockquote><code>AB / AC = BE / DC</code>.</blockquote>
+
+      <h2>An isosceles triangle closes the proof</h2>
+      <p>Similarity also gives <code>angle AEB = angle ADC</code>. Passing to supplementary angles when E lies on the extension of AD gives <code>angle BED = angle BDE</code>, so triangle BDE is <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles</a> and <code>BD = BE</code>. Put this into the previous line and the claim follows. The little matching strokes on BD and BE mark that equality; the logic test verifies <code>BD = BE</code> over the same random triangles.</p>
+
+      <h2>Why the three bisectors meet</h2>
+      <p>Apply the ratio at each corner and multiply: every side length cancels, leaving 1. That is exactly <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a>, so the three bisectors of a triangle pass through a single point. The Hint button draws families of parallel strokes that make the ratios visible: matching pieces of the two sides are cut into equal counts.</p>
+
+      <p class="tip">Try dragging C until the triangle is almost flat, then press Hint and Check the ratio: the two numbers still agree.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AngleBisectorRatio2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="angle-bisector-ratio-2-core.js"></script>
+<script src="angle-bisector-ratio-2.js"></script>
+</body>
+</html>
