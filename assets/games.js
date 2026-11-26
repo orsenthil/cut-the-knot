@@ -2260,5 +2260,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "sine-cosine-derivatives",
+      title: "Derivatives of Sine and Cosine",
+      blurb: "A point runs round a circle. Why is the upward part of its speed exactly its cosine?",
+      tags: ["curves", "limits", "complex-analysis"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

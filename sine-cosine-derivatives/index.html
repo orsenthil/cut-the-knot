@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Derivatives of Sine and Cosine &mdash; coolmaths</title>
+<meta name="description" content="A point runs round a circle. Why is the upward part of its speed exactly its cosine?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/sine-cosine-derivatives/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Derivatives of Sine and Cosine">
+<meta property="og:description" content="A point runs round a circle. Why is the upward part of its speed exactly its cosine?">
+<meta property="og:url" content="https://coolmaths.ai/sine-cosine-derivatives/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; background: var(--surface); border-radius: 8px; }
+  #board .axis { stroke: var(--border-strong); stroke-width: 1.5; }
+  #board .circle { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .radius { stroke: var(--ink); stroke-width: 2; }
+  #board .velocity { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .arrow line { stroke-width: 3.5; }
+  #board .arrow.cos line { stroke: var(--accent); }
+  #board .arrow.cos polygon { fill: var(--accent); }
+  #board .arrow.sin line { stroke: var(--bad); }
+  #board .arrow.sin polygon { fill: var(--bad); }
+  #board .handle { fill: var(--card); stroke: var(--ink); stroke-width: 2.5; cursor: grab; }
+  #board .handle:focus-visible { outline: none; stroke: var(--accent); stroke-width: 4; }
+  #readout { margin: 0.5rem 0 0; text-align: center; font-family: var(--mono); font-size: 0.85rem; color: var(--muted); white-space: pre-wrap; }
+  .legend { text-align: center; font-size: 0.95rem; margin: 0.3rem 0 0; }
+  .legend .c { color: var(--accent); font-weight: 700; }
+  .legend .s { color: var(--bad); font-weight: 700; }
+  .controls fieldset { display: flex; flex-wrap: wrap; gap: 0.2rem 0.8rem; align-items: center; border: 0; margin: 0; padding: 0; }
+  .controls legend { float: left; margin-right: 0.4rem; color: var(--muted); font-size: 0.9rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.3rem; min-height: 2.75rem; }
+</style>
+</head>
+<body data-game="sine-cosine-derivatives" data-kind="demo">
+<main id="main">
+  <h1>Derivatives of Sine and Cosine</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#limits">Limits</a><a class="tag" href="../index.html#complex-analysis">Complex Analysis</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A point runs round a circle. Watch how its across-and-up arrows match the arrows of the direction it is moving.<br>
+    <strong>How to play:</strong> Press Start, or drag the point round the circle. Try Slow and Fast.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="img" aria-label="The unit circle with the point P, its cosine and sine arrows, and its velocity split into two arrows"></svg>
+    <p class="legend"><span class="c">blue: cos t</span> &nbsp; <span class="s">red: sin t</span></p>
+    <p id="readout" aria-live="off"></p>
+  </div>
+
+  <div class="controls">
+    <p class="legend" style="width:100%">sin&prime;(t) = cos(t), &nbsp; cos&prime;(t) = &minus;sin(t)</p>
+    <fieldset>
+      <legend>Speed</legend>
+      <label><input type="radio" name="speed" value="slow" checked> Slow</label>
+      <label><input type="radio" name="speed" value="fast"> Fast</label>
+    </fieldset>
+    <button id="runBtn" type="button" class="primary" aria-pressed="false">Start</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A point turning round the unit circle is at <code>r = (cos t, sin t)</code>. Its velocity <code>r&prime; = (cos&prime; t, sin&prime; t)</code> is tangent to the circle, so it is perpendicular to the radius:</p>
+      <blockquote><code>cos t &middot; cos&prime; t + sin t &middot; sin&prime; t = 0</code>,</blockquote>
+      <p>which is also what you get by differentiating <code>cos&sup2; t + sin&sup2; t = 1</code>.</p>
+
+      <h2>Two equal triangles</h2>
+      <p>The radius, the blue cosine arrow and the red sine arrow make a right triangle. The velocity, split into an upright and a sideways arrow, makes another right triangle with the same sides, turned by a quarter turn. So the upward part of the velocity is as long as the cosine, and the sideways part as long as the sine. The logic test checked this at every whole degree. Notice how the order of the two velocity arrows flips four times in one turn.</p>
+
+      <h2>Reading off the derivatives</h2>
+      <p>The sine grows while the cosine is positive (on the right half of the circle) and falls while it is negative, at exactly the rate <code>cos t</code>: <code>sin&prime; t = cos t</code>. The cosine falls in the upper half, where the sine is positive, and grows in the lower half: <code>cos&prime; t = &minus;sin t</code>. The test compared the velocity arrow with the change of <code>(cos t, sin t)</code> over a tiny step at all 360 angles.</p>
+
+      <h2>Euler's formula</h2>
+      <p>The picture also fits <a class="wiki-term" data-wiki="Euler%27s_formula" href="https://en.wikipedia.org/wiki/Euler%27s_formula" target="_blank" rel="noopener">Euler's formula</a> <code>e<sup>it</sup> = cos t + i sin t</code>. Differentiating as if <code>i</code> were an ordinary number gives <code>(e<sup>it</sup>)&prime; = i e<sup>it</sup></code>, and multiplying by <code>i</code> turns a <a class="wiki-term" data-wiki="Complex_number" href="https://en.wikipedia.org/wiki/Complex_number" target="_blank" rel="noopener">complex number</a> a quarter turn: <code>i e<sup>it</sup> = &minus;sin t + i cos t</code>, the velocity in the picture.</p>
+
+      <p class="tip">Stop at 45&deg;, then at 135&deg;. Which arrow of the velocity changes sides?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Calculus/SineCosine.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="sine-cosine-derivatives-core.js"></script>
+<script src="sine-cosine-derivatives.js"></script>
+</body>
+</html>
