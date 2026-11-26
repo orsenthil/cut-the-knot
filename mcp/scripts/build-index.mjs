@@ -537,6 +537,16 @@ const CORE_GLOBALS = {
   "barlotti/barlotti-core.js": ["BarlottiCore"],
   "barycentric/barycentric-core.js": ["BarycentricCore"],
   "barygon/barygon-core.js": ["BarygonCore"],
+  "bender/bender-core.js": ["BenderCore"],
+  "bertrand/bertrand-core.js": ["BertrandCore"],
+  "besteman/besteman-core.js": ["BestemanCore"],
+  "besteman-2/besteman-2-core.js": ["Besteman2Core"],
+  "bevan-point/bevan-point-core.js": ["BevanPointCore"],
+  "bicentric-quadri-2/bicentric-quadri-2-core.js": ["BicentricQuadri2Core"],
+  "bicolor/bicolor-core.js": ["BicolorCore"],
+  "bid/bid-core.js": ["BidCore"],
+  "bimedians-in-tetrahedron/bimedians-in-tetrahedron-core.js": ["BimediansInTetrahedronCore"],
+  "bisectal-circle/bisectal-circle-core.js": ["BisectalCircleCore"],
 };
 
 const games = [];

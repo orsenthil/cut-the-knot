@@ -2143,6 +2143,16 @@ check("baltic-darij-1: the altitude foot, bisector feet and midpoint are concycl
 check("barlotti: the erected polygons' centres form a regular polygon", read.barlotti?.centersAreRegular === true && read.barlotti.everyErectedPolygonRegular === true);
 check("barycentric: the cevian feet satisfy all the page's identities", Object.values(read.barycentric?.reading.claims || {}).every(Boolean) === true && read.barycentric.stateIsIllustration === true);
 check("barygon: averaging N/2 vertices yields an exact paragon", read.barygon?.reading.paragon.isParagon === true && read.barygon.reading.paragon.paragonDefect === 0);
+check("bender: rotating polygons keep the outer polygon's symmetry", read.bender?.symmetryHolds === true && Object.values(read.bender.properties).every(Boolean) === true);
+check("bertrand: the fixed-end chord model gives one third", read.bertrand?.theoreticalText === "1/3" && read.bertrand.theoreticalProbability === 1 / 3);
+check("besteman: the perpendicular chord divides AB as AB/N", Object.values(read.besteman?.reading.claims || {}).every(Boolean) === true);
+check("besteman-2: the angle bisector divides the extended base", read["besteman-2"]?.claims.allHold === true && read["besteman-2"].claims.pageSecond === true);
+check("bevan-point: the Bevan point is the reflection of I in O", read["bevan-point"]?.reading.O_is_midpoint_of_I_and_V === true && read["bevan-point"].reading.excentral_radius_is_twice_R === true);
+check("bicentric-quadri-2: the pedal quadrilateral is inscriptible but not cyclic", read["bicentric-quadri-2"]?.reading.claims.incircle_inscriptible === true && read["bicentric-quadri-2"].reading.claims.circumcircle_cyclic === false);
+check("bicolor: the Boolean board is not yet solved", read.bicolor?.solved === false && read.bicolor.filled === 3 && read.bicolor.missing.length === 13);
+check("bid: the saved 45-degree triangle is the three-triangle case", read.bid?.reading.regime === "three_at_45" && read.bid.angle === 45);
+check("bimedians-in-tetrahedron: the three bimedians meet at the barycentre", read["bimedians-in-tetrahedron"]?.reading.claims.concurrent === true && read["bimedians-in-tetrahedron"].reading.claims.barycenter === true);
+check("bisectal-circle: inversion by the bisectal circle swaps the two circles", Object.values(read["bisectal-circle"]?.checks || {}).every(Boolean) === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);

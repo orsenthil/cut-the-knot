@@ -997,6 +997,16 @@ const GAMES = {
   barlotti: (page) => dragFirstHandle(page),
   barycentric: (page) => dragFirstHandle(page),
   barygon: (page) => dragFirstHandle(page),
+  bender: (page) => dragFirstHandle(page),
+  bertrand: (page) => dragFirstHandle(page),
+  besteman: (page) => dragFirstHandle(page),
+  "besteman-2": (page) => dragFirstHandle(page),
+  "bevan-point": (page) => dragFirstHandle(page),
+  "bicentric-quadri-2": (page) => dragFirstHandle(page),
+  bicolor: (page) => dragFirstHandle(page),
+  bid: (page) => dragFirstHandle(page),
+  "bimedians-in-tetrahedron": (page) => dragFirstHandle(page),
+  "bisectal-circle": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },
