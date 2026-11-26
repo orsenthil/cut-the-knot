@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Broken Chord &mdash; coolmaths</title>
+<meta name="description" content="Move the corners of a triangle on a circle: where does the line from the arc's midpoint cut the bent path from A to C to B? Discover Archimedes' broken chord theorem.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/broken-chord/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Broken Chord">
+<meta property="og:description" content="Move the corners of a triangle on a circle: where does the line from the arc's midpoint cut the bent path from A to C to B? Discover Archimedes' broken chord theorem.">
+<meta property="og:url" content="https://coolmaths.ai/broken-chord/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .triangle-side { fill: none; stroke: var(--ink); stroke-width: 3; }
+  #board .long-part { stroke: var(--accent); stroke-width: 4; }
+  #board .rest-part { stroke: var(--good); stroke-width: 3.5; }
+  #board .perp { stroke: var(--ink); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .special-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .proof-circle { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 4 4; }
+  #board .proof-line { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 4; }
+  #board .extension-line { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .right-mark, #board .angle-arc { fill: none; stroke: var(--highlight); stroke-width: 1.8; }
+  #board .angle-small { stroke: var(--accent); }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 17px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .proof-label { fill: var(--accent); font-size: 15px; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="broken-chord" data-kind="demo">
+<main id="main">
+  <h1>Broken Chord</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore: move the corners of a triangle on a circle and watch where a line from the circle cuts the bent path from A to C to B.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a point and use the arrow keys. Press Show hint to see the proof lines, or Check the claim to read the result.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 250" role="group"
+         aria-label="A triangle on a circle, the point P on the circle, and the foot M of a line from P onto the longest side; drag A, B or C"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the three triangle corners to their starting places">Reset</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the names of the points">Hide names</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the proof lines of the hint">Show hint</button>
+    <button id="checkBtn" type="button" aria-label="Check that the point M halves the broken line">Check the claim</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The line from P lands on the longest side, yet the piece it cuts off equals the other two pieces of the bent path put together. Drag the corners about: it keeps happening. That is the Broken Chord Theorem, credited to Archimedes.</p>
+
+      <h2>The picture</h2>
+      <p>A, B and C lie on the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of their triangle. P is the midpoint of the arc ACB: of the two places where the <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a> of <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord</a> AB meets the circle, it is the one on the same side of AB as C. The line from P is dropped onto the longer of AC and BC, and its foot is M. The broken line is the path A&ndash;C&ndash;B along the two sides of the triangle.</p>
+
+      <h2>Adding the point F</h2>
+      <p>Suppose AC is the longer side. Extend it past C to F so that <code>CF = BC</code>. Then BCF is an <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles triangle</a>: its base angles at B and F are equal, so the outside angle ACB at C is twice the angle at F. Angles ACB and APB stand on the same chord AB, so they are equal too, and <code>angle APB = 2 × angle AFB</code>.</p>
+
+      <h2>Why P is the centre</h2>
+      <p>In triangle ABF, the angle at F is an <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angle</a> on chord AB. The angle at P is twice as large, so P is the centre of the circle through A, B and F: press Show hint to see that circle. A line from the centre of a circle perpendicular to a chord cuts the chord in half, hence</p>
+      <blockquote><code>AM = MF = MC + CF = MC + BC</code>.</blockquote>
+      <p>The logic test checks this equality and its supporting facts at 204 positions, and checks that the applet's own circumcircle, P, M and F agree with this code at every one of them.</p>
+
+      <h2>The other side and the edge cases</h2>
+      <p>The applet compares AC with BC and uses the longer one. If BC wins, the foot M lies on BC and the claim reads <code>BM = MC + AC</code> instead; the test covers that mirror case too. When A, B and C are almost in a straight line the circumcircle has no centre, and both the applet and this page draw nothing until you spread them out.</p>
+
+      <p class="tip">Try dragging C across the middle: watch M jump to the other side as AC and BC swap, and the equality change from AM = MC + BC to BM = MC + AC.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BrokenChord.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="broken-chord-core.js"></script>
+<script src="broken-chord.js"></script>
+</body>
+</html>
