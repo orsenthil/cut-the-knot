@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cantor Point &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle: do the three perpendiculars from its side midpoints to the tangents of the circumcircle always meet at one point? Find Cantor's point, the centre of the nine-point circle.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cantor-point/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cantor Point">
+<meta property="og:description" content="Drag the corners of a triangle: do the three perpendiculars from its side midpoints to the tangents of the circumcircle always meet at one point? Find Cantor's point, the centre of the nine-point circle.">
+<meta property="og:url" content="https://coolmaths.ai/cantor-point/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .circumcircle { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .radius-line { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 5; }
+  #board .circumdot { fill: var(--muted); }
+  #board .tangent-line { stroke: var(--highlight); stroke-width: 1.5; stroke-dasharray: 5 6; }
+  #board .tangent-tri { fill: var(--highlight); fill-opacity: 0.08; stroke: var(--highlight); stroke-width: 2; stroke-linejoin: round; }
+  #board .cantor-line { stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
+  #board .mid-dot { fill: var(--muted); }
+  #board .foot-dot { fill: var(--accent); }
+  #board .nine-circle { fill: var(--good); fill-opacity: 0.10; stroke: var(--good); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .cantor-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 18px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .cantor-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="cantor-point" data-kind="demo">
+<main id="main">
+  <h1>Cantor Point</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners of a triangle and watch three lines meet at one spot, right in the middle of a circle.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a corner and use the arrow keys. Press the buttons to show or hide each part of the picture.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle with its circumcircle, tangential triangle, three Cantor lines and nine-point circle"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset triangle</button>
+    <button id="cantorBtn" type="button" aria-pressed="false" aria-label="Toggle the three Cantor lines">Cantor lines</button>
+    <button id="nineBtn" type="button" aria-pressed="false" aria-label="Toggle the nine-point circle">Nine point circle</button>
+    <button id="tangentialBtn" type="button" aria-pressed="false" aria-label="Toggle the tangential triangle">Tangential triangle</button>
+    <button id="circumcircleBtn" type="button" aria-pressed="false" aria-label="Toggle the circle through the three corners">Circumcircle</button>
+    <button id="circumcenterBtn" type="button" aria-pressed="false" aria-label="Toggle the centre of the circle through the corners">Circumcenter</button>
+    <button id="circumradiiBtn" type="button" aria-pressed="false" aria-label="Toggle the lines from the circumcenter to the corners">Circumradii</button>
+    <button id="checkBtn" type="button" aria-label="Check the claims for this triangle">Check the claims</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three lines drawn from the sides of a triangle towards its corners always meet at one point. That point turns out to be the centre of a circle that runs through the middles of the sides. Drag a corner and watch: the meeting point moves, but the three lines still agree.</p>
+
+      <h2>The triangle outside the circle</h2>
+      <p>Every triangle has a <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> through its three corners. A <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> to that circle at A is a straight line that just touches it there. The tangents at A, B and C form a new triangle around the circle: the <em>tangential triangle</em>. Its side opposite the tangents at B and C is the tangent at A.</p>
+
+      <h2>Three perpendicular lines</h2>
+      <p>Let m<sub>A</sub> be the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> of BC. From m<sub>A</sub>, draw the line that crosses the tangent at A at a right angle; do the same at B and C. These are <em>Cantor's lines</em>. The page claims they are always concurrent, and the logic test checks this on hundreds of triangles: they do meet, every time.</p>
+
+      <h2>Why they all meet at one point</h2>
+      <p>Put the origin at the circle's centre O and write the corners as <code>z_A</code>, <code>z_B</code>, <code>z_C</code>. Then <code>m_A = (z_B + z_C)/2</code> and the centre of the <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">nine-point circle</a> is <code>N = (z_A + z_B + z_C)/2</code>. Subtract: <code>N - m_A = z_A/2</code>, so the line from m<sub>A</sub> to N is parallel to the radius OA and therefore perpendicular to the tangent at A. The same calculation works at B and C, so all three lines pass through N.</p>
+      <blockquote><code>N = (A + B + C - O)/2</code> &nbsp;and&nbsp; <code>radius of nine-point circle = radius of circumcircle / 2</code>.</blockquote>
+
+      <h2>More sides, same point</h2>
+      <p>The page's remark goes further. For any shape inscribed in a circle, take one vertex p and the <a class="wiki-term" data-wiki="Centroid" href="https://en.wikipedia.org/wiki/Centroid" target="_blank" rel="noopener">centroid</a> g of all the <em>other</em> vertices. The line through g perpendicular to the tangent at p always passes through one common point, <code>(sum of all vertices - O)/(n - 1)</code>. For a triangle, n = 3 and that point is the nine-point centre N again; the logic test checks this for shapes with 3 to 7 sides.</p>
+      <p class="tip">Try dragging a corner until its angle is a right angle: the two opposite tangents become parallel, but the three Cantor lines still meet at N.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CantorPoint.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cantor-point-core.js"></script>
+<script src="cantor-point.js"></script>
+</body>
+</html>
