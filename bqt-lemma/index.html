@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BQTLemma &mdash; coolmaths</title>
+<meta name="description" content="Three points on a line, two pairs of parallel lines and a midpoint: how are the three triangle areas related?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bqt-lemma/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="BQTLemma">
+<meta property="og:description" content="Three points on a line, two pairs of parallel lines and a midpoint: how are the three triangle areas related?">
+<meta property="og:url" content="https://coolmaths.ai/bqt-lemma/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    margin: 0 auto;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .fill-dem { fill: var(--accent); fill-opacity: 0.16; stroke: none; }
+  #board .fill-pair { fill: var(--good); fill-opacity: 0.13; stroke: none; }
+  #board .base-line { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .edge { fill: none; stroke: var(--ink); stroke-width: 1.8; }
+  #board .de-line { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .half-line { fill: none; stroke: var(--accent); stroke-width: 3; stroke-dasharray: 7 5; }
+  #board .extra-line { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 3 6; }
+  #board .mid-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 18px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .f-label { fill: var(--highlight); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="bqt-lemma" data-kind="demo">
+<main id="main">
+  <h1>BQTLemma</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the points to change a shape made of two pairs of parallel lines, and watch three triangle areas.<br>
+    <strong>How to play:</strong> Drag A, B, C, D or E with a mouse or finger, or focus a point and use the arrow keys. Press Check the claim to compare the areas.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A, B and C on a straight line, with D and E above it; the triangles DEM, ABD and BCE are shaded"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the diagram to its starting shape">Reset diagram</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show or hide the point names">Show names</button>
+    <button id="extraBtn" type="button" aria-pressed="false" aria-label="Show or hide the extra dashed lines">Show extra lines</button>
+    <button id="checkBtn" type="button" aria-label="Check the equal-area claim for this diagram">Check the claim</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Bui Quang Tuan found a small surprise: move the points however you like, keeping two pairs of lines parallel, and one triangle always has half the combined area of two others. The original cut-the-knot article shows the same lemma with a GeoGebra drawing; this page uses the rules of the older Java applet.</p>
+
+      <h2>Two pairs of parallel lines</h2>
+      <p>A, B and C are <a class="wiki-term" data-wiki="Collinearity" href="https://en.wikipedia.org/wiki/Collinearity" target="_blank" rel="noopener">collinear</a>: they sit on one straight line. D and E are on the same side of it, with <code>AD ∥ BE</code> and <code>BD ∥ CE</code>. Moving D rebuilds E from those two rules; moving E rebuilds D. Drag any point and the shape follows.</p>
+
+      <h2>Equal areas in a trapezoid</h2>
+      <p>ABED is a <a class="wiki-term" data-wiki="Trapezoid" href="https://en.wikipedia.org/wiki/Trapezoid" target="_blank" rel="noopener">trapezoid</a> because AD and BE are parallel. Triangles ABD and AED share the base AD and reach the same parallel line, so their <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">areas</a> match: <code>[ABD] = [AED]</code>. The same argument in BCED gives <code>[BCE] = [CDE]</code>. Adding them, <code>[ABD] + [BCE] = [AED] + [CDE]</code>.</p>
+
+      <h2>The midpoint halves the distances</h2>
+      <p>F is the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> of AC. Measure the perpendicular distances from A, F and C to the line DE: call them <code>h_a</code>, <code>h_m</code> and <code>h_c</code>. Because F is halfway along AC, <code>h_m = (h_a + h_c)/2</code>. Since <code>[AED] = DE·h_a/2</code> and <code>[CDE] = DE·h_c/2</code>, their sum is <code>DE·h_m = 2·[DEM]</code>. So the lemma follows:</p>
+      <blockquote><code>[DEM] = ([ABD] + [BCE]) / 2</code>.</blockquote>
+      <p>The logic test checks this on the starting picture and on 500 other layouts, using both the cross-product area and the applet's own Heron-formula area. When B is exactly at F, all three shaded triangles have the same area, as the article points out.</p>
+
+      <h2>A product that stays put</h2>
+      <p>The article adds a second fact. If <code>h_b</code> is the distance from B to DE, <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similar_triangles" target="_blank" rel="noopener">similar triangles</a> give <code>h_b/h_a = h_c/h_b</code>, hence <code>[ABD]·[BCE] = [BDE]²</code>. The logic test confirms that too on every layout it tries.</p>
+
+      <p class="tip">Try pulling B right next to F: the three shaded areas become equal, and the two numbers in the status line still agree.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/BQTLemma.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bqt-lemma-core.js"></script>
+<script src="bqt-lemma.js"></script>
+</body>
+</html>
