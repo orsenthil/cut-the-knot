@@ -2142,5 +2142,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "random-walk",
+      title: "Random Walks",
+      blurb: "A walker takes random up-and-down steps from A to B. How many different routes are there, and how many ever touch the middle line?",
+      tags: ["probability", "counting", "sequences"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
