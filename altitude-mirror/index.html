@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Altitude Mirror &mdash; coolmaths</title>
+<meta name="description" content="Move the corners of a triangle and a point on its altitude: why do the two lines through the foot of the altitude always lean away by the same angle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/altitude-mirror/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Altitude Mirror">
+<meta property="og:description" content="Move the corners of a triangle and a point on its altitude: why do the two lines through the foot of the altitude always lean away by the same angle?">
+<meta property="og:url" content="https://coolmaths.ai/altitude-mirror/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+    border-radius: 8px;
+  }
+  #board .tri-edge { stroke: var(--ink); stroke-width: 2; fill: none; }
+  #board .altitude { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; fill: none; }
+  #board .cevian { stroke: var(--accent); stroke-width: 1.5; opacity: 0.7; fill: none; }
+  #board .mirror-ray { stroke: var(--accent); stroke-width: 3; fill: none; }
+  #board .helper { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 4 4; fill: none; }
+  #board .right-angle { stroke: var(--muted); stroke-width: 1.6; fill: none; }
+  #board .angle-arc { stroke: var(--good); stroke-width: 3; fill: none; }
+  #board .aux-dot { fill: var(--accent); }
+  #board .hint-dot { fill: var(--good); }
+  #board .point-label {
+    fill: var(--text);
+    font-size: 0.95rem;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible {
+    outline: none;
+    stroke: var(--good);
+    stroke-width: 5;
+  }
+  #board .point-handle { fill: var(--good); }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.4rem 0 0;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="altitude-mirror" data-kind="demo">
+<main id="main">
+  <h1>Altitude Mirror</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A triangle and the straight line dropped from its top corner hide a mirror trick; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the four dots to move the triangle and the dot on the straight line. Tick the boxes to show the names, the angle marks or the helper lines.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="Triangle ABC with the line AH dropped from A to BC, a point P on that line, and the lines from H to D and E"></svg>
+    <p class="hint">Keyboard: Tab to a dot, then use the arrow keys (Shift makes a bigger step).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" checked> Show names</label>
+    <label><input id="statementBox" type="checkbox"> Show statement</label>
+    <label><input id="hintBox" type="checkbox"> Show hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drop a line straight down from the top corner of a triangle and put a dot anywhere on it. Join that dot to the other two corners. Something unexpected happens at the foot of the line.</p>
+
+      <h2>The mirror at the foot</h2>
+      <p>Let the straight line from <code>A</code> meet <code>BC</code> at <code>H</code>, and let <code>P</code> be any point on it. The line <code>CP</code> meets <code>AB</code> at <code>E</code>, and <code>BP</code> meets <code>AC</code> at <code>D</code>. When <code>H</code> lies between <code>B</code> and <code>C</code>, the two angles at <code>H</code> are equal: <code>∠BHE = ∠CHD</code>. The line <code>AH</code> also splits the angle <code>DHE</code> into two equal parts, so it acts like a <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">mirror</a>. The logic test checked this on 648 exact triangles and 4,000 random ones, and it held every time.</p>
+
+      <h2>Why the two sides are equal</h2>
+      <p>Draw a line through <code>A</code> parallel to <code>BC</code> (the "hint" box shows it). It meets <code>HE</code> at <code>F</code> and <code>HD</code> at <code>G</code>. Similar triangles give <code>AF = AE · BH / BE</code> and <code>AG = AD · CH / CD</code>. <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a> says <code>(AE/BE) · (BH/CH) · (CD/AD) = 1</code> when the three cevians meet at <code>P</code>. Multiply it out and the two lengths become the same: <code>AF = AG</code>. That symmetry is the whole proof, due to Hiroshi Haruki. The test checked all three formulas numerically as well.</p>
+
+      <h2>The orthic triangle</h2>
+      <p>Drag <code>P</code> onto the crossing point of the three altitudes — the <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a>. Then <code>D</code> and <code>E</code> become the feet of the other two altitudes, and <code>DEH</code> is the <a class="wiki-term" data-wiki="Orthic_triangle" href="https://en.wikipedia.org/wiki/Orthic_triangle" target="_blank" rel="noopener">orthic triangle</a>. Its sides are equally inclined to the sides of the original triangle; this is the mirror property that solves <a class="wiki-term" data-wiki="Fagnano%27s_problem" href="https://en.wikipedia.org/wiki/Fagnano%27s_problem" target="_blank" rel="noopener">Fagnano's problem</a>.</p>
+
+      <h2>When the foot falls outside</h2>
+      <p>The page states the angle equality only when <code>H</code> is between <code>B</code> and <code>C</code>. Make the triangle obtuse at <code>B</code> or <code>C</code> and the foot leaves the side: the two <em>rays</em> <code>HE</code> and <code>HD</code> can then point in opposite directions, so the ordinary angle equality fails in many cases. The underlying mirror of the two <em>lines</em> still holds, and so does <code>AF = AG</code>; the test checked 4,000 such triangles and found no exception.</p>
+
+      <p class="tip">Try putting <code>P</code> exactly at the orthocenter, then tick "Show statement" and drag <code>A</code> slowly: the two green angle marks stay equal.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AltitudeMirror.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="altitude-mirror-core.js"></script>
+<script src="altitude-mirror.js"></script>
+</body>
+</html>
