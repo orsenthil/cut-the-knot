@@ -146,7 +146,7 @@ const WgraphsCore = (() => {
     if (at < 0) return null;
     const clicked = s.edges[at];
     const edges = s.edges.map((e) => ({ ...e }));
-    const next = { graph: s.graph, mode: s.mode, n: s.n, edges, announcement: "", done: s.done, circuit: s.circuit };
+    const next = { graph: s.graph, mode: s.mode, ...(s.n === undefined ? {} : { n: s.n }), edges, announcement: "", done: s.done, circuit: s.circuit };
 
     if (clicked.status === DISQUALIFIED) {
       next.announcement = "You tried this one before.";
