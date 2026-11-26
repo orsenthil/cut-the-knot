@@ -864,6 +864,12 @@ const GAMES = {
       await page.click(`#board .cell[data-i="${b[0]}"][data-j="${b[1]}"]`);
     }
   },
+  "turning-turtles": async (page) => {
+    const o = await page.evaluate(() => [...document.querySelectorAll("#row .sq")].findIndex((b) => !b.classList.contains("x")));
+    await page.click(`#row .sq[data-i="${o}"]`);
+    await page.click("#moveBtn");
+    await page.waitForTimeout(1000);
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

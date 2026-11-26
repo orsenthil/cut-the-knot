@@ -451,6 +451,7 @@ const CORE_GLOBALS = {
   "stick-in-three/stick-in-three-core.js": ["StickInThreeCore"],
   "stick-in-square/stick-in-square-core.js": ["StickInSquareCore"],
   "tromino-monomino/tromino-monomino-core.js": ["TrominoMonominoCore"],
+  "turning-turtles/turning-turtles-core.js": ["TurningTurtlesCore"],
 };
 
 const games = [];

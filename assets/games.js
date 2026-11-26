@@ -2392,5 +2392,12 @@ window.COOLMATHS = {
       tags: ["invariants", "algebra", "counting"],
       level: 3,
     },
+    {
+      slug: "turning-turtles",
+      title: "Turning Turtles",
+      blurb: "Turn an O into an X, and maybe flip one square to its left. Whoever turns the last O wins. Why is this really Nim?",
+      tags: ["game-strategy", "place-value", "invariants"],
+      level: 2,
+    },
   ],
 };

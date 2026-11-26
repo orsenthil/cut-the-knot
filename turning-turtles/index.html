@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Turning Turtles &mdash; coolmaths</title>
+<meta name="description" content="Turn an O into an X, and maybe flip one square to its left. Whoever turns the last O wins. Why is this really Nim?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/turning-turtles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Turning Turtles">
+<meta property="og:description" content="Turn an O into an X, and maybe flip one square to its left. Whoever turns the last O wins. Why is this really Nim?">
+<meta property="og:url" content="https://coolmaths.ai/turning-turtles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.8rem 0.5rem; }
+  #row { display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 0.25rem; }
+  #row .sq { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; padding: 0.3rem 0; min-width: 0; min-height: 2.75rem; border-radius: 0.5rem; }
+  #row .num { font-size: 0.75rem; color: var(--muted); }
+  #row .mark { font-size: 1.5rem; font-weight: 800; line-height: 1; color: var(--accent); }
+  #row .sq.x .mark { color: var(--ink); }
+  #row .sq.pick { background: var(--accent); }
+  #row .sq.pick .mark, #row .sq.pick .num { color: var(--accent-text); }
+  #row .sq.flip { outline: 3px dashed var(--accent); outline-offset: -3px; }
+  #row .sq.theirs { background: var(--highlight); }
+  #row .sq:disabled { opacity: 1; cursor: default; }
+  #score { text-align: center; font-weight: 700; margin: 0.6rem 0 0; }
+</style>
+</head>
+<body data-game="turning-turtles" data-kind="game">
+<main id="main">
+  <h1>Turning Turtles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#game-strategy">Game Strategy</a><a class="tag" href="../index.html#place-value">Place Value</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Take turns with the computer turning an O into an X. Whoever turns the last O wins.<br>
+    <strong>How to play:</strong> Click an O, and if you like a square to its left to flip as well (O to X or X to O), then press Make Move.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="row" role="group" aria-label="Eleven squares, numbered 1 to 11 from the left"></div>
+    <p id="score"></p>
+  </div>
+
+  <div class="controls">
+    <button id="moveBtn" type="button" class="primary" disabled>Make Move</button>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>In the original version from <em>Winning Ways</em>, players turn turtles onto their backs and back onto their feet; here O and X stand in for them. The game is <a class="wiki-term" data-wiki="Nim" href="https://en.wikipedia.org/wiki/Nim" target="_blank" rel="noopener">Nim</a> in disguise.</p>
+
+      <h2>Squares are heaps</h2>
+      <p>Think of square <code>k</code> holding an O as a Nim heap of <code>k</code> counters, and an X as an empty heap. Turning the O at <code>k</code> empties that heap. If you also flip a square <code>j</code> to its left, the result counts as a heap of <code>j</code> in its place, whether square <code>j</code> was O or X before. So the move is "take <code>k &minus; j</code> counters from heap <code>k</code>". Every Nim move appears this way, and nothing else does.</p>
+
+      <h2>The Nim-sum</h2>
+      <p>Write the numbers of the O squares in binary and add them without carrying: that is their <a class="wiki-term" data-wiki="Nim#Mathematical_theory" href="https://en.wikipedia.org/wiki/Nim#Mathematical_theory" target="_blank" rel="noopener">Nim-sum</a>, or XOR, <code>s</code>. If <code>s = 0</code>, every move makes it nonzero. If <code>s &ne; 0</code>, some O square <code>k</code> has <code>k xor s &lt; k</code>: turn it and flip <code>k xor s</code> (no flip if that is 0), and the Nim-sum is 0 again. The player who keeps handing over Nim-sum 0 makes the last move. The logic test searched the whole game, all 2,048 rows, and confirmed that a row is lost for the player to move exactly when its Nim-sum is 0.</p>
+
+      <h2>The computer</h2>
+      <p>The computer plays the Nim move whenever it can and a random O otherwise. The original applet looked for its heap in a slightly different way, and in 9 of the 1,920 rows where it should win, that rule asked for a flip to the right, which the rules forbid. The computer here always plays a legal winning move. The test checked that from every winning row it wins against every reply.</p>
+
+      <p class="tip">Before each move, add up the O numbers in binary without carrying. Can you leave the computer a Nim-sum of 0?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/blue/tt.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="turning-turtles-core.js"></script>
+<script src="turning-turtles.js"></script>
+</body>
+</html>
