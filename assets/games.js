@@ -2062,5 +2062,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "power-index",
+      title: "Weighted Voting and Power Indices",
+      blurb: "Players with different numbers of votes team up to reach a quota. Does twice the votes mean twice the power, and can a player with votes have no power at all?",
+      tags: ["counting", "permutations", "logic"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Weighted Voting and Power Indices &mdash; coolmaths</title>
+<meta name="description" content="Players with different numbers of votes team up to reach a quota. Does twice the votes mean twice the power, and can a player with votes have no power at all?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/power-index/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Weighted Voting and Power Indices">
+<meta property="og:description" content="Players with different numbers of votes team up to reach a quota. Does twice the votes mean twice the power, and can a player with votes have no power at all?">
+<meta property="og:url" content="https://coolmaths.ai/power-index/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.9rem; }
+  #system { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.25rem; font-weight: 700; font-size: 1.3rem; }
+  #system input { width: 4.2rem; font: inherit; font-size: 1rem; text-align: center; }
+  #summary { text-align: center; margin: 0.6rem 0; }
+  .table-wrap { overflow-x: auto; }
+  #table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  #system .vote { display: inline-flex; align-items: center; gap: 0.25rem; }
+  #table th, #table td { padding: 0.35rem 0.5rem; border-bottom: 1px solid var(--border); text-align: right; vertical-align: top; }
+  #table .frac { display: block; overflow-wrap: anywhere; }
+  #table .pct { display: block; font-size: 0.85rem; color: var(--muted); }
+  #table thead th { text-align: right; font-size: 0.9rem; color: var(--muted); }
+  #table tbody th { text-align: center; }
+  #table tr.dummy td { color: var(--bad); }
+  #note { margin: 0.6rem 0 0; min-height: 1.4rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.75rem; }
+  .controls input[type=number] { width: 4.5rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="power-index" data-kind="demo">
+<main id="main">
+  <h1>Weighted Voting and Power Indices</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#permutations">Permutations</a><a class="tag" href="../index.html#logic">Logic</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Players with different numbers of votes team up to reach a target. Find out who really has the power.<br>
+    <strong>How to play:</strong> Change the target and the votes in the brackets, tick “Compute indices”, and compare each player's share of power with their share of votes.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="system" role="group" aria-label="The voting system: quota, then each player's votes"></div>
+    <p id="summary" aria-live="polite"></p>
+    <div class="table-wrap">
+      <table id="table" hidden>
+        <thead><tr><th scope="col">Player</th><th scope="col">Votes</th><th scope="col">Banzhaf</th><th scope="col">Shapley-Shubik</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p id="note" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label>Players <input id="nIn" type="number" min="2" max="15" value="4"></label>
+    <label><input id="computeBox" type="checkbox"> Compute indices</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>In a <a class="wiki-term" data-wiki="Weighted_voting" href="https://en.wikipedia.org/wiki/Weighted_voting" target="_blank" rel="noopener">weighted voting system</a> <code>[q: w₁, …, wₙ]</code> player <code>i</code> controls <code>wᵢ</code> votes and a decision passes when the votes for it reach the quota <code>q</code>. Having votes is not the same as having power. In <code>[5: 3, 2, 1]</code> the first two players decide everything together and the one-vote player never matters: a <em>dummy</em>.</p>
+
+      <h2>Banzhaf: who can break a coalition</h2>
+      <p>A coalition is any non-empty group of players; it is winning if its votes reach <code>q</code>. A player is <em>critical</em> to a winning coalition if the coalition loses without them. The <a class="wiki-term" data-wiki="Banzhaf_power_index" href="https://en.wikipedia.org/wiki/Banzhaf_power_index" target="_blank" rel="noopener">Banzhaf index</a> of a player is the number of times they are critical over the total number of times anyone is. In the starting system <code>[6: 4, 3, 2, 1]</code> the counts are 5, 3, 3, 1 out of 12: the 3-vote and 2-vote players have exactly the same power.</p>
+
+      <h2>Shapley-Shubik: who tips the balance</h2>
+      <p>Now let the players join one at a time, in one of the <code>n!</code> possible orders. The <em>pivotal</em> player is the one whose arrival first brings the total up to <code>q</code>. If <code>q</code> is at most the total of all the votes, every order has exactly one pivotal player. The <a class="wiki-term" data-wiki="Shapley–Shubik_power_index" href="https://en.wikipedia.org/wiki/Shapley%E2%80%93Shubik_power_index" target="_blank" rel="noopener">Shapley-Shubik index</a> is the share of orders in which a player is pivotal: 10, 6, 6, 2 of 24 for <code>[6: 4, 3, 2, 1]</code>. The two indices often differ, but they always agree on who is a dummy.</p>
+
+      <h2>How it is counted</h2>
+      <p>The applet listed all <code>2ⁿ</code> coalitions and all <code>n!</code> orders, and for 13 or more players <code>n!</code> was too big for it. Here the orders are counted by coalition: player <code>i</code> is pivotal in <code>|S|!·(n − 1 − |S|)!</code> orders for every group <code>S</code> that loses without <code>i</code> and wins with them. The test compared both indices with the applet's own enumeration on over 6,000 systems of up to 7 players. When the quota is more than all the votes together, the applet still named player 1 pivotal in every order; with no winning coalition at all, this page says so instead.</p>
+
+      <p class="tip">Start from <code>[6: 4, 3, 2, 1]</code> and raise the quota one step at a time up to 10. When does the 1-vote player lose all power, and when does it get it back?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/SocialScience/PowerIndex.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="power-index-core.js"></script>
+<script src="power-index.js"></script>
+</body>
+</html>
