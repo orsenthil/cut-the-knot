@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Building Bridge &mdash; coolmaths</title>
+<meta name="description" content="A river separates two towns. Slide the bridge along the banks and find where to put it so the road from one town to the other is as short as possible.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/building-bridge/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Building Bridge">
+<meta property="og:description" content="A river separates two towns. Slide the bridge along the banks and find where to put it so the road from one town to the other is as short as possible.">
+<meta property="og:url" content="https://coolmaths.ai/building-bridge/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .river { fill: var(--accent); fill-opacity: 0.10; }
+  #board .bank { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .guide { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .best-bridge { fill: none; stroke: var(--accent); stroke-width: 3; stroke-dasharray: 3 4; }
+  #board .best-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .road { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+  #board .bridge { fill: none; stroke: var(--good); stroke-width: 4; stroke-linecap: round; }
+  #board .prime-dot { fill: var(--muted); }
+  #board .mate-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 18px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .prime-label { fill: var(--muted); font-weight: 400; }
+  #board .mate-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="building-bridge" data-kind="demo">
+<main id="main">
+  <h1>Building Bridge</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move a bridge across a river so the road from one town to the other is as short as you can make it.<br>
+    <strong>How to play:</strong> Drag a town or the bridge dot with a mouse or finger, or focus a dot and use the arrow keys. Press Snap to shortest to see the best spot.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Two towns on opposite sides of a river, with a draggable bridge joining the banks"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the two towns and the bridge to their starting places">Reset diagram</button>
+    <button id="hintBtn" type="button" aria-pressed="true" aria-label="Toggle the dashed lines that show the shortest bridge">Hide hint lines</button>
+    <button id="snapBtn" type="button" aria-label="Move the bridge to the shortest possible place">Snap to shortest</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Moving the bridge changes two slanted road pieces but not the river crossing: the bridge is always the same length. So the puzzle is really about making just the two land pieces as short as possible. There is a neat way to turn that into one straight line.</p>
+
+      <h2>Slide one town across the river</h2>
+      <p>Let the bridge go from C on the upper bank to C' straight below it on the lower bank. The <a class="wiki-term" data-wiki="Translation_(geometry)" href="https://en.wikipedia.org/wiki/Translation_(geometry)" target="_blank" rel="noopener">translation</a> that takes C to C' also takes B to B'. It moves every point the same distance in the same direction, so it keeps lengths: <code>C B' = C' B</code>. That is why the land part of the road, <code>AC + C'B</code>, can be written as <code>AC + CB'</code>. The river crossing adds the same fixed width to every route, so whichever choice makes the land part shortest makes the whole road shortest.</p>
+
+      <h2>A straight line beats a bent one</h2>
+      <p>Now A is above the upper bank and B' is below it. For any point C on that bank, the <a class="wiki-term" data-wiki="Triangle_inequality" href="https://en.wikipedia.org/wiki/Triangle_inequality" target="_blank" rel="noopener">triangle inequality</a> gives <code>AC + CB' &ge; AB'</code>, with equality only when C lies on the straight <a class="wiki-term" data-wiki="Line_segment" href="https://en.wikipedia.org/wiki/Line_segment" target="_blank" rel="noopener">segment</a> from A to B'. So the best bridge is exactly where the line AB' crosses the upper bank. Its total length is <code>AB' + river width</code>.</p>
+
+      <h2>The other translation gives the same answer</h2>
+      <p>The old article also says you can slide A across the river to A' instead and draw A'B. Its meeting point with the lower bank is C', directly below the first bridge spot. The logic test checks both crossings against the applet's own line-intersection calculation on hundreds of town positions and river widths: the two points are the same bridge, and the two ways give the same minimum length. The dashed lines on the page are that very <a class="wiki-term" data-wiki="Geometric_construction" href="https://en.wikipedia.org/wiki/Geometric_construction" target="_blank" rel="noopener">construction</a>.</p>
+
+      <p class="tip">Try hiding the hint lines, find the best bridge by dragging, then press Snap to shortest to check your eye. The original Java applet chose its towns at random; this page starts from one fixed picture so two runs can be compared.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BuildingBridge.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="building-bridge-core.js"></script>
+<script src="building-bridge.js"></script>
+</body>
+</html>
