@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carpets In Quadri 2 &mdash; coolmaths</title>
+<meta name="description" content="Move the corners of a quadrilateral. Will the four little corner pieces always have the same total area as the middle piece?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/carpets-in-quadri-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Carpets In Quadri 2">
+<meta property="og:description" content="Move the corners of a quadrilateral. Will the four little corner pieces always have the same total area as the middle piece?">
+<meta property="og:url" content="https://coolmaths.ai/carpets-in-quadri-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .carpet-red { fill: var(--bad); opacity: 0.2; }
+  #board .carpet-blue { fill: var(--accent); opacity: 0.2; }
+  #board .cut { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .cut-one { stroke: var(--accent); }
+  #board .cut-two { stroke: var(--bad); }
+  #board .diagonal { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 5; }
+  #board .inner { fill: var(--highlight); fill-opacity: 0.16; stroke: var(--good); stroke-width: 3; }
+  #board .midpoint { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .crossing { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.9rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="carpets-in-quadri-2" data-kind="demo">
+<main id="main">
+  <h1>Carpets In Quadri 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: four little corner pieces have exactly the same total area as the middle piece.<br>
+    <strong>How to play:</strong> Drag the corners A, B, C and D, or focus a corner and use the arrow keys. Tick the boxes to show the two cuts, the names of the points, or to hide a cut.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 450 400" role="group"
+         aria-label="A quadrilateral with draggable corners, the midpoints of its sides, the four crossings of lines drawn to those midpoints, and two coloured carpets"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Show names</label>
+    <label><input id="partition1" type="checkbox"> Partition 1</label>
+    <label><input id="partition2" type="checkbox"> Partition 2</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the diagram to its starting quadrilateral">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag a corner of the <a class="wiki-term" data-wiki="Quadrilateral" href="https://en.wikipedia.org/wiki/Quadrilateral" target="_blank" rel="noopener">quadrilateral</a> and the coloured pieces change shape. Yet the four corner pieces always add up to exactly the piece in the middle. Bui Quang Tuan suggested this puzzle; Bogomolny called it a carpet because two coloured carpets are laid over the same floor.</p>
+
+      <h2>Two carpets, one floor</h2>
+      <p>Let E, F, G, H be the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoints</a> of AB, BC, CD, DA. Tick only Partition 1: the blue shape AFCH is one half of the whole, and the two red triangles ABF and CDH make the other half. Tick only Partition 2: the blue shape BGDE is a half too, and the red triangles ADE and BCG are the other half. For example, <code>[ADE] = [BDE]</code> because E is the middle of AB, and <code>[BCG] = [BDG]</code> because G is the middle of CD; adding gives <code>[ADE] + [BCG] = [BGDE]</code>.</p>
+
+      <h2>The overlapping pieces</h2>
+      <p>Where the blue halves overlap lies the four-sided shape PQRS: P is where AF meets DE, Q is where AF meets BG, R is where BG meets CH, and S is where CH meets DE. Where the red halves overlap lie the four corner triangles AEP, BFQ, CGR and DHS. The <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> of each whole carpet equals the area of its complement, so the Carpet Theorem says those two overlaps have equal area:</p>
+      <blockquote><code>[AEP] + [BFQ] + [CGR] + [DHS] = [PQRS]</code></blockquote>
+      <p>The logic test checks this on the starting shape, on squares, rectangles, tilted shapes, parallelograms and thousands of generated convex quadrilaterals: the two sides agree to machine precision every time. Make a shape with a dent in it and the equality can fail &mdash; the puzzle is about convex quadrilaterals.</p>
+
+      <h2>How this differs from the first carpet</h2>
+      <p>In <em>Carpets in a Quadrilateral</em> you slide two points P and Q along the sides AB and CD at the same fraction of the way, and compare the middle shape PSQR with just two red triangles, ARD and BSC. Here all four points are fixed at the middles of the four sides, so four corner triangles appear instead of two, and the middle shape is PQRS. The partition boxes let you lay down either carpet alone or both at once, which is how the proof becomes visible.</p>
+
+      <h2>The one-fifth remark</h2>
+      <p>The original page adds that a square leaves a middle square with <code>1/5</code> of its area, and says this carries over because any convex quadrilateral is an affine image of a square. That last sentence is not right: an <a class="wiki-term" data-wiki="Affine_transformation" href="https://en.wikipedia.org/wiki/Affine_transformation" target="_blank" rel="noopener">affine transformation</a> sends a square to a <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a>, so the fifth is guaranteed only there. The logic test confirms that parallelograms give <code>[PQRS] = [ABCD]/5</code> exactly, while a skewed convex shape such as A(0,0), B(100,0), C(80,20), D(0,60) gives about <code>0.195</code>. The carpet equality itself still holds for every convex shape.</p>
+
+      <p class="tip">Tick one partition box at a time, then both: the middle piece is where the two blue halves overlap, and the corner pieces are where the two red halves overlap.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CarpetsInQuadri2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="carpets-in-quadri-2-core.js"></script>
+<script src="carpets-in-quadri-2.js"></script>
+</body>
+</html>
