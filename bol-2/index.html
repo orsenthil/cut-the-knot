@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BOL2 &mdash; coolmaths</title>
+<meta name="description" content="Drag D along a semicircle: its tangent and the tangent at B meet at T, and AT cuts the perpendicular DE at F. Is F always halfway along DE?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/bol-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="BOL2">
+<meta property="og:description" content="Drag D along a semicircle: its tangent and the tangent at B meet at T, and AT cuts the perpendicular DE at F. Is F always halfway along DE?">
+<meta property="og:url" content="https://coolmaths.ai/bol-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.5rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .arc { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .diameter { stroke: var(--ink); stroke-width: 2.5; }
+  #board .guide { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .hint-line { stroke-dasharray: 3 5; }
+  #board .tangent { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .tangent.alt { stroke-dasharray: 8 5; }
+  #board .perp { stroke: var(--ink); stroke-width: 2; }
+  #board .equal-seg { stroke: var(--good); stroke-width: 4; stroke-linecap: round; }
+  #board .equal-seg.alt { stroke: var(--highlight); stroke-width: 4; stroke-linecap: round; }
+  #board .hint-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 6; }
+  #board .foot-dot { fill: var(--muted); }
+  #board .mid-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .t-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .hint-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  #board .right-mark { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .hint-mark { stroke: var(--highlight); }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .statement { fill: var(--good); font-size: 18px; }
+  #board .hint-label { fill: var(--highlight); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+</style>
+</head>
+<body data-game="bol-2" data-kind="demo">
+<main id="main">
+  <h1>BOL2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the point on the arch and watch where the sloping line crosses the upright line.<br>
+    <strong>How to play:</strong> Drag D with a mouse or finger, or focus it and use the arrow keys. Slide A or B to change the arch, tick the boxes to show more, and press Check the claim.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 320" role="group"
+         aria-label="A semicircle on the diameter AB, a point D on the arc, the tangents at B and D meeting at T, the perpendicular DE, and the crossing point F"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the diagram to its starting position">Reset diagram</button>
+    <button id="checkBtn" type="button" aria-label="Check Archimedes' claim DF equals FE for this position">Check the claim</button>
+  </div>
+
+  <div class="controls" aria-label="What to show">
+    <label><input id="namesBox" type="checkbox" checked aria-label="Show the names of the points"> names</label>
+    <label><input id="hintBox" type="checkbox" aria-label="Show the hint from the proof"> hint</label>
+    <label><input id="statementBox" type="checkbox" aria-label="Show the statement DF equals FE"> statement</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Archimedes found a surprising fact about a semicircle and two touching lines: a third line always cuts a certain upright segment exactly in half. The cut-the-knot page now shows a GeoGebra version, but the Java applet it replaced had the same claim and the same three display switches. The logic test checks the claim at 192 positions of the moving point and four different diameters.</p>
+
+      <h2>What the picture claims</h2>
+      <p>Let <code>AB</code> be the diameter of a <a class="wiki-term" data-wiki="Semicircle" href="https://en.wikipedia.org/wiki/Semicircle" target="_blank" rel="noopener">semicircle</a> and let <code>D</code> be any other point on the arc. The <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangents</a> at <code>B</code> and <code>D</code> meet at <code>T</code>. Drop <code>DE</code> straight down to the diameter, and let <code>AT</code> cross <code>DE</code> at <code>F</code>. Proposition 2 of the <em>Book of Lemmas</em> says</p>
+      <blockquote><code>DF = FE</code> &nbsp;— that is, <code>F</code> is the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> of <code>DE</code>.</blockquote>
+      <p>In the drawing, the two halves of <code>DE</code> are painted green and gold so you can see them change size together as you drag.</p>
+
+      <h2>The two tangents have equal lengths</h2>
+      <p>Two tangents drawn from the same point to a circle have the same length, so <code>TB = TD</code>. The angle at <code>D</code> in the triangle <code>ADB</code> is a right angle — this is <a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a>, because <code>AB</code> is a diameter. The logic test measures that right angle and the two tangent lengths at every one of its 192 test positions; both claims hold.</p>
+
+      <h2>Where the extra point H lands</h2>
+      <p>Extend <code>AD</code> until it meets the tangent at <code>B</code> at <code>H</code>. Since <code>AD</code> is at right angles to <code>DB</code>, the angle <code>BDH</code> is right too. So <code>D</code> lies on the circle whose diameter is <code>BH</code>. Because <code>TB = TD</code>, and <code>T</code> lies on the line <code>BH</code>, <code>T</code> is the centre of that circle. Hence <code>HT = TB</code>, exactly as the page's proof says. Tick <em>hint</em> to see that circle and the line through <code>H</code>.</p>
+
+      <h2>Why F is the halfway point</h2>
+      <p>Both <code>DE</code> and <code>BH</code> are at right angles to <code>AB</code>, so they are parallel. Shrink the whole triangle <code>AHB</code> towards <code>A</code> by any factor <code>λ</code>: <code>H</code> lands on <code>D</code> and <code>B</code> lands on <code>E</code>. The same shrink sends the midpoint <code>T</code> of <code>BH</code> to the midpoint of <code>DE</code>. But the line from <code>A</code> to <code>T</code> is just where that moving midpoint travels, so it meets <code>DE</code> at its midpoint <code>F</code>. Therefore <code>DF = FE</code> for every position of <code>D</code>, not just the one on screen.</p>
+      <p>The original let <code>D</code> go all the way to <code>A</code>, where the tangents meet far outside any picture. Here the arc stops just short of the ends so that <code>T</code> and the hint circle stay visible; the claim itself holds on the whole open arc.</p>
+
+      <p class="tip">Try sliding both ends of the diameter inward to make a small arch, then drag D close to an end and watch the two coloured halves grow together.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BookOfLemmas/BOL2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="bol-2-core.js"></script>
+<script src="bol-2.js"></script>
+</body>
+</html>
