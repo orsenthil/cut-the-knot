@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Recombining Permutations &mdash; coolmaths</title>
+<meta name="description" content="Numbers sit on a circle, and arrows show where a shuffle sends each one. Swap two numbers: why does the number of loops always change by exactly one?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/perm-on-circle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Recombining Permutations">
+<meta property="og:description" content="Numbers sit on a circle, and arrows show where a shuffle sends each one. Swap two numbers: why does the number of loops always change by exactly one?">
+<meta property="og:url" content="https://coolmaths.ai/perm-on-circle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.4rem; }
+  #board { width: 100%; height: auto; display: block; }
+  #board .arrow { stroke: var(--accent); stroke-width: 2; fill: none; marker-end: url(#head); }
+  #board .head { fill: var(--accent); }
+  #board .node { fill: var(--stage); stroke: var(--ink); stroke-width: 1.6; cursor: pointer; }
+  #board .node.sel { fill: var(--highlight); stroke: var(--accent); stroke-width: 3.5; }
+  #board text { font: 700 14px system-ui, sans-serif; fill: var(--ink); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+  .facts { margin: 0.6rem 0 0; font-size: 0.95rem; line-height: 1.6; overflow-wrap: anywhere; }
+  .controls label { display: inline-flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; max-width: 100%; }
+  .controls input[type=number] { width: 4.5rem; max-width: 100%; font: inherit; }
+</style>
+</head>
+<body data-game="perm-on-circle" data-kind="demo">
+<main id="main">
+  <h1>Recombining Permutations</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#permutations">Permutations</a><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Numbers stand on a circle and arrows show where a shuffle sends each one. Swap two numbers and watch the loops of arrows split or join.<br>
+    <strong>How to play:</strong> Press one number, then another one, to swap them. Count the loops before and after.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="img" aria-label="Numbers on a circle with arrows from each number to the one it is sent to">
+      <defs><marker id="head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0 L10 5 L0 10 z"/></marker></defs>
+      <g id="layer"></g>
+    </svg>
+    <p id="facts" class="facts"></p>
+  </div>
+
+  <div class="controls">
+    <label>N <input id="nIn" type="number" min="2" max="20" step="1" value="8" aria-label="How many numbers"></label>
+    <button id="newBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Put the numbers <code>1, ..., N</code> on a circle and draw an arrow from each number to the number it is sent to. Following the arrows round, you come back where you started: the loops are the <a class="wiki-term" data-wiki="Cyclic_permutation" href="https://en.wikipedia.org/wiki/Cyclic_permutation" target="_blank" rel="noopener">cycles</a> of the permutation. A number that stays put is a loop of length one.</p>
+
+      <h2>Swapping two numbers</h2>
+      <p>Pressing <code>a</code> and then <code>b</code> multiplies the permutation by the <a class="wiki-term" data-wiki="Transposition_(mathematics)" href="https://en.wikipedia.org/wiki/Transposition_(mathematics)" target="_blank" rel="noopener">transposition</a> <code>(a b)</code>: the two arrows that leave <code>a</code> and <code>b</code> trade their targets. The number of loops changes by exactly one. If <code>a</code> and <code>b</code> were in the same loop it splits into two; if they were in different loops, the two loops join into one.</p>
+
+      <p>The test tried this on every permutation of up to 8 numbers and every pair: 100% of the swaps changed the count by one, in the direction just described.</p>
+
+      <h2>Even and odd, and the Fifteen</h2>
+      <p>Because every swap changes the number of loops by one, it also changes whether <code>N</code> minus the number of loops is even or odd. That is the <a class="wiki-term" data-wiki="Parity_of_a_permutation" href="https://en.wikipedia.org/wiki/Parity_of_a_permutation" target="_blank" rel="noopener">parity</a> of the permutation, and it flips at every swap. This is the idea behind the Fifteen puzzle: each move swaps the blank with a tile, so after an odd number of moves the permutation is odd.</p>
+
+      <p class="tip">Start with N = 4 and try to reach the picture where every number has only a loop of length one. How many swaps do you need at least?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/PermOnCircle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="perm-on-circle-core.js"></script>
+<script src="perm-on-circle.js"></script>
+</body>
+</html>

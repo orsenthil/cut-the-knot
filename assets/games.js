@@ -1975,5 +1975,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "perm-on-circle",
+      title: "Recombining Permutations",
+      blurb: "Numbers sit on a circle, and arrows show where a shuffle sends each one. Swap two numbers: why does the number of loops always change by exactly one?",
+      tags: ["permutations", "parity", "invariants"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
