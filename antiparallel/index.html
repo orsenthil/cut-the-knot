@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Antiparallel &mdash; coolmaths</title>
+<meta name="description" content="A circle through two corners of a triangle cuts the other two sides. Drag the points: what line does it draw, and why are its angles with the sides reversed?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/antiparallel/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Antiparallel">
+<meta property="og:description" content="A circle through two corners of a triangle cuts the other two sides. Drag the points: what line does it draw, and why are its angles with the sides reversed?">
+<meta property="og:url" content="https://coolmaths.ai/antiparallel/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circle { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .axis { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .ext { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .chord { fill: none; stroke: var(--good); stroke-width: 3.5; }
+  #board .angle-one { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .angle-two { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .cut { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .centre { fill: var(--ink); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="antiparallel" data-kind="demo">
+<main id="main">
+  <h1>Antiparallel</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: a circle through two corners of a triangle draws a line across the other two sides.<br>
+    <strong>How to play:</strong> Drag A, B, C or the circle's centre P, or focus a point and use the arrow keys. Tick "Equal angles" to see why the new line matches the angles of the triangle.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Triangle ABC with a circle through A and B meeting the other sides at D and E, and the chord DE drawn across them"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox" checked> Names</label>
+    <label><input id="hint" type="checkbox"> Equal angles</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the diagram to its starting points">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag the corners and watch the green line. Its ends move, yet it always
+        meets the two sides of the triangle at the same angles as the bottom
+        side does — in the opposite order. That is why it is called an antiparallel.</p>
+
+      <h2>Parallel and antiparallel</h2>
+      <p>Two <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a>
+        lines meet a <a class="wiki-term" data-wiki="Transversal_(geometry)" href="https://en.wikipedia.org/wiki/Transversal_(geometry)" target="_blank" rel="noopener">transversal</a>
+        at equal angles in the same positions. Here the two lines are angled
+        the other way around: the angle that AB makes with one side equals the
+        angle that DE makes with the other. Drag P and the green chord keeps
+        this reversed match, even when one of its ends lies beyond a corner.</p>
+
+      <h2>The circle makes the chord</h2>
+      <p>P is kept on the <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a>
+        of AB, so its circle passes through A and B. It meets BC again at D
+        and AC again at E, and the chord DE is drawn through them. All four
+        points A, B, D and E lie on that one circle: they form a
+        <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>.
+        Moving P changes the size of the circle, and so slides D and E along
+        the sides; moving A or B moves P with them at the same distance from AB.</p>
+
+      <h2>Opposite angles and the reversed order</h2>
+      <p>When D and E both fall on the sides of the triangle, ABDE is convex.
+        Its opposite angles add to <code>180&deg;</code>. Taking the
+        <a class="wiki-term" data-wiki="Supplementary_angles" href="https://en.wikipedia.org/wiki/Supplementary_angles" target="_blank" rel="noopener">supplementary angles</a>
+        at D and E turns that statement into the equality of the two pairs of
+        angles shown by the coloured arcs. <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">Inscribed angles</a>
+        say the same thing another way: <code>∠ADB</code> and <code>∠AEB</code>
+        are equal or supplementary, because both stand on the chord AB.</p>
+
+      <h2>What the checks found</h2>
+      <p>The logic test tries nine named triangles and 220 generated ones, with
+        the centre on either side of AB. In every well-cut case the two angle
+        pairs match to within a millionth of a radian, D and E lie on the
+        circle and on their lines, the inscribed angles are equal or
+        supplementary, and — when both cuts are on the sides — the opposite
+        angles add to <code>180&deg;</code>. It also rebuilds the whole
+        construction from the old applet's bytecode and gets the same D and E.
+        The old article now embeds a GeoGebra drawing instead of the Java
+        applet, but its text describes exactly the construction used here.</p>
+
+      <p class="tip">Try dragging P far below AB: one cut jumps past a corner, and the reversed angle match still holds.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Antiparallel.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="antiparallel-core.js"></script>
+<script src="antiparallel.js"></script>
+</body>
+</html>
