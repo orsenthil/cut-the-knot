@@ -967,6 +967,16 @@ const GAMES = {
   "angle-on-diameter": (page) => dragFirstHandle(page),
   "angle-property": (page) => dragFirstHandle(page),
   "angles-in-circle": (page) => dragFirstHandle(page),
+  "angles-in-triangle": (page) => dragFirstHandle(page),
+  "anonymous-visitor": (page) => dragFirstHandle(page),
+  "anticomplementary-triangle": (page) => dragFirstHandle(page),
+  antiparallel: (page) => dragFirstHandle(page),
+  "any-quadri": (page) => dragFirstHandle(page),
+  "apmo-2009-3": (page) => dragFirstHandle(page),
+  "apollonian-circle": (page) => dragFirstHandle(page),
+  apollonius: (page) => dragFirstHandle(page),
+  arbelos: (page) => dragFirstHandle(page),
+  "arbelos-bui": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

@@ -2113,6 +2113,16 @@ check("angle-bisectors-in-quadri: U, G and V are collinear", read["angle-bisecto
 check("angle-on-diameter: the angle at P stays a right angle", read["angle-on-diameter"]?.savedMatchesCore === true && read["angle-on-diameter"].reading.rightAngleAtP.isRight === true && read["angle-on-diameter"].maxAngleDifference === 0);
 check("angle-property: inversion keeps the two crossing angles equal", read["angle-property"]?.crossingAnglesPreserved === true && read["angle-property"].power > 0);
 check("angles-in-circle: the angle matches the half-arc rule", read["angles-in-circle"]?.reading.agrees === true && read["angles-in-circle"].reading.valid === true);
+check("angles-in-triangle: folded corners fill a straight angle", read["angles-in-triangle"]?.reading.foldedSumDegrees === 180 && read["angles-in-triangle"].reading.largestAngleAt === "A");
+check("anonymous-visitor: C stays at the fixed point as D moves", read["anonymous-visitor"]?.reading.C_onFixedPoint === true && read["anonymous-visitor"].reading.C_matchesSaved === true);
+check("anticomplementary-triangle: the second triangle has ABC as its medial triangle", read["anticomplementary-triangle"]?.claims.allHold === true && read["anticomplementary-triangle"].claims.areaRatioFour === true);
+check("antiparallel: the chord's angles with the sides are reversed", read.antiparallel?.reading.reversedAngleEqualities.bothPairsHold === true && read.antiparallel.reading.concyclicity.concyclic === true);
+check("any-quadri: the three midpoint segments share one midpoint", read["any-quadri"]?.savedClaims.concurrent === true && read["any-quadri"].savedClaims.barycenter === true);
+check("apmo-2009-3: the isosceles apex is optimal for this saved base", /claim holds/.test(read["apmo-2009-3"]?.verdict || "") && read["apmo-2009-3"].degenerate === false);
+check("apollonian-circle: the sampled point has AP/BP equal to the ratio", read["apollonian-circle"]?.measuredAtP.agrees === true && read["apollonian-circle"].ratio === 1.536);
+check("apollonius: eight tangent circles match the saved picture", read.apollonius?.count === 8 && read.apollonius.agreesWithSaved === true && read.apollonius.closestSavedGap.every((g) => g < 0.001));
+check("arbelos: the arbelos area equals the circle on the upright", read.arbelos?.archimedesProposition4 === true && read.arbelos.arcsEqual === true && read.arbelos.savedMatchesCore === true);
+check("arbelos-bui: both new circles share the twins' radius", Object.values(read["arbelos-bui"]?.savedMatchesCore || {}).every(Boolean) === true && read["arbelos-bui"].core.twins.matchesFormula === true && read["arbelos-bui"].core.chords.sumIsTwinDiameter === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);

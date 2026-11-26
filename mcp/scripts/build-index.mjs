@@ -507,6 +507,16 @@ const CORE_GLOBALS = {
   "payoff-heat-equation/payoff-heat-equation-core.js": ["PayoffHeatEquationCore"],
   "black-scholes-formula/black-scholes-formula-core.js": ["BlackScholesFormulaCore"],
   "delta-hedging/delta-hedging-core.js": ["DeltaHedgingCore"],
+  "angles-in-triangle/angles-in-triangle-core.js": ["AnglesInTriangleCore"],
+  "anonymous-visitor/anonymous-visitor-core.js": ["AnonymousVisitorCore"],
+  "anticomplementary-triangle/anticomplementary-triangle-core.js": ["AnticomplementaryTriangleCore"],
+  "antiparallel/antiparallel-core.js": ["AntiparallelCore"],
+  "any-quadri/any-quadri-core.js": ["AnyQuadriCore"],
+  "apmo-2009-3/apmo-2009-3-core.js": ["Apmo20093Core"],
+  "apollonian-circle/apollonian-circle-core.js": ["ApollonianCircleCore"],
+  "apollonius/apollonius-core.js": ["ApolloniusCore"],
+  "arbelos/arbelos-core.js": ["ArbelosCore"],
+  "arbelos-bui/arbelos-bui-core.js": ["ArbelosBuiCore"],
 };
 
 const games = [];
