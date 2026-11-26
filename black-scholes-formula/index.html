@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Black–Scholes Formula &mdash; coolmaths</title>
+<meta name="description" content="One formula prices an option from the stock, the strike, the time, the interest rate and the volatility. Slide them all and find the one thing it ignores: how fast the stock is expected to grow.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/black-scholes-formula/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Black–Scholes Formula">
+<meta property="og:description" content="One formula prices an option from the stock, the strike, the time, the interest rate and the volatility. Slide them all and find the one thing it ignores: how fast the stock is expected to grow.">
+<meta property="og:url" content="https://coolmaths.ai/black-scholes-formula/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+#stage { width: 100%; max-width: 38rem; padding: 0.8rem; }
+  #prices { text-align: center; font-size: 1.4rem; margin: 0 0 0.4rem; }
+  #pieces { text-align: center; font-size: 0.95rem; margin: 0 0 0.6rem; overflow-wrap: anywhere; }
+  #graph { display: block; width: 100%; height: auto; }
+  svg .grid { stroke: var(--border-strong); stroke-width: 1; }
+  svg .axis { fill: var(--muted); font: 12px var(--font); text-anchor: end; }
+  svg .axis.mid { text-anchor: middle; }
+  svg .payoff { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 4; }
+  svg .curve { fill: none; stroke: var(--accent); stroke-width: 3; }
+  svg .tangent { stroke: var(--bad); stroke-width: 2; }
+  svg .here { fill: var(--bad); }
+  .caption { text-align: center; color: var(--muted); font-size: 0.9rem; margin: 0.2rem 0 0.6rem; }
+  .scroll { overflow-x: auto; }
+  #greeks { border-collapse: collapse; margin: 0 auto; font-size: 0.95rem; }
+  #greeks th, #greeks td { padding: 0.25rem 0.5rem; border-bottom: 1px solid var(--border); text-align: right; }
+  #greeks th { text-align: left; font-weight: 500; color: var(--muted); }
+  #mc { text-align: center; margin: 0.6rem 0 0; font-size: 0.95rem; }
+  .controls .group { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3rem 0.8rem; width: 100%; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 7.5rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="black-scholes-formula" data-kind="demo">
+<main id="main">
+  <h1>The Black&ndash;Scholes Formula</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#black-scholes">Black–Scholes</a><a class="tag" href="../index.html#probability">Probability</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> One formula gives the fair price of an option. Change the stock, the strike, the time and how jumpy the stock is, and see what moves the price and what doesn't.<br>
+    <strong>How to play:</strong> Move the sliders. Press Simulate to check the formula against thousands of random futures.
+  </div>
+
+  <div id="stage" class="stage">
+    <p id="prices" aria-live="polite"></p>
+    <p id="pieces"></p>
+    <svg id="graph" viewBox="0 0 400 200" role="img" aria-label="The call's price against the stock price, with its tangent at today's price"></svg>
+    <p class="caption">The call against the stock price; red: the tangent, whose slope is delta. Dashed: the payoff.</p>
+    <div class="scroll"><table id="greeks" aria-label="The Greeks"></table></div>
+    <p id="mc" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <div class="group">
+      <label>Stock <input id="SIn" type="range" min="50" max="150" step="1" value="100"> <span id="SOut"></span></label>
+      <label>Strike <input id="KIn" type="range" min="50" max="150" step="1" value="100"> <span id="KOut"></span></label>
+      <label>Time <input id="TIn" type="range" min="0.05" max="3" step="0.05" value="1"> <span id="TOut"></span></label>
+    </div>
+    <div class="group">
+      <label>Volatility <input id="sigmaIn" type="range" min="0.05" max="0.8" step="0.01" value="0.2"> <span id="sigmaOut"></span></label>
+      <label>Interest <input id="rIn" type="range" min="0" max="0.1" step="0.005" value="0.05"> <span id="rOut"></span></label>
+      <label>Stock's own growth <input id="muIn" type="range" min="-0.2" max="0.4" step="0.01" value="0.15"> <span id="muOut"></span></label>
+    </div>
+    <div class="group"><button id="simBtn" type="button" class="primary">Simulate</button></div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Solving the heat equation of the previous page and changing back to dollars gives the <a class="wiki-term" data-wiki="Black%E2%80%93Scholes_model" href="https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model" target="_blank" rel="noopener">Black&ndash;Scholes formula</a> for a call:</p>
+      <blockquote><code>C = S&middot;N(d<sub>1</sub>) &minus; K e<sup>&minus;rT</sup>&middot;N(d<sub>2</sub>)<br>d<sub>1</sub> = (ln(S/K) + (r + &sigma;&sup2;/2)T) / (&sigma;&radic;T),&nbsp;&nbsp; d<sub>2</sub> = d<sub>1</sub> &minus; &sigma;&radic;T</code></blockquote>
+      <p>Here <code>N</code> is the area under the standard bell curve.</p>
+
+      <h2>Two pieces</h2>
+      <p><code>N(d<sub>1</sub>)</code> is the delta: the number of shares in the hedge, the slope of the red tangent. <code>N(d<sub>2</sub>)</code> is the risk-neutral chance that the call is used. So the second piece is the strike, paid with that chance and discounted to today. A put is priced the same way, and the two are tied by <a class="wiki-term" data-wiki="Put%E2%80%93call_parity" href="https://en.wikipedia.org/wiki/Put%E2%80%93call_parity" target="_blank" rel="noopener">put&ndash;call parity</a>, <code>C &minus; P = S &minus; K e<sup>&minus;rT</sup></code>. Owning a call and selling a put is the same as owning the stock with a debt of <code>K</code> due at <code>T</code>.</p>
+
+      <h2>The Greeks</h2>
+      <p>The table lists the formula's slopes, the <a class="wiki-term" data-wiki="Greeks_(finance)" href="https://en.wikipedia.org/wiki/Greeks_(finance)" target="_blank" rel="noopener">Greeks</a>. Delta is the change per dollar of the stock. Gamma is how fast delta itself changes, which is how often a hedge must be adjusted. Vega is the change per point of volatility, theta per day that passes, and rho per point of interest. Volatility always adds value: it widens the spread of outcomes, but the payoff can never go below zero.</p>
+
+      <h2>Where is &mu;?</h2>
+      <p>The stock's own growth rate is nowhere in the formula, because the hedge cancelled it. Simulate shows this. Average the payoff over thousands of end prices grown at the bank's rate, and you land on the formula. Grow them at the stock's own rate instead, and you get a different, wrong price. The logic test checked the textbook values ($10.45 call, $5.57 put), parity in 54 cases, every Greek against the price's slope, and 400,000 simulated end prices.</p>
+
+      <p class="tip">Set the strike far above the stock and raise the volatility. Why does a call that will probably expire worthless gain value?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original demo for coolmaths, after David Alvarez Rosa's article
+    <a href="https://david.alvarezrosa.com/posts/deriving-black-scholes/" target="_blank" rel="noopener">Deriving Black-Scholes</a>
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="black-scholes-formula-core.js"></script>
+<script src="black-scholes-formula.js"></script>
+</body>
+</html>

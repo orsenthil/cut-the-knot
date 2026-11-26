@@ -973,6 +973,9 @@ const GAMES = {
   "payoff-heat-equation": async (page) => {
     await page.fill("#tauIn", "1"); await page.dispatchEvent("#tauIn", "input");
   },
+  "black-scholes-formula": async (page) => {
+    await page.fill("#KIn", "110"); await page.dispatchEvent("#KIn", "input");
+  },
 };
 
 /** Move the first draggable point of an illustration with the keyboard. */

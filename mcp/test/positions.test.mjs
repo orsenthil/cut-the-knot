@@ -2128,6 +2128,11 @@ check("payoff-heat-equation: a year left, the grid agrees with the formula", rea
   const ph = at("payoff-heat-equation", { tau: 0.5, sigma: 0.3, r: 0.05, seen: false });
   check("payoff-heat-equation: half a year, 30%, 5%: $9.6349", ph.blackScholes === 9.6349 && ph.payoffNow === 0);
 }
+check("black-scholes-formula: strike moved to 110", read["black-scholes-formula"]?.inputs.K === 110 && read["black-scholes-formula"].call < 10.4506);
+{
+  const bf = at("black-scholes-formula", { S: 100, K: 100, r: 0.05, sigma: 0.2, T: 1, mu: 0.15, runs: 0 });
+  check("black-scholes-formula: the textbook 10.4506 and 5.5735", bf.call === 10.4506 && bf.put === 5.5735 && bf.parity.callMinusPut === bf.parity.stockMinusDiscountedStrike);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;
