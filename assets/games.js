@@ -2354,5 +2354,13 @@ window.COOLMATHS = {
       tags: ["counting", "logic", "invariants"],
       level: 2,
     },
+    {
+      slug: "party-acquaintances",
+      title: "Party Acquaintances",
+      blurb: "At any party of six, three people all know each other or three are all strangers. Colour the lines and try to dodge it: why can you with five and never with six?",
+      tags: ["graph-theory", "logic", "counting"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

@@ -844,6 +844,9 @@ const GAMES = {
     await page.click("#skipBtn");
     await page.locator("#dest button").first().click();
   },
+  "party-acquaintances": async (page) => {
+    for (const [a, b] of [[0, 1], [1, 2]]) { await page.click(`#board .node[data-i="${a}"]`); await page.click(`#board .node[data-i="${b}"]`); }
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

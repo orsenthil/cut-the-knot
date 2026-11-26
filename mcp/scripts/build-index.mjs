@@ -446,6 +446,7 @@ const CORE_GLOBALS = {
   "switching-signs/switching-signs-core.js": ["SwitchingSignsCore"],
   "base-tables/base-tables-core.js": ["BaseTablesCore"],
   "tesseract/tesseract-core.js": ["TesseractCore"],
+  "party-acquaintances/party-acquaintances-core.js": ["PartyAcquaintancesCore"],
 };
 
 const games = [];

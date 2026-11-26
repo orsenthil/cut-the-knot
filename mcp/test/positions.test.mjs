@@ -1989,6 +1989,11 @@ check("tesseract: built, the moving reper one square away", read.tesseract?.buil
   const tr = at("tesseract", { angles: {}, plane: {}, built: true, fixed: "XY00", moving: "XY00", reper: [[1, 1], [0, 1]], fixedReper: [[0, 1], [1, 1]], path: ["XY00", "X10H", "X1Z0"] });
   check("tesseract: arrows swapped on the home square: solved", tr.puzzle.orientation === "reversed: solved");
 }
+check("party-acquaintances: two lines drawn, red then blue, next red", read["party-acquaintances"]?.linesDrawn === 2 && read["party-acquaintances"].nextColour === "red" && read["party-acquaintances"].finished === false);
+{
+  const pa = at("party-acquaintances", { n: 6, nRed: 3, nBlue: 3, autoColor: false, useRed: true, nextRed: true, edges: [[0, 1, true], [1, 2, true], [0, 2, true]] });
+  check("party-acquaintances: three red lines 1-2-3 make a red triangle", pa.redGroups.length === 1 && pa.redGroups[0].join() === "1,2,3" && pa.finished === true);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Party Acquaintances &mdash; coolmaths</title>
+<meta name="description" content="At any party of six, three people all know each other or three are all strangers. Colour the lines and try to dodge it: why can you with five and never with six?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/party-acquaintances/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Party Acquaintances">
+<meta property="og:description" content="At any party of six, three people all know each other or three are all strangers. Colour the lines and try to dodge it: why can you with five and never with six?">
+<meta property="og:url" content="https://coolmaths.ai/party-acquaintances/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; height: auto; }
+  #board .edge { stroke-width: 3; stroke-linecap: round; }
+  #board .edge.red { stroke: #e0453a; }
+  #board .edge.blue { stroke: #3b74e0; }
+  #board .edge.clique { stroke-width: 8; }
+  #board .node { cursor: pointer; }
+  #board .node circle { fill: var(--card); stroke: var(--ink); stroke-width: 2.5; }
+  #board .node.picked circle { fill: var(--accent); }
+  #board .node text { fill: var(--text); font: 700 15px var(--font); text-anchor: middle; pointer-events: none; }
+  #board .node.picked text { fill: var(--accent-text); }
+  #board .node:focus-visible { outline: none; }
+  #board .node:focus-visible circle { stroke: var(--focus); stroke-width: 6; }
+  .controls .group { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3rem 0.8rem; width: 100%; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.3rem; min-height: 2.75rem; }
+  .controls input[type="number"] { width: 4.5rem; min-height: 2.75rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="party-acquaintances" data-kind="demo">
+<main id="main">
+  <h1>Party Acquaintances</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#graph-theory">Graph Theory</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Six people at a party: join each pair with a red line if they know each other and a blue line if they don't. Can you avoid three who all know each other and three who are all strangers?<br>
+    <strong>How to play:</strong> Click one person, then another, to draw a line. The colours take turns, or pick them yourself.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="group" aria-label="The people round a circle; arrow keys move between them, Enter picks one"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="group">
+      <label>N <input id="nIn" type="number" min="3" max="20" value="6"></label>
+      <label>#Red <input id="redIn" type="number" min="2" max="5" value="3"></label>
+      <label>#Blue <input id="blueIn" type="number" min="2" max="5" value="3"></label>
+    </div>
+    <div class="group">
+      <label><input id="autoBox" type="checkbox" checked> Autocolor</label>
+      <label><input type="radio" name="colour" value="red" checked disabled> Red</label>
+      <label><input type="radio" name="colour" value="blue" disabled> Blue</label>
+    </div>
+    <div class="group">
+      <button id="removeBtn" type="button" disabled>Remove last</button>
+      <button id="resetBtn" type="button" class="primary">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>At any party of six, either three people all know each other or three are all strangers. Colour each of the 15 lines of the complete graph <code>K<sub>6</sub></code> red or blue: a one-colour triangle always appears. This is the smallest case of <a class="wiki-term" data-wiki="Ramsey%27s_theorem" href="https://en.wikipedia.org/wiki/Ramsey%27s_theorem" target="_blank" rel="noopener">Ramsey's theorem</a>.</p>
+
+      <h2>Why six is enough</h2>
+      <p>Take one person. Of the other five, at least three are joined to them in the same colour, say red. If any two of those three are joined in red, that makes a red triangle with the first person. If not, the three are joined to each other all in blue: a blue triangle. The logic test checked all 32,768 colourings of <code>K<sub>6</sub></code>. Every one has a one-colour triangle, and in fact at least two (A. W. Goodman).</p>
+
+      <h2>Why five is not</h2>
+      <p>Seat five people at a round table and let each know only the two neighbours: red is the pentagon, blue the five-pointed star, and neither has a triangle. (Only 12 of the 1,024 colourings of <code>K<sub>5</sub></code> manage this.) So the <a class="wiki-term" data-wiki="Ramsey_number" href="https://en.wikipedia.org/wiki/Ramsey%27s_theorem#Ramsey_numbers" target="_blank" rel="noopener">Ramsey number</a> is <code>R(3, 3) = 6</code>. Use #Red and #Blue to look for larger groups: <code>R(4, 3) = 9</code>, <code>R(5, 3) = 14</code>, <code>R(4, 4) = 18</code>.</p>
+
+      <h2>Bounds, and a slip on the original page</h2>
+      <p>Splitting everyone else by their colour to one person shows <code>R(m, n) &le; R(m&minus;1, n) + R(m, n&minus;1)</code>, and hence <code>R(m, n) &le; C(m+n&minus;2, m&minus;1)</code>. Lower bounds need clever colourings. For <code>R(5, 3) &gt; 13</code> the original page seats 13 people who each know only the fifth person on either side. That does avoid three acquaintances, but people 1 to 5 sitting together are then five mutual strangers. If each person also knows both neighbours, both conditions hold. The test checked this, and also the colourings showing <code>R(4, 3) &gt; 8</code> and <code>R(4, 4) &gt; 17</code>.</p>
+
+      <p class="tip">Set N to 5 and draw the round table: pentagon red, star blue. Then set N to 6 and try to escape.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/ThreeOrThree.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="party-acquaintances-core.js"></script>
+<script src="party-acquaintances.js"></script>
+</body>
+</html>
