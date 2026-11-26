@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Angle &mdash; coolmaths</title>
+<meta name="description" content="Drag the rays of an angle and watch it change its name. When does a turn stop being acute and become right, obtuse, reflex, or full?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/angle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Angle">
+<meta property="og:description" content="Drag the rays of an angle and watch it change its name. When does a turn stop being acute and become right, obtuse, reflex, or full?">
+<meta property="og:url" content="https://coolmaths.ai/angle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .angle-circle { fill: none; stroke: var(--border); stroke-width: 1.5; stroke-dasharray: 4 5; }
+  #board .ray { stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+  #board .angle-arc { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linejoin: round; }
+  #board .right-mark { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .vertex { fill: var(--ink); }
+  #board .pt-label { fill: var(--text); font-size: 1.1rem; font-weight: 600; pointer-events: none; }
+  #board .angle-value { fill: var(--accent); font-size: 1.15rem; font-weight: 700; text-anchor: middle; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+  #degreeInput { width: 5rem; max-width: 100%; min-height: 2.5rem; font: inherit; color: var(--text); background: var(--stage); border: 1px solid var(--border); border-radius: 0.4rem; }
+  #signedBox { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+  .presets { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+</style>
+</head>
+<body data-game="angle" data-kind="demo">
+<main id="main">
+  <h1>Angle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the two rays and watch the angle get its name: acute, right, obtuse, straight, reflex, full, or big.<br>
+    <strong>How to play:</strong> Drag a blue dot, or focus it and use the arrow keys. Type a number of degrees, press + or −, or tick "Signed angle" to see which way the turn goes.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="An angle at O with two draggable rays, A and B"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="minusBtn" type="button" aria-label="Make the angle one degree smaller">&minus;</button>
+    <label for="degreeInput">Angle</label>
+    <input id="degreeInput" type="number" min="-1800" max="1800" step="1" aria-label="Angle in degrees, from minus 1800 to 1800">
+    <button id="plusBtn" type="button" aria-label="Make the angle one degree bigger">+</button>
+    <label><input id="signedBox" type="checkbox" aria-label="Show the angle as a signed turn">Signed angle</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the angle to its starting position">Reset</button>
+  </div>
+  <div class="controls presets" aria-label="Try a named angle">
+    <button type="button" data-angle="0" aria-label="Set the angle to zero degrees">0&deg;</button>
+    <button type="button" data-angle="45" aria-label="Set the angle to 45 degrees">45&deg;</button>
+    <button type="button" data-angle="90" aria-label="Set the angle to 90 degrees">90&deg;</button>
+    <button type="button" data-angle="135" aria-label="Set the angle to 135 degrees">135&deg;</button>
+    <button type="button" data-angle="180" aria-label="Set the angle to 180 degrees">180&deg;</button>
+    <button type="button" data-angle="270" aria-label="Set the angle to 270 degrees">270&deg;</button>
+    <button type="button" data-angle="360" aria-label="Set the angle to 360 degrees">360&deg;</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The same two rays can be named in several ways. What decides the name is not how far apart the dots look, but how far one ray has turned from the other.</p>
+
+      <h2>Measure the turn</h2>
+      <p>A whole turn is <code>360&deg;</code>, so a quarter turn is <code>90&deg;</code> and half a turn is <code>180&deg;</code>. The applet measures the turn in whole degrees and rounds the number before it gives the angle a name. That rounding is real: <code>89.6&deg;</code> rounds to <code>90&deg;</code> and is called right, while <code>89.4&deg;</code> is called <a class="wiki-term" data-wiki="Acute_angle" href="https://en.wikipedia.org/wiki/Acute_angle" target="_blank" rel="noopener">acute</a>.</p>
+
+      <h2>Seven names for one picture</h2>
+      <p>The old applet's own code checks the absolute value of the rounded number in this order: <code>0 &rarr; zero</code>, <code>90 &rarr; right</code>, less than 90 &rarr; acute, less than 180 &rarr; obtuse, <code>180 &rarr; straight</code>, less than 360 &rarr; reflex, <code>360 &rarr; full</code>, and anything bigger &rarr; big. A turn of <code>370&deg;</code> ends in the same place as one of <code>10&deg;</code>, yet the applet still calls it big because it remembers the turn you made.</p>
+
+      <h2>Positive and negative turns</h2>
+      <p>With <em>Signed angle</em> on, a turn one way is positive and a turn the other way is negative. The sign is printed after the name, but the name itself uses the size of the turn, so <code>&minus;30&deg;</code> and <code>30&deg;</code> are both acute. Turning ray OA moves both rays together and leaves the measured turn alone; turning ray OB changes it. The Java applet only let you drag OA and type the number &mdash; here OB can be dragged as well, and the turn is rounded to whole degrees just like the numbers you type.</p>
+
+      <p class="tip">Try the presets in order: 0&deg;, 90&deg;, 180&deg;, 360&deg;. Then use the + button to step just past a boundary and watch the name jump.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Angle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="angle-core.js"></script>
+<script src="angle.js"></script>
+</body>
+</html>
