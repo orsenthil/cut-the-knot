@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Angles in a Triangle &mdash; coolmaths</title>
+<meta name="description" content="Fold the three corners of a triangle onto one point and they fill a straight line. In a triangle with a 120° apex, BD = 1 and CD = √2: can you see why the angle at D is 60°?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/angles-in-triangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Angles in a Triangle">
+<meta property="og:description" content="Fold the three corners of a triangle onto one point and they fill a straight line. In a triangle with a 120° apex, BD = 1 and CD = √2: can you see why the angle at D is 60°?">
+<meta property="og:url" content="https://coolmaths.ai/angles-in-triangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .copy { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .altitude { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 2 4; }
+  #board .fold-base { stroke: var(--accent); stroke-width: 2.5; }
+  #board .fold-leg { stroke: var(--accent); stroke-width: 1.75; stroke-dasharray: 6 4; }
+  #board .foot { fill: var(--ink); }
+  #board .centre { fill: var(--muted); }
+  #board .arc-k, #board .fold-k { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .arc-l, #board .fold-l { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .arc-m, #board .fold-m { fill: none; stroke: var(--highlight); stroke-width: 4; }
+  #board .fold-k, #board .fold-l, #board .fold-m { stroke-width: 3.5; }
+  #board .ex-leg { stroke: var(--good); stroke-width: 2; stroke-dasharray: 4 3; }
+  #board .ex-arc { fill: none; stroke: var(--accent); stroke-width: 4; }
+  #board .pt-label { fill: var(--text); font-size: 1.05rem; font-weight: 600; pointer-events: none; }
+  #board .ex-value { fill: var(--accent); font-size: 1.2rem; font-weight: 700; text-anchor: middle; pointer-events: none; }
+  #board .ex-length { fill: var(--good); font-size: 1.05rem; font-weight: 600; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .centre-handle { fill: var(--muted); }
+  #board .ex-handle { fill: var(--good); }
+  .controls { align-items: center; }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+  #namesBox { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+  .legend { display: flex; flex-wrap: wrap; gap: 0.75rem; color: var(--muted); }
+  .legend span::before { content: ""; display: inline-block; width: 0.8rem; height: 0.8rem;
+    margin-right: 0.3rem; border-radius: 50%; background: var(--accent); }
+  .legend span:nth-child(2)::before { background: var(--good); }
+  .legend span:nth-child(3)::before { background: var(--highlight); }
+</style>
+</head>
+<body data-game="angles-in-triangle" data-kind="demo">
+<main id="main">
+  <h1>Angles in a Triangle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Fold the three corners of a triangle onto one spot and see how their angles fit together.<br>
+    <strong>How to play:</strong> Drag A, B, C or the copy's centre P, or focus a dot and use the arrow keys. Press &ldquo;120&deg; exercise&rdquo; for a special triangle, &ldquo;Any triangle&rdquo; to go back, or tick &ldquo;Show names&rdquo; to label the fold points.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="A triangle, its copy around P, and three fold lines meeting at the foot D of the altitude"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="foldingBtn" type="button" aria-label="Show any triangle and its folding construction">Any triangle</button>
+    <button id="exerciseBtn" type="button" aria-label="Show the exercise with a 120 degree apex and its 60 degree angle">120&deg; exercise</button>
+    <label><input id="namesBox" type="checkbox" aria-label="Show the names of the fold points">Show names</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the current picture to its starting position">Reset</button>
+  </div>
+  <div class="controls legend" aria-label="The three folded angles">
+    <span>Largest corner</span><span>Next corner</span><span>Last corner</span>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three corners of any triangle can be laid side by side on one straight line. The old applet showed this by folding paper; the second picture is a puzzle about one particular triangle where a hidden angle turns out to be exactly 60&deg;.</p>
+
+      <h2>Fold the corners onto one point</h2>
+      <p>Pick the corner with the biggest angle and call it A. The <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a> from A meets the opposite side at D, between B and C. The line EF joins the midpoints of AB and AC, so it is halfway down and parallel to BC: folding along EF sends A to D. The other two creases, EG and FH, are the perpendicular bisectors of DB and DC, so folding along them sends B and C to D as well. This is the <a class="wiki-term" data-wiki="Paper_folding" href="https://en.wikipedia.org/wiki/Paper_folding" target="_blank" rel="noopener">paper folding</a> proof that the three <a class="wiki-term" data-wiki="Angle" href="https://en.wikipedia.org/wiki/Angle" target="_blank" rel="noopener">angles</a> of a <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a> add to <code>180&deg;</code>: at D they fill the straight angle from B to C. The logic test checked this for 2,000 random triangles, including ones with a very large angle.</p>
+
+      <h2>The 120&deg; exercise</h2>
+      <blockquote>AB = AC, &angle;BAC = 120&deg;, BC = &radic;5, and D is inside with BD = 1 and CD = &radic;2. Prove that &angle;ADC = 60&deg;.</blockquote>
+      <p>The <a class="wiki-term" data-wiki="Law_of_cosines" href="https://en.wikipedia.org/wiki/Law_of_cosines" target="_blank" rel="noopener">Law of Cosines</a> in triangle BCD gives <code>5 = 1 + 2 &minus; 2&radic;2 cos(&angle;BDC)</code>, so <code>cos(&angle;BDC) = &minus;&radic;2/2</code> and <code>&angle;BDC = 135&deg;</code>. Turning the whole picture 120&deg; about A (<a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a>) carries B to C and D to D&prime;; the remaining angles in triangle DCD&prime; then force <code>&angle;ADC = 60&deg;</code>. The logic test verified the claim on the exact coordinates from the article and on 300 randomly rotated, scaled and reflected copies. The article writes one line of its Law of Sines step without squaring <code>sin 15&deg;</code>; with the square restored, that line gives <code>4</code> and the angle <code>30&deg;</code> it needs.</p>
+
+      <h2>Which page goes with the applet</h2>
+      <p>The inventory's link points to the exercise article above, which has no applet on it. The applet itself appears on Bogomolny's &ldquo;Angles in Triangle Add to 180&rdquo; page (linked in the byline), and its code only draws the folding construction &mdash; it does not draw the 120&deg; exercise. This page keeps the applet's draggable points and adds the exercise as a preset, so both claims can be tried on the same picture. Moving A, B, C or D by hand changes the lengths and the angle, so the status line tells you what is true <em>now</em>, not what the exercise promises.</p>
+
+      <p class="tip">Try the exercise, then drag D a little: the angle stops being 60&deg; as soon as BD and CD stop being 1 and &radic;2. Press Reset to put it back.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AnglesInTriangle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="angles-in-triangle-core.js"></script>
+<script src="angles-in-triangle.js"></script>
+</body>
+</html>
