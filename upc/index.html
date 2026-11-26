@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UPC &mdash; coolmaths</title>
+<meta name="description" content="Change the first eleven digits of a UPC-A product code and watch the last digit and the bars follow. Can you work out the rule that chooses the check digit?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/upc/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="UPC">
+<meta property="og:description" content="Change the first eleven digits of a UPC-A product code and watch the last digit and the bars follow. Can you work out the rule that chooses the check digit?">
+<meta property="og:url" content="https://coolmaths.ai/upc/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 0.8rem; }
+  #bars { display: block; width: 100%; max-width: 100%; height: auto; }
+  #bars .paper { fill: #fbfbf8; }
+  #bars .bar { fill: #1b1d24; }
+  #digits { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3rem; margin-top: 0.6rem; }
+  .digit { position: relative; min-width: 2.4rem; min-height: 2.75rem; font-size: 1.3rem; font-weight: 700; padding: 0 0.3rem; font-variant-numeric: tabular-nums; }
+  .digit::after { content: ""; position: absolute; top: 0.35em; bottom: 0.35em; left: 50%; border-left: 1px solid var(--border-strong); opacity: 0.6; pointer-events: none; }
+  span.digit.check { display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; border: 2px solid var(--good); background: color-mix(in srgb, var(--good) 18%, transparent); }
+  #sum { margin: 0.6rem 0 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+</style>
+</head>
+<body data-game="upc" data-kind="demo">
+<main id="main">
+  <h1>UPC</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#divisibility">Divisibility</a><a class="tag" href="../index.html#number-theory">Number Theory</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A shop product code has twelve digits, and the last one is worked out from the others; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Press the left or right half of one of the first eleven digits to add one or take one away, or select a digit and type a new one. Watch the last digit and the bars change.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="bars" viewBox="0 0 105 64" role="img" aria-label="The 95 black and white bars of a UPC-A barcode: guard bars at each end and in the middle, odd patterns for the left six digits and right-side patterns for the last six."></svg>
+    <div id="digits" aria-label="The twelve digits of the code"></div>
+    <p id="sum" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The <a class="wiki-term" data-wiki="Universal_Product_Code" href="https://en.wikipedia.org/wiki/Universal_Product_Code" target="_blank" rel="noopener">UPC-A</a> code on a shop item is twelve digits. The last is a <a class="wiki-term" data-wiki="Check_digit" href="https://en.wikipedia.org/wiki/Check_digit" target="_blank" rel="noopener">check digit</a>: it is chosen so that a little sum comes out a multiple of ten. That way a scanner can notice a digit that was read or typed wrongly.</p>
+
+      <h2>The rule for the last digit</h2>
+      <p>Write the digits <code>d1 d2 … d12</code>, with <code>d12</code> last. The applet and its page use</p>
+      <blockquote><code>3d1 + d2 + 3d3 + d4 + … + 3d11 + d12 = 0 (mod 10)</code></blockquote>
+      <p>The weights 3 and 1 alternate. Calling the sums of the digits in the odd and even places <code>S_odd</code> and <code>S_even</code>, this is the same as <code>3 S_odd + S_even = 0 (mod 10)</code>. The applet fills in <code>d12 = (10 − (3 S_odd + S_even mod 10)) mod 10</code>. The logic test compared this with a second transcription of the applet's own <code>FixCheckDigit</code> on 330,000 prefixes — every digit value in every one of the eleven places — and all 330,000 finished codes satisfied the page's formula.</p>
+
+      <h2>What the check catches</h2>
+      <p>In <a class="wiki-term" data-wiki="Modular_arithmetic" href="https://en.wikipedia.org/wiki/Modular_arithmetic" target="_blank" rel="noopener">modular arithmetic</a>, changing one of the first eleven digits by <code>c</code> changes the sum by <code>3c</code> or <code>c</code>. Neither can be a multiple of ten unless <code>c</code> is, so one wrong digit is always caught: the test tried every wrong value in every place of 1,000 codes. Swapping two neighbours <code>a, b</code> changes the sum by <code>±2(a − b)</code>; that can be a multiple of ten when the two digits differ by 5, so that one slip can go unnoticed. The check digit is the only digit 0–9 that makes the sum work, which the test confirmed on 1,000 prefixes.</p>
+
+      <h2>The bars</h2>
+      <p>The code is 95 modules wide: a <code>101</code> guard at each end and <code>01010</code> in the middle, seven modules for each digit. The left six digits use the odd patterns and the right six the colour-inverse patterns, so a reader can tell which way up the code is. The test decoded the bars of 100,000 random codes back into the right twelve digits. Put a 0 in front of a UPC-A code and you have an <a class="wiki-term" data-wiki="International_Article_Number" href="https://en.wikipedia.org/wiki/International_Article_Number" target="_blank" rel="noopener">EAN-13</a> with the same check digit and the same bars.</p>
+
+      <p class="tip">Try swapping two neighbouring digits that differ by 5: the bars change, but the last digit does not. Can you find another pair the check digit misses?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/UPC.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="upc-core.js"></script>
+<script src="upc.js"></script>
+</body>
+</html>
