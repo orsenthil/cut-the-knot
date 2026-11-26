@@ -2118,5 +2118,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "right-replacement",
+      title: "Right Replacement",
+      blurb: "Replace each number by how many numbers to its right match a rule, then do it again. Will the row settle down, fall to zero, or keep looping?",
+      tags: ["sequences", "logic", "invariants"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Right Replacement &mdash; coolmaths</title>
+<meta name="description" content="Replace each number by how many numbers to its right match a rule, then do it again. Will the row settle down, fall to zero, or keep looping?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/right-replacement/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Right Replacement">
+<meta property="og:description" content="Replace each number by how many numbers to its right match a rule, then do it again. Will the row settle down, fall to zero, or keep looping?">
+<meta property="og:url" content="https://coolmaths.ai/right-replacement/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 40rem;
+    padding: 0.9rem 1rem;
+  }
+  .scroll { overflow-x: auto; }
+  .calc-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.8rem;
+    min-width: max-content;
+    padding: 0.15rem 0;
+  }
+  .calc-label {
+    flex: 0 0 5rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+    text-align: right;
+  }
+  .num {
+    min-width: 3rem;
+    min-height: 2.75rem;
+    padding: 0.1rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--card);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 1.05rem;
+    cursor: pointer;
+  }
+  .num:hover { background: var(--accent-soft); border-color: var(--accent); }
+  .values { display: flex; gap: 0.25rem; }
+  .cells {
+    min-height: 1.8rem;
+    padding: 0.15rem 0.25rem;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    white-space: pre;
+  }
+  .last-row .cells { color: var(--accent); font-weight: 700; }
+  .panel-title { margin: 0 0 0.4rem; color: var(--muted); font-size: 0.85rem; }
+  .divider { margin: 0.9rem 0 0.7rem; border: 0; border-top: 1px solid var(--border); }
+  .hint { margin: 0.6rem 0 0; color: var(--muted); font-size: 0.85rem; }
+  .controls .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    gap: 0.75rem;
+  }
+  .types {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 100%;
+    gap: 0.35rem;
+  }
+  .types label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-height: 2.75rem;
+    padding: 0 0.4rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    font-family: var(--mono);
+  }
+  .types label:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+  .spinner {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    gap: 0.35rem;
+  }
+  .controls .spinner label { white-space: normal; color: var(--muted); font-size: 0.9rem; }
+  .step {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0.25rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  .step:hover { background: var(--accent-soft); border-color: var(--accent); }
+  .spinner input {
+    width: 3.75rem;
+    min-height: 2.75rem;
+    padding: 0.25rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--card);
+    color: var(--text);
+    font: inherit;
+    text-align: center;
+  }
+  button:focus-visible, input:focus-visible, .num:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="right-replacement" data-kind="demo">
+<main id="main">
+  <h1>Right Replacement</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#logic">Logic</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Count how many numbers to the right of each number match a rule, write those counts as a new row, and keep going. There is nothing to win &mdash; watch what the rows do.<br>
+    <strong>How to play:</strong> Click a number's left or right half to change it, pick a rule, then press Compute. Change the length or press Reset to try a fresh row.
+  </div>
+
+  <div id="stage" class="stage">
+    <p class="panel-title">Starting row</p>
+    <div class="scroll"><div id="values" class="calc-row"><div class="values" role="group" aria-label="The starting numbers"></div></div></div>
+    <hr class="divider">
+    <p class="panel-title">One row for each replacement</p>
+    <div id="rows" class="scroll"></div>
+    <p class="hint">Tap the left half of a number to make it smaller, the right half to make it bigger. Arrow keys work too; a long row slides sideways.</p>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <div class="types" role="radiogroup" aria-label="Which numbers to count">
+        <label><input id="type-LT" type="radio" name="type" value="LT"> LT</label>
+        <label><input id="type-LE" type="radio" name="type" value="LE"> LE</label>
+        <label><input id="type-GT" type="radio" name="type" value="GT"> GT</label>
+        <label><input id="type-GE" type="radio" name="type" value="GE"> GE</label>
+      </div>
+      <div class="spinner">
+        <button id="lengthDown" type="button" class="step" aria-label="Use one fewer number">&minus;</button>
+        <label for="lengthInput">Numbers</label>
+        <input id="lengthInput" type="number" min="2" max="40" step="1" inputmode="numeric">
+        <button id="lengthUp" type="button" class="step" aria-label="Use one more number">+</button>
+      </div>
+    </div>
+    <div class="control-row">
+      <button id="computeBtn" type="button" class="primary">Compute</button>
+      <button id="resetBtn" type="button">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Write down a row of numbers. Under each number, write how many numbers to its right match a rule. Do it again to the new row, and again. Four simple rules give four very different endings.</p>
+
+      <h2>One pass is a count</h2>
+      <p>The rule LT asks for numbers strictly smaller than the one you are standing on; LE also counts equal ones; GT counts strictly larger ones; GE also counts equal ones. The last number has nothing to its right, so it always becomes zero. The rule never looks at the numbers on the left, which is why the tail of a row settles down first.</p>
+
+      <h2>Smaller or equal: a staircase</h2>
+      <p>With LE, every row of <code>n</code> numbers ends at <code>n &minus; 1, n &minus; 2, &hellip;, 2, 1, 0</code>, and it does so after at most <code>n</code> rounds. That row is a <a class="wiki-term" data-wiki="Fixed_point_(mathematics)" href="https://en.wikipedia.org/wiki/Fixed_point_(mathematics)" target="_blank" rel="noopener">fixed point</a>: applying the rule again leaves it exactly where it is. Any row already in that staircase stays there forever.</p>
+
+      <h2>Smaller, or greater: two easy endings</h2>
+      <p>With LT the rows also stop, but at a fixed row that depends on where you began. With GT they end at all zeroes: each pass can only lower the numbers, and once every entry is zero nothing can change. The logic test checks both endings for every row of up to four places whose entries are 0, 1, 2 or 3, and for seeded random rows of twelve places.</p>
+
+      <h2>Greater or equal: a two-step loop</h2>
+      <p>GE behaves differently. A row of zeros becomes <code>n &minus; 1, n &minus; 2, &hellip;, 0</code>, and that row becomes zeros again, so the two keep swapping. More generally the rows usually fall into a <a class="wiki-term" data-wiki="Cycle_(mathematics)" href="https://en.wikipedia.org/wiki/Cycle_(mathematics)" target="_blank" rel="noopener">two-row cycle</a>. The letter from which the applet takes the problem says this was observed in every example tried, not proved; the applet stops after 100 rows if a cycle has not closed. This port follows that rule. Try LT, then switch to GE without changing the row and watch the last two rows alternate.</p>
+
+      <h2>What was checked</h2>
+      <p>The test compares every replacement with a second transcription of the applet's four counting methods, and the whole list of rows with a second transcription of its drawing loop and its stopping test, over every short row of small numbers. It confirms the staircase bound, the all-zero ending and the two-step loop on those rows. One detail about reading the display: the final row is shown twice, because the applet draws one more row to notice that nothing changed; the page's "at most n rounds" counts rounds, not the repeated row on screen.</p>
+
+      <p class="tip">Set the length to 4, make the row <code>1 2 3 4</code>, and compare LE with GE. Which rule reaches the staircase, and which one keeps two rows alive?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/RightReplacement.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="right-replacement-core.js"></script>
+<script src="right-replacement.js"></script>
+</body>
+</html>
