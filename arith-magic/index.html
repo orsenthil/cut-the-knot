@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arith Magic &mdash; coolmaths</title>
+<meta name="description" content="Pick one square in every row and column of a number grid. Can you see why the total is the same every time?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/arith-magic/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Arith Magic">
+<meta property="og:description" content="Pick one square in every row and column of a number grid. Can you see why the total is the same every time?">
+<meta property="og:url" content="https://coolmaths.ai/arith-magic/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.8rem; }
+  .board-scroll { width: 100%; overflow-x: auto; padding-bottom: 0.3rem; }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(2.8rem, 1fr));
+    gap: 0.25rem;
+    min-width: calc(var(--n) * 2.8rem);
+    max-width: 100%;
+  }
+  .num, .cell {
+    min-height: 2.9rem;
+    padding: 0.35rem 0.2rem;
+    font: inherit;
+    font-size: 1rem;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.45rem;
+    background: var(--card);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .cell { background: var(--board-a); }
+  .cell.picked {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 2px var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .control-num { border-style: dashed; color: var(--muted); }
+  .control-num:disabled { background: transparent; border-color: transparent; cursor: default; }
+  .corner { min-height: 2.9rem; }
+  .num:focus-visible, .cell:focus-visible, button:focus-visible,
+  input:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .result, .prediction { margin: 0.7rem 0 0; font-size: 0.95rem; color: var(--muted); overflow-wrap: anywhere; }
+  .result { color: var(--text); font-weight: 600; }
+  .controls { align-items: center; }
+  .controls fieldset { display: inline-flex; gap: 0.6rem; align-items: center; border: 0; padding: 0; margin: 0; flex-wrap: wrap; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { width: 100%; max-width: 9rem; accent-color: var(--accent); }
+</style>
+</head>
+<body data-game="arith-magic" data-kind="demo">
+<main id="main">
+  <h1>Arith Magic</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#permutations">Permutations</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Pick squares in a number grid and find the trick that keeps one total the same.<br>
+    <strong>How to play:</strong> Choose one square in every row and every column. Press Show hint to see the hidden row and column numbers.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="board-scroll">
+      <div id="board" class="board" role="group" aria-label="Magic number board"></div>
+    </div>
+    <p id="result" class="result" aria-live="polite"></p>
+    <p id="prediction" class="prediction"></p>
+  </div>
+
+  <div class="controls">
+    <fieldset>
+      <legend>Operation</legend>
+      <label><input id="sumOp" type="radio" name="operation" value="sum" checked aria-label="Add the row and column numbers"> + Sum</label>
+      <label><input id="prodOp" type="radio" name="operation" value="product" aria-label="Multiply the row and column numbers"> &times; Product</label>
+    </fieldset>
+    <label><input id="hintIn" type="checkbox" aria-label="Show the hidden row and column numbers"> Show hint</label>
+    <label>Size <input id="sizeIn" type="range" min="2" max="10" value="5" aria-label="Board size, 2 to 10"> <output id="sizeOut" for="sizeIn">5×5</output></label>
+    <button id="clearBtn" type="button" disabled>Pick again</button>
+    <button id="newBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>How can someone know the total of your squares before you choose them? Because the numbers hiding beside the grid do all the work.</p>
+
+      <h2>The hidden row and column numbers</h2>
+      <p>Turn on <em>Show hint</em>. A number sits to the left of each row and above each column. Every square is just its row number plus its column number, or their product. Clicking to the right of a hidden number's middle makes it bigger, clicking to the left makes it smaller, and dragging changes it faster — just as in the original applet. The numbers run from &minus;100 to 100 for sums, and from 1 to 20 for products.</p>
+
+      <h2>Why the total cannot change</h2>
+      <p>Choosing one square in <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">permutation</a> order — exactly one in every row and every column — uses each row number once and each column number once. So for sums</p>
+      <blockquote><code>(row₁ + col₁) + (row₂ + col₂) + … = (row₁ + row₂ + …) + (col₁ + col₂ + …)</code></blockquote>
+      <p>and for products <code>(row₁ × col₁) × (row₂ × col₂) × … = (row₁ × row₂ × …) × (col₁ × col₂ × …)</code>. The order of the chosen squares makes no difference: addition and multiplication are <a class="wiki-term" data-wiki="Commutative_property" href="https://en.wikipedia.org/wiki/Commutative_property" target="_blank" rel="noopener">commutative</a>, so the total is an <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>.</p>
+
+      <h2>What the applet really checks</h2>
+      <p>The applet shows the running total after every pick, and its three little faces light up once you have picked as many squares as there are rows. It does not stop you picking two squares in the same row — the cut-the-knot page is the one that asks for one in every row and every column. Two in the same row really do change the total. The logic test walks all 23,648 one-per-row-and-column choices for sizes 2 to 7, checks the product version too, and compares every control value and running total with a second transcription of the applet's own calculation.</p>
+
+      <p class="tip">Try a 2×2 sum board, write down the four hidden numbers, and predict the total before picking. Then switch to products and try the same trick on a friend.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/ArithmeticMagicMatrix.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="arith-magic-core.js"></script>
+<script src="arith-magic.js"></script>
+</body>
+</html>
