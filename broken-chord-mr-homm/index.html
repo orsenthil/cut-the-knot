@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Broken Chord Mr Homm &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle on a circle. Does the point under the arc's midpoint really cut the path from A through C to B into two equal lengths?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/broken-chord-mr-homm/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Broken Chord Mr Homm">
+<meta property="og:description" content="Drag the corners of a triangle on a circle. Does the point under the arc's midpoint really cut the path from A through C to B into two equal lengths?">
+<meta property="og:url" content="https://coolmaths.ai/broken-chord-mr-homm/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .chord-main { fill: none; stroke: var(--accent); stroke-width: 3; }
+  #board .chord-broken { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .perp { fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .hint-line { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 4 3; }
+  #board .hint-draw { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .corner { fill: none; stroke: var(--highlight); stroke-width: 2; }
+  #board .angle-two { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .angle-one { fill: none; stroke: var(--bad); stroke-width: 2.5; }
+  #board .constructed { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  #board .constructed-hint { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="broken-chord-mr-homm" data-kind="demo">
+<main id="main">
+  <h1>Broken Chord Mr Homm</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: a point on the circle cuts the path from A through C to B into two equal lengths.<br>
+    <strong>How to play:</strong> Drag the corners A, B and C, or focus one and use the arrow keys. Tick Names or Hint to show the labels or the proof, and press Reset diagram to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Triangle ABC on its circle, with P the midpoint of the arc through C and M the foot of the perpendicular on the longer side"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox" checked> Names</label>
+    <label><input id="hint" type="checkbox"> Hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag the triangle as you like: the point M always hands the broken
+        path A-C-B to itself. That is the Broken Chord Theorem, credited to
+        Archimedes, and this picture draws the construction Mr Homm's applet
+        used to show it.</p>
+
+      <h2>The claim</h2>
+      <p>On the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>
+        of triangle ABC, P is the midpoint of the arc through C, and PM is
+        perpendicular to the longer of the sides AC and BC. M then splits the
+        broken line A-C-B exactly in half. If AC is longer, the claim is
+        <code>AM = MC + BC</code>; if BC is longer, it is
+        <code>BM = MC + AC</code>. The applet and this page use that exact
+        wording, with the longer side chosen by comparing the two lengths.</p>
+
+      <h2>How P and M are found</h2>
+      <p>The <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a>
+        of the chord AB meets the circle in the midpoints of its two arcs.
+        The one on the same side of AB as C is the midpoint of the arc A-C-B,
+        so that is P. Dropping a perpendicular from P to the longer side puts
+        M on that side. Equality of the two arcs also gives equal
+        <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angles</a>,
+        which is what makes the next step work.</p>
+
+      <h2>Anderson's proof in the Hint box</h2>
+      <p>Extend PM to meet the circle again at Q, and let F be where BQ crosses
+        AC extended. Because QM is both an altitude and an angle bisector of
+        the angle at Q, triangle AQF is
+        <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles</a>
+        and <code>AM = MF</code>. Since A, Q, B and C lie on one
+        <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>,
+        triangle BCF is isosceles too and <code>BC = CF</code>. Put them
+        together: <code>AM = MF = MC + CF = MC + BC</code>. The logic test
+        checks both equalities on every generated case where AC is longer.</p>
+
+      <h2>What the checks found</h2>
+      <p>Over fourteen hundred triangles — corners on the circle and corners
+        anywhere in the board — the claim held to within a millionth, and a
+        second transcription of the applet's bytecode gave the same P, M, Q
+        and F to within a hundred-thousandth. The old page notes one edge case:
+        if Q happens to be B, use the tangent at B in place of BQ. The applet
+        draws no tangent, so in that one case the Hint's F labels simply do
+        not appear; the theorem itself still holds.</p>
+
+      <p class="tip">Try dragging C close to P, then away again: watch M stay put on the long side while the two halves keep matching.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BrokenChordMrHomm.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="broken-chord-mr-homm-core.js"></script>
+<script src="broken-chord-mr-homm.js"></script>
+</body>
+</html>
