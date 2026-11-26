@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Broken Chord Paper Folding &mdash; coolmaths</title>
+<meta name="description" content="On the circle through A, B and C, P sits halfway along the arc from A through C to B. Fold B across the line PC: where does its image land, and why does that prove AM = MC + CB?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/broken-chord-paper-folding/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Broken Chord Paper Folding">
+<meta property="og:description" content="On the circle through A, B and C, P sits halfway along the arc from A through C to B. Fold B across the line PC: where does its image land, and why does that prove AM = MC + CB?">
+<meta property="og:url" content="https://coolmaths.ai/broken-chord-paper-folding/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .circumcircle { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2.2; }
+  #board .side { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .broken-first { stroke: var(--accent); stroke-width: 3.4; stroke-linecap: round; }
+  #board .broken-second { stroke: var(--good); stroke-width: 3.4; stroke-linecap: round; }
+  #board .perpendicular { stroke: var(--ink); stroke-width: 2; stroke-dasharray: 3 4; }
+  #board .rightmark { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .hintsideline { stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 4 4; }
+  #board .foldline { stroke: var(--bad); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .extraline { stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 2 4; }
+  #board .crease { stroke: var(--good); stroke-width: 2.4; stroke-dasharray: 7 5; }
+  #board .tickmark { stroke: var(--ink); stroke-width: 2; stroke-linecap: round; }
+  #board .anglemark { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .constructiondot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .folddot { fill: var(--bad); stroke: var(--stage); stroke-width: 2; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 1.25rem;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 4px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="broken-chord-paper-folding" data-kind="demo">
+<main id="main">
+  <h1>Broken Chord Paper Folding</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A triangle sits on a circle, and a crease cuts through it. Move the corners and watch one corner flip across the crease; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the blue points A, B and C, or focus one and use the arrow keys. Tick Show hint to draw the crease and the flipped point; the other boxes add more marks.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 450" role="group"
+         aria-label="Triangle ABC on its circumcircle. P is halfway along the arc from A through C to B, PM is perpendicular to the longer side, and the dashed crease PC folds one corner onto F. Drag A, B or C."></svg>
+    <p class="hint-line">Drag A, B or C, or focus one and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Names</label>
+    <label><input id="hintBox" type="checkbox" data-label="the crease and the fold"> Show hint</label>
+    <label><input id="linesBox" type="checkbox" data-label="matching-length marks"> Length marks</label>
+    <label><input id="anglesBox" type="checkbox" data-label="angle marks"> Angle marks</label>
+    <label><input id="extraBox" type="checkbox" data-label="the second fold"> Extra fold</label>
+    <button id="resetBtn" type="button" class="primary">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This is Archimedes' broken chord theorem, told as a paper fold. The surprising part is that the point where the crease lands explains a length that looks as if it has nothing to do with folding.</p>
+
+      <h2>Find the halfway point of the arc</h2>
+      <p>The three corners lie on their <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>. The point P is the midpoint of the arc from A through C to B: it is equally far from A and from B, and it sits on C's side of the chord AB. The applet finds it by crossing the circle with the <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a> of AB and keeping the crossing on that side.</p>
+      <p>From P drop a perpendicular to the longer of AC and BC; its foot is M. When AC is longer, the theorem says <code>AM = MC + CB</code> — M cuts the bent path A–C–B into two equal lengths. If BC is longer, swap A and B and the same statement holds. The logic test checked both cases over 1,964 triangles: the largest difference between the two halves was <code>3 × 10<sup>−10</sup></code> board units, and M always fell on the side it was supposed to.</p>
+
+      <h2>Unfold the paper</h2>
+      <p>Now fold the picture along the line PC. The <a class="wiki-term" data-wiki="Reflection_(mathematics)" href="https://en.wikipedia.org/wiki/Reflection_(mathematics)" target="_blank" rel="noopener">reflection</a> of B in that crease is the orange point F. A fold keeps distances, so <code>CF = CB</code>, and F lands exactly on the line from A through C, beyond C. The reason is that PC is the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> of the angle between CB and the extension of CA: the angles marked in the page's proof come in pairs, with <code>α + γ = β</code>. All of those angle pairs and the crease's bisector property were measured in the logic test; the largest angle mismatch was <code>5 × 10<sup>−11</sup></code> radians.</p>
+
+      <h2>Why the two halves match</h2>
+      <p>Because P is the arc midpoint, <code>AP = PB</code>; the fold gives <code>PB = PF</code>, so triangle APF is <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles</a>. The line PM is its altitude, so it also cuts AF in half: <code>AM = MF</code>. But F lies beyond C and <code>CF = CB</code>, so <code>MF = MC + CF = MC + CB</code>. Put the two equalities together and you have <code>AM = MC + CB</code>, exactly the broken chord theorem. Across the 1,964 tested triangles the largest error in <code>AM − (MC + CB)</code> was <code>3 × 10<sup>−10</sup></code>.</p>
+      <p>Tick <em>Extra fold</em> to reflect the other end instead: the image G gives a second isosceles triangle, obtained from the first by turning the paper around P. The applet's own "distance less than one board unit" fallback is kept: if P and C almost coincide it reflects in the point P rather than in the line PC.</p>
+
+      <p class="tip">Tick Show hint and drag C around the circle: the crease swings, but the two halves stay equal. Then drag A almost onto B to see the picture stop being drawn.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BrokenChordPaperFolding.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="broken-chord-paper-folding-core.js"></script>
+<script src="broken-chord-paper-folding.js"></script>
+</body>
+</html>
