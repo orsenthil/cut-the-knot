@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carpets In Square 2 &mdash; coolmaths</title>
+<meta name="description" content="Two rectangles overlap inside a bigger one. Drag their corners: why do the red pieces and the blue piece always have the same total area, and what do the two rectangles cover together?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/carpets-in-square-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Carpets In Square 2">
+<meta property="og:description" content="Two rectangles overlap inside a bigger one. Drag their corners: why do the red pieces and the blue piece always have the same total area, and what do the two rectangles cover together?">
+<meta property="og:url" content="https://coolmaths.ai/carpets-in-square-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .region { opacity: 0.42; stroke: none; }
+  #board .red { fill: var(--bad); }
+  #board .blue { fill: var(--accent); }
+  #board .square { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; }
+  #board .inner-edge { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+  #board .guide { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; }
+  #board .end-dot { fill: var(--ink); }
+  #board .cross-dot { fill: var(--accent); }
+  #board .center-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .slide-handle { fill: var(--good); }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-weight: 600;
+    font-size: 13px;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="carpets-in-square-2" data-kind="demo">
+<main id="main">
+  <h1>Carpets In Square 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two rectangles overlap inside a bigger one; the red pieces always have the same total size as the blue piece, and there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag A along the bottom edge or F along the right edge, or focus either point and use the arrow keys. Tick “hint” to see the proof lines, tick “names” for the letters, and press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 450 400" role="group"
+         aria-label="Two overlapping rectangles inside ABCD. Drag A along the bottom side or F along the right side to change the picture; red pieces and a blue piece show the equal areas."></svg>
+    <p class="hint-line">Drag A or F, or focus one and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Show names</label>
+    <label><input id="hintBox" type="checkbox" data-label="hint"> Hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the picture to its starting position">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two <a class="wiki-term" data-wiki="Rectangle" href="https://en.wikipedia.org/wiki/Rectangle" target="_blank" rel="noopener">rectangles</a> lie inside a third one and overlap. No matter how you move their corners, the <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">areas</a> balance in two surprising ways. Here is why.</p>
+
+      <h2>One centre and one circle</h2>
+      <p>The diagonals of a rectangle — even of a <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a> — meet at their common midpoint. EFGH and IFJH share the diagonal FH, so their diagonals are equal and their midpoints are the same point O. That point is also the middle of ABCD: it is halfway along FH (the horizontal middle) and halfway along EG (the vertical middle). So E, F, G, I and J all sit the same distance from O, on one <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>.</p>
+      <blockquote><code>O = (A + C)/2 = (F + H)/2 = (E + G)/2 = (I + J)/2</code></blockquote>
+      <p>The applet picks F on BC at 30% of the way from B to C, then draws H opposite F and cuts the circle by the bottom side AB to get E and I. The logic test transcribes those steps from the applet's own bytecode and checks all ten points for nearly two thousand configurations.</p>
+
+      <h2>Red against blue</h2>
+      <p>With “hint” unticked, the blue quadrilateral HKFL is the part where the two carpets overlap. The six red triangles are the parts of ABCD that neither carpet covers. The page's first claim is</p>
+      <blockquote><code>total red area = area of HKFL</code></blockquote>
+      <p>Tick “hint” and the picture changes to a different pair: the blue quadrilateral IFGH has half the area of ABCD, and the four red triangles together have the other half. The logic test checked both equalities on a grid of A and F drags and on 500 random boards: they held every time the picture can be drawn.</p>
+
+      <h2>Adding the two carpets</h2>
+      <p>The page's second claim is about the rectangles themselves:</p>
+      <blockquote><code>area(EFGH) + area(IFJH) = area(ABCD)</code><br><code>area(IFGH) = area(EFJH) = area(ABCD)/2</code></blockquote>
+      <p>Because the two rectangles share the diagonal FH, each is split by that diagonal into two equal halves; the halves fit together to make exactly the big rectangle. The logic test confirms these formulas across all the same configurations, including when A is dragged so the outer rectangle becomes narrower.</p>
+
+      <p class="tip">Try moving F to the middle of BC: the inner rectangles become mirror images and the blue shape in hint mode fills exactly half of ABCD. Untick “hint” to watch K and L take over.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CarpetsInSquare2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="carpets-in-square-2-core.js"></script>
+<script src="carpets-in-square-2.js"></script>
+</body>
+</html>
