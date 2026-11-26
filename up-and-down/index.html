@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Up And Down &mdash; coolmaths</title>
+<meta name="description" content="Six numbers are shown from a row of ten; the others are hidden. Can you work out which ones are missing, and which way the hidden run goes?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/up-and-down/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Up And Down">
+<meta property="og:description" content="Six numbers are shown from a row of ten; the others are hidden. Can you work out which ones are missing, and which way the hidden run goes?">
+<meta property="og:url" content="https://coolmaths.ai/up-and-down/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* Red and blue are the puzzle's own colours, as in the original applet. */
+  :root { --up: #c0382c; --down: #2f6fbf; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --up: #ff8073; --down: #8fbcff; }
+  }
+  :root[data-theme="dark"] { --up: #ff8073; --down: #8fbcff; }
+
+  #stage { width: 100%; max-width: 40rem; padding: 0.7rem; overflow-x: auto; }
+  .board { width: 100%; }
+  .cards { display: flex; gap: 0.35rem; width: max-content; min-width: 100%; justify-content: center; }
+  .card {
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    min-width: 2.3rem; min-height: 3.1rem; padding: 0 0.2rem;
+    font-size: 1.05rem; font-weight: 650;
+    border: 1px solid var(--border-strong); border-radius: 0.6rem;
+    background: var(--card); color: var(--text);
+  }
+  .card.blank {
+    background: var(--surface); border-style: dashed; color: var(--muted); cursor: pointer;
+  }
+  .card.run.up { color: var(--up); border-color: var(--up); border-width: 2px; }
+  .card.run.down { color: var(--down); border-color: var(--down); border-width: 2px; }
+  .card.revealed { box-shadow: inset 0 0 0 2px var(--accent); }
+  .legend { margin: 0.7rem 0 0; text-align: center; font-size: 0.9rem; color: var(--muted); }
+  .controls label { white-space: normal; }
+</style>
+</head>
+<body data-game="up-and-down" data-kind="demo">
+<main id="main">
+  <h1>Up And Down</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#permutations">Permutations</a><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Ten numbers stand in a row with some of them hidden. The hidden numbers always go steadily up or steadily down.<br>
+    <strong>How to play:</strong> Press a blank card to peek at its number, or choose "Hidden part" to see the whole hidden run. Tick Training for five numbers, and press Reset for a new row.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="board" class="board" role="group" aria-label="A row of cards from the permutation"></div>
+    <p class="legend">The colour tells you which way the hidden run goes: red rises, blue falls.</p>
+  </div>
+
+  <div class="controls" role="group" aria-label="Which cards to show">
+    <button id="visibleBtn" type="button" aria-pressed="true">Visible part</button>
+    <button id="hiddenBtn" type="button" aria-pressed="false">Hidden part</button>
+    <button id="allBtn" type="button" aria-pressed="false">Whole permutation</button>
+  </div>
+
+  <div class="controls">
+    <label for="trainingIn"><input type="checkbox" id="trainingIn"> Training (5 numbers)</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>At first you see only part of a <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">permutation</a> of 1 to 10. The missing cards are not chosen at random: they form a run that never turns around. The colour of the cards you can see is a clue to which way that run goes.</p>
+
+      <h2>A run that never turns</h2>
+      <p>Read left to right, the hidden numbers are either all bigger than the one before (the applet calls them red) or all smaller (blue). Because at least four of the ten are hidden, at most six are shown; with five training numbers, at least three are hidden and at most two are shown. The logic test found that the applet sometimes hides even more than four (even nine!) — so "at most six shown" is always true, but "exactly six" would not be.</p>
+
+      <h2>Why a run must be there</h2>
+      <p>Write beside each number two counts: the length of the longest rising run ending there, and the longest falling run ending there. Two positions cannot have the same pair of counts: going right, a bigger number raises the first count and a smaller one raises the second. If neither run ever reached 4, both counts would be only 1, 2 or 3, giving just <code>3 &times; 3 = 9</code> different pairs for ten positions. Ten objects in nine boxes force a repeat: that is the <a class="wiki-term" data-wiki="Pigeonhole_principle" href="https://en.wikipedia.org/wiki/Pigeonhole_principle" target="_blank" rel="noopener">pigeonhole principle</a>, called Dirichlet's box principle on the original page.</p>
+
+      <h2>How far the idea goes</h2>
+      <p>The <a class="wiki-term" data-wiki="Erd%C5%91s%E2%80%93Szekeres_theorem" href="https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93Szekeres_theorem" target="_blank" rel="noopener">Erdős–Szekeres theorem</a> says that <code>(r-1)(s-1)+1</code> distinct numbers force a rising run of <code>r</code> or a falling run of <code>s</code>. For ten numbers take <code>r = s = 4</code>: <code>3 &times; 3 + 1 = 10</code>. For five take <code>r = s = 3</code>: <code>2 &times; 2 + 1 = 5</code>. Both bounds are sharp: the test checked all <code>10! = 3,628,800</code> permutations of ten numbers and all 120 of five, and found a nine-number row (3, 2, 1, 6, 5, 4, 9, 8, 7) with no run of 4, and a four-number row with no run of 3.</p>
+
+      <h2>Which run gets hidden</h2>
+      <p>The applet tosses a coin to decide whether to look for a rising run or a falling run first. It scans left to right, tries the next bigger (or smaller) number it can find, and keeps the first run that reaches the needed length — then extends that run as far as it can. That is a search for an <a class="wiki-term" data-wiki="Subsequence" href="https://en.wikipedia.org/wiki/Subsequence" target="_blank" rel="noopener">increasing subsequence</a> (or a falling one), but not always the longest possible one; extending it is why the hidden part can be longer than the minimum. The logic test compares this choice with a second, literal reading of the applet's bytecode for every five-card deal and a large sample of ten-card deals.</p>
+
+      <p class="tip">Try Training: with only five cards, can you name all three hidden numbers before pressing "Hidden part"? Then look for a ten-card row where only one number is left showing.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/UpAndDown.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="up-and-down-core.js"></script>
+<script src="up-and-down.js"></script>
+</body>
+</html>
