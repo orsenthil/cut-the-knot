@@ -2015,5 +2015,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "pick",
+      title: "Pick's Theorem",
+      blurb: "Draw a shape on a grid of dots and count the dots on its edge and inside it. Why does that give its area, whatever the shape?",
+      tags: ["area", "counting", "coordinates"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

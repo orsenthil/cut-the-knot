@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pick's Theorem &mdash; coolmaths</title>
+<meta name="description" content="Draw a shape on a grid of dots and count the dots on its edge and inside it. Why does that give its area, whatever the shape?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/pick/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Pick's Theorem">
+<meta property="og:description" content="Draw a shape on a grid of dots and count the dots on its edge and inside it. Why does that give its area, whatever the shape?">
+<meta property="og:url" content="https://coolmaths.ai/pick/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.4rem; }
+  #board { width: 100%; height: auto; display: block; touch-action: manipulation; }
+  #board:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  #board .node { fill: var(--border-strong); }
+  #board .node.edge { fill: var(--accent); }
+  #board .node.in { fill: var(--good); }
+  #board .poly { fill: var(--highlight); fill-opacity: 0.45; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .poly.bad { fill: none; stroke: var(--bad); }
+  #board .vertex { fill: var(--accent); stroke: var(--ink); stroke-width: 2; }
+  #board .cursor { fill: none; stroke: var(--ink); stroke-width: 2; stroke-dasharray: 4 3; }
+  .controls fieldset { border: 0; padding: 0; margin: 0; display: inline-flex; flex-wrap: wrap; gap: 0.8rem; }
+  .controls label { display: inline-flex; gap: 0.4rem; align-items: center; }
+  .readout { font-size: 1.05rem; margin: 0.5rem 0 0; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="pick" data-kind="demo">
+<main id="main">
+  <h1>Pick's Theorem</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#coordinates">Coordinates</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Draw a shape with corners on the dots of a grid, and count the dots on its edge and inside it. The numbers tell its area.<br>
+    <strong>How to play:</strong> Press dots to put the corners down one by one; the last one joins the first. Choose "Delete nodes" to take a corner away. Arrow keys and Enter work too.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 464 336" tabindex="0" role="application" aria-label="Grid of dots. Arrow keys move the cursor, Enter or Space puts down or takes away a corner."></svg>
+    <p id="readout" class="readout" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <fieldset><legend class="sr-only" style="position:absolute;left:-9999px">Mode</legend>
+      <label><input type="radio" name="mode" id="addMode" checked> Add nodes</label>
+      <label><input type="radio" name="mode" id="delMode"> Delete nodes</label>
+    </fieldset>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Draw a shape whose corners are dots of a square grid and whose sides do not cross. Let <code>B</code> be the number of dots on its edge and <code>I</code> the number inside. Then its area is a very simple sum.</p>
+
+      <h2>Pick's formula</h2>
+      <blockquote><code>Area = I + B/2 &minus; 1</code></blockquote>
+      <p>This is <a class="wiki-term" data-wiki="Pick%27s_theorem" href="https://en.wikipedia.org/wiki/Pick%27s_theorem" target="_blank" rel="noopener">Pick's theorem</a>, published by Georg Pick in 1899. A single unit square has <code>B = 4</code> and <code>I = 0</code>, so the area is <code>0 + 2 &minus; 1 = 1</code>. A triangle with <code>B = 3</code> and <code>I = 0</code> has area <code>1/2</code>, which is why some areas on this page end in &frac12;.</p>
+
+      <h2>Checked, not trusted</h2>
+      <p>The test counted the dots on the edge two ways (testing every dot, and adding up the greatest common divisors of the steps along each side) and the dots inside by testing each one, for tens of thousands of random shapes on this board. The area from the formula equalled the area from the <a class="wiki-term" data-wiki="Shoelace_formula" href="https://en.wikipedia.org/wiki/Shoelace_formula" target="_blank" rel="noopener">shoelace formula</a> every time. Each side that goes <code>a</code> steps across and <code>b</code> up holds <code>gcd(a, b)</code> of the edge dots, which is why steep sides with a common factor add extra dots.</p>
+
+      <h2>Why it is true</h2>
+      <p>The proof cuts the shape into small triangles with no dot inside or on their sides except their corners, each of area <code>1/2</code>, and counts them with <a class="wiki-term" data-wiki="Euler_characteristic" href="https://en.wikipedia.org/wiki/Euler_characteristic" target="_blank" rel="noopener">Euler's formula</a>: it gives <code>2I + B &minus; 2</code> triangles. Pick's formula is in fact equivalent to Euler's formula.</p>
+
+      <p class="tip">Make a shape with no dots inside and a long thin side, such as one with corners at (1,1), (7,1) and (1,2). What does B tell you about the area?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/ctk/Pick.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="pick-core.js"></script>
+<script src="pick.js"></script>
+</body>
+</html>
