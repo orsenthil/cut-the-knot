@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Adams Circle &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and watch six points on its sides. Will they always land on the same circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/adams-circle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Adams Circle">
+<meta property="og:description" content="Drag the corners of a triangle and watch six points on its sides. Will they always land on the same circle?">
+<meta property="og:url" content="https://coolmaths.ai/adams-circle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  .tri-fill { fill: var(--accent-soft); stroke: var(--ink); stroke-width: 2; }
+  .contact-tri { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+  .incircle { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 5 4; }
+  .adams-circle { fill: none; stroke: var(--highlight); stroke-width: 4; }
+  .parallel-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  .hint-line { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 3 3; }
+  .contact-dot { fill: var(--accent); }
+  .g-dot { fill: var(--good); }
+  .i-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  .six-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.2; }
+  .hint-dot { fill: var(--muted); }
+  .pt-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    pointer-events: none;
+  }
+  .pt-label.vertex-label { font-weight: 700; }
+  .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2.5;
+    cursor: grab;
+  }
+  .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem 1rem;
+  }
+  .control-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body data-game="adams-circle" data-kind="demo">
+<main id="main">
+  <h1>Adams Circle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the corners of a triangle and watch six dots on its sides.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus one and press the arrow keys. Tick the boxes to show or hide the guides.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 260" role="group"
+         aria-label="Triangle ABC with its incircle, the six points P Q R S T U and a circle through them"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label><input id="namesCheck" type="checkbox"> Show names</label>
+      <label><input id="incircleCheck" type="checkbox"> incircle</label>
+      <label><input id="gergonneLinesCheck" type="checkbox"> Gergonne lines</label>
+      <label><input id="gergonneTriangleCheck" type="checkbox"> Gergonne triangle</label>
+      <label><input id="adamsCheck" type="checkbox"> Adams circle</label>
+      <label><input id="hintCheck" type="checkbox"> hint</label>
+      <button id="resetBtn" type="button" class="primary" aria-label="Make a new random triangle">New triangle</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The six dots sit on the sides of any triangle you draw. Move a corner as far as you like and they still lie on one circle &mdash; and the centre of that circle never moves away from the middle of the <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a>. That was C. Adams' discovery in 1843.</p>
+
+      <h2>Building the six points</h2>
+      <p>The incircle touches the three sides at <code>D</code> (on <code>BC</code>), <code>E</code> (on <code>CA</code>) and <code>F</code> (on <code>AB</code>). The lines <code>AD</code>, <code>BE</code> and <code>CF</code> meet at one point, the <a class="wiki-term" data-wiki="Gergonne_point" href="https://en.wikipedia.org/wiki/Gergonne_point" target="_blank" rel="noopener">Gergonne point</a> <code>G</code>. The triangle <code>DEF</code> is called the contact triangle. Now draw through <code>G</code> a line parallel to each side of <code>DEF</code>. Those three lines cut the sides of <code>ABC</code> in six places: <code>P</code> and <code>Q</code> on <code>BC</code>, <code>R</code> and <code>S</code> on <code>CA</code>, <code>T</code> and <code>U</code> on <code>AB</code>. Those are the six dots.</p>
+
+      <h2>Equal steps from the touch points</h2>
+      <p>Because <code>AE = AF</code> (two <a class="wiki-term" data-wiki="Tangent_lines_to_circles" href="https://en.wikipedia.org/wiki/Tangent_lines_to_circles" target="_blank" rel="noopener">tangents</a> from the same point), triangle <code>EAF</code> is isosceles. The line through <code>G</code> parallel to <code>EF</code> makes triangle <code>UR A</code> similar to it, so <code>UR</code> is isosceles too. Comparing equal lengths gives <code>ER = FU</code>, and the same argument on the other sides gives <code>DQ = FT</code> and <code>DP = ES</code>.</p>
+
+      <h2>Two midpoints finish the proof</h2>
+      <p>Turn on the hint. The line through <code>A</code> parallel to <code>BC</code> meets <code>DE</code> and <code>DF</code> at <code>X</code> and <code>Y</code>, and <code>A</code> is exactly halfway between them. It is also halfway between <code>M</code> and <code>N</code>, where those lines meet <code>PS</code> and <code>QT</code>. Taking the two halves away leaves <code>MX = NY</code>; since <code>MX = DP</code> and <code>NY = DQ</code>, we get <code>DP = DQ</code>. Together with the pairs above, all six of <code>DP, DQ, ER, ES, FT, FU</code> are equal. The touch points are the feet of the perpendiculars from the incenter <code>I</code>, so equal steps along the sides mean equal distances from <code>I</code>: all six dots lie on a circle centred at <code>I</code>.</p>
+      <p>The logic test confirms every one of these claims on hundreds of exact and random triangles: the largest difference between the six distances is under a billionth of a drawing unit. It also checks each constructed point against a second transcription of the applet's own method.</p>
+
+      <p class="tip">Turn off Adams circle and guess where its centre is. Then tick the incircle: the centre you guessed is the centre of both circles. Which pair of equal steps is easiest to see when two sides are nearly the same length?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AdamsCircle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="adams-circle-core.js"></script>
+<script src="adams-circle.js"></script>
+</body>
+</html>
