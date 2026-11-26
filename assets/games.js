@@ -2461,5 +2461,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "perm-from-det",
+      title: "Permanent from a Determinant",
+      blurb: "Put minus signs on letters to turn a determinant into a permanent. It works for 2 by 2 but never for 3 by 3. How big must a determinant be to hide a permanent? That is VP ≠ VNP.",
+      tags: ["vp-vnp", "parity", "permutations"],
+      level: 3,
+    },
   ],
 };

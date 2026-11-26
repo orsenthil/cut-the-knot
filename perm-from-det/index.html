@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Permanent from a Determinant &mdash; coolmaths</title>
+<meta name="description" content="Put minus signs on letters to turn a determinant into a permanent. It works for 2 by 2 but never for 3 by 3. How big must a determinant be to hide a permanent? That is VP ≠ VNP.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/perm-from-det/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Permanent from a Determinant">
+<meta property="og:description" content="Put minus signs on letters to turn a determinant into a permanent. It works for 2 by 2 but never for 3 by 3. How big must a determinant be to hide a permanent? That is VP ≠ VNP.">
+<meta property="og:url" content="https://coolmaths.ai/perm-from-det/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+#stage { width: 100%; max-width: 40rem; padding: 0.8rem; }
+  .part { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: flex-start; }
+  #grid { display: grid; gap: 0.35rem; }
+  #grid .cell { width: 3.4rem; height: 3.4rem; padding: 0; font-size: 1.4rem; font-weight: 800; font-style: italic; border-radius: 0.6rem; }
+  #grid .cell.neg { background: var(--bad); color: #ffffff; }
+  #terms { list-style: none; margin: 0; padding: 0; columns: 2; font-family: var(--mono); font-size: 1.1rem; font-weight: 700; }
+  #terms .plus { color: var(--good); }
+  #terms .minus { color: var(--bad); }
+  h2.sub { font-size: 1.05rem; margin: 1.2rem 0 0.4rem; text-align: center; }
+  .scroll { overflow-x: auto; }
+  #grenet { border-collapse: collapse; margin: 0 auto; font-family: var(--mono); font-size: 0.85rem; }
+  #grenet th { color: var(--muted); font-weight: 500; padding: 0.15rem 0.3rem; white-space: nowrap; }
+  #grenet td { border: 1px solid var(--border); min-width: 1.8rem; height: 1.8rem; text-align: center; }
+  #grenet td.var { background: var(--accent-soft); font-weight: 700; font-style: italic; }
+  #grenet td.one { color: var(--muted); }
+  #tryOut { text-align: center; margin: 0.6rem 0 0; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+</style>
+</head>
+<body data-game="perm-from-det" data-kind="game">
+<main id="main">
+  <h1>Permanent from a Determinant</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#vp-vnp">VP ≠ VNP</a><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#permutations">Permutations</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Put minus signs on some of the letters so that the determinant's products all come out positive, turning the determinant into the permanent.<br>
+    <strong>How to play:</strong> Click a letter to give it a minus sign, and click again to take it off. For 3 &times; 3, get as many of the six products positive as you can.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="part">
+      <div id="grid" role="group" aria-label="The square of letters; click one to give it a minus sign"></div>
+      <ul id="terms" aria-label="The products of the determinant with their signs"></ul>
+    </div>
+    <h2 class="sub">A bigger determinant that does it: Grenet&rsquo;s matrix</h2>
+    <div class="scroll"><table id="grenet" aria-label="Grenet's matrix: rows and columns are sets of columns"></table></div>
+    <p id="tryOut" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label><input type="radio" name="size" value="2"> 2 × 2</label>
+    <label><input type="radio" name="size" value="3" checked> 3 × 3</label>
+    <button id="resetBtn" type="button">Clear signs</button>
+    <button id="tryBtn" type="button" class="primary">Try other numbers</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The determinant is easy to compute and the permanent seems hard, yet they differ only in signs. So can a determinant be made to compute the permanent? This is the form in which Leslie Valiant posed the question behind VP &ne; VNP.</p>
+
+      <h2>Changing signs: only for 2 &times; 2</h2>
+      <p>For 2 &times; 2, putting a minus on <code>b</code> gives <code>det [[a, &minus;b], [c, d]] = ad + bc</code>, the permanent. George P&oacute;lya asked in 1913 whether signs can do this for larger squares. For 3 &times; 3 they cannot. Each letter appears in exactly two of the six products, so flipping its sign flips two products at once. The number of minus products starts odd (three) and stays odd. The logic test tried all 512 sign patterns: the best is 5 positive out of 6. G&aacute;bor Szeg&#337; proved that no signs work for any size from 3 up.</p>
+
+      <h2>A bigger square can do it</h2>
+      <p>Make a vertex for every set of columns. From a set of size <code>k</code>, draw an arrow to each set with one more column <code>j</code>, labelled with the entry in row <code>k + 1</code>, column <code>j</code>. Each route from the empty set to the full set picks one entry per row in different columns: one rook product, and every one appears once. Join the full set back to the empty set and put a 1 on the diagonal for every other set. The determinant of that matrix of size <code>2&#8319; &minus; 1</code> is exactly the permanent. This is Bruno Grenet's construction (2011). For 3 &times; 3 it is the 7 &times; 7 matrix above, and Alper, Bogart and Velasco showed that 7 is the smallest size possible. The test checked the construction for sizes 2, 3 and 4.</p>
+
+      <h2>The real question</h2>
+      <p>Call the smallest determinant that computes the <code>n &times; n</code> permanent its determinantal complexity, <code>dc(n)</code>. Grenet shows <code>dc(n) &le; 2&#8319; &minus; 1</code>. The best lower bound known is about <code>n&sup2;/2</code> (Mignon and Ressayre, 2004). Valiant conjectured that <code>dc(n)</code> grows faster than any power of <code>n</code>. That is the determinant-versus-permanent form of <a class="wiki-term" data-wiki="VP_(complexity)" href="https://en.wikipedia.org/wiki/VP_(complexity)" target="_blank" rel="noopener">VP &ne; VNP</a>: easy determinants cannot disguise the hard permanent without becoming enormous. Gil Fried's article reports a proof of VP &ne; VNP announced in 2026; this page explains the question and does not check that claim.</p>
+
+      <p class="tip">Try the 2 &times; 2 first. Then on 3 &times; 3, see which single letter, when flipped, turns the most products positive.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    An original game for coolmaths, after Gil Fried's article
+    <a href="https://www.friedgil.com/vpvnp" target="_blank" rel="noopener">What VP &ne; VNP Means (In 3 Minutes)</a>
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="perm-from-det-core.js"></script>
+<script src="perm-from-det.js"></script>
+</body>
+</html>

@@ -2059,6 +2059,11 @@ check("ryser-formula: three of seven terms shown, the last set {A, B}", read["ry
   const rf = at("ryser-formula", { n: 3, seed: 1, shown: 7 });
   check("ryser-formula: all seven terms add up to the permanent", rf.runningTotal === rf.permanent);
 }
+check("perm-from-det: 3 x 3 with a minus on b", read["perm-from-det"]?.size === 3 && read["perm-from-det"].minusOn.join() === "b" && read["perm-from-det"].best === 5);
+{
+  const pd = at("perm-from-det", { n: 2, signs: [1, -1, 1, 1] });
+  check("perm-from-det: 2 x 2 with -b: both products positive", pd.positive === 2 && pd.reachedBest === true);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

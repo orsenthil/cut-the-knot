@@ -898,6 +898,9 @@ const GAMES = {
   "ryser-formula": async (page) => {
     await page.click("#nextBtn"); await page.click("#nextBtn"); await page.click("#nextBtn");
   },
+  "perm-from-det": async (page) => {
+    await page.click('#grid [data-k="1"]');
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

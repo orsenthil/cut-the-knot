@@ -460,6 +460,7 @@ const CORE_GLOBALS = {
   "arithmetic-circuits/arithmetic-circuits-core.js": ["ArithmeticCircuitsCore"],
   "determinant-elimination/determinant-elimination-core.js": ["DeterminantEliminationCore"],
   "ryser-formula/ryser-formula-core.js": ["RyserFormulaCore"],
+  "perm-from-det/perm-from-det-core.js": ["PermFromDetCore"],
 };
 
 const games = [];
