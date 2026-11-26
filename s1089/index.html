@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The 1089 Trick &mdash; coolmaths</title>
+<meta name="description" content="Turn a three-digit number backwards, subtract, then add the answer to its own reversal. Why does 1089 keep turning up, and what changes in another base?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/s1089/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The 1089 Trick">
+<meta property="og:description" content="Turn a three-digit number backwards, subtract, then add the answer to its own reversal. Why does 1089 keep turning up, and what changes in another base?">
+<meta property="og:url" content="https://coolmaths.ai/s1089/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.9rem 1rem;
+  }
+  .calc { overflow-x: auto; }
+  .calc-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.8rem;
+    min-width: max-content;
+    padding: 0.2rem 0;
+  }
+  .calc-label {
+    flex: 0 0 7.5rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-align: right;
+  }
+  .number, .digits {
+    min-height: 2.75rem;
+    font-family: var(--mono);
+    font-size: 1.35rem;
+    letter-spacing: 0.08em;
+  }
+  .number { padding: 0.3rem 0.25rem; white-space: nowrap; }
+  .digits { display: flex; gap: 0.2rem; }
+  .digit {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--card);
+    color: var(--accent);
+    font: inherit;
+    cursor: pointer;
+  }
+  .digit:hover { background: var(--accent-soft); border-color: var(--accent); }
+  .answer-row .calc-label, .answer-row .number {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .hint { margin: 0.7rem 0 0; color: var(--muted); font-size: 0.85rem; }
+  .controls .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    gap: 0.75rem;
+  }
+  .spinner {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    gap: 0.35rem;
+  }
+  .controls .spinner label, .controls .check {
+    white-space: normal;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .step {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--surface-2);
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+  .step:hover { background: var(--accent-soft); border-color: var(--accent); }
+  .spinner input {
+    width: 3.75rem;
+    min-height: 2.75rem;
+    padding: 0.25rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.5rem;
+    background: var(--card);
+    color: var(--text);
+    font: inherit;
+    text-align: center;
+  }
+  .check { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.75rem; }
+  button:focus-visible, input:focus-visible, .digit:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="s1089" data-kind="demo">
+<main id="main">
+  <h1>The 1089 Trick</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#place-value">Place Value</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Turn a number backwards, take away the smaller from the bigger, then add the answer to its own backwards version. There is nothing to win &mdash; watch what always happens.<br>
+    <strong>How to play:</strong> Click the left or right half of a blue digit to lower or raise it. Change the base, the number of digits or the link between digits, then press New number for another try.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="calc">
+      <div class="calc-row start-row">
+        <span class="calc-label">Start</span>
+        <div id="digits" class="digits" role="group" aria-label="The number you can change"></div>
+      </div>
+      <div class="calc-row">
+        <span class="calc-label">Turned around</span>
+        <span id="line-aPrime" class="number"></span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-label">Difference</span>
+        <span id="line-b" class="number"></span>
+      </div>
+      <div class="calc-row">
+        <span class="calc-label">Turned around again</span>
+        <span id="line-bPrime" class="number"></span>
+      </div>
+      <div class="calc-row answer-row">
+        <span class="calc-label">Answer</span>
+        <span id="line-c" class="number"></span>
+      </div>
+    </div>
+    <p class="hint">Tap the left half of a blue digit to make it smaller, or the right half to make it bigger. Arrow keys work too; a wide number slides sideways.</p>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <div class="spinner">
+        <button id="baseDown" type="button" class="step" aria-label="Decrease the base">&minus;</button>
+        <label for="baseInput">Base</label>
+        <input id="baseInput" type="number" min="2" max="36" step="1" inputmode="numeric">
+        <button id="baseUp" type="button" class="step" aria-label="Increase the base">+</button>
+      </div>
+      <div class="spinner">
+        <button id="countDown" type="button" class="step" aria-label="Use one fewer digit">&minus;</button>
+        <label for="countInput">Digits</label>
+        <input id="countInput" type="number" min="1" max="15" step="1" inputmode="numeric">
+        <button id="countUp" type="button" class="step" aria-label="Use one more digit">+</button>
+      </div>
+    </div>
+    <div class="control-row">
+      <label class="check"><input id="autonomous" type="checkbox"> Autonomous digits</label>
+      <button id="randomBtn" type="button" class="primary">New number</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Start with 732, turn it around to get 237, take away 237 from 732 to get 495, then add 495 to its own reversal 594. The answer is 1089. Try any other three digits: the same thing happens. Why?</p>
+
+      <h2>The middle digit is always nine</h2>
+      <p>Write the starting number as <code>100a + 10b + c</code>. Turned around it is <code>100c + 10b + a</code>, so taking the smaller from the larger removes the middle digit entirely: the difference is <code>99(a &minus; c)</code>. Borrowing one hundred rewrites that as <code>100(a &minus; c &minus; 1) + 90 + (10 + c &minus; a)</code>. In other words the difference has the shape <code>x9y</code>, where the two outside digits add up to nine. A <a class="wiki-term" data-wiki="Palindromic_number" href="https://en.wikipedia.org/wiki/Palindromic_number" target="_blank" rel="noopener">palindrome</a> (<code>a = c</code>) gives zero instead.</p>
+
+      <h2>Adding a number to its reversal</h2>
+      <p>The reversal of <code>x9y</code> is <code>y9x</code>. Adding them digit by digit gives <code>100(x + y) + 90 + 90 + (x + y)</code>. Since <code>x + y = 9</code>, that is <code>900 + 180 + 9 = 1089</code>. Nothing in the sum depends on which number you started with &mdash; only on having three places and a nonzero difference. With two digits the same argument gives 99; with one digit it gives zero. The applet pads the difference with a leading zero before reversing it, so <code>100 &minus; 1 = 099</code> reverses to <code>990</code>, not <code>99</code>.</p>
+
+      <h2>It works in any base</h2>
+      <p>In <a class="wiki-term" data-wiki="Positional_notation" href="https://en.wikipedia.org/wiki/Positional_notation" target="_blank" rel="noopener">positional notation</a> with <a class="wiki-term" data-wiki="Radix" href="https://en.wikipedia.org/wiki/Radix" target="_blank" rel="noopener">base</a> <code>b</code>, exactly the same steps give <code>b&sup3; + b&sup2; &minus; b &minus; 1</code>, written as <code>10uv</code>, where <code>u = b &minus; 2</code> and <code>v = b &minus; 1</code> are the two largest digits. Base ten gives 1089; base thirty-six gives <code>10YZ</code>. Change the base on the page to see it happen. The logic test checks every three-digit number in every base from 2 to 36.</p>
+
+      <h2>What was checked</h2>
+      <p>The page's claims all held: 1089 for three digits, 99 for two, zero for a palindrome, and <code>10uv</code> in every base. The test compares the core with a second transcription of the applet's own method over about 460,000 positions and of its digit-clicking code in every case for bases 2 to 12. Two applet quirks are kept: a wrapped digit chooses its carry direction from its <em>old</em> value (so in base two, clicking up on a zero borrows), and a new random number that is too big for a 64-bit integer leaves the old number in place. One quirk is not kept: reversing all zeroes makes the Java applet delete past the end of its buffer, while the page says the sum is zero, so this page shows zero.</p>
+
+      <p class="tip">Set the base to 2 and try <code>101</code>, then switch Autonomous digits on and click a wrapped digit. What changes?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Arithmetic/S1089.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="s1089-core.js"></script>
+<script src="s1089.js"></script>
+</body>
+</html>

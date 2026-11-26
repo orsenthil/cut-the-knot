@@ -2110,5 +2110,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "s1089",
+      title: "The 1089 Trick",
+      blurb: "Turn a three-digit number backwards, subtract, then add the answer to its own reversal. Why does 1089 keep turning up, and what changes in another base?",
+      tags: ["place-value", "arithmetic", "algebra"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };
