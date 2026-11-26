@@ -493,6 +493,16 @@ const CORE_GLOBALS = {
   "altitude-mirror/altitude-mirror-core.js": ["AltitudeMirrorCore"],
   "altitude-mirror-2/altitude-mirror-2-core.js": ["AltitudeMirror2Core"],
   "angle/angle-core.js": ["AngleCore"],
+  "angle-between-tangent-and-chord/angle-between-tangent-and-chord-core.js": ["AngleBetweenTangentAndChordCore"],
+  "angle-bisector/angle-bisector-core.js": ["AngleBisectorCore"],
+  "angle-bisector-in-equilateral-trapezoid/angle-bisector-in-equilateral-trapezoid-core.js": ["AngleBisectorInEquilateralTrapezoidCore"],
+  "angle-bisector-in-rectangle/angle-bisector-in-rectangle-core.js": ["AngleBisectorInRectangleCore"],
+  "angle-bisector-ratio/angle-bisector-ratio-core.js": ["AngleBisectorRatioCore"],
+  "angle-bisector-ratio-2/angle-bisector-ratio-2-core.js": ["AngleBisectorRatio2Core"],
+  "angle-bisectors-in-quadri/angle-bisectors-in-quadri-core.js": ["AngleBisectorsInQuadriCore"],
+  "angle-on-diameter/angle-on-diameter-core.js": ["AngleOnDiameterCore"],
+  "angle-property/angle-property-core.js": ["AnglePropertyCore"],
+  "angles-in-circle/angles-in-circle-core.js": ["AnglesInCircleCore"],
 };
 
 const games = [];

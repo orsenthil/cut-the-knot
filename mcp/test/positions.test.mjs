@@ -2103,6 +2103,16 @@ check("altitude-and-circumcircle: the three reflections lie on the circumcircle"
 check("altitude-mirror: the altitude bisects the angle and AF equals AG", read["altitude-mirror"]?.mirror.rayAnglesEqual === true && read["altitude-mirror"].mirror.AFequalsAG === true);
 check("altitude-mirror-2: the Pascal line is straight and EF bisects angle CFD", read["altitude-mirror-2"]?.pascal.collinear === true && read["altitude-mirror-2"].angle.equalHalves === true);
 check("angle: a thirty-degree turn is acute", read.angle?.reading.text === "30° (acute)" && read.angle.reading.measuredFromRays === 30);
+check("angle-between-tangent-and-chord: tangent-chord equals the alternate inscribed angle", read["angle-between-tangent-and-chord"]?.checks.tangentChordEqualsInscribed.holds === true && read["angle-between-tangent-and-chord"].checks.allFourEqual.holds === true);
+check("angle-bisector: the two circles cut equal lengths from A to the bisector", Math.abs(read["angle-bisector"]?.reading.distances.AD - read["angle-bisector"].reading.distances.AE) < 0.01 && read["angle-bisector"].reading.distances.distFToAB === read["angle-bisector"].reading.distances.distFToAC);
+check("angle-bisector-in-equilateral-trapezoid: off the bisector, PQRS is not cyclic", read["angle-bisector-in-equilateral-trapezoid"]?.savedDerivedPointsMatchCore === true && read["angle-bisector-in-equilateral-trapezoid"].reading.bisectsAngleCBD === false && read["angle-bisector-in-equilateral-trapezoid"].reading.cyclicPQRS === false);
+check("angle-bisector-in-rectangle: MN bisects the angle and the three corrected ratios agree", read["angle-bisector-in-rectangle"]?.reading.anglesDegrees.QNM === read["angle-bisector-in-rectangle"].reading.anglesDegrees.MNP && read["angle-bisector-in-rectangle"].reading.ratios.allThreeEqual === true);
+check("angle-bisector-ratio: the bisector foot divides BC in the side ratio", read["angle-bisector-ratio"]?.reading.claims.bisectorRatio === true && read["angle-bisector-ratio"].reading.claims.footOnSide === true);
+check("angle-bisector-ratio-2: all nine McWorter proof claims hold", read["angle-bisector-ratio-2"]?.reading.claims.allHold === true && read["angle-bisector-ratio-2"].reading.claims.failed.length === 0);
+check("angle-bisectors-in-quadri: U, G and V are collinear", read["angle-bisectors-in-quadri"]?.reading.collinear.UGV === true && read["angle-bisectors-in-quadri"].savedClaims.verticalAngles === true);
+check("angle-on-diameter: the angle at P stays a right angle", read["angle-on-diameter"]?.savedMatchesCore === true && read["angle-on-diameter"].reading.rightAngleAtP.isRight === true && read["angle-on-diameter"].maxAngleDifference === 0);
+check("angle-property: inversion keeps the two crossing angles equal", read["angle-property"]?.crossingAnglesPreserved === true && read["angle-property"].power > 0);
+check("angles-in-circle: the angle matches the half-arc rule", read["angles-in-circle"]?.reading.agrees === true && read["angles-in-circle"].reading.valid === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);

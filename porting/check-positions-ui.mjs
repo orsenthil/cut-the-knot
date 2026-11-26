@@ -957,6 +957,16 @@ const GAMES = {
   "altitude-mirror": (page) => dragFirstHandle(page),
   "altitude-mirror-2": (page) => dragFirstHandle(page),
   angle: (page) => dragFirstHandle(page),
+  "angle-between-tangent-and-chord": (page) => dragFirstHandle(page),
+  "angle-bisector": (page) => dragFirstHandle(page),
+  "angle-bisector-in-equilateral-trapezoid": (page) => dragFirstHandle(page),
+  "angle-bisector-in-rectangle": (page) => dragFirstHandle(page),
+  "angle-bisector-ratio": (page) => dragFirstHandle(page),
+  "angle-bisector-ratio-2": (page) => dragFirstHandle(page),
+  "angle-bisectors-in-quadri": (page) => dragFirstHandle(page),
+  "angle-on-diameter": (page) => dragFirstHandle(page),
+  "angle-property": (page) => dragFirstHandle(page),
+  "angles-in-circle": (page) => dragFirstHandle(page),
 };
 
 /** Move the first draggable point of an illustration with the keyboard. */
