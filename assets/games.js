@@ -2031,5 +2031,12 @@ window.COOLMATHS = {
       tags: ["probability", "counting", "paradoxes"],
       level: 1,
     },
+    {
+      slug: "play-hex-design",
+      title: "Fill the Hex Grid",
+      blurb: "Each click spins the last dot a sixth of a turn around the dot you pick, and fills where it lands. Can you fill every dot on the board without a single misstep?",
+      tags: ["coordinates", "algebra", "logic"],
+      level: 2,
+    },
   ],
 };
