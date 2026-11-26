@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Order and Chaos in Multiple Pendulums &mdash; coolmaths</title>
+<meta name="description" content="A row of dots swings up and down, each at its own speed. Why does the mess keep falling into patterns, and why does everything line up again?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/pendula-chaos/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Order and Chaos in Multiple Pendulums">
+<meta property="og:description" content="A row of dots swings up and down, each at its own speed. Why does the mess keep falling into patterns, and why does everything line up again?">
+<meta property="og:url" content="https://coolmaths.ai/pendula-chaos/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.4rem; }
+  #board { width: 100%; height: auto; display: block; }
+  #board .rest { stroke: var(--border-strong); stroke-width: 1; stroke-dasharray: 3 4; }
+  .controls label { display: inline-flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; max-width: 100%; }
+  .controls input[type=number] { width: 4.5rem; max-width: 100%; font: inherit; }
+  .controls .run button { min-width: 2.75rem; }
+</style>
+</head>
+<body data-game="pendula-chaos" data-kind="demo">
+<main id="main">
+  <h1>Order and Chaos in Multiple Pendulums</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#physics">Physics</a><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#limits">Limits</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A row of dots swings up and down, each at its own speed. Watch them fall into a mess, and then, for a moment, into a pattern.<br>
+    <strong>How to play:</strong> Press the right arrow to start, the left arrow to run backwards and the bars to stop. Change how many dots there are and how fast the first one swings.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="img" aria-label="A row of dots moving up and down at different speeds"></svg>
+  </div>
+
+  <div class="controls">
+    <span class="run">
+      <button id="backBtn" type="button" aria-label="Run backwards">&lt;</button>
+      <button id="stopBtn" type="button" aria-label="Stop" disabled>||</button>
+      <button id="fwdBtn" type="button" class="primary" aria-label="Run forwards">&gt;</button>
+    </span>
+    <label>Dots <input id="nIn" type="number" min="5" max="100" step="5" value="20" aria-label="Number of dots"></label>
+    <label>Start with <input id="tIn" type="number" min="1" max="100" step="1" value="1" aria-label="Number of swings of the first dot"></label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Each dot moves like a small <a class="wiki-term" data-wiki="Pendulum" href="https://en.wikipedia.org/wiki/Pendulum" target="_blank" rel="noopener">pendulum</a>: up and down in a smooth wave, with a speed that depends only on the dot. The first dot makes <code>T</code> swings in the time the others make <code>T+1</code>, <code>T+2</code>, and so on. Yet the whole row keeps making patterns.</p>
+
+      <h2>Why the row lines up</h2>
+      <p>Dot <code>i</code> is at height <code>1 &minus; cos(s&middot;(i+T)/20)</code> at time <code>s</code>. All the numbers <code>i+T</code> are whole, so when <code>s</code> is a multiple of <code>40&pi;</code> every cosine is back at 1 at once, and the dots are all in line again. The test confirmed this for every number of dots and every starting value. The ticks are scaled by <code>2/N</code>, so one full cycle takes the same <code>20&pi;N</code> ticks however the numbers are set.</p>
+
+      <h2>The waves in between</h2>
+      <p>Look at a fraction of a cycle, <code>s = 40&pi;&middot;p/q</code>. Then dot <code>i</code> is at <code>1 &minus; cos(2&pi;p(i+T)/q)</code>, which only depends on <code>(i+T)</code> modulo <code>q</code>, so the dots fall into at most <code>q/2 + 1</code> levels: exactly two at half a cycle, three at a fifth. Those few levels, repeating along the row, are the waves and zigzags that appear and fade. Between the fractions with small <code>q</code> the row looks random; this is the same idea as the <a class="wiki-term" data-wiki="Fourier_series" href="https://en.wikipedia.org/wiki/Fourier_series" target="_blank" rel="noopener">sum of waves</a> in a Fourier series.</p>
+
+      <p class="tip">Set "Dots" to 5 and "Start with" to 1 and run it. Then try "Start with" 50. Why do the patterns look different?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/PendulaChaos.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="pendula-chaos-core.js"></script>
+<script src="pendula-chaos.js"></script>
+</body>
+</html>

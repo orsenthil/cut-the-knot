@@ -1958,5 +1958,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "pendula-chaos",
+      title: "Order and Chaos in Multiple Pendulums",
+      blurb: "A row of dots swings up and down, each at its own speed. Why does the mess keep falling into patterns, and why does everything line up again?",
+      tags: ["physics", "sequences", "limits"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };
