@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arbelos PWW &mdash; coolmaths</title>
+<meta name="description" content="A knife-shaped gap sits between three half-circles, with a circle standing on the upright through the middle dot. Can three pairs of half-circles show why the gap and the circle have the same area?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/arbelos-pww/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Arbelos PWW">
+<meta property="og:description" content="A knife-shaped gap sits between three half-circles, with a circle standing on the upright through the middle dot. Can three pairs of half-circles show why the gap and the circle have the same area?">
+<meta property="og:url" content="https://coolmaths.ai/arbelos-pww/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .pww-big { fill: var(--accent); fill-opacity: 0.10; }
+  #board .pww-blue { fill: var(--accent); fill-opacity: 0.28; stroke: var(--accent); stroke-width: 2; }
+  #board .pww-red { fill: var(--bad); fill-opacity: 0.28; stroke: var(--bad); stroke-width: 2; }
+  #board .pww-small { stroke: none; }
+  #board .pww-slope { fill-opacity: 0.14; stroke-width: 2.5; }
+  #board .pww-half { fill-opacity: 0.32; }
+  #board .pww-answer { fill: var(--good); fill-opacity: 0.14; stroke: var(--good); stroke-width: 3; }
+  #board .pww-outline { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .pww-baseline { stroke: var(--ink); stroke-width: 2; }
+  #board .pww-upright { stroke: var(--ink); stroke-width: 2.5; }
+  #board .pww-ray { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label { fill: var(--text); font-size: 15px; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="arbelos-pww" data-kind="demo">
+<main id="main">
+  <h1>Arbelos PWW</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A curved knife shape sits between three half-circles, and a circle on the upright line has just as much room inside it.<br>
+    <strong>How to play:</strong> Drag the dot along the bottom line, or focus it and press the arrow keys. Press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="60 60 380 380" role="group"
+         aria-label="A large semicircle on AB with two smaller semicircles on AN and NB. N is draggable; the upright through N meets the big circle at P and D, with coloured semicircles showing the three Euclid steps."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Put N back at its starting place">Reset</button>
+    <button id="middleBtn" type="button" aria-label="Move N to the middle of AB">N in the middle</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the dot and the knife changes shape, yet the circle standing on the upright changes with it. The two always have exactly the same <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a>. The picture is a proof without words: it uses Euclid's favourite proof of the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a> three times.</p>
+
+      <h2>A half-circle on a side of a right triangle</h2>
+      <p>Euclid did not compare squares on the sides: he drew similar shapes on them. A <a class="wiki-term" data-wiki="Semicircle" href="https://en.wikipedia.org/wiki/Semicircle" target="_blank" rel="noopener">semicircle</a> with diameter <code>d</code> has area <code>&pi;d&sup2;/8</code>, so its area grows like the square of its diameter. For a right triangle, the square of the hypotenuse is the sum of the squares of the two legs. Therefore the semicircle on the hypotenuse equals the two semicircles on the legs put together.</p>
+      <blockquote><code>semicircle(AB) = semicircle(AD) + semicircle(BD)</code></blockquote>
+      <p>The upright <code>DN</code> is perpendicular to <code>AB</code>, and <code>D</code> sits on the big circle, so triangle <code>ADB</code> is right-angled at <code>D</code> by <a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a>.</p>
+
+      <h2>Blue and red, two more times</h2>
+      <p>Now look at the smaller right triangles <code>AND</code> and <code>BND</code>. Each has the upright as one leg, and each gives another Euclid step:</p>
+      <blockquote><code>blue: semicircle(AD) = semicircle(AN) + semicircle(ND)</code><br><code>red: semicircle(BD) = semicircle(BN) + semicircle(ND)</code></blockquote>
+      <p>Those are the two smaller blue and red half-circles. The biggest blue one is on <code>AD</code> and the biggest red one is on <code>BD</code>, matching the page's description.</p>
+
+      <h2>The knife and the circle</h2>
+      <p>Putting all three lines together cancels the two sloping semicircles:</p>
+      <blockquote><code>big &minus; small left &minus; small right = semicircle(ND) + semicircle(ND)</code></blockquote>
+      <p>Two equal half-circles on <code>DN</code> make one whole circle. The left side is the arbelos; the right side is the circle on the upright. Write <code>AN = a</code> and <code>NB = b</code>. The upright is their <a class="wiki-term" data-wiki="Geometric_mean" href="https://en.wikipedia.org/wiki/Geometric_mean" target="_blank" rel="noopener">geometric mean</a>, <code>h = &radic;(a&times;b)</code>, so both areas are <code>&pi;a&times;b/4</code>. This is Archimedes' Proposition 4, and the logic test checks it at thousands of positions.</p>
+
+      <h2>About the original</h2>
+      <p>The Java applet used pink for the big half-circle, blue and red for the small ones, an orange circle standing on the upright and grey guide lines; the same parts appear here in the site's colours. Its internal "about" text was a leftover from a polygon applet and said nothing about this figure. The applet also rounded the upright to a whole pixel before drawing, while the picture here keeps the exact length; that changes nothing about the proof.</p>
+
+      <p class="tip">Press <strong>N in the middle</strong>, then drag the dot close to A. The knife and its circle shrink together, but the two numbers in the status line stay equal.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ArbelosPWW.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="arbelos-pww-core.js"></script>
+<script src="arbelos-pww.js"></script>
+</body>
+</html>
