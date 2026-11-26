@@ -1994,6 +1994,11 @@ check("party-acquaintances: two lines drawn, red then blue, next red", read["par
   const pa = at("party-acquaintances", { n: 6, nRed: 3, nBlue: 3, autoColor: false, useRed: true, nextRed: true, edges: [[0, 1, true], [1, 2, true], [0, 2, true]] });
   check("party-acquaintances: three red lines 1-2-3 make a red triangle", pa.redGroups.length === 1 && pa.redGroups[0].join() === "1,2,3" && pa.finished === true);
 }
+check("triangle-chain: three counted from the top, best 21", read["triangle-chain"]?.counted === 3 && read["triangle-chain"].best === 21 && read["triangle-chain"].upMinusDown === 1);
+{
+  const tc = at("triangle-chain", { n: 3, stack: [{ k: 0, p: 0, x: false }, { k: 2, p: 0, x: true }] });
+  check("triangle-chain: a refused click is not counted", tc.counted === 1 && tc.lastClickRefused === true && tc.best === 7);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

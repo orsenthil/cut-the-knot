@@ -847,6 +847,9 @@ const GAMES = {
   "party-acquaintances": async (page) => {
     for (const [a, b] of [[0, 1], [1, 2]]) { await page.click(`#board .node[data-i="${a}"]`); await page.click(`#board .node[data-i="${b}"]`); }
   },
+  "triangle-chain": async (page) => {
+    for (const [k, p] of [[0, 0], [1, 1], [1, 0]]) await page.click(`#board .cell[data-k="${k}"][data-p="${p}"]`);
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

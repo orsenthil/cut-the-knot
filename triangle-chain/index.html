@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Counting Triangles II &mdash; coolmaths</title>
+<meta name="description" content="Walk through the little triangles of a big one, side to side, never twice. Why can you never count them all, and how close can you get?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/triangle-chain/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Counting Triangles II">
+<meta property="og:description" content="Walk through the little triangles of a big one, side to side, never twice. Why can you never count them all, and how close can you get?">
+<meta property="og:url" content="https://coolmaths.ai/triangle-chain/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 0.6rem; }
+  .scroll { overflow-x: auto; }
+  #board { display: block; width: 100%; height: auto; }
+  #board .tri { fill: var(--card); stroke: var(--ink); stroke-width: 1.5; cursor: pointer; }
+  #board .tri.up { fill: #f6c9c3; }
+  #board .tri.down { fill: #f8dcb0; }
+  #board .tri.counted { fill: var(--accent-soft); }
+  #board .tri.last { fill: var(--accent); }
+  #board .mark { fill: var(--text); font-family: var(--font); font-weight: 700; text-anchor: middle; pointer-events: none; }
+  #board .mark.x { fill: var(--bad); }
+  #board .cell:focus-visible { outline: none; }
+  #board .cell:focus-visible .tri { stroke: var(--focus); stroke-width: 5; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls input[type="number"] { width: 4.5rem; min-height: 2.75rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="triangle-chain" data-kind="game">
+<main id="main">
+  <h1>Counting Triangles II</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#graph-theory">Graph Theory</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Count the little triangles by walking from one to the next, always to one that shares a side, and never to one you have already counted. How many can you reach?<br>
+    <strong>How to play:</strong> Click a triangle to start, then click its neighbours one by one. Remove last takes a step back.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="scroll"><svg id="board" viewBox="0 0 400 350" role="group" aria-label="The big triangle cut into small ones; arrow keys move between them, Enter counts one"></svg></div>
+  </div>
+
+  <div class="controls">
+    <label>N <input id="nIn" type="number" min="2" max="16" value="5"></label>
+    <label><input id="hintBox" type="checkbox"> Show hint</label>
+    <button id="removeBtn" type="button" disabled>Remove last</button>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Lines parallel to the sides cut a triangle into <code>n&sup2;</code> small triangles. Walking from triangle to neighbouring triangle, you can never count them all. The best possible is</p>
+      <blockquote><code>n&sup2; &minus; n + 1</code></blockquote>
+
+      <h2>A chessboard of triangles</h2>
+      <p>Paint the triangles that point up one colour and those that point down another (Show hint). Neighbours always have different colours, like the squares of a chessboard: it is a <a class="wiki-term" data-wiki="Bipartite_graph" href="https://en.wikipedia.org/wiki/Bipartite_graph" target="_blank" rel="noopener">bipartite</a> pattern. There are <code>1 + 2 + &hellip; + n = n(n+1)/2</code> up triangles but only <code>n(n&minus;1)/2</code> down ones.</p>
+
+      <h2>Why the count is limited</h2>
+      <p>A chain changes colour at every step, so it holds at most one more up triangle than down triangles: at most <code>n(n&minus;1)/2 + n(n&minus;1)/2 + 1 = n&sup2; &minus; n + 1</code> in all. That is a <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a> argument. The logic test searched every chain for <code>n</code> up to 5: the longest has exactly that length, and it begins and ends on an up triangle.</p>
+
+      <h2>Reaching it</h2>
+      <p>The bound can always be met. Snake through the rows, left to right and then right to left, and leave out one corner triangle in every row below the top: that skips <code>n &minus; 1</code> up triangles and counts all the rest. The test made this chain for every <code>n</code> from 2 to 16.</p>
+
+      <p class="tip">Start at the top triangle and snake down the rows. Which triangle must you give up in each row?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/TriangleChain.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="triangle-chain-core.js"></script>
+<script src="triangle-chain.js"></script>
+</body>
+</html>

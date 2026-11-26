@@ -2362,5 +2362,12 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "triangle-chain",
+      title: "Counting Triangles II",
+      blurb: "Walk through the little triangles of a big one, side to side, never twice. Why can you never count them all, and how close can you get?",
+      tags: ["parity", "counting", "graph-theory"],
+      level: 2,
+    },
   ],
 };

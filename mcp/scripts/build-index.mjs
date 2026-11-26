@@ -447,6 +447,7 @@ const CORE_GLOBALS = {
   "base-tables/base-tables-core.js": ["BaseTablesCore"],
   "tesseract/tesseract-core.js": ["TesseractCore"],
   "party-acquaintances/party-acquaintances-core.js": ["PartyAcquaintancesCore"],
+  "triangle-chain/triangle-chain-core.js": ["TriangleChainCore"],
 };
 
 const games = [];
