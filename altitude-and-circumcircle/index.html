@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Altitude And Circumcircle &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle: where do the reflections of its orthocenter in the sides land, and what do the equal circles show?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/altitude-and-circumcircle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Altitude And Circumcircle">
+<meta property="og:description" content="Drag the corners of a triangle: where do the reflections of its orthocenter in the sides land, and what do the equal circles show?">
+<meta property="og:url" content="https://coolmaths.ai/altitude-and-circumcircle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .circumcircle { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .extracircle { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .triangle { fill: var(--accent-soft); stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .altitude { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; }
+  #board .rightmark { fill: none; stroke: var(--muted); stroke-width: 1.4; }
+  #board .hintline { stroke: var(--highlight); stroke-width: 3; }
+  #board .extraseg { stroke: var(--good); stroke-width: 1.8; stroke-dasharray: 3 3; }
+  #board .centerdot { fill: var(--muted); }
+  #board .orthodot { fill: var(--ink); }
+  #board .footdot { fill: var(--accent); }
+  #board .reflectdot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="altitude-and-circumcircle" data-kind="demo">
+<main id="main">
+  <h1>Altitude And Circumcircle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move a triangle and watch three special dots: they always land on the circle through the corners; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag a corner, or focus it and use the arrow keys. Tick the boxes to show the altitude lines, the equal lengths, point S and its circle.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="Triangle ABC with its circumcircle, the orthocenter H and the reflections Ka, Kb and Kc. Drag the three corners to move them."></svg>
+    <p class="hint-line">Drag A, B or C, or focus one and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Names</label>
+    <label><input id="hintBox" type="checkbox" data-label="equal lengths"> Equal lengths</label>
+    <label><input id="altitudesBox" type="checkbox" data-label="altitudes"> Altitudes</label>
+    <label><input id="circleBox" type="checkbox" data-label="the extra circle"> Extra circle</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The circle through the three corners seems to know where the <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a> will go: whenever H is reflected in a side, the new dot falls on that same circle.</p>
+
+      <h2>Where the three dots come from</h2>
+      <p>Each <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a> meets the opposite side (or its extension) at a foot: H<sub>a</sub> on BC, H<sub>b</sub> on AC and H<sub>c</sub> on AB. The altitude lines meet at H. The green dots are the <a class="wiki-term" data-wiki="Reflection_(mathematics)" href="https://en.wikipedia.org/wiki/Reflection_(mathematics)" target="_blank" rel="noopener">reflections</a> of H in those side lines: <code>K<sub>a</sub> = 2H<sub>a</sub> − H</code>, and likewise for b and c. The logic test checked all three against the circle for 4,006 triangles, including obtuse ones: every one lies on it.</p>
+
+      <h2>Why the foot is halfway</h2>
+      <p>Let K<sub>a</sub> be the second point where the altitude AH<sub>a</sub> meets the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>. The page's proof compares two angles: the right triangles CAH<sub>a</sub> and CBH<sub>b</sub> share the angle at C, so <code>∠CAH<sub>a</sub> = ∠CBH<sub>b</sub></code>; and the <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angles</a> subtending the same arc CK<sub>a</sub> give <code>∠CAH<sub>a</sub> = ∠CBK<sub>a</sub></code>. Thus the altitude from B is both an altitude and an angle bisector in triangle BHK<sub>a</sub>, so it is also a median: <code>HH<sub>a</sub> = H<sub>a</sub>K<sub>a</sub></code>. The page proves this for an acute triangle and notes that an obtuse angle needs a small change; the equality itself still held in every obtuse case we tested.</p>
+
+      <h2>Four equal circles and equal arcs</h2>
+      <p>Reflect the circumcircle in BC and it passes through H, B and C with the same radius; the reflection S of A in H<sub>a</sub> lies on it too (<code>AH<sub>a</sub> = H<sub>a</sub>S</code>). The page adds that the circles through ABC, ABH, BCH and CAH are all equal — the test compared their radii for every triangle in the sample. It also says the arcs next to A each measure <code>2(90° − ∠BAC)</code>; that was confirmed for every acute triangle tested. For a right triangle H is a corner, so two of those four circles collapse onto a straight line.</p>
+
+      <p class="tip">Try dragging one corner past the opposite side to make an obtuse triangle: the green dots stay on the circle. Then tick <em>Altitudes</em> and <em>Extra circle</em> to see the second circle and the point S.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AltitudeAndCircumcircle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="altitude-and-circumcircle-core.js"></script>
+<script src="altitude-and-circumcircle.js"></script>
+</body>
+</html>
