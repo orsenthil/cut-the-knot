@@ -876,6 +876,10 @@ const GAMES = {
   "two-perpendiculars": async (page) => {
     await page.check('input[name="fallacy"][value="2"]');
   },
+  "two-men-of-tibet": async (page) => {
+    await page.focus('#board .handle[data-i="1"]');
+    await page.keyboard.press("ArrowUp");
+  },
 };
 
 /** The shape of a value: its fields and kinds, without the values. */

@@ -2029,6 +2029,11 @@ check("two-perpendiculars: the saved picture is the cheating one, second puzzle"
   const tp = at("two-perpendiculars", { A: [120, 120], B: [180, 260], C: [230, 40], cheat: false, fallacy: 1 });
   check("two-perpendiculars: drawn honestly, D = E = K = the foot", tp.distanceDE === 0 && tp.K.join() === tp.footFromA.join() && tp.angleADB === 90);
 }
+check("two-men-of-tibet: the saved range has 7 corners and a walk", read["two-men-of-tibet"]?.heights.length === 7 && (read["two-men-of-tibet"].plateau || read["two-men-of-tibet"].steps > 0));
+{
+  const tb = at("two-men-of-tibet", { heights: [0, 0.3, 0.1, 0.9, 0], walking: false });
+  check("two-men-of-tibet: on 0, .3, .1, .9, 0 the walk goes from (A, I) to (I, A) and the white man turns back", tb.walk[0] === "(A, I)" && tb.walk[tb.walk.length - 1] === "(I, A)" && tb.turnsBack.white >= 1);
+}
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;

@@ -454,6 +454,7 @@ const CORE_GLOBALS = {
   "turning-turtles/turning-turtles-core.js": ["TurningTurtlesCore"],
   "chips-on-circle/chips-on-circle-core.js": ["ChipsOnCircleCore"],
   "two-perpendiculars/two-perpendiculars-core.js": ["TwoPerpendicularsCore"],
+  "two-men-of-tibet/two-men-of-tibet-core.js": ["TwoMenOfTibetCore"],
 };
 
 const games = [];

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Two Men of Tibet &mdash; coolmaths</title>
+<meta name="description" content="Two men start at the ends of a mountain range at the same height. Can they swap places while always staying level with each other?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/two-men-of-tibet/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Two Men of Tibet">
+<meta property="og:description" content="Two men start at the ends of a mountain range at the same height. Can they swap places while always staying level with each other?">
+<meta property="og:url" content="https://coolmaths.ai/two-men-of-tibet/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .ground { stroke: var(--border-strong); stroke-width: 2; }
+  #board .rock { fill: #9c8a74; fill-opacity: 0.35; }
+  #board .ridge { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
+  #board .level { stroke: var(--accent); stroke-width: 1; stroke-dasharray: 4 4; opacity: 0.7; }
+  #board .named { fill: var(--accent); }
+  #board .handle { fill: var(--card); stroke: var(--ink); stroke-width: 2.5; cursor: ns-resize; }
+  #board .handle:focus-visible { outline: none; stroke: var(--focus); stroke-width: 5; }
+  #board .end { fill: var(--ink); }
+  #board .man { stroke-width: 2.5; }
+  #board .man.white { fill: #ffffff; stroke: #20232b; }
+  #board .man.black { fill: #20232b; stroke: #ffffff; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls input[type="number"] { width: 4.5rem; min-height: 2.75rem; font-size: 1rem; }
+</style>
+</head>
+<body data-game="two-men-of-tibet" data-kind="demo">
+<main id="main">
+  <h1>The Two Men of Tibet</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#graph-theory">Graph Theory</a><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two men start at the two ends of a mountain range. Can they walk along it and swap places while always staying at exactly the same height?<br>
+    <strong>How to play:</strong> Drag the peaks up or down to make a tricky range, then press Start journey and watch them go, turning back when they have to.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 270" role="group" aria-label="A mountain range drawn as a broken line, with the two men on it"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="goBtn" type="button" class="primary">Start journey</button>
+    <button id="newBtn" type="button">New range</button>
+    <label>Delay <input id="delayIn" type="number" min="0" max="100" step="5" value="20"></label>
+    <label><input id="levelsBox" type="checkbox"> Show levels</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The two men can always swap places, though they may have to turn back now and then. The proof turns their journey into a walk on a <a class="wiki-term" data-wiki="Graph_(discrete_mathematics)" href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)" target="_blank" rel="noopener">graph</a>.</p>
+
+      <h2>Named points</h2>
+      <p>Draw a level line through every corner of the range (Show levels) and mark where those lines cross it. Call the corners and crossings, in order along the range, <code>A, B, &hellip;, Z</code>. A position of the two men is an ordered pair of named points at the same height, like <code>(A, Z)</code> at the start. A step takes both men to a neighbouring named point, both going up or both going down, so they stay level.</p>
+
+      <h2>Counting steps</h2>
+      <p>From <code>(A, Z)</code> there is only one step: both men climb. The same goes for <code>(Z, A)</code>. From any other pair there is an even number of steps: 0, 2 or 4. For example, a man on a slope can go up or down, and a man on a peak can only go down, but either way. (The men may not walk side by side: that keeps the count even where they meet.)</p>
+
+      <h2>The handshake argument</h2>
+      <p>Start at <code>(A, Z)</code> and keep walking along new edges for as long as you can. Every pair you pass through in the middle of the walk uses up two of its edges, one to arrive and one to leave, so you can only get stuck at a pair with an odd number of edges. By the <a class="wiki-term" data-wiki="Handshaking_lemma" href="https://en.wikipedia.org/wiki/Handshaking_lemma" target="_blank" rel="noopener">handshake lemma</a> that pair must be <code>(Z, A)</code>: the men have swapped. The logic test checked the edge counts on thousands of random ranges, and the walk the page shows is the shortest one in this graph.</p>
+
+      <p class="tip">Make a low hill near one man and a high peak near the other. How many times must someone turn back?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/TwoMonks.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="two-men-of-tibet-core.js"></script>
+<script src="two-men-of-tibet.js"></script>
+</body>
+</html>

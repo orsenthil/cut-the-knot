@@ -2415,5 +2415,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "two-men-of-tibet",
+      title: "The Two Men of Tibet",
+      blurb: "Two men start at the ends of a mountain range at the same height. Can they swap places while always staying level with each other?",
+      tags: ["graph-theory", "parity", "invariants"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };
