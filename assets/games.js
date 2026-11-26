@@ -2134,5 +2134,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 2,
     },
+    {
+      slug: "quadratic-roots",
+      title: "Quadratic Roots",
+      blurb: "Three numbers make a bent line and one circle. Where the circle crosses the axis are the roots of a quadratic equation — why does that work, and how many crossings can there be?",
+      tags: ["algebra", "curves", "number-theory"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

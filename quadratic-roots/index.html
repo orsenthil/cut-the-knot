@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quadratic Roots &mdash; coolmaths</title>
+<meta name="description" content="Three numbers make a bent line and one circle. Where the circle crosses the axis are the roots of a quadratic equation — why does that work, and how many crossings can there be?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/quadratic-roots/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Quadratic Roots">
+<meta property="og:description" content="Three numbers make a bent line and one circle. Where the circle crosses the axis are the roots of a quadratic equation — why does that work, and how many crossings can there be?">
+<meta property="og:url" content="https://coolmaths.ai/quadratic-roots/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 42rem;
+    padding: 0.8rem 1rem;
+  }
+  svg { display: block; width: 100%; height: auto; max-width: 100%; }
+  .axis { stroke: var(--border-strong); }
+  .broken { fill: none; stroke: var(--ink); stroke-linejoin: round; }
+  .helper { stroke: var(--muted); }
+  .construction-circle { fill: none; stroke: var(--accent); }
+  .vertex { fill: var(--ink); }
+  .right-angle { fill: var(--highlight); stroke: var(--accent); }
+  .root { fill: var(--good); }
+  .point-label { fill: var(--text); font-family: var(--font); }
+  #roots {
+    margin: 0.4rem 0 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+    text-align: center;
+  }
+  .controls .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    gap: 0.75rem 1.25rem;
+  }
+  .slider-group {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .slider-group label { color: var(--muted); font: italic 1rem var(--font); }
+  .slider-group output {
+    min-width: 3.2rem;
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    text-align: right;
+  }
+  input[type="range"] { width: 8rem; max-width: 45vw; accent-color: var(--accent); }
+  .check {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    min-height: 2.75rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  button:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="quadratic-roots" data-kind="demo">
+<main id="main">
+  <h1>Quadratic Roots</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#number-theory">Number Theory</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Build a bent line from three numbers and watch where a circle crosses the bottom line. Those crossing points are the answers to a quadratic equation. There is nothing to win &mdash; explore the equation.<br>
+    <strong>How to play:</strong> Move the a, b and c sliders to change the equation. Tick names or hint to see more of the construction; press Reset for the starting equation.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="diagram" viewBox="0 0 640 480" role="img" aria-label="Broken line A B C D, the circle on A D, and the roots where it meets the x-axis"></svg>
+    <p id="roots"></p>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <div class="slider-group">
+        <label for="slider-a">a</label>
+        <input id="slider-a" type="range" min="-5" max="5" step="0.1" value="1.5" aria-label="Coefficient a">
+        <output id="value-a" for="slider-a">1.5</output>
+      </div>
+      <div class="slider-group">
+        <label for="slider-b">b</label>
+        <input id="slider-b" type="range" min="-10" max="10" step="0.1" value="5" aria-label="Coefficient b">
+        <output id="value-b" for="slider-b">5.0</output>
+      </div>
+      <div class="slider-group">
+        <label for="slider-c">c</label>
+        <input id="slider-c" type="range" min="-10" max="10" step="0.1" value="3" aria-label="Coefficient c">
+        <output id="value-c" for="slider-c">3.0</output>
+      </div>
+    </div>
+    <div class="control-row">
+      <label class="check"><input id="hintBox" type="checkbox"> Show hint</label>
+      <label class="check"><input id="namesBox" type="checkbox"> Show names</label>
+      <button id="resetBtn" type="button" class="primary">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A quadratic equation has at most two answers. Instead of a formula, you can <em>draw</em> them: make a bent line out of the three coefficients, draw one circle, and see where it cuts the axis.</p>
+
+      <h2>A broken line from the coefficients</h2>
+      <p>Put B at the origin. Walk straight up by <code>a</code> to A, back down to B, then walk <code>b</code> along the axis to C, and finally <code>c</code> up or down to D. Negative numbers simply send you the other way. So A is <code>(0, a)</code>, C is <code>(b, 0)</code> and D is <code>(b, c)</code>.</p>
+
+      <h2>The circle on AD</h2>
+      <p>Draw the circle whose diameter is AD. Where it cuts the axis at X, the angle AXD is a right angle by <a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a>. That turns into <code>x² &minus; bx + ac = 0</code> for the horizontal position <code>x</code> of X. Tick "Show hint" to see the helper line and "Show names" to see the labelled points.</p>
+
+      <h2>Where the equation comes from</h2>
+      <p>The starting number <code>a</code> is the unit along the bent line: write <code>x = a&middot;t</code>. Substituting gives <code>a&middot;t² &minus; bt + c = 0</code> after dividing by <code>a</code>. The applet (following Adler's diagram) therefore solves <code>ax² &minus; bx + c = 0</code> &mdash; note the minus sign before <code>b</code>, not the plus sign in the familiar <a class="wiki-term" data-wiki="Quadratic_equation" href="https://en.wikipedia.org/wiki/Quadratic_equation" target="_blank" rel="noopener">quadratic equation</a>. With <code>a = 1, b = 5, c = 6</code> the marked roots are 2 and 3, not &minus;2 and &minus;3. The logic test checks this sign convention on a grid of coefficients.</p>
+
+      <h2>One root, or none</h2>
+      <p>The <a class="wiki-term" data-wiki="Discriminant" href="https://en.wikipedia.org/wiki/Discriminant" target="_blank" rel="noopener">discriminant</a> <code>b² &minus; 4ac</code> decides how many green points you see: two when it is positive, one when it is zero (the circle just touches the axis), and none when it is negative. When <code>a = 0</code> the equation is not quadratic at all: there is one root, <code>c / b</code>. Two roots always add to <code>b / a</code> and multiply to <code>c / a</code>, as <a class="wiki-term" data-wiki="Vi%C3%A8te%27s_formulas" href="https://en.wikipedia.org/wiki/Vi%C3%A8te%27s_formulas" target="_blank" rel="noopener">Viète's formulas</a> say.</p>
+
+      <h2>What was checked</h2>
+      <p>The test runs 343 coefficient triples, including negatives, zero and fractions. It checks that E really lies on AD and on the axis, that EF is perpendicular to AD, that the marked points sit on the circle and solve the equation, and that the roots match an independent quadratic formula and Viète's relations. It also confirms the sign swap and the zero-discriminant and <code>a = 0</code> cases.</p>
+
+      <p class="tip">Set <code>a = 1</code> and <code>c = 1</code>, then slide <code>b</code> from &minus;4 to 4 and watch the two green points meet and vanish.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/QuadraticRoots.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="quadratic-roots-core.js"></script>
+<script src="quadratic-roots.js"></script>
+</body>
+</html>
