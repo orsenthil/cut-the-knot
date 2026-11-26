@@ -1950,5 +1950,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 1,
     },
+    {
+      slug: "peasant-multiplication",
+      title: "Peasant Multiplication",
+      blurb: "Multiply two numbers using nothing but halving, doubling and adding. Why does the answer come out right?",
+      tags: ["arithmetic", "algorithms"],
+      kind: "demo",
+      level: 1,
+    },
   ],
 };

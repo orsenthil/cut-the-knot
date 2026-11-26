@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Peasant Multiplication &mdash; coolmaths</title>
+<meta name="description" content="Multiply two numbers using nothing but halving, doubling and adding. Why does the answer come out right?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/peasant-multiplication/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Peasant Multiplication">
+<meta property="og:description" content="Multiply two numbers using nothing but halving, doubling and adding. Why does the answer come out right?">
+<meta property="og:url" content="https://coolmaths.ai/peasant-multiplication/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.6rem; overflow-x: auto; box-sizing: border-box; }
+  .nums { display: flex; flex-wrap: wrap; gap: 1.2rem 2rem; justify-content: center; align-items: center; margin-bottom: 0.8rem; }
+  .times { font-size: 1.6rem; color: var(--muted, inherit); }
+  .num { display: inline-flex; gap: 0.15rem; }
+  .digit { display: flex; flex-direction: column; align-items: center; }
+  .digit button { min-width: 2.2rem; min-height: 1.6rem; padding: 0; line-height: 1; }
+  .digit .d { font-size: 2rem; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; line-height: 1.2; }
+  table.pm { border-collapse: collapse; margin: 0 auto; font-variant-numeric: tabular-nums; max-width: 100%; }
+  table.pm th, table.pm td { padding: 0.1rem 0.35rem; text-align: right; }
+  table.pm th { font-weight: 600; font-size: 0.85rem; border-bottom: 1px solid var(--border-strong); }
+  td.odd { color: var(--bad); font-weight: 700; }
+  td.even { color: var(--muted, inherit); opacity: 0.75; }
+  td.bit { text-align: center; }
+  .sum { text-align: center; margin: 0.7rem 0 0; font-size: 1.05rem; overflow-wrap: anywhere; }
+  .controls label { display: inline-flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; max-width: 100%; }
+  .controls select { font: inherit; }
+</style>
+</head>
+<body data-game="peasant-multiplication" data-kind="demo">
+<main id="main">
+  <h1>Peasant Multiplication</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Multiply two numbers using only halving, doubling and adding, the way peasants are said to have done it.<br>
+    <strong>How to play:</strong> Press the arrows above a digit to change a number and watch the columns follow. Tick "Show binary" to see why it works.
+  </div>
+
+  <div id="stage" class="stage">
+    <div class="nums"><div id="numA" class="num" role="group" aria-label="First number"></div><span class="times" aria-hidden="true">&times;</span><div id="numB" class="num" role="group" aria-label="Second number"></div></div>
+    <table id="tbl" class="pm"></table>
+    <p id="sum" class="sum"></p>
+  </div>
+
+  <div class="controls">
+    <label>Digits <select id="digitsSel" aria-label="Number of digits">
+      <option>1</option><option selected>2</option><option>3</option><option>4</option></select></label>
+    <label><input id="autoIn" type="checkbox"> Autonomous digits</label>
+    <label><input id="binIn" type="checkbox"> Show binary</label>
+    <button id="newBtn" type="button">New numbers</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>To find <code>a &times; b</code>, halve <code>a</code> again and again (dropping any remainder) until you reach 1, and double <code>b</code> the same number of times. Then add the doubles that stand beside an odd half. The sum is the product, and nothing more difficult than doubling and adding was needed.</p>
+
+      <h2>Binary numbers inside</h2>
+      <p>Each time you halve and drop the remainder, the remainder you dropped is the next digit of <code>a</code> written in <a class="wiki-term" data-wiki="Binary_number" href="https://en.wikipedia.org/wiki/Binary_number" target="_blank" rel="noopener">binary</a>: 1 beside an odd number, 0 beside an even one. For 85 these digits are <code>1010101</code>, which is <code>64 + 16 + 4 + 1</code>. So <code>85 &times; 18 = 64&times;18 + 16&times;18 + 4&times;18 + 1&times;18</code>, and those four products are exactly the doubles in the red rows. "Show binary" adds the power of 2 and the digit to every row.</p>
+
+      <h2>Which number first?</h2>
+      <p>The number of rows is the number of binary digits of the first number. The page advises putting the smaller number first, because it has fewer digits. The test confirmed this for every pair of numbers up to 400, and that the algorithm gives the true product for all 160,000 of them and for 20,000 random four-digit pairs.</p>
+
+      <h2>Where the name comes from</h2>
+      <p>The method is called <a class="wiki-term" data-wiki="Ancient_Egyptian_multiplication" href="https://en.wikipedia.org/wiki/Ancient_Egyptian_multiplication" target="_blank" rel="noopener">Russian peasant</a> or Ethiopian multiplication, and it is close to the doubling in the Egyptian Rhind Papyrus. Computers do the same thing with shifts and adds.</p>
+
+      <p class="tip">Try 85 &times; 18 and then 18 &times; 85. Both give 1530. Which one needs fewer rows?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Algebra/PeasantMultiplication.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="peasant-multiplication-core.js"></script>
+<script src="peasant-multiplication.js"></script>
+</body>
+</html>
