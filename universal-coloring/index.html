@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Universal Coloring &mdash; coolmaths</title>
+<meta name="description" content="Can you colour n² dots round a circle so that every ordered pair of colours appears next to another dot as you go round? The trick is an Euler cycle in a complete directed graph.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/universal-coloring/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Universal Coloring">
+<meta property="og:description" content="Can you colour n² dots round a circle so that every ordered pair of colours appears next to another dot as you go round? The trick is an Euler cycle in a complete directed graph.">
+<meta property="og:url" content="https://coolmaths.ai/universal-coloring/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 100%; padding: 0.4rem; }
+  #boardWrap { width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+  #board { position: relative; margin: 0 auto; }
+  #board .ring {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    border: 1px solid var(--border-strong); border-radius: 50%;
+  }
+  .dot {
+    position: absolute; transform: translate(-50%, -50%);
+    width: 2.75rem; height: 2.75rem; min-width: 2.75rem; padding: 0;
+    border: 2px solid var(--ink); border-radius: 50%;
+    color: #fff; font: 700 1rem var(--font);
+    display: grid; place-items: center; cursor: pointer;
+  }
+  .dot.c0 { background: #c94d5b; }
+  .dot.c1 { background: #d99a2b; }
+  .dot.c2 { background: #3f9467; }
+  .dot.c3 { background: #3f74b5; }
+  .dot.c4 { background: #8662bc; }
+  .dot.c5 { background: #2f909e; }
+  .dot.digits-only { background: var(--surface-2); color: var(--text); }
+  .dot:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  #hintNote { text-align: center; color: var(--muted); font-size: 0.9rem; margin: 0.2rem 0 0.4rem; }
+  #arcs { width: 100%; overflow-x: auto; }
+  #arcs .grid { display: grid; gap: 2px; max-width: 19rem; margin: 0 auto; font-size: 0.9rem; }
+  #arcs .head { display: grid; place-items: center; min-height: 1.6rem; color: var(--muted); font-weight: 700; }
+  #arcs .arc { display: grid; place-items: center; min-height: 1.8rem; border-radius: 0.35rem; background: var(--surface-2); color: var(--muted); }
+  #arcs .arc.on { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls input[type="number"] { width: 4.5rem; min-height: 2.75rem; font-size: 1rem; }
+  .controls fieldset { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; border: 1px solid var(--border); border-radius: 0.6rem; padding: 0.2rem 0.5rem; margin: 0; }
+  .controls legend { padding: 0 0.25rem; color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body data-game="universal-coloring" data-kind="demo">
+<main id="main">
+  <h1>Universal Coloring</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#graph-theory">Graph Theory</a><a class="tag" href="../index.html#counting">Counting</a><a class="tag" href="../index.html#algorithms">Algorithms</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Put colours round a circle so that every pair of colours shows up next to each other somewhere as you go round.<br>
+    <strong>How to play:</strong> Click a dot to change its colour, and choose how many colours to use. Tick Show pairs to see which pairs you have made.
+  </div>
+
+  <div id="stage" class="stage">
+    <div id="boardWrap">
+      <div id="board" role="group" aria-label="A circle of colour dots; use arrow keys to move between dots and press Enter to change one"></div>
+    </div>
+    <p id="hintNote" hidden>From the row colour to the column colour: a filled dot means you have made that pair.</p>
+    <div id="arcs" role="img" aria-label="Pair chart" hidden></div>
+  </div>
+
+  <div class="controls">
+    <label>Colours <input id="nIn" type="number" min="2" max="6" step="1" value="4"></label>
+    <fieldset>
+      <legend>Show on dots</legend>
+      <label><input type="radio" name="show" value="colors" checked> colours</label>
+      <label><input type="radio" name="show" value="digits"> numbers</label>
+      <label><input type="radio" name="show" value="both"> both</label>
+    </fieldset>
+    <label><input id="hintIn" type="checkbox"> Show pairs</label>
+    <button id="newBtn" type="button" class="primary">Start over</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>With four colours there are sixteen ordered pairs of colours. The circle has sixteen dots, so it also has sixteen neighbour pairs. Can every possible pair be there at once? A circle like this is called a <a class="wiki-term" data-wiki="De_Bruijn_sequence" href="https://en.wikipedia.org/wiki/De_Bruijn_sequence" target="_blank" rel="noopener">de Bruijn sequence</a>.</p>
+
+      <h2>Count the gaps</h2>
+      <p>With <code>n</code> colours and <code>n&sup2;</code> dots there are exactly <code>n&sup2;</code> gaps between neighbouring dots, counting the gap from the last dot back to the first. There are also exactly <code>n&sup2;</code> ordered pairs of colours. So if all the pairs appear, each one appears <em>exactly once</em>. There is no room for a repeat. The logic test checked this for every colouring of 4 and 9 dots.</p>
+
+      <h2>Turn pairs into arrows</h2>
+      <p>Make a <a class="wiki-term" data-wiki="Directed_graph" href="https://en.wikipedia.org/wiki/Directed_graph" target="_blank" rel="noopener">directed graph</a> with one vertex for each colour. Draw an arrow from <code>a</code> to <code>b</code> whenever pair <code>a,b</code> occurs. Every arrow is present, including the loops from a colour to itself. Each vertex therefore has <code>n</code> arrows leaving and <code>n</code> arriving. Going round the circle is a closed walk that uses every arrow once: an <a class="wiki-term" data-wiki="Eulerian_path" href="https://en.wikipedia.org/wiki/Eulerian_path" target="_blank" rel="noopener">Euler cycle</a>. Reading the circle the other way just reverses every arrow, so the pairs are all there in that direction too.</p>
+
+      <h2>A walk that always finishes</h2>
+      <p>Because incoming and outgoing arrows balance, you can build the cycle by taking unused arrows from any starting colour and splicing in small closed loops when you come back early. That is Hierholzer's method. The applet page says there is "no way to get stuck"; taken literally that is not quite right. With two colours, the greedy walk <code>0,0,1,0</code> stops back at 0 after three of the four arrows, missing <code>1,1</code>. What is true is that you can always splice that short loop in and finish. The test built the cycle from every starting colour for 2 to 6 colours and checked all <code>n&sup2;</code> pairs in both directions.</p>
+
+      <h2>What the test checked</h2>
+      <p>For 2 and 3 colours it tried all <code>2&#8308; = 16</code> and <code>3&#8311; = 19,683</code> colourings and compared its pair chart and its colour-changing move with a second, independent reading of the applet's own methods. For 4, 5 and 6 colours, where listing every colouring is impossible, it checked the constructed cycles and thousands of other colourings. It also confirmed that <code>n&sup2; &minus; 1</code> dots can never hold all <code>n&sup2;</code> pairs.</p>
+
+      <p class="tip">Set two colours and find a circle yourself. Then read it backwards: did you need to start again?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Combinatorics/UniversalColoring.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="universal-coloring-core.js"></script>
+<script src="universal-coloring.js"></script>
+</body>
+</html>
