@@ -947,7 +947,23 @@ const GAMES = {
     await page.click("#kruskalBtn");
     await page.click('[data-edge="0"]');
   },
+  "a-bisector": (page) => dragFirstHandle(page),
+  "ab-on-circumcircle": (page) => dragFirstHandle(page),
+  "abul-wafa-pythagoras": (page) => dragFirstHandle(page),
+  "adams-circle": (page) => dragFirstHandle(page),
+  "adjacent-incircles": (page) => dragFirstHandle(page),
+  "al-nayrizi-construction": (page) => dragFirstHandle(page),
+  "altitude-and-circumcircle": (page) => dragFirstHandle(page),
+  "altitude-mirror": (page) => dragFirstHandle(page),
+  "altitude-mirror-2": (page) => dragFirstHandle(page),
+  angle: (page) => dragFirstHandle(page),
 };
+
+/** Move the first draggable point of an illustration with the keyboard. */
+async function dragFirstHandle(page) {
+  await page.locator("#board .geom-handle").first().focus();
+  await page.keyboard.press("ArrowRight");
+}
 
 /** The shape of a value: its fields and kinds, without the values. */
 function shape(value) {

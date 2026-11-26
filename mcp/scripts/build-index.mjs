@@ -483,6 +483,16 @@ const CORE_GLOBALS = {
   "wgraphs/wgraphs-core.js": ["WgraphsCore"],
   "zeros-and-nines/zeros-and-nines-core.js": ["ZerosAndNinesCore"],
   "arith-magic/arith-magic-core.js": ["ArithMagicCore"],
+  "a-bisector/a-bisector-core.js": ["ABisectorCore"],
+  "ab-on-circumcircle/ab-on-circumcircle-core.js": ["AbOnCircumcircleCore"],
+  "abul-wafa-pythagoras/abul-wafa-pythagoras-core.js": ["AbulWafaPythagorasCore"],
+  "adams-circle/adams-circle-core.js": ["AdamsCircleCore"],
+  "adjacent-incircles/adjacent-incircles-core.js": ["AdjacentIncirclesCore"],
+  "al-nayrizi-construction/al-nayrizi-construction-core.js": ["AlNayriziConstructionCore"],
+  "altitude-and-circumcircle/altitude-and-circumcircle-core.js": ["AltitudeAndCircumcircleCore"],
+  "altitude-mirror/altitude-mirror-core.js": ["AltitudeMirrorCore"],
+  "altitude-mirror-2/altitude-mirror-2-core.js": ["AltitudeMirror2Core"],
+  "angle/angle-core.js": ["AngleCore"],
 };
 
 const games = [];

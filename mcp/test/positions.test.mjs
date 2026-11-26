@@ -2093,6 +2093,16 @@ check("very-tiles: one misplaced answer makes the patterns disagree", read["very
 check("voting: Borda gives B the most points on the saved schedule", read.voting?.method === "borda" && read.voting.current.winners.join() === "B" && read.voting.finished === false);
 check("two-numbers: an even sum names the even number 8", read["two-numbers"]?.agreesWithSaved === true && read["two-numbers"].reading.honestPick === 8 && read["two-numbers"].finished === true);
 check("water: six pours from the start, five from the saved position", read.water?.fewestPoursFromFreshStart === 6 && read.water.poursToTargetFromHere === 5 && read.water.target === 4);
+check("a-bisector: Ceva's product is one at the incenter", read["a-bisector"]?.reading.cevaProduct === 1 && read["a-bisector"].reading.degenerate === false);
+check("ab-on-circumcircle: AD, BE and CF meet EF, FD and DE at right angles", read["ab-on-circumcircle"]?.reading.perpendiculars.allRight === true && read["ab-on-circumcircle"].reading.incenter.onAllThree === true);
+check("abul-wafa-pythagoras: the seven pieces tile the hypotenuse square", read["abul-wafa-pythagoras"]?.piecesTileSquare === true && Math.abs(read["abul-wafa-pythagoras"].areas.aSquare + read["abul-wafa-pythagoras"].areas.bSquare - read["abul-wafa-pythagoras"].areas.hypotenuseSquare) < 1e-6);
+check("adams-circle: the six points share a circle centred at the incenter", read["adams-circle"]?.concyclic === true && read["adams-circle"].centerIsIncenter === true);
+check("adjacent-incircles: the unlevelled fan has unequal first-level radii", read["adjacent-incircles"]?.savedRadiiMatchCore === true && read["adjacent-incircles"].theoremHolds === false);
+check("al-nayrizi-construction: three marks cut the segment into four equal parts", read["al-nayrizi-construction"]?.reading.allCrossingsLandOnCuts === true && read["al-nayrizi-construction"].reading.equallySpaced === true && read["al-nayrizi-construction"].reading.parts === 4);
+check("altitude-and-circumcircle: the three reflections lie on the circumcircle", read["altitude-and-circumcircle"]?.checks.reflectionsOnCircumcircle < 1e-9 && read["altitude-and-circumcircle"].checks.allChecksWithinTolerance === true);
+check("altitude-mirror: the altitude bisects the angle and AF equals AG", read["altitude-mirror"]?.mirror.rayAnglesEqual === true && read["altitude-mirror"].mirror.AFequalsAG === true);
+check("altitude-mirror-2: the Pascal line is straight and EF bisects angle CFD", read["altitude-mirror-2"]?.pascal.collinear === true && read["altitude-mirror-2"].angle.equalHalves === true);
+check("angle: a thirty-degree turn is acute", read.angle?.reading.text === "30° (acute)" && read.angle.reading.measuredFromRays === 30);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
