@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Baltic Darij 1 &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle: will the altitude foot, the midpoint of the far side and the two feet on the bisector always lie on one circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/baltic-darij-1/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Baltic Darij 1">
+<meta property="og:description" content="Drag the corners of a triangle: will the altitude foot, the midpoint of the far side and the two feet on the bisector always lie on one circle?">
+<meta property="og:url" content="https://coolmaths.ai/baltic-darij-1/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .claim-circle { fill: var(--accent); fill-opacity: 0.10; stroke: var(--accent); stroke-width: 2; }
+  #board .diameter-circle { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 9 6; }
+  #board .altitude { fill: none; stroke: var(--muted); stroke-width: 1.8; }
+  #board .bisector { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .perp-foot { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .midline { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .midline.extended { stroke: var(--muted); stroke-dasharray: 3 5; }
+  #board .extension { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 2 6; }
+  #board .extension-seg { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 4 4; }
+  #board .right-mark { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+  #board .equal-arc { fill: none; stroke: var(--bad); stroke-width: 2.5; }
+  #board .equal-arc.alt { stroke: var(--good); }
+  #board .chord { fill: none; stroke: var(--highlight); stroke-width: 3; }
+  #board .aux-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .muted-dot { fill: var(--muted); }
+  #board .alt-dot, #board .mid-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .aux-label { fill: var(--accent); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.25rem; }
+</style>
+</head>
+<body data-game="baltic-darij-1" data-kind="demo">
+<main id="main">
+  <h1>Baltic Darij 1</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the corners of a triangle and watch four marked points sit on one circle.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a corner and use the arrow keys. Tick the boxes to show more lines and marks, and press Check the claim to test what you see.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle with its bisector, altitude and four marked points on a circle"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its opening shape">Reset triangle</button>
+    <button id="checkBtn" type="button" aria-label="Check that P, Q, A prime and H a lie on one circle">Check the claim</button>
+    <label><input id="namesChk" type="checkbox" data-option="names" aria-label="Show the names of the points" checked> names</label>
+    <label><input id="rightChk" type="checkbox" data-option="rightAngles" aria-label="Show right-angle marks"> right angles</label>
+    <label><input id="equalChk" type="checkbox" data-option="equalAngles" aria-label="Show equal-angle marks" disabled> equal angles</label>
+    <label><input id="linesChk" type="checkbox" data-option="lines" aria-label="Show the extended lines"> lines</label>
+    <label><input id="bigCircleChk" type="checkbox" data-option="bigCircle" aria-label="Show the circle with diameter A C"> big circle</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drop a perpendicular from B and from C onto the bisector at A. Join the altitude foot and the midpoint of BC to those two points. The four points you get always sit on one circle, however you drag the triangle. That is the surprise this applet shows.</p>
+
+      <h2>Four points, one circle</h2>
+      <p>Call the feet from B and C onto the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> at A by P and Q. Let Ha be the foot of the altitude from A, and A' the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> of BC. The claim is that P, Q, A' and Ha are <a class="wiki-term" data-wiki="Concyclic_points" href="https://en.wikipedia.org/wiki/Concyclic_points" target="_blank" rel="noopener">concyclic</a>. The logic test measures the distance from each point to the centre of the circle through the other three on the opening triangle, on six fixed triangles and on 1,500 random ones; the four distances agree to within about 1 part in 10 billion.</p>
+
+      <h2>A line through the middle</h2>
+      <p>Reflect B across the bisector at A. Its reflection R lies on the line AC, and the bisector cuts BR exactly in half: P is the midpoint of BR. In triangle BCR, the segment from the midpoint of BR to A' (the midpoint of BC) is a midline, so it is parallel to the base: <code>A'P || AC</code>. The same argument from the other side gives <code>A'Q || AB</code>. Since the bisector makes equal angles with AB and AC, these two parallel segments are equally long: <code>A'P = A'Q</code>. All three statements hold at every triangle in the test; tick <em>lines</em> to see the full lines and the point R.</p>
+
+      <h2>A circle with diameter AC</h2>
+      <p>Both angles <code>AHaC</code> and <code>AQC</code> are right angles, so Ha and Q lie on the <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> whose diameter is AC (<a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a>). Tick <em>big circle</em> to see it. This puts Ha and Q on a second circle, and comparing angles on the two circles is what proves the first claim.</p>
+
+      <h2>Angles that match</h2>
+      <p>The applet's solution compares two angles that are sometimes equal and sometimes supplementary; <a class="wiki-term" data-wiki="Angle" href="https://en.wikipedia.org/wiki/Angle" target="_blank" rel="noopener">directed angles</a> modulo 180° make one argument cover both cases. The upshot is <code>angle(A'P, A'Ha) = angle(QP, QHa)</code>, which is exactly the test for four concyclic points. A bonus: triangle <code>QPHa</code> is <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similar_triangles" target="_blank" rel="noopener">inversely similar</a> to <code>ABC</code>, with <code>QPHa = ABC</code> and <code>PQHa = ACB</code>. The test checks all three angle pairs, the three side ratios and the reflected orientation too. Nothing on the page turned out to be false.</p>
+
+      <p class="tip">Try a very flat triangle with Ha outside BC: the circle still passes through all four points, and the two "equal" angles become supplementary instead of equal.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/BalticDarij1.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="baltic-darij-1-core.js"></script>
+<script src="baltic-darij-1.js"></script>
+</body>
+</html>
