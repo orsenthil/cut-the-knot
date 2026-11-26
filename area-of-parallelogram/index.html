@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Area Of Parallelogram &mdash; coolmaths</title>
+<meta name="description" content="How much space does a slanted box cover? Drag its corners and discover why a parallelogram's area is one side times the distance to the opposite side.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/area-of-parallelogram/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Area Of Parallelogram">
+<meta property="og:description" content="How much space does a slanted box cover? Drag its corners and discover why a parallelogram's area is one side times the distance to the opposite side.">
+<meta property="og:url" content="https://coolmaths.ai/area-of-parallelogram/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .para { fill: var(--highlight); opacity: 0.14; }
+  #board .blue { fill: var(--accent); opacity: 0.38; stroke: var(--accent); stroke-width: 1.5; }
+  #board .pink { fill: var(--bad); opacity: 0.35; stroke: var(--bad); stroke-width: 1.5; }
+  #board .rect { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .base { stroke: var(--accent); stroke-width: 3.5; }
+  #board .top { stroke: var(--ink); stroke-width: 2; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .height { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .foot { fill: var(--muted); stroke: var(--stage); stroke-width: 1; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="area-of-parallelogram" data-kind="demo">
+<main id="main">
+  <h1>Area Of Parallelogram</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: drag a corner and the shape stays a slanted box with two pairs of matching sides.<br>
+    <strong>How to play:</strong> Drag the corners A, B, C and D, or focus a corner and use the arrow keys. Tick “Cut and paste” to see the rectangle made by the two blue pieces.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A parallelogram whose four corners can be dragged, the feet of two perpendiculars onto its base, and the blue pieces that make a rectangle"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="cut" type="checkbox" checked> Cut and paste</label>
+    <label><input id="names" type="checkbox"> Names</label>
+    <button id="newBtn" type="button">New shape</button>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag a corner: the slanted box changes shape, but the two blue pieces are always the same size. Move one across and the box turns into an ordinary rectangle, so its space is easy to count.</p>
+
+      <h2>The area rule</h2>
+      <p>A rectangle's <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> is its two sides multiplied. A <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a> is a rectangle that has been slid sideways: its area is one side times the distance straight across to the parallel side opposite it. Here the bottom side BC is the base and the dotted line from A down to F is that distance, the <code>height</code>. The page states exactly this: <code>Area = base &times; height</code>, and the logic test confirms it for more than three thousand shapes.</p>
+
+      <h2>Cut and paste</h2>
+      <p>Let F be the foot of the perpendicular from A to the line through BC, and G the foot from D. The two blue right triangles ABF and DCG are <a class="wiki-term" data-wiki="Congruence_(geometry)" href="https://en.wikipedia.org/wiki/Congruence_(geometry)" target="_blank" rel="noopener">congruent</a>: each has the same height and the same slant, so <code>Area(ABF) = Area(DCG)</code>. Cut ABF off the left end and put it on the right end, and the parallelogram becomes the green <a class="wiki-term" data-wiki="Rectangle" href="https://en.wikipedia.org/wiki/Rectangle" target="_blank" rel="noopener">rectangle</a> AFGD. The page writes this as <code>Area(ABCD) = Area(ABF) + Area(AFCD) = Area(DCG) + Area(AFCD) = Area(AFGD)</code>. Since AFGD is <code>FG &times; height</code> and FG is the same length as BC, the two areas are equal. Tick the box to see that rectangle.</p>
+
+      <h2>When a foot falls outside</h2>
+      <p>Drag the top far to one side and the foot F leaves the bottom segment: the page calls this Figure 2. The blue triangles now overlap, so the simple addition above does not work as written. The page gives three fixes: subtract the small pink triangle (<code>Area = Area(AKD) + Area(ABF) - Area(CFK)</code>), count overlapping pieces with a negative sign, or use the <a class="wiki-term" data-wiki="Trapezoid" href="https://en.wikipedia.org/wiki/Trapezoid" target="_blank" rel="noopener">trapezoid</a> under both top corners and remove one blue triangle: <code>Area = Area(BGDA) - Area(DCG)</code>. The logic test checks all three equalities, for Figure 1 and Figure 2 alike. (The article's letters put the base on AB; this drawing puts it on BC, with F and G still the two feet, so the same equalities appear with the letters shifted one place.)</p>
+
+      <h2>Half the parallelogram</h2>
+      <p>The two diagonals cross at the middle of the box. Each <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a> cut by a diagonal is exactly half the parallelogram, so the page's corollary follows at once: <code>Area of triangle = base &times; height / 2</code>. Watch the status line as you drag: the two halves stay equal.</p>
+
+      <p class="tip">Try this: press New shape several times, then drag the top-left corner past the bottom-right one. The pink overlap appears, yet the number in the status line still matches base times height.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/AreaOfParallelogram.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="area-of-parallelogram-core.js"></script>
+<script src="area-of-parallelogram.js"></script>
+</body>
+</html>
