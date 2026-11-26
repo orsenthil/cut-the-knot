@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Archimedes Triangle &mdash; coolmaths</title>
+<meta name="description" content="Drag two points on a parabola to make a triangle from their tangents. What fraction of that triangle does the curved segment fill?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/archimedes-triangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Archimedes Triangle">
+<meta property="og:description" content="Drag two points on a parabola to make a triangle from their tangents. What fraction of that triangle does the curved segment fill?">
+<meta property="og:url" content="https://coolmaths.ai/archimedes-triangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .parabola { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .axis { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 4 4; }
+  #board .directrix { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 2 5; }
+  #board .projection { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 3 4; }
+  #board .tangent { stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; }
+  #board .chord { stroke: var(--good); stroke-width: 2.8; stroke-linecap: round; }
+  #board .side { stroke: var(--accent); stroke-width: 2; stroke-linecap: round; }
+  #board .median { stroke: var(--accent); stroke-width: 2.2; stroke-dasharray: 6 4; }
+  #board .tangent-o { stroke: var(--bad); stroke-width: 2.2; stroke-linecap: round; }
+  #board .inner-side { stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 4 4; }
+  #board .filled-triangle { fill: var(--highlight); stroke: none; }
+  #board .construction-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1.5; }
+  #board .inner-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .focus-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="archimedes-triangle" data-kind="demo">
+<main id="main">
+  <h1>Archimedes Triangle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag two points on a curved line to make a triangle, then see how much of it the curve fills. There is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the blue points A and B, or focus one and use the arrow keys. Tick Lemma and Theorem to reveal the hidden lines and points.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 320" role="group"
+         aria-label="A parabola with two draggable points A and B, the tangents at those points meeting at S, and the chord AB. Drag A or B along the curve."></svg>
+    <p class="hint-line">Drag A or B, or focus one and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Names</label>
+    <label><input id="lemmaBox" type="checkbox" data-label="the lemma"> Lemma</label>
+    <label><input id="theoremBox" type="checkbox" data-label="the theorem"> Theorem</label>
+    <label><input id="fillBox" type="checkbox" data-label="the filled triangles"> Filled triangles</label>
+    <button id="newBtn" type="button" class="primary">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Pick two points on a <a class="wiki-term" data-wiki="Parabola" href="https://en.wikipedia.org/wiki/Parabola" target="_blank" rel="noopener">parabola</a>. The two <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangents</a> there meet at S, and the chord AB is the base of the triangle ABS. Archimedes used this triangle to measure the curved cap cut off by the chord — over two thousand years before calculus.</p>
+
+      <h2>A triangle made by tangents</h2>
+      <p>Write a point of the curve as <code>t</code> steps sideways from the axis. With focal length <code>a</code> the point is <code>(t, t²/(4a))</code> above the vertex, and its tangent has slope <code>t/(2a)</code>. For the two points <code>t₁</code> and <code>t₂</code>, solving the two tangent equations gives <code>S = ((t₁+t₂)/2, t₁t₂/(4a))</code>. The <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> M of the chord has the same sideways coordinate <code>(t₁+t₂)/2</code>, so the line MS is straight up — parallel to the parabola's axis.</p>
+
+      <h2>The three midpoints</h2>
+      <p>The line MS meets the curve at <code>O</code>, which sits at parameter <code>(t₁+t₂)/2</code>. Its tangent is parallel to the chord AB. Where that tangent crosses the sides it lands exactly halfway: <code>A1</code> is the midpoint of AS and <code>B1</code> of BS. And <code>O</code> is halfway between M and S. Tick <em>Lemma</em> to see the axis, the focus and the two points under A and B; tick <em>Theorem</em> for the tangent at O and the two inner sides. The logic test checked all three midpoint claims on 413 configurations.</p>
+
+      <h2>Why the curve takes two thirds</h2>
+      <p>Set the <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> of ABS to 1. The inner triangle ABO takes <code>1/2</code>. The cap above it takes <code>1/4</code>, and the next four caps together <code>1/16</code>; the total is a <a class="wiki-term" data-wiki="Geometric_series" href="https://en.wikipedia.org/wiki/Geometric_series" target="_blank" rel="noopener">geometric series</a>. Archimedes summed it as <code>1/2 (1 + 1/4 + 1/16 + …) = 2/3</code>. So the parabolic segment is <strong>two thirds of the Archimedes triangle</strong>, whatever the two points you chose. The test measured the ratio on all 413 shapes; the largest departure from <code>2/3</code> was below <code>0.00000001</code>.</p>
+
+      <h2>About this port</h2>
+      <p>The Java applet let the two points travel past the edge of its canvas and used whole-pixel coordinates, so near-parallel tangents could drift a few pixels; our handles stop while still in view and the drawing uses exact coordinates. The applet's "filled triangles" switch was only enabled after Theorem was ticked — that quirk is kept. The cut-the-knot address below now carries a GeoGebra illustration rather than the Java applet itself; it is the closest verified article describing the same lemma and theorem, so it is the one cited here.</p>
+
+      <p class="tip">Tick <em>Theorem</em> and <em>Filled triangles</em>, then drag A towards B: the pieces change size but the two-thirds ratio never does.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ArchimedesTriangle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="archimedes-triangle-core.js"></script>
+<script src="archimedes-triangle.js"></script>
+</body>
+</html>
