@@ -192,6 +192,16 @@ check("zeros-and-ones-array: the most possible array was shown for 3 by 3, 4 sum
 check("adding-functions: the difference was chosen and its height at the marker is f - g", read["adding-functions"]?.operation === "f - g" && Math.abs(read["adding-functions"].result - (read["adding-functions"].f - read["adding-functions"].g)) < 1e-9);
 check("orthogonal-latin-squares: the solution for 4 is saved, Latin and orthogonal", read["orthogonal-latin-squares"]?.size === 4 && read["orthogonal-latin-squares"].solved === true && read["orthogonal-latin-squares"].repeats === 0);
 check("kochs-snowflake: N = 4 has 192 segments and an outline 7.11 sides long", read["kochs-snowflake"]?.n === 4 && read["kochs-snowflake"].segments === 192 && Math.abs(read["kochs-snowflake"].totalLength - 64 / 9) < 1e-9);
+check("pascal-triangle: a dot pressed in row 5 shows its two parents adding up", read["pascal-triangle"]?.pressed?.sumOfParents === read["pascal-triangle"].pressed.value && read["pascal-triangle"].pressed.parents.length === 2 && read["pascal-triangle"].lastRowSum === 2 ** (read["pascal-triangle"].rows - 1));
+check("peasant-multiplication: 85 x 18 = 1530 in 7 rows, binary 1010101", read["peasant-multiplication"]?.product === Number(read["peasant-multiplication"].a) * Number(read["peasant-multiplication"].b) && read["peasant-multiplication"].binaryShown === true);
+check("pendula-chaos: a saved step, its direction and the number of levels", read["pendula-chaos"]?.dots >= 5 && typeof read["pendula-chaos"].levelsNow === "number" && typeof read["pendula-chaos"].direction === "string");
+check("perm: the saved permutation's inverse and inversions", read.perm?.f.length === read.perm.n && read.perm.inversions.length === read.perm.n && read.perm.inversions[read.perm.n - 1] === 0);
+check("perm-by-trans: one shuttle between poles 1 and 3 is an odd permutation with 2 cycles of length 2 and 1", read["perm-by-trans"]?.shuttles === 1 && read["perm-by-trans"].parity === "odd" && read["perm-by-trans"].fewestShuttlesForThisPermutation === 1);
+check("perm-group: conjugating g by f keeps g's cycle shape", read["perm-group"]?.shapeG.join() === read["perm-group"].shapeOfConjugate.join());
+check("perm-on-circle: one swap made, so the parity is odd or even by cycle count", read["perm-on-circle"]?.swapsSoFar === 1 && read["perm-on-circle"].parity === ((read["perm-on-circle"].n - read["perm-on-circle"].numberOfCycles) % 2 === 0 ? "even" : "odd"));
+check("perm-product: fg has the same length as f and g", read["perm-product"]?.fg.length === read["perm-product"].n && typeof read["perm-product"].commute === "boolean");
+check("pick: the 6 by 4 rectangle has B = 20, I = 15 and area 24", read.pick?.simple === true && read.pick.B === 20 && read.pick.I === 15 && read.pick.area === "24");
+check("pigeonhole: five dots always have a pair with a lattice midpoint", read.pigeonhole?.dots === 5 && read.pigeonhole.pair?.length === 2 && read.pigeonhole.noPair === false);
 
 // The ten newest ports, on positions saved by their own pages.
 check("chvatal: one diagonal on a pentagon", read.chvatal?.n === 5 && read.chvatal.diagonalsPlaced === 1 && read.chvatal.diagonalsNeeded === 2 && read.chvatal.complete === false);
@@ -1823,6 +1833,30 @@ const at = (slug, state) => describePosition(slug, state, 1);
   check("orthogonal-latin-squares: size 6 has no solution at all (Euler's 36 officers)", ol6.solutionExistsForThisSize === false && ol6.solved === false);
   const ks = at("kochs-snowflake", { n: 8 });
   check("kochs-snowflake: N = 8 has 49,152 segments and area under 8/5", ks.segments === 49152 && ks.areaOverTriangle < 1.6 && ks.areaOverTriangle > 1.59);
+  const pt = at("pascal-triangle", { rows: 8, form: "symmetric", arrows: false, pick: [5, 2] });
+  check("pascal-triangle: C(5,2) = 4 + 6 = 10 and the last row of 8 sums to 128", pt.pressed.value === 10 && pt.pressed.sumOfParents === 10 && pt.lastRowSum === 128 && pt.lastRow.length === 8);
+  const pm = at("peasant-multiplication", { a: 85, b: 18, digits: 2, binary: true, autonomous: false });
+  check("peasant-multiplication: 85 x 18 = 1530, binary 1010101, 7 rows against 5 swapped", pm.product === 1530 && pm.binaryOfA === "1010101" && pm.rows === 7 && pm.rowsIfSwapped === 5);
+  const pc = at("pendula-chaos", { n: 20, t: 1, dir: 0, step: 0 });
+  check("pendula-chaos: at step 0 all the dots are in line", pc.levelsNow === 1 && pc.cyclesCompleted === 0 && pc.direction === "stopped");
+  const pe = at("perm", { n: 9, f: [5, 9, 1, 8, 2, 6, 4, 7, 3], view: "table" });
+  check("perm: the page's example has inversions 2,3,6,4,0,2,2,1,0 and cycles (1 5 2 9 3)(4 8 7)(6)", pe.inversions.join() === "2,3,6,4,0,2,2,1,0" && pe.cycles === "(1 5 2 9 3)(4 8 7)(6)");
+  const bt = at("perm-by-trans", { n: 5, bars: [{ h: 2, a: 1, b: 3 }, { h: 4, a: 3, b: 5 }] });
+  check("perm-by-trans: shuttles (1,3) then (3,5) send 1 to 5, an even permutation with one 3-cycle", bt.permutation[0] === 5 && bt.cycles === "(1 5 3)(2)(4)" && bt.parity === "even" && bt.fewestShuttlesForThisPermutation === 2);
+  const pg = at("perm-group", { n: 3, f: [2, 3, 1], g: [2, 1, 3], cycles: true });
+  check("perm-group: (1 2) conjugated by (1 2 3) is (2 3)", pg.conjugateOfGByF.join() === "1,3,2" && pg.shapeOfConjugate.join() === "2,1");
+  const po = at("perm-on-circle", { n: 3, f: [2, 3, 1], moves: 0 });
+  check("perm-on-circle: the 3-cycle is an even permutation with one cycle", po.numberOfCycles === 1 && po.parity === "even");
+  const pp = at("perm-product", { n: 3, f: [2, 3, 1], g: [1, 3, 2] });
+  check("perm-product: (1 2 3) then (2 3) is {3,2,1}, and it does not equal gf", pp.fg.join() === "3,2,1" && pp.commute === false);
+  const pk = at("pick", { poly: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 0, y: 1 }], mode: "add" });
+  check("pick: the unit right triangle has B = 3, I = 0 and area 0.5", pk.simple === true && pk.B === 3 && pk.I === 0 && pk.area === "0.5");
+  const pk2 = at("pick", { poly: [{ x: 0, y: 0 }, { x: 2, y: 2 }, { x: 2, y: 0 }, { x: 0, y: 2 }], mode: "add" });
+  check("pick: a bow tie is not simple", pk2.simple === false);
+  const ph = at("pigeonhole", { n: 4, points: [{ x: 2, y: 2 }, { x: 5, y: 2 }, { x: 2, y: 5 }, { x: 5, y: 5 }] });
+  check("pigeonhole: the four dots in four boxes have no pair", ph.noPair === true && ph.distinctBoxes === 4);
+  const ph5 = at("pigeonhole", { n: 5, points: [{ x: 2, y: 2 }, { x: 5, y: 2 }, { x: 2, y: 5 }, { x: 5, y: 5 }, { x: 4, y: 4 }] });
+  check("pigeonhole: a fifth dot in the (even, even) box makes a pair with (2,2)", ph5.pair.join() === "1,5" && ph5.midpoint.x === 3 && ph5.midpoint.y === 3);
 }
 }
 }

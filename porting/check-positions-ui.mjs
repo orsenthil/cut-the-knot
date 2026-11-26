@@ -564,6 +564,29 @@ const GAMES = {
     await page.fill("#nIn", "4");
     await page.dispatchEvent("#nIn", "input");
   },
+  "pascal-triangle": async (page) => {
+    await page.locator("#board circle.dot").nth(7).click();
+  },
+  "peasant-multiplication": async (page) => {
+    await page.check("#binIn");
+  },
+  "pendula-chaos": null,
+  perm: null,
+  "perm-by-trans": async (page) => {
+    await page.locator('#board circle[aria-label="Pole 1, height 1"]').click();
+    await page.locator('#board circle[aria-label="Pole 3, height 1"]').click();
+  },
+  "perm-group": null,
+  "perm-on-circle": async (page) => {
+    await page.locator("#board circle.node").nth(0).click();
+    await page.locator("#board circle.node").nth(1).click();
+  },
+  "perm-product": null,
+  pick: async (page) => {
+    const box = await page.locator("#board").boundingBox();
+    for (const [x, y] of [[2, 2], [8, 2], [8, 6], [2, 6]]) await page.mouse.click(box.x + ((24 + x * 32) / 464) * box.width, box.y + ((24 + y * 32) / 336) * box.height);
+  },
+  pigeonhole: null,
   "isosceles-fallacy": async (page) => {
     await page.click("#modeCheck");
   },

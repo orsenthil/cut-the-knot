@@ -404,6 +404,16 @@ const CORE_GLOBALS = {
   "adding-functions/adding-functions-core.js": ["FunctionsCore"],
   "orthogonal-latin-squares/orthogonal-latin-squares-core.js": ["LatinCore"],
   "kochs-snowflake/kochs-snowflake-core.js": ["KochCore"],
+  "pascal-triangle/pascal-triangle-core.js": ["PascalTriangleCore"],
+  "peasant-multiplication/peasant-multiplication-core.js": ["PeasantCore"],
+  "pendula-chaos/pendula-chaos-core.js": ["PendulaCore"],
+  "perm/perm-core.js": ["PermCore"],
+  "perm-by-trans/perm-by-trans-core.js": ["PermTransCore"],
+  "perm-group/perm-group-core.js": ["PermGroupCore"],
+  "perm-on-circle/perm-on-circle-core.js": ["PermCircleCore"],
+  "perm-product/perm-product-core.js": ["PermProductCore"],
+  "pick/pick-core.js": ["PickCore"],
+  "pigeonhole/pigeonhole-core.js": ["PigeonholeCore"],
 };
 
 const games = [];
