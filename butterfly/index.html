@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Butterfly &mdash; coolmaths</title>
+<meta name="description" content="Drag the nexus M and the two spikes of a butterfly made from circles. Is M always the midpoint of the segment the wings cut out, even with more circles and a new pairing?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/butterfly/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Butterfly">
+<meta property="og:description" content="Drag the nexus M and the two spikes of a butterfly made from circles. Is M always the midpoint of the segment the wings cut out, even with more circles and a new pairing?">
+<meta property="og:url" content="https://coolmaths.ai/butterfly/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .bf-circle { fill: none; stroke: var(--muted); stroke-width: 1.6; }
+  #board .bf-classifier { stroke: var(--ink); stroke-width: 2.5; }
+  #board .bf-spike { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .bf-wing { stroke: var(--accent); stroke-width: 2; stroke-opacity: 0.85; }
+  #board .bf-wing.alt { stroke: var(--good); }
+  #board .bf-x { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .bf-y { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .bf-chord { fill: var(--muted); }
+  #board .bf-right { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 17px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls label { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; min-width: 0; }
+  .controls input[type="range"] { width: min(9rem, 55vw); min-width: 0; accent-color: var(--accent); }
+  .controls output { min-width: 1.5rem; text-align: center; font-weight: 600; }
+</style>
+</head>
+<body data-game="butterfly" data-kind="demo">
+<main id="main">
+  <h1>Butterfly</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#permutations">Permutations</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Lines cross a stack of circles and make a shape like a butterfly. Watch the place where the lines meet.<br>
+    <strong>How to play:</strong> Drag M, A or C with a mouse or finger, or focus a point and use the arrow keys. Change the number of circles, press Permute, then press Check the claim.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Concentric circles with two spikes through the point M and a butterfly of crossing wings"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="nRange">Circles: <input id="nRange" type="range" min="1" max="10" value="2" step="1" aria-label="Number of circles, from 1 to 10"></label>
+    <output id="nOut" for="nRange" aria-label="Current number of circles">2</output>
+    <button id="permuteBtn" type="button" aria-label="Permute the pairing of the butterfly wings">Permute</button>
+    <button id="checkBtn" type="button" aria-label="Check the butterfly equality for this drawing">Check the claim</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the butterfly to a new starting shape">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A butterfly looks like a drawing game, but one small length never changes when you move its wings. The surprise is that the point in the middle stays exactly halfway between the two places where the wings cross the horizontal line.</p>
+
+      <h2>One circle: the plain butterfly</h2>
+      <p>Take a <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord</a> PQ of a circle and let M be its midpoint. Draw two more chords through M, from A to B and from C to D. Join A to D and C to B; they meet PQ at X and Y. The <a class="wiki-term" data-wiki="Butterfly_theorem" href="https://en.wikipedia.org/wiki/Butterfly_theorem" target="_blank" rel="noopener">butterfly theorem</a> says M is also the midpoint of XY: <code>MX = MY</code>. With one circle on the page, the logic test checks this on hundreds of drawings and it holds every time.</p>
+
+      <h2>Why the midpoint stays put</h2>
+      <p>M is the midpoint of PQ because the line PQ is at right angles to the radius OM. For every chord AB through M, the two pieces on either side of M multiply to the same number, whichever way the chord is tilted: <code>MA &times; MB = r&sup2; - OM&sup2;</code>. That is the <a class="wiki-term" data-wiki="Power_of_a_point" href="https://en.wikipedia.org/wiki/Power_of_a_point" target="_blank" rel="noopener">power of the point</a> M inside the circle. Similar triangles then give <code>MX&sup2;/MY&sup2; = (r&sup2; - MX&sup2;)/(r&sup2; - MY&sup2;)</code>, so <code>MX = MY</code>. The test checks the product on both spikes of every circle.</p>
+
+      <h2>More circles, any pairing</h2>
+      <p>The applet actually shows the 2N-wing version: N circles share the center O, and two spikes through M cut circle i in A<sub>i</sub>, B<sub>i</sub> and C<sub>i</sub>, D<sub>i</sub>. Pair A<sub>i</sub> with D<sub>p(i)</sub> and C<sub>i</sub> with B<sub>p(i)</sub> for any <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">permutation</a> p. If X<sub>i</sub> and Y<sub>i</sub> are where those lines cross PQ, then <code>1/MX&#8321; + &hellip; + 1/MX<sub>N</sub> = 1/MY&#8321; + &hellip; + 1/MY<sub>N</sub></code>. The logic test checks this for all N from 1 to 10 and, for N up to 6, tries every permutation: the sum never changes. For N = 1 the formula says <code>1/MX = 1/MY</code>, which is the plain butterfly theorem again.</p>
+
+      <h2>What breaks it</h2>
+      <p>The equality needs M to be the midpoint of the chord in <em>each</em> circle. The applet starts with M on the line through O at right angles to PQ, so that is true. Drag M sideways and it stops being true: the test checks that the two sums then differ. This is a feature of the original applet, not a mistake in the theorem. The original page prints the theorem and five proofs; the applet itself sits on its <a href="https://www.cut-the-knot.org/Curriculum/Geometry/Butterfly.shtml" target="_blank" rel="noopener">2N-Wing Butterfly Problem</a> page, while the proofs are on the <a href="https://www.cut-the-knot.org/pythagoras/Butterfly.shtml" target="_blank" rel="noopener">Butterfly Theorem</a> article.</p>
+
+      <p class="tip">Try one circle first and press Check the claim. Then set the slider to ten circles and press Permute: the butterfly changes, but the two sums still agree.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Butterfly.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="butterfly-core.js"></script>
+<script src="butterfly.js"></script>
+</body>
+</html>
