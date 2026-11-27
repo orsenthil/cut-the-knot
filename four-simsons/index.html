@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Four Simsons &mdash; coolmaths</title>
+<meta name="description" content="Drag four corners round a circle. Do the four nine-point circles and four Simson lines really all pass through one dot?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/four-simsons/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Four Simsons">
+<meta property="og:description" content="Drag four corners round a circle. Do the four nine-point circles and four Simson lines really all pass through one dot?">
+<meta property="og:url" content="https://coolmaths.ai/four-simsons/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+    margin: 0 auto;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 6; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .nine-circle { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .simson { stroke: var(--good); stroke-width: 3; cursor: pointer; }
+  #board .simson.selected { stroke: var(--highlight); stroke-width: 5; }
+  #board .simson:focus-visible { outline: none; stroke: var(--ink); stroke-width: 7; }
+  #board .highlight-side { fill: none; stroke: var(--highlight); stroke-width: 6; stroke-linecap: round; }
+  #board .perp { stroke: var(--bad); stroke-width: 2; }
+  #board .foot { fill: var(--bad); stroke: var(--stage); stroke-width: 1.5; }
+  #board .nine-center { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+</style>
+</head>
+<body data-game="four-simsons" data-kind="demo">
+<main id="main">
+  <h1>Four Simsons</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: four lines and four circles drawn from four corners on one ring all cross at a single dot.<br>
+    <strong>How to play:</strong> Drag A, B, C or D round the ring, or focus a corner and use the arrow keys. Tick the boxes to show the dots, circles and lines, then click a line to see why it is there.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Four draggable corners on a circle, with four nine-point circles, four nine-point centres and four Simson lines"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="centersBox" type="checkbox"> Nine-point centres</label>
+    <label><input id="circlesBox" type="checkbox"> Nine-point circles</label>
+    <label><input id="simsonsBox" type="checkbox"> Simson lines</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move a corner and the picture changes completely. Yet the four circles and four lines keep meeting in the same dot. What is that dot, and why can it never move away?</p>
+
+      <h2>Four corners, four triangles</h2>
+      <p>Four corners A, B, C, D on one circle make four triangles: BCD, CDA, DAB and ABC. Each triangle has an <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a> H<sub>A</sub> (the meeting point of its three altitudes) and a <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>. Halfway between its orthocenter and its circumcenter sits the nine-point centre: <code>N = (O + H) / 2</code>. The <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">nine-point circle</a> centred there passes through the midpoints of the triangle's sides. The small dots in the picture are N<sub>A</sub>, N<sub>B</sub>, N<sub>C</sub> and N<sub>D</sub>.</p>
+
+      <h2>Why the four circles meet</h2>
+      <p>The four centres N<sub>A</sub>N<sub>B</sub>N<sub>C</sub>N<sub>D</sub> form a shape exactly like ABCD, only half its size. Its circumradius is therefore <code>R/2</code>, where R is the radius of the circle through A, B, C, D. Every triangle's nine-point circle also has radius <code>R/2</code>. Four equal circles whose centres lie <code>R/2</code> from a common point must all pass through that point: the circumcenter of N<sub>A</sub>N<sub>B</sub>N<sub>C</sub>N<sub>D</sub>. That is the dot the circles share.</p>
+
+      <h2>Why the four lines meet there too</h2>
+      <p>Drop perpendiculars from A to the three sides of triangle BCD. When A lies on that triangle's circumcircle, the three feet lie in a row: that row is the <a class="wiki-term" data-wiki="Simson_line" href="https://en.wikipedia.org/wiki/Simson_line" target="_blank" rel="noopener">Simson line</a> of A. The shared dot is also the centre of the <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothety</a> that sends ABCD to the quadrilateral of the four orthocentres, so it is the midpoint of <code>AH<sub>A</sub></code>, and likewise for B, C and D. A known property of the Simson line puts it through that midpoint. Click a line to see the triangle and the three feet that make it.</p>
+
+      <h2>What the test found</h2>
+      <p>The page's exact claim is that in a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a> all eight objects concur. The logic test checks it independently on thousands of generated quadrilaterals, and compares every computed point with a second transcription of the applet's bytecode. It found no failure: the errors stay near <code>1e-9</code> times the size of the drawing. The page adds that for a non-cyclic quadrilateral the Simson lines turn into circles and the eight circles still concur; that was checked on hundreds of non-cyclic quadrilaterals too. The applet itself keeps its four corners on one circle and always draws a line through just two of the three feet, so this port does the same: the generalized circles are stated here, not drawn. Near a position where three corners almost line up, the construction is hidden rather than drawn with unreliable numbers.</p>
+
+      <p class="tip">Tick Simson lines, click the line of A, then drag A: the three perpendicular feet stay in a row while the triangle changes around them.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FourSimsons.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="four-simsons-core.js"></script>
+<script src="four-simsons.js"></script>
+</body>
+</html>
