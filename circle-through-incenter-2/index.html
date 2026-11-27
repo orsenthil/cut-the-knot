@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circle Through Incenter 2 &mdash; coolmaths</title>
+<meta name="description" content="A circle through two corners of a triangle and its incenter cuts the other sides again at X and Y. Drag the corners: why is AX always the same length as BY?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circle-through-incenter-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circle Through Incenter 2">
+<meta property="og:description" content="A circle through two corners of a triangle and its incenter cuts the other sides again at X and Y. Drag the corners: why is AX always the same length as BY?">
+<meta property="og:url" content="https://coolmaths.ai/circle-through-incenter-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circle { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .ext { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 6; }
+  #board .bisector { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 8 4; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .measure { fill: none; stroke: var(--good); stroke-width: 5; stroke-linecap: round; }
+  #board .premise { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .chord { fill: none; stroke: var(--good); stroke-width: 3; stroke-dasharray: 6 4; }
+  #board .angle-a { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .angle-b { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .hint-a { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .hint-b { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .cut { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .incenter { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .aux { fill: var(--highlight); stroke: var(--ink); stroke-width: 1; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="circle-through-incenter-2" data-kind="demo">
+<main id="main">
+  <h1>Circle Through Incenter 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: a circle through two corners and the middle point of a triangle cuts the other two sides so that two lengths come out equal.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a point and use the arrow keys. Tick the boxes to show the equal lengths, the bisectors or the hint.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Triangle ABC with its incenter I and the circle through A, I and B, which meets the lines AC and BC again at X and Y"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="statement" type="checkbox"> Equal lengths</label>
+    <label><input id="premises" type="checkbox"> Bisectors</label>
+    <label><input id="hint" type="checkbox"> Hint</label>
+    <label><input id="names" type="checkbox" checked> Names</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the diagram to its starting triangle">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag the corners of the triangle. The circle through A, the incenter I
+        and B keeps moving, and so do X and Y where it cuts the two sides. Yet
+        the length from A to X always equals the length from B to Y. That is
+        problem 7 of the 2009 Australian Mathematical Olympiad.</p>
+
+      <h2>The two lengths</h2>
+      <p>Let <code>I</code> be the
+        <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a>
+        of triangle <code>ABC</code>, the point where its three angle bisectors
+        meet. The circle through <code>A</code>, <code>I</code> and <code>B</code>
+        meets the line <code>AC</code> again at <code>X</code> and the line
+        <code>BC</code> again at <code>Y</code>. The problem asks us to show
+        <code>AX = BY</code>. The article calls <code>AC &ne; BC</code> a red
+        herring: when the sides are equal, <code>X</code> and <code>Y</code>
+        land on <code>A</code> and <code>B</code>, so both lengths are zero.</p>
+
+      <h2>Why the chord is antiparallel</h2>
+      <p>A circle through two corners of a triangle cuts a chord that is
+        <a class="wiki-term" data-wiki="Antiparallel_(mathematics)" href="https://en.wikipedia.org/wiki/Antiparallel_(mathematics)" target="_blank" rel="noopener">antiparallel</a>
+        to the side joining those corners. Here the chord <code>XY</code> is
+        antiparallel to <code>AB</code>: it meets one side at the same angle
+        that <code>AB</code> meets the other, but in the reversed order. Tick
+        "Bisectors" to see the equal angles at the incenter that make
+        <code>I</code> special; tick "Hint" to see the two marked angles at
+        <code>X</code>. Because <code>A</code>, <code>B</code>, <code>X</code>
+        and <code>Y</code> lie on one circle, <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angles</a>
+        give <code>&ang;BAX = &ang;BYX</code>.</p>
+
+      <h2>Equal arcs, equal chords</h2>
+      <p>Those two angles stand on the arcs <code>BXA</code> and <code>YBX</code>.
+        Let <code>J</code> be the second point where the circle meets the
+        bisector <code>CI</code> (the "Hint" box draws it). Depending on the
+        layout, either</p>
+      <blockquote><code>BXA = BJX + XA</code> and <code>YBX = YB + BJX</code>,<br>
+        or <code>BXA = BIX + XA</code> and <code>YBX = YB + BIX</code>.</blockquote>
+      <p>In both cases the arcs <code>XA</code> and <code>YB</code> are equal,
+        and equal arcs cut off equal
+        <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chords</a>.
+        That is the end of the proof: <code>AX = BY</code>.</p>
+
+      <h2>How this differs from the first circle theorem</h2>
+      <p>The sibling page <em>Circle Through Incenter</em> proves a different
+        statement about the same circle: its centre lies on the
+        <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a>
+        from <code>C</code>, so the circle is symmetric in <code>CI</code>.
+        This page goes further: it uses the antiparallel chord and the point
+        <code>J</code> to compare two lengths cut off on the sides. Both are
+        true, but the second theorem is not just a restatement of the first.</p>
+      <p>The logic test checks 269 triangles, including the red-herring case:
+        the true second cuts always give <code>AX = BY</code> and the reversed
+        angle match, and the port's points agree with a second transcription of
+        the applet's own bytecode. It also found a small quirk: the applet's
+        <code>Other()</code> accepts a cut as "second" only if it is at least
+        one pixel from the corner, so at an almost tangent cut it keeps the
+        corner and the equality appears to fail. The picture here keeps that
+        behaviour and says so in the status line. The old article now embeds a
+        GeoGebra sketch instead of the Java applet; its problem and proof are
+        exactly the ones this page follows.</p>
+
+      <p class="tip">Try dragging C close to the line AB, until one of the cuts jumps past a corner: the equality still holds.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CircleThroughIncenter2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circle-through-incenter-2-core.js"></script>
+<script src="circle-through-incenter-2.js"></script>
+</body>
+</html>
