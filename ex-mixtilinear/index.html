@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ex Mixtilinear &mdash; coolmaths</title>
+<meta name="description" content="Drag K along side BC: why do the two circles touching AK, BC and the circumcircle always aim their touch-chords at the same point?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/ex-mixtilinear/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Ex Mixtilinear">
+<meta property="og:description" content="Drag K along side BC: why do the two circles touching AK, BC and the circumcircle always aim their touch-chords at the same point?">
+<meta property="og:url" content="https://coolmaths.ai/ex-mixtilinear/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri { fill: var(--accent); fill-opacity: 0.06; stroke: none; }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .incircle { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .excircle { fill: none; stroke: var(--bad); stroke-width: 1.5; stroke-dasharray: 3 4; }
+  #board .cut { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .tangent-circle { fill: var(--accent); fill-opacity: 0.10; stroke: var(--accent); stroke-width: 2.5; }
+  #board .tangent-circle.c { stroke: var(--good); fill: var(--good); fill-opacity: 0.08; }
+  #board .chord { stroke: var(--ink); stroke-width: 1.3; stroke-opacity: 0.65; }
+  #board .centres { stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 2 5; }
+  #board .hint-line { stroke: var(--highlight); stroke-width: 2; }
+  #board .hint-seg { stroke: var(--good); stroke-width: 2.5; }
+  #board .excenter-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1.5; }
+  #board .contact-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1; }
+  #board .hint-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1; }
+  #board .tangent-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .k-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 5; }
+  #board .point-label { fill: var(--text); font-size: 0.7rem; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.6rem; }
+</style>
+</head>
+<body data-game="ex-mixtilinear" data-kind="demo">
+<main id="main">
+  <h1>Ex Mixtilinear</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two circles sit between the line from A to K, the side BC and the circle through all three corners, and their touch points line up in a surprising way.<br>
+    <strong>How to play:</strong> Drag the dots A, B, C and K, or focus a dot and use the arrow keys. Tick "Show hint" for more lines, or press "Find equal circles".
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 420" role="group"
+         aria-label="Triangle ABC with a point K on BC. Two circles touch AK, BC and the circumcircle; the lines through their touching points meet at a point below the triangle."></svg>
+  </div>
+
+  <div class="controls">
+    <label class="option" for="namesChk"><input id="namesChk" type="checkbox" checked> Show names</label>
+    <label class="option" for="hintChk"><input id="hintChk" type="checkbox"> Show hint</label>
+    <button id="snapBtn" type="button" aria-label="Move K to the incircle's touch point on BC so the two circles match">Find equal circles</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the triangle and K back where they started">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move K along the bottom side and the two circles change shape. Yet the straight line through each circle's two touching points always aims at the same point outside the triangle — and once K is in just the right spot, both circles are exactly as big as the circle outside the triangle.</p>
+
+      <h2>The two circles</h2>
+      <p>The picture draws triangle <code>ABC</code>, its <a class="wiki-term" data-wiki="Circumscribed_circle" href="https://en.wikipedia.org/wiki/Circumscribed_circle" target="_blank" rel="noopener">circumcircle</a>, and its <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a>. For a point K on <code>BC</code>, each of the two extra circles touches the line <code>AK</code>, the line <code>BC</code> and the circumcircle from outside. A circle touching two lines has its centre on an <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> at K, so the centre is <code>K + t·u</code> for a known direction <code>u</code>. Tangency to the circumcircle gives one quadratic equation in <code>t</code>; its positive root is the circle. The logic test checks both roots and both circles over 180 triangles.</p>
+
+      <h2>The point the chords aim at</h2>
+      <p>Let <code>M</code> and <code>L</code> be the touching points on <code>BC</code> and <code>AK</code>. The page's main claim is that both lines <code>ML</code> pass through the <a class="wiki-term" data-wiki="Excenter" href="https://en.wikipedia.org/wiki/Excenter" target="_blank" rel="noopener">excenter</a> <code>E</code> opposite A, and that the line joining the two circle centres passes through <code>E</code> too. This was tested for every generated triangle and every K; it held to floating-point precision. It is the outward-touching version of a fact behind Sawayama's Lemma.</p>
+
+      <h2>The special spot for K</h2>
+      <p>When K is where the incircle touches <code>BC</code>, both circles have the radius <code>r_a</code> of the <a class="wiki-term" data-wiki="Excircle" href="https://en.wikipedia.org/wiki/Excircle" target="_blank" rel="noopener">excircle</a> centred at E. Press <strong>Find equal circles</strong> to jump there. The test confirms this for all 180 triangles: the two radii and <code>r_a</code> agree, and the construction's midpoint <code>O</code> is the first circle's centre. The applet signals it by opening its three little eyes; this page writes it in the status line instead. For the inward-touching circles of Thébault's third problem the matching spot is the excircle's contact point, a different case that this applet does not draw.</p>
+
+      <h2>Two honest quirks</h2>
+      <p>The page calls the midpoint of <code>VH</code> "L", but <code>V</code> and <code>H</code> both lie on <code>BC</code>, and the point that lands at their midpoint is <code>M</code>, the contact on <code>BC</code>. The test checks that version. Also, the applet's quadratic helper refuses a coefficient below <code>0.01</code> and then draws no circle at all; this port keeps that behaviour for nearly parallel lines. No rule of the puzzle changes.</p>
+
+      <p class="tip">Try ticking <strong>Show hint</strong>, then drag K slowly: watch the two touch-chords keep meeting at E, and see how far the circles travel before their radii match.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ExMixtilinear.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="ex-mixtilinear-core.js"></script>
+<script src="ex-mixtilinear.js"></script>
+</body>
+</html>
