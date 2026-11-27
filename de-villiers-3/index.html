@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>de Villiers 3 &mdash; coolmaths</title>
+<meta name="description" content="Four dots slide around a circle, and the tangents at them make a new shape. Will the middle lines of its sides still fit a circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/de-villiers-3/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="de Villiers 3">
+<meta property="og:description" content="Four dots slide around a circle, and the tangents at them make a new shape. Will the middle lines of its sides still fit a circle?">
+<meta property="og:url" content="https://coolmaths.ai/de-villiers-3/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .tangent-quad { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .prime-quad { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .bis-quad { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .tangent { stroke: var(--muted); stroke-width: 1; }
+  #board .ext-bisector { stroke: var(--highlight); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .perp-line { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 7 5; }
+  #board .side-bisector { stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 3 3; }
+  #board .diagonal { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .radius { stroke: var(--muted); stroke-width: 1; }
+  #board .angle-mark { fill: none; stroke: var(--highlight); stroke-width: 2; }
+  #board .main-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .inner-circle { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .xyz-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .prime-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .bis-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .center-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="de-villiers-3" data-kind="demo">
+<main id="main">
+  <h1>de Villiers 3</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: four dots on a circle make a shape with a circle inside, and the middle lines of its sides make another shape with a circle inside too.<br>
+    <strong>How to play:</strong> Drag dots A, B, C and D around the circle, or focus a dot and use the arrow keys. Tick the boxes to show names, angle marks, lines through the sides, middle lines, centers, diagonals, radii or circles.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Four dots on a circle, the tangents at them, and the two quadrilaterals made by perpendiculars and their middle lines"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="angles" type="checkbox"> Angle marks</label>
+    <label><input id="perps" type="checkbox"> Perps to sides</label>
+    <label><input id="bisectors" type="checkbox"> Side bisectors</label>
+    <label><input id="centers" type="checkbox"> Centers</label>
+    <label><input id="diagonals" type="checkbox"> Diagonals</label>
+    <label><input id="radii" type="checkbox"> Radii</label>
+    <label><input id="circles" type="checkbox"> Circles</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the diagram to its starting dots">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move a dot and most of the picture changes at once. Yet a smaller copy of one quadrilateral keeps landing exactly on another. The article still lives on cut-the-knot.org, but its Java applet no longer runs in a browser, so this page follows the archived applet's own instructions. The proof credited there is by Darij Grinberg, based on an idea of Marcello Tarquini.</p>
+
+      <h2>The claim, and the picture here</h2>
+      <p>Given a quadrilateral ABCD, the <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisectors</a> of its sides meet in pairs to form A1B1C1D1. The page claims: if ABCD is <a class="wiki-term" data-wiki="Tangential_quadrilateral" href="https://en.wikipedia.org/wiki/Tangential_quadrilateral" target="_blank" rel="noopener">inscriptible</a> (it has an <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a>), then so is A1B1C1D1. The four dots of this applet are held on one circle, so the tangents at them form a quadrilateral with that circle as its incircle. That is the shape the proof works with.</p>
+
+      <h2>Where X, Y, Z and W come from</h2>
+      <p>At each corner of the tangent quadrilateral the applet draws the <em>external</em> <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a>. Neighbouring ones meet at X, Y, Z and W. The diagonals XZ and YW cross at M, the center of the incircle, just as the page says. X, Y, Z and W lie on a second circle; the applet marks its center M&prime; and has a checkbox for that circle.</p>
+
+      <h2>Halving from M</h2>
+      <p>Through X, Y, Z and W the applet draws lines at right angles to the sides. They meet in A&prime;B&prime;C&prime;D&prime;. Midway from M to X lies the center of the circle through the two tangent corners next to X, so the line through X and the middle line of that side are a <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothety</a> pair: shrink from M by <code>1/2</code> and A&prime;B&prime;C&prime;D&prime; becomes A1B1C1D1. That is the whole proof: the first shape has an incircle, and a shrinking keeps it touching a circle. The logic test measures the gap at every point; it stays below <code>10<sup>-6</sup></code> times the drawing size on thousands of shapes.</p>
+
+      <h2>What the test also found</h2>
+      <p>When the four draggable dots are <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic</a>, their own middle lines all pass through the circle's center: the degenerate case the page mentions. On other quadrilaterals the test checks both directions of the claim: an inscriptible shape gives an inscriptible image, and a non-cyclic shape whose image is inscriptible was inscriptible itself. It also checks the page's last statement that two PB steps make a homothetic copy, with all six sides and diagonals parallel. All three held in every case tried. Shapes with a gap bigger than a half turn make a crossed tangent quadrilateral; the picture still draws, but the article's incircle claims are not meant for those, and the status line says the shape is stretched.</p>
+
+      <p class="tip">Tick "Side bisectors" and "Centers", then drag one dot: watch the green middle-line shape stay exactly halfway between M and the orange one.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/deVilliers3.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="de-villiers-3-core.js"></script>
+<script src="de-villiers-3.js"></script>
+</body>
+</html>
