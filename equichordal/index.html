@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equichordal &mdash; coolmaths</title>
+<meta name="description" content="A circle's centre is a point where every chord through it is the same length. Can another shape have such a point, and can it have two? Change the curve and drag the chord to find out.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equichordal/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Equichordal">
+<meta property="og:description" content="A circle's centre is a point where every chord through it is the same length. Can another shape have such a point, and can it have two? Change the curve and drag the chord to find out.">
+<meta property="og:url" content="https://coolmaths.ai/equichordal/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 42rem; padding: 0.6rem; overflow: hidden; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .eq-curve { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .eq-trace { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .eq-chord { stroke: var(--ink); stroke-width: 3; }
+  #board .eq-centre { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .eq-label { fill: var(--text); font-size: 17px; pointer-events: none; }
+  #board .eq-handle-a { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .eq-handle-b { fill: var(--good); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--highlight); stroke-width: 6; }
+  .controls { flex-wrap: wrap; gap: 0.5rem 0.9rem; align-items: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="range"] { flex: 1 1 8rem; min-width: 7rem; max-width: 11rem; }
+  .controls output { font-family: var(--mono); min-width: 3ch; }
+  .controls button { min-height: 2.5rem; }
+  #status { min-height: 1.6rem; }
+</style>
+</head>
+<body data-game="equichordal" data-kind="demo">
+<main id="main">
+  <h1>Equichordal</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> A shape with a centre O and a bar through it: turn the bar any way you like and its length stays the same.<br>
+    <strong>How to play:</strong> Drag the blue or green end of the bar, or focus it and use the arrow keys. Change Power, Shift and Frequency, tick “Sine formula” to see the curve, and press Clear to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 460" role="group"
+         aria-label="A sine curve around the centre O, with a chord whose two ends A and B can be dragged. The bar keeps the same length whichever way it turns."></svg>
+  </div>
+
+  <div class="controls">
+    <label>Power <input id="powerRange" type="range" min="1" max="61" step="2" value="1" aria-label="Power, odd numbers from 1 to 61"> <output id="powerOut" for="powerRange">1</output></label>
+    <label>Shift <input id="shiftRange" type="range" min="1" max="11" step="0.1" value="2" aria-label="Shift, from 1 to 11 in steps of 0.1"> <output id="shiftOut" for="shiftRange">2.0</output></label>
+    <label>Frequency <input id="freqRange" type="range" min="1" max="81" step="2" value="1" aria-label="Frequency, odd numbers from 1 to 81"> <output id="freqOut" for="freqRange">1</output></label>
+    <label><input id="formulaChk" type="checkbox" aria-label="Draw the sine formula curve"> Sine formula</label>
+    <button id="clearBtn" type="button" class="primary" aria-label="Clear the traced path and put the chord back on the curve">Clear</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Mary Krimmel asked whether the centre of a circle is the only point where every chord through it has the same length. The answer is no: there are many other curves. The live cut-the-knot article now shows a GeoGebra model; the Java applet embedded in the <a href="https://web.archive.org/web/20070713212007/http://www.cut-the-knot.org/Generalization/Equichordal.shtml" target="_blank" rel="noopener">2007 archive of the same page</a> is the one this port follows.</p>
+
+      <h2>A fixed length in both directions</h2>
+      <p>An <a class="wiki-term" data-wiki="Equichordal_point" href="https://en.wikipedia.org/wiki/Equichordal_point" target="_blank" rel="noopener">equichordal point</a> O has the same chord length in every direction. If a boundary point in one direction is at distance r(t) from O, the one in the opposite direction is at r(t + &pi;), so the chord is r(t) + r(t + &pi;). Make that sum constant and O is equichordal. The applet's curve gives <code>r(t) + r(t + &pi;) = 2 &times; Scale &times; Shift</code>, which is 184 board units here. The logic test checks this sum at 1.5 million samples and checks the dragged chord's length over the whole selector range. Two harmless quirks stay: at Shift = 1 the tiny floating-point error at &pi; can make the opening chord read 185 instead of 184, and the 640-pixel slider snaps a chosen Shift of 2.0 to 1.99.</p>
+
+      <h2>Why odd numbers work</h2>
+      <p>In <a class="wiki-term" data-wiki="Polar_coordinate_system" href="https://en.wikipedia.org/wiki/Polar_coordinate_system" target="_blank" rel="noopener">polar coordinates</a> the applet uses <code>r(t) = Scale &times; (Shift + sin(Frequency &times; t)<sup>Power</sup>)</code>. Since <code>sin(k(t + &pi;)) = (&minus;1)<sup>k</sup> sin(kt)</code>, an odd Frequency and an odd Power make the sine term change sign after half a turn. The two terms cancel in the sum, leaving the constant <code>2 &times; Scale &times; Shift</code>. Even values do not cancel: the logic test shows the sum then varies with t. That is the page's “why?” answered.</p>
+
+      <h2>Many curves, but only one such point</h2>
+      <p>The page's <code>r(t) = 2 + sin(t)</code> is one example; any <code>f</code> with <code>f(t) + f(t + &pi;) = const</code> works, giving a four-parameter family when you start with a sine wave. Here <em>Radius</em> in the page's formula is the applet's Scale, which depends on Shift. Because <code>r(t) &ge; 0</code>, every point of these regions can be joined to O by a segment inside the region, so they are <a class="wiki-term" data-wiki="Star_domain" href="https://en.wikipedia.org/wiki/Star_domain" target="_blank" rel="noopener">star-shaped</a>; all convex regions are star-shaped. Rychlik proved that no star-shaped region can have two equichordal points, so a curve like this can have only one, even though there are infinitely many curves to choose from.</p>
+
+      <p class="tip">Try Frequency 3 and Power 3, tick Sine formula, then drag A around: watch B land at the far end of the same-length bar.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Generalization/Equichordal.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="equichordal-core.js"></script>
+<script src="equichordal.js"></script>
+</body>
+</html>
