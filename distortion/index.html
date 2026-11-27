@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Distortion &mdash; coolmaths</title>
+<meta name="description" content="Can you trust your eyes? Move the crossing lines and see when perfect circles and straight-sided triangles start to look bent.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/distortion/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Distortion">
+<meta property="og:description" content="Can you trust your eyes? Move the crossing lines and see when perfect circles and straight-sided triangles start to look bent.">
+<meta property="og:url" content="https://coolmaths.ai/distortion/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .ring { fill: none; stroke: var(--ink); stroke-width: 1.4; }
+  #board .triangle { fill: none; stroke: var(--ink); stroke-width: 1.6; }
+  #board .track { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .track-label { fill: var(--text); font: 600 0.85rem var(--font); pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+  .controls .row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .controls .row + .row { margin-top: 0.5rem; }
+  .controls input[type="range"] { flex: 1 1 9rem; min-width: 6rem; }
+  .controls .mode-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="distortion" data-kind="demo">
+<main id="main">
+  <h1>Distortion</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is an illusion, not a game: round rings and straight-sided triangles can look bent when other lines cross them.<br>
+    <strong>How to play:</strong> Slide the spacing bar, drag the dot on the little track or move it with the arrow keys, and choose which shape goes on top. Press Reset picture to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 330" role="group"
+         aria-label="Rings and triangles that look bent where their lines cross, with a spacing handle below them"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="row">
+      <label for="spread">Spacing</label>
+      <input id="spread" type="range" min="2" max="36" step="1" value="10" aria-label="Spacing between the crossing lines">
+      <output id="spreadOut" for="spread">10</output>
+    </div>
+    <div class="row mode-buttons" role="group" aria-label="Which shape is drawn on top">
+      <button id="triOnCircles" type="button" aria-pressed="true">Triangle on Circles</button>
+      <button id="circlesOnTriangles" type="button" aria-pressed="false">Circle on Triangles</button>
+    </div>
+    <div class="row">
+      <button id="resetBtn" type="button" class="primary">Reset picture</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two sets of lines are laid over each other, and neither set is actually bent. Change the spacing and watch how strongly your eyes disagree with the coordinates on the screen.</p>
+
+      <h2>Two ways to cross the lines</h2>
+      <p>Let <code>S</code> be the side of the square the applet draws in, <code>S = min(width, height) − 15</code>. In <em>Triangle on Circles</em> it draws nested rings with diameters <code>S, S−2s, S−4s, …</code>, where <code>s</code> is the spacing, and one triangle whose corners lie on the largest ring. In <em>Circle on Triangles</em> it draws nested triangles whose corner radii are <code>S, S−3s, S−6s, …</code>, then three rings of radii <code>trunc(S/6)</code>, <code>trunc(S/3)</code> and <code>trunc(S/2)</code>. The truncations are the applet's own integer divisions; on the 400-by-300 canvas they give 47, 95 and 142. The old AWT scrollbar was built as <code>(HORIZONTAL, 10, 4, 2, 40)</code>: Java caps its value at <code>40 − 4 = 36</code>, so this page offers spacing 2 to 36.</p>
+
+      <h2>The shapes are exact</h2>
+      <p>Each ring here is a real <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>: its width and height are the same number, and all rings share one centre. Each triangle joins three points at angles 90°, 30° and 150° around that centre, which makes it a straight-sided, near-<a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangle</a>; integer rounding of the corners changes a side by at most about 1.2 pixels. The logic test checks every spacing from 2 to 36 on 77 odd and even canvas sizes in both modes — 5,390 drawings — against a second transcription of the applet's own drawing bytecode. All sides are equal within that rounding and all signed areas are positive, so none of the triangles is concave in the drawing.</p>
+
+      <h2>The eye supplies the bend</h2>
+      <p>The cut-the-knot page says: <em>"Circles on triangles do not appear quite round. Triangles on circles look concave. Similar to <a class="wiki-term" data-wiki="Poggendorff_illusion" href="https://en.wikipedia.org/wiki/Poggendorff_illusion" target="_blank" rel="noopener">Poggendorff</a>, <a class="wiki-term" data-wiki="Hering_illusion" href="https://en.wikipedia.org/wiki/Hering_illusion" target="_blank" rel="noopener">Hering</a>, <a class="wiki-term" data-wiki="Orbison_illusion" href="https://en.wikipedia.org/wiki/Orbison_illusion" target="_blank" rel="noopener">Orbison</a>, <a class="wiki-term" data-wiki="Z%C3%B6llner_illusion" href="https://en.wikipedia.org/wiki/Z%C3%B6llner_illusion" target="_blank" rel="noopener">Zöllner</a> illusions, the crossing lines distort the perception of the lines they cross."</em> This is a claim about <a class="wiki-term" data-wiki="Optical_illusion" href="https://en.wikipedia.org/wiki/Optical_illusion" target="_blank" rel="noopener">perception</a>, not geometry: the test confirms the coordinates are exact, so what bends is the look, not the lines. The original page still embeds this Java applet (checked live on 27 November 2026), so no archive copy was needed. This port keeps its two pictures and spacing range; it only replaces the grey canvas and AWT controls with SVG and labelled buttons, and adds a draggable dot as a second way to set the spacing. There is no win or loss because the applet has none.</p>
+
+      <p class="tip">Try switching pictures at spacing 2: the rings stay exactly round even when they are hardest to believe.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Distortion.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="distortion-core.js"></script>
+<script src="distortion.js"></script>
+</body>
+</html>
