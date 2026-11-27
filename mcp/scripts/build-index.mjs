@@ -679,6 +679,16 @@ const CORE_GLOBALS = {
   "diameters-in-concurrent-circles/diameters-in-concurrent-circles-core.js": ["DiametersInConcurrentCirclesCore"],
   "dijkstra/dijkstra-core.js": ["DijkstraCore"],
   "directly-similar-1/directly-similar-1-core.js": ["DirectlySimilar1Core"],
+  "directly-similar-2/directly-similar-2-core.js": ["DirectlySimilar2Core"],
+  "dissect-cyclic-quadri/dissect-cyclic-quadri-core.js": ["DissectCyclicQuadriCore"],
+  "distortion/distortion-core.js": ["DistortionCore"],
+  "divergent-spirals/divergent-spirals-core.js": ["DivergentSpiralsCore"],
+  "droz-farny/droz-farny-core.js": ["DrozFarnyCore"],
+  "droz-farny-circles/droz-farny-circles-core.js": ["DrozFarnyCirclesCore"],
+  "dupont-garden/dupont-garden-core.js": ["DupontGardenCore"],
+  "dyno-ellipse/dyno-ellipse-core.js": ["DynoEllipseCore"],
+  "edge-illusion/edge-illusion-core.js": ["EdgeIllusionCore"],
+  "eight-point-circle/eight-point-circle-core.js": ["EightPointCircleCore"],
 };
 
 const games = [];

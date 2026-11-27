@@ -1148,6 +1148,16 @@ const GAMES = {
   "diameters-in-concurrent-circles": (page) => dragFirstHandle(page),
   "dijkstra": (page) => dragFirstHandle(page),
   "directly-similar-1": (page) => dragFirstHandle(page),
+  "directly-similar-2": (page) => dragFirstHandle(page),
+  "dissect-cyclic-quadri": (page) => dragFirstHandle(page),
+  "distortion": (page) => dragFirstHandle(page),
+  "divergent-spirals": (page) => dragFirstHandle(page),
+  "droz-farny": (page) => dragFirstHandle(page),
+  "droz-farny-circles": (page) => dragFirstHandle(page),
+  "dupont-garden": (page) => dragFirstHandle(page),
+  "dyno-ellipse": (page) => dragFirstHandle(page),
+  "edge-illusion": (page) => dragFirstHandle(page),
+  "eight-point-circle": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

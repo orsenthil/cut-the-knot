@@ -2285,6 +2285,16 @@ check("diameters-and-chords: the saved distances agree with the rebuilt Pascal f
 check("diameters-in-concurrent-circles: all saved points and diameter flags agree", read["diameters-in-concurrent-circles"]?.savedReadable === true && Object.values(read["diameters-in-concurrent-circles"].agreement).every(Boolean) === true);
 check("dijkstra: the three signs agree and the page's swapped ratio is flagged", read.dijkstra?.reading.signs.allAgree === true && read.dijkstra.reading.proportionalAreas.proportionalHolds === true && read.dijkstra.reading.proportionalAreas.pageClaimHolds === false);
 check("directly-similar-1: translated vertices make a square with the page's steps", read["directly-similar-1"]?.valid === true && read["directly-similar-1"].reading.translated.isSquare === true && read["directly-similar-1"].reading.claim.allHold === true && read["directly-similar-1"].reading.collapsed === false);
+check("directly-similar-2: the completed triangle is similar to both given triangles", read["directly-similar-2"]?.valid === true && read["directly-similar-2"].reading.directlySimilarToBoth === true && read["directly-similar-2"].reading.collapsed === false && read["directly-similar-2"].reading.completed.possible === true);
+check("dissect-cyclic-quadri: saved cuts are not cyclic but the core agrees with the page", read["dissect-cyclic-quadri"]?.core.savedMatchesCore === true && read["dissect-cyclic-quadri"].count === 0 && read["dissect-cyclic-quadri"].core.atPerpendicularFeet.count === 4);
+check("distortion: crossing lines do not bend the circles or triangles", read.distortion?.valid === true && read.distortion.allCirclesRound === true && read.distortion.allTrianglesStraight === true && read.distortion.allTrianglesEqualSided === true && read.distortion.allTrianglesConvex === true);
+check("divergent-spirals: the ring geometry matches the saved rotation", Object.values(read["divergent-spirals"]?.savedMatchesCore ?? {}).every(Boolean) === true && read["divergent-spirals"].reading.spiralCurvesDrawn === 0 && read["divergent-spirals"].reading.sweepDeg === 180);
+check("droz-farny: perpendicular lines through H cut midpoints on one line", read["droz-farny"]?.degenerate === false && read["droz-farny"].reading.allHold === true && read["droz-farny"].reading.midpoints.length === 3);
+check("droz-farny-circles: isogonal conjugates give two congruent circles", read["droz-farny-circles"]?.savedReadable === true && read["droz-farny-circles"].reading.QagreesWithBarycentrics === true && read["droz-farny-circles"].reading.bigCircles.sameRadius === true && read["droz-farny-circles"].reading.radiusFormula.residual === "0.00e+0");
+check("dupont-garden: each water jet follows the parabola over its flight", read["dupont-garden"]?.reading.jets.length === 5 && read["dupont-garden"].reading.jets[0].returnTime === 28.571429 && read["dupont-garden"].reading.jets[0].apexHeight === 1000);
+check("dyno-ellipse: the saved pen is rebuilt exactly from the four sliders", read["dyno-ellipse"]?.valid === true && read["dyno-ellipse"].savedPenMatchesCore === true && read["dyno-ellipse"].savedEnd1MatchesCore === true && read["dyno-ellipse"].result === "done");
+check("edge-illusion: the middle has no drawn sides and is masked with the field colour", read["edge-illusion"]?.valid === true && read["edge-illusion"].noDrawnSides === true && read["edge-illusion"].middleIsFieldColour === true && read["edge-illusion"].edgeStrokes === 0);
+check("eight-point-circle: eight points share a circle about the centroid", read["eight-point-circle"]?.savedReadable === true && read["eight-point-circle"].claims.allEight === true && read["eight-point-circle"].claims.rectangle === true && read["eight-point-circle"].claims.diameters === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2413,6 +2423,35 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   const ts = runGameLogic("directly-similar-1", "translated_square", {});
   const collapse = runGameLogic("directly-similar-1", "collapsing_case", { dx: 40, dy: -25 });
   check("directly-similar-1/translations: the new square holds and translate pairs collapse", ts.claim.allHold === true && ts.translated.isSquare === true && collapse.allFourCornersCoincide === true && collapse.isSquare === false);
+}
+
+// The batch-21 tutor actions all run their real cores, not just their saved positions.
+{
+  const ds2 = runGameLogic("directly-similar-2", "third_triangle", {});
+  const col2 = runGameLogic("directly-similar-2", "collapsing_case", {});
+  check("directly-similar-2/third_triangle: the completed triangle is similar to both", ds2.directlySimilarToBoth === true && ds2.completed.possible === true && col2.allThreeCornersCoincide === true);
+  const feet = runGameLogic("dissect-cyclic-quadri", "perpendicular_feet", {});
+  const fromN = runGameLogic("dissect-cyclic-quadri", "build_from_n", {});
+  check("dissect-cyclic-quadri/feet and N: all four pieces are cyclic", feet.quads.count === 4 && feet.quads.quads.every((q) => q.cyclic) === true && fromN.quads.count === 4);
+  const fig = runGameLogic("distortion", "figure_check", {});
+  const sweep = runGameLogic("distortion", "spacing_sweep", {});
+  check("distortion/figures: every spacing keeps the circles and triangles honest", fig.allCirclesRound === true && fig.allTrianglesStraight === true && fig.allTrianglesEqualSided === true && sweep.allFiguresHonestAtEverySetting === true);
+  const spin = runGameLogic("divergent-spirals", "rotation", { clockwise: true, fast: false, frames: 10 });
+  check("divergent-spirals/rotation: the fast speed is 34/9 of the slow one", spin.arcsUnchangedByRotation === true && spin.turn.matches34over9 === true && spin.turn.sign === 1);
+  const df = runGameLogic("droz-farny", "check_claims", {});
+  check("droz-farny/check_claims: the three midpoints are collinear", df.allHold === true && df.failed.length === 0 && df.collinearity.holds === true);
+  const dfc = runGameLogic("droz-farny-circles", "verify_circles", {});
+  check("droz-farny-circles/verify_circles: two congruent circles through six cuts each", dfc.allHold === true && dfc.failed.length === 0 && dfc.onP === true && dfc.onQ === true && dfc.equalR === true);
+  const steps = runGameLogic("dupont-garden", "equal_steps", {});
+  check("dupont-garden/equal_steps: gravity gives constant second differences", steps.horizontalStepsConstant === true && steps.verticalSecondDifferencesConstant === true && Math.abs(steps.expectedVerticalSecondDifference + 2.45) < 1e-9);
+  const ell = runGameLogic("dyno-ellipse", "ellipse", { rate: 2, r1: 60, r2: 40 });
+  const curves = runGameLogic("dyno-ellipse", "special_curves", { length: 60 });
+  check("dyno-ellipse/ellipse and curves: counter-rotating vectors trace an ellipse", ell.ellipseIdentityHolds === true && ell.semiAxes.horizontal === 100 && ell.semiAxes.vertical === 20 && curves.curves.every((c) => c.agrees) === true);
+  const ill = runGameLogic("edge-illusion", "illusion_claims", {});
+  check("edge-illusion/illusion_claims: no sides drawn, dashes on the missing sides", ill.defaultPicture.noDrawnSides === true && ill.defaultPicture.middleIsFieldColour === true && ill.showEdges.allStrokesOnMissingSides === true && ill.brightnessIsPerceptual === true);
+  const eight = runGameLogic("eight-point-circle", "eight_points", {});
+  const skew = runGameLogic("eight-point-circle", "skew_diagonals", {});
+  check("eight-point-circle/eight_points: skewing the diagonals breaks the circle", eight.claims.allEight === true && eight.measures.footError < 1e-8 && skew.breaksTheTheorem === true && skew.skewed.claims.allEight === false);
 }
 
 // A game with no reader, and a position that makes no sense.
