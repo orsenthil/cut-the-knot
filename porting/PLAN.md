@@ -9,11 +9,11 @@ in [README.md](README.md); the rules a port follows are in [../CLAUDE.md](../CLA
 - **Inventory:** `porting/manifest.json` lists all 1,288 applets in `classes.zip`:
   100 games, 218 demos, 931 illustrations and 39 helper libraries (never ported).
   Run `node porting/build-manifest.mjs` for the current counts by status.
-- **Ports:** 452 done. The 13 hand-made originals; about 20 from a parallel cloud run on
+- **Ports:** 462 done. The 13 hand-made originals; about 20 from a parallel cloud run on
   2026-11-05 (six lanes, which ended when the credits ran out); then one an hour from a
   local loop, followed by batches of ten run in parallel lanes in November 2026. All
   `game`-kind applets are ported; two `demo` applets (MorleyConc, SimpsonParrondo) are
-  deferred, and 812 illustrations remain.
+  deferred, and 802 illustrations remain.
 - **Gate:** `porting/verify.sh` stands in for review. Every push to `web` goes live on
   GitHub Pages and there are no pull requests.
 - **MCP tutor:** `mcp/`, a Cloudflare Worker at
@@ -40,7 +40,7 @@ One porter, locally, one applet per step, committing straight to `web`:
 1. **Games** (`kind: "game"`): all ported.
 2. **Demos.** Interactive demonstrations with nothing to win. Same page format, with the
    "Game:" line describing what to explore. Only the two deferred ones remain.
-3. **Illustrations** (812, mostly geometry with draggable points). The shared
+3. **Illustrations** (802, mostly geometry with draggable points). The shared
    `assets/geom.js` is in place (see `porting/GEOM.md`): focusable point handles,
    lines, circles, angle arcs and redraw on drag/theme change, so later ports are short.
 4. **Articles** without an applet, last, listed in the manifest as `kind: "article"`.
