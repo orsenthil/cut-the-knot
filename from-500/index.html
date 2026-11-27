@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>From 500 &mdash; coolmaths</title>
+<meta name="description" content="Drag a point around a semicircle: will the tangent and the two other lines meet in one place, or stay parallel?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/from-500/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="From 500">
+<meta property="og:description" content="Drag a point around a semicircle: will the tangent and the two other lines meet in one place, or stay parallel?">
+<meta property="og:url" content="https://coolmaths.ai/from-500/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .diameter { stroke: var(--muted); stroke-width: 2; }
+  #board .semicircle { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .tangent { stroke: var(--ink); stroke-width: 2; }
+  #board .tangent-x { stroke: var(--good); stroke-width: 2.6; }
+  #board .secant { stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  #board .meeting-line { stroke: var(--good); stroke-width: 2.2; stroke-dasharray: 9 5; }
+  #board .hint-mark { stroke: var(--highlight); stroke-width: 2.4; stroke-linecap: round; }
+  #board .aux-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1.5; }
+  #board .meet-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="from-500" data-kind="demo">
+<main id="main">
+  <h1>From 500</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move a point around a half-circle and watch three lines; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag O or X, or focus one and press the arrow keys. Tick the boxes to show the point names or the matching-length marks.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 400" role="group"
+         aria-label="A semicircle with diameter AB and centre O, a point X on the arc, tangents at A, X and B, and the lines through X that meet them at Y and Z. Drag O or X."></svg>
+    <p class="hint-line">Drag O or X, or focus one and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Show names</label>
+    <label><input id="hintBox" type="checkbox" data-label="the equal-length marks"> Show hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This is a droodle from <em>Five Hundred Mathematical Challenges</em>: move X and the three coloured lines either all meet in one place, or none of them do. The same thing happens at every position on the circle — the logic test checked 4,000-plus pictures, from X almost at A all the way round to X almost at B.</p>
+
+      <h2>The claim, and one slip on the old page</h2>
+      <p>Let AB be the diameter, O its centre, and X any other point on the arc. The <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangents</a> at A, X and B are drawn. The line BX meets the tangent at A at Y, and AX meets the tangent at B at Z. The old page claims that the tangent at X, the line YZ and the line AB are <a class="wiki-term" data-wiki="Concurrent_lines" href="https://en.wikipedia.org/wiki/Concurrent_lines" target="_blank" rel="noopener">concurrent</a> or else all <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a>. The logic test confirms this for every sampled position. One line of the old proof says "V is the midpoint of BV"; it must mean BZ — V lies on the tangent at B. The old applet also always drew the lower half of the circle although it put X above AB; here the arc follows X, as the page's "semicircle AXB" says.</p>
+
+      <h2>Why U and V are midpoints</h2>
+      <p>Let U be where the tangent at X meets the tangent at A. The two tangents from U touch the same circle, so <code>UA = UX</code>. Because AB is a diameter, angle AXY is a <a class="wiki-term" data-wiki="Right_angle" href="https://en.wikipedia.org/wiki/Right_angle" target="_blank" rel="noopener">right angle</a>, and AY's <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> is equally far from A, X and Y: it must be U. Hence <code>UA = UX = UY</code>. The same argument at B gives <code>VB = VX = VZ</code>, so V is the midpoint of BZ. Tick <em>Show hint</em> to see the matching slashes on those three lengths at U.</p>
+
+      <h2>Where the three lines meet</h2>
+      <p>Write the radius as r and put X at angle t above AB, so its offset from O is <code>(r cos t, r sin t)</code>. The midpoint facts give the coordinates <code>U = (-r, r cot(t/2))</code> and <code>V = (r, r tan(t/2))</code>, measured from O with up positive. Chasing the line YZ through the two midpoints gives the meeting point <code>P = (r / cos t, 0)</code>, which lies on AB extended. The tangent at X has equation <code>x cos t + y sin t = r</code>, and P satisfies it too: <code>(r / cos t) · cos t + 0 = r</code>. When <code>cos t = 0</code> — X at the top of the arc — P runs off to infinity and the three lines are parallel instead.</p>
+
+      <p class="tip">Drag X towards the top of the arc and watch the meeting point travel further and further out along AB, then disappear when the lines become parallel.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/From500.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="from-500-core.js"></script>
+<script src="from-500.js"></script>
+</body>
+</html>
