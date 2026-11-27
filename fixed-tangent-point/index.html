@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fixed Tangent Point &mdash; coolmaths</title>
+<meta name="description" content="Slide a point P along a line and watch the circle drawn around it: can you see the dot that every one of these circles passes through?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/fixed-tangent-point/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Fixed Tangent Point">
+<meta property="og:description" content="Slide a point P along a line and watch the circle drawn around it: can you see the dot that every one of these circles passes through?">
+<meta property="og:url" content="https://coolmaths.ai/fixed-tangent-point/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .line-m { stroke: var(--muted); stroke-width: 2; }
+  #board .radius { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 4 5; }
+  #board .circle-c { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .circle-tangent { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .hint-line { fill: none; stroke: var(--good); stroke-width: 1.6; }
+  #board .statement-line { fill: none; stroke: var(--highlight); stroke-width: 2.2; }
+  #board .right-mark { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+  #board .fixed-point { fill: var(--bad); stroke: var(--stage); stroke-width: 1.5; }
+  #board .statement-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  #board .tangent-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label { fill: var(--text); font-size: 0.9rem; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="fixed-tangent-point" data-kind="demo">
+<main id="main">
+  <h1>Fixed Tangent Point</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move a dot along a line and watch a circle that always goes through one fixed dot.<br>
+    <strong>How to play:</strong> Drag O, R, X or P, or focus a dot with Tab and use the arrow keys. Press Names, Hint or Statement to show more of the picture.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 480 360" role="group"
+         aria-label="A circle with centre O, a horizontal line through X and P, a circle centred at P, and the fixed point Q"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the circle, the line and the four points">Reset</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Show or hide the names O, P, M, N, T and Q">Names</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show or hide the right-triangle hint">Hint</button>
+    <button id="statementBtn" type="button" aria-pressed="false" aria-label="Show or hide the tangent right angles at T">Statement</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag the dot P along the line. Its circle shrinks and grows, yet the red dot Q never moves. This is a <a class="wiki-term" data-wiki="Mathematical_droodle" href="https://en.wikipedia.org/wiki/Mathematical_droodle" target="_blank" rel="noopener">droodle</a>: a picture that hides a theorem. R. Honsberger credited Hiroshi Haruki with the result. There is nothing to win &mdash; the point is to see why the red dot stays put.</p>
+
+      <h2>The claim on the page</h2>
+      <p>Given a circle C with centre O and a line m that does not meet it, there is a point Q such that <code>PQ = PT</code> for every point P on m, where PT is the length of the <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> from P to C. So the circle centred at P with radius PT always passes through Q. The logic test checks this at thousands of line heights and positions of P: the largest relative difference it found between PQ and PT is below 1e-10. The live cut-the-knot page now shows only a Java warning; a <a href="https://web.archive.org/web/20120510032730/http://www.cut-the-knot.org/Curriculum/Geometry/FixedTangentPoint.shtml" target="_blank" rel="noopener">2012 Wayback snapshot</a> embeds the FixedTangentPoint applet the text describes.</p>
+
+      <h2>Four right triangles</h2>
+      <p>Let M be the foot of the perpendicular from O to m, let MN and PT touch the circle, and write <code>r = ON = OT</code> and <code>z = MN</code>. Four right triangles give the whole proof. From OPT and OMP, <code>r&sup2; + PT&sup2; = OM&sup2; + MP&sup2;</code>. From QMP and OMN, with Q on MO chosen so that <code>MQ = z</code>, <code>OM&sup2; + MP&sup2; = r&sup2; + PQ&sup2;</code>. Compare the two lines and the <code>r&sup2;</code> and <code>OM&sup2;</code> terms cancel: <code>PT&sup2; = PQ&sup2;</code>. Both lengths are positive, so <code>PT = PQ</code>. The <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a> is the only tool needed; pressing Hint draws those four right angles.</p>
+
+      <h2>The other fixed point</h2>
+      <p>Once <code>z&sup2; = OM&sup2; &minus; r&sup2;</code> is fixed, so is Q, even though P slides. Reflect Q across the line m and you get a second point Q' with <code>PQ' = PQ</code>. In the language of <a class="wiki-term" data-wiki="Orthogonal_circles" href="https://en.wikipedia.org/wiki/Orthogonal_circles" target="_blank" rel="noopener">orthogonal circles</a>, every circle centred on m and orthogonal to C passes through both points; m is their <a class="wiki-term" data-wiki="Radical_axis" href="https://en.wikipedia.org/wiki/Radical_axis" target="_blank" rel="noopener">radical axis</a>. The test checks the orthogonality condition <code>OP&sup2; = r&sup2; + PT&sup2;</code> for every case too.</p>
+
+      <h2>When the picture goes quiet</h2>
+      <p>The page assumes m misses C. If m cuts C, then <code>OM&sup2; &minus; r&sup2;</code> is negative and the applet's square root is NaN: it keeps the last drawn Q and N instead of showing new ones. If P itself goes inside C, the applet's guard stops the whole redraw. This port keeps both behaviours; the status line says which one happened. The tangent points here come from an analytic formula while the check script compares them with a second transcription of the applet's inversion-and-intersection code, point by point, on random and grid layouts.</p>
+
+      <p class="tip">Try pressing Hint, then slide P from far left to far right. Next move X towards the circle until the line touches it: watch what happens to Q.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FixedTangentPoint.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="fixed-tangent-point-core.js"></script>
+<script src="fixed-tangent-point.js"></script>
+</body>
+</html>
