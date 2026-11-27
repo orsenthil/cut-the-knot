@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Centroids in Polygon &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a polygon: the lines from each corner to the balance point of all the others always meet at one dot. Where on each line is that dot?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/centroids-in-polygon/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Centroids in Polygon">
+<meta property="og:description" content="Drag the corners of a polygon: the lines from each corner to the balance point of all the others always meet at one dot. Where on each line is that dot?">
+<meta property="og:url" content="https://coolmaths.ai/centroids-in-polygon/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .poly-p { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+  #board .poly-q { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .spoke { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .poly-cycle { fill: none; stroke: var(--good); stroke-width: 4; stroke-linejoin: round; }
+  #board .spoke-cycle { fill: none; stroke: var(--good); stroke-width: 5; stroke-linecap: round; }
+  #board .hint-line { fill: none; stroke: var(--highlight); stroke-width: 7; stroke-linecap: round; }
+  #board .q-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1; }
+  #board .cycle-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .g-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 2; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.9rem var(--font); pointer-events: none;
+  }
+  #board .g-label { fill: var(--bad); }
+  #board .p-label { fill: var(--good); }
+  #board .q-label { fill: var(--accent); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .n-control { display: inline-flex; align-items: center; gap: 0.5rem; }
+  .n-control output { min-width: 1.5rem; text-align: center; font-family: var(--mono); }
+</style>
+</head>
+<body data-game="centroids-in-polygon" data-kind="demo">
+<main id="main">
+  <h1>Centroids in Polygon</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: the lines from each corner to the balance point of all the other corners always meet at one dot.<br>
+    <strong>How to play:</strong> Drag a corner, or focus one and use the arrow keys. Use the minus and plus buttons for 3 to 20 corners, press Cycle to pick a corner, and tick Hint on a four-corner shape to see why.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A polygon with draggable corners, the balance point of the other corners for each one, and the lines joining each corner to its balance point"></svg>
+  </div>
+
+  <div class="controls">
+    <span class="n-control">
+      <button id="nMinus" type="button" aria-label="Use one fewer corner, at least three">&minus;</button>
+      <output id="nValue" aria-live="polite">4</output>
+      <button id="nPlus" type="button" aria-label="Use one more corner, at most twenty">+</button>
+      <span>corners</span>
+    </span>
+    <button id="cycleBtn" type="button" aria-label="Pick the next corner to highlight">Cycle corner</button>
+    <label><input id="hint" type="checkbox" disabled> Hint (four corners only)</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the corners to a new polygon">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag a corner and the whole picture follows. Yet every line still runs through the same red dot, and that dot always cuts the line in the same fraction. Here is why that cannot fail.</p>
+
+      <h2>One balance point</h2>
+      <p>Hang a unit weight at each of the N corners. The one point where the polygon balances is the <a class="wiki-term" data-wiki="Barycenter" href="https://en.wikipedia.org/wiki/Barycenter" target="_blank" rel="noopener">barycenter</a> <code>G = (P1 + P2 + ... + PN) / N</code>: add the corners like arrows and divide by how many there are. That is the red dot in the picture.</p>
+
+      <h2>The centre of the other corners</h2>
+      <p>Leave one corner out and average the rest. For corner <code>Pi</code> the other N&minus;1 corners have balance point <code>Qi = (sum of all Pj with j not i) / (N&minus;1)</code>, marked with a small blue dot. <strong>Cycle</strong> picks a corner: the green shape joins the other corners, and its green dot is exactly the average of theirs. With four corners, <strong>Hint</strong> draws the three <a class="wiki-term" data-wiki="Centroid" href="https://en.wikipedia.org/wiki/Centroid" target="_blank" rel="noopener">medians</a> of that trimmed triangle; they cross at the same dot.</p>
+
+      <h2>Why every line goes through G</h2>
+      <p>Write <code>S</code> for the sum of all the corners. Then <code>Qi = (S &minus; Pi)/(N&minus;1)</code> and <code>G = S/N</code>, so a short calculation gives</p>
+      <blockquote><code>Qi &minus; G = &minus;(Pi &minus; G)/(N&minus;1)</code></blockquote>
+      <p>The two vectors point in opposite directions along the same line: G lies between Pi and Qi, and <code>PiG / GQi = N&minus;1</code>. This holds for every i at once, so all N lines meet at G. For N = 3 the fraction is 2 to 1, the familiar split of a triangle's <a class="wiki-term" data-wiki="Median_(geometry)" href="https://en.wikipedia.org/wiki/Median_(geometry)" target="_blank" rel="noopener">medians</a>. The logic test checks all three claims for every N from 3 to 20 on regular, skewed and hundreds of random polygons; none failed.</p>
+
+      <h2>A smaller copy, turned around</h2>
+      <p>The last equation is one <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothety</a> applied to every corner: centre G, coefficient <code>&minus;1/(N&minus;1) = 1/(1&minus;N)</code>. So Q is similar to P, just smaller and turned halfway around G; its sides are <code>1/(N&minus;1)</code> as long and its areas <code>1/(N&minus;1)&sup2;</code> as large. For a triangle this red dot is also the point where the three medians cut the shape into six pieces of equal area. The applet scatters its starting corners with a small random angle; this page fixes that jitter so the first picture is steady. The geometry is the same.</p>
+
+      <p class="tip">Set four corners, press Cycle and then tick Hint: the green dot is where the triangle's three medians cross, and each median is split 2 to 1 there.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CentroidsInPolygon.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="centroids-in-polygon-core.js"></script>
+<script src="centroids-in-polygon.js"></script>
+</body>
+</html>
