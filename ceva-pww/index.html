@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ceva PWW &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and watch three lines meet at one point. Then switch on the grid: can you see why the three side ratios always multiply to 1?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/ceva-pww/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Ceva PWW">
+<meta property="og:description" content="Drag the corners of a triangle and watch three lines meet at one point. Then switch on the grid: can you see why the three side ratios always multiply to 1?">
+<meta property="og:url" content="https://coolmaths.ai/ceva-pww/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 1rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .triangle-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .cevian { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .spoke { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 3 4; }
+  #board .foot-dot { fill: var(--muted); }
+  #board .k-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .grid-dot { fill: var(--bad); }
+  #board .fine-edge, #board .grid-edge { fill: none; stroke: var(--border-strong); stroke-width: 1.4; }
+  #board .fine-line { stroke: var(--accent); stroke-opacity: 0.55; stroke-width: 0.9; }
+  #board .grid-line { stroke: var(--bad); stroke-opacity: 0.7; stroke-width: 1; }
+  #board .extra-line { stroke: var(--ink); stroke-opacity: 0.6; stroke-width: 1; }
+  #board .color-line { stroke: var(--highlight); stroke-width: 1.6; }
+  #board .region { stroke: none; }
+  #board .region-0 { fill: var(--surface-2); fill-opacity: 0.85; }
+  #board .region-1 { fill: var(--good); fill-opacity: 0.14; }
+  #board .region-2 { fill: var(--accent); fill-opacity: 0.14; }
+  #board .region-hot { fill: var(--highlight); stroke: var(--accent); stroke-width: 1.5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .vertex-label { fill: var(--ink); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .counts {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 0.5rem 1rem; width: 100%;
+  }
+  .count { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+  .count label { font-size: 0.95rem; }
+  .count input[type="number"] {
+    width: 4rem; min-height: 2.25rem; padding: 0.25rem;
+    font: inherit; color: var(--ink); background: var(--card);
+    border: 1px solid var(--border-strong); border-radius: 0.5rem;
+  }
+  .count button { min-width: 2.25rem; min-height: 2.25rem; padding: 0.25rem; }
+  .toggles { display: flex; flex-wrap: wrap; gap: 0.5rem; width: 100%; }
+  .controls { flex-wrap: wrap; gap: 0.6rem; }
+</style>
+</head>
+<body data-game="ceva-pww" data-kind="demo">
+<main id="main">
+  <h1>Ceva PWW</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Three lines drawn across a triangle always meet at one spot, and a grid of smaller lines shows why.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a corner and use the arrow keys. Change the four counts, then switch on the grid pieces; press Reset diagram to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="70 20 280 240" role="group"
+         aria-label="A triangle with three lines through one point and an optional grid of parallel lines"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="counts" aria-label="Counts along the sides, from -10 to 10">
+      <div class="count"><label for="aeInput">AE</label>
+        <button id="aeLess" type="button" aria-label="Decrease AE count">−</button>
+        <input id="aeInput" type="number" min="-10" max="10" step="1" value="2" aria-label="AE count, from -10 to 10">
+        <button id="aeMore" type="button" aria-label="Increase AE count">+</button></div>
+      <div class="count"><label for="ecInput">EC</label>
+        <button id="ecLess" type="button" aria-label="Decrease EC count">−</button>
+        <input id="ecInput" type="number" min="-10" max="10" step="1" value="3" aria-label="EC count, from -10 to 10">
+        <button id="ecMore" type="button" aria-label="Increase EC count">+</button></div>
+      <div class="count"><label for="afInput">AF</label>
+        <button id="afLess" type="button" aria-label="Decrease AF count">−</button>
+        <input id="afInput" type="number" min="-10" max="10" step="1" value="3" aria-label="AF count, from -10 to 10">
+        <button id="afMore" type="button" aria-label="Increase AF count">+</button></div>
+      <div class="count"><label for="fbInput">FB</label>
+        <button id="fbLess" type="button" aria-label="Decrease FB count">−</button>
+        <input id="fbInput" type="number" min="-10" max="10" step="1" value="2" aria-label="FB count, from -10 to 10">
+        <button id="fbMore" type="button" aria-label="Increase FB count">+</button></div>
+    </div>
+    <div class="toggles">
+      <button id="gridBtn" type="button" aria-pressed="false" aria-label="Show or hide the grid of parallel lines">Show grid</button>
+      <button id="fineBtn" type="button" aria-pressed="false" aria-label="Show or hide the fine grid">Show fine grid</button>
+      <button id="diagonalsBtn" type="button" aria-pressed="false" aria-label="Show or hide the diagonals">Show diagonals</button>
+      <button id="colorsBtn" type="button" aria-pressed="false" aria-label="Show or hide the coloured dissection">Show colors</button>
+      <button id="cycleBtn" type="button" aria-pressed="false" disabled aria-label="Cycle through the coloured pieces">Cycle</button>
+    </div>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle and the counts">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Join three points on the sides of a triangle to the opposite corners. The three lines always pass through one point. Bogomolny's picture turns that fact into a counting game: the pieces of a grid tell you exactly how the three side ratios fit together.</p>
+
+      <h2>Three lines, one meeting point</h2>
+      <p>A line from a corner of a <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a> to the opposite side is called a cevian. Here the cevians are <code>AD</code>, <code>BE</code> and <code>CF</code>, and they meet at <code>K</code>. Two counts set where <code>E</code> and <code>F</code> sit: <code>AE:EC</code> and <code>AF:FB</code>. The third point is placed at <code>BD:DC = (AE·FB):(EC·AF)</code>, which is exactly the choice that makes the three lines meet. This is <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a>.</p>
+
+      <h2>A grid of parallel lines</h2>
+      <p>Draw lines through <code>A</code>, <code>B</code> and <code>C</code> parallel to the two cevians <code>BE</code> and <code>CF</code>. They make a parallelogram with corners <code>A</code>, <code>Q</code>, <code>G</code>, <code>R</code>. The fine grid cuts the side <code>AQ</code> into <code>(AE+EC)·AF</code> strips and the side <code>AR</code> into <code>(AF+FB)·AE</code> strips. The meeting point <code>K</code> lands at step <code>AE·AF</code> along <b>both</b> sides, so <code>AK</code> is the diagonal of a little grid square with <code>AE·AF</code> units on every side. The logic test checks this for all 10,000 choices of the four counts from 1 to 10.</p>
+
+      <h2>Counting the pieces</h2>
+      <p>Follow the grid lines that cross <code>FB</code> and let them turn at <code>BE</code> toward <code>AD</code>: they cut <code>BD</code> into <code>FB·EA</code> equal pieces. Starting from <code>CE</code> does the same for <code>DC</code>, giving <code>CE·AF</code> pieces. Because all the pieces are the same size in the grid, the article's claim follows:</p>
+      <blockquote><code>BD/DC = FB·EA / (CE·AF)</code>.</blockquote>
+      <p>Now multiply the three side ratios:</p>
+      <blockquote><code>(AF/FB) · (BD/DC) · (CE/EA) = (AF/FB) · (FB·EA/(CE·AF)) · (CE/EA) = 1</code>.</blockquote>
+      <p>Everything cancels. The logic test measures the actual lengths on 10,000 different count settings and on thousands of dragged triangles; the identity holds every time. The idea is a proof by <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> and counting, not by measuring a particular drawing.</p>
+
+      <h2>A note about the original applet</h2>
+      <p>The applet's own description still says "A funny dissection that uses Fibonacci numbers" — a leftover from the Fibonacci dissection applet it was copied from. The page it appears on, and the explanation it links to, are about Ceva, so this port follows the Ceva picture. That explanation credits the grid proof to Professor William A. McWorter Jr.; the drawing and code here are written afresh.</p>
+
+      <p class="tip">Try <code>AE = 10</code>, <code>EC = 1</code>, <code>AF = 1</code>, <code>FB = 10</code>, switch on Show colors, and then drag a corner. The shapes change but the three ratios still multiply to 1.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CevaPWW.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="ceva-pww-core.js"></script>
+<script src="ceva-pww.js"></script>
+</body>
+</html>
