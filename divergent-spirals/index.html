@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Divergent Spirals &mdash; coolmaths</title>
+<meta name="description" content="Turn a ring of curved lines and watch spirals appear that were never drawn. Can you make the light spiral flow outward, then bring both spirals inward?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/divergent-spirals/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Divergent Spirals">
+<meta property="og:description" content="Turn a ring of curved lines and watch spirals appear that were never drawn. Can you make the light spiral flow outward, then bring both spirals inward?">
+<meta property="og:url" content="https://coolmaths.ai/divergent-spirals/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .spiral-arc { fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linecap: butt; }
+  #board .knob-track { fill: none; stroke: var(--border-strong); stroke-width: 1; }
+  #board .knob-track-strong { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .center-dot { fill: var(--ink); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.6rem 0.8rem; align-items: center; }
+  .controls button { min-height: 2.75rem; }
+  .controls button[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .setting { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+  .setting label { font-size: 0.85rem; color: var(--muted); }
+  .setting input { width: 100%; max-width: 13rem; min-height: 2.5rem; accent-color: var(--accent); }
+  .setting output { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="divergent-spirals" data-kind="demo">
+<main id="main">
+  <h1>Divergent Spirals</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#curves">Curves</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch a ring of curved lines turn, and see spirals appear that were never drawn.<br>
+    <strong>How to play:</strong> Press Start to turn the picture; try Fast or Slow, switch direction, and move the two sliders. You can also drag the outside dot, or focus it and use the arrow keys, to turn it by hand.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 400" role="group"
+         aria-label="Rings of circular arcs that seem to form turning spirals, with a draggable dot to turn the picture"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="runBtn" type="button" class="primary" aria-label="Start the rotation">Start</button>
+    <button id="cwBtn" type="button" aria-pressed="true" aria-label="Turn the design clockwise">Clockwise</button>
+    <button id="ccwBtn" type="button" aria-pressed="false" aria-label="Turn the design counterclockwise">Counterclockwise</button>
+    <button id="fastBtn" type="button" aria-pressed="false" aria-label="Turn fast" disabled>Fast</button>
+    <button id="slowBtn" type="button" aria-pressed="true" aria-label="Turn slowly" disabled>Slow</button>
+    <div class="setting">
+      <label for="openingInput">Arc angle: <output id="openingValue" for="openingInput">45°</output></label>
+      <input id="openingInput" type="range" min="10" max="90" step="5" value="45" aria-label="Arc angle in degrees, from 10 to 90">
+    </div>
+    <div class="setting">
+      <label for="overlapInput">Arc overlap: <output id="overlapValue" for="overlapInput">4</output></label>
+      <input id="overlapInput" type="range" min="1" max="11" step="1" value="4" aria-label="Arc overlap, from 1 to 11">
+    </div>
+    <button id="resetBtn" type="button" aria-label="Restore the starting picture">Restore defaults</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This is an <a class="wiki-term" data-wiki="Optical_illusion" href="https://en.wikipedia.org/wiki/Optical_illusion" target="_blank" rel="noopener">optical illusion</a>: a picture made only of arcs convinces your eyes that two <a class="wiki-term" data-wiki="Spiral" href="https://en.wikipedia.org/wiki/Spiral" target="_blank" rel="noopener">spirals</a> are moving. The picture itself never changes shape — only the direction and speed of its turning.</p>
+
+      <h2>Only circles are drawn</h2>
+      <p>The applet starts with <code>N = 4</code> and makes its largest radius from the smaller side of the canvas: <code>R = round(min(width, height)/2 − 20)</code>, snapped down to a multiple of <code>4 × (N+1) = 20</code>. On the 640×400 canvas here that gives <code>R = 180</code>. It then draws one arc per ring, using <code>inc = floor(floor(R / floor(360/Opening)) / (N+1))</code>. With the starting <code>Opening = 45°</code> that is <code>inc = 4</code>, so 44 rings are drawn, with radii <code>4, 8, 12, …, 176</code>.</p>
+      <blockquote><code>radius = k</code>, &nbsp; <code>start = k × Opening</code>, &nbsp; <code>sweep = Overlap × Opening</code></blockquote>
+      <p>Each ring's start is the previous ring's start plus <code>Opening</code> degrees, and each <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> is covered for <code>Overlap × Opening</code> degrees — <code>180°</code> at the defaults. The overlap is what links one ring to the next. The logic test transcribes both nested loops, including all six integer arguments of Java's <code>drawArc</code>, and checks all 17 arc angles × 11 overlaps × 12 canvas sizes: 2,244 configurations, thousands of arcs, no disagreement.</p>
+
+      <h2>The turn is the trick</h2>
+      <p>After each tick the original adds <code>π/9</code> radians to the angle in fast mode, or <code>π/17</code> in slow mode, and waits 10&nbsp;ms or 20&nbsp;ms. Counterclockwise subtracts instead of adding. Fast therefore turns <code>(π/9)/10 ÷ (π/17)/20 = 34/9</code> times as quickly as slow, and the two directions have opposite signs; the test checks this tick by tick up to 64 ticks.</p>
+      <p>The page asks you to watch a fast clockwise turn and says you will see a dark spiral wind inward and a light one flow outward, while a counterclockwise turn makes both seem to converge. Those are claims about <em>perception</em>, which arithmetic cannot prove: your eyes supply the spirals. What can be checked is the drawing that causes them, and the test verifies it: successive rings are turned by exactly <code>Opening</code>, they span exactly <code>Overlap × Opening</code>, and not one spiral curve is ever drawn.</p>
+
+      <h2>Little leftovers from the old applet</h2>
+      <p>Two oddities are worth knowing. The applet's own "info" string still calls it <em>Pythagorean Theorem, Proof #36</em>, copied from another applet; it has nothing to do with this picture. It also contains handlers for a third control (the number of concentric arcs, <code>W</code>) that its panel never creates, so <code>W</code> stays at 1 — this page keeps just the two sliders the applet really showed.</p>
+      <p>Finally, if a canvas is tiny enough that <code>inc = 0</code>, the original loop would never end. This page shows no arcs in that case instead of hanging. At 90° and overlap 11 the requested sweep is 990°, more than a full turn, so both the applet and this page draw a complete circle.</p>
+      <p class="tip">Set the arc angle to 10° and the overlap to 11, then start the rotation: many more, much longer arcs make the effect much stronger.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/DivergentSpirals.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="divergent-spirals-core.js"></script>
+<script src="divergent-spirals.js"></script>
+</body>
+</html>
