@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circle In Isosceles Triangle &mdash; coolmaths</title>
+<meta name="description" content="In an isosceles triangle, pick points P and Q on the equal sides with AP = CQ. Must the circle through A, P and Q pass through the triangle's circumcenter?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circle-in-isosceles-triangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circle In Isosceles Triangle">
+<meta property="og:description" content="In an isosceles triangle, pick points P and Q on the equal sides with AP = CQ. Must the circle through A, P and Q pass through the triangle's circumcenter?">
+<meta property="og:url" content="https://coolmaths.ai/circle-in-isosceles-triangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .apq-circle { fill: var(--accent); fill-opacity: 0.09; stroke: var(--accent); stroke-width: 2.5; }
+  #board .radius-line { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .hint-line { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .right-angle { fill: none; stroke: var(--highlight); stroke-width: 1.5; }
+  #board .equal-tick { fill: none; stroke: var(--good); stroke-width: 3; stroke-linecap: round; }
+  #board .foot-dot { fill: var(--highlight); }
+  #board .center-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .point-label { fill: var(--accent); }
+  #board .center-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .aux-handle { fill: var(--highlight); stroke: var(--ink); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="circle-in-isosceles-triangle" data-kind="demo">
+<main id="main">
+  <h1>Circle In Isosceles Triangle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the corners of an isosceles triangle and the two points on its sides, and watch the circle follow them.<br>
+    <strong>How to play:</strong> Drag A, B, C, P or Q with a mouse or finger, or focus a point and use the arrow keys. Press Check the claim to test what you see.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="An isosceles triangle with points P and Q on its equal sides, the circle through A, P and Q, and the triangle's circumcenter O"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle and the two points to their starting places">Reset shape</button>
+    <button id="checkBtn" type="button" aria-label="Check that the circle through A, P and Q passes through O">Check the claim</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point names">Hide names</button>
+    <button id="premiseBtn" type="button" aria-pressed="false" aria-label="Toggle the marks showing AP and CQ are equal">Show equal-length marks</button>
+    <button id="statementBtn" type="button" aria-pressed="false" aria-label="Toggle the lines from O to the three corners">Show the three radii</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the hint lines from O to P, Q and the base">Show the hint</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Here is a small surprise. Pick two points on the equal sides of an isosceles triangle so that the short pieces from the top and the far base corner match. Draw the circle through the top and those two points. It always goes through one fixed point of the triangle, even as you drag everything around.</p>
+
+      <h2>The setup</h2>
+      <p>In an <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles triangle</a> <code>ABC</code>, the sides <code>AB</code> and <code>AC</code> are equal. <code>P</code> sits on <code>AB</code> and <code>Q</code> sits on <code>AC</code>, and neither is a corner. The rule is <code>AP = CQ</code>. The circle you see is the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of <code>APQ</code>, and the green dot is <code>O</code>, the center of the circle through <code>A</code>, <code>B</code> and <code>C</code>.</p>
+
+      <h2>Equal power gives OP = OQ</h2>
+      <p>Because <code>AB = AC</code> and <code>AP = CQ</code>, the leftover pieces are equal too: <code>PB = QA</code>. So <code>PA·PB = QC·QA</code>. These two products are the <a class="wiki-term" data-wiki="Power_of_a_point_(geometry)" href="https://en.wikipedia.org/wiki/Power_of_a_point" target="_blank" rel="noopener">power</a> of <code>P</code> and <code>Q</code> with respect to the big circle. Writing the power as <code>R² − OP²</code>, with <code>R</code> the <a class="wiki-term" data-wiki="Circumradius" href="https://en.wikipedia.org/wiki/Circumradius" target="_blank" rel="noopener">circumradius</a>, gives <code>R² − OP² = R² − OQ²</code>, hence <code>OP = OQ</code>.</p>
+
+      <h2>Equal angles put O on the circle</h2>
+      <p>The line <code>AO</code> cuts the top angle in half. Using the <a class="wiki-term" data-wiki="Law_of_sines" href="https://en.wikipedia.org/wiki/Law_of_sines" target="_blank" rel="noopener">sine rule</a> in triangles <code>AOP</code> and <code>AOQ</code> with <code>AO</code> common and <code>OP = OQ</code> gives <code>sin∠APO = sin∠AQO</code>. Unless <code>P</code> and <code>Q</code> are the midpoints, those angles are not equal, so they add to 180 degrees. Four points with opposite angles like that form a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>: <code>A</code>, <code>P</code>, <code>O</code> and <code>Q</code> lie on one circle. The midpoint case is the symmetric case where the quadrilateral is an isosceles trapezoid, and it works too.</p>
+
+      <h2>What the logic test checks</h2>
+      <p>The core keeps one number <code>t</code>, placing <code>P</code> at <code>t·A + (1−t)·B</code> and <code>Q</code> at <code>t·C + (1−t)·A</code>. On 500 shapes it checks <code>AP = CQ</code>, <code>PA·PB = QC·QA</code>, <code>OP = OQ</code>, <code>∠POQ = 2∠ACB</code> (so <code>∠BAC + ∠POQ = 180°</code>), and the real cross ratio from the article's complex-number proof. The centers and circle match a second transcription of the applet's own bytecode: midpoint perpendiculars intersected to find <code>O</code>, and the mean of the three distances for the drawn radius. One small deviation: the applet's code for dragging corner B overwrites <code>C.y</code> twice, breaking the isosceles shape, so this page mirrors <code>C</code> across the axis as it does when corner C is dragged; that keeps the triangle isosceles as the problem needs.</p>
+
+      <p class="tip">Try a very tall, narrow triangle, then a very flat one, and press Check the claim each time. Try dragging P almost to B and watch Q move with it.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/m/Geometry/CircleInIsoscelesTriangle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circle-in-isosceles-triangle-core.js"></script>
+<script src="circle-in-isosceles-triangle.js"></script>
+</body>
+</html>
