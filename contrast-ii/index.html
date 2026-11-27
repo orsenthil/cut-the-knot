@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contrast II &mdash; coolmaths</title>
+<meta name="description" content="Small squares can look whiter or blacker than big ones even though every square is painted the same colour. Change the grid and find the setting where the edges seem to wave.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/contrast-ii/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Contrast II">
+<meta property="og:description" content="Small squares can look whiter or blacker than big ones even though every square is painted the same colour. Change the grid and find the setting where the edges seem to wave.">
+<meta property="og:url" content="https://coolmaths.ai/contrast-ii/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .field { fill: var(--stage); }
+  #board .sq { fill: var(--ink); }
+  #board .frame { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+  #board.switched .field { fill: var(--ink); }
+  #board.switched .sq { fill: var(--stage); }
+  #board.switched .frame { stroke: var(--stage); }
+  #board .ruler-line, #board .ruler-tick { stroke: var(--muted); stroke-width: 2; }
+  #board .ruler-label {
+    fill: var(--text); font-family: var(--font); font-size: 13px;
+    text-anchor: middle; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board.switched .geom-handle { stroke: var(--ink); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0 0; }
+  .controls { flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .controls > * { min-width: 0; max-width: 100%; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; max-width: 100%; }
+  .controls input[type="range"] { width: min(9rem, 42vw); max-width: 100%; }
+  .controls output { min-width: 2.5rem; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="contrast-ii" data-kind="demo">
+<main id="main">
+  <h1>Contrast II</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is an illusion to explore, not a game to win: small squares can look whiter or blacker than big squares even though every square is the same colour.<br>
+    <strong>How to play:</strong> Move the sliders, or drag the dot on the ruler, to change how many squares you see and how much of each little space they fill. Press Switch colors to turn light and dark around; the dot also moves with the arrow keys.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 390" role="group"
+         aria-label="A grid of small squares and a grid of larger squares, all in one colour, with a ruler below for how full the pattern is"></svg>
+    <p class="hint">Drag the purple dot on the ruler or focus it and use the arrow keys. The sliders and the S key do the same jobs.</p>
+  </div>
+
+  <div class="controls">
+    <label for="nInput">Squares across <input id="nInput" type="range" min="2" max="10" step="1" value="8" aria-label="Number of small squares across the grid, from 2 to 10"><output id="nOut" for="nInput">8</output></label>
+    <label for="partInput">How full <input id="partInput" type="range" min="0" max="100" step="1" value="75" aria-label="How much of each little space the squares fill, from 0 to 100 percent"><output id="partOut" for="partInput">75%</output></label>
+    <label for="switchBtn"><input id="switchBtn" type="checkbox" aria-label="Switch colors: exchange the colour of the squares and the background"> Switch colors</label>
+    <button id="lessN" type="button" aria-label="Use fewer squares across, from 8">&minus; squares</button>
+    <button id="moreN" type="button" aria-label="Use more squares across, from 8">+ squares</button>
+    <button id="lessPart" type="button" aria-label="Fill less of each little space, from 75 percent">&minus; fill</button>
+    <button id="morePart" type="button" aria-label="Fill more of each little space, from 75 percent">+ fill</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset to 8 squares across and 75 percent fill">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>At first glance the little squares seem to shine more brightly than the large ones. The picture gives the eye a reason to group them differently, but the colours on the screen never change. Here is exactly what the applet draws and what the page claims about it.</p>
+
+      <h2>The claim, word for word</h2>
+      <p>Bogomolny's page says: <q>Small white squares appear whiter than big white quares and small black squares appear blacker than the big black squares. There is of course no diffrence in the colors. Brightness of small squares appears to be enhanced by the background.</q> (The spelling is the original page's.) The test checks the part a computer can check: all <code>N&sup2;</code> small squares and all <code>(N&minus;1)&sup2;</code> large squares use one foreground colour on a flat background, no shading, at every one of the 9 &times; 101 settings and six canvas sizes. At the opening setting of 75 percent fill, the small squares are strictly larger than the big ones for every grid size. The <a class="wiki-term" data-wiki="Optical_illusion" href="https://en.wikipedia.org/wiki/Optical_illusion" target="_blank" rel="noopener">illusion</a> is in the looking, not in the paint.</p>
+
+      <h2>How the picture is built</h2>
+      <p>Let <code>S = min(width, height) &minus; 20</code> be the side of the drawn <a class="wiki-term" data-wiki="Square_(geometry)" href="https://en.wikipedia.org/wiki/Square_(geometry)" target="_blank" rel="noopener">square</a>, centred on the canvas. With <code>N</code> across and <code>P</code> percent fill, the applet uses a step <code>step = S &middot; P / (100 &middot; N)</code> and rounds it to get the small side <code>a = round(step)</code>. Grid points are spread over <code>S &minus; step</code>, so the gap between neighbours is <code>g = round((S &minus; step)/(N &minus; 1) &minus; a) + 1</code> and the large squares have side <code>b = 2 &middot; round(g/2) &minus; 1</code>. The <code>N &times; N</code> small squares sit on the grid points; the <code>(N&minus;1) &times; (N&minus;1)</code> large ones sit between them. The arithmetic above keeps Java's integer rounding, and the test compares every rectangle with a second transcription of the applet's <code>Draw()</code> bytecode.</p>
+
+      <h2>When the edges seem to wave</h2>
+      <p>The page adds: <q>When squares of both colors are nearly equal we may observe Kitaoka's illusion or Kitaoka's waves (after Japanese artist Akiyoshi Kitaoka): the edges of the squares do not appear to form straight lines.</q> Since all the squares share one colour, "nearly equal" here means the small and large sides (and so the light and dark patches) are nearly equal. With 8 squares across, <code>P = 53</code> gives <code>a = b = 23</code> board units and the ink covers about 52 percent of the field. The test searches all 101 fill values for every <code>N</code> from 2 to 10 at six canvas sizes: there is always a setting with <code>|a &minus; b| &le; 1</code> and about half the field filled. That is the setting to try for wavy edges.</p>
+
+      <h2>What is different here</h2>
+      <p>The applet's own defaults are a pale green background (<code>c0dcc0</code>) and black squares, but the cut-the-knot page embeds it with <code>bcolor=ffffff</code> and <code>fcolor=000000</code>. This page follows the page's white and black, expressed in the site's light and dark <a class="wiki-term" data-wiki="Color" href="https://en.wikipedia.org/wiki/Color" target="_blank" rel="noopener">colour</a> tokens so the illusion still reads at night; Switch colors exchanges the two just as the applet's checkbox does. The ruler under the picture is a modern stand-in for the applet's Fill scrollbar. Unlike Contrast I's uniform bar over a grey gradient, Contrast2 and Contrast4's grey bands (White's illusion) or Contrast3's grey ring (Koffka), Contrast II draws only two flat colours and two interleaved grids. Its <code>N</code> scrollbar runs from 2 to 10 (the AWT control's <code>maximum &minus; visible</code>), which is why the page offers fewer squares than you might expect from the raw number 12 in the bytecode.</p>
+
+      <p class="tip">Set Squares across to 8, drag the ruler dot near 53 percent, then press Switch colors: watch whether the square edges look straight when the two sizes match.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ContrastII.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="contrast-ii-core.js"></script>
+<script src="contrast-ii.js"></script>
+</body>
+</html>
