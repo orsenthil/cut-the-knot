@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circular Poggendorf &mdash; coolmaths</title>
+<meta name="description" content="A straight strip hides part of a circle, and the two pieces seem not to fit. Move the strip and the circle: can you tell what is really there?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circular-poggendorf/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circular Poggendorf">
+<meta property="og:description" content="A straight strip hides part of a circle, and the two pieces seem not to fit. Move the strip and the circle: can you tell what is really there?">
+<meta property="og:url" content="https://coolmaths.ai/circular-poggendorf/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .illusion-circle {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 2.5;
+  }
+  #board .bar-fill { fill: var(--stage); }
+  #board .bar-outline {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 2.5;
+  }
+  #board .whole-circle {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2.5;
+    stroke-dasharray: 7 5;
+  }
+  #board .cut-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .radius-handle { fill: var(--highlight); }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0 0; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="circular-poggendorf" data-kind="demo">
+<main id="main">
+  <h1>Circular Poggendorf</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A circle is crossed by a strip with two straight edges; the pieces look as if they no longer fit together. There is nothing to win.<br>
+    <strong>How to play:</strong> Drag the dot on the circle to change its size, or the dots on the strip's edges to move and widen it. Focus a dot and use the arrow keys, or press the buttons to show the whole circle.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 300" role="group"
+         aria-label="A circle partly hidden by a strip with two parallel edges, and three draggable points that set the circle's radius, the strip's start and its width"></svg>
+    <p class="hint">Drag the three dots, or focus one and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the circle and strip to the original settings">Reset</button>
+    <button id="revealBtn" type="button" aria-pressed="false" aria-label="Show the hidden part of the circle">Show hidden circle</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Press "Show hidden circle": the pieces join into one round shape after all. The picture never changed &mdash; only what you can see of it did.</p>
+
+      <h2>The claim, word for word</h2>
+      <p>Bogomolny's page says: <q>The parallel lines that obscure parts of a circle break the circle off so that its pieces do not appear to fit together.</q> That is the claim kept here. Its first half is about <a class="wiki-term" data-wiki="Geometry" href="https://en.wikipedia.org/wiki/Geometry" target="_blank" rel="noopener">geometry</a> and can be checked. The words <em>do not appear</em> are about <a class="wiki-term" data-wiki="Visual_perception" href="https://en.wikipedia.org/wiki/Visual_perception" target="_blank" rel="noopener">perception</a>: no coordinate can measure how a picture looks, so the logic test does not pretend to. This is a circular form of the <a class="wiki-term" data-wiki="Poggendorff_illusion" href="https://en.wikipedia.org/wiki/Poggendorff_illusion" target="_blank" rel="noopener">Poggendorff illusion</a>; the page cites Shepard, Seckel and <em>The Mind's Eye</em>.</p>
+
+      <h2>What the applet actually draws</h2>
+      <p>One <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>, centred on the canvas: <code>drawOval(W/2 &minus; R, H/2 &minus; R, 2R, 2R)</code>. Then a strip painted in the background colour, <code>fillRect(X0, 0, Width, H &minus; 1)</code>, which erases the part of the circle behind it. Finally <code>drawRect</code> draws the same strip's outline, giving the two <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a> vertical edges at <code>x = X0</code> and <code>x = X0 + Width</code>. The circle's radius never changes and its centre stays at <code>(W/2, H/2)</code>.</p>
+      <blockquote>At an edge <code>x</code>, the circle meets it at <code>y = H/2 &plusmn; &radic;(R&sup2; &minus; (x &minus; W/2)&sup2;)</code> &mdash; two ends, one if the edge just touches, none if it misses.</blockquote>
+      <p>The two cut ends are symmetric about the horizontal middle line. Slide the strip away and the circle is whole: the pieces fit exactly. The test checks this over 8,000 configurations and compares every oval and strip with a second, literal transcription of the applet's own <code>Draw()</code> bytecode, plus 6,000 random settings of its three scrollbars.</p>
+
+      <h2>Why the eye disagrees</h2>
+      <p>The strip's edges are straight and run the whole height of the picture, so the eye treats them as the ends of the arcs and reads the two pieces as if they belonged to different circles. They do not: every point of the drawing is still exactly <code>R</code> from the centre. That gap between what is measured and what is seen is the <a class="wiki-term" data-wiki="Optical_illusion" href="https://en.wikipedia.org/wiki/Optical_illusion" target="_blank" rel="noopener">optical illusion</a>.</p>
+      <p><strong>Deviation from the applet:</strong> the original had three scrollbars (radius, bar width and X0). Here three draggable dots do the same job. Their handles stay inside the drawing, so the largest circle reachable by dragging is 145 units (the scrollbar reached 500, where the circle overflowed), and the strip cannot be dragged past the right edge. All of the applet's ranges are still checked in the logic test, and the settings printed on its page (radius 125, width 50, X0 100) are the starting picture.</p>
+
+      <p class="tip">Widen the strip until it covers the circle completely: the pieces vanish and there is nothing left to misjudge. Then make it narrow again and press "Show hidden circle".</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CircularPoggendorf.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circular-poggendorf-core.js"></script>
+<script src="circular-poggendorf.js"></script>
+</body>
+</html>
