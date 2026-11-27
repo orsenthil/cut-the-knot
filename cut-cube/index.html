@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cut Cube &mdash; coolmaths</title>
+<meta name="description" content="Move a flat sheet through a cube: can you cut off a pyramid, or make a square, a four-sided, a five-sided or a six-sided section?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cut-cube/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cut Cube">
+<meta property="og:description" content="Move a flat sheet through a cube: can you cut off a pyramid, or make a square, a four-sided, a five-sided or a six-sided section?">
+<meta property="og:url" content="https://coolmaths.ai/cut-cube/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 44rem; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  #board .cube-face { fill: var(--board-a); fill-opacity: 0.35; stroke: var(--muted); stroke-width: 1; }
+  #board .cube-edge { stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; }
+  #board .hidden-edge { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 5 5; }
+  #board .plane-face { fill: var(--accent); fill-opacity: 0.12; stroke: var(--accent); stroke-width: 2.5; }
+  #board .plane-face.opaque { fill-opacity: 0.82; }
+  #board .section-face { fill: var(--good); fill-opacity: 0.5; stroke: var(--good); stroke-width: 3; stroke-linejoin: round; }
+  #board .section-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .tilt-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--text); stroke-width: 5; }
+  .bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3rem 0.5rem; margin: 0.4rem 0; }
+  .bar label, .bar button { min-height: 2.5rem; display: inline-flex; align-items: center; gap: 0.25rem; }
+  fieldset { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.3rem 0.6rem; align-items: center; }
+  legend { padding: 0; font-weight: 650; }
+  .controls { flex-wrap: wrap; justify-content: center; gap: 0.4rem 1rem; }
+  .hint, #readout { margin: 0.4rem 0; text-align: center; color: var(--muted); font-size: 0.94rem; }
+</style>
+</head>
+<body data-game="cut-cube" data-kind="demo">
+<main id="main">
+  <h1>Cut Cube</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> A cube and a flat sheet, with the outline showing where the sheet passes through the cube.<br>
+    <strong>How to play:</strong> Drag a dot to slide or tilt the sheet, or drag the picture to turn the cube. Press a shape button to see a triangular, square, four-, five- or six-sided cut.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 420" role="group" tabindex="0"
+         aria-label="A cube and a plane. Drag the two handles to slide or tilt the plane, or drag the picture to turn the cube; arrow keys work when the board has focus."></svg>
+    <div class="bar" role="group" aria-label="Try these cuts">
+      <button type="button" data-preset="pyramid" aria-label="Show a cut that takes a pyramid off one corner">Pyramid</button>
+      <button type="button" data-preset="square" aria-label="Show a square cut">Square</button>
+      <button type="button" data-preset="quadrilateral" aria-label="Show a four-sided cut">Four sides</button>
+      <button type="button" data-preset="pentagon" aria-label="Show a five-sided cut">Five sides</button>
+      <button type="button" data-preset="hexagon" aria-label="Show a six-sided cut">Six sides</button>
+    </div>
+    <p id="readout" aria-live="polite"></p>
+    <p class="hint">Drag with the left button to turn, with the right button to slide, and with Alt held down to zoom. On a keyboard: arrows turn, + and − zoom, and comma and full stop move the sheet.</p>
+  </div>
+
+  <div class="controls">
+    <fieldset>
+      <legend>Plane</legend>
+      <label><input type="radio" name="style" value="transparent" checked> Transparent</label>
+      <label><input type="radio" name="style" value="opaque"> Opaque</label>
+    </fieldset>
+    <fieldset>
+      <legend>Objects</legend>
+      <label><input type="radio" name="mode" value="separate" checked> Separate</label>
+      <label><input type="radio" name="mode" value="combined"> Combined</label>
+    </fieldset>
+    <fieldset>
+      <legend>Move</legend>
+      <label><input type="radio" name="target" value="cube" checked> Cube</label>
+      <label><input type="radio" name="target" value="plane"> Plane</label>
+    </fieldset>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the cube and plane to their starting positions">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>One straight sheet can pass through a cube in surprisingly many ways. The coloured outline is the <a class="wiki-term" data-wiki="Cross_section_(geometry)" href="https://en.wikipedia.org/wiki/Cross_section_(geometry)" target="_blank" rel="noopener">cross section</a>: the shape the sheet and the solid have in common.</p>
+
+      <h2>One side for each face</h2>
+      <p>Write the sheet as <code>ax + by + cz = d</code>. A corner of the outline can only appear where the sheet crosses an edge of the cube, and an edge belongs to two faces. The outline therefore has one side for each cube face the sheet meets. A <a class="wiki-term" data-wiki="Polyhedron" href="https://en.wikipedia.org/wiki/Polyhedron" target="_blank" rel="noopener">polyhedron</a> with six faces can give at most six sides. The logic test checked every integer direction with coordinates from −3 to 3 and many heights: no cut had seven sides, though three, four, five and six all occurred.</p>
+
+      <h2>The shapes the page asks for</h2>
+      <p>The page asks whether the section can be a square, a quadrilateral, a pentagon or a hexagon. All four are possible, and the five buttons above show them. A sheet parallel to a face, <code>z = 0</code>, gives a square. A tilted sheet such as <code>x + y = 1</code> gives a <a class="wiki-term" data-wiki="Quadrilateral" href="https://en.wikipedia.org/wiki/Quadrilateral" target="_blank" rel="noopener">quadrilateral</a> that is not a square. <code>x + y + 0.8z = 1.6</code> gives five sides, and <code>x + y + z = 0</code> through the centre gives a regular hexagon. Every outline point really satisfies the sheet's equation and lies on the cube.</p>
+
+      <h2>Moving and showing</h2>
+      <p>Turning or sliding the cube changes the numbers <code>a, b, c, d</code>, but the shape of the cut stays the same as long as the two objects keep the same relative position. That is why the "combined" choice carries the cube along when the sheet moves: it is the same cut viewed from another place. "Transparent" and "opaque" only change how the sheet is drawn; neither changes the cut.</p>
+
+      <h2>Cutting off a pyramid</h2>
+      <p>Choose <code>x + y + z = 7.5</code> and the sheet passes just beyond the corner <code>(3, 3, 3)</code>. It meets the three edges at that corner, leaving a triangle behind and cutting off a small <a class="wiki-term" data-wiki="Tetrahedron" href="https://en.wikipedia.org/wiki/Tetrahedron" target="_blank" rel="noopener">tetrahedron</a> — a pyramid with a triangular base. The test confirmed that exactly one corner is on the far side of the sheet.</p>
+
+      <p class="tip">Try the six-sided cut, then slide the sheet slowly towards a corner and watch the outline shrink from six sides to five, four and three.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CutCube.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cut-cube-core.js"></script>
+<script src="cut-cube.js"></script>
+</body>
+</html>
