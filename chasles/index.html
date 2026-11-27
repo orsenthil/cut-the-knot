@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chasles &mdash; coolmaths</title>
+<meta name="description" content="Six points sit on an oval. Move them and see whether the crossings of three pairs of lines really land on one straight line, as Chasles' theorem says.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/chasles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Chasles">
+<meta property="og:description" content="Six points sit on an oval. Move them and see whether the crossings of three pairs of lines really land on one straight line, as Chasles' theorem says.">
+<meta property="og:url" content="https://coolmaths.ai/chasles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .bbox { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .conic { fill: var(--accent); fill-opacity: 0.06; stroke: var(--ink); stroke-width: 2; }
+  #board .side { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .pascal { stroke: var(--accent); stroke-width: 2.5; }
+  #board .aux { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .aux-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .end-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .corner-handle { fill: var(--muted); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="chasles" data-kind="demo">
+<main id="main">
+  <h1>Chasles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move six dots around an oval and see where lines through them cross.<br>
+    <strong>How to play:</strong> Drag A to F along the oval, or drag a small corner dot to change the oval's shape. Focus a dot and use the arrow keys instead, and press Show names to label the crossings.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Six points on an ellipse with their hexagon, the line through P and Q, and its crossings"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the diagram to its starting shape">Reset diagram</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show or hide the names of the crossings">Show names</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Six points on one oval make a hexagon. Draw lines through pairs of them and the crossings look as if they could wander anywhere — but one pair always lands on the very same spot. The proof on the applet's page was suggested by Hubert Shutrick.</p>
+
+      <h2>Four lines from one point</h2>
+      <p>Pick four points on a <a class="wiki-term" data-wiki="Conic_section" href="https://en.wikipedia.org/wiki/Conic_section" target="_blank" rel="noopener">conic</a> and draw the four lines to them from a fifth point of the conic. Those four lines form a pencil. Their <a class="wiki-term" data-wiki="Cross-ratio" href="https://en.wikipedia.org/wiki/Cross-ratio" target="_blank" rel="noopener">cross-ratio</a> is a single number made from the four lines; for four points on any straight line cutting the pencil it is <code>((c-a)/(c-b)) / ((d-a)/(d-b))</code>, using signed positions along that line.</p>
+
+      <h2>Chasles' theorem</h2>
+      <p>Move the fifth point somewhere else on the conic: the cross-ratio does not change. That is <a class="wiki-term" data-wiki="Chasles%27_theorem" href="https://en.wikipedia.org/wiki/Chasles%27_theorem" target="_blank" rel="noopener">Chasles' theorem</a>. In the picture, P is <code>AB ^ DE</code>, Q is <code>CD ^ FA</code>, and the blue line <code>p</code> joins them. It cuts the conic at L and M and meets AD at T.</p>
+
+      <h2>Where the crossings meet</h2>
+      <p>Now put <code>R = EF ^ p</code> and <code>S = BC ^ p</code>. Cutting the pencils from F and D by the blue line gives <code>(LQRM) = F(LAEM) = D(LAEM) = (LTPM)</code>. Cutting the pencils from A and C gives <code>(LTPM) = A(LDBM) = C(LDBM) = (LQSM)</code>. Chasles' theorem is used once in each chain, so <code>(LQRM) = (LQSM)</code>. Three points of a line and their cross-ratio pin down the fourth, hence <code>R = S</code> — the three Pascal crossings are collinear, which is <a class="wiki-term" data-wiki="Pascal%27s_theorem" href="https://en.wikipedia.org/wiki/Pascal%27s_theorem" target="_blank" rel="noopener">Pascal's theorem</a>.</p>
+
+      <h2>Checked, not just claimed</h2>
+      <p>The logic test drags the ellipse and all six points into hundreds of shapes. In every usable one it measures both cross-ratios independently, from the signed angles at the two vertices and from positions along the blue line, and confirms the whole chain above and <code>R = S</code>. It also compares every constructed point with a second transcription of the applet's own bytecode computation.</p>
+
+      <p class="tip">Try moving every point to one side of the ellipse, so the hexagon is very lopsided. The blue line swings, but R and S still sit on top of each other.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Chasles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="chasles-core.js"></script>
+<script src="chasles.js"></script>
+</body>
+</html>
