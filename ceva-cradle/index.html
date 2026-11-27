@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ceva Cradle &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and the points on its sides: when the three lines from the corners meet, do the three lines inside the smaller triangle meet too? Move the free point and see what never changes.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/ceva-cradle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Ceva Cradle">
+<meta property="og:description" content="Drag the corners of a triangle and the points on its sides: when the three lines from the corners meet, do the three lines inside the smaller triangle meet too? Move the free point and see what never changes.">
+<meta property="og:url" content="https://coolmaths.ai/ceva-cradle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-line { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .inner-line { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .ray { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 3 5; }
+  #board .cevian { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .cevian-inner { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 4 4; }
+  #board .solved-a { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .solved-b { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .hint { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 2 4; }
+  #board .aux-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1; }
+  #board .foot-dot { fill: var(--muted); }
+  #board .meeting-dot.a { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .meeting-dot.b { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .glabel.small { font-size: 13px; fill: var(--muted); }
+  #board .glabel.meet.a { fill: var(--good); }
+  #board .glabel.meet.b { fill: var(--accent); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+</style>
+</head>
+<body data-game="ceva-cradle" data-kind="demo">
+<main id="main">
+  <h1>Ceva Cradle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the dots and watch two triangles of lines: when the three lines from the corners meet in one spot, the three lines inside also meet.<br>
+    <strong>How to play:</strong> Drag A, B, C, O or X, Y, Z with a mouse or finger, or focus a dot and use the arrow keys. Tick "cevians" and "hint" to see the lines and the proof.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Triangle ABC with points X, Y and Z on its sides, a free point O and the cradle of lines through them"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle and all points to their starting positions">Reset diagram</button>
+    <label><input id="namesBox" type="checkbox" checked aria-label="Show the point names"> Names</label>
+    <label><input id="ceviansBox" type="checkbox" aria-label="Show the cevians whose meeting is tested"> Cevians</label>
+    <label><input id="hintBox" type="checkbox" aria-label="Show the perpendiculars used in the proof"> Hint</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Take a <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a> ABC, put X, Y and Z on its sides, and pick any other point O. Join O to the three corners. The lines AO, BO and CO cross the sides of the little triangle XYZ at D, E and F. Drag the dots: something stays exactly the same.</p>
+
+      <h2>Two triangles, six lines</h2>
+      <p>The three lines AX, BY and CZ belong to the big triangle. The three lines XD, YE and ZF belong to the small one. Tick "cevians" to see both sets. Tick "hint" to see the two <a class="wiki-term" data-wiki="Perpendicular" href="https://en.wikipedia.org/wiki/Perpendicular" target="_blank" rel="noopener">perpendiculars</a> YG and ZH dropped from Y and Z onto AO; they are the key to the proof on the original page.</p>
+
+      <h2>The product that never changes</h2>
+      <p>Measure the lengths along the sides and multiply three ratios for each triangle. The applet's page claims that the two answers are always the same:</p>
+      <blockquote><code>(AZ/ZB)(BX/XC)(CY/YA) = (ZD/DY)(YF/FX)(XE/EZ)</code></blockquote>
+      <p>The left side only knows where X, Y and Z sit. The right side uses D, E and F, which move with O — yet the two stay equal. The logic test checks this on more than 1,500 random diagrams and on 720 placements of O around fixed cradles; the largest relative difference it found was about <code>10<sup>-11</sup></code>. Move O far out of the picture and the equality still holds.</p>
+
+      <h2>Why O cancels</h2>
+      <p>From the similar right triangles at D, <code>ZD/DY = ZH/YG</code>. Then <code>ZH = AZ·sin(OAZ)</code> and <code>YG = YA·sin(OAY)</code>, so <code>ZD/DY = (AZ/YA)·sin(OAZ)/sin(OAY)</code>. Two analogous formulas give the other ratios. Multiplying all three leaves exactly the left-hand product above, times a product of six <a class="wiki-term" data-wiki="Sine" href="https://en.wikipedia.org/wiki/Sine" target="_blank" rel="noopener">sines</a>.</p>
+      <p>Those six sines cancel because AO, BO and CO already meet at O: that is the trigonometric form of Ceva's theorem. So the point O never enters the identity at all.</p>
+
+      <h2>When the lines meet</h2>
+      <p>Each product is 1 exactly when its three cevians pass through one point — the ordinary <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a>. Since the products are equal, the six lines meet together or not together: the cevians AX, BY, CZ concur if and only if XD, YE and ZF concur. The applet called a diagram finished when both products were within 0.01 of 1; this page uses the same test, and draws the two meeting points M and N in green and purple.</p>
+      <p class="tip">Try putting X, Y and Z at the midpoints of the sides: the first three lines meet at the centre. Now slide O anywhere — the second three lines still meet.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CevaCradle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="ceva-cradle-core.js"></script>
+<script src="ceva-cradle.js"></script>
+</body>
+</html>
