@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Foot Of Altitude &mdash; coolmaths</title>
+<meta name="description" content="Slide a point along the base of a triangle: where is the segment between its two perpendicular feet shortest, and why?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/foot-of-altitude/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Foot Of Altitude">
+<meta property="og:description" content="Slide a point along the base of a triangle: where is the segment between its two perpendicular feet shortest, and why?">
+<meta property="og:url" content="https://coolmaths.ai/foot-of-altitude/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .baseLine { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; }
+  #board .triangle { fill: var(--accent-soft); stroke: var(--ink); stroke-width: 2.4; stroke-linejoin: round; }
+  #board .perpendicular { stroke: var(--ink); stroke-width: 1.6; }
+  #board .ef { stroke: var(--accent); stroke-width: 4; stroke-linecap: round; }
+  #board .altitude { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 5; }
+  #board .circumcircle { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .rightmark { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .barMin { stroke: var(--good); stroke-width: 4; stroke-linecap: round; }
+  #board .barNow { stroke: var(--accent); stroke-width: 4; stroke-linecap: round; }
+  #board .barNow.done { stroke: var(--good); }
+  #board .footdot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .projectiondot { fill: var(--ink); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .measure {
+    margin: 0.3rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .hint-line {
+    margin: 0.4rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="foot-of-altitude" data-kind="demo">
+<main id="main">
+  <h1>Foot Of Altitude</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Slide a point along the bottom of a triangle and watch the short line between the places where its two lines meet the sides; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag a corner or the sliding point, or focus one and use the arrow keys. Tick the boxes to show names, right angles or the circle, and press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Triangle ABC with point D on the bottom line, its two perpendicular feet E and F, and a segment EF. Drag A, B, C or D, or focus one and use the arrow keys."></svg>
+    <p id="measure" class="measure"></p>
+    <p class="hint-line">Drag A, B, C or D; with the keyboard, focus a point and press arrow keys (Shift moves further).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Show names</label>
+    <label><input id="premiseBox" type="checkbox" data-label="right angles"> Show right angles</label>
+    <label><input id="hintBox" type="checkbox" data-label="circle and altitude"> Show circle and altitude</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the picture">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A point slides along the bottom of a triangle. Two short lines drop from it to the other sides, and their ends mark a segment whose length changes. The surprise is that the same simple spot makes it shortest for every triangle — even when that spot lies outside the bottom side.</p>
+
+      <h2>The shortest place for D</h2>
+      <p>The answer is the foot of the <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a> from A to the line BC. Call it D′; let E′ and F′ be its projections on AC and AB. The applet draws E′F′ as the green bar and the length at the current D as the violet bar. The logic test compared the bar lengths at thousands of triangles and sliding positions, including obtuse ones: EF at D′ was never larger than at any other point of the base line. The applet fixes B, C and D to a horizontal line, so D may slide past B or C; when the foot is outside the side, it is still the minimum on that line. The page notes that Honsberger's exception for an obtuse base angle (where he puts the minimum at the vertex) is incorrect; the test agrees for the applet's line.</p>
+
+      <h2>A circle with AD as its diameter</h2>
+      <p>Because DE is perpendicular to AC and DF to AB, the angles AED and AFD are right angles. So A, E, D and F lie on one <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>, and AD is a diameter of its circle. The chord EF subtends the angle EDF at D; by the <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angle</a> rule this angle is the same as the angle at A, or its supplement, whichever way the points turn. The test found that EDF stays fixed (up to that supplement) as D slides; at the instant D reaches B or C one of the lines has zero length, so the angle is undefined there.</p>
+
+      <h2>Minimizing without calculus</h2>
+      <p>A chord of a fixed circle that subtends a fixed angle has length <code>diameter × sin(angle)</code>, which the page also gets from the <a class="wiki-term" data-wiki="Law_of_sines" href="https://en.wikipedia.org/wiki/Law_of_sines" target="_blank" rel="noopener">law of sines</a>:</p>
+      <blockquote><code>EF = AD · sin(∠EDF)</code></blockquote>
+      <p>The sine factor does not change as D moves, so EF is shortest exactly when AD is. The nearest point of a line to A is its perpendicular foot, giving <code>E′F′ ≤ EF</code> without calculus. When angle A is a right angle, AEDF is a rectangle: the sine is 1, AD and EF are its equal diagonals, and the test confirmed <code>EF = AD</code> for right triangles with D in several places. On the page this last calculation is Gordon Walsh's solution; the words here follow the page, and the check script verifies the identity over every triangle in its sample.</p>
+
+      <p class="tip">Try the circle box and slide D slowly past the foot: the circle shrinks with AD, and the violet bar reaches the green bar exactly at the foot.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FootOfAltitude.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="foot-of-altitude-core.js"></script>
+<script src="foot-of-altitude.js"></script>
+</body>
+</html>
