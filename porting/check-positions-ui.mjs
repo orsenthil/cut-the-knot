@@ -1057,6 +1057,16 @@ const GAMES = {
   "ceva-pww": (page) => dragFirstHandle(page),
   "cevian-triangle": (page) => dragFirstHandle(page),
   chasles: (page) => dragFirstHandle(page),
+  "chasles-tangents": (page) => dragFirstHandle(page),
+  cid: (page) => dragFirstHandle(page),
+  "circle-center-by-ruler": (page) => dragFirstHandle(page),
+  "circle-centers-on-radical-axes": (page) => dragFirstHandle(page),
+  "circle-division": (page) => dragFirstHandle(page),
+  "circle-in-isosceles-triangle": (page) => dragFirstHandle(page),
+  "circle-of-similitude": (page) => dragFirstHandle(page),
+  "circle-of-similitude-1": (page) => dragFirstHandle(page),
+  "circle-on-cevian": (page) => dragFirstHandle(page),
+  "circles-and-parallelogram": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

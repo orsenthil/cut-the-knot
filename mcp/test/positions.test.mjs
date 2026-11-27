@@ -2203,6 +2203,16 @@ check("ceva-nest: nested cevians give a perspective point", read["ceva-nest"]?.s
 check("ceva-pww: the grid dissection proves Ceva's product is one", read["ceva-pww"]?.stateIsIllustration === true && read["ceva-pww"].reading.allClaimsHold === true);
 check("cevian-triangle: the cevian triangle is perspective from P and its axis exists", read["cevian-triangle"]?.reading.desarguesAxis === true && read["cevian-triangle"].reading.perspectiveFromP === true);
 check("chasles: the Pascal chain closes with R equal to S", read.chasles?.chainHolds === true && read.chasles.R_equals_S === true);
+check("chasles-tangents: a pencil cross-ratio equals the tangent cuts", read["chasles-tangents"]?.equality.holds === true && read["chasles-tangents"].savedReadable === true);
+check("cid: an odd denominator completes the isosceles slice chain", read.cid?.reading.oddDenominator === true && read.cid.reading.baseAnglesDegrees.length === 4);
+check("circle-center-by-ruler: equal chords give a diameter through P and Q", read["circle-center-by-ruler"]?.reading.claims.all === true);
+check("circle-centers-on-radical-axes: three axes meet at one radical centre", read["circle-centers-on-radical-axes"]?.reading.axes.length === 3 && typeof read["circle-centers-on-radical-axes"].reading.radicalCentre === "object");
+check("circle-division: the band area equals the arc fraction", read["circle-division"]?.reading.equalsBandArea === true);
+check("circle-in-isosceles-triangle: A, P, Q and the circumcentre are concyclic", read["circle-in-isosceles-triangle"]?.reading.concyclic === true);
+check("circle-of-similitude: the tangent intersections bound the similitude circle", read["circle-of-similitude"]?.valid === true && typeof read["circle-of-similitude"].circle === "object");
+check("circle-of-similitude-1: the similitude circle is orthogonal to the centre-diameter circle", read["circle-of-similitude-1"]?.possible === true && read["circle-of-similitude-1"].orthogonal === true);
+check("circle-on-cevian: three diameter circles meet at the orthocenter", read["circle-on-cevian"]?.reading.axes.length === 3 && read["circle-on-cevian"].reading.orthocenter !== null);
+check("circles-and-parallelogram: the second circle intersection lies on AC", read["circles-and-parallelogram"]?.reading.onDiagonalAC.holds === true && read["circles-and-parallelogram"].reading.onDiagonalAC.crossProductResidual === 0);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);

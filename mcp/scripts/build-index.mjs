@@ -597,6 +597,16 @@ const CORE_GLOBALS = {
   "ceva-pww/ceva-pww-core.js": ["CevaPwwCore"],
   "cevian-triangle/cevian-triangle-core.js": ["CevianTriangleCore"],
   "chasles/chasles-core.js": ["ChaslesCore"],
+  "chasles-tangents/chasles-tangents-core.js": ["ChaslesTangentsCore"],
+  "cid/cid-core.js": ["CidCore"],
+  "circle-center-by-ruler/circle-center-by-ruler-core.js": ["CircleCenterByRulerCore"],
+  "circle-centers-on-radical-axes/circle-centers-on-radical-axes-core.js": ["CircleCentersOnRadicalAxesCore"],
+  "circle-division/circle-division-core.js": ["CircleDivisionCore"],
+  "circle-in-isosceles-triangle/circle-in-isosceles-triangle-core.js": ["CircleInIsoscelesTriangleCore"],
+  "circle-of-similitude/circle-of-similitude-core.js": ["CircleOfSimilitudeCore"],
+  "circle-of-similitude-1/circle-of-similitude-1-core.js": ["CircleOfSimilitude1Core"],
+  "circle-on-cevian/circle-on-cevian-core.js": ["CircleOnCevianCore"],
+  "circles-and-parallelogram/circles-and-parallelogram-core.js": ["CirclesAndParallelogramCore"],
 };
 
 const games = [];
