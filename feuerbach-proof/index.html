@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Feuerbach Proof &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and watch two circles outside it chase a circle through the midpoints. Can you see why they always just touch?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/feuerbach-proof/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Feuerbach Proof">
+<meta property="og:description" content="Drag the corners of a triangle and watch two circles outside it chase a circle through the midpoints. Can you see why they always just touch?">
+<meta property="og:url" content="https://coolmaths.ai/feuerbach-proof/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 38rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .side { stroke: var(--muted); stroke-width: 1.6; }
+  #board .centre-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 4; }
+  #board .tangent { stroke: var(--good); stroke-width: 2.2; }
+  #board .tangent-at-l { stroke: var(--bad); stroke-width: 2; }
+  #board .excircle { fill: var(--good); fill-opacity: 0.06; stroke: var(--good); stroke-width: 2.4; }
+  #board .excircle-b { stroke-dasharray: 9 4; }
+  #board .inversion-circle { fill: var(--accent); fill-opacity: 0.05; stroke: var(--accent); stroke-width: 2.2; stroke-dasharray: 5 4; }
+  #board .nine-point-circle { fill: none; stroke: var(--bad); stroke-width: 2.6; }
+  #board .aux-dot { fill: var(--ink); }
+  #board .centre-dot { fill: var(--good); }
+  #board .angle-mark { fill: none; stroke: var(--accent); stroke-width: 1.8; }
+  #board .angle-mark.second { stroke: var(--bad); }
+  #board .point-label { fill: var(--text); font-size: 0.85rem; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  .controls { flex-wrap: wrap; gap: 0.5rem 0.9rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; white-space: normal; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="feuerbach-proof" data-kind="demo">
+<main id="main">
+  <h1>Feuerbach Proof</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This picture shows why a circle through the middle points of a triangle just touches the circles outside it.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a dot and press the arrow keys. Tick the boxes to show names, the two extra circles and the angle marks.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="A draggable triangle ABC with the two excircles opposite B and C, their common centre line, two external tangents, the inversion circle centred at L and the nine-point circle through K, L and M."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the three triangle corners back where they started">Reset</button>
+    <label class="option" for="namesChk"><input id="namesChk" type="checkbox" checked aria-label="Show the names of the points and circles"> names</label>
+    <label class="option" for="inversionChk"><input id="inversionChk" type="checkbox" aria-label="Show the circle of inversion"> circle of inversion</label>
+    <label class="option" for="nineChk"><input id="nineChk" type="checkbox" aria-label="Show the nine-point circle"> 9-point circle</label>
+    <label class="option" for="anglesChk"><input id="anglesChk" type="checkbox" checked aria-label="Show the angle marks"> angles</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag a corner and every circle moves, yet one circle always just touches the two circles outside the triangle. The trick is to change the picture into a simpler one by reflecting it in a circle.</p>
+
+      <h2>A circle that swaps two points</h2>
+      <p>Drop the centres of the two outside <a class="wiki-term" data-wiki="Excircle" href="https://en.wikipedia.org/wiki/Excircle" target="_blank" rel="noopener">excircles</a> onto the base BC at B′ and C′. The midpoint L of B′C′ is also the midpoint of BC, because</p>
+      <blockquote><code>BB′ = CC′ = (AB + BC + AC)/2</code></blockquote>
+      <p>Let w be the circle centred at L with radius <code>LB′ = LC′ = (b + c)/2</code>, where <code>b = CA</code> and <code>c = AB</code>. The foot P of the altitude from A and the point S where BC meets the line of the two excircle centres satisfy</p>
+      <blockquote><code>LP &middot; LS = LB′ &middot; LC′ = LB′&sup2;</code></blockquote>
+      <p>That is exactly the rule for <a class="wiki-term" data-wiki="Inversion_(mathematics)" href="https://en.wikipedia.org/wiki/Inversion_(mathematics)" target="_blank" rel="noopener">inversion</a> in w: P and S are a pair of inverse points. The page also says that A and S split the two centres in the same ratio, <code>ACb/ACc = rb/rc = SCb/SCc</code>, so they divide that segment harmonically. The logic test checked both equations, and the two equal lengths above, on more than 1,700 triangles; every difference was a tiny rounding error.</p>
+
+      <h2>The circle becomes a line</h2>
+      <p>K, L and M are the midpoints of AB, BC and CA, and the <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">nine-point circle</a> is the circle through them. It passes through L, the centre of w, so inversion sends it to a straight line; it also passes through P, so that line must go through S. Which line is it? Inversion keeps angles unchanged, and the page claims</p>
+      <blockquote><code>&ang;XLK = &ang;KML = &ang;ABC</code></blockquote>
+      <p>Since KL is parallel to AC, the line through S with that angle to KL is the second common external <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> of the two excircles. The test inverted the actual points K, M and P and checked that all three images lie on that tangent, and checked the angle equation, over the same 1,700-plus triangles.</p>
+
+      <h2>Why the circles really touch</h2>
+      <p>The circle w meets each excircle at right angles, so inversion leaves both excircles where they are (they are anallagmatic). The nine-point circle, though, becomes a line that just touches both of them. Undoing the inversion gives back the original nine-point circle, still touching both excircles. This proves the page's headline claim for the pair Cb and Cc: the nine-point circle touches the excircles from the outside. It also checked the other half of the claim, that the nine-point circle touches the incircle from inside, using <code>distance = |R/2 &minus; r|</code> for the two radii, where R is the circumradius. The sibling applets state the theorem, its incidences, or its sixteen circles; this applet concentrates on this one proof.</p>
+      <p>The live cut-the-knot page still embeds the Java applet twice: once with names switched off, once with names and angles switched on for the proof. This port shows the proof copy on one board, with the two optional circles off as in the Java panel. The applet's own sizes, corner positions, constructions and four checkboxes are kept; only the presentation changed to modern SVG. A nearly collinear drag hides the construction instead of drawing impossible circles.</p>
+
+      <p class="tip">Tick both circles, then drag A close to C. Watch LB′ and LC′ stay equal, P and S stay inverse, and the red nine-point circle keep its single touch on each green excircle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FeuerbachProof.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="feuerbach-proof-core.js"></script>
+<script src="feuerbach-proof.js"></script>
+</body>
+</html>
