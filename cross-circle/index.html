@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cross Circle &mdash; coolmaths</title>
+<meta name="description" content="A circle crosses the sides of a triangle twice. Where do the perpendiculars at the second crossings meet when you drag the points?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cross-circle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cross Circle">
+<meta property="og:description" content="A circle crosses the sides of a triangle twice. Where do the perpendiculars at the second crossings meet when you drag the points?">
+<meta property="og:url" content="https://coolmaths.ai/cross-circle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--muted); stroke-width: 2; stroke-linejoin: round; }
+  #board .pedal-circle { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .drop-line { stroke: var(--bad); stroke-width: 1.4; stroke-dasharray: 4 4; stroke-opacity: 0.85; }
+  #board .right-mark { fill: none; stroke: var(--bad); stroke-width: 1.3; stroke-opacity: 0.7; }
+  #board .spoke { stroke: var(--ink); stroke-width: 1.3; stroke-opacity: 0.4; }
+  #board .new-perp { stroke: var(--good); stroke-width: 2.2; stroke-linecap: round; }
+  #board .foot-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1.2; }
+  #board .second-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.2; }
+  #board .meet-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .hint-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .hint-spoke { stroke: var(--good); stroke-width: 1.4; stroke-dasharray: 3 4; stroke-opacity: 0.8; }
+  #board .center-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 14px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .label-s { fill: var(--good); }
+  #board .label-o { fill: var(--highlight); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  #hintBtn[aria-pressed="true"] { border-color: var(--accent); }
+</style>
+</head>
+<body data-game="cross-circle" data-kind="demo">
+<main id="main">
+  <h1>Cross Circle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A triangle, a point and a circle cross its sides again and again; watch where the new lines meet when you move the points.<br>
+    <strong>How to play:</strong> Drag A, B, C or P with a mouse or finger, or focus a point and use the arrow keys. Press Hint to reveal the circle's centre, Move P for a new place, or Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Triangle ABC with a point P, the circle through the three feet of perpendiculars from P, the other crossings of the sides, and the perpendiculars that meet at S"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show or hide the circle's centre and the middles of the chords">Hint</button>
+    <button id="moveBtn" type="button" aria-label="Put P at a new random place on the circle around the triangle">Move P</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the four points to the starting picture">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drop three perpendiculars from P onto the sides of a triangle. Their feet lie on a circle, and that circle cuts each side again. The three lines drawn at those new crossings always arrive at the same place, and that place has a simple description. The live cut-the-knot page still embeds Bogomolny's Java applet (it asks for an old Java VM); this page draws the same construction with draggable points.</p>
+
+      <h2>The circle through the feet</h2>
+      <p>The three feet are the corners of the <a class="wiki-term" data-wiki="Pedal_triangle" href="https://en.wikipedia.org/wiki/Pedal_triangle" target="_blank" rel="noopener">pedal triangle</a> of P. Three points fix a circle unless they are in a straight line. When P happens to lie on the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of ABC, its feet do line up — the <a class="wiki-term" data-wiki="Simson_line" href="https://en.wikipedia.org/wiki/Simson_line" target="_blank" rel="noopener">Simson line</a> — so the original page carefully says the circle crosses the sides again <em>in general</em>. Press Move P or drag it away from that circle and the pedal circle returns.</p>
+
+      <h2>Why the three lines meet</h2>
+      <p>Let O be the centre of the pedal circle and let N be the foot of the perpendicular from O onto one side line. A <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord's</a> midpoint is the projection of its circle's centre, so N is halfway between the two crossings on that side. The other crossing is <code>2N − first foot</code>. Now take S, the <a class="wiki-term" data-wiki="Point_reflection" href="https://en.wikipedia.org/wiki/Point_reflection" target="_blank" rel="noopener">half-turn image</a> of P in O: <code>S = 2O − P</code>. Projection onto a straight line shares addition and scaling, so the projection of S on the side is <code>2N − first foot</code> as well. Therefore the perpendicular at the second crossing goes through S. The same argument works on all three sides, so the three lines concur at S. Press Hint to see O and the three chord midpoints.</p>
+
+      <h2>What the checks found</h2>
+      <p>The logic test compares this page with a second transcription of the applet's own drawing methods on 72 starting positions plus more than 1,400 random triangles with P anywhere in the board. On every non-degenerate picture, both crossings lie on the circle and all three perpendiculars pass through S to better than a billionth of the circle's radius, so the page's "always concur" claim holds. Two faithful quirks survive: the applet takes its radius as the average of the three distances from the centre, and its foot routine snaps P to itself when P comes within <code>sqrt(0.1)</code> of a side's endpoint; in that tiny zone the drawn crossing shifts a little. When the feet are collinear the test checks that no circle is drawn, as the page's "in general" allows.</p>
+
+      <p class="tip">Try dragging P nearly onto the triangle's circumcircle: the circle grows huge and S runs far away. Press Hint to watch O and the chord midpoints follow it.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CrossCircle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cross-circle-core.js"></script>
+<script src="cross-circle.js"></script>
+</body>
+</html>
