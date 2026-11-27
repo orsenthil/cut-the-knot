@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cy Quadri &mdash; coolmaths</title>
+<meta name="description" content="Drag the four corners of any quadrilateral. Do the points where its angle bisectors meet always lie on one circle, even when you use the outside halves?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cy-quadri/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cy Quadri">
+<meta property="og:description" content="Drag the four corners of any quadrilateral. Do the points where its angle bisectors meet always lie on one circle, even when you use the outside halves?">
+<meta property="og:url" content="https://coolmaths.ai/cy-quadri/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .bisector { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 7 5; }
+  #board .circum { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .angle-mark { fill: none; stroke: var(--bad); stroke-width: 2; }
+  #board .crossing { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="cy-quadri" data-kind="demo">
+<main id="main">
+  <h1>Cy Quadri</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: split the four corners of a shape, and the places where the split lines meet always sit on one circle.<br>
+    <strong>How to play:</strong> Drag the corners A, B, C and D, or focus one and use the arrow keys. Choose inside or outside splits, show the angle marks, or press Reset.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A quadrilateral with its four angle bisectors, the crossings of neighbouring bisectors, and the circle through those crossings"></svg>
+  </div>
+
+  <div class="controls">
+    <fieldset>
+      <legend>Bisectors</legend>
+      <label><input id="internal" type="radio" name="mode" aria-label="Use internal bisectors" checked> Internal bisectors</label>
+      <label><input id="external" type="radio" name="mode" aria-label="Use external bisectors"> External bisectors</label>
+    </fieldset>
+    <label><input id="angles" type="checkbox" aria-label="Show angle marks"> Show angles</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the diagram to its starting quadrilateral">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move any corner of a four-sided shape and the drawing changes completely, yet four new points still land on a single circle. Here is why, and why it works for the lines outside the shape too.</p>
+
+      <h2>What the old page claims</h2>
+      <p>The <a href="https://www.cut-the-knot.org/Curriculum/Geometry/CyQuadriSolution.shtml" target="_blank" rel="noopener">explanation</a> says:</p>
+      <blockquote>“Angle bisectors in a quadrilateral form another quadrilateral which is <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic</a>, i.e. a quadrilateral that can be inscribed in a circle. Indeed, the sum of opposite angles of the latter is always 180°. The same holds true for the external angle bisectors.”</blockquote>
+      <p>The live article now shows a GeoGebra picture instead of the Java applet. A <a href="https://web.archive.org/web/20070714052041/http://www.cut-the-knot.org/Curriculum/Geometry/CyQuadri.shtml" target="_blank" rel="noopener">2007 capture of the same page</a> still embeds <code>CyQuadri</code> with exactly three choices: “Internal bisectors”, “External bisectors” and “Show angles”. Those are the options on this page, and the construction below follows the applet's bytecode. There is no winning move: this is a picture to explore.</p>
+
+      <h2>Four halves, four crossings</h2>
+      <p>At each corner, the applet halves the angle between the two neighbouring sides. The point where the halves from A and B meet, the one from B and C, the one from C and D, and the one from D and A become the corners of the new shape. The green circle is drawn through the first three of them. Choosing “External bisectors” turns each half-line by a right angle before drawing; it does not change the four original corners. These are <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisectors</a> of the four corners themselves, not of angles made by diagonals.</p>
+
+      <h2>Why the opposite angles add to 180°</h2>
+      <p>Write the four angles of the starting shape as <code>A + B + C + D = 360°</code>. In the triangle made by side AB and the two inside half-lines, the crossing angle is <code>180° − (A + B)/2</code>. At the opposite crossing it is <code>180° − (C + D)/2</code>. Adding the two gives <code>360° − (A + B + C + D)/2 = 180°</code>, which is exactly the test for a cyclic quadrilateral. For the outside half-lines each small angle at a corner is <code>90° − A/2</code>, so the crossing angles become <code>(A + B)/2</code> and <code>(C + D)/2</code>, and these also add to 180°. The fourth crossing therefore lies on the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> drawn from the other three.</p>
+
+      <h2>What the check found, and the other applet</h2>
+      <p>The logic test repeats the applet's own arithmetic a second time and compares it on thousands of shapes in both modes. It finds the four crossings on one circle every time, including shapes that are dented or crossed; the largest circle error is below <code>0.00001</code> board units. The “180°” sentence is about ordinary convex shapes: there the angle sums agree too. A dented or crossed shape can have a reflex angle, so an unsigned angle measurement no longer describes the quadrilateral in the usual way, though the circle still does. This is not the sibling <em>CyclicQuadrilateral</em> applet: that one <em>starts</em> with four points on a circle and halves its arcs to make incenters and a rectangle; here four freely dragged corners work just as well.</p>
+
+      <p class="tip">Try the outside half-lines, then drag one corner far away: the circle grows and moves, but the four crossings stay on it.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CyQuadri.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cy-quadri-core.js"></script>
+<script src="cy-quadri.js"></script>
+</body>
+</html>
