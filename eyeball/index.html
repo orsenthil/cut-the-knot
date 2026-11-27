@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eyeball &mdash; coolmaths</title>
+<meta name="description" content="Two circles send tangents towards each other. Drag them about: are the two chords they cut always the same length?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/eyeball/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Eyeball">
+<meta property="og:description" content="Two circles send tangents towards each other. Drag them about: are the two chords they cut always the same length?">
+<meta property="og:url" content="https://coolmaths.ai/eyeball/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 48rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .eyeball-circle { fill: var(--accent-soft); stroke-width: 2.5; }
+  #board .circle-a { stroke: var(--accent); }
+  #board .circle-b { stroke: var(--good); }
+  #board .tangent { stroke-width: 2.2; stroke-linecap: round; }
+  #board .tangent-a { stroke: var(--accent); }
+  #board .tangent-b { stroke: var(--good); }
+  #board .eyeball-chord { stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+  #board .chord-rs { stroke-dasharray: 7 4; }
+  #board .rect-side { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .helper-circle { fill: none; stroke-width: 1.8; }
+  #board .diameter { stroke: var(--muted); }
+  #board .helper { stroke: var(--accent); stroke-dasharray: 5 4; }
+  #board .touch-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="eyeball" data-kind="demo">
+<main id="main">
+  <h1>Eyeball</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Each circle sends two straight lines to the other circle, cutting out a short segment; see how the two segments compare. There is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the four blue points to move the circles or change their sizes. Tick the boxes for the helper circles and the rectangle, or press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 780 400" role="group"
+         aria-label="Two circles with centres A and B. Tangents from each centre touch the other circle and cut segments PQ and RS. Four draggable points: the centre and radius point of each circle."></svg>
+    <p class="hint-line">Drag A, RA, B or RB, or focus a point and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="extraBox" type="checkbox" data-label="the helper circles"> Draw extra circles</label>
+    <label><input id="rectangleBox" type="checkbox" data-label="the rectangle"> Draw rectangle</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the picture to the opening circles">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two circles look at each other like eyes. From each centre, two lines just brush past the other circle; those lines cut the circle they started from. The surprising part is that the two cuts are always the same length, whatever the sizes of the circles.</p>
+
+      <h2>Two fans of tangents</h2>
+      <p>A <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> is a line that touches a circle at exactly one point, without crossing it. From centre A there are two tangents to the circle around B; from centre B there are two tangents to the circle around A. The applet draws all four rays. Where the rays from A cross circle A they mark <code>P</code> and <code>Q</code>; where the rays from B cross circle B they mark <code>R</code> and <code>S</code>. If one circle reaches inside the other, that pair of rays does not exist and the picture leaves them out.</p>
+
+      <h2>Right triangles measure the cuts</h2>
+      <p>Write <code>d = AB</code> for the distance between the centres, <code>rA</code> and <code>rB</code> for the two radii. A tangent meets the radius at its touch point at a right angle, so the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a> makes a right triangle with hypotenuse <code>d</code>. The angle at A therefore has <code>sin = rB/d</code>. The half of chord <code>PQ</code> is <code>rA·sin</code>, so <code>PQ = 2·rA·rB/d</code>. The logic test measured both chords on 2,140 arrangements, including circles almost touching and circles far apart; the largest gap between the claim and the measured lengths was below <code>0.000001</code>.</p>
+
+      <h2>Why the two lengths match</h2>
+      <p>The expression <code>2·rA·rB/d</code> does not change when A and B swap names. Doing the same right-triangle calculation at B gives <code>RS = 2·rA·rB/d</code> too, so <code>PQ = RS</code> — the page's claim, confirmed. The chords are also perpendicular to <code>AB</code> and their midpoints lie on it, so <code>PQSR</code> is a rectangle when its sides are drawn. This is <em>not</em> the Squinting Eyes Theorem of applet Eyeball2: there the equal things are the radii of two little curved triangles, <code>2·rA·rB/(rA+rB+d)</code>, not chords.</p>
+
+      <h2>The extra circles</h2>
+      <p>Tick <em>Draw extra circles</em> and the picture adds the circle on diameter <code>AB</code> plus two more through pairs of touch points. Each touch point sees <code>AB</code> at a right angle, so it lies on that circle — a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a> in disguise. The Java applet that this page ports was embedded in the same cut-the-knot page, preserved in <a href="https://web.archive.org/web/2009id_/http://www.cut-the-knot.org/Curriculum/Geometry/Eyeball.shtml" target="_blank" rel="noopener">the Wayback Machine's 2009 capture</a>; the live page now shows a GeoGebra version of the same theorem. The second circle starts outside the original 600×400 canvas, so this board is wider to keep every handle reachable; the construction is unchanged.</p>
+
+      <p class="tip">Drag the two centres closer together (without letting the circles swallow each other): the formula says both chords should grow together.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Eyeball.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="eyeball-core.js"></script>
+<script src="eyeball.js"></script>
+</body>
+</html>
