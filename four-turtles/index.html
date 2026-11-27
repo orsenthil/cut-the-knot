@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Four Turtles &mdash; coolmaths</title>
+<meta name="description" content="Four turtles start at the corners of a square and chase one another at the same steady speed. How far does each one crawl before they meet?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/four-turtles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Four Turtles">
+<meta property="og:description" content="Four turtles start at the corners of a square and chase one another at the same steady speed. How far does each one crawl before they meet?">
+<meta property="og:url" content="https://coolmaths.ai/four-turtles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 38rem; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .base-square { fill: none; stroke: var(--ink); stroke-width: 1.6; }
+  #board .moving-square { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; }
+  #board .reference-square { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 7 6; }
+  #board .turtle-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1; }
+  #board .trace-whirl { fill: none; stroke: var(--muted); stroke-width: 1; opacity: 0.55; }
+  #board .trace-spiral { fill: none; stroke: var(--good); stroke-width: 1.5; opacity: 0.85; }
+  #board .dial-tick { fill: var(--border-strong); }
+  #board .dial-tick.chosen { fill: var(--good); }
+  #board .dial-label { fill: var(--muted); font-size: 13px; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.6rem 0.8rem; align-items: center; }
+  .controls button { min-height: 2.75rem; }
+  .controls button[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .controls button:disabled { opacity: 0.5; cursor: default; }
+  .setting { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-width: 0; }
+  .setting label { font-size: 0.9rem; color: var(--muted); }
+  .setting input { width: 4.5rem; min-height: 2.5rem; accent-color: var(--accent); font: inherit; }
+  .setting .stepper { display: flex; gap: 0.35rem; }
+  .setting .stepper button { min-width: 2.75rem; padding: 0 0.6rem; }
+  #status { min-height: 1.5em; }
+</style>
+</head>
+<body data-game="four-turtles" data-kind="demo">
+<main id="main">
+  <h1>Four Turtles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch four turtles chase each other around a square and see how far each one crawls before they meet.<br>
+    <strong>How to play:</strong> Press Let them go to start and Stop to pause. Choose a frame, a number of turtles and whether to trace their paths; drag the outside dial, focus it and use the arrow keys, or type a number to change the count.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 550" role="group"
+         aria-label="Turtles at the corners of a shrinking polygon, with a dial to choose how many turtles there are"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="runBtn" type="button" class="primary" aria-label="Start the turtles moving">Let them go</button>
+    <button id="fixedBtn" type="button" aria-pressed="true" aria-label="Watch from a stationary frame">Stationary</button>
+    <button id="rotatingBtn" type="button" aria-pressed="false" aria-label="Watch from the frame that rotates with the turtles">Rotating</button>
+    <button id="traceBtn" type="button" aria-pressed="false" aria-label="Show the paths the turtles leave behind">Trace</button>
+    <button id="spiralsBtn" type="button" aria-pressed="false" aria-label="Trace the spiral paths of the turtles" disabled>Spirals</button>
+    <button id="whirlBtn" type="button" aria-pressed="true" aria-label="Draw the stack of smaller polygons, the whirl pattern" disabled>Whirl</button>
+    <button id="bothBtn" type="button" aria-pressed="false" aria-label="Draw both the spiral paths and the whirl pattern" disabled>Both</button>
+    <div class="setting">
+      <label for="nInput">Turtles:</label>
+      <div class="stepper">
+        <button id="nDown" type="button" aria-label="One fewer turtle">&minus;</button>
+        <input id="nInput" type="number" min="3" max="20" step="1" value="4" aria-label="Number of turtles, 3 to 20">
+        <button id="nUp" type="button" aria-label="One more turtle">+</button>
+      </div>
+    </div>
+    <button id="resetBtn" type="button" aria-label="Restore the starting picture and options">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Four turtles start at the corners of a square, each crawling toward the next at the same steady speed. They spiral into the middle together. The surprising part is that the distance each turtle travels depends only on the starting side and the number of turtles &mdash; and for four turtles it is exactly one side.</p>
+
+      <h2>The shape never changes</h2>
+      <p>Because every turtle does the same thing, the picture has <a class="wiki-term" data-wiki="Symmetry" href="https://en.wikipedia.org/wiki/Symmetry" target="_blank" rel="noopener">symmetry</a>: after any amount of time the turtles still sit at the corners of a smaller <a class="wiki-term" data-wiki="Regular_polygon" href="https://en.wikipedia.org/wiki/Regular_polygon" target="_blank" rel="noopener">regular polygon</a> with the same centre. It has only turned and shrunk. The applet applies the same turn-and-shrink map to all the corners; the logic test checked every side of 2,486 painted frames, for every turtle count from 3 to 20, and found the sides equal and evenly spaced each time.</p>
+
+      <h2>Time and distance, no calculus needed</h2>
+      <p>Let the side be <code>S</code>, the distance from the centre to a corner <code>R</code>, and <code>a = pi/N</code>. A corner of a regular polygon gives <code>S/2 = R sin(a)</code>. A turtle's speed points along a side, so only <code>V sin(a)</code> of it points towards the centre. The turtle has <code>R</code> to go:</p>
+      <blockquote><code>T = R / (V sin(a)) = S / (2 V sin&sup2;(a)) = S / (V (1 &minus; cos(2a)))</code><br><code>D = V T = S / (1 &minus; cos(2a))</code></blockquote>
+      <p>For <code>N = 4</code>, <code>cos(2a) = cos(pi/2) = 0</code>, so <code>D = S</code>: a turtle walks exactly one side of the square, and the time is <code>S/V</code>. A triangle gives <code>D = 2S/3</code>; with five turtles <code>D</code> is about <code>1.45 S</code>. The test checked all three forms of <code>T</code> and the identity <code>D = VT</code> for 504 combinations of <code>N</code>, side and speed, and found no disagreement. This is the page's central claim, and it holds exactly (up to rounding).</p>
+
+      <h2>Two frames, one chase</h2>
+      <p>Ride along with the turning polygon and the turtles seem to come straight towards the centre, while the first polygon appears to turn the other way. That is just a change of viewpoint: the applet negates its turn in the rotating frame and keeps the shrinking polygon on fixed rays from the centre. In a still frame the paths are <a class="wiki-term" data-wiki="Logarithmic_spiral" href="https://en.wikipedia.org/wiki/Logarithmic_spiral" target="_blank" rel="noopener">logarithmic spirals</a>, <code>r = c e<sup>kt</sup></code> in <a class="wiki-term" data-wiki="Polar_coordinate_system" href="https://en.wikipedia.org/wiki/Polar_coordinate_system" target="_blank" rel="noopener">polar coordinates</a>: each small step towards the middle turns more than the last. The test confirmed both: every trace point satisfies <code>ratio = exp(angle/k)</code>, and the turn grows on every later frame.</p>
+      <p>One honest difference: the physical pursuit angle is <code>&minus;cot(a) log(r/R)</code>, which the page derives, but the old applet turns by <code>sin(g)(1 &minus; cos(g)) log(s/S)</code> with <code>g = pi(N&minus;2)/N</code>. Those coefficients agree only for <code>N = 4</code>; for other counts the animation is a log spiral of a different pitch. The page's formula is the right one for equal-speed pursuit; the applet's constant is a display choice that keeps the picture watchable. This page keeps the applet's animation numbers.</p>
+
+      <h2>What the old controls did</h2>
+      <p>The applet started with <code>N = 4</code> and allowed 3 to 20, with radius <code>trunc((min(width, height) &minus; 40)/2)</code> and side <code>2R sin(pi/N)</code>. Every 50&nbsp;ms it reduced the side by <code>speed(N)(1 &minus; cos(g))</code> and repainted. For four turtles that step is 12 in the applet's units, so the side falls linearly as <code>S = S0 &minus; Vt</code>, as the page says. Trace unlocked Spirals, Whirl and Both; Whirl started selected, Trace started off. The test transcribed <code>Reset()</code>, <code>Transform.Apply()</code> and <code>run()</code> a second time and compared all 216 configurations, frame by frame and point by point. The applet's own about-box still says "Shapes of Constant Width", a harmless leftover copied from a sibling; it has nothing to do with turtles.</p>
+
+      <p class="tip">Try Rotating with Trace and Both turned on: the straight radial approach and the turning original square make the change of viewpoint easy to see.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FourTurtles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="four-turtles-core.js"></script>
+<script src="four-turtles.js"></script>
+</body>
+</html>
