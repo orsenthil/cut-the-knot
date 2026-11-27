@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dancing Squares &mdash; coolmaths</title>
+<meta name="description" content="Drag the three hinges of a grid of stiff squares: can you open it into a checkerboard and close it again as a grid turned a quarter turn?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/dancing-squares/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Dancing Squares">
+<meta property="og:description" content="Drag the three hinges of a grid of stiff squares: can you open it into a checkerboard and close it again as a grid turned a quarter turn?">
+<meta property="og:url" content="https://coolmaths.ai/dancing-squares/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 42rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .tile {
+    stroke: var(--ink);
+    stroke-width: 1.2;
+    stroke-linejoin: round;
+  }
+  #board .tile-one { fill: var(--accent); fill-opacity: 0.20; }
+  #board .tile-c0 { fill: var(--accent); fill-opacity: 0.24; }
+  #board .tile-c1 { fill: var(--good); fill-opacity: 0.24; }
+  #board .tile-c2 { fill: var(--highlight); fill-opacity: 0.30; }
+  #board .tile-c3 { fill: var(--muted); fill-opacity: 0.30; }
+  #board .tile-c4 { fill: var(--accent); fill-opacity: 0.12; }
+  #board .tile-c5 { fill: var(--good); fill-opacity: 0.14; }
+  #board .tile-c6 { fill: var(--highlight); fill-opacity: 0.18; }
+  #board .tile-c7 { fill: var(--muted); fill-opacity: 0.18; }
+  #board .tile-c8 { fill: var(--accent); fill-opacity: 0.34; }
+  #board .tile-c9 { fill: var(--good); fill-opacity: 0.34; }
+  #board .ring-edge { fill: none; stroke: var(--ink); stroke-width: 2; stroke-dasharray: 9 7; }
+  #board .ring-diagonal { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+  #board .d-dot { fill: var(--muted); }
+  #board .point-label {
+    fill: var(--text); font-family: var(--font); font-size: 20px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+
+  .controls { flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .controls > * { min-width: 0; max-width: 100%; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; max-width: 100%; }
+  .controls input[type="number"] { width: 4rem; }
+  .controls fieldset { display: inline-flex; gap: 0.75rem; border: 0; margin: 0; padding: 0; flex-wrap: wrap; min-width: 0; max-width: 100%; }
+  .controls legend { padding: 0; float: left; width: 100%; }
+</style>
+</head>
+<body data-game="dancing-squares" data-kind="demo">
+<main id="main">
+  <h1>Dancing Squares</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A grid of stiff squares is hinged at its corners, and the squares stay the same size as the pattern opens and shuts.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a point and use the arrow keys. Change the layers and colours, then press Open hinge to watch the pattern move.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 560" role="group"
+         aria-label="A hinged grid of squares with draggable corners A, B and C"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="layersInput">Layers <input id="layersInput" type="number" min="0" max="15" step="1" value="4" aria-label="How many repeating layers to draw, from zero to fifteen"></label>
+    <fieldset>
+      <legend>Colour</legend>
+      <label for="oneColor"><input id="oneColor" type="radio" name="shade" checked aria-label="Draw every square in one colour"> One colour</label>
+      <label for="colorLayers"><input id="colorLayers" type="radio" name="shade" aria-label="Colour successive layers differently"> Colour layers</label>
+    </fieldset>
+    <label for="showNames"><input id="showNames" type="checkbox" aria-label="Show the names A, B, C and D beside the hinge points"> Show names</label>
+    <label for="lockHinges"><input id="lockHinges" type="checkbox" checked aria-label="Keep the three hinges at a fixed side length"> Lock hinges</label>
+    <button id="openBtn" type="button" aria-label="Open the hinge and expand the pattern">Open hinge</button>
+    <button id="closeBtn" type="button" aria-label="Close the hinge and contract the pattern">Close hinge</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the squares to their starting position">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Paul Brown's applet shows something unusual: a pattern of rigid squares can open out and close up again without any square changing shape or size. The live cut-the-knot page embeds the applet twice, once with the hinges locked and once with them loose. That is why this page has a Lock hinges switch. The logic test checks the page's motion claim at every angle from 1 to 179 degrees rather than taking it on trust.</p>
+
+      <h2>Four squares on a hinge</h2>
+      <p>Drag A, B or C. The fourth corner of the hinge rhombus is <code>D = A + C &minus; B</code>. The applet puts one <a class="wiki-term" data-wiki="Square_(geometry)" href="https://en.wikipedia.org/wiki/Square_(geometry)" target="_blank" rel="noopener">square</a> on each side of ABCD by turning the side through a quarter turn; reflecting those four squares across their free edges grows the whole <a class="wiki-term" data-wiki="Tessellation" href="https://en.wikipedia.org/wiki/Tessellation" target="_blank" rel="noopener">tessellation</a>. A quarter turn keeps the two new edges at right angles and exactly as long as the side they came from, so every tile stays a square. With Lock hinges on, all four squares have the same side; switch it off and the two hinge sides can differ, so two square sizes appear.</p>
+
+      <h2>The cell that grows</h2>
+      <p>Take the length of one square's side to be <code>s</code> and let <code>&theta;</code> be the angle at hinge B. Two squares lie in each repeating block, and the steps between neighbouring blocks are always equal and at right angles. The test verifies, for every angle, that the block's area is</p>
+      <blockquote><code>cell = 2s&sup2;(1 + sin &theta;)</code>, so the covered fraction is <code>1 / (1 + sin &theta;)</code>.</blockquote>
+      <p>At <code>&theta; = 0&deg;</code> the cell is <code>2s&sup2;</code> and the squares cover it completely: a plain grid. At <code>90&deg;</code> the cell has grown to <code>4s&sup2;</code> and the squares cover only half of it, sitting at opposite half-cell offsets: a checkerboard. At <code>180&deg;</code> the cell is back to <code>2s&sup2;</code> and the grid is whole again. The cell grows from 0&deg; to 90&deg; and shrinks from 90&deg; to 180&deg; at every step of the test, so the page's "expand, checkerboard, reform" description is exactly right — not just a rough impression.</p>
+
+      <h2>Why the last grid is turned</h2>
+      <p>The test also measures the direction of a square's edge. It turns by half the hinge angle, from <code>0&deg;</code> at the start to <code>90&deg;</code> at the end. That is the page's claim that the grid reforms with every square rotated a quarter turn. You can reach that final grid by opening the hinges clockwise or counterclockwise, which is why some squares end up turned one way and some the other. The quantity that never changes along either route is the side length <code>s</code>: the rigid-square <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>.</p>
+
+      <h2>What the applet leaves out</h2>
+      <p>The Java applet's information string still says "Pythagorean Theorem, Proof #36", which is a leftover from a different applet; nothing in this pattern uses that proof, so this page follows the cut-the-knot article instead. The second layer-growing routine in the bytecode is also never called by <code>Compute()</code>, so it changes nothing you can see. The test transcribes the called routines a second time and checks all sixteen layers for scores of starting shapes.</p>
+
+      <p class="tip">Press Reset, then Open hinge nine times: the hinge reaches 90&deg; and the status line announces a checkerboard. Close it nine times to get back to the plain grid.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/DancingSquares.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="dancing-squares-core.js"></script>
+<script src="dancing-squares.js"></script>
+</body>
+</html>
