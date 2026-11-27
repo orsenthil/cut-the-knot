@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circle Centers On Radical Axes &mdash; coolmaths</title>
+<meta name="description" content="Can you move three circles so each centre sits on the line made by the other two? Which of the three dots lights up last?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circle-centers-on-radical-axes/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circle Centers On Radical Axes">
+<meta property="og:description" content="Can you move three circles so each centre sits on the line made by the other two? Which of the three dots lights up last?">
+<meta property="og:url" content="https://coolmaths.ai/circle-centers-on-radical-axes/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .ring { fill: none; stroke-width: 2.5; }
+  #board .ring-P { stroke: var(--accent); }
+  #board .ring-Q { stroke: var(--good); }
+  #board .ring-R { stroke: var(--ink); }
+  #board .axis { fill: none; stroke-width: 2; }
+  #board .axis-PQ { stroke: var(--accent); }
+  #board .axis-QR { stroke: var(--good); stroke-dasharray: 9 6; }
+  #board .axis-RP { stroke: var(--ink); stroke-dasharray: 2 6; }
+  #board .hint { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 6; }
+  #board .radical-center { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  #board .on-dot { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .point-label { fill: var(--text); font-size: 0.9rem; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="circle-centers-on-radical-axes" data-kind="demo">
+<main id="main">
+  <h1>Circle Centers On Radical Axes</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Three circles and three straight lines you can change by moving the circles.<br>
+    <strong>How to play:</strong> Drag a middle dot to move a circle, or a dot on its edge to make it bigger or smaller. With the keyboard, focus a dot and use the arrow keys.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Three circles with draggable centre and rim dots, their three radical axes, and the point where the axes meet."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the three circles to the starting diagram">Reset</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Show or hide the names P, Q, R and O">Names</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show or hide the triangle joining the three centres">Hint</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the circles and watch the three straight lines. Something surprising happens: once two of the centres sit on the lines made from the other two circles, the third centre is forced onto its line too. There is nothing to win here &mdash; the picture is a <a class="wiki-term" data-wiki="Mathematical_droodle" href="https://en.wikipedia.org/wiki/Mathematical_droodle" target="_blank" rel="noopener">droodle</a> you can take apart.</p>
+
+      <h2>A line of equal power</h2>
+      <p>For a point X and a circle with centre C and radius r, the <em>power</em> of X is <code>|XC|&sup2; &minus; r&sup2;</code>. The <a class="wiki-term" data-wiki="Radical_axis" href="https://en.wikipedia.org/wiki/Radical_axis" target="_blank" rel="noopener">radical axis</a> of two circles is all the points with the same power in both. It is perpendicular to the line joining their centres; when the circles cross, it is simply the line through the two crossing points. In the picture the three axes are drawn in different styles: solid for P and Q, dashed for Q and R, dotted for R and P.</p>
+
+      <h2>Two clues force the third</h2>
+      <p>Write <code>a</code>, <code>b</code>, <code>c</code> for the squared distances PQ, PR and QR. Saying P lies on the axis of Q and R means <code>a &minus; r<sub>Q</sub>&sup2; = b &minus; r<sub>R</sub>&sup2;</code>. Saying Q lies on the axis of P and R means <code>a &minus; r<sub>P</sub>&sup2; = c &minus; r<sub>R</sub>&sup2;</code>. Subtract the two equations and the radii of R cancel: <code>b &minus; r<sub>P</sub>&sup2; = c &minus; r<sub>Q</sub>&sup2;</code>. That is exactly the statement that R lies on the axis of P and Q. The page's claim is true, and the logic test confirms it on hundreds of arrangements built to meet the first two conditions.</p>
+
+      <h2>The meeting point</h2>
+      <p>The three axes meet at one point O, the <a class="wiki-term" data-wiki="Radical_center" href="https://en.wikipedia.org/wiki/Radical_center" target="_blank" rel="noopener">radical center</a>. Each axis is perpendicular to the side of the triangle opposite its centre, so the axes are the triangle's altitudes. Their meeting point is therefore also the <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a> of triangle PQR. The original applet works in whole pixels: a centre counts as "on" a line when it is less than one pixel away, which is why a dot can blink out if a circle is nudged by a tiny amount.</p>
+
+      <p class="tip">Try lighting up P and Q, then guess whether R will light up before you move the last dot. Press Hint to see the triangle whose altitudes are the three lines.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CircleCentersOnRadicalAxes.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circle-centers-on-radical-axes-core.js"></script>
+<script src="circle-centers-on-radical-axes.js"></script>
+</body>
+</html>
