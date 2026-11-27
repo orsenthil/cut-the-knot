@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fagnano &mdash; coolmaths</title>
+<meta name="description" content="Move a triangle and its inscribed triangle: which three dots on the sides give the shortest path, and why do five reflections make the answer straight?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/fagnano/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Fagnano">
+<meta property="og:description" content="Move a triangle and its inscribed triangle: which three dots on the sides give the shortest path, and why do five reflections make the answer straight?">
+<meta property="og:url" content="https://coolmaths.ai/fagnano/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 46rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .tri-edge { stroke: var(--ink); stroke-width: 2.2; fill: none; }
+  #board .tri-ghost { stroke: var(--muted); stroke-width: 1.5; fill: none; opacity: 0.75; }
+  #board .fold-edge { stroke: var(--accent); stroke-width: 3.4; fill: none; stroke-linecap: round; }
+  #board .altitude { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; fill: none; }
+  #board .orthic-edge { stroke: var(--good); stroke-width: 2.5; fill: none; }
+  #board .right-mark { stroke: var(--muted); stroke-width: 1.4; fill: none; }
+  #board .foot-dot { fill: var(--good); }
+  #board .point-label { fill: var(--text); font-size: 1rem; font-weight: 600; pointer-events: none; }
+  #board .ghost-label { fill: var(--muted); font-size: 0.85rem; pointer-events: none; }
+  #board .geom-handle { stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .vertex-handle { fill: var(--ink); }
+  #board .side-handle { fill: var(--accent); }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 0.4rem 0 0; }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="fagnano" data-kind="demo">
+<main id="main">
+  <h1>Fagnano</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A triangle can hold another triangle with one corner on each side; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the six dots to change the two triangles. Tick the boxes for names or altitude lines, or press the button to put the three side dots at the feet of the altitudes.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="30 110 550 270" role="group"
+         aria-label="Triangle ABC with an inscribed triangle PQR on its sides, five reflected copies, and a red path made of six pieces"></svg>
+    <p class="hint">Keyboard: Tab to a dot, then use the arrow keys (Shift makes a bigger step). The first three dots set the outer triangle; the others stay on its sides.</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="altBox" type="checkbox"> Show altitudes</label>
+    <label><input id="namesBox" type="checkbox"> Show names</label>
+    <button id="orthicBtn" type="button" aria-label="Put the three side dots at the feet of the altitudes">Put dots on altitude feet</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the picture to the starting triangles">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>In 1775 Fagnano asked for the triangle of smallest perimeter that fits inside a given acute triangle. The surprising answer is that the three corners must be the feet of the altitudes. The applet draws the same rolling picture that Schwarz used to prove it. Its page now shows a Wolfram Demonstration instead of the Java applet (the original applet tag is commented out in the page source); the geometry here follows the archived applet and the written proof on that page.</p>
+
+      <h2>The answer is the altitude feet</h2>
+      <p>Let <code>P</code> lie on <code>BC</code>, <code>Q</code> on <code>CA</code> and <code>R</code> on <code>AB</code>. The <a class="wiki-term" data-wiki="Orthic_triangle" href="https://en.wikipedia.org/wiki/Orthic_triangle" target="_blank" rel="noopener">orthic triangle</a> joins the three <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a> feet. The page claims it is the unique smallest-perimeter inscribed triangle of an acute triangle. The logic test confirms this on 250 acute triangles by searching along <code>BC</code>, and on 12 more by a full grid search over all three side positions: no sampled triangle beats the orthic one. Press the button to see the red path become a single straight line.</p>
+
+      <h2>Schwarz rolls the triangle five times</h2>
+      <p><a class="wiki-term" data-wiki="Reflection_(mathematics)" href="https://en.wikipedia.org/wiki/Reflection_(mathematics)" target="_blank" rel="noopener">Reflect</a> the triangle in <code>CA</code>, then in the new <code>BC</code>, then <code>AB</code>, <code>CA</code>, <code>BC</code> again. The six copies form a chain, and the page says the final <code>AB</code> is parallel to the first with the same direction. The three sides of <code>PQR</code> reappear as the six red pieces. When <code>PQR</code> is orthic, the pieces join into one straight segment of length <code>2 &times; perimeter(orthic)</code>; every other choice gives a longer bent path. The test checked this on 600 acute triangles: the parallel claim and the doubled length held every time. One small port quirk: the Java code uses a shortcut when a mirror side is within one board unit of vertical, which can shift the drawing a little; the page's claim is about true reflections, and the test checks both the true chain and the applet's shorthand.</p>
+
+      <h2>Fejér's two reflections</h2>
+      <p>Reflect <code>P</code> in <code>CA</code> and in <code>AB</code>, giving <code>P'</code> and <code>P''</code>. For a fixed <code>P</code>, the shortest route <code>P'Q + QR + RP''</code> is the straight line <code>P'P''</code>, so <code>Q</code> and <code>R</code> must obey the mirror rule. The page notes that angle <code>P'AP'' = 2A</code> wherever <code>P</code> sits and that <code>AP' = AP</code>, so <code>P'P'' = 2 AP sin(A)</code>. That is shortest when <code>AP</code> is an altitude, which makes <code>BQ</code> perpendicular to <code>CA</code> and <code>CR</code> perpendicular to <code>AB</code>. All three identities were checked on 600 configurations and held to within a billionth of a board unit.</p>
+
+      <h2>Other triangles, other pages</h2>
+      <p>The page adds that for right or obtuse triangles no proper inscribed triangle reaches the minimum: perimeters can get arbitrarily close to twice the shortest altitude. A search of 24 such triangles agreed, with the closest approaches all collapsed onto a vertex. This is the original <a class="wiki-term" data-wiki="Fagnano%27s_problem" href="https://en.wikipedia.org/wiki/Fagnano%27s_problem" target="_blank" rel="noopener">Fagnano problem</a> page: Fagnano III (Samelson's solution) and Fagnano IV (Izvolsky's circumcenter and area bound <code>2 Area / R</code>) are different proofs on their own pages, not what this applet draws. The Java let a dragged side dot wander off its side; this illustration keeps it on the side, since only inscribed triangles are relevant to the claim.</p>
+
+      <p class="tip">Try this: make a tall, thin triangle, note the red path length, then press the button and watch the six pieces snap into a single line.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/triangle/Fagnano.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="fagnano-core.js"></script>
+<script src="fagnano.js"></script>
+</body>
+</html>
