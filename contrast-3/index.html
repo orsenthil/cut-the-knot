@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contrast 3 &mdash; coolmaths</title>
+<meta name="description" content="A single gray ring crosses two different shades. Slide one half into the other square: does the same gray stop matching itself?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/contrast-3/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Contrast 3">
+<meta property="og:description" content="A single gray ring crosses two different shades. Slide one half into the other square: does the same gray stop matching itself?">
+<meta property="og:url" content="https://coolmaths.ai/contrast-3/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; margin: 0 auto; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board .backdrop, #board .seam-backdrop { fill: var(--stage); }
+  #board .square-min, #board .half-min { fill: var(--tone-left); }
+  #board .square-max, #board .half-max, #board .seam-max { fill: var(--tone-right); }
+  #board .ring { fill: var(--tone-ring); }
+  #board .frame { fill: none; stroke: var(--ink); stroke-width: 1.5; opacity: 0.55; }
+  #board .slide-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: ns-resize; }
+  #board .slide-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: 0.45rem 0.9rem; align-items: center; max-width: 36rem; margin: 0 auto;
+  }
+  .controls .row { display: flex; align-items: center; gap: 0.4rem; min-width: 0; }
+  .controls label { font-size: 0.9rem; white-space: normal; }
+  .controls input[type="range"] { flex: 1 1 5rem; min-width: 4rem; accent-color: var(--accent); }
+  .controls output { min-width: 2.5ch; text-align: right; font-variant-numeric: tabular-nums; }
+  .controls button { justify-self: start; }
+  @media (max-width: 30rem) { .controls { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body data-game="contrast-3" data-kind="demo">
+<main id="main">
+  <h1>Contrast 3</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is not a game to win: the same gray ring crosses two squares, and sliding one square can make its two halves look different.<br>
+    <strong>How to play:</strong> Move the six sliders to change the square shades, the ring shade and the slide. Drag the slide dot, or focus it and use the arrow keys, then press Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 300" role="group"
+         aria-label="Two squares side by side with a uniform gray ring across their shared edge. The right square and its half of the ring can slide up or down; a focusable dot controls the slide."></svg>
+  </div>
+
+  <div class="controls">
+    <div class="row"><label for="maxInput">Ring size (Max)</label><input id="maxInput" type="range" min="40" max="100" step="1" value="50" aria-label="Outer radius of the gray ring, the applets Max scrollbar, from 40 to 100"><output id="maxOut" for="maxInput">50</output></div>
+    <div class="row"><label for="minInput">Inner size (Min)</label><input id="minInput" type="range" min="0" max="100" step="1" value="50" aria-label="Inner disk radius of the two coloured halves, the applets Min scrollbar, from 0 to 100"><output id="minOut" for="minInput">50</output></div>
+    <div class="row"><label for="hInput">Slide (H)</label><input id="hInput" type="range" min="-50" max="50" step="1" value="0" aria-label="Vertical slide of the right square, from minus 50 to 50"><output id="hOut" for="hInput">0</output></div>
+    <div class="row"><label for="grayInput">Ring gray</label><input id="grayInput" type="range" min="0" max="100" step="1" value="50" aria-label="Uniform gray ring shade, from 0 to 100"><output id="grayOut" for="grayInput">50</output></div>
+    <div class="row"><label for="minColorInput">Left shade</label><input id="minColorInput" type="range" min="0" max="100" step="1" value="50" aria-label="Left square shade used by the applets MinColor scrollbar, from 0 to 100"><output id="minColorOut" for="minColorInput">50</output></div>
+    <div class="row"><label for="maxColorInput">Right shade</label><input id="maxColorInput" type="range" min="0" max="100" step="1" value="100" aria-label="Right square shade used by the applets MaxColor scrollbar, from 0 to 100"><output id="maxColorOut" for="maxColorInput">100</output></div>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset all six sliders to the applet's starting values">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The original page calls this Koffka's example of simultaneous contrast: the same gray can look different when its neighbours change. The live article no longer embeds the Java applet, so the drawing here follows the archived applet itself, captured on 9 May 2008. Everything below is geometry and shading; there is no score to win.</p>
+
+      <h2>What the applet draws</h2>
+      <p>Two equal squares sit side by side in a canvas <code>width × height</code>. The applet takes <code>side = round(min(width/2, height)) − 40</code>, puts the squares at the middle of the canvas, and centres a circle on the line between them. Its outer radius is <code>round((side/2)·Max/100·7/8)</code>; the inner disk split into two halves has radius <code>round(r·9/10·Min/100)</code>. The ring is therefore a narrow band: the inner disk never reaches past it. See <a class="wiki-term" data-wiki="Geometry" href="https://en.wikipedia.org/wiki/Geometry" target="_blank" rel="noopener">geometry</a> for the idea of fixing a shape by a few numbers.</p>
+
+      <h2>One uniform gray</h2>
+      <p>SetGrayColor() builds all three shades with <code>Color(t, t, t)</code>, where <code>t = slider/100</code>. The whole outer circle is filled with that one gray, and only the smaller inner disk is repainted, left half in the left square's shade and right half in the right square's shade. The page's claim of “an uniform gray shade” is confirmed: the band between the two radii is a single shade on both sides. The test checks every one of the 101³ tone triples against java.awt.Color's float conversion, and samples pixels from a second transcription of Draw() at every Min and Max with several slides. What the eye makes of that shade belongs to a <a class="wiki-term" data-wiki="Contrast_effect" href="https://en.wikipedia.org/wiki/Contrast_effect" target="_blank" rel="noopener">contrast effect</a>, not to the arithmetic.</p>
+
+      <h2>Sliding the two halves</h2>
+      <p>The H scrollbar runs from −50 to 50. Draw() moves the right square, with its half of the ring, vertically by <code>dy = round(side·H/100)</code> and repaints the strips it leaves behind; the left half does not move. At <code>H = 0</code> the two halves meet in one circle. The page says the halves “acquire independent identities” when slid: the test confirms the physical change — one half shifts by dy, the other stays, and both keep the same gray — while the different appearance is the perceptual claim the page is illustrating. The slide dot on this page is a modern convenience for moving H; it adds no new rule.</p>
+
+      <h2>Ranges, rounding and shades</h2>
+      <p>Each AWT scrollbar was built as <code>Scrollbar(0, value, 5, minimum, maximum)</code>. Because the visible thumb is 5 units wide, the reachable maxima are 100 rather than the declared 105 (and 50 rather than 55 for H). The core keeps those reachable ranges and the applet's starting values. Java's integer divisions truncate toward zero, <code>Math.round</code> rounds halves up, and <code>Color(float)</code> converts each component with <code>floor(t·255 + 0.5)</code>, so 50 becomes 128 and 100 becomes 255. The test compares the core with a literal second transcription over all 101 × 61 × 101 geometry settings at three canvas sizes. The page's sentence that spatial configuration “may significantly influence contrast perception” is qualitative; there is no number on the page to prove or refute.</p>
+
+      <p class="tip">Try left shade 0, right shade 100 and ring gray 50, then slide H all the way up and down: both halves of the ring are still gray 128.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Contrast3.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="contrast-3-core.js"></script>
+<script src="contrast-3.js"></script>
+</body>
+</html>
