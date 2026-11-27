@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circle On Cevian &mdash; coolmaths</title>
+<meta name="description" content="Draw circles on lines from a triangle's corners to the opposite sides: where do their radical axes meet? Drag the points to find the hidden point they all share.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circle-on-cevian/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circle On Cevian">
+<meta property="og:description" content="Draw circles on lines from a triangle's corners to the opposite sides: where do their radical axes meet? Drag the points to find the hidden point they all share.">
+<meta property="og:url" content="https://coolmaths.ai/circle-on-cevian/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .cevian { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .cevian-circle { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .cevian-circle.cevian-b { stroke-dasharray: 7 5; }
+  #board .cevian-circle.cevian-c { stroke-dasharray: 2 4; }
+  #board .altitude { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .proof-line { fill: none; stroke: var(--muted); stroke-width: 1.25; stroke-dasharray: 4 5; opacity: 0.65; }
+  #board .right-angle { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .radical-axis { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .hint-arc { fill: none; stroke: var(--accent); stroke-width: 3; opacity: 0.55; }
+  #board .center-dot { fill: var(--muted); }
+  #board .foot-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1.5; }
+  #board .cross-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1; }
+  #board .ortho-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .p-label { fill: var(--accent); }
+  #board .o-label { fill: var(--muted); font-size: 13px; font-weight: 500; }
+  #board .h-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .foot-handle { fill: var(--good); stroke: var(--stage); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="circle-on-cevian" data-kind="demo">
+<main id="main">
+  <h1>Circle On Cevian</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the triangle and the dots on its sides to watch circles follow the lines from its corners.<br>
+    <strong>How to play:</strong> Drag a corner or a side dot with a mouse or finger, or focus one and use the arrow keys. Press 1, 2 or 3 to show more circles.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="A triangle with circles on lines from its corners, their common line, and the point where the altitudes meet"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="oneBtn" type="button" aria-pressed="true" aria-label="Show one cevian and its circle">1 cevian</button>
+    <button id="twoBtn" type="button" aria-pressed="false" aria-label="Show two cevians and their circles">2 cevians</button>
+    <button id="threeBtn" type="button" aria-pressed="false" aria-label="Show all three cevians and circles">3 cevians</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the names on the diagram">Hide names</button>
+    <button id="hintBtn" type="button" aria-pressed="true" aria-label="Toggle the proof hint marks">Hide hint</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle and its side points">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A line from a corner of a triangle to the opposite side is a cevian. Draw a circle whose diameter is one of those lines and something surprising happens: however you drag the corners and the side points, the circles' common lines all go through the very same point.</p>
+
+      <h2>The circle finds an altitude</h2>
+      <p>Take the circle with the line <code>CPc</code> as its diameter, where <code>Pc</code> lies on <code>AB</code>. Let it meet <code>AB</code> again at <code>Hc</code>. The angle <code>C Hc Pc</code> sits on a diameter, so it is a right angle by <a class="wiki-term" data-wiki="Thales%27s_theorem" href="https://en.wikipedia.org/wiki/Thales%27s_theorem" target="_blank" rel="noopener">Thales' theorem</a>. That makes <code>CHc</code> perpendicular to <code>AB</code>: it is an <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a>. The same is true at the other two corners, and the small right-angle marks in the picture show just that.</p>
+
+      <h2>Equal power at the meeting point</h2>
+      <p>The altitudes from A and C meet at <code>H</code>, the <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a>. The <a class="wiki-term" data-wiki="Power_of_a_point" href="https://en.wikipedia.org/wiki/Power_of_a_point" target="_blank" rel="noopener">power</a> of H in the circle on <code>APa</code> is <code>AH · HHa</code>, and in the circle on <code>CPc</code> it is <code>CH · HHc</code>, taking lengths along the altitudes. The right triangles <code>AHHc</code> and <code>CHHa</code> are similar, so <code>CH · HHc = AH · HHa</code>. Equal powers put H on the <a class="wiki-term" data-wiki="Radical_axis" href="https://en.wikipedia.org/wiki/Radical_axis" target="_blank" rel="noopener">radical axis</a> of the two circles: that is the green line you see.</p>
+
+      <h2>Two cevians, one line</h2>
+      <p>So the theorem is: circles drawn on two cevians from different corners as diameters have a radical axis that passes through the orthocenter. The old applet joins the two points where the circles cross to draw this line. Here the same line is drawn even when the circles do not cross, because the radical axis exists for any two circles. The logic test checks the equal powers and the line through the crossings on hundreds of triangles, including obtuse ones where an altitude foot lies outside its side.</p>
+
+      <h2>Three circles, one center</h2>
+      <p>Add the third circle on <code>BPb</code>. Every pair now gives a radical axis, and all three go through H, which is the <a class="wiki-term" data-wiki="Radical_center" href="https://en.wikipedia.org/wiki/Radical_center" target="_blank" rel="noopener">radical center</a> unless the circles are coaxal, in which case the three lines coincide. A cousin of this result is the <a class="wiki-term" data-wiki="Gauss%E2%80%93Bodenmiller_theorem" href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Bodenmiller_theorem" target="_blank" rel="noopener">Gauss&ndash;Bodenmiller theorem</a>: for a <a class="wiki-term" data-wiki="Complete_quadrilateral" href="https://en.wikipedia.org/wiki/Complete_quadrilateral" target="_blank" rel="noopener">complete quadrilateral</a>, the circles on its three diagonals are coaxal.</p>
+
+      <p class="tip">Try dragging a side dot all the way to an end of its side: the circle changes a lot, but the green line still passes through the same point.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CircleOnCevian.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circle-on-cevian-core.js"></script>
+<script src="circle-on-cevian.js"></script>
+</body>
+</html>
