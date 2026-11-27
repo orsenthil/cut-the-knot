@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Common Tangent Sangaku &mdash; coolmaths</title>
+<meta name="description" content="Two circles inside an angle, both touching its sides, with the small one centred on the big circle. Move the points: why do the tangencies always come together, and how are the two radii related?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/common-tangent-sangaku/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Common Tangent Sangaku">
+<meta property="og:description" content="Two circles inside an angle, both touching its sides, with the small one centred on the big circle. Move the points: why do the tangencies always come together, and how are the two radii related?">
+<meta property="og:url" content="https://coolmaths.ai/common-tangent-sangaku/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .side { stroke: var(--ink); stroke-width: 2; }
+  #board .bisector { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .circle-o { fill: var(--accent); fill-opacity: 0.07; stroke: var(--accent); stroke-width: 2.5; }
+  #board .circle-q { fill: var(--good); fill-opacity: 0.12; stroke: var(--good); stroke-width: 2.5; }
+  #board .chord { stroke: var(--highlight); stroke-width: 3; }
+  #board .right-mark { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+  #board .hint-line { stroke: var(--bad); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .hint-mark { fill: none; stroke: var(--bad); stroke-width: 1.5; }
+  #board .hint-solid { stroke: var(--highlight); stroke-width: 2; }
+  #board .statement-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label { fill: var(--text); font-size: 12px; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .handle-c { fill: var(--ink); }
+  #board .handle-q { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; }
+  .controls button { min-height: 2.5rem; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="common-tangent-sangaku" data-kind="demo">
+<main id="main">
+  <h1>Common Tangent Sangaku</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two circles sit inside an angle, each touching both sides, and the small circle also touches a chord across the big one.<br>
+    <strong>How to play:</strong> Drag the dots C, O and Q, or focus a dot and use the arrow keys. Q slides along the line from C to O; switch on the names, statement or hint to see more.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Two circles inside an angle. C is the angle's vertex, O is the big circle's centre and Q is the small circle's centre; all three points can be moved."></svg>
+  </div>
+
+  <div class="controls">
+    <label class="option" for="namesChk"><input id="namesChk" type="checkbox"> Show names</label>
+    <label class="option" for="statementChk"><input id="statementChk" type="checkbox"> Show statement</label>
+    <label class="option" for="hintChk"><input id="hintChk" type="checkbox"> Show hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Restore the opening diagram">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the three points and the two circles change size, yet they keep three special contacts at once. This old temple problem asks why those contacts always come together.</p>
+
+      <h2>Three contacts in one picture</h2>
+      <p>Let the angle have vertex <code>C</code> and let the two circles be centred at <code>O</code> (the big one) and <code>Q</code> (the small one). Both touch the angle's two sides, so their centres lie on the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">bisector</a> of the angle. Cut the big circle with the <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord</a> <code>MN</code> perpendicular to <code>OC</code>. The page's claim is that any two of these force the third: (1) <code>M</code> and <code>N</code> are where the big circle touches the sides; (2) the small circle is <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> to <code>MN</code>; (3) <code>Q</code> lies on the big circle.</p>
+
+      <h2>The exact radius rule</h2>
+      <p>Write <code>d = CO</code> and <code>t = CQ/d</code>. The applet keeps <code>Q</code> on the segment <code>CO</code>, so the big radius is <code>R = OQ = (1 &minus; t)d</code>. The small circle's radius is</p>
+      <blockquote><code>r = R &times; CQ / CO = R(1 &minus; R/d) = d &times; t(1 &minus; t)</code></blockquote>
+      <p>At the applet's starting value <code>t = 0.6</code> this gives <code>R = 0.4d</code> and <code>r = 0.24d</code>. The chord <code>MN</code> is cut at distance <code>&radic;(d&sup2; &minus; R&sup2;)</code> from <code>C</code>; that is exactly where the big circle's radius meets each side at a right angle, so condition 1 holds.</p>
+
+      <h2>Why two conditions force the third</h2>
+      <p>Let <code>s = sin(&alpha;) = R/d</code> for half the angle. A circle touching both sides with centre <code>x</code> from <code>C</code> has radius <code>xs</code>. The tangency chord sits at <code>d &minus; Rs</code> from <code>C</code>, and the small circle touching it from the C side needs <code>xs = (d &minus; Rs) &minus; x</code>; hence <code>x = d &minus; R</code>, exactly the near point where the small centre lies on the big circle. The same equation read backwards gives the other two implications. The logic test checks all three pairs independently on a grid of 17 angles and 6 distances, and re-measures every contact from the resulting points.</p>
+
+      <h2>What this port keeps, and what it changes</h2>
+      <p>The page treats only the case where <code>O</code> is farther from <code>C</code> than <code>Q</code>; the applet also keeps <code>Q</code> between <code>C</code> and <code>O</code>, so this port does too. It also keeps the applet's guard that refuses a diagram with <code>CQ &lt; 2</code>, and its Show names, Show statement and Show hint options. The drawing is modern SVG instead of AWT, and a Reset button returns to the opening picture; neither changes the geometry. The logic test compares the geometry with a second transcription of the applet's own <code>Compute()</code> over hundreds of configurations.</p>
+
+      <p class="tip">Try dragging Q to the midpoint of CO: the small circle is then as large as it can get. Switch on the hint to see the tangent line at the far point V and the larger triangle around the big circle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CommonTangentSangaku.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="common-tangent-sangaku-core.js"></script>
+<script src="common-tangent-sangaku.js"></script>
+</body>
+</html>
