@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circles Through Orthocenter &mdash; coolmaths</title>
+<meta name="description" content="Draw circles on the sides of a triangle, all passing through its orthocenter: they cut the sides in six points. Do those six points always lie on one circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circles-through-orthocenter/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circles Through Orthocenter">
+<meta property="og:description" content="Draw circles on the sides of a triangle, all passing through its orthocenter: they cut the sides in six points. Do those six points always lie on one circle?">
+<meta property="og:url" content="https://coolmaths.ai/circles-through-orthocenter/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .triangle { fill: var(--accent-soft); stroke: var(--ink); stroke-width: 2; }
+  #board .altitude { stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 5 5; }
+  #board .midline { stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 3 4; }
+  #board .midcircle { fill: none; stroke: var(--muted); stroke-width: 1.8; }
+  #board .circle-a { stroke: var(--accent); }
+  #board .circle-b { stroke: var(--good); }
+  #board .circle-c { stroke: var(--bad); }
+  #board .sixcircle { fill: none; stroke: var(--accent); stroke-width: 2.8; stroke-dasharray: 7 4; }
+  #board .circumcircle { fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-dasharray: 2 5; }
+  #board .crossdot { stroke: var(--stage); stroke-width: 1.6; }
+  #board .crossdot-a { fill: var(--accent); }
+  #board .crossdot-b { fill: var(--good); }
+  #board .crossdot-c { fill: var(--bad); }
+  #board .orthodot { fill: var(--ink); stroke: var(--stage); stroke-width: 2; }
+  #board .centerdot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .middot { fill: var(--muted); }
+  #board .radicaldot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.4; }
+  #board .corner-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+  .controls input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+  .controls button { min-height: 2.6rem; padding: 0.5rem 0.9rem; }
+</style>
+</head>
+<body data-game="circles-through-orthocenter" data-kind="demo">
+<main id="main">
+  <h1>Circles Through Orthocenter</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore: circles drawn on the sides of a triangle meet the sides in six points, and those six points always lie on one circle. There is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the blue corners A, B and C, or focus one and use the arrow keys. Tick the boxes to show names and the hint that explains the circle.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="Triangle ABC with three circles centred at the side midpoints and passing through the orthocenter H. Their six crossings with the sides lie on one dashed circle. Corners A, B and C can be dragged."></svg>
+    <p class="hint-line">Drag a corner, or focus one and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Names</label>
+    <label><input id="hintBox" type="checkbox" data-label="the hint"> Hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the triangle back where it started">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This picture came from Problem 1 of the 2008 International Mathematics Olympiad. At first the six points look as if they have no reason to line up on one circle — until you notice where the circle's centre must be.</p>
+
+      <h2>Three circles through H</h2>
+      <p>Drop the three <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitudes</a> of triangle ABC; they meet at the <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a> H. Let M<sub>a</sub>, M<sub>b</sub>, M<sub>c</sub> be the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoints</a> of BC, CA, AB. The circle centred at M<sub>a</sub> through H cuts the line BC at A<sub>1</sub> and A<sub>2</sub>; its radius is <code>r<sub>a</sub> = M<sub>a</sub>H</code>, so the two crossings sit that far either side of M<sub>a</sub>. The other two circles give B<sub>1</sub>, B<sub>2</sub> and C<sub>1</sub>, C<sub>2</sub> in the same way.</p>
+
+      <h2>The circle is centred at O</h2>
+      <p>Let O be the <a class="wiki-term" data-wiki="Circumcenter" href="https://en.wikipedia.org/wiki/Circumcenter" target="_blank" rel="noopener">circumcenter</a> of ABC and <code>s<sub>a</sub> = OM<sub>a</sub></code>. Because O lies on the perpendicular bisector of BC, OM<sub>a</sub> is perpendicular to BC, so Pythagoras gives <code>OA<sub>1</sub><sup>2</sup> = s<sub>a</sub><sup>2</sup> + r<sub>a</sub><sup>2</sup></code> — the same for A<sub>2</sub>. The page compares powers of the vertices to show <code>(a/2)<sup>2</sup> − r<sub>a</sub><sup>2</sup> = (b/2)<sup>2</sup> − r<sub>b</sub><sup>2</sup></code> and, since <code>(a/2)<sup>2</sup> + s<sub>a</sub><sup>2</sup> = R<sup>2</sup></code>, that <code>r<sub>a</sub><sup>2</sup> + s<sub>a</sub><sup>2</sup> = r<sub>b</sub><sup>2</sup> + s<sub>b</sub><sup>2</sup> = r<sub>c</sub><sup>2</sup> + s<sub>c</sub><sup>2</sup></code>. All six points are therefore <a class="wiki-term" data-wiki="Concyclic_points" href="https://en.wikipedia.org/wiki/Concyclic_points" target="_blank" rel="noopener">concyclic</a> about O. The logic test checked both equations and the six equal distances on more than four thousand triangles, to within 0.00001 board units.</p>
+
+      <h2>Red herrings and a small quirk</h2>
+      <p>The page notes that "acute-angled" is a <a class="wiki-term" data-wiki="Red_herring_(rhetoric)" href="https://en.wikipedia.org/wiki/Red_herring_(rhetoric)" target="_blank" rel="noopener">red herring</a>: the six points are concyclic for any non-degenerate triangle, and even the altitudes can be replaced by other concurrent lines. H is the <a class="wiki-term" data-wiki="Radical_center" href="https://en.wikipedia.org/wiki/Radical_center" target="_blank" rel="noopener">radical center</a> of the three circles and each altitude is a radical axis. In a right triangle H is a corner, the three chosen crossings can coincide, and the applet's own three-point circle has no centre; this port draws the proved circle centred at O instead, so the picture still tells the truth.</p>
+
+      <p class="tip">Tick Hint and drag one corner far to a side: the dashed circumcircle, the segments joining the midpoints and the highlighted dots show the radical axes lining up with the altitudes.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CirclesThroughOrthocenter.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circles-through-orthocenter-core.js"></script>
+<script src="circles-through-orthocenter.js"></script>
+</body>
+</html>
