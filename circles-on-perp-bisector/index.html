@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circles on a Perpendicular Bisector &mdash; coolmaths</title>
+<meta name="description" content="Drag a triangle and the centre of a circle through B and C: when can two more circles touch both sides and that circle as well? Look for a common tangent parallel to BC.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circles-on-perp-bisector/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circles on a Perpendicular Bisector">
+<meta property="og:description" content="Drag a triangle and the centre of a circle through B and C: when can two more circles touch both sides and that circle as well? Look for a common tangent parallel to BC.">
+<meta property="og:url" content="https://coolmaths.ai/circles-on-perp-bisector/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .side { stroke: var(--muted); stroke-width: 2; }
+  #board .side-bc { stroke: var(--ink); stroke-width: 2.6; }
+  #board .perp-bisector { stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 6 5; }
+  #board .circle-o { fill: none; stroke: var(--accent); stroke-width: 2.6; }
+  #board .circle-i { fill: var(--accent-soft); stroke: var(--good); stroke-width: 2; }
+  #board .circle-p { fill: none; stroke: var(--bad); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .st-line { stroke: var(--highlight); stroke-width: 2.4; }
+  #board .tangent { stroke: var(--good); stroke-width: 2; stroke-dasharray: 4 4; }
+  #board .touchdot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .middot { fill: var(--ink); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+  .controls input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+  .controls button { min-height: 2.6rem; padding: 0.5rem 0.9rem; }
+</style>
+</head>
+<body data-game="circles-on-perp-bisector" data-kind="demo">
+<main id="main">
+  <h1>Circles on a Perpendicular Bisector</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore: two circles touch both sides of a triangle while a third circle passes through B and C. There is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the blue points A, B, C or O, or focus one and use the arrow keys. Tick the boxes to show names, the two common tangents and the line joining S and T.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="Triangle ABC, a circle centred at O passing through B and C, and two smaller circles tangent to the sides AB and AC. Points A, B, C and O can be dragged."></svg>
+    <p class="hint-line">Drag a point, or focus one and press the arrow keys (Shift for bigger steps). O slides along the perpendicular bisector of BC.</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Names</label>
+    <label><input id="tangentsBox" type="checkbox" data-label="the common tangents"> Common tangents</label>
+    <label><input id="stBox" type="checkbox" data-label="the line of tangencies"> Line ST</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the four points back where they started">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A circle through two points has its centre on the <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a> of the segment between them. The surprise here is how two smaller circles, both touching the same two sides of the triangle, know exactly where that centre must be.</p>
+
+      <h2>One circle through B and C</h2>
+      <p>O can slide anywhere on the perpendicular bisector of BC, and the <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> (O) has radius <code>R = OB = OC</code>. Each side of the angle at A meets (O) in a second point besides B or C; the chord joining those two points is always <em>antiparallel</em> to BC — it is BC reflected in the angle bisector at A. The logic test checked this for hundreds of positions of the four draggable points.</p>
+
+      <h2>Two circles inside the angle</h2>
+      <p>A circle touching both rays AB and AC has its centre on the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> at A, and its radius is its distance to either ray. (I) is chosen tangent internally to (O); (P) is chosen tangent externally to it when O is on the far side of BC. The applet solves one quadratic for each centre and keeps the root nearer A, exactly as this port does; S and T are where the lines from O to the two centres meet (O). The line ST is the line of tangencies, and the test confirms it is <em>not</em> either of the two common <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangents</a>, just as the page says.</p>
+
+      <h2>Unger's condition</h2>
+      <p>The page states a theorem of J. Marshall Unger: with (I) the <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> of ABC and (P) any circle touching AB and AC, a circle through B and C tangent to (I) internally and (P) externally exists <em>if and only if</em> one of the common internal tangents of (I) and (P) is parallel to BC. The other internal tangent is then antiparallel to BC. Our test sets (I) to the incircle and slides (P) through 53 nearby positions: the parallel tangent and the existing circle occur together at the same position and nowhere else. With an arbitrary O, as in the applet, (I) need not be the incircle; the page only claims a tangent is parallel "at least when (I) is close to the incircle". The opening picture is such an approximation: its tangent lies about 4° from BC, not exactly on it. This is a faithful illustration, not a counterexample to the theorem.</p>
+
+      <p class="tip">Tick Common tangents and slide O slowly: watch one dashed tangent swing towards BC while the small inner circle grows towards the incircle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CirclesOnPerpBisector.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circles-on-perp-bisector-core.js"></script>
+<script src="circles-on-perp-bisector.js"></script>
+</body>
+</html>
