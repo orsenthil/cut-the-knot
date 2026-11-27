@@ -2355,6 +2355,16 @@ check("fifteen: the solved even board is in its own parity class", read.fifteen?
 check("five-circles-in-square: the triangle incircle and inner-square circle differ here", read["five-circles-in-square"]?.formulasHold === true && read["five-circles-in-square"].finished === false && typeof read["five-circles-in-square"].angleToEquality === "number");
 check("five-concyclic-points: Q and four intersections share a circle", read["five-concyclic-points"]?.valid === true && read["five-concyclic-points"].concyclic === true && read["five-concyclic-points"].circleO.fourPointsConcyclic === true && read["five-concyclic-points"].radicalAxis.atQ.equalPowers === true);
 check("fixed-point: the saved triangle is rebuilt with its incircle touch point", read["fixed-point"]?.valid === true && typeof read["fixed-point"].reading.fixedPoint.x === "number" && read["fixed-point"].trips === 0);
+check("fixed-tangent-point: the saved Q has PQ equal to the tangent length", read["fixed-tangent-point"]?.noDraw === false && Math.abs(read["fixed-tangent-point"].pq - read["fixed-tangent-point"].tangentLength) < 1e-9 && typeof read["fixed-tangent-point"].mirrorQ.x === "number");
+check("foot-of-altitude: EF=AD·sin(angle EDF) and the foot is shortest", read["foot-of-altitude"]?.identity.holds === true && read["foot-of-altitude"].lengths.shortestEF < read["foot-of-altitude"].lengths.EF && read["foot-of-altitude"].degenerate === false);
+check("forced-cyclic-quad: equal angles force AEFD cyclic in the saved order", read["forced-cyclic-quad"]?.claims.aefdCyclic === true && read["forced-cyclic-quad"].claims.eafEqualsEdf === true && read["forced-cyclic-quad"].claims.cafEqualsBde === true && read["forced-cyclic-quad"].claims.sameSideOutside === false);
+check("four-ab: the saved radius just misses the 4ab identity", read["four-ab"]?.savedMatchesCore === true && read["four-ab"].identityHolds === false && read["four-ab"].coversRectangle === false && typeof read["four-ab"].fourAb === "number");
+check("four-centroids: centroid parallels concur with the page's U claim corrected", read["four-centroids"]?.valid === true && read["four-centroids"].claims.parallels === true && read["four-centroids"].claims.homothetic === true && read["four-centroids"].claims.pageU === false && read["four-centroids"].claims.workingU === true);
+check("four-circle-sangaku: the incircle radius is the mean of the outer radii", read["four-circle-sangaku"]?.savedReadable === true && read["four-circle-sangaku"].reading.radiusIdentity.holds === true && read["four-circle-sangaku"].reading.tangentLines.tangent === true);
+check("four-circles-in-triangle: the saved contact-triangle point is rebuilt", read["four-circles-in-triangle"]?.savedReadable === true && read["four-circles-in-triangle"].savedMatchesCore === true && read["four-circles-in-triangle"].reading.cornerCircles.length === 3);
+check("four-crossing-circles: equal chords and the radius ratio are saved", read["four-crossing-circles"]?.valid === true && read["four-crossing-circles"].core.valid === true && typeof read["four-crossing-circles"].Ra === "number" && Array.isArray(read["four-crossing-circles"].chordA));
+check("four-feet-on-bisectors: four feet are collinear while the printed angle fails", read["four-feet-on-bisectors"]?.drawingPossible === true && read["four-feet-on-bisectors"].reading.claims.collinear === true && read["four-feet-on-bisectors"].reading.claims.cyclic === true && read["four-feet-on-bisectors"].reading.claims.pageAINValue === false);
+check("four-griffiths: four Griffith points and both concurrences are rebuilt", read["four-griffiths"]?.reading.griffithsPoints.length === 4 && typeof read["four-griffiths"].reading.pedalMeet === "object" && typeof read["four-griffiths"].reading.ninePointMeet === "object");
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2691,6 +2701,35 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("five-concyclic-points/radical axes: equal powers at Q, Y and Z", powers.atQ.equalPowers === true && powers.atY.equalPowers === true && powers.atZ.equalPowers === true && powers.lineL1IsCommonChord === true);
   const trips = runGameLogic("fixed-point", "two_trips", {});
   check("fixed-point/two trips: one half-turn then an exact return", trips.trips.afterSecond === 2 && trips.originalDots.every((d) => d.oneTripIsHalfTurn === true && d.twoTripsRestore === true) === true);
+}
+
+// The batch-28 tutor actions all run their real cores, not just their saved positions.
+{
+  const sp = runGameLogic("fixed-tangent-point", "slide_p", {});
+  check("fixed-tangent-point/slide_p: Q stays fixed while PQ keeps equalling PT", sp.qNeverMoves === true && sp.allPQequalPT === true && sp.allOrthogonal === true);
+  const sf = runGameLogic("foot-of-altitude", "slide", {});
+  check("foot-of-altitude/slide: no position beats the altitude foot", sf.checks.identityHoldsWhereDefined === true && sf.checks.noSampleBeatsFoot === true && sf.checks.leastSampleIsAtFoot === true);
+  const cyc = runGameLogic("forced-cyclic-quad", "cyclic_conclusion", {});
+  const cav = runGameLogic("forced-cyclic-quad", "angle_sum_and_caveat", {});
+  check("forced-cyclic-quad/conclusion and caveat: cyclic in order, not outside it", cyc.checks.aefdCyclic === true && cyc.checks.cafEqualsBde === true && cav.comparison.openingCafEqualsBde === true && cav.comparison.otherCafEqualsBde === false);
+  const qa = runGameLogic("four-ab", "quadrant_areas", { a: 112, b: 51, radius: 130 });
+  check("four-ab/quadrant_areas: alternating sum is exactly 4ab when covered", qa.coversRectangle === true && qa.identityHolds === true && qa.alternatingSum === qa.fourAb);
+  const fc = runGameLogic("four-centroids", "four_centroids", {});
+  const hm = runGameLogic("four-centroids", "homothety_and_midpoint", {});
+  check("four-centroids/centroids: parallels at G and the corrected midpoint claim", fc.claims.parallels === true && fc.claims.homothetic === true && hm.pageMidpointSentence.pageClaimHolds === false && hm.pageMidpointSentence.workingClaimHolds === true);
+  const sr = runGameLogic("four-circle-sangaku", "sangaku_radii", {});
+  const tl = runGameLogic("four-circle-sangaku", "tangent_lines", {});
+  check("four-circle-sangaku/radii and tangents: mean radius and ST=2r", sr.radiusIdentity.holds === true && tl.tangentLines.touchPoints.U !== undefined && tl.base.holds === true);
+  const joins = runGameLogic("four-circles-in-triangle", "concurrent_joins", {});
+  check("four-circles-in-triangle/concurrent_joins: joins meet at the contact incenter", joins.concurrent === true && joins.atContactIncenter === true && joins.maxMiss < 1e-6);
+  const chords = runGameLogic("four-crossing-circles", "equal_chords", {});
+  const quirk = runGameLogic("four-crossing-circles", "applet_other_quirk", { A: [25.449351, 163.32516], B: [33.317842, 30.010235], C: [51.499959, 79.602904], D: [162.13977, 149.934694], O: [179.541171, 220.785561] });
+  check("four-crossing-circles/equal_chords: chords equal and ratio matches radii", chords.chordsOnCircleA.equal === true && chords.chordsOnCircleB.equal === true && chords.separations.equalsRaOverRb === true && quirk.quirk.rows.some((r) => r.differs === true) === true);
+  const feet = runGameLogic("four-feet-on-bisectors", "four_feet", {});
+  const angle = runGameLogic("four-feet-on-bisectors", "angle_check", {});
+  check("four-feet-on-bisectors/feet and angle: collinear feet, corrected A/2+C/2", feet.claims.collinear === true && feet.claims.cyclic === true && angle.claims.printedAngleIsCorrect === false && angle.claims.equalAnglesAMN_AIN === true);
+  const thm = runGameLogic("four-griffiths", "check_theorems", {});
+  check("four-griffiths/check_theorems: line, pedal and nine-point concurrences all hold", thm.collinear.holds === true && thm.pedalConcurrence.holds === true && thm.ninePointConcurrence.holds === true && thm.unitCircle.holds === true && thm.allHold === true);
 }
 
 // A game with no reader, and a position that makes no sense.

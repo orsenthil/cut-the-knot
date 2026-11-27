@@ -1222,6 +1222,16 @@ const GAMES = {
   "five-circles-in-square": (page) => dragFirstHandle(page),
   "five-concyclic-points": (page) => dragFirstHandle(page),
   "fixed-point": (page) => dragFirstHandle(page),
+  "fixed-tangent-point": (page) => dragFirstHandle(page),
+  "foot-of-altitude": (page) => dragFirstHandle(page),
+  "forced-cyclic-quad": (page) => dragFirstHandle(page),
+  "four-ab": (page) => dragFirstHandle(page),
+  "four-centroids": (page) => dragFirstHandle(page),
+  "four-circle-sangaku": (page) => dragFirstHandle(page),
+  "four-circles-in-triangle": (page) => dragFirstHandle(page),
+  "four-crossing-circles": (page) => dragFirstHandle(page),
+  "four-feet-on-bisectors": (page) => dragFirstHandle(page),
+  "four-griffiths": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },
