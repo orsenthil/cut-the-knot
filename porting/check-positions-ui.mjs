@@ -1198,6 +1198,16 @@ const GAMES = {
   "eurica-cyclic": (page) => dragFirstHandle(page),
   "evelyn": (page) => dragFirstHandle(page),
   "evelyn-n": (page) => dragFirstHandle(page),
+  "every-trapezoid-is-para": (page) => dragFirstHandle(page),
+  "eves-extension": (page) => dragFirstHandle(page),
+  "existence-of-circumcenter": (page) => dragFirstHandle(page),
+  "ex-mixtilinear": (page) => dragFirstHandle(page),
+  "expanded-incircle": (page) => dragFirstHandle(page),
+  "external-angle-bisector": (page) => dragFirstHandle(page),
+  "eyeball": (page) => dragFirstHandle(page),
+  "eyeball-2": (page) => dragFirstHandle(page),
+  "fagnano": (page) => dragFirstHandle(page),
+  "fagnano-iii": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

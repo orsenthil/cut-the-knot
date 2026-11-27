@@ -729,6 +729,16 @@ const CORE_GLOBALS = {
   "eurica-cyclic/eurica-cyclic-core.js": ["EuricaCyclicCore"],
   "evelyn/evelyn-core.js": ["EvelynCore"],
   "evelyn-n/evelyn-n-core.js": ["EvelynNCore"],
+  "every-trapezoid-is-para/every-trapezoid-is-para-core.js": ["EveryTrapezoidIsParaCore"],
+  "eves-extension/eves-extension-core.js": ["EvesExtensionCore"],
+  "existence-of-circumcenter/existence-of-circumcenter-core.js": ["ExistenceOfCircumcenterCore"],
+  "ex-mixtilinear/ex-mixtilinear-core.js": ["ExMixtilinearCore"],
+  "expanded-incircle/expanded-incircle-core.js": ["ExpandedIncircleCore"],
+  "external-angle-bisector/external-angle-bisector-core.js": ["ExternalAngleBisectorCore"],
+  "eyeball/eyeball-core.js": ["EyeballCore"],
+  "eyeball-2/eyeball-2-core.js": ["Eyeball2Core"],
+  "fagnano/fagnano-core.js": ["FagnanoCore"],
+  "fagnano-iii/fagnano-iii-core.js": ["FagnanoIIICore"],
 };
 
 const games = [];

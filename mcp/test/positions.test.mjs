@@ -2335,6 +2335,16 @@ check("euler-to-euler: the second Euler line is parallel to BC", read["euler-to-
 check("eurica-cyclic: the saved K is the true concurrence point", read["eurica-cyclic"]?.derived.concurrent === true && read["eurica-cyclic"].derived.savedKIsMiquel === true);
 check("evelyn: the six-circle triangle chain closes and all tangencies hold", read.evelyn?.savedReadable === true && read.evelyn.reading.claims.atMostSix === true && read.evelyn.reading.claims.closesAfterSix === true && read.evelyn.reading.allTangenciesHold === true);
 check("evelyn-n: the triangle chain repeats after six circles", read["evelyn-n"]?.savedMatchesCore === true && read["evelyn-n"].chainLength === 6 && read["evelyn-n"].reading.isEvelynTriangle === true);
+check("every-trapezoid-is-para: AG equals CH though the bases differ", read["every-trapezoid-is-para"]?.valid === true && read["every-trapezoid-is-para"].xEqualsZ === true && read["every-trapezoid-is-para"].basesEqual === false && read["every-trapezoid-is-para"].eq1Holds === true && read["every-trapezoid-is-para"].eq2Holds === true);
+check("eves-extension: the odd pentagon loops leave a gap", read["eves-extension"]?.savedReadable === true && read["eves-extension"].even === false && typeof read["eves-extension"].gap === "number" && read["eves-extension"].reading.parity === "odd" && read["eves-extension"].reading.loopsClose === false);
+check("existence-of-circumcenter: the perpendicular bisectors give one circle through all vertices", read["existence-of-circumcenter"]?.valid === true && read["existence-of-circumcenter"].reading.equalDistances === true && read["existence-of-circumcenter"].reading.positionOfO.kind === "acute" && typeof read["existence-of-circumcenter"].reading.dotsFound === "number");
+check("ex-mixtilinear: tangent chords pass through the A-excenter", read["ex-mixtilinear"]?.savedReadable === true && read["ex-mixtilinear"].reading.exradius > 0 && read["ex-mixtilinear"].reading.circles.length === 2);
+check("expanded-incircle: the six points are concyclic about the incenter", read["expanded-incircle"]?.valid === true && Object.values(read["expanded-incircle"].core.claims).every(Boolean) === true);
+check("external-angle-bisector: both bisectors divide BC in the side ratio", read["external-angle-bisector"]?.degenerate === false && read["external-angle-bisector"].checks.internalRatio === true && read["external-angle-bisector"].checks.externalRatio === true && read["external-angle-bisector"].checks.correctedAngle === true && read["external-angle-bisector"].checks.printedAngle === false);
+check("eyeball: the two tangent chords have the same length", read.eyeball?.core.valid === true && read.eyeball.claimHolds === true && typeof read.eyeball.core.radii.chordFormula === "number");
+check("eyeball-2: the two curved-triangle incircles agree with the formula", read["eyeball-2"]?.core.matchesFormula === true && read["eyeball-2"].core.equalRadii === true && read["eyeball-2"].core.possible === true);
+check("fagnano: the acute triangle's orthic perimeter is the minimum", read.fagnano?.valid === true && read.fagnano.triangle.kind === "acute" && typeof read.fagnano.orthic.perimeter === "number");
+check("fagnano-iii: rolled sides cross at 180-2C in the acute triangle", read["fagnano-iii"]?.validAcute === true && read["fagnano-iii"].crossingIs180Minus2C === true && typeof read["fagnano-iii"].minLength === "number");
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2616,6 +2626,31 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   const chain = runGameLogic("evelyn-n", "chain_period", { n: 6, ta: 0.7 });
   const dist = runGameLogic("evelyn-n", "even_n_distance", { n: 4, taA: 0.5, taB: 0.95 });
   check("evelyn-n/chain period: even n repeats after n circles and the distance claim fails", chain.programCap === 12 && chain.regularPolygonPeriod === 6 && chain.repeatsPastCap === true && dist.pageClaimHolds === false);
+}
+
+// The batch-26 tutor actions all run their real cores, not just their saved positions.
+{
+  const seg = runGameLogic("every-trapezoid-is-para", "segments", {});
+  const falseProof = runGameLogic("every-trapezoid-is-para", "false_proof", {});
+  check("every-trapezoid-is-para/segments: AG=CH while the bases stay unequal", seg.xEqualsZ === true && seg.basesEqual === false && falseProof.dividingByZero === true && falseProof.fEqual === true);
+  const ce = runGameLogic("eves-extension", "incircle_counterexamples", {});
+  check("eves-extension/counterexamples: alternating sum is not sufficient beyond n=4", ce.hexagon.alternatingIsZero === true && ce.hexagon.hasIncircle === false && ce.hexagon.loopsCloseAtEveryStart === true);
+  const md = runGameLogic("existence-of-circumcenter", "midpoint_dots", {});
+  check("existence-of-circumcenter/midpoint_dots: snapping the dots reveals the circle", md.before.dotsFound === 0 && md.afterSnap.dotsFound === 3 && md.afterSnap.circleDrawn === true);
+  const ee = runGameLogic("ex-mixtilinear", "equal_excircles", {});
+  check("ex-mixtilinear/equal_excircles: at the incircle contact both radii equal r_a", ee.bothRadiiEqualExradius === true && ee.finished === true && ee.otherPositionsOnBC.every((p) => p.bothEqualExradius === false) === true);
+  const chords = runGameLogic("expanded-incircle", "conway_chords", {});
+  check("expanded-incircle/Conway chords: the page's half-chord is half the real chord", chords.halfChord.agrees === true && chords.chords.allMatchTrueFormula === true && chords.chords.pageUnderstatesBy > 0);
+  const proof = runGameLogic("external-angle-bisector", "proof_and_concurrence", {});
+  check("external-angle-bisector/proof: corrected angle holds, printed angle fails", proof.angleChecks.correctedAngle === true && proof.angleChecks.printedAngle === false && proof.concurrence.holds === true);
+  const sweep = runGameLogic("eyeball", "separation_sweep", {});
+  check("eyeball/separation_sweep: equal chords hold until tangents vanish", sweep.allValidClaimsHold === true && sweep.samples.length === 6);
+  const cmp = runGameLogic("eyeball-2", "equal_chords_vs_incircles", { ra: 60, rb: 90, d: 200 });
+  check("eyeball-2/chords vs incircles: the two theorems give different values", cmp.eyeball2.incircleRadius === cmp.eyeball2.fromCore && cmp.eyeball.equalChordLength > cmp.eyeball2.incircleRadius && cmp.same === false);
+  const fj = runGameLogic("fagnano", "fejer_reflections", {});
+  check("fagnano/Fejer reflections: P'P''=2·AP·sin A and the altitude foot beats P", fj.fejer.checks.angleIsTwiceA === true && fj.fejer.checks.baseIs2APsinA === true && fj.minimization.footIsBetter === true && fj.minimization.footBaseEqualsOrthicPerimeter === true);
+  const sp = runGameLogic("fagnano-iii", "shortest_path", {});
+  check("fagnano-iii/shortest_path: the straightened path at M is the minimum", sp.acute === true && sp.pathAtLeastBase === true && sp.atM.straight === true);
 }
 
 // A game with no reader, and a position that makes no sense.
