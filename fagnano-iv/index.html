@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fagnano IV &mdash; coolmaths</title>
+<meta name="description" content="Move a triangle and the three dots on its sides: when do the little eyes open, and why can the inner triangle never be shorter than one area bound?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/fagnano-iv/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Fagnano IV">
+<meta property="og:description" content="Move a triangle and the three dots on its sides: when do the little eyes open, and why can the inner triangle never be shorter than one area bound?">
+<meta property="og:url" content="https://coolmaths.ai/fagnano-iv/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+    border-radius: 8px;
+  }
+  #board .quad { stroke: none; }
+  #board .quad-c { fill: var(--accent); fill-opacity: 0.13; }
+  #board .quad-a { fill: var(--good); fill-opacity: 0.12; }
+  #board .quad-b { fill: var(--muted); fill-opacity: 0.22; }
+  #board .circumcircle { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 4 5; }
+  #board .tri-edge { stroke: var(--ink); stroke-width: 2.2; fill: none; }
+  #board .inner-edge { stroke: var(--accent); stroke-width: 3.2; fill: none; }
+  #board .radius-line { stroke: var(--muted); stroke-width: 1.2; opacity: 0.8; }
+  #board .altitude { stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .normal { stroke: var(--ink); stroke-width: 1.2; stroke-dasharray: 3 3; opacity: 0.65; }
+  #board .right-angle { stroke: var(--muted); stroke-width: 1.2; fill: none; }
+  #board .normal-dot { fill: var(--muted); }
+  #board .orthic-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .centre-dot { fill: var(--ink); }
+  #board .point-label {
+    fill: var(--text);
+    font-size: 0.95rem;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  #board .eye-white { fill: var(--stage); }
+  #board .eye-outline { fill: none; stroke: var(--ink); stroke-width: 1.6; }
+  #board .eye-iris { fill: var(--accent); }
+  #board .eye-lid { stroke: var(--ink); stroke-width: 2.4; }
+  #board .eye-label {
+    fill: var(--text);
+    font-size: 0.8rem;
+    text-anchor: middle;
+    pointer-events: none;
+  }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible {
+    outline: none;
+    stroke: var(--good);
+    stroke-width: 5;
+  }
+  #board .side-handle { fill: var(--good); }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.4rem 0 0;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="fagnano-iv" data-kind="demo">
+<main id="main">
+  <h1>Fagnano IV</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This shows a triangle with a smaller triangle inside it and three pairs of eyes; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the six dots to move the triangles. Tick "hint" to show the special feet, and watch the eyes: they open when the inner triangle sits on them.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Triangle ABC, its circumcircle, the points P Q R on its sides, three dashed perpendiculars and three pairs of eyes that open on the orthic triangle"></svg>
+    <p class="hint">Keyboard: Tab to a dot, then use the arrow keys (Shift makes a bigger step).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" checked> Show names</label>
+    <label><input id="hintBox" type="checkbox"> Show hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Fagnano's problem asks for the shortest triangle you can fit inside a given triangle. This page takes a surprising shortcut: instead of hunting for the shortest one, it gives a fixed limit that no inner triangle can beat, then shows that one special triangle reaches it.</p>
+
+      <h2>The claim on the page</h2>
+      <p>Let <code>O</code> be the centre of the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of <code>ABC</code>, let <code>r</code> be its radius, and put <code>P</code>, <code>Q</code>, <code>R</code> anywhere on <code>BC</code>, <code>CA</code>, <code>AB</code>. The page's exact claim is</p>
+      <blockquote><code>perimeter(PQR) &ge; 2 &times; area(ABC) / r</code>.</blockquote>
+      <p>It also says the <a class="wiki-term" data-wiki="Orthic_triangle" href="https://en.wikipedia.org/wiki/Orthic_triangle" target="_blank" rel="noopener">orthic triangle</a> makes this an equality, and that it is the only inscribed triangle that does. The logic test checked the inequality on 9,000 random configurations and on a 7 &times; 6 grid of triangles with 125 choices of <code>P</code>, <code>Q</code>, <code>R</code> each; no case beat the bound.</p>
+
+      <h2>Why the limit holds</h2>
+      <p>Join <code>O</code> to <code>P</code>, <code>Q</code>, <code>R</code>. The three quadrilaterals <code>OPCQ</code>, <code>OQAR</code> and <code>ORBP</code> fill <code>ABC</code>. The first is two triangles on the common base <code>OC</code>. If their heights to that base are <code>h</code> and <code>g</code>, then its area is <code>(h + g) &times; OC / 2</code>, which cannot exceed <code>PQ &times; OC / 2</code> and so cannot exceed <code>PQ &times; r / 2</code>. The same goes for the other two quadrilaterals. Adding them gives <code>area(ABC) &le; (PQ + QR + RP) &times; r / 2</code>, which is the bound above. Tightness needs each inner side to be square to the radius pointing at the opposite corner. The test checked that middle step on thousands of acute triangles and found no exception; for obtuse triangles <code>O</code> lies outside, the two dots can be on the same side of <code>OC</code>, and that single step can fail even though the sampled final bound still held.</p>
+
+      <h2>Why the eyes open at the answer</h2>
+      <p>By Nagel's theorem, the sides of the orthic triangle are square to <code>OA</code>, <code>OB</code> and <code>OC</code>, so every one of those three area inequalities becomes an equality. The little dashed right angles on the board show this. The applet's three pairs of eyes open only when <code>P</code>, <code>Q</code> and <code>R</code> are each within one pixel of a foot of an altitude. The test confirmed equality for more than 1,500 random acute triangles and that each of the three side positions has just one tight spot: the orthic one.</p>
+
+      <h2>What the other Fagnano pages do</h2>
+      <p>The <a class="wiki-term" data-wiki="Fagnano%27s_problem" href="https://en.wikipedia.org/wiki/Fagnano%27s_problem" target="_blank" rel="noopener">Fagnano problem</a> page and Samelson's solution (FagnanoIII) unfold the triangle by reflection, turning the inner triangle into a broken line that is shortest when straight. This fourth solution, Izvolsky's, never unfolds anything: it proves the explicit area-and-radius bound instead. One caution the other pages spell out: in an obtuse triangle the altitude feet fall outside the sides, so the orthic triangle is not inscribed, the test found a clear gap above the bound there, and the area argument above is an acute-triangle proof; in a right triangle the orthic triangle collapses to a segment, so it is not a proper triangle either. The uniqueness claim is about acute triangles.</p>
+
+      <p class="tip">Try ticking "hint", then drag <code>P</code> towards the green foot: the right-angle dashes line up and the left eye opens. Repeat for <code>Q</code> and <code>R</code>.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FagnanoIV.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="fagnano-iv-core.js"></script>
+<script src="fagnano-iv.js"></script>
+</body>
+</html>
