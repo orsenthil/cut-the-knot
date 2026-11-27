@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Four Pedal Circles &mdash; coolmaths</title>
+<meta name="description" content="Move four points and a fifth point: do the four pedal circles always pass through one common point?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/four-pedal-circles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Four Pedal Circles">
+<meta property="og:description" content="Move four points and a fifth point: do the four pedal circles always pass through one common point?">
+<meta property="og:url" content="https://coolmaths.ai/four-pedal-circles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .side { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 4 4; }
+  #board .pedal-circle { fill: none; stroke: var(--accent); stroke-width: 2.2; }
+  #board .pedal-line { stroke: var(--accent); stroke-width: 2.2; }
+  #board .pedal-triangle { fill: var(--accent-soft); stroke: var(--muted); stroke-width: 1.6; }
+  #board .perpendicular { stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  #board .foot-dot { fill: var(--accent); }
+  #board .q-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .geom-handle { fill: var(--ink); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 700;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="four-pedal-circles" data-kind="demo">
+<main id="main">
+  <h1>Four Pedal Circles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Four circles drawn from one point and four corners all pass through the same dot; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag A, B, C, D or P, or focus one and use the arrow keys. Tick the boxes to show names, pedal triangles and perpendicular lines.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Four points A, B, C, D joined by six segments, a fifth point P, their pedal feet and four circles meeting at Q. Drag any of the five points to move them."></svg>
+    <p class="hint-line">Drag a point, or focus it and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Names</label>
+    <label><input id="trianglesBox" type="checkbox" data-label="pedal triangles"> Pedal triangles</label>
+    <label><input id="linesBox" type="checkbox" data-label="perpendiculars"> Perpendiculars</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A <a class="wiki-term" data-wiki="Complete_quadrilateral" href="https://en.wikipedia.org/wiki/Complete_quadrilateral" target="_blank" rel="noopener">complete quadrangle</a> is four points and all six lines between them. Take any three points and you get a triangle. From a fifth point P you can drop three perpendiculars to that triangle's sides: the three feet form a <a class="wiki-term" data-wiki="Pedal_triangle" href="https://en.wikipedia.org/wiki/Pedal_triangle" target="_blank" rel="noopener">pedal triangle</a>, and its <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> is the pedal circle. The surprising thing is what the four pedal circles do.</p>
+
+      <h2>One point for all four circles</h2>
+      <p>The page claims that <strong>the four pedal circles defined by a point and a complete quadrangle are concurrent</strong>: they all pass through one point Q. The logic test checked 1,500 non-degenerate configurations with an independent circumcircle formula, and the largest distance from Q to any of the four circles was below <code>0.0001</code>. Each pair of circles shares one pedal foot — circles ABC and ABD both go through the foot on AB, while ACD and BCD share the foot on CD. Their <em>other</em> intersections are the same point Q, so the applet averages those two answers.</p>
+
+      <h2>A small quirk in the applet</h2>
+      <p>To pick the "other" intersection, the original code keeps the one at least <code>1</code> unit from the shared foot. If the two intersections sit closer than that, it can pick the foot by mistake and draw Q a little away from the true meeting point. This port keeps that behaviour, so the picture follows the applet. The theorem itself does not depend on the choice: the test used the textbook circle intersection and found the four circles concurrent in every well-conditioned case tested. When the three feet nearly line up, the applet even draws a straight <a class="wiki-term" data-wiki="Simson_line" href="https://en.wikipedia.org/wiki/Simson_line" target="_blank" rel="noopener">Simson line</a> in place of that circle.</p>
+
+      <h2>When the four points lie on a circle</h2>
+      <p>The page adds that for a cyclic quadrangle the four Simson lines — each corner with respect to the triangle of the other three — and the four nine-point circles all meet in one point. Across 700 cyclic quadrangles the test found the three feet of each Simson line collinear, the four lines concurrent, and the same point on every <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">nine-point circle</a> (largest error below <code>0.0001</code>).</p>
+
+      <h2>A fact for every quadrangle</h2>
+      <p>The last claim on the page generalises this: for any four points, the nine-point circles of BCD, CDA, DAB and ABC and the pedal circles of the remaining point A, B, C and D are concurrent. The test found a common point on all eight circles in hundreds of quadrangles, with error below <code>0.0001</code>. The page ends with "to be continued"; no further formula is stated there.</p>
+
+      <p class="tip">Try dragging P close to one of the four corners: its three feet almost line up and the pedal circle flattens into a line. Then tick <em>Pedal triangles</em> and <em>Perpendiculars</em> to see where the circles come from.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FourPedalCircles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="four-pedal-circles-core.js"></script>
+<script src="four-pedal-circles.js"></script>
+</body>
+</html>
