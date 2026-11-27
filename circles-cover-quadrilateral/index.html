@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circles Cover Quadrilateral &mdash; coolmaths</title>
+<meta name="description" content="Four circles sit at the corners of a quadrilateral. If together they cover the whole shape, must three of them cover one of its four triangles? Drag the corners and find out.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circles-cover-quadrilateral/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circles Cover Quadrilateral">
+<meta property="og:description" content="Four circles sit at the corners of a quadrilateral. If together they cover the whole shape, must three of them cover one of its four triangles? Drag the corners and find out.">
+<meta property="og:url" content="https://coolmaths.ai/circles-cover-quadrilateral/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .quad-fill { fill: var(--accent-soft); stroke: var(--ink); stroke-width: 2; }
+  #board .covered-tri { fill: var(--good); fill-opacity: 0.16; stroke: var(--good); stroke-width: 2.5; }
+  #board .diag { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; }
+  #board .cover-circle { fill: var(--accent); fill-opacity: 0.10; stroke: var(--accent); stroke-width: 2; }
+  #board .cover-circle.off { fill: none; stroke: var(--muted); stroke-dasharray: 5 5; opacity: 0.65; }
+  #board .point-label {
+    fill: var(--text); font: 700 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .control-row {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 1rem;
+  }
+  .control-row label { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.95rem; }
+  .control-row input[type="range"] { width: min(9rem, 100%); }
+  .control-row output { min-width: 2.2rem; font-variant-numeric: tabular-nums; }
+  .toggle-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .toggle-row button { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="circles-cover-quadrilateral" data-kind="demo">
+<main id="main">
+  <h1>Circles Cover Quadrilateral</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: four circles sit on the corners of a four-sided shape, and one of its triangles lights up when three circles cover it.<br>
+    <strong>How to play:</strong> Drag a corner, or focus it and use the arrow keys. Move the sliders to change the circles, click inside a circle to hide or show it, or press Make them cover.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 400" role="group"
+         aria-label="A quadrilateral ABCD with a circle centred at each corner; its two diagonals and the triangle covered by three of the circles"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label for="radiusA">Radius A <input id="radiusA" type="range" min="0" max="600" step="5" value="120" aria-label="Radius of circle A"></label>
+      <output id="readoutA" for="radiusA">120</output>
+      <label for="radiusB">Radius B <input id="radiusB" type="range" min="0" max="600" step="5" value="140" aria-label="Radius of circle B"></label>
+      <output id="readoutB" for="radiusB">140</output>
+    </div>
+    <div class="control-row">
+      <label for="radiusC">Radius C <input id="radiusC" type="range" min="0" max="600" step="5" value="160" aria-label="Radius of circle C"></label>
+      <output id="readoutC" for="radiusC">160</output>
+      <label for="radiusD">Radius D <input id="radiusD" type="range" min="0" max="600" step="5" value="180" aria-label="Radius of circle D"></label>
+      <output id="readoutD" for="radiusD">180</output>
+    </div>
+    <div class="toggle-row">
+      <button id="toggleA" type="button" aria-label="Hide circle A" aria-pressed="true">Hide A</button>
+      <button id="toggleB" type="button" aria-label="Hide circle B" aria-pressed="true">Hide B</button>
+      <button id="toggleC" type="button" aria-label="Hide circle C" aria-pressed="true">Hide C</button>
+      <button id="toggleD" type="button" aria-label="Hide circle D" aria-pressed="true">Hide D</button>
+    </div>
+    <div class="toggle-row">
+      <button id="fitBtn" type="button" aria-label="Choose radii so the four circles cover the quadrilateral">Make them cover</button>
+      <button id="resetBtn" type="button" class="primary" aria-label="Reset the diagram to the starting position">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Four circles sit at the corners of a four-sided shape. If together they cover every bit of the shape, something surprising happens: three of them are already enough for one of the four triangles cut off by the diagonals. Drag the corners and watch the green triangle.</p>
+
+      <h2>The four circles and four triangles</h2>
+      <p>The corners are <code>A</code>, <code>B</code>, <code>C</code> and <code>D</code>, and each <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> is centred on one corner and goes out to its own radius. A <a class="wiki-term" data-wiki="Quadrilateral" href="https://en.wikipedia.org/wiki/Quadrilateral" target="_blank" rel="noopener">quadrilateral</a> has two <a class="wiki-term" data-wiki="Diagonal" href="https://en.wikipedia.org/wiki/Diagonal" target="_blank" rel="noopener">diagonals</a>, <code>AC</code> and <code>BD</code>. They split it into four smaller pieces, but they also pick out four overlapping <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangles</a>: <code>ABC</code>, <code>BCD</code>, <code>CDA</code> and <code>DAB</code>. The question asks for just one of these to be covered by the three circles at its own corners.</p>
+
+      <h2>How the page decides "covered"</h2>
+      <p>For a spot <code>p</code>, a circle centred at <code>X</code> with radius <code>r</code> contains it when the <code>distance(p, X) - r</code> is negative; a point exactly on the circle is not counted as inside, just as in the old applet. A triangle is covered when that number is at most zero for every spot in it and for at least one of the three circles. The drawing checks a fine grid of spots inside each shape. Because distance changes by at most the distance you move (a <a class="wiki-term" data-wiki="Lipschitz_continuity" href="https://en.wikipedia.org/wiki/Lipschitz_continuity" target="_blank" rel="noopener">Lipschitz</a> bound of 1), a grid spacing <code>h</code> with largest value below <code>-h</code> proves covering everywhere, while a positive value proves a hole. That is why the status line can speak confidently instead of guessing.</p>
+
+      <h2>Why three circles are enough</h2>
+      <p>The original problem notes that a check of a few cases settles it. Here is the heart of that check: if triangle <code>ABC</code> has a spot missed by circles <code>A</code>, <code>B</code> and <code>C</code>, the covering condition forces that spot to lie inside circle <code>D</code>. Doing the same for the other three triangles leaves only a short list of arrangements, and in each one some triangle is covered by its own three circles. The logic test checks all these arrangements numerically rather than relying on one picture: hundreds of near-tight covering configurations, plus a square, a rectangle, a tilted shape and a dart, all confirm the claim.</p>
+
+      <h2>What was ported</h2>
+      <p>The four sliders keep the applet's range of 0 to 600 in steps of 5, starting at 120, 140, 160 and 180. Clicking inside a circle hides or shows it, exactly as the applet does, including the quirk that a click inside two overlapping circles flips both. The <em>Make them cover</em> button is a convenience added here: the applet only had the sliders, and this button chooses radii that satisfy the hypothesis so you can see the conclusion right away. No behaviour of the puzzle itself was changed.</p>
+
+      <p class="tip">Press Make them cover, then hide one circle. Can you find a spot that is no longer covered? Put the circle back and see which triangle lights up.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CirclesCoverQuadrilateral.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circles-cover-quadrilateral-core.js"></script>
+<script src="circles-cover-quadrilateral.js"></script>
+</body>
+</html>
