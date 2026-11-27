@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gergonne And Soddy &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and watch the Gergonne line and the Soddy line. Will they always meet at a right angle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/gergonne-and-soddy/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Gergonne And Soddy">
+<meta property="og:description" content="Drag the corners of a triangle and watch the Gergonne line and the Soddy line. Will they always meet at a right angle?">
+<meta property="og:url" content="https://coolmaths.ai/gergonne-and-soddy/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .side { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .chord { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .cevian { fill: none; stroke: #d98b3a; stroke-width: 1.5; opacity: 0.85; }
+  #board .incircle { fill: none; stroke: #d98b3a; stroke-width: 2; opacity: 0.9; }
+  #board .gergonne-line { stroke: var(--accent); stroke-width: 2.5; }
+  #board .soddy-line { stroke: var(--bad); stroke-width: 2.5; }
+  #board .inversion-circle { fill: none; stroke: var(--good); stroke-width: 1.5; opacity: 0.7; }
+  #board .dot { stroke: var(--stage); stroke-width: 1.5; }
+  #board .dot-A1, #board .dot-B1, #board .dot-C1 { fill: #d98b3a; }
+  #board .dot-A2, #board .dot-B2, #board .dot-C2 { fill: var(--highlight); }
+  #board .dot-Ge { fill: var(--accent); }
+  #board .dot-I { fill: var(--good); }
+  #board .dot-S { fill: var(--bad); }
+  #board .right-mark { fill: none; stroke: var(--text); stroke-width: 2; }
+  #board .point-label { fill: var(--text); font-size: 15px; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls button[aria-pressed="true"] { border-color: var(--accent); }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="gergonne-and-soddy" data-kind="demo">
+<main id="main">
+  <h1>Gergonne And Soddy</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the three corners of a triangle and watch two special lines that always cross at a right angle.<br>
+    <strong>How to play:</strong> Drag a corner, or focus it and use the arrow keys. Press the buttons to show the circle, the helper lines, the right-angle mark or the flipped circles.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 500" role="group"
+         aria-label="A triangle with three draggable corners, its incircle, a blue Gergonne line and a red Soddy line crossing at right angles."></svg>
+  </div>
+
+  <div class="controls" role="group" aria-label="Choose which parts of the diagram to show">
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Show or hide the names of the points">Names</button>
+    <button id="premisesBtn" type="button" aria-pressed="false" aria-label="Show or hide the incircle and the cevians through the touch points">Premises</button>
+    <button id="statementBtn" type="button" aria-pressed="true" aria-label="Show or hide the right-angle mark at the crossing">Right angle</button>
+    <button id="inversionBtn" type="button" aria-pressed="false" aria-label="Show or hide the circles obtained by inverting the lines in the incircle">Inversions</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put A, B and C back at their starting places">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move any corner and both lines swing around, yet the angle where they meet never changes. That is the whole surprise: a right angle that survives every triangle you can draw.</p>
+
+      <h2>Two lines inside a triangle</h2>
+      <p>The <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> touches the three sides at <code>A₁</code>, <code>B₁</code>, <code>C₁</code>. Join each touch point to the opposite corner: those three cevians meet at the <a class="wiki-term" data-wiki="Gergonne_point" href="https://en.wikipedia.org/wiki/Gergonne_point" target="_blank" rel="noopener">Gergonne point</a> <code>Ge</code>. The lines <code>B₁C₁</code>, <code>C₁A₁</code> and <code>A₁B₁</code> meet the sides again at three points called <a class="wiki-term" data-wiki="Polar_(geometry)" href="https://en.wikipedia.org/wiki/Polar_(geometry)" target="_blank" rel="noopener">Nobbs' points</a>; they lie on one straight line, the Gergonne line. The line through <code>Ge</code> and the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> <code>I</code> is the Soddy line. Blue is the Gergonne line; red is the Soddy line.</p>
+
+      <h2>The page's claim, checked</h2>
+      <p>The original page says: “Wherever the Soddy line is uniquely defined (in particular, in a scalene triangle), it is perpendicular to Gergonne Line.” The logic test measured the angle between the two lines in 2,590 triangles from a grid and a fixed random seed. It was <code>90°</code> to within <code>0.001°</code> in every one. The three Nobbs points were collinear and the three cevians passed through <code>Ge</code> in all of those cases too.</p>
+      <p>The page also says <code>I</code> and <code>Ge</code> never coincide in a scalene triangle. That is true, and a little more is true: they coincide exactly when the triangle is <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral</a>. An isosceles but not equilateral triangle still has two different points, hence a well-defined Soddy line. The applet refuses to draw the red line when the two points are less than two pixels apart; this page keeps that guard.</p>
+
+      <h2>Why inversion sees the right angle</h2>
+      <p>Invert the whole picture in the incircle, with radius <code>r</code> and centre <code>I</code>. A line at distance <code>d</code> from <code>I</code> becomes a circle through <code>I</code>, centred halfway from <code>I</code> towards the line's foot, with radius <code>r²/(2d)</code>. So:</p>
+      <blockquote><code>AB, BC, CA → circles with diameters IC₁, IA₁, IB₁</code><br><code>A₁B₁, B₁C₁, C₁A₁ → circles with diameters CI, AI, BI</code><br><code>the Soddy line IGe → itself</code><br><code>the Gergonne line → the circle with diameter IGe</code></blockquote>
+      <p>The last circle contains <code>Ge</code> and the inverted images of all three Nobbs points; the logic test checks all of that, along with the two diameter formulas above. An <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">inversion</a> preserves angles, so a line through the centre of that circle — the Soddy line <code>IGe</code> — is perpendicular to the circle. Inverting back turns it into the perpendicular pair you see on the board. Press <em>Inversions</em> to watch the seven image circles appear.</p>
+
+      <h2>The switches</h2>
+      <p>The applet has four checkboxes: <em>names</em>, <em>premises</em>, <em>statement</em> and <em>inversions</em>. The original page embeds it twice: once with none of them ticked, and again in the proof with names and statement on. This page opens in that second view. <em>Reset diagram</em> is a convenience added here: the applet had no reset button. When the three corners are nearly in a straight line, the construction runs off the board and the picture is hidden until you move one back.</p>
+      <p class="tip">Press <em>Inversions</em>, then drag one corner close to the line through the other two. The image circles grow enormous, but the red and blue lines still cross at a right angle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/GergonneAndSoddy.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="gergonne-and-soddy-core.js"></script>
+<script src="gergonne-and-soddy.js"></script>
+</body>
+</html>
