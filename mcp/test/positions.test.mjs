@@ -2315,6 +2315,16 @@ check("equilateral-345: the dragged corner is not at the proof angle", read["equ
 check("equilateral-on-lines: two mirror solutions keep their saved corners", read["equilateral-on-lines"]?.saved.solutions.length === 2 && read["equilateral-on-lines"].finishedFromSave === false && typeof read["equilateral-on-lines"].reading.placement === "object");
 check("equilateral-triangles: three rotations give an equilateral midpoint triangle", read["equilateral-triangles"]?.valid === true && read["equilateral-triangles"].midpointTriangle.equilateral === true && read["equilateral-triangles"].complexCriterion.holds === true);
 check("equilic-quad: P, Q, R and S are collinear with the three kites equilateral", Object.values(read["equilic-quad"]?.claims ?? {}).every(Boolean) === true && read["equilic-quad"].savedMatchesCore === true);
+check("equiloc-quad-1-tri: Q, not S, is the circumcircle arc midpoint", read["equiloc-quad-1-tri"]?.valid === true && read["equiloc-quad-1-tri"].claims.qIsArcMidpoint === true && read["equiloc-quad-1-tri"].claims.pageClaimLiteral === false && read["equiloc-quad-1-tri"].claimsAgree === true);
+check("equiloc-quad-2-tri: the four midpoints make a rhombus split into two equilateral halves", read["equiloc-quad-2-tri"]?.claims.rhombus === true && read["equiloc-quad-2-tri"].claims.equilateralKML === true && read["equiloc-quad-2-tri"].claims.equilateralKNL === true && read["equiloc-quad-2-tri"].savedMatchesCore === true);
+check("equiloc-quad-2-tri-120: the two apexes coincide on the angle bisector", read["equiloc-quad-2-tri-120"]?.claims.apexesCoincide === true && read["equiloc-quad-2-tri-120"].claims.onBisector === true && read["equiloc-quad-2-tri-120"].claims.asbIs120 === true && read["equiloc-quad-2-tri-120"].savedMatchesCore === true);
+check("equi-tri-in-rec: two inward equilateral triangles give APQ with homothety two", read["equi-tri-in-rec"]?.valid === true && read["equi-tri-in-rec"].homothetyRatio === 2 && read["equi-tri-in-rec"].apqEquilateral === true && Object.values(read["equi-tri-in-rec"].savedMatchesCore).every(Boolean) === true);
+check("equi-tri-on-para: the second parallelogram returns to the original corners", read["equi-tri-on-para"]?.claims.middleParallelogram === true && read["equi-tri-on-para"].claims.lastParallelogram === true && read["equi-tri-on-para"].claims.coincide === true && read["equi-tri-on-para"].savedMatchesCore === true);
+check("escher-ceva-menelaus: the Klamkin-Liu criterion is satisfied at the saved marks", read["escher-ceva-menelaus"]?.reading.formula.satisfied === true && read["escher-ceva-menelaus"].reading.concurrence.concurrent === true && read["escher-ceva-menelaus"].reading.concurrence.agreesWithFormula === true);
+check("eschers-theorem: the turns concur and the saved picture agrees with the core", read["eschers-theorem"]?.savedDerivedMatches === true && read["eschers-theorem"].reading.fixedTriangle.isEquilateral === true && read["eschers-theorem"].reading.concurrence.concurrent === true);
+check("euclid: the similar-shape area law holds under the displayed rounding", read.euclid?.valid === true && read.euclid.reading.displayedSumMatchesHyp === false && typeof read.euclid.law.residuals.legSumMinusHyp === "number");
+check("euclid-i43: every diagonal cell mirrors across AC with equal area", read["euclid-i43"]?.reading.allGreenPairsMatch === true && read["euclid-i43"].reading.allPiecesTile === true && read["euclid-i43"].reading.allPairsMatch === true);
+check("euclid-i43-extended: the compensating piece equals XNCP off the diagonal", read["euclid-i43-extended"]?.reading.compensates === true && read["euclid-i43-extended"].reading.plainEuclidI43Matches === false && read["euclid-i43-extended"].reading.tOnAx === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2530,6 +2540,39 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   const col = runGameLogic("equilic-quad", "collinearity_and_triangles", {});
   const arc = runGameLogic("equilic-quad", "arc_sweep", {});
   check("equilic-quad/collinearity and arcs: P,Q,R,S always line up, AQB only on one arc", col.line.holds === true && arc.collinearEverywhere === true && arc.aqbOnOppositeArc.allEquilateral === true && arc.aqbOnSmallArc.noneEquilateral === true);
+}
+
+// The batch-24 tutor actions all run their real cores, not just their saved positions.
+{
+  const am = runGameLogic("equiloc-quad-1-tri", "arc_midpoint", {});
+  const hs = runGameLogic("equiloc-quad-1-tri", "handedness_sweep", {});
+  check("equiloc-quad-1-tri/arc_midpoint: Q bisects the arc, the printed claim does not", am.claims.qIsArcMidpoint === true && am.claims.pageClaimLiteral === false && hs.qOnlyOnStartingSide === true);
+  const rh = runGameLogic("equiloc-quad-2-tri", "rhombus_and_halves", {});
+  const ra = runGameLogic("equiloc-quad-2-tri", "rhombus_at_other_angles", {});
+  check("equiloc-quad-2-tri/rhombi: equal sides at every angle, equilateral halves only at 60/120", rh.rhombus.holds === true && rh.rhombus.equalSides === true && ra.rhombusAtEveryAngle === true && ra.equilateralOnlyAt60or120 === true);
+  const tb = runGameLogic("equiloc-quad-2-tri-120", "tips_and_bisector", { S: [200, 54] });
+  const as = runGameLogic("equiloc-quad-2-tri-120", "arc_sweep", {});
+  check("equiloc-quad-2-tri-120/tips and sweep: P=R on the 120-degree arc only", tb.claims.apexesCoincide === true && tb.claims.onBisector === true && as.startingArc.allTipsCoincide === true && as.otherArc.allTipsSeparated === true);
+  const ah = runGameLogic("equi-tri-in-rec", "apq_and_homothety", {});
+  const oc = runGameLogic("equi-tri-in-rec", "orientation_check", {});
+  check("equi-tri-in-rec/homothety: ratio two and midpoints, broken by one flipped apex", ah.homothety.ratioIsTwo === true && ah.claims.apqEquilateral === true && oc.sameOrientationAllEquilateral === true && oc.oppositeOrientationNoneEquilateral === true);
+  const ps = runGameLogic("equi-tri-on-para", "parallelograms", {});
+  check("equi-tri-on-para/parallelograms: the second round returns to ABCD", ps.first.parallelogram === true && ps.second.parallelogram === true && ps.second.coincide === true);
+  const ev = runGameLogic("escher-ceva-menelaus", "evaluate", { divisions: { AB: 3, BC: 4, CA: 5 }, grid: { AB: 3, BC: 5, CA: 4 }, marks: { B1: 4, C1: 3, B2: 1, C2: 0, B3: 2, C3: 1 } });
+  const pat = runGameLogic("escher-ceva-menelaus", "escher_patterns", {});
+  check("escher-ceva-menelaus/evaluate and patterns: F=1 concurs with twelve patterns", ev.formula.satisfied === true && ev.concurrence.concurrent === true && pat.twelveConfirmed === true && pat.count === 12);
+  const ve = runGameLogic("eschers-theorem", "verify_escher", {});
+  const of = runGameLogic("eschers-theorem", "orientation_flip", {});
+  check("eschers-theorem/turns and flip: same-handed 120 degrees concur and tessellate", ve.turns.allAre120Degrees === true && ve.concurrence.concurrent === true && ve.tessellation.allCongruent === true && of.correct.concurrent === true && of.flipped.concurrent === false);
+  const al = runGameLogic("euclid", "area_law_at_point", { preset: "corner" });
+  const au = runGameLogic("euclid", "displayed_area_audit", {});
+  check("euclid/area law at the corner: the similar-shape sum holds", al.law.lawHoldsWithinTolerance === true && al.figure.displayedSumMatchesHyp === true && au.summary.displayedSumsThatMatch === 2);
+  const ec = runGameLogic("euclid-i43", "equal_complements", { N: 1 });
+  const mg = runGameLogic("euclid-i43", "mirrored_grid", { N: 3 });
+  check("euclid-i43/complements and grid: green pairs match and every cell mirrors", ec.allGreenPairsMatch === true && ec.allPiecesTile === true && mg.allPairsMatch === true);
+  const ca = runGameLogic("euclid-i43-extended", "compensating_areas", { region: "ABD" });
+  const sp = runGameLogic("euclid-i43-extended", "same_side_pair", { region: "BCD" });
+  check("euclid-i43-extended/areas: ASRQ compensates XNCP off the diagonal", ca.compensates === true && ca.proofAreaMatches === true && ca.plainEuclidI43Matches === false && sp.equal === true && sp.tOnAx === true);
 }
 
 // A game with no reader, and a position that makes no sense.

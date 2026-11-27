@@ -709,6 +709,16 @@ const CORE_GLOBALS = {
   "equilateral-on-lines/equilateral-on-lines-core.js": ["EquilateralOnLinesCore"],
   "equilateral-triangles/equilateral-triangles-core.js": ["EquilateralTrianglesCore"],
   "equilic-quad/equilic-quad-core.js": ["EquilicQuadCore"],
+  "equiloc-quad-1-tri/equiloc-quad-1-tri-core.js": ["EquilocQuad1TriCore"],
+  "equiloc-quad-2-tri/equiloc-quad-2-tri-core.js": ["EquilocQuad2TriCore"],
+  "equiloc-quad-2-tri-120/equiloc-quad-2-tri-120-core.js": ["EquilocQuad2Tri120Core"],
+  "equi-tri-in-rec/equi-tri-in-rec-core.js": ["EquiTriInRecCore"],
+  "equi-tri-on-para/equi-tri-on-para-core.js": ["EquiTriOnParaCore"],
+  "escher-ceva-menelaus/escher-ceva-menelaus-core.js": ["EscherCevaMenelausCore"],
+  "eschers-theorem/eschers-theorem-core.js": ["EschersTheoremCore"],
+  "euclid/euclid-core.js": ["EuclidCore"],
+  "euclid-i43/euclid-i43-core.js": ["EuclidI43Core"],
+  "euclid-i43-extended/euclid-i43-extended-core.js": ["EuclidI43ExtendedCore"],
 };
 
 const games = [];

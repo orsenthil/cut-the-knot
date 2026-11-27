@@ -1178,6 +1178,16 @@ const GAMES = {
   "equilateral-on-lines": (page) => dragFirstHandle(page),
   "equilateral-triangles": (page) => dragFirstHandle(page),
   "equilic-quad": (page) => dragFirstHandle(page),
+  "equiloc-quad-1-tri": (page) => dragFirstHandle(page),
+  "equiloc-quad-2-tri": (page) => dragFirstHandle(page),
+  "equiloc-quad-2-tri-120": (page) => dragFirstHandle(page),
+  "equi-tri-in-rec": (page) => dragFirstHandle(page),
+  "equi-tri-on-para": (page) => dragFirstHandle(page),
+  "escher-ceva-menelaus": (page) => dragFirstHandle(page),
+  "eschers-theorem": (page) => dragFirstHandle(page),
+  "euclid": (page) => dragFirstHandle(page),
+  "euclid-i43": (page) => dragFirstHandle(page),
+  "euclid-i43-extended": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },
