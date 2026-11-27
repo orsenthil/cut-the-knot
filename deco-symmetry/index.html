@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deco Symmetry &mdash; coolmaths</title>
+<meta name="description" content="Can you cut a triangle so its pieces turn and slide, never flip, into its mirror image? Drag the corners and watch the two-cut dissection.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/deco-symmetry/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Deco Symmetry">
+<meta property="og:description" content="Can you cut a triangle so its pieces turn and slide, never flip, into its mirror image? Drag the corners and watch the two-cut dissection.">
+<meta property="og:url" content="https://coolmaths.ai/deco-symmetry/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+    border-radius: 8px;
+  }
+  #board .axis { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 5 5; fill: none; }
+  #board .edge { stroke: var(--ink); stroke-width: 2; fill: none; }
+  #board .mirror-edge { stroke: var(--accent); stroke-width: 1.6; opacity: 0.8; }
+  #board .piece { opacity: 0.55; stroke: var(--ink); stroke-width: 0.8; }
+  #board .piece-0 { fill: #3f9d78; }
+  #board .piece-1 { fill: #d18736; }
+  #board .piece-2 { fill: #547fc9; }
+  #board .piece-3 { fill: #a55ba8; }
+  #board .right-mark { stroke: var(--good); stroke-width: 1.8; fill: none; }
+  #board .radius { stroke: var(--accent); stroke-width: 1.3; stroke-dasharray: 4 3; fill: none; }
+  #board .tick { stroke: var(--good); stroke-width: 2.2; fill: none; }
+  #board .aux-dot { fill: var(--accent); }
+  #board .point-label {
+    fill: var(--text);
+    font-size: 0.9rem;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  #board .drag-shape { fill: transparent; stroke: none; cursor: move; }
+  #board .drag-shape:focus-visible { stroke: var(--good); stroke-width: 3; }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 0.4rem 0 0; }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="deco-symmetry" data-kind="demo">
+<main id="main">
+  <h1>Deco Symmetry</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A triangle and its mirror image are drawn here; the coloured pieces can turn and slide between them, but nothing is won or lost.<br>
+    <strong>How to play:</strong> Drag the three dots to reshape the triangle, or drag the triangle itself. Tick the boxes for names and helper marks, then press Move them.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="A triangle, its mirror image, and the coloured pieces joining them"></svg>
+    <p class="hint">Keyboard: Tab to a dot or to the triangle, then use the arrow keys (Shift makes a bigger step).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox"> Show names</label>
+    <label><input id="hintBox" type="checkbox"> Show hint</label>
+    <label><input id="acuteBox" type="checkbox"> Acute special</label>
+    <button id="moveBtn" type="button" class="primary" aria-label="Move the pieces into the mirror image">Move them</button>
+    <button id="resetBtn" type="button" aria-label="Reset the triangle and the pieces">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A triangle and its mirror image lean in opposite directions, yet the coloured pieces can be slid and turned — never turned over — from one to the other. The page asks a surprising question: can two cuts really be enough?</p>
+
+      <h2>The automatic mirror</h2>
+      <p>The dotted line is the middle of the board. The applet builds the right-hand triangle by <a class="wiki-term" data-wiki="Reflection_(mathematics)" href="https://en.wikipedia.org/wiki/Reflection_(mathematics)" target="_blank" rel="noopener">reflecting</a> every corner across it: <code>x′ = 400 − x</code> and <code>y′ = y</code>. A reflection reverses the shape's handedness, which is why an ordinary slide and turn alone cannot carry the whole triangle onto its image. Cutting it into pieces is the way around that.</p>
+
+      <h2>Four pieces from one altitude</h2>
+      <p>Put the largest-angle corner first and call it <code>A</code>. Drop the <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a> <code>AD</code> to the opposite side, and let <code>E</code> and <code>F</code> be the midpoints of <code>AB</code> and <code>AC</code>. The four triangles <code>EBD</code>, <code>EDA</code>, <code>FAD</code> and <code>FDC</code> are the applet's general dissection. Press Move them: each one reaches its place on the right by a rotation and a slide, with the same handedness it started with. The logic test checked this against a second transcription of the applet's method on a grid and 1,200 random triangles, then checked that each piece lands exactly on the bytecode's final polygon.</p>
+
+      <h2>Why the page says two cuts</h2>
+      <p>Two of those four pieces share the altitude <code>AD</code>. Because <code>E</code> and <code>F</code> are midpoints of the hypotenuse in the right triangles <code>ADB</code> and <code>ADC</code>, we get <code>ED = EA</code> and <code>FD = FA</code>. So <code>A-E-D-F</code> is a <a class="wiki-term" data-wiki="Kite_(geometry)" href="https://en.wikipedia.org/wiki/Kite_(geometry)" target="_blank" rel="noopener">kite</a>, symmetric about <code>AD</code>; the two pieces join into one piece that moves rigidly. Only three pieces remain, cut apart by the two segments <code>DE</code> and <code>DF</code>. That confirms the page's exact claim, "It can be done in just two cuts". An exhaustive search of single straight cuts found none for the scalene and unequal-leg right triangles tested, but did find one for an isosceles right triangle — so the page's "in general" wording also stands.</p>
+
+      <h2>The acute alternative</h2>
+      <p>When all three angles are less than 90°, the Acute special box becomes available. It places <code>O</code> at the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcentre</a> and cuts from <code>O</code> to the three corners, giving three pieces that also move without flipping. The test checked that <code>O</code> is equally far from all three corners and that all three pieces are directly congruent to their targets. For a right or obtuse triangle the box switches itself off, exactly as in the applet.</p>
+
+      <h2>One careful change</h2>
+      <p>The cut-the-knot page still embeds the Java applet. We kept its board, options, construction and 50 animation steps, but fixed one quirk: its signed-angle test uses an expression that depends on where the triangle sits, so a piece can stop short of its target. Here each piece uses the turn that actually maps it onto the target, and the test verifies the final position. The applet itself does not draw the two-piece right-triangle version; as the page says, that solution is surmised from the general four-piece one.</p>
+
+      <p class="tip">Try dragging one corner until an angle passes 90°: the Acute special box switches off and the dissection changes back to four pieces.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/DecoSymmetry.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="deco-symmetry-core.js"></script>
+<script src="deco-symmetry.js"></script>
+</body>
+</html>
