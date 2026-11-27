@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eppstein's Soddy Circles &mdash; coolmaths</title>
+<meta name="description" content="Three circles touch one another at the corners of a triangle, and a fourth touches all three. Move the corners: will the lines through opposite touching points still meet at one spot?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/eppstein/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Eppstein's Soddy Circles">
+<meta property="og:description" content="Three circles touch one another at the corners of a triangle, and a fourth touches all three. Move the corners: will the lines through opposite touching points still meet at one spot?">
+<meta property="og:url" content="https://coolmaths.ai/eppstein/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .vertex-circle { fill: var(--accent); fill-opacity: 0.07; stroke: var(--accent); stroke-width: 2; }
+  #board .soddy-circle { fill: var(--good); fill-opacity: 0.09; stroke: var(--good); stroke-width: 3; }
+  #board .join { stroke: var(--muted); stroke-width: 2; }
+  #board .touch-point { fill: var(--highlight); stroke: var(--stage); stroke-width: 1; }
+  #board .meet { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .point-label { fill: var(--text); font-size: 12px; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="eppstein" data-kind="demo">
+<main id="main">
+  <h1>Eppstein</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Three circles touch each other around a triangle, and a fourth circle touches all three; watch where the three joining lines meet.<br>
+    <strong>How to play:</strong> Drag the three dots, or focus a dot and use the arrow keys. Pick Inner circle or Outer circle to switch the fourth circle.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Three circles centred on draggable points A, B and C, a fourth circle touching all three, and three lines that meet at one point."></svg>
+  </div>
+
+  <div class="controls" role="group" aria-label="Choose which touching circle to show">
+    <button id="innerBtn" type="button" class="primary" aria-pressed="true" aria-label="Show the inner Soddy circle, the small circle in the gap">Inner circle</button>
+    <button id="outerBtn" type="button" aria-pressed="false" aria-label="Show the outer Soddy circle, the other circle touching all three">Outer circle</button>
+    <button id="resetBtn" type="button" aria-label="Put A, B and C back at their starting places">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the three corners and every circle changes, yet the three lines keep meeting at a single spot. That spot has been given a name only quite recently: Eppstein's point.</p>
+
+      <h2>Circles at the corners</h2>
+      <p>Write the side lengths as <code>a = BC</code>, <code>b = CA</code>, <code>c = AB</code> and the <a class="wiki-term" data-wiki="Semiperimeter" href="https://en.wikipedia.org/wiki/Semiperimeter" target="_blank" rel="noopener">semiperimeter</a> as <code>s = (a + b + c)/2</code>. The circle centred at A has radius <code>R_A = s &minus; a = (b + c &minus; a)/2</code>; the others are <code>R_B = s &minus; b</code> and <code>R_C = s &minus; c</code>. Those radii add in pairs to the side between the centres, so the three circles just touch. Their touching points on the sides are exactly where the triangle's <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> touches those sides. The logic test checks the radii formula for every triangle it tries.</p>
+
+      <h2>The fourth circle</h2>
+      <p>A circle's <em>bend</em> is <code>k = 1/R</code>. For four mutually touching circles, <a class="wiki-term" data-wiki="Descartes%27_circle_theorem" href="https://en.wikipedia.org/wiki/Descartes%27_circle_theorem" target="_blank" rel="noopener">Descartes' circle theorem</a> says</p>
+      <blockquote><code>2(k<sub>1</sub><sup>2</sup> + k<sub>2</sub><sup>2</sup> + k<sub>3</sub><sup>2</sup> + k<sub>4</sub><sup>2</sup>) = (k<sub>1</sub> + k<sub>2</sub> + k<sub>3</sub> + k<sub>4</sub>)<sup>2</sup></code></blockquote>
+      <p>So <code>k<sub>4</sub> = k<sub>1</sub> + k<sub>2</sub> + k<sub>3</sub> &plusmn; 2&radic;(k<sub>1</sub>k<sub>2</sub> + k<sub>2</sub>k<sub>3</sub> + k<sub>3</sub>k<sub>1</sub>)</code>: two answers, which the applet draws as Inner and Outer. The test checks both bends against the drawn radii. The page says one of them always touches the three internally, with a negative bend. That is true for the starting triangle, where the outer circle encloses the others, but <em>not always</em>: an obtuse triangle can give two externally touching circles, both with positive bends. This page keeps the applet's two choices and does not claim otherwise.</p>
+
+      <h2>Three lines, one point</h2>
+      <p>Take the point where the fourth circle touches circle A and join it to the point where circles B and C touch; do the same for the other two pairs. <a class="wiki-term" data-wiki="David_Eppstein" href="https://en.wikipedia.org/wiki/David_Eppstein" target="_blank" rel="noopener">David Eppstein</a> observed in 2001 that these three lines are <a class="wiki-term" data-wiki="Concurrency_(geometry)" href="https://en.wikipedia.org/wiki/Concurrency_(geometry)" target="_blank" rel="noopener">concurrent</a>. They pass through</p>
+      <blockquote><code>M = (k<sub>A</sub>A + k<sub>B</sub>B + k<sub>C</sub>C + k<sub>S</sub>S) / (k<sub>A</sub> + k<sub>B</sub> + k<sub>C</sub> + k<sub>S</sub>)</code></blockquote>
+      <p>where <code>S</code> is the fourth circle's centre and <code>k<sub>S</sub></code> is its signed bend. The test checked this for both circles, over a grid and two thousand triangles, and the three lines met at <code>M</code> every time (up to rounding).</p>
+
+      <h2>Back to the triangle</h2>
+      <p>Leaving out the fourth circle gives the same weighted average of the three corners, which is the <a class="wiki-term" data-wiki="Gergonne_point" href="https://en.wikipedia.org/wiki/Gergonne_point" target="_blank" rel="noopener">Gergonne point</a> <code>Ge = (k<sub>A</sub>A + k<sub>B</sub>B + k<sub>C</sub>C)/(k<sub>A</sub> + k<sub>B</sub> + k<sub>C</sub>)</code>. The page's last claim is that the inner Soddy centre <code>S</code>, <code>M</code> and <code>Ge</code> lie on one straight line. The test confirms it, and finds the same collinearity for the outer choice. <code>Reset diagram</code> and the colours are modern conveniences; the geometry and the two circle choices follow the applet.</p>
+
+      <p class="tip">Try dragging one corner almost onto the line through the other two: the fourth circle shoots off the board, but the three lines still cross at one point. Then switch to Outer circle without moving anything.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Eppstein.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="eppstein-core.js"></script>
+<script src="eppstein.js"></script>
+</body>
+</html>
