@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Directly Similar 1 &mdash; coolmaths</title>
+<meta name="description" content="Two squares and a point P make a third square. Drag the corners and the point: why does that new shape stay a square?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/directly-similar-1/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Directly Similar 1">
+<meta property="og:description" content="Two squares and a point P make a third square. Drag the corners and the point: why does that new shape stay a square?">
+<meta property="og:url" content="https://coolmaths.ai/directly-similar-1/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .given-square { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .new-square { fill: none; stroke: var(--accent); stroke-width: 3.5; stroke-linejoin: round; }
+  #board .link { fill: none; stroke-width: 2; opacity: 0.85; }
+  #board .link-0 { stroke: var(--bad); }
+  #board .link-1 { stroke: var(--good); }
+  #board .link-2 { stroke: var(--accent); }
+  #board .link-3 { stroke: var(--text); }
+  #board .p-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  #board .pt-label { fill: var(--text); font-size: 1.05rem; font-weight: 600; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+  #namesBox { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+</style>
+</head>
+<body data-game="directly-similar-1" data-kind="demo">
+<main id="main">
+  <h1>Directly Similar 1</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two squares and a point make a third square. There is nothing to win or lose: it is a picture to explore.<br>
+    <strong>How to play:</strong> Drag any blue dot, or focus one and press the arrow keys. Use Reset to put the dots back, and tick "Show names" to label the corners.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 500" role="group"
+         aria-label="Two given squares, a point P, and the square built from their matching corners"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" aria-label="Show the corner names">Show names</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset all five dots to the starting positions">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move any blue dot: the coloured lines change length and direction, yet the outlined fourth shape keeps four equal sides and square corners. That is not a coincidence. The live cut-the-knot page now shows a still picture in place of the applet; the Java version embedded here was checked in the <a href="https://web.archive.org/web/20080720040000/http://www.cut-the-knot.org/Curriculum/Geometry/DirectlySimilar1.shtml" target="_blank" rel="noopener">20 July 2008 archive</a>, which carries the same explanation and the <code>DirectlySimilar1</code> applet.</p>
+
+      <h2>The claim on the page</h2>
+      <p>For two points X and Y, <code>P + XY</code> means: start at P and make the same step that takes X to Y. The page says, exactly:</p>
+      <blockquote>Given two squares ABCD and A'B'C'D' and a point P, let A<sub>1</sub> = P + AA', B<sub>1</sub> = P + BB', C<sub>1</sub> = P + CC', and D<sub>1</sub> = P + DD'. Then A<sub>1</sub>B<sub>1</sub>C<sub>1</sub>D<sub>1</sub> is a square.</blockquote>
+      <p>The letters have to be paired in matching order: A with A', B with B', and so on. The logic test checks this statement over 8,100 pairs of squares that give a visible figure, in five positions of P, plus 2,000 randomly generated pairs, and finds no counterexample.</p>
+
+      <h2>Why a quarter turn survives subtraction</h2>
+      <p>Write a <a class="wiki-term" data-wiki="Square" href="https://en.wikipedia.org/wiki/Square" target="_blank" rel="noopener">square</a> as a centre c and one <a class="wiki-term" data-wiki="Euclidean_vector" href="https://en.wikipedia.org/wiki/Euclidean_vector" target="_blank" rel="noopener">vector</a> d from that centre to a corner. Rotating d by a quarter turn gives the next corner, so the four corners are <code>c + d</code>, <code>c + turn(d)</code>, <code>c &minus; d</code>, <code>c &minus; turn(d)</code>. Let the primed square have centre c' and vector e, the unprimed one c and d. Then the page's new corners are</p>
+      <blockquote><code>P + (c' + e &minus; c &minus; d) = (P + c' &minus; c) + (e &minus; d)</code><br><code>P + (c' + turn(e) &minus; c &minus; turn(d)) = (P + c' &minus; c) + turn(e &minus; d)</code></blockquote>
+      <p>and similarly for the other two. Those four points have exactly the same form as a square: a centre, plus a vector and its quarter <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a> repeated. Bogomolny's reference gives the same proof with <a class="wiki-term" data-wiki="Complex_number" href="https://en.wikipedia.org/wiki/Complex_number" target="_blank" rel="noopener">complex numbers</a>, where a quarter turn is multiplication by <code>i</code>. The test also checks that each side of the new square is the difference of the two matching sides.</p>
+
+      <h2>What the applet drew, and what changed here</h2>
+      <p>The Java canvas had five blue draggable dots: two opposite corners of each square and P. Its <code>GetSquare</code> filled in the other two corners by rotating half the diagonal, and it drew four coloured links between matching corners, four coloured links from P, and the new square. This port keeps that arithmetic and that order of drawing. It changes only the presentation: the old canvas never displayed corner names (its <code>show</code> flag was read but unused), while here <em>Show names</em> is a switch, off at first; the dots are larger and stay inside the frame so they work on a phone; and the colours come from the site's theme. The live page calls this problem 46a from Yaglom and points to <a class="wiki-term" data-wiki="Similarity_(geometry)" href="https://en.wikipedia.org/wiki/Similarity_(geometry)" target="_blank" rel="noopener">similar figures</a>. The sibling <em>Directly Similar 2</em> applet uses two directly similar triangles, completes a third corner from angles, and offers <em>Show names</em> and <em>Show hint</em> boxes; this one uses only two squares, has no options, and has no win or loss.</p>
+
+      <h2>Where the statement needs care</h2>
+      <p>If the two squares are translates of one another &mdash; the same size and direction, only shifted &mdash; then <code>e &minus; d</code> is zero and all four new corners land at <code>P + c' &minus; c</code>. The page does not mention this: the formula still describes a square of side zero, but there is nothing to see. The test records those 2,025 collapsed cases separately instead of calling them a counterexample. Pairing corners in the opposite order can also fail: the test builds a rhombus with corners <code>(&minus;1,0), (0,3), (1,0), (0,&minus;3)</code>, whose sides are equal but whose angles are not right. That is why the correspondence must be a <em>direct</em> one.</p>
+
+      <p class="tip">Try dragging A' onto A, then slide P around and watch the new square move without turning.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/DirectlySimilar1.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="directly-similar-1-core.js"></script>
+<script src="directly-similar-1.js"></script>
+</body>
+</html>
