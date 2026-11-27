@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>De Temple &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a four-sided shape. Will the outside angle bisectors always make a cyclic shape, and will the second shape have a circle inside it with the same centre?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/detemple/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="De Temple">
+<meta property="og:description" content="Drag the corners of a four-sided shape. Will the outside angle bisectors always make a cyclic shape, and will the second shape have a circle inside it with the same centre?">
+<meta property="og:url" content="https://coolmaths.ai/detemple/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .bisector { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 7 5; }
+  #board .perp { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .circum { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .incircle { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .outer-point { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .inner-point { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .foot-point, #board .tangent-point { fill: var(--highlight); stroke: var(--stage); stroke-width: 1; }
+  #board .centre-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1; }
+  #board .hint-right { fill: none; stroke: var(--highlight); stroke-width: 2; }
+  #board .hint-arc { fill: none; stroke: var(--highlight); stroke-width: 2.5; }
+  #board .hint-radius { fill: none; stroke: var(--highlight); stroke-width: 1.5; stroke-dasharray: 3 3; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.9rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="detemple" data-kind="demo">
+<main id="main">
+  <h1>De Temple</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: a four-sided shape makes two more shapes, and each new shape has a circle even as you move the corners.<br>
+    <strong>How to play:</strong> Drag the corners A, B, C and D, or focus a corner and use the arrow keys. Tick Names or the two hints to see more of the drawing.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="A quadrilateral ABCD with exterior angle bisectors meeting in E, F, G, H on a circle, and perpendiculars meeting in P, Q, R, S around a smaller circle"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="hint1" type="checkbox"> Hint 1</label>
+    <label><input id="hint2" type="checkbox"> Hint 2</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move one corner of ABCD and almost every point in the picture jumps. Yet E, F, G, H always lie on one circle, and the four perpendiculars enclose a shape that always has an incircle centred at exactly the same point. That is Duane DeTemple's discovery.</p>
+
+      <h2>Why EFGH is cyclic</h2>
+      <p>E is where the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">exterior angle bisectors</a> at A and B meet. The outside angle at A is 180&deg; minus the inside angle BAD, so the angle EAB is half of that; the same at B gives EBA. Hence</p>
+      <blockquote><code>&ang;FEH = &ang;AEB = 180&deg; - &ang;EAB - &ang;EBA = (&ang;BAD + &ang;ABC)/2.</code></blockquote>
+      <p>The same argument at C and D gives <code>&ang;FGH = (&ang;BCD + &ang;ADC)/2</code>. The angles of a four-sided shape add to 360&deg;, so those two angles add to 180&deg;. Opposite angles adding to 180&deg; is exactly the test for a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>.</p>
+
+      <h2>Why PQRS has an incircle</h2>
+      <p>Look at the triangle EHS. The line SE is perpendicular to AB and SH lies along the outside bisector at A, so both angles at E and H are half of BAD: the triangle is isosceles. Its bisector at S is therefore also the <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a> of EH. The same holds at the other three corners of PQRS. Perpendicular bisectors of the sides of a cyclic shape all meet at the centre O of its <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>, so the four angle bisectors of PQRS meet at that same O. Being equally far from all four sides makes O the centre of an <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a>.</p>
+
+      <h2>What the test checked</h2>
+      <p>The logic test checks the two formulas above and <code>&ang;SEH = &ang;BAD/2</code> on fixed shapes and on hundreds of random convex four-sided shapes; all three hold to drawing precision. It also confirms the page's three extras: EFGH is cyclic, a <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a> makes EFGH a <a class="wiki-term" data-wiki="Rectangle" href="https://en.wikipedia.org/wiki/Rectangle" target="_blank" rel="noopener">rectangle</a>, and a rectangle makes EFGH a square. Sometimes the four perpendiculars all pass through O at once, so PQRS collapses to that single point, just as the article says.</p>
+
+      <h2>One drawing detail</h2>
+      <p>The article still embeds the Java applet, so the construction here follows its bytecode exactly. Its smaller blue circle is drawn with the applet's own radius rule: the average of four projected distances, labelled GetSmallRadius. That radius is not always the true inradius of PQRS. The incircle described in the article is concentric with the big circle, but the small blue guide circle can be smaller than it; the logic test records that difference instead of hiding it.</p>
+
+      <p class="tip">Try dragging the corners into a rectangle, then tick Hint 2: the perpendiculars all run through the same point and PQRS shrinks to it.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/DeTemple.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="detemple-core.js"></script>
+<script src="detemple.js"></script>
+</body>
+</html>
