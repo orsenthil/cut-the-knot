@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Casey Theorem &mdash; coolmaths</title>
+<meta name="description" content="Four circles touch a bigger one: do the straight lines that touch pairs of them always satisfy one sum-of-products identity?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/casey-theorem/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Casey Theorem">
+<meta property="og:description" content="Four circles touch a bigger one: do the straight lines that touch pairs of them always satisfy one sum-of-products identity?">
+<meta property="og:url" content="https://coolmaths.ai/casey-theorem/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .big-circle { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .small-circle { fill: var(--accent); fill-opacity: 0.08; stroke: var(--ink); stroke-width: 1.5; }
+  #board .tangent-segment { stroke-width: 3; stroke-linecap: round; }
+  #board .tangent-out { stroke: var(--accent); }
+  #board .tangent-in { stroke: var(--bad); stroke-dasharray: 7 5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 18px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="casey-theorem" data-kind="demo">
+<main id="main">
+  <h1>Casey Theorem</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag four small circles around a big one and watch the straight lines that just touch two circles at once.<br>
+    <strong>How to play:</strong> Drag A, B, C or D with a mouse or finger, or focus a point and use the arrow keys. Press Check the identity to see whether the two sides match.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Four circles touching a big circle, with the six straight lines that touch pairs of them"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the four circles to their starting places">Reset circles</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the names A, B, C and D">Hide names</button>
+    <button id="checkBtn" type="button" aria-label="Check Casey's identity for this arrangement">Check the identity</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Four circles sit around a bigger circle, each just touching it. Draw the straight lines that just touch two circles at a time. Multiply two pairs of those lengths, add them, and you get the product of the remaining pair. Drag the circles and the sums still match.</p>
+
+      <h2>From Ptolemy to Casey</h2>
+      <p>For four points A, B, C, D on one circle, <a class="wiki-term" data-wiki="Ptolemy%27s_theorem" href="https://en.wikipedia.org/wiki/Ptolemy%27s_theorem" target="_blank" rel="noopener">Ptolemy's theorem</a> says <code>AB·CD + AD·BC = AC·BD</code>. <a class="wiki-term" data-wiki="Casey%27s_theorem" href="https://en.wikipedia.org/wiki/Casey%27s_theorem" target="_blank" rel="noopener">Casey's theorem</a> replaces the four points by four circles touching a fifth circle: their common <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangents</a> take the place of the chords. In the page's numbering the claim is</p>
+      <blockquote><code>t12·t34 + t14·t23 = t13·t24</code>.</blockquote>
+      <p>Letting all four radii shrink to 0 puts the four centres on the big circle and gives Ptolemy back. The applet starts essentially there: its second point is displaced by 0.1 of a pixel, so one radius is about 0.087 instead of exactly 0. That harmless quirk is kept here.</p>
+
+      <h2>How long is a common tangent?</h2>
+      <p>Put S at the centre of the big circle, of radius R. Circle i has centre P_i at distance d_i from S, so the applet gives it radius <code>|d_i − R|</code>. Give it the <em>signed</em> radius <code>ρ_i = d_i − R</code>: positive outside the big circle, negative inside. The straight piece of a common tangent between circles i and j then has length</p>
+      <blockquote><code>t(ij) = √(|P_iP_j|² − (ρ_i − ρ_j)²)</code>.</blockquote>
+      <p>When both circles lie on the same side of the big circle this is the outer tangent (drawn purple here, red in the applet); when one is inside and one outside it is the inner tangent (dashed red here, blue in the applet). The logic test builds both kinds the hard way — from the applet's own circle intersection and homothety construction — and compares them with this formula on hundreds of arrangements.</p>
+
+      <h2>Why the two products agree</h2>
+      <p>Write each centre in polar form around S, with angle θ_i. The law of cosines turns the formula above into <code>t(ij) = 2·√(d_i·d_j)·|sin((θ_i − θ_j)/2)|</code>: each tangent length is a chord of the unit circle scaled by <code>√(d_i·d_j)</code>. Divide Casey's whole equation by <code>√(d_1·d_2·d_3·d_4)</code> and only the four chords remain, so Ptolemy proves Casey at once. This needs the four circles to come in the order A, B, C, D around S; drag one past another and the identity stops holding, which the test checks too.</p>
+      <p>The radius R cancels from every tangent length, so crossing a circle from inside to outside changes the colours but not the lengths. The applet's page also discusses the converse and whether the circles must be mutually external; this port, like the applet, only shows the identity where the tangents are real.</p>
+
+      <p class="tip">Try pulling A far outside while leaving B inside: the dashed red tangents cross between the two sides, yet the two products stay equal. Then swap B past D around the circle and press Check to see the identity break.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CaseyTheorem.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="casey-theorem-core.js"></script>
+<script src="casey-theorem.js"></script>
+</body>
+</html>
