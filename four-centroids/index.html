@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Four Centroids &mdash; coolmaths</title>
+<meta name="description" content="Move a point beside a triangle: the centroids of the three new triangles make a smaller copy of it. Where is the centre that turns one triangle into the other?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/four-centroids/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Four Centroids">
+<meta property="og:description" content="Move a point beside a triangle: the centroids of the three new triangles make a smaller copy of it. Where is the centre that turns one triangle into the other?">
+<meta property="og:url" content="https://coolmaths.ai/four-centroids/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox. Every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .cevian { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .small-tri { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .premise-line { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .premise-median { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .parallel-line { fill: none; stroke: var(--accent); stroke-width: 3; stroke-dasharray: 9 7; }
+  #board .spoke { fill: none; stroke: var(--bad); stroke-width: 2.5; stroke-dasharray: 3 5; }
+  #board .gp-line { fill: none; stroke: var(--good); stroke-width: 4; }
+  #board .g-dot, #board .g-center-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .premise-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1; }
+  #board .j-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 2; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.85rem var(--font); pointer-events: none;
+  }
+  #board .g-label, #board .g-center-label { fill: var(--accent); }
+  #board .j-label, #board .p-label { fill: var(--bad); }
+  #board .m-label, #board .n-label { fill: var(--muted); }
+  #board .geom-handle { fill: var(--stage); stroke: var(--ink); stroke-width: 3; cursor: grab; }
+  #board .p-handle { fill: var(--accent); }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+</style>
+</head>
+<body data-game="four-centroids" data-kind="demo">
+<main id="main">
+  <h1>Four Centroids</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: move the four dots and the three smaller triangle centres still follow the same rules.<br>
+    <strong>How to play:</strong> Drag A, B, C or P, or focus a dot and use the arrow keys. Tick the four boxes to show the lines that explain what you see.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle ABC and a point P, with the centroids of the three triangles around P, the lines through them parallel to AP, BP and CP, and the centre J"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> names</label>
+    <label><input id="statement1" type="checkbox"> statement 1</label>
+    <label><input id="statement2" type="checkbox"> statement 2</label>
+    <label><input id="premises" type="checkbox"> premises</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put A, B, C and P back at their starting places, keeping the checkbox settings">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move any dot and the small triangle inside the big one moves too. Yet its sides always point the same way as the big triangle's sides, always stay one third as long, and its three corners always line up with the same two dots. Here is why none of that can change.</p>
+
+      <h2>Four centres, one big triangle</h2>
+      <p>Put a unit weight at each corner of a <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a>. Its balance point is the <a class="wiki-term" data-wiki="Centroid" href="https://en.wikipedia.org/wiki/Centroid" target="_blank" rel="noopener">centroid</a>: add the three corners like arrows and divide by three. For the three triangles ABP, BCP and CAP this gives <code>Ga = (B+C+P)/3</code>, <code>Gb = (C+A+P)/3</code> and <code>Gc = (A+B+P)/3</code>. The centroid of ABC itself is <code>G = (A+B+C)/3</code>.</p>
+
+      <h2>The three parallels meet at G</h2>
+      <p>Subtract G from Ga and the A and P terms cancel: <code>G &minus; Ga = (A &minus; P)/3</code>. The same holds with B and C. So the line through Ga <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a> to AP passes through G, and likewise for Gb with BP and Gc with CP. Tick <strong>statement 1</strong> to see all three dashed lines crossing at G. This is the page's first claim, and the logic test checks it on thousands of shapes.</p>
+
+      <h2>A smaller triangle, turned around</h2>
+      <p>Let <code>J = (A+B+C+P)/4 = (3G+P)/4</code>. Then <code>Ga = J &minus; (A &minus; J)/3</code>, and similarly for B and C: one <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothety</a> centred at J, with coefficient <code>&minus;1/3</code>, sends A, B, C to Ga, Gb, Gc. Its sides are parallel and one third as long. The very same rule sends P to G, so J sits on GP with <code>GJ : JP = 1 : 3</code>. Tick <strong>statement 2</strong> to see the lines from each corner to its small centroid and the line GP.</p>
+
+      <h2>Where the midpoints come in</h2>
+      <p>Let L be the midpoint of BC. Then <code>G = L + (A &minus; L)/3</code> and <code>Ga = L + (P &minus; L)/3</code>, so <code>LG : LA = 1 : 3</code> and <code>LGa : LP = 1 : 3</code>. A homothety centred at L with coefficient 3 sends G to A and Ga to P, hence GGa is parallel to AP. Tick <strong>premises</strong> for those <a class="wiki-term" data-wiki="Median_(geometry)" href="https://en.wikipedia.org/wiki/Median_(geometry)" target="_blank" rel="noopener">medians</a>. Also <code>Gb &minus; Gc = (C &minus; B)/3</code>, so GbGc is parallel to BC and one third of it; the other two sides work the same way.</p>
+      <p>One correction to the page: it says "let U be the midpoint of AG" and then claims <code>CGb : GbU = BGc : GcU = 2 : 1</code>. Those splits hold for the midpoint of <strong>AP</strong>, not of AG, unless P happens to be G. The conclusion GbGc parallel to BC and a third of it is true either way, as the last equation shows. The logic test confirms both points on every configuration it tries.</p>
+
+      <p class="tip">Try putting P right on top of A: the triangle ABP collapses, but the other two centroids and the three parallels still meet at G. Then tick all four boxes to see the whole construction at once.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FourCentroids.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="four-centroids-core.js"></script>
+<script src="four-centroids.js"></script>
+</body>
+</html>
