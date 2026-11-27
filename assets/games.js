@@ -3737,5 +3737,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "cleaver",
+      title: "The Cleaver",
+      blurb: "A line from the middle of one side, parallel to an angle bisector, cuts the triangle's edge into two equal halves. Does it work for every triangle?",
+      tags: ["geometry", "triangles"],
+      kind: "demo",
+      level: 2,
+    },
   ],
 };

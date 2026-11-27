@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Cleaver &mdash; coolmaths</title>
+<meta name="description" content="A line from the middle of one side, parallel to an angle bisector, cuts the triangle's edge into two equal halves. Does it work for every triangle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cleaver/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The Cleaver">
+<meta property="og:description" content="A line from the middle of one side, parallel to an angle bisector, cuts the triangle's edge into two equal halves. Does it work for every triangle?">
+<meta property="og:url" content="https://coolmaths.ai/cleaver/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-body { fill: var(--accent); fill-opacity: 0.06; cursor: move; }
+  #board .tri-side { stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; }
+  #board .bisector { stroke: var(--muted); stroke-width: 2; }
+  #board .ext { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 5; }
+  #board .cleaver { stroke: var(--good); stroke-width: 3.2; stroke-linecap: round; }
+  #board .angle-arc { fill: none; stroke: var(--highlight); stroke-width: 2; }
+  #board .measure { stroke: var(--accent); stroke-width: 2; }
+  #board .measure.s, #board .measure.f { stroke: var(--good); }
+  #board .arrow-head { fill: var(--muted); }
+  #board .measure-dot { fill: var(--muted); }
+  #board .tick { stroke: var(--highlight); stroke-width: 2.4; }
+  #board .pt-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1.5; }
+  #board .pt-dot.cut { fill: var(--good); }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 20px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--highlight); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+</style>
+</head>
+<body data-game="cleaver" data-kind="demo">
+<main id="main">
+  <h1>The Cleaver</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> The green line cuts the edge of the triangle into two pieces of the same length. Change the triangle and see that it always does.<br>
+    <strong>How to play:</strong> Drag a blue corner, or the inside of the triangle, or focus a corner and use the arrow keys. Tick the boxes to show the names and the steps of the proof.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 60 600 380" role="group"
+         aria-label="Triangle ABC with the bisector CL, the midpoint M of AB, the cleaver MD parallel to CL and the extension of the longer side to F"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox"> Names</label>
+    <label><input id="premiseBox" type="checkbox"> Premise</label>
+    <label><input id="statementBox" type="checkbox"> Statement</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Put the triangle back and clear the boxes">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A line through the midpoint M of side AB, parallel to the bisector of angle C, meets the longer of the other two sides at D. M and D cut the perimeter of the triangle into two equal halves. The line is called a cleaver.</p>
+
+      <h2>The statement</h2>
+      <p>Take AC longer than BC. CL is the <a class="wiki-term" data-wiki="Bisection#Angle_bisector" href="https://en.wikipedia.org/wiki/Bisection#Angle_bisector" target="_blank" rel="noopener">angle bisector</a> at C, M is the midpoint of AB, and MD is parallel to CL with D on AC. Then</p>
+      <blockquote><code>AM + AD = BM + BC + CD</code></blockquote>
+      <p>Both sides are half the <a class="wiki-term" data-wiki="Perimeter" href="https://en.wikipedia.org/wiki/Perimeter" target="_blank" rel="noopener">perimeter</a>. The line under the picture adds them up for the triangle on the board.</p>
+
+      <h2>Why it works</h2>
+      <p>Extend AC past C to F with CF = CB (the "premise" marks). Triangle BCF is <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles</a>, so the bisector of its angle at C is perpendicular to BF. That bisector is also perpendicular to CL, because the inner and outer bisectors at a corner are at right angles. So CL is parallel to BF, and so is MD. In triangle ABF the line MD runs from the midpoint of AB parallel to BF, so by the <a class="wiki-term" data-wiki="Midpoint_theorem_(triangle)" href="https://en.wikipedia.org/wiki/Midpoint_theorem_(triangle)" target="_blank" rel="noopener">midpoint theorem</a> D is the midpoint of AF (the "statement" arrows). Hence AD = DF = CD + BC, and adding AM = BM gives the equation above.</p>
+
+      <h2>Three cleavers</h2>
+      <p>Every side has a cleaver from its midpoint, and the three meet at one point, the <a class="wiki-term" data-wiki="Spieker_center" href="https://en.wikipedia.org/wiki/Spieker_center" target="_blank" rel="noopener">Spieker center</a>. That point is the incenter of the triangle formed by the three midpoints. The logic test checks every step of the proof, and this meeting point, on 5,000 random triangles and on a grid of 2,500 places for C. Each claim held every time.</p>
+
+      <p class="tip">Drag C until AC and BC are equal. The cleaver slides onto the bisector and D lands on C. Pull C past that point and D jumps to the other side.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Cleaver.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cleaver-core.js"></script>
+<script src="cleaver.js"></script>
+</body>
+</html>
