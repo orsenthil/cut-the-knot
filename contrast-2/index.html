@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contrast 2 &mdash; coolmaths</title>
+<meta name="description" content="Six gray rectangles are painted the very same shade, yet two of them look lighter. Move the bands and find out why White's illusion fools the eye.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/contrast-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Contrast 2">
+<meta property="og:description" content="Six gray rectangles are painted the very same shade, yet two of them look lighter. Move the bands and find out why White's illusion fools the eye.">
+<meta property="og:url" content="https://coolmaths.ai/contrast-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  /* The shades come from the five scrollbars; the frame follows the theme. */
+  #board .band { stroke: none; }
+  #board .band.min { fill: var(--band-min); }
+  #board .band.max { fill: var(--band-max); }
+  #board .patch { fill: var(--patch-gray); stroke: none; }
+  #board .frame { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .geom-handle { fill: var(--good); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--highlight); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+  .slider-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  .slider-row label { font-size: 0.95rem; min-width: 6.5rem; }
+  .slider-row input[type="range"] {
+    flex: 1 1 8rem;
+    min-width: 5rem;
+    accent-color: var(--accent);
+  }
+  .slider-row output {
+    min-width: 3rem;
+    font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .controls button { min-height: 2.75rem; min-width: 5rem; }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0 0; }
+</style>
+</head>
+<body data-game="contrast-2" data-kind="demo">
+<main id="main">
+  <h1>Contrast 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore, not a game to win: every gray rectangle is painted the same shade, but some look lighter than others.<br>
+    <strong>How to play:</strong> Move the five sliders to change the stripes, the rectangles and their shades, or press Reset to start again. Drag a small dot, or focus it and use the arrow keys, to hear what is behind a patch.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Six dark and light horizontal bands with six identical gray rectangles, three in a left column and three in a right column, and two sample dots"></svg>
+    <p class="hint">The dots are only probes: dragging one moves it to another gray patch. The sliders change the picture.</p>
+  </div>
+
+  <div class="controls">
+    <div class="slider-row">
+      <label for="hRange">Band height</label>
+      <input type="range" id="hRange" min="40" max="105" step="1" value="50" aria-label="Band height, from 40 to 105 percent">
+      <output id="hValue" for="hRange">50%</output>
+    </div>
+    <div class="slider-row">
+      <label for="wRange">Patch width</label>
+      <input type="range" id="wRange" min="0" max="105" step="1" value="50" aria-label="Patch width, from 0 to 105 percent">
+      <output id="wValue" for="wRange">50%</output>
+    </div>
+    <div class="slider-row">
+      <label for="grayRange">Patch shade</label>
+      <input type="range" id="grayRange" min="0" max="105" step="1" value="50" aria-label="Shade of all six gray patches, from 0 to 105 percent">
+      <output id="grayValue" for="grayRange">50%</output>
+    </div>
+    <div class="slider-row">
+      <label for="minRange">Dark band</label>
+      <input type="range" id="minRange" min="0" max="105" step="1" value="0" aria-label="Shade of the dark bands, from 0 to 105 percent">
+      <output id="minValue" for="minRange">0%</output>
+    </div>
+    <div class="slider-row">
+      <label for="maxRange">Light band</label>
+      <input type="range" id="maxRange" min="0" max="105" step="1" value="100" aria-label="Shade of the light bands, from 0 to 105 percent">
+      <output id="maxValue" for="maxRange">100%</output>
+    </div>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset all five sliders to the applet's starting values">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This is <a class="wiki-term" data-wiki="White%27s_illusion" href="https://en.wikipedia.org/wiki/White%27s_illusion" target="_blank" rel="noopener">White's illusion</a>, an <a class="wiki-term" data-wiki="Optical_illusion" href="https://en.wikipedia.org/wiki/Optical_illusion" target="_blank" rel="noopener">optical illusion</a> about how we judge <a class="wiki-term" data-wiki="Lightness" href="https://en.wikipedia.org/wiki/Lightness" target="_blank" rel="noopener">lightness</a>. The surprise is that the pixels are easy to describe exactly, while what the eye reports is not.</p>
+
+      <h2>One shade, six patches</h2>
+      <p>The cut-the-knot page says: "The gray rectangles are of the same shade. The ones that appear lighter are drawn within the darker bands." The applet uses one call to <code>SetGrayColor</code> and then fills every patch with that same gray. There is no second color and no hidden shading. The logic test checks all six patches at every slider setting: their gray byte is always the same, and it matches the exact byte that Java's <code>Color(float)</code> computes from the patch-shade slider.</p>
+      <blockquote><code>gray byte = (int)(v / 100 × 255 + 0.5)</code>, using 32-bit floats</blockquote>
+      <p>Those floats matter: at 70% Java gives 179, at 90% it gives 230, where rounding in ordinary double precision would give 178 and 229. The test uses the JDK's own answers for all 101 values.</p>
+
+      <h2>Where the long edges touch</h2>
+      <p>Each patch is exactly as tall as its band. Its long top and bottom edges therefore touch the bands above and below it. A patch in a dark band has its long edges against light bands; a patch in a light band has its long edges against dark bands. That is why the page says the same illusion appears "even when their longer sides are in the contact with the lighter bands", and that "the background seems to stretch from left to right rather than vertically".</p>
+      <p>Edward Adelson explained the effect with T-junctions: patches straddling the stem of a T are grouped for the lightness calculation, while the cross-bar acts like an atmospheric boundary. Bogomolny disagrees. He argues that the eye sees one long item cut by darker bands, made of six rectangles rather than three, and that the perceived shade comes from averaging the visible pieces with the occluding pieces. A test can check the six rectangle positions, but it cannot check what an eye perceives: that part is the claim of the page, not a theorem here.</p>
+
+      <h2>What the five scrollbars do</h2>
+      <p>Transcribed from <code>Contrast2Canvas.Draw</code>, with <code>n = 6</code> bands and a canvas <code>W</code> by <code>H</code> pixels:</p>
+      <blockquote><code>band height h = round(H × height / 900)</code><br>
+      <code>patch half-width r = round(W × (width − 40) / 500)</code><br>
+      <code>left column centre = 20 + (width − 40)/3</code><br>
+      <code>right column centre = 20 + 2(width − 40)/3</code></blockquote>
+      <p>The test walks every pair the two size scrollbars allow — <code>W = 0…105</code> and <code>H = 40…105</code>, 6,996 pictures — against a second transcription of the applet's draw loop, and all 1,030,301 triples of the three color scrollbars. One deviation is deliberate: those scrollbars also reach 105, but Java's <code>Color(float)</code> throws above 100, so the old applet stopped repainting. This page caps the shade at white and says so in the status line.</p>
+
+      <h2>The upright cousin</h2>
+      <p>The page's "applet" link points to the sibling applet Contrast4, the version with dark and light bands standing vertical. Its draw loop swaps the two axes: narrow tall bands and narrow tall patches. This port is Contrast2 and keeps the original horizontal bands. The test checks the transposed shapes in 308 configurations so the two applets cannot be confused.</p>
+
+      <p class="tip">Try dark band 0%, light band 100% and patch shade 50%, then swap the two band shades: the patches are still the same pixels, but the light ones seem to change places.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Contrast2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="contrast-2-core.js"></script>
+<script src="contrast-2.js"></script>
+</body>
+</html>
