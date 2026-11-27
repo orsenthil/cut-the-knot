@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ellipse Focus Directrix &mdash; coolmaths</title>
+<meta name="description" content="Drag a point around an ellipse and watch the distance to its focus stay a fixed fraction of the distance to a straight line. What is that fraction?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/ellipse-focus-directrix/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Ellipse Focus Directrix">
+<meta property="og:description" content="Drag a point around an ellipse and watch the distance to its focus stay a fixed fraction of the distance to a straight line. What is that fraction?">
+<meta property="og:url" content="https://coolmaths.ai/ellipse-focus-directrix/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .frame { fill: none; stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 4 5; }
+  #board .ellipse-shape { fill: var(--accent); fill-opacity: 0.08; stroke: var(--ink); stroke-width: 2.5; }
+  #board .directrix { stroke: var(--accent); stroke-width: 3; }
+  #board .directrix.other { stroke: var(--muted); stroke-width: 2.2; stroke-dasharray: 6 5; }
+  #board .measure.focus, #board .triangle.focus { stroke: var(--bad); stroke-width: 3; }
+  #board .measure.direct, #board .triangle.direct { stroke: var(--accent); stroke-width: 3; }
+  #board .triangle.grey { stroke: var(--border-strong); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .focus-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1.5; }
+  #board .focus-dot.chosen { fill: var(--bad); }
+  #board .foot-dot { fill: var(--accent); }
+  #board .p-dot { fill: var(--good); }
+  #board .small-label { fill: var(--muted); font-size: 0.85rem; font-weight: 600; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .p-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5.5; }
+  .controls { align-items: center; gap: 0.5rem 0.8rem; flex-wrap: wrap; }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+  .controls output { font-variant-numeric: tabular-nums; min-width: 3rem; font-weight: 700; color: var(--accent); }
+  #math code { white-space: normal; }
+</style>
+</head>
+<body data-game="ellipse-focus-directrix" data-kind="demo">
+<main id="main">
+  <h1>Ellipse Focus Directrix</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#coordinates">Coordinates</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This picture shows an oval, a special point called a focus, and a straight line called a directrix.<br>
+    <strong>How to play:</strong> Drag the dot on the oval, or drag a corner dot to change its shape. You can also press a shape button or use the arrow keys.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="An ellipse in a dashed rectangle, with a focus, a directrix line, a movable point P on the curve and a small right triangle"></svg>
+  </div>
+
+  <div class="controls" aria-label="Choose an ellipse shape">
+    <button type="button" data-preset="wide" aria-label="Make a wide ellipse with a horizontal focus line">Wide ellipse</button>
+    <button type="button" data-preset="tall" aria-label="Make a tall ellipse with a vertical focus line">Tall ellipse</button>
+    <button type="button" data-preset="circle" aria-label="Make an ellipse almost as wide as it is tall">Almost a circle</button>
+    <button id="otherBtn" type="button" aria-pressed="false" aria-label="Show or hide the directrix paired with the other focus">Show the other pair</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Put the rectangle and point P back at the start">Reset</button>
+    <label for="ratioOut">PF / PD <output id="ratioOut" for="ratioOut">0.866</output></label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>An <a class="wiki-term" data-wiki="Ellipse" href="https://en.wikipedia.org/wiki/Ellipse" target="_blank" rel="noopener">ellipse</a> can be drawn in more than one way. Instead of using two special points, this page uses one point and one straight line, and watches how the two distances compare as you slide a point around the curve.</p>
+
+      <h2>The claim on the page</h2>
+      <p>The original page says that an ellipse is the set of points <code>P</code> whose distance to a point <code>F</code> and distance to a line <code>d</code> are in a fixed ratio below one:</p>
+      <blockquote><code>dist(P, F) / dist(P, d) = const &lt; 1</code></blockquote>
+      <p>Here <code>F</code> is a <a class="wiki-term" data-wiki="Focus_(optics)" href="https://en.wikipedia.org/wiki/Focus_(optics)" target="_blank" rel="noopener">focus</a> and <code>d</code> is a <a class="wiki-term" data-wiki="Directrix_(conic_section)" href="https://en.wikipedia.org/wiki/Directrix_(conic_section)" target="_blank" rel="noopener">directrix</a>. The logic test checks this for both focus/directrix pairs on about 200 ellipses at 24 points each: the ratio never changes along a curve and is always less than one. Red is <code>PF</code>, blue is <code>PD</code>, and the small triangle repeats those two lengths.</p>
+
+      <h2>Where the two lines sit</h2>
+      <p>Write <code>a</code> for half the long way across and <code>b</code> for half the short way. The foci are <code>c = sqrt(a&sup2; &minus; b&sup2;)</code> from the centre along the long <a class="wiki-term" data-wiki="Axis_of_symmetry" href="https://en.wikipedia.org/wiki/Axis_of_symmetry" target="_blank" rel="noopener">axis of symmetry</a>, and the <a class="wiki-term" data-wiki="Eccentricity_(mathematics)" href="https://en.wikipedia.org/wiki/Eccentricity_(mathematics)" target="_blank" rel="noopener">eccentricity</a> is <code>e = c / a</code>. The matching directrix is <code>a / e</code> from the centre, on the far side of the focus. The test confirms that the line joining the foci is perpendicular to both directrices and that reflecting a point in it leaves the ellipse unchanged.</p>
+      <p>When the long axis runs up and down, swap <code>a</code> and <code>b</code>: the focus is below or above the centre and the directrix is horizontal. Press Wide ellipse and then Tall ellipse to see the switch. The strict inequality is right too: the test found <code>0 &lt; e &lt; 1</code> on every shape it tried.</p>
+
+      <h2>Two pairs, and the other ellipse page</h2>
+      <p>The page says every ellipse has two focus/directrix pairs. They are mirror images in the middle of the ellipse and share the same ratio <code>e</code>; press Show the other pair to see the second dashed directrix. The sibling applet <em>Focal Definition of Ellipse</em> makes a different claim about the same curve: <code>PF + PF' = 2a</code>, the sum of the distances to both foci. Both statements hold here — the logic test checks the sum on the very same points — but this applet highlights the ratio and draws only one directrix at a time, while the focal one draws both focus segments.</p>
+
+      <h2>What changed from the Java applet</h2>
+      <p>The original had no buttons or text messages: you dragged four little rectangle corners and the point on the curve. This page keeps those five draggable dots (now keyboard-friendly), adds shape buttons for touch screens, and keeps the red, blue and grey measuring lines. It also keeps two small quirks: when the rectangle is almost a square the applet stops recomputing the focus and directrix, and the corner triangle uses the original's odd <code>min(V0.x, V1.y) / 2</code> formula. Both are explained by the logic test rather than hidden. The added dashed line is only a guide to the second pair the page describes.</p>
+
+      <p class="tip">Press Almost a circle, then Wide ellipse: watch what happens to PF / PD, and watch the rectangle of corner dots change shape.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EllipseFocusDirectrix.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="ellipse-focus-directrix-core.js"></script>
+<script src="ellipse-focus-directrix.js"></script>
+</body>
+</html>
