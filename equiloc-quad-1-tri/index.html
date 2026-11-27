@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equiloc Quad 1Tri &mdash; coolmaths</title>
+<meta name="description" content="Drag S, C and D around a four-sided shape: where does the tip Q of the isosceles triangle on CD meet the circle through A, B and S? Is the page's claim about S right?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equiloc-quad-1-tri/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Equiloc Quad 1Tri">
+<meta property="og:description" content="Drag S, C and D around a four-sided shape: where does the tip Q of the isosceles triangle on CD meet the circle through A, B and S? Is the page's claim about S right?">
+<meta property="og:url" content="https://coolmaths.ai/equiloc-quad-1-tri/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .guide-circle { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 5; }
+  #board .secant { stroke: var(--muted); stroke-width: 1.5; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .apex-side { stroke: var(--highlight); stroke-width: 2.5; stroke-linecap: round; }
+  #board .hint-line { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .angle-mark { fill: none; stroke: var(--highlight); stroke-width: 3; }
+  #board .hint-angle { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .side-tick { stroke: var(--good); stroke-width: 2.5; stroke-linecap: round; }
+  #board .base-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1; }
+  #board .apex-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .arc-dot { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="equiloc-quad-1-tri" data-kind="demo">
+<main id="main">
+  <h1>Equiloc Quad 1Tri</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: watch where Q, the tip of the triangle on CD, meets the circle through A, B and S.<br>
+    <strong>How to play:</strong> Drag S, C or D, or focus a point and use the arrow keys. Tick the boxes for names, angle marks and the hint triangles, or press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A four-sided shape with two equal sides through S, the circle through A, B and S, and the apex Q of an isosceles triangle on CD"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="construction" type="checkbox"> Construction</label>
+    <label><input id="hint" type="checkbox"> Hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the diagram to its starting position">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The original page still shows the Java applet behind a "browser is not set to run Java applets" notice; its two applet tags are present in the page source. It calls this picture a variation of an equilic quadrilateral. The surprising point is where the tip of one <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles triangle</a> lands on the circle through A, B and S.</p>
+
+      <h2>The construction</h2>
+      <p>A and B are fixed on a <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>. S can be dragged freely. C is placed on the line from B towards S and D on the line from A towards S, both at the same distance from their starting corner, so <code>AD = BC</code> always. The applet then measures the angle at S with the law of cosines, <code>angle(S,A,B) = acos((SA&sup2; + SB&sup2; &minus; AB&sup2;) / (2&middot;SA&middot;SB))</code>, and builds Q as the apex of the isosceles triangle on CD with <code>angle CQD = angle BSA</code>. Tick "Construction" to see those two equal angles and the matching side marks.</p>
+
+      <h2>What the page says, and what is true</h2>
+      <blockquote>Assume in a quadrilateral ABCD AD = BC, S the intersection of AD and BC. Let Q be the apex of an isosceles triangle CDQ drawn away from AB with &ang;CQD = &ang;BSA. Then S is the midpoint of the arc of the circumcircle of &Delta;ABS containing S.</blockquote>
+      <p>Read literally, that last sentence says <code>SA = SB</code>, because S bisects the <a class="wiki-term" data-wiki="Arc_(geometry)" href="https://en.wikipedia.org/wiki/Arc_(geometry)" target="_blank" rel="noopener">arc</a> through S only when the two chords are equal. In the starting picture <code>SA &asymp; 222.16</code> and <code>SB &asymp; 115.66</code>, so it is false there. The true statement, which is what the applet draws and what the valid proof of its sibling proves, is that <strong>Q</strong> is the midpoint of that arc: <code>QA = QB</code> and Q lies on the circle through A, B and S. The logic test confirms this on more than two thousand positions with S on the starting side of AB, and records the false sentence as false rather than quietly fixing it.</p>
+
+      <h2>Why Q sits at the middle</h2>
+      <p>By construction <code>AD = BC</code> and <code>DQ = CQ</code>, and an angle chase gives <code>angle ADQ = angle BCQ</code>. The two triangles ADQ and BCQ are therefore <a class="wiki-term" data-wiki="Congruence_(geometry)" href="https://en.wikipedia.org/wiki/Congruence_(geometry)" target="_blank" rel="noopener">congruent</a>, so <code>AQ = BQ</code>: Q lies on the perpendicular bisector of AB. A <a class="wiki-term" data-wiki="Rotation_(geometry)" href="https://en.wikipedia.org/wiki/Rotation_(geometry)" target="_blank" rel="noopener">rotation</a> about Q through the angle at S carries D to C and A to B, which puts Q on the circumcircle of ABS as well. A point of that circle equally far from A and B on the arc through S is exactly the arc's midpoint. Tick "Hint" to see the two congruent triangles and their equal side marks.</p>
+
+      <h2>Siblings, and a faithful quirk</h2>
+      <p>This is not the equilateral-triangle puzzle on segments: that one builds three triangles on AC, DC and DB and their tips line up. It is not the midpoint-rhombus applet either, or the one whose two diagonal triangles share an apex. Here one isosceles triangle has an apex angle that changes with S, and the prize is the middle of an arc. The original applet also chooses Q by a fixed turn, which gives the "away from AB" apex only while S stays on the starting side of AB. Drag S across AB and the drawn Q stops being the arc midpoint, while the other apex would be: the test checks hundreds of such positions and the status says so. This is kept as the applet behaves.</p>
+
+      <p class="tip">Tick Hint, then drag S around the circle. Watch Q stay on the little ring at the arc middle, then cross the segment AB to see which apex takes over.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EquilocQuad1Tri.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="equiloc-quad-1-tri-core.js"></script>
+<script src="equiloc-quad-1-tri.js"></script>
+</body>
+</html>
