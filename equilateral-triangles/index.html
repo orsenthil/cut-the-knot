@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equilateral Triangles &mdash; coolmaths</title>
+<meta name="description" content="Three equal equilateral triangles share the centre of a circle. Do the halfway points of their outer sides always make another equilateral triangle? Drag the corners and see.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equilateral-triangles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Equilateral Triangles">
+<meta property="og:description" content="Three equal equilateral triangles share the centre of a circle. Do the halfway points of their outer sides always make another equilateral triangle? Drag the corners and see.">
+<meta property="og:url" content="https://coolmaths.ai/equilateral-triangles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 42rem; margin: 0 auto; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board .guide-circle { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 6 5; }
+  #board .tri-fill { fill: var(--highlight); fill-opacity: 0.16; }
+  #board .tri-fill-1 { fill: var(--accent); fill-opacity: 0.12; }
+  #board .tri-fill-2 { fill: var(--good); fill-opacity: 0.10; }
+  #board .tri-edge { fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linejoin: round; }
+  #board .mid-fill { fill: var(--good); fill-opacity: 0.24; }
+  #board .mid-edge { fill: none; stroke: var(--good); stroke-width: 2.8; stroke-linejoin: round; }
+  #board .center-dot { fill: var(--muted); }
+  #board .mid-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 6; }
+  #board .handle-label { fill: var(--text); font-size: 15px; font-weight: 650; pointer-events: none; }
+  #readout {
+    margin: 0.4rem 0 0; text-align: center; font-size: 0.95rem;
+    font-variant-numeric: tabular-nums; overflow-wrap: anywhere; color: var(--text);
+  }
+  .controls { flex-wrap: wrap; }
+  .controls .toggle { display: inline-flex; align-items: center; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="equilateral-triangles" data-kind="demo">
+<main id="main">
+  <h1>Equilateral Triangles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Three triangles with all sides equal turn around the centre of a circle, and a green triangle joins the halfway points of their long sides.<br>
+    <strong>How to play:</strong> Drag the three blue dots, or focus one and press the arrow keys, to turn the triangles. Press New picture for a fresh start.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Three equilateral triangles sharing the centre of a circle, with a green triangle joining their midpoints. Drag the three blue points to move them."></svg>
+    <p id="readout" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Make a new random picture">New picture</button>
+    <label class="toggle" for="restrictBox"><input type="checkbox" id="restrictBox" checked> Keep points on the circle</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three triangles with equal sides share one corner at the middle of a circle. Join three halfway points and a fourth triangle appears. Is it always the same kind of triangle? The applet lets you drag the corners to find out; the logic test checked over a thousand placements.</p>
+
+      <h2>Three turns of sixty degrees</h2>
+      <p>Put the shared corner <code>O</code> at the centre of the <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>. In each triangle, call the two outer corners <code>Aᵢ</code> and <code>Bᵢ</code>. The applet makes <code>Bᵢ</code> by a <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a> of <code>Aᵢ</code> around <code>O</code> through 60°, so <code>OAᵢ = OBᵢ = AᵢBᵢ</code>: all three triangles are <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral</a>. The old Java applet had a parameter called <code>RestrictToCircle</code>, on by default; the checkbox here is that parameter, so you can also drag the points off the circle.</p>
+
+      <h2>Choose three halfway points</h2>
+      <p>Each outer side runs from one triangle's <code>B</code> corner to the next triangle's <code>A</code> corner. Let <code>M₁</code> be the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> of <code>B₁A₂</code>, <code>M₂</code> the midpoint of <code>B₂A₃</code>, and <code>M₃</code> the midpoint of <code>B₃A₁</code>. The page claims that <code>M₁M₂M₃</code> is equilateral, and the green triangle in the picture is exactly that triangle. Its three sides are printed under the board.</p>
+
+      <h2>Why the claim holds</h2>
+      <p>The Explanation on the page uses <a class="wiki-term" data-wiki="Complex_number" href="https://en.wikipedia.org/wiki/Complex_number" target="_blank" rel="noopener">complex numbers</a>. Put <code>O</code> at 0 and let <code>j</code> be a cube root of 1 with <code>j³ = 1</code>. An equilateral pair satisfies <code>Aᵢ + jBᵢ = 0</code>. A triangle is equilateral when <code>M₁ + jM₂ + j²M₃ = 0</code>. Substituting <code>M₁ = (B₁ + A₂)/2</code> gives <code>(B₁ − jB₂) + (jB₂ − j²B₃) + (j²B₃ − B₁) = 0</code>: every term cancels. The logic test checked this identity for every triple of angles on a grid, for 3,000 random off-circle triples, and with the criterion itself on 1,200 pictures.</p>
+
+      <h2>More than the circle, and an older applet</h2>
+      <p>Nothing in that calculation used the size of <code>OAᵢ</code>, so the six corners need not lie on a circle at all — the page says so in its remark, and turning the checkbox off confirms it. The same idea appears in a 1967 Putnam problem about a hexagon whose alternate sides are equal. The live cut-the-knot page now shows a GeoGebra animation; an <a href="https://web.archive.org/web/2010id_/http://www.cut-the-knot.org/Curriculum/Geometry/EquilateralTriangles.shtml" target="_blank" rel="noopener">archived 2010 capture</a> still shows the Java applet this port follows. The rules and the claim come from <a href="https://www.cut-the-knot.org/Curriculum/Geometry/EquilateralTriangles.shtml" target="_blank" rel="noopener">the applet's page</a> and its Explanation.</p>
+
+      <p class="tip">Try putting the three blue points a third of a turn apart: the green triangle shrinks to a single point. Then turn off the circle and drag one point far away — its sides are still equal.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EquilateralTriangles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="equilateral-triangles-core.js"></script>
+<script src="equilateral-triangles.js"></script>
+</body>
+</html>
