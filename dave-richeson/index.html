@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dave Richeson's Japanese Theorem &mdash; coolmaths</title>
+<meta name="description" content="Join the corners of a cyclic polygon into triangles. Does their signed incircle total stay the same when you change the triangulation?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/dave-richeson/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Dave Richeson's Japanese Theorem">
+<meta property="og:description" content="Join the corners of a cyclic polygon into triangles. Does their signed incircle total stay the same when you change the triangulation?">
+<meta property="og:url" content="https://coolmaths.ai/dave-richeson/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; colours come from site tokens, except
+     the two blues that stand for the applet's blue and red incircles. */
+  :root { --incircle-blue: #3776c4; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --incircle-blue: #83b4f5; }
+  }
+  :root[data-theme="dark"] { --incircle-blue: #83b4f5; }
+
+  #stage { width: 100%; max-width: 36rem; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .diagonal { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: 0.8; }
+  #board .incircle { fill: none; stroke-width: 2.75; }
+  #board .incircle-pos { stroke: var(--incircle-blue); }
+  #board .incircle-neg { stroke: var(--bad); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .controls input { width: 4.5rem; }
+</style>
+</head>
+<body data-game="dave-richeson" data-kind="demo">
+<main id="main">
+  <h1>Dave Richeson's Japanese Theorem</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: corners on a circle are joined into triangles, and each triangle has a circle inside it.<br>
+    <strong>How to play:</strong> Drag a corner, or focus one and use the arrow keys. Change the number of corners, press Triangulate again, and watch the total.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 550" role="group"
+         aria-label="Points on a circle, joined into triangles with their blue and red incircles"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="nInput">Corners (N)</label>
+    <input id="nInput" type="number" min="3" max="30" step="1" value="6" aria-label="Number of corners, from 3 to 30">
+    <button id="triangulateBtn" type="button" aria-label="Make a new random triangulation">Triangulate again</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the corners evenly around the circle again">Reset polygon</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the corners into any order you like and cut the polygon into triangles in a different way: the total shown above stays put. That is the surprise David Richeson proved, extending a temple puzzle from around 1800. The applet itself is Alexander Bogomolny's.</p>
+
+      <h2>A temple puzzle</h2>
+      <p>The old <a class="wiki-term" data-wiki="Sangaku" href="https://en.wikipedia.org/wiki/Sangaku" target="_blank" rel="noopener">sangaku</a> took a <a class="wiki-term" data-wiki="Polygon" href="https://en.wikipedia.org/wiki/Polygon" target="_blank" rel="noopener">polygon</a> whose corners lie on a circle and joined one corner to all the others. Add up the radii of the little circles inside those triangles, and the total is the same whichever corner you start from.</p>
+
+      <h2>Triangles that face backwards</h2>
+      <p>Richeson allowed any <a class="wiki-term" data-wiki="Triangulation_(geometry)" href="https://en.wikipedia.org/wiki/Triangulation_(geometry)" target="_blank" rel="noopener">triangulation</a>, including polygons with corners out of circular order. Some triangles then wind the other way. Give those a negative radius: a triangle's <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> is drawn blue when its corner order is positive and red when it is negative, and the red radii are subtracted. It is this <em>signed</em> total that never changes.</p>
+
+      <h2>Why the total cannot change</h2>
+      <p>For a triangle with angles <code>A</code>, <code>B</code>, <code>C</code> on a <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of radius <code>R</code>, its inradius is
+        <code>r = 4R sin(A/2) sin(B/2) sin(C/2) = R(cos A + cos B + cos C &minus; 1)</code>.
+        Each angle is half the arc opposite it. Along an interior cut, the two triangles see complementary arcs, so their cosine terms cancel when the sign of the winding is included. What survives comes only from the polygon's own sides, which is why re-triangulating cannot alter the sum.</p>
+
+      <h2>What the checks found</h2>
+      <p>The logic test enumerates every sequence of the applet's random cuts for 4 to 9 corners, and checks four different shapes for each: the signed sums agree to a millionth and match <code>R(Σ cos(gap/2) &minus; (n&minus;2))</code> for convex polygons. It also tries the old fan cuts from every corner up to 12 corners, non-convex orders up to 8 corners, and random layouts right up to the applet's limit of 30. The page's claim holds in all of them. The incircles are rebuilt a second way, straight from the applet's angle-bisector bytecode, and agree with the textbook incenter formula.</p>
+
+      <p class="tip">Try setting N to 30, dragging one corner across its neighbours, then pressing Triangulate again several times: the number stays the same while the picture changes.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/DaveRicheson.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="dave-richeson-core.js"></script>
+<script src="dave-richeson.js"></script>
+</body>
+</html>
