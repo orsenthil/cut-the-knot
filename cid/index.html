@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CID &mdash; coolmaths</title>
+<meta name="description" content="Can a tall isosceles triangle be cut into a chain of smaller isosceles triangles? Change the top angle and watch the equal steps climb to the point.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cid/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="CID">
+<meta property="og:description" content="Can a tall isosceles triangle be cut into a chain of smaller isosceles triangles? Change the top angle and watch the equal steps climb to the point.">
+<meta property="og:url" content="https://coolmaths.ai/cid/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.5rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .outer { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .step { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; }
+  #board .tick { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .slice { fill: var(--accent); fill-opacity: 0.10; stroke: none; }
+  #board .slice.alt { fill: var(--good); fill-opacity: 0.08; }
+  #board .chain-dot { fill: var(--accent); }
+  #board .angle-arc { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 18px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .num-label {
+    fill: var(--muted); font-family: var(--mono); font-size: 12px; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  #nOut {
+    align-self: center; font-family: var(--mono); font-size: 0.9rem;
+    color: var(--text); white-space: nowrap;
+  }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="cid" data-kind="demo">
+<main id="main">
+  <h1>CID</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#sequences">Sequences</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch one tall isosceles triangle get cut into smaller isosceles triangles, step by step up to the top.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a corner and use the arrow keys. Use the N buttons to change the top angle, then press Check the pattern.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 450" role="group"
+         aria-label="An isosceles triangle cut into a chain of smaller isosceles triangles, with three draggable corners"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="minusBtn" type="button" aria-label="Decrease N, making the apex angle larger">&minus; N</button>
+    <output id="nOut" aria-label="Current denominator and apex angle"></output>
+    <button id="plusBtn" type="button" aria-label="Increase N, making the apex angle smaller">+ N</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show point numbers on the diagram">Show point numbers</button>
+    <button id="checkBtn" type="button" aria-label="Check the equal steps and base angles">Check the pattern</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A tall isosceles triangle can be cut into a chain of smaller isosceles triangles, one after another, all the way to the top. With a 20° angle at the point, their base angles are 80°, 60°, 40°, 20° &mdash; a perfectly even staircase. Which triangles have such a decomposition, and why is the staircase always even?</p>
+
+      <h2>Every step is the same length</h2>
+      <p>The applet starts at the base corner C, draws a circle centred there with radius <code>|BC|</code>, and meets the line through B and the top corner A. The next point is that meeting point, so the new segment is exactly as long as the base. It then repeats from the new point. The short cross strokes on the picture mark all the equal steps. Each slice has two equal sides, so each one is an <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles triangle</a>. The logic test checks every step on all 177 settings of the applet's angle control.</p>
+
+      <h2>The angles go down by the top angle</h2>
+      <p>Let two neighbouring slices have base angles <code>&alpha;</code> and <code>&beta;</code>, with <code>&alpha; &gt; &beta;</code>. The next slice down has base angle <code>180&deg; &minus; (180&deg; &minus; 2&alpha; &minus; &beta;) = 2&alpha; &minus; &beta;</code>, which is another <code>&alpha; &minus; &beta;</code> past <code>&beta;</code>. That difference never changes, and it equals <code>&gamma;</code>, the angle at the top corner. Starting from <code>(180&deg; &minus; &gamma;)/2</code>, the base angles form an <a class="wiki-term" data-wiki="Arithmetic_progression" href="https://en.wikipedia.org/wiki/Arithmetic_progression" target="_blank" rel="noopener">arithmetic progression</a>:</p>
+      <blockquote><code>base angle k = (180&deg; &minus; &gamma;)/2 &minus; (k &minus; 1)&gamma;</code></blockquote>
+      <p>For <code>&gamma; = 20&deg;</code> this gives 80°, 60°, 40°, 20°, exactly the four slices the applet draws.</p>
+
+      <h2>Only certain top angles close the chain</h2>
+      <p>For the last slice to finish at the top corner, its base angle must be <code>&gamma;</code>. So <code>(180&deg; &minus; &gamma;)/2 = n&gamma;</code>, and the article's formula follows:</p>
+      <blockquote><code>&gamma; = 180&deg; / (2n + 1)</code></blockquote>
+      <p>That is half the angle between two neighbouring corners of a regular <a class="wiki-term" data-wiki="Regular_polygon" href="https://en.wikipedia.org/wiki/Regular_polygon" target="_blank" rel="noopener">(2n + 1)-gon</a>. For <code>n = 1</code> we get 60° and one equilateral triangle; <code>n = 2</code> gives 36° and the golden triangle 72-72-36; <code>n = 4</code> gives 20° and the four slices above. The next one, <code>&pi;/7</code>, is not a <a class="wiki-term" data-wiki="Constructible_polygon" href="https://en.wikipedia.org/wiki/Constructible_polygon" target="_blank" rel="noopener">constructible polygon</a> angle. The logic test confirms each of these formulas over the whole slider range.</p>
+      <p>The applet also allows even values of N. Then <code>180&deg;/N</code> is not <code>180&deg;/(2n + 1)</code> for a whole number of slices, so the chain stops just below the top corner. The base angles still step by <code>&gamma;</code>, but the decomposition is not complete, and the article's closing formula does not apply. This page says so instead of pretending the picture closes.</p>
+
+      <p class="tip">Try N = 9, then N = 5 and N = 3: count the equal steps. Then press + N many times to make a very thin triangle and watch the staircase shrink.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/triangle/CID.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cid-core.js"></script>
+<script src="cid.js"></script>
+</body>
+</html>
