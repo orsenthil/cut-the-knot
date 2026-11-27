@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Euclid I.43 Extended &mdash; coolmaths</title>
+<meta name="description" content="Move a point off the diagonal of a parallelogram: can you still find pieces with exactly matching areas?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/euclid-i43-extended/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Euclid I.43 Extended">
+<meta property="og:description" content="Move a point off the diagonal of a parallelogram: can you still find pieces with exactly matching areas?">
+<meta property="og:url" content="https://coolmaths.ai/euclid-i43-extended/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; all colours are site tokens. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .blue-fill { fill: var(--accent); opacity: 0.32; }
+  #board .red-fill { fill: var(--bad); opacity: 0.30; }
+  #board .orange-fill { fill: #cf7a16; opacity: 0.40; }
+  #board .alt { opacity: 0.24; }
+  #board .edge { stroke: var(--ink); stroke-width: 2; fill: none; }
+  #board .accent-edge { stroke: var(--accent); stroke-width: 3; }
+  #board .diagonal { stroke: var(--ink); stroke-width: 2; stroke-dasharray: 8 5; fill: none; }
+  #board .faint { opacity: 0.45; }
+  #board .aux-line { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+  #board .centre-line { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 5 4; fill: none; }
+  #board .proof-line { stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 4 4; fill: none; }
+  #board .aux-dot { fill: var(--text); opacity: 0.75; }
+  #board .point-label {
+    fill: var(--text); font: 600 1.05rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .x-handle { fill: var(--bad); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; white-space: normal; }
+</style>
+</head>
+<body data-game="euclid-i43-extended" data-kind="demo">
+<main id="main">
+  <h1>Euclid I43Extended</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: move the point inside the slanted box and watch three coloured pieces keep their sizes matched.<br>
+    <strong>How to play:</strong> Drag a corner or the point X, or focus one and use the arrow keys. Tick “areas on the same side of BD” to see the orange pair, and use the two buttons to put X on either side of the diagonal.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 320" role="group"
+         aria-label="A parallelogram ABCD with a draggable point X, the two off-diagonal coloured pieces, and the construction lines that match their sizes"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox" checked> Show names</label>
+    <label><input id="sameSide" type="checkbox"> areas on the same side of BD</label>
+    <label><input id="proof" type="checkbox"> proof lines</label>
+    <button id="abdBtn" type="button" aria-label="Put X inside triangle ABD, below BD">X below BD</button>
+    <button id="bcdBtn" type="button" aria-label="Put X inside triangle BCD, above BD">X above BD</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Make a new random diagram">New diagram</button>
+    <button id="resetBtn" type="button" aria-label="Restore the opening diagram">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Plain Euclid I.43 only talks about a point on the diagonal. This applet, following a construction of Quang Tuan Bui, keeps a matching piece when X moves off that line — and the same matching works on either side.</p>
+
+      <h2>What Euclid I.43 says</h2>
+      <p>Through X draw MP parallel to BC (M on AB, P on CD) and NQ parallel to AB (N on BC, Q on AD). Write <code>X = A + t(B − A) + u(D − A)</code> and call the <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a>'s area <code>S</code>. Then <code>AMXQ</code> has area <code>t&times;u&times;S</code> and <code>XNCP</code> has area <code>(1−t)&times;(1−u)&times;S</code>. The diagonal BD is exactly <code>t + u = 1</code>, which makes those two <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">areas</a> equal: the <a class="wiki-term" data-wiki="Euclid%27s_Elements" href="https://en.wikipedia.org/wiki/Euclid%27s_Elements" target="_blank" rel="noopener">Elements</a> I.43.</p>
+
+      <h2>Off the diagonal</h2>
+      <p>Inside triangle ABD we have <code>t + u &lt; 1</code>, so the blue piece XNCP is larger than the red one AMXQ. Now make <code>Y = B + D − X</code>, so XBYD is a parallelogram; let <code>R</code> be where DY meets NQ, and draw RS parallel to BC with S on AB. A short calculation gives <code>ASRQ = (1−t)(1−u)S = XNCP</code>. That is the page's central claim, and the logic test confirms it for 1,932 placements of X — both below and above BD. The leftover strip MSRX has area <code>(1−t−u)S</code> below BD (and <code>(t+u−1)S</code> above it), exactly the difference between the blue and red pieces.</p>
+
+      <h2>The same-side pair</h2>
+      <p>Tick the box and the applet draws a second pair of <a class="wiki-term" data-wiki="Congruence_(geometry)" href="https://en.wikipedia.org/wiki/Congruence_(geometry)" target="_blank" rel="noopener">congruent</a>-looking orange pieces QXUV and XMSR. Their areas are both <code>(1−t)(1−u)S − t&times;u&times;S = |1−t−u|S</code>, so they match each other and measure the gap. The page also says the intersection T of RS and UV lies on AX; in these coordinates <code>T = ((1−t)(1−u)/u, (1−t)(1−u)/t)</code>, whose two coordinates have the same ratio as X, so T is on that line. The test checks all of this in every placement, including points on BD where the gap is zero.</p>
+
+      <h2>Why the article's proof works</h2>
+      <p>Let W be where DR meets AB, K where RS meets CD, and E and F where the line through W parallel to BC meets NQ and CD. Because SWER and BWRX are parallelograms, <code>ER = BW − NR = RX − NR = NX</code>, so REFK and XNCP are congruent. In parallelogram AWFD, R lies on diagonal WD, and Euclid I.43 gives <code>ASRQ = REFK</code>; together, <code>ASRQ = XNCP</code>. Tick “proof lines” to see W, E, F and K. The logic test checks <code>REFK = XNCP</code> for every configuration too.</p>
+
+      <p class="tip">Try this: put X just below BD, note the gap in the status line, then press “X above BD” and watch the same construction turn the gap into the other side's difference.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EuclidI43Extended.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="euclid-i43-extended-core.js"></script>
+<script src="euclid-i43-extended.js"></script>
+</body>
+</html>
