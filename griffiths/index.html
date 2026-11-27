@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Griffiths &mdash; coolmaths</title>
+<meta name="description" content="Slide a dot along a straight line through a triangle's centre: will its pedal circle always pass through the same spot on the nine-point circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/griffiths/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Griffiths">
+<meta property="og:description" content="Slide a dot along a straight line through a triangle's centre: will its pedal circle always pass through the same spot on the nine-point circle?">
+<meta property="og:url" content="https://coolmaths.ai/griffiths/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour comes from a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+  #board .line-l { stroke: var(--accent); stroke-width: 2; }
+  #board .foot-p { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .foot-q { stroke: var(--highlight); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .foot-o { stroke: var(--muted); stroke-width: 1.2; }
+  #board .pedal-p { fill: none; stroke: var(--accent); stroke-width: 1.8; }
+  #board .pedal-q { fill: none; stroke: var(--highlight); stroke-width: 1.8; }
+  #board .nine-circle { fill: none; stroke: var(--good); stroke-width: 1.8; stroke-dasharray: 2 5; }
+  #board .centre-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1.5; }
+  #board .griffiths-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="griffiths" data-kind="demo">
+<main id="main">
+  <h1>Griffiths</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a drawing, not a game: as a dot slides along a straight line, the circle drawn from where it meets the sides keeps passing through the same spot.<br>
+    <strong>How to play:</strong> Drag A₁, A₂, A₃, P or Q, or focus one and use the arrow keys. Tick Perpendiculars or Circles to show the guide lines, the circles and their meeting spot.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 300" role="group"
+         aria-label="Triangle A1 A2 A3 with its circumcentre O, two points P and Q on a line through O, their pedal circles and the nine-point circle meeting at one dot"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="perps" type="checkbox"> Perpendiculars</label>
+    <label><input id="circles" type="checkbox"> Circles</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Here is a theorem published by Griffiths in 1857. Put a triangle in a circle, choose a straight line through the circle's centre, and slide a point along that line. The circle you get from that point keeps going through one fixed place. That place is called the Griffiths point.</p>
+
+      <h2>Three circles, one shared dot</h2>
+      <p>Drop a perpendicular from a point to each side of the triangle. The three landing spots sit on a circle, called the <a class="wiki-term" data-wiki="Pedal_triangle" href="https://en.wikipedia.org/wiki/Pedal_triangle" target="_blank" rel="noopener">pedal circle</a> of that point. The triangle's side midpoints and other notable spots sit on the <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">nine-point circle</a>. Griffiths' claim, as the page puts it, is: <em>if a point moves on a fixed line through the circumcenter, its pedal circle passes through a fixed point on the nine point circle.</em> The applet shows two points, P and Q, on the same line through O; tick Circles to see the two pedal circles meet the nine-point circle at one dot.</p>
+
+      <h2>Why the dot cannot move</h2>
+      <p>Put the <a class="wiki-term" data-wiki="Circumcenter" href="https://en.wikipedia.org/wiki/Circumcenter" target="_blank" rel="noopener">circumcenter</a> at the origin of the <a class="wiki-term" data-wiki="Complex_number" href="https://en.wikipedia.org/wiki/Complex_number" target="_blank" rel="noopener">complex plane</a>, make the circle have radius 1, and turn the picture so the chosen line is the real axis. If the triangle's vertices are <code>a₁, a₂, a₃</code>, the shared dot is</p>
+      <blockquote><code>w = (a₁ + a₂ + a₃ − a₁a₂a₃) / 2</code></blockquote>
+      <p>There is no <code>p</code> in that formula: wherever the sliding point is on the line, <code>w</code> is the same. The proof shows that <code>w</code> lies on the pedal circle of any point of the line, and when the point is at O the pedal circle is exactly the nine-point circle. The logic test checks this formula, the fixed dot and the three-circle meeting on 179 configurations; all hold. When the sliding point is on the circumcircle itself, the three feet become a straight <a class="wiki-term" data-wiki="Simson_line" href="https://en.wikipedia.org/wiki/Simson_line" target="_blank" rel="noopener">Simson line</a> and there is no pedal circle to draw.</p>
+
+      <h2>Not the other Griffiths pictures</h2>
+      <p>This is one triangle and two points on a line. <em>Four Griffiths</em> takes four points on one circle; for each of the four triangles it marks a Griffiths point, and those four points lie on a line while the four pedal circles share a dot. <em>Griffiths Collinearity</em>, due to Hubert Shutrick, takes the three places where a line cuts the sides of a triangle: those three pedal circles are coaxal and their centres are collinear. These are different statements about the same construction, not the one made here.</p>
+
+      <h2>What the port changes</h2>
+      <p>The live cut-the-knot page now shows a GeoGebra figure; a <a href="https://web.archive.org/web/20060928063829/http://www.cut-the-knot.org/Curriculum/Geometry/Griffiths.shtml" target="_blank" rel="noopener">2006 Wayback capture</a> shows the original Java applet, with width 500 and height 300 and the same claim. This port keeps its two checkboxes (both off at first) and its rules for dragging: P moves Q with the same line setting, dragging Q slides it along the line, and moving a triangle corner re-centres O and carries Q. The old code always drew the names even though the page set ShowNames=0, so names are always shown here too. Its pixel test keeps the first pair of circle meetings within √2 pixels; when P and Q are very close that can pick a near miss, and this port keeps that quirk. There is no win or loss: moving something finishes the exploration.</p>
+
+      <p class="tip">Try ticking Perpendiculars first, then Circles, and slide Q: watch the green dot stay fixed while the two pedal circles change shape.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Griffiths.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="griffiths-core.js"></script>
+<script src="griffiths.js"></script>
+</body>
+</html>
