@@ -2345,6 +2345,16 @@ check("eyeball: the two tangent chords have the same length", read.eyeball?.core
 check("eyeball-2: the two curved-triangle incircles agree with the formula", read["eyeball-2"]?.core.matchesFormula === true && read["eyeball-2"].core.equalRadii === true && read["eyeball-2"].core.possible === true);
 check("fagnano: the acute triangle's orthic perimeter is the minimum", read.fagnano?.valid === true && read.fagnano.triangle.kind === "acute" && typeof read.fagnano.orthic.perimeter === "number");
 check("fagnano-iii: rolled sides cross at 180-2C in the acute triangle", read["fagnano-iii"]?.validAcute === true && read["fagnano-iii"].crossingIs180Minus2C === true && typeof read["fagnano-iii"].minLength === "number");
+check("fagnano-iv: the orthic triangle attains 2·area/R uniquely", read["fagnano-iv"]?.valid === true && read["fagnano-iv"].orthic.ratio === 1 && read["fagnano-iv"].orthic.uniqueness.allStrictlyAboveOne === true && read["fagnano-iv"].bound.meetsBound === true);
+check("fermat-point: Napoleon lines concur at 120 degrees in the saved triangle", read["fermat-point"]?.savedReadable === true && read["fermat-point"].anglesAtF.all120 === true && read["fermat-point"].concurrence.allThroughF === true && read["fermat-point"].moreThan120 === false);
+check("feuerbach: centre gaps and touch dots match the nine-point tangencies", read.feuerbach?.valid === true && read.feuerbach.checks.gapsMatchFeuerbach === true && read.feuerbach.checks.dotsLieOnBothCircles === true && read.feuerbach.checks.eulerHolds === true);
+check("feuerbach-incidence: three excircle touch cevians concur at X(12)", read["feuerbach-incidence"]?.valid === true && read["feuerbach-incidence"].concurrence.concurrent === true && read["feuerbach-incidence"].collinearity.collinear === true && read["feuerbach-incidence"].collinearity.harmonicConjugate === true);
+check("feuerbach-proof: inversion sends the nine-point circle to the second tangent", read["feuerbach-proof"]?.valid === true && read["feuerbach-proof"].reading.inversePair.holds === true && read["feuerbach-proof"].reading.orthogonality.Cb.orthogonal === true && read["feuerbach-proof"].reading.tangency.Cb.touchesExternally === true);
+check("feuerbach-treasure: one nine-point circle touches all sixteen circles", read["feuerbach-treasure"]?.valid === true && read["feuerbach-treasure"].circles.total === 16 && Object.values(read["feuerbach-treasure"].claims).every(Boolean) === true);
+check("fifteen: the solved even board is in its own parity class", read.fifteen?.verdict.solvableBySlides === true && read.fifteen.reading.Nmod2 === 0 && read.fifteen.verdict.matchesSolvedClass === true);
+check("five-circles-in-square: the triangle incircle and inner-square circle differ here", read["five-circles-in-square"]?.formulasHold === true && read["five-circles-in-square"].finished === false && typeof read["five-circles-in-square"].angleToEquality === "number");
+check("five-concyclic-points: Q and four intersections share a circle", read["five-concyclic-points"]?.valid === true && read["five-concyclic-points"].concyclic === true && read["five-concyclic-points"].circleO.fourPointsConcyclic === true && read["five-concyclic-points"].radicalAxis.atQ.equalPowers === true);
+check("fixed-point: the saved triangle is rebuilt with its incircle touch point", read["fixed-point"]?.valid === true && typeof read["fixed-point"].reading.fixedPoint.x === "number" && read["fixed-point"].trips === 0);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2651,6 +2661,36 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("fagnano/Fejer reflections: P'P''=2·AP·sin A and the altitude foot beats P", fj.fejer.checks.angleIsTwiceA === true && fj.fejer.checks.baseIs2APsinA === true && fj.minimization.footIsBetter === true && fj.minimization.footBaseEqualsOrthicPerimeter === true);
   const sp = runGameLogic("fagnano-iii", "shortest_path", {});
   check("fagnano-iii/shortest_path: the straightened path at M is the minimum", sp.acute === true && sp.pathAtLeastBase === true && sp.atM.straight === true);
+}
+
+// The batch-27 tutor actions all run their real cores, not just their saved positions.
+{
+  const bound = runGameLogic("fagnano-iv", "orthic_equality", {});
+  check("fagnano-iv/orthic_equality: the orthic perimeter equals 2·area/R uniquely", bound.orthic.ratio === 1 && bound.orthic.equality.holds === true && bound.orthic.uniqueness.allStrictlyAboveOne === true);
+  const fp = runGameLogic("fermat-point", "fermat_point", {});
+  const ex = runGameLogic("fermat-point", "angle_120_exception", {});
+  check("fermat-point/Fermat point: equal Napoleon lines meet at 120 degrees", fp.anglesAtF.all120 === true && fp.concurrence.allThroughF === true && fp.minimality.fIsNoWorse === true && ex.anglesAtF.all120 === true);
+  const ft = runGameLogic("feuerbach", "four_tangencies", {});
+  const eq = runGameLogic("feuerbach", "equilateral_coincidence", {});
+  check("feuerbach/four tangencies: gap and touch identities, equilateral exception", ft.checks.gapsMatchFeuerbach === true && ft.checks.dotsLieOnBothCircles === true && eq.coincidentIncircle === true);
+  const inc = runGameLogic("feuerbach-incidence", "concurrence", {});
+  const cl = runGameLogic("feuerbach-incidence", "collinear_line", {});
+  check("feuerbach-incidence/X(12) concurrence and L(1,5) collinearity", inc.concurrence.concurrent === true && inc.x12.agreement === 0 && cl.collinearity.collinear === true && cl.collinearity.harmonicConjugate === true);
+  const inv = runGameLogic("feuerbach-proof", "inversion_proof", {});
+  const tc = runGameLogic("feuerbach-proof", "tangency_checks", {});
+  check("feuerbach-proof/inversion: LP·LS=r² and the nine-point image is tangent", inv.inversePair.holds === true && inv.orthogonality.Cb.orthogonal === true && inv.tangency.Cb.touchesExternally === true && tc.result === null);
+  const sixteen = runGameLogic("feuerbach-treasure", "sixteen_circles", {});
+  const right = runGameLogic("feuerbach-treasure", "right_angle_exception", { A: [0, 0], B: [0, 100], C: [100, 100] });
+  check("feuerbach-treasure/sixteen circles: the right angle leaves only eight", sixteen.allClaimsHold === true && right.eightCircleException === true && right.tangenciesStillHold === true);
+  const par = runGameLogic("fifteen", "parity", { n: 4, mode: 0, seed: 7 });
+  const cheat = runGameLogic("fifteen", "cheat", { n: 4, mode: 0, seed: 7 });
+  check("fifteen/parity and cheat: one swap flips the solvability class", par.verdict.solvableBySlides === true && cheat.inversionParityFlipped === true && cheat.oddBoardCounterexample.actuallySolvable === false);
+  const equal = runGameLogic("five-circles-in-square", "equal_configuration", {});
+  check("five-circles-in-square/equal configuration: c=2b, 30/60 degrees", Math.abs(equal.cOverB - 2) < 1e-9 && Math.abs(equal.acuteDegrees - 30) < 1e-9 && Math.abs(equal.otherDegrees - 60) < 1e-9 && equal.allFiveMatchFormula === true);
+  const powers = runGameLogic("five-concyclic-points", "radical_axis_powers", {});
+  check("five-concyclic-points/radical axes: equal powers at Q, Y and Z", powers.atQ.equalPowers === true && powers.atY.equalPowers === true && powers.atZ.equalPowers === true && powers.lineL1IsCommonChord === true);
+  const trips = runGameLogic("fixed-point", "two_trips", {});
+  check("fixed-point/two trips: one half-turn then an exact return", trips.trips.afterSecond === 2 && trips.originalDots.every((d) => d.oneTripIsHalfTurn === true && d.twoTripsRestore === true) === true);
 }
 
 // A game with no reader, and a position that makes no sense.

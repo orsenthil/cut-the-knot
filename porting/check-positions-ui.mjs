@@ -1208,6 +1208,20 @@ const GAMES = {
   "eyeball-2": (page) => dragFirstHandle(page),
   "fagnano": (page) => dragFirstHandle(page),
   "fagnano-iii": (page) => dragFirstHandle(page),
+  "fagnano-iv": (page) => dragFirstHandle(page),
+  "fermat-point": (page) => dragFirstHandle(page),
+  "feuerbach": (page) => dragFirstHandle(page),
+  "feuerbach-incidence": (page) => dragFirstHandle(page),
+  "feuerbach-proof": (page) => dragFirstHandle(page),
+  "feuerbach-treasure": (page) => dragFirstHandle(page),
+  "fifteen": async (page) => {
+    await page.locator("#board .cursor-dot").first().focus();
+    await page.keyboard.press("ArrowRight");
+    await page.keyboard.press("Enter");
+  },
+  "five-circles-in-square": (page) => dragFirstHandle(page),
+  "five-concyclic-points": (page) => dragFirstHandle(page),
+  "fixed-point": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

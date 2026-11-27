@@ -739,6 +739,16 @@ const CORE_GLOBALS = {
   "eyeball-2/eyeball-2-core.js": ["Eyeball2Core"],
   "fagnano/fagnano-core.js": ["FagnanoCore"],
   "fagnano-iii/fagnano-iii-core.js": ["FagnanoIIICore"],
+  "fagnano-iv/fagnano-iv-core.js": ["FagnanoIvCore"],
+  "fermat-point/fermat-point-core.js": ["FermatPointCore"],
+  "feuerbach/feuerbach-core.js": ["FeuerbachCore"],
+  "feuerbach-incidence/feuerbach-incidence-core.js": ["FeuerbachIncidenceCore"],
+  "feuerbach-proof/feuerbach-proof-core.js": ["FeuerbachProofCore"],
+  "feuerbach-treasure/feuerbach-treasure-core.js": ["FeuerbachTreasureCore"],
+  "fifteen/fifteen-core.js": ["FifteenCore"],
+  "five-circles-in-square/five-circles-in-square-core.js": ["FiveCirclesInSquareCore"],
+  "five-concyclic-points/five-concyclic-points-core.js": ["FiveConcyclicPointsCore"],
+  "fixed-point/fixed-point-core.js": ["FixedPointCore"],
 };
 
 const games = [];
