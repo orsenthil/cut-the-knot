@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cut Cylinder &mdash; coolmaths</title>
+<meta name="description" content="Tilt and slide a sheet through a cylinder and watch the cut become a circle, an ellipse or two parallel lines. When do the lines join?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cut-cylinder/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cut Cylinder">
+<meta property="og:description" content="Tilt and slide a sheet through a cylinder and watch the cut become a circle, an ellipse or two parallel lines. When do the lines join?">
+<meta property="og:url" content="https://coolmaths.ai/cut-cylinder/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 46rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .axis, #board .cut-axis { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 5 7; }
+  #board .tilt-arc { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 4; }
+  #board .cylinder-body { fill: var(--accent); opacity: 0.12; stroke: none; }
+  #board .cylinder-outline { stroke: var(--ink); stroke-width: 2.5; fill: none; }
+  #board .rim { stroke: var(--ink); stroke-width: 1.6; fill: none; }
+  #board .plane-line { stroke: var(--accent); stroke-width: 3.5; stroke-linecap: round; }
+  #board .plane-line.solid { stroke: var(--ink); stroke-width: 5; }
+  #board .normal, #board .right-angle { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 4; }
+  #board .plane-foot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .cut { fill: none; stroke: var(--good); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+  #board .small-label { fill: var(--muted); font-size: 0.85rem; pointer-events: none; }
+  #board .cut-title { fill: var(--accent); font-size: 1.05rem; font-weight: 700; text-anchor: middle; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5.5; }
+  .controls { align-items: center; gap: 0.5rem 0.9rem; flex-wrap: wrap; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; max-width: 100%; }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+  .controls input[type="range"] { width: min(11rem, 55vw); max-width: 100%; accent-color: var(--accent); }
+  .controls output { min-width: 4rem; font-variant-numeric: tabular-nums; }
+  #familyOut { font-weight: 700; color: var(--accent); }
+</style>
+</head>
+<body data-game="cut-cylinder" data-kind="demo">
+<main id="main">
+  <h1>Cut Cylinder</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#curves">Curves</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This shows the shape you get where a flat sheet cuts through a cylinder.<br>
+    <strong>How to play:</strong> Drag the dots or slide the controls to tilt and move the sheet. Press a shape button for a ready-made cut.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 340" role="group"
+         aria-label="A cylinder and a movable cutting sheet seen from the side on the left, and the cut seen face-on on the right"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="tiltRange">Sheet tilt <input id="tiltRange" type="range" min="0" max="90" step="1" aria-label="Tilt of the cutting sheet, from zero to ninety degrees"></label>
+    <output id="tiltOut" for="tiltRange">30&deg;</output>
+    <label for="offsetRange">Sheet position <input id="offsetRange" type="range" min="-12" max="12" step="0.5" aria-label="Distance of the cutting sheet from the cylinder's centre, from minus twelve to twelve"></label>
+    <output id="offsetOut" for="offsetRange">2.0</output>
+  </div>
+
+  <div class="controls" aria-label="Ready-made cuts and options">
+    <button type="button" data-preset="circle" aria-label="Make the sheet straight across to show a circle">Circle</button>
+    <button type="button" data-preset="ellipse" aria-label="Tilt the sheet to show an ellipse">Ellipse</button>
+    <button type="button" data-preset="lines" aria-label="Run the sheet along the cylinder to show two parallel lines">Two lines</button>
+    <button type="button" data-preset="touch" aria-label="Move the sheet out until the two lines join into one">Just touching</button>
+    <button id="opaqueBtn" type="button" aria-pressed="false" aria-label="Change whether the cutting sheet is drawn as transparent or opaque">Show sheet as opaque</button>
+    <button id="linkBtn" type="button" aria-pressed="false" aria-label="Change whether the sheet and the cylinder move together">Move objects separately</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the tilt and the sheet position">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <div class="controls"><span id="familyOut" aria-live="polite"></span></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A flat sheet can meet a round <a class="wiki-term" data-wiki="Cylinder" href="https://en.wikipedia.org/wiki/Cylinder" target="_blank" rel="noopener">cylinder</a> in a surprising small set of curves. No matter how you tilt or slide it, you only ever see one of three kinds of cut.</p>
+
+      <h2>What the page claims</h2>
+      <p>The original page says: <em>“The possible sections are circles, ellipses, and parallel lines that may coalesce.”</em> The logic test checks this over every whole-degree tilt and every whole-unit position, plus thousands of other settings: it holds. Two details the sentence leaves out: a sheet completely past the cylinder gives no cut at all, and an oval can be trimmed short by the cylinder's flat ends.</p>
+      <blockquote><code>tilt = 0&deg; &rarr; circle</code><br>
+        <code>0&deg; &lt; tilt &lt; 90&deg; &rarr; ellipse</code><br>
+        <code>tilt = 90&deg; &rarr; two parallel lines, or one when the sheet just touches</code></blockquote>
+
+      <h2>Why those are the only shapes</h2>
+      <p>Put the cylinder's axis along <code>x</code> and let its round side be <code>y&sup2; + z&sup2; = 6&sup2;</code>. A <a class="wiki-term" data-wiki="Plane_(geometry)" href="https://en.wikipedia.org/wiki/Plane_(geometry)" target="_blank" rel="noopener">plane</a> whose normal leans by <code>&beta;</code> from the axis, at distance <code>d</code> from the centre, meets it where</p>
+      <blockquote><code>(u cos&beta; + d sin&beta;)&sup2; + v&sup2; = 6&sup2;</code></blockquote>
+      <p>Here <code>u</code> and <code>v</code> are coordinates inside the sheet. For <code>&beta; &lt; 90&deg;</code> this is a stretched circle: an <a class="wiki-term" data-wiki="Ellipse" href="https://en.wikipedia.org/wiki/Ellipse" target="_blank" rel="noopener">ellipse</a> with half-widths <code>6/cos&beta;</code> and <code>6</code>. At <code>&beta; = 0</code> the two half-widths are both 6, a <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>. At <code>&beta; = 90&deg;</code> the <code>u</code> term drops out and <code>v = &plusmn;&radic;(6&sup2; &minus; d&sup2;)</code>: two lines running along the axis. Their gap shrinks to zero when <code>|d| = 6</code>, so the two lines become one — the coalescence the page mentions.</p>
+
+      <h2>What changed from the Java applet</h2>
+      <p>The applet drew a Java 3D cylinder of radius 6 and height 18 and a square sheet of side 20; you rotated, slid and zoomed them with the mouse. Its radio buttons chose <em>separate</em> or <em>combined</em> motion and a <em>transparent</em> or <em>opaque</em> sheet. This port keeps those two choices and the cylinder's size, but trades the 3D mouse gestures for a side view, a face-on view, two draggable dots and sliders. In the flat view, “combined” only changes the label: the picture already shows the sheet's position relative to the cylinder, which is all that decides the cut. The applet never named the curve; the names here come from its page.</p>
+
+      <p class="tip">Press Two lines, then slide the sheet slowly outward. Watch the two lines move together and become one at Just touching.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CutCylinder.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cut-cylinder-core.js"></script>
+<script src="cut-cylinder.js"></script>
+</body>
+</html>
