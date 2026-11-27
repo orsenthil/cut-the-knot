@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Conjugality &mdash; coolmaths</title>
+<meta name="description" content="Slide three dots along the sides of a triangle: when they line up, will their isotomic or isogonal partners line up too? Try to make the cevians meet and see what happens to the reflected ones.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/conjugality/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Conjugality">
+<meta property="og:description" content="Slide three dots along the sides of a triangle: when they line up, will their isotomic or isogonal partners line up too? Try to make the cevians meet and see what happens to the reflected ones.">
+<meta property="og:url" content="https://coolmaths.ai/conjugality/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--muted); stroke-width: 1.8; }
+  #board .line-p { fill: none; stroke: var(--bad); stroke-width: 2.8; }
+  #board .line-q { fill: none; stroke: var(--accent); stroke-width: 2.8; stroke-dasharray: 7 5; }
+  #board .cevian-p { fill: none; stroke: var(--bad); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .cevian-q { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .q-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .mark-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1; }
+  #board .angle-hint { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 13px;
+    font-weight: 650; pointer-events: none;
+  }
+  #board .glabel.vertex { fill: var(--muted); }
+  #board .glabel.p { fill: var(--bad); }
+  #board .glabel.q { fill: var(--accent); }
+  #board .glabel.mark { fill: var(--muted); font-size: 12px; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+</style>
+</head>
+<body data-game="conjugality" data-kind="demo">
+<main id="main">
+  <h1>Conjugality</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move three dots along the sides of a triangle until their partner dots line up, or until the lines from the corners meet in one place.<br>
+    <strong>How to play:</strong> Drag A, B, C, Pa, Pb or Pc with a mouse or finger, or focus a dot and use the arrow keys. Switch the two ways of making partners and tick Hint to see how each one is built.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="group"
+         aria-label="Triangle ABC with draggable points Pa, Pb and Pc on its side lines and their reflected partners"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle and the three side points">New diagram</button>
+    <label><input type="radio" name="mode" value="isotomic" checked aria-label="Use isotomic partners, reflected in the midpoints of the sides"> Isotomic</label>
+    <label><input type="radio" name="mode" value="isogonal" aria-label="Use isogonal partners, reflected in the angle bisectors"> Isogonal</label>
+    <label><input id="namesBox" type="checkbox" aria-label="Show the point names"> Names</label>
+    <label><input id="hintBox" type="checkbox" aria-label="Show the midpoints, bisectors and matching angles"> Hint</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A point on the side line of a <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a> can be flipped in two different ways. The puzzle is that both flips carry a straight line to a straight line. The original page states this for collinear points; the same reasoning works when the three cevians meet.</p>
+
+      <h2>Two ways to flip a point</h2>
+      <p>Each point Pa, Pb, Pc sits on one side line. Its <a class="wiki-term" data-wiki="Isotomic_conjugate" href="https://en.wikipedia.org/wiki/Isotomic_conjugate" target="_blank" rel="noopener">isotomic partner</a> Qa is the mirror image of Pa in the midpoint of that side: <code>Qa = B + C - Pa</code>. Its <a class="wiki-term" data-wiki="Isogonal_conjugate" href="https://en.wikipedia.org/wiki/Isogonal_conjugate" target="_blank" rel="noopener">isogonal partner</a> is found by reflecting the line from the opposite corner through the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> and seeing where it crosses the same side line. Tick Hint to see the midpoint or the bisector foot that each flip turns around.</p>
+
+      <h2>A line stays a line</h2>
+      <p>Write the position on each side as a signed ratio along that side. Three points on the side lines of a triangle are collinear exactly when their three ratios multiply to <code>-1</code> — that is <a class="wiki-term" data-wiki="Menelaus%27_theorem" href="https://en.wikipedia.org/wiki/Menelaus%27_theorem" target="_blank" rel="noopener">Menelaus' theorem</a>:</p>
+      <blockquote><code>(BPa/PaC)(CPb/PbA)(APc/PcB) = -1</code></blockquote>
+      <p>The midpoint flip replaces each ratio by its reciprocal, so the product is still <code>-1</code>: the three isotomic partners are collinear too. This is the page's exact claim, and the logic test checks it on 121 collinear triples built on random triangles.</p>
+
+      <h2>Why angles do it too</h2>
+      <p>For the isogonal flip the <a class="wiki-term" data-wiki="Law_of_sines" href="https://en.wikipedia.org/wiki/Law_of_sines" target="_blank" rel="noopener">sine rule</a> in the two small triangles at a corner gives <code>(BPa/PaC)(BQa/QaC) = (AB/AC)&sup2;</code>. Going round the triangle, the three squared side ratios multiply to <code>1</code> because each side appears once above and once below the line. So the isogonal product is also <code>-1</code> whenever the original product is <code>-1</code>.</p>
+      <p>When the three ratios multiply to <code>+1</code> instead, <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a> says the cevians meet at one point. The same two products show that the partners' cevians meet too; the test checks this on 600 more configurations.</p>
+
+      <h2>What the applet looks for</h2>
+      <p>The original did not measure zero exactly. It called the P points collinear when twice their signed area was less than 300 screen units, and the cevians concurrent when two crossings were less than 2 units apart. Those are the tests this page uses as well, so the coloured line or the six cevians light up at the same moments as in the applet. The bytecode construction of the isogonal partner is transcribed literally, including its rotation of one side end about the opposite corner; the test compares it with a second transcription on 4,800 configurations and finds no disagreement.</p>
+      <p class="tip">Try putting Pa, Pb and Pc at the midpoints of the sides: the cevians meet at the centre, and the partners' cevians meet there too.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Conjugality.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="conjugality-core.js"></script>
+<script src="conjugality.js"></script>
+</body>
+</html>
