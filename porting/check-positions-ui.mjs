@@ -1047,6 +1047,16 @@ const GAMES = {
   "carpets-in-square": (page) => dragFirstHandle(page),
   "carpets-in-square-2": (page) => dragFirstHandle(page),
   "carpet-with-hole": (page) => dragFirstHandle(page),
+  "casey-theorem": (page) => dragFirstHandle(page),
+  "center-circle": (page) => dragFirstHandle(page),
+  "central-angles-in-cube": (page) => dragFirstHandle(page),
+  "centroids-in-polygon": (page) => dragFirstHandle(page),
+  "ceva-cradle": (page) => dragFirstHandle(page),
+  "ceva-in-ngon": (page) => dragFirstHandle(page),
+  "ceva-nest": (page) => dragFirstHandle(page),
+  "ceva-pww": (page) => dragFirstHandle(page),
+  "cevian-triangle": (page) => dragFirstHandle(page),
+  chasles: (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

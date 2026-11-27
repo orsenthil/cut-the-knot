@@ -2193,6 +2193,16 @@ check("carpets-in-quadri-2: the four corner triangles equal PQRS", read["carpets
 check("carpets-in-square: the blue region equals the three red regions", read["carpets-in-square"]?.reading.equality.holds === true);
 check("carpets-in-square-2: red equals blue in the saved hint mode", Object.values(read["carpets-in-square-2"]?.reading.checks || {}).every(Boolean) === true);
 check("carpet-with-hole: the holed carpet has exactly the square's cell count", read["carpet-with-hole"]?.reading.identity.holds === true && read["carpet-with-hole"].reading.identity.materialCells === read["carpet-with-hole"].reading.identity.squareCells);
+check("casey-theorem: Casey's tangent identity holds in cyclic order", read["casey-theorem"]?.cyclicOrder === true && read["casey-theorem"].casey.holds === true);
+check("center-circle: the child circles share a point and their centres are concyclic", read["center-circle"]?.reading.childCentersOnNextCircle === true && read["center-circle"].reading.commonPointOnChildCircles.of === read["center-circle"].reading.commonPointOnChildCircles.total);
+check("central-angles-in-cube: the face and edge central angles are supplementary", read["central-angles-in-cube"]?.isIllustration === true && read["central-angles-in-cube"].reading.supplementary === true);
+check("centroids-in-polygon: vertex-deleted centroids concur with the whole centroid", Object.values(read["centroids-in-polygon"]?.savedClaims || {}).every(Boolean) === true);
+check("ceva-cradle: the two triple products agree", read["ceva-cradle"]?.reading.claims.identity === true && read["ceva-cradle"].reading.products.equal === true);
+check("ceva-in-ngon: the odd polygon has an odd number of crossings and product one", read["ceva-in-ngon"]?.reading.claims.productIsOne === true && read["ceva-in-ngon"].reading.claims.oddCrossings === true);
+check("ceva-nest: nested cevians give a perspective point", read["ceva-nest"]?.stateIsIllustration === true && read["ceva-nest"].reading.concurrent === true);
+check("ceva-pww: the grid dissection proves Ceva's product is one", read["ceva-pww"]?.stateIsIllustration === true && read["ceva-pww"].reading.allClaimsHold === true);
+check("cevian-triangle: the cevian triangle is perspective from P and its axis exists", read["cevian-triangle"]?.reading.desarguesAxis === true && read["cevian-triangle"].reading.perspectiveFromP === true);
+check("chasles: the Pascal chain closes with R equal to S", read.chasles?.chainHolds === true && read.chasles.R_equals_S === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);

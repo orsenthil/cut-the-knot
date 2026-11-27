@@ -587,6 +587,16 @@ const CORE_GLOBALS = {
   "carpets-in-square/carpets-in-square-core.js": ["CarpetsInSquareCore"],
   "carpets-in-square-2/carpets-in-square-2-core.js": ["CarpetsInSquare2Core"],
   "carpet-with-hole/carpet-with-hole-core.js": ["CarpetWithHoleCore"],
+  "casey-theorem/casey-theorem-core.js": ["CaseyTheoremCore"],
+  "center-circle/center-circle-core.js": ["CenterCircleCore"],
+  "central-angles-in-cube/central-angles-in-cube-core.js": ["CentralAnglesInCubeCore"],
+  "centroids-in-polygon/centroids-in-polygon-core.js": ["CentroidsInPolygonCore"],
+  "ceva-cradle/ceva-cradle-core.js": ["CevaCradleCore"],
+  "ceva-in-ngon/ceva-in-ngon-core.js": ["CevaInNgonCore"],
+  "ceva-nest/ceva-nest-core.js": ["CevaNestCore"],
+  "ceva-pww/ceva-pww-core.js": ["CevaPwwCore"],
+  "cevian-triangle/cevian-triangle-core.js": ["CevianTriangleCore"],
+  "chasles/chasles-core.js": ["ChaslesCore"],
 };
 
 const games = [];
