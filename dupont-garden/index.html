@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dupont Garden &mdash; coolmaths</title>
+<meta name="description" content="Can you read a fountain's arc? Watch jets of water rise and fall, then follow two dots along the curved path to see how high each one climbs.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/dupont-garden/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Dupont Garden">
+<meta property="og:description" content="Can you read a fountain's arc? Watch jets of water rise and fall, then follow two dots along the curved path to see how high each one climbs.">
+<meta property="og:url" content="https://coolmaths.ai/dupont-garden/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+    overflow-x: auto;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    min-width: 18rem;
+    height: auto;
+    touch-action: none;
+  }
+  #board .ground { stroke: var(--ink); stroke-width: 2; }
+  #board .axis { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 7; }
+  #board .flight { fill: none; stroke: var(--muted); stroke-width: 1.8; stroke-dasharray: 5 6; }
+  #board .flight.active { stroke: var(--accent); stroke-width: 2.8; stroke-dasharray: none; }
+  #board .drop { fill: var(--accent); opacity: 0.9; }
+  #board .component { stroke: var(--highlight); stroke-width: 1.6; stroke-dasharray: 3 4; }
+  #board .probe-label { fill: var(--text); font-size: 1.8rem; font-weight: 700; pointer-events: none; }
+  #board .flight-note { fill: var(--text); font-size: 1.7rem; pointer-events: none; }
+  #board .probe-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .probe-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; gap: 0.5rem; }
+  .controls button { min-height: 2.75rem; min-width: 2.75rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+  .controls input[type="number"] {
+    width: 4.5rem;
+    max-width: 100%;
+    min-height: 2.75rem;
+    font: inherit;
+    color: var(--text);
+    background: var(--stage);
+    border: 1px solid var(--border);
+    border-radius: 0.4rem;
+  }
+  .controls select {
+    max-width: 100%;
+    min-height: 2.75rem;
+    font: inherit;
+    color: var(--text);
+    background: var(--stage);
+    border: 1px solid var(--border);
+    border-radius: 0.4rem;
+  }
+</style>
+</head>
+<body data-game="dupont-garden" data-kind="demo">
+<main id="main">
+  <h1>Dupont Garden</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#physics">Physics</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#coordinates">Coordinates</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a fountain, not a game: jets of water jump up and fall down, and there is nothing to win.<br>
+    <strong>How to play:</strong> Press Run to send the jets up and Stop to pause. Change Drops, Delay or the pattern, then drag dots A and B along a curve to read its height.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 320" role="group"
+         aria-label="Jets of water following curved paths, with two draggable reading dots, A and B"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="runBtn" type="button" class="primary" aria-label="Run the jumping water">Run</button>
+    <button id="replayBtn" type="button" aria-label="Start another round of jets">Replay</button>
+    <label for="dropsInput">Drops</label>
+    <button id="minusDrops" type="button" aria-label="One drop fewer">&minus;</button>
+    <input id="dropsInput" type="number" min="1" max="50" step="1" aria-label="Number of drops per jet, from 1 to 50">
+    <button id="plusDrops" type="button" aria-label="One drop more">+</button>
+    <label for="delayInput">Delay</label>
+    <button id="minusDelay" type="button" aria-label="Shorter delay by ten milliseconds">&minus;</button>
+    <input id="delayInput" type="number" min="10" max="1000" step="10" aria-label="Delay between pictures, from 10 to 1000 milliseconds">
+    <button id="plusDelay" type="button" aria-label="Longer delay by ten milliseconds">+</button>
+    <label for="scheduleSel">Pattern</label>
+    <select id="scheduleSel" aria-label="Choose the jet pattern">
+      <option value="auto">Random choice</option>
+      <option value="random">Ten random jets</option>
+      <option value="multi-random">Many random jets</option>
+      <option value="slow-lr">Slow, left to right</option>
+      <option value="fast-lr">Fast, left to right</option>
+      <option value="slow-rl">Slow, right to left</option>
+      <option value="fast-rl">Fast, right to left</option>
+    </select>
+  </div>
+
+  <div class="controls" aria-label="Move the reading dots along the curve">
+    <button id="aLeft" type="button" aria-label="Move dot A left along the curve">A &larr;</button>
+    <button id="aRight" type="button" aria-label="Move dot A right along the curve">A &rarr;</button>
+    <button id="bLeft" type="button" aria-label="Move dot B left along the curve">B &larr;</button>
+    <button id="bRight" type="button" aria-label="Move dot B right along the curve">B &rarr;</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The page calls this an animated demonstration of projectile trajectory. Its exact claim is: <q>By 1604 he concluded that projectiles travel along parabolic trajectories.</q> Every jet drawn by the applet was checked against that statement, and it holds for all of them.</p>
+
+      <h2>Two motions at once</h2>
+      <p>Galileo's idea was to split the motion into two independent parts. A jet moves sideways at a steady speed: <code>x(t) = X0 + Vt</code>. At the same time gravity pulls it down: <code>y(t) = Wt &minus; 9.8t&sup2;/2</code>. Changing <code>V</code> changes where it lands but leaves <code>y(t)</code> alone. Here <a class="wiki-term" data-wiki="Projectile_motion" href="https://en.wikipedia.org/wiki/Projectile_motion" target="_blank" rel="noopener">projectile motion</a> is measured in the applet's own units, with <code>g = 9.8</code>.</p>
+
+      <h2>Why the curve is a parabola</h2>
+      <p>Eliminate the time <code>t</code> from the two formulas. From the first one, <code>t = (x &minus; X0)/V</code>; put that into the second:</p>
+      <blockquote><code>y = (W/V)(x &minus; X0) &minus; (4.9/V&sup2;)(x &minus; X0)&sup2;</code></blockquote>
+      <p>That is a quadratic in <code>x</code>, so the path is a <a class="wiki-term" data-wiki="Parabola" href="https://en.wikipedia.org/wiki/Parabola" target="_blank" rel="noopener">parabola</a>. The highest point comes halfway through the flight, at <code>t = W/9.8</code>, and reaches <code>W&sup2;/19.6</code>. The jet is back at ground level at <code>t = 2W/9.8</code>, having travelled <code>2VW/9.8</code> sideways. A logic test checked those formulas and the constant downward acceleration over a grid of launches; it also found that the applet's own jets always have <code>V &ne; 0</code>, so none of their paths is a straight vertical line. Parabolas are one kind of <a class="wiki-term" data-wiki="Conic_section" href="https://en.wikipedia.org/wiki/Conic_section" target="_blank" rel="noopener">conic section</a>, the family Kepler used for the differently shaped orbits mentioned on the original page.</p>
+
+      <h2>Inside the fountain</h2>
+      <p>The applet builds six patterns: ten random jets, twenty random jets, and slow or fast flights across the picture in either direction. Before each pattern it scales the upward speed so the jets fit the frame; then each jet drops a small bead every half unit of time. Run picks one of the six patterns at random and starts a new one when every jet has landed. <em>Drops</em> runs from 1 to 50 and <em>Delay</em> from 10 to 1000 milliseconds, just as in the original. The two dots here are reading probes: they snap to the current curve and show the height, but they never change the water.</p>
+
+      <p class="tip">Try <em>Slow, left to right</em> with one drop and move A and B: the beads are further apart in time, so you can see that equal time steps give equal sideways steps but unequal changes in height.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/DupontGarden.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="dupont-garden-core.js"></script>
+<script src="dupont-garden.js"></script>
+</body>
+</html>
