@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Four Squares From Temple &mdash; coolmaths</title>
+<meta name="description" content="Four squares hang from three draggable points. When A, B and C fall on one line, how do the sides of the gold and blue squares compare?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/four-squares-from-temple/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Four Squares From Temple">
+<meta property="og:description" content="Four squares hang from three draggable points. When A, B and C fall on one line, how do the sides of the gold and blue squares compare?">
+<meta property="og:url" content="https://coolmaths.ai/four-squares-from-temple/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .baseline { stroke: var(--bad); stroke-width: 2; stroke-dasharray: 8 6; opacity: 0.8; }
+  #board .aux-circle { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 5 5; }
+  #board .hint-line { stroke: var(--good); stroke-width: 1.6; opacity: 0.85; }
+  #board .hint-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .fill-small { fill: var(--highlight); stroke: none; opacity: 0.45; }
+  #board .fill-big { fill: var(--accent); stroke: none; opacity: 0.25; }
+  #board .square { fill: none; stroke-linejoin: round; }
+  #board .square-outer { stroke: var(--muted); stroke-width: 1.5; }
+  #board .square-small { stroke: var(--highlight); stroke-width: 2.5; }
+  #board .square-big { stroke: var(--accent); stroke-width: 2.5; }
+  #board .vertex-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="four-squares-from-temple" data-kind="demo">
+<main id="main">
+  <h1>Four Squares From Temple</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a drawing of four squares joined at their corners; line up A, B and C to see a surprise about two of their sides.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a point and use the arrow keys. Tick names or hint to see more, then press Reset diagram.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 500" role="group"
+         aria-label="Four hinged squares with draggable points A, B and C"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="hint" type="checkbox"> Hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This old Japanese temple problem hangs four squares from three movable points. The drawing seems to wobble freely, but the moment A, B and C fall on one line one square becomes exactly twice the size of another. The applet's own construction is kept here, so you can watch the relation appear.</p>
+
+      <h2>Four hinged squares</h2>
+      <p>The <a class="wiki-term" data-wiki="Square_(geometry)" href="https://en.wikipedia.org/wiki/Square_(geometry)" target="_blank" rel="noopener">squares</a> AESX and CHIY are built on the sides AE and CH. The square BEKH is built on the diagonal BK, so its other corners E and H are found by rotating half of BK. Finally KINS is placed on KI, with N completing it. Every corner moves when you drag A, B or C, but each shape stays a square.</p>
+
+      <h2>Bottema's two centres</h2>
+      <p>U is the centre of the square on AB and V the centre of the square on BC; applying <a class="wiki-term" data-wiki="Sangaku" href="https://en.wikipedia.org/wiki/Sangaku" target="_blank" rel="noopener">Bottema's theorem</a> twice makes triangles ABU, KSU, BCV and IKV <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">right isosceles</a>. Consequently K is the midpoint of UV, and UV has the same length as SI, a diagonal of KINS. The logic test checks all four triangles, the midpoint and the equal lengths on every drawn-hinge configuration.</p>
+
+      <h2>Why the line-up doubles the side</h2>
+      <p>When A, B and C lie on one line, the angle UBV is a right angle. By <a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a>, B lies on the <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> with UV as diameter, centred at K. Hence KB = KV = UV / 2. Since BK is a diagonal of the small square and SI = UV is a diagonal of the big one, <code>SI = 2 × BK</code>, and the sides have the same ratio: <code>side(KINS) = 2 × side(BEKH)</code>. The test confirms both on every exactly collinear case; the applet's own one-pixel tolerance can call a near miss "lined up", where the exact ratio is only close to 2.</p>
+
+      <h2>What this port keeps</h2>
+      <p>The drawing follows the applet's method, including its choice of which square centre to use when the hinge is mirrored; outside the arrangement drawn on the page that choice can break the intermediate identities, but it does not change the answer for the stated problem. The old Show names and hint boxes are kept, Reset diagram is a modern convenience, and there is nothing to win or lose. The logic test compares the core with a second transcription of the bytecode on 944 configurations and after every possible drag.</p>
+
+      <p class="tip">Try dragging A upwards until the pink line passes through B, then tick Hint to see the circle that appears around K.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FourSquaresFromTemple.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="four-squares-from-temple-core.js"></script>
+<script src="four-squares-from-temple.js"></script>
+</body>
+</html>
