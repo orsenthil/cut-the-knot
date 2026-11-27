@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Euler Collinearity &mdash; coolmaths</title>
+<meta name="description" content="Move a triangle and a point P, then slide t: three lines keep meeting at one spot. Where does that spot travel, and when is its path the Euler line?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/euler-collinearity/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Euler Collinearity">
+<meta property="og:description" content="Move a triangle and a point P, then slide t: three lines keep meeting at one spot. Where does that spot travel, and when is its path the Euler line?">
+<meta property="og:url" content="https://coolmaths.ai/euler-collinearity/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; margin: 0 auto; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board .triangle-edge { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .cevian { fill: none; stroke: var(--muted); stroke-width: 1.7; }
+  #board .vector { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  #board .vector-tip { fill: var(--accent); }
+  #board .locus-line { fill: none; stroke: var(--good); stroke-width: 2.4; stroke-dasharray: 8 5; }
+  #board .hint-triangle { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .hint-medial { fill: var(--highlight); fill-opacity: 0.35; }
+  #board .hint-scaled { fill: var(--accent); fill-opacity: 0.25; }
+  #board .dot { stroke: var(--stage); stroke-width: 1.5; }
+  #board .dot-m { fill: var(--muted); }
+  #board .dot-mt { fill: var(--accent); }
+  #board .dot-u { fill: var(--good); }
+  #board .dot-s { fill: var(--good); stroke: var(--ink); stroke-width: 1.6; }
+  #board .dot-g { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.6; }
+  #board .pt-label { font-size: 16px; font-weight: 650; pointer-events: none; }
+  #board .vertex-label { fill: var(--text); }
+  #board .mid-label { fill: var(--muted); }
+  #board .mt-label { fill: var(--accent); }
+  #board .s-label { fill: var(--good); }
+  #board .g-label { fill: var(--text); }
+  #board .p-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .p-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 5; }
+  .slider-row, .check-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; }
+  .slider-row label { min-width: 11rem; }
+  .slider-row input[type="range"] { width: min(16rem, 100%); accent-color: var(--accent); }
+  .check-row label { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .check-row input { accent-color: var(--accent); width: 1.1rem; height: 1.1rem; }
+  #tValue { font-variant-numeric: tabular-nums; font-weight: 650; }
+  .controls { justify-content: center; }
+</style>
+</head>
+<body data-game="euler-collinearity" data-kind="demo">
+<main id="main">
+  <h1>Euler Collinearity</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Three lines drawn from a triangle's corners keep meeting at one point as you slide a number up or down; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the round points to move the triangle or the point P, then slide the number. Tick Show hint or Show names to see more, and press Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 500" role="group"
+         aria-label="A triangle with a point P, the midpoints of its sides and scaled copies of those midpoints. Three lines through the triangle's corners meet at one point. Drag the four round points to change the picture."></svg>
+  </div>
+
+  <div class="controls">
+    <div class="slider-row">
+      <label for="tSlider">Slider <code>t</code> = <output id="tValue" for="tSlider">1.5</output></label>
+      <input id="tSlider" type="range" min="-10" max="505" step="1" value="15"
+             aria-label="Sliding factor t, from minus 1 to 50 point 5">
+    </div>
+    <div class="check-row">
+      <label><input id="hintBox" type="checkbox"> Show hint</label>
+      <label><input id="nameBox" type="checkbox"> Show names</label>
+    </div>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the triangle, point P and slider to their starting values">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the triangle or the point P and the three lines still cross at a single spot. That spot travels along a straight line. The applet illustrates a generalization of a problem from the <em>Mathematics Magazine</em>; its own page explains that choosing P at the triangle's circumcenter gives the famous Euler line. The live page no longer embeds the Java applet, but the archived cut-the-knot page from 2011 does, and its <code>&lt;APPLET CODE="EulerCollinearity"&gt;</code> tag is the source for this port.</p>
+
+      <h2>Shrinking the triangle around its center</h2>
+      <p>Join the three side midpoints and you get a smaller upside-down <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a>. It is the original triangle scaled by <code>-1/2</code> about its <a class="wiki-term" data-wiki="Centroid" href="https://en.wikipedia.org/wiki/Centroid" target="_blank" rel="noopener">centroid</a> <code>G</code>. The slider applies a second scaling, by <code>t</code> about <code>P</code>, to each midpoint <code>Mk</code>, giving <code>Mtk = P + t(Mk - P)</code>. Tick Show hint to see the two scaled midpoint triangles.</p>
+
+      <h2>Where the three lines meet</h2>
+      <p>Two scalings applied one after the other make another scaling. Its center lies on the line <code>GP</code>, and it carries each corner <code>Vk</code> to <code>Mtk</code>, so the three lines <code>Vk Mtk</code> all pass through that center. Its position is <code>S(t) = (2(1-t)P + 3tG)/(2+t)</code>. At <code>t = 0</code> it is <code>P</code>; at <code>t = 1</code> it is <code>G</code>. The logic test checked this formula against the applet's own method of intersecting the lines for thousands of triangles, points and slider values. The page says "for any t"; that is true for the applet's slider, from <code>-1</code> to <code>50.5</code>, but at <code>t = -2</code> the two scalings become a slide and the three lines are parallel instead of concurrent. The applet also stops drawing an intersection when two lines are less than one pixel from parallel, and this port keeps that quirk.</p>
+
+      <h2>Why the Euler line turns up</h2>
+      <p>If P is the <a class="wiki-term" data-wiki="Circumcenter" href="https://en.wikipedia.org/wiki/Circumcenter" target="_blank" rel="noopener">circumcenter</a> <code>O</code>, the line <code>GP</code> is the line through the circumcenter and centroid, which is the <a class="wiki-term" data-wiki="Euler_line" href="https://en.wikipedia.org/wiki/Euler_line" target="_blank" rel="noopener">Euler line</a>. As <code>t</code> grows, <code>S</code> approaches <code>3G - 2O</code>, the <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a> <code>H</code>, and <code>GH = 2GO</code> on that line. This differs from the separate Euler Line Simple applet: that one proves <code>O</code>, <code>G</code> and <code>H</code> lie on one line using parallelograms and altitudes, while this one studies how the meeting point moves when a point P and a slider change.</p>
+
+      <p class="tip">Put P on the circumcenter and slide <code>t</code> from <code>0</code> upwards: the green point travels from the circumcenter through the centroid towards the orthocenter.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EulerCollinearity.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="euler-collinearity-core.js"></script>
+<script src="euler-collinearity.js"></script>
+</body>
+</html>
