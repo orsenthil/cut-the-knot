@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Feuerbach &mdash; coolmaths</title>
+<meta name="description" content="Move the corners of a triangle: will its nine-point circle always touch the incircle and all three excircles?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/feuerbach/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Feuerbach">
+<meta property="og:description" content="Move the corners of a triangle: will its nine-point circle always touch the incircle and all three excircles?">
+<meta property="og:url" content="https://coolmaths.ai/feuerbach/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 36rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .tri { fill: var(--accent-soft); stroke: var(--ink); stroke-width: 2; }
+  #board .median-guide { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 5 4; }
+  #board .altitude-guide { stroke: var(--muted); stroke-width: 1.3; }
+  #board .nine-circle { fill: none; stroke: var(--accent); stroke-width: 3; }
+  #board .in-circle { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .ex-circle { fill: none; stroke: var(--bad); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .touch-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .nine-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1; }
+  #board .in-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1; }
+  #board .ex-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1; }
+  #board .pt-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    pointer-events: none;
+  }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2.5;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem 1rem;
+  }
+  .control-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body data-game="feuerbach" data-kind="demo">
+<main id="main">
+  <h1>Feuerbach</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the corners of a triangle and watch a special circle touch four other circles.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a corner and press the arrow keys. Tick a box to show or hide its guides, and press Reset to put the triangle back.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Triangle ABC with its nine-point circle, incircle, three excircles and the four points where they touch"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label><input id="circlesCheck" type="checkbox"> circles</label>
+      <label><input id="mediansCheck" type="checkbox"> medians</label>
+      <label><input id="altitudesCheck" type="checkbox"> altitudes</label>
+      <label><input id="namesCheck" type="checkbox"> names</label>
+      <button id="resetBtn" type="button" class="primary" aria-label="Put the triangle back at its starting position and clear all guides">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A triangle carries a circle through its side midpoints and the feet of its heights. Surprising as it sounds, that same circle always touches the circle inside the triangle and each of the three circles outside it. Drag the corners to see how far you can stretch the triangle before this stops looking true.</p>
+
+      <h2>A circle through nine points</h2>
+      <p>The midpoints of <code>AB</code>, <code>BC</code> and <code>CA</code> lie on one circle: the <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">nine-point circle</a>. It also passes through the feet of the three heights and the midpoints from each corner to the <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a>. Its centre <code>N</code> is halfway between the triangle's circumcentre <code>O</code> and the orthocenter <code>H</code>, and its radius is <code>R/2</code>, where <code>R</code> is the circumradius. The applet builds it as the circumcircle of the three side midpoints, averaging the three distances from its centre to them; the logic test checks that this is <code>R/2</code> on every triangle in its sample.</p>
+
+      <h2>Four circles that touch</h2>
+      <p>The <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> has centre <code>I</code> and radius <code>r</code>; each <a class="wiki-term" data-wiki="Excircle" href="https://en.wikipedia.org/wiki/Excircle" target="_blank" rel="noopener">excircle</a> has centre <code>I_a</code> and radius <code>r_a</code>. The applet finds those centres from angle bisectors and takes each radius as the mean of the distances to the three side lines. Feuerbach's discovery is that <code>IN = R/2 − r</code> while <code>IN_a = R/2 + r_a</code>. In other words the incircle sits inside the nine-point circle and touches it internally, while each excircle lies outside and touches it externally. The incircle's <a class="wiki-term" data-wiki="Feuerbach_point" href="https://en.wikipedia.org/wiki/Feuerbach_point" target="_blank" rel="noopener">Feuerbach point</a> is marked <code>F</code>. These equalities hold throughout the test's hundreds of triangles. There is one edge case the page does not mention: for an equilateral triangle <code>r = R/2</code> and <code>N = I</code>, so the two circles coincide and there is no single <code>F</code>.</p>
+
+      <h2>What the neighbouring pages add</h2>
+      <p>This applet draws only the triangle, the four circles and their four dots. The nearby <em>Incidence</em> page goes further: it joins each corner to the touch point on the opposite excircle and asks whether those three lines meet, and whether <code>N</code>, that point, <code>I</code> and <code>F</code> lie on one line (its text calls four points "concurrent"). The <em>Proof</em> page establishes the tangency by <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">inversion in a circle</a>, rather than by the distances Feuerbach computed. The <em>Four Triangles, One Circle</em> page puts the orthocenter to work: <code>ABC</code> and the three triangles made with <code>H</code> share one nine-point circle, tangent in general to sixteen circles. None of those extra constructions belongs to this applet; the live droodle page now keeps only the text, while a 2006 <a href="https://web.archive.org/web/20060928034827id_/http://www.cut-the-knot.org/Curriculum/Geometry/Feuerbach.shtml" target="_blank" rel="noopener">archived copy</a> still embeds <code>CODE="Feurebach"</code> twice.</p>
+
+      <p class="tip">Make the triangle almost equilateral and watch <code>I</code> and <code>N</code> merge: the single Feuerbach point becomes every point of a shared circle. Then pull one corner far away and see which excircle leaves the screen first.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Feuerbach.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="feuerbach-core.js"></script>
+<script src="feuerbach.js"></script>
+</body>
+</html>
