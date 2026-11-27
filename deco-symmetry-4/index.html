@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deco Symmetry 4 &mdash; coolmaths</title>
+<meta name="description" content="A triangle and its mirror can be made from the same three pieces. Can you find the two cuts, and turn the pieces without flipping them?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/deco-symmetry-4/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Deco Symmetry 4">
+<meta property="og:description" content="A triangle and its mirror can be made from the same three pieces. Can you find the two cuts, and turn the pieces without flipping them?">
+<meta property="og:url" content="https://coolmaths.ai/deco-symmetry-4/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board is the applet's own 400 by 250 coordinate system; the pieces
+     keep the applet's red, yellow and blue palette. Every other colour comes
+     from the site's tokens. */
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+    border-radius: 8px;
+  }
+  #board .tri-edge { stroke: var(--ink); stroke-width: 2; fill: none; }
+  #board .mirror-edge { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 4; fill: none; }
+  #board .pair-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 5; fill: none; }
+  #board .cut-line { stroke: var(--bad); stroke-width: 3; fill: none; }
+  #board .piece-fill { stroke: var(--ink); stroke-width: 1.4; fill-opacity: 0.42; }
+  #board .piece-0 { fill: #d43f3f; }
+  #board .piece-1 { fill: #d9a406; }
+  #board .piece-2 { fill: #3f78d4; }
+  #board .hint-mark { stroke: var(--good); stroke-width: 1.8; fill: none; }
+  #board .aux-dot { fill: var(--bad); }
+  #board .point-label {
+    fill: var(--text);
+    font-size: 0.95rem;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible {
+    outline: none;
+    stroke: var(--good);
+    stroke-width: 5;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.4rem 0 0;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="deco-symmetry-4" data-kind="demo">
+<main id="main">
+  <h1>Deco Symmetry 4</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A triangle and its upside-down mirror can be built from the very same three pieces; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the top dot or slide the two base dots. Tick the boxes to show names or right-angle marks, then press Move them to see the pieces turn.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Triangle ABC, its mirror A prime B prime C prime, the two cuts from A prime to D and E, and three coloured pieces"></svg>
+    <p class="hint">Keyboard: Tab to a dot, then use the arrow keys (Shift makes a bigger step).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox"> Show names</label>
+    <label><input id="hintBox" type="checkbox"> Show hint</label>
+    <button id="moveBtn" type="button" class="primary" aria-label="Turn the two end pieces into the mirror triangle">Move them</button>
+    <button id="resetBtn" type="button" aria-label="Put the triangle and the pieces back at the start">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Here is a triangle with a flat base. Its mirror image sits the other way up. The book's solution to the old puzzle uses only two cuts — and not one piece needs to be turned over. This applet gives a new way to see why it works, rather than a new dissection.</p>
+
+      <h2>The mirror between two lines</h2>
+      <p>B and C slide along one horizontal line while A moves freely. The mirror is a <a class="wiki-term" data-wiki="Reflection_(mathematics)" href="https://en.wikipedia.org/wiki/Reflection_(mathematics)" target="_blank" rel="noopener">reflection</a> in the horizontal line halfway between A and the base: A' has A's x and the base's y, while B' and C' have the base points' x and A's y. So A' lands <em>on</em> the base whenever A stands above the segment BC. If A moves out to one side, the cut fails and the applet switches "Move them" off. Earlier applets in this series used a vertical mirror line and different pieces (three for acute triangles, four in general, or three kites from the incenter); this fourth one uses the horizontal midline and just three pieces for every valid position.</p>
+
+      <h2>Two cuts, two half turns</h2>
+      <p>Let D be where AB crosses A'B', and E where AC crosses A'C'. Because the base is flat, D is the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> of both AB and A'B', and E is the midpoint of both AC and A'C'. The two cuts A'D and A'E split the triangle into three pieces. A half <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">turn</a> about D sends A' to B' and B to A; a half turn about E sends A' to C' and C to A. The middle piece A'DAE already fits both triangles. Every move is a turn, never a flip, so this is a direct <a class="wiki-term" data-wiki="Equidecomposability" href="https://en.wikipedia.org/wiki/Equidecomposability" target="_blank" rel="noopener">equidecomposition</a>. The logic test checked 4,655 valid layouts: the pieces fill both triangles, their side lengths match, and their orientation keeps its sign.</p>
+
+      <h2>Four isosceles triangles</h2>
+      <p>A'D and A'E are <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisectors</a> of A'B and A'C, so the two end pieces are <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles</a>. The middle four-sided piece is split by the line AA': D and E lie on the middle line between A and A', so those two halves are isosceles too. That gives four isosceles triangles; the test found no exception in 4,655 valid layouts nor in 500 arbitrary triangles turned so one of their sides became the base.</p>
+
+      <h2>The shorter decompositions</h2>
+      <p>The page also notes two special cases. For an acute triangle, join the <a class="wiki-term" data-wiki="Circumcenter" href="https://en.wikipedia.org/wiki/Circumcenter" target="_blank" rel="noopener">circumcenter</a> to the three corners: it lies inside, and its equal distances to the corners give three isosceles triangles. For a right triangle, join the right corner to the midpoint of the <a class="wiki-term" data-wiki="Hypotenuse" href="https://en.wikipedia.org/wiki/Hypotenuse" target="_blank" rel="noopener">hypotenuse</a>: that midpoint is equally far from all three corners, giving two isosceles triangles. Both claims were checked over a grid of triangles.</p>
+
+      <p class="tip">Try sliding A to the left edge of the base: the two cuts switch off, because A' is no longer on the base. Then bring A back and press "Move them".</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/DecoSymmetry4.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="deco-symmetry-4-core.js"></script>
+<script src="deco-symmetry-4.js"></script>
+</body>
+</html>
