@@ -1232,6 +1232,16 @@ const GAMES = {
   "four-crossing-circles": (page) => dragFirstHandle(page),
   "four-feet-on-bisectors": (page) => dragFirstHandle(page),
   "four-griffiths": (page) => dragFirstHandle(page),
+  "four-incident-circles": (page) => dragFirstHandle(page),
+  "four-incircles": (page) => dragFirstHandle(page),
+  "four-incircles-in-triangle": (page) => dragFirstHandle(page),
+  "four-np-circles": (page) => dragFirstHandle(page),
+  "four-pedal-circles": (page) => dragFirstHandle(page),
+  "four-simsons": (page) => dragFirstHandle(page),
+  "four-squares-from-temple": (page) => dragFirstHandle(page),
+  "four-touching-circles": (page) => dragFirstHandle(page),
+  "four-touching-circles-3": (page) => dragFirstHandle(page),
+  "four-turtles": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

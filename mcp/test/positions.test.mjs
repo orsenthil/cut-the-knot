@@ -2365,6 +2365,16 @@ check("four-circles-in-triangle: the saved contact-triangle point is rebuilt", r
 check("four-crossing-circles: equal chords and the radius ratio are saved", read["four-crossing-circles"]?.valid === true && read["four-crossing-circles"].core.valid === true && typeof read["four-crossing-circles"].Ra === "number" && Array.isArray(read["four-crossing-circles"].chordA));
 check("four-feet-on-bisectors: four feet are collinear while the printed angle fails", read["four-feet-on-bisectors"]?.drawingPossible === true && read["four-feet-on-bisectors"].reading.claims.collinear === true && read["four-feet-on-bisectors"].reading.claims.cyclic === true && read["four-feet-on-bisectors"].reading.claims.pageAINValue === false);
 check("four-griffiths: four Griffith points and both concurrences are rebuilt", read["four-griffiths"]?.reading.griffithsPoints.length === 4 && typeof read["four-griffiths"].reading.pedalMeet === "object" && typeof read["four-griffiths"].reading.ninePointMeet === "object");
+check("four-incident-circles: four tangents make a cyclic quadrilateral", read["four-incident-circles"]?.valid === true && read["four-incident-circles"].core.valid === true && read["four-incident-circles"].A.length === 4);
+check("four-incircles: the saved cevian incircles are rebuilt", read["four-incircles"]?.savedMatchesCore === true && read["four-incircles"].reading.theorem.iffHolds === true && read["four-incircles"].level1.length === 3);
+check("four-incircles-in-triangle: the saved T lies on the sliding circle", read["four-incircles-in-triangle"]?.savedReadable === true && read["four-incircles-in-triangle"].onGliderResidual < 1e-9 && typeof read["four-incircles-in-triangle"].reading.side.ratio === "number");
+check("four-np-circles: eight circles concur at the rebuilt common point", read["four-np-circles"]?.savedReadable === true && read["four-np-circles"].core.concurrenceHolds === true && read["four-np-circles"].core.finiteCircleCount === 8);
+check("four-pedal-circles: four pedal circles concur for the saved point", read["four-pedal-circles"]?.valid === true && read["four-pedal-circles"].core.pedalCircles.valid === true && read["four-pedal-circles"].core.pedalCircles.commonPoint.x !== undefined);
+check("four-simsons: eight cyclic-quadrilateral objects concur", read["four-simsons"]?.reading.concurring.verdict.allEightConcur === true && read["four-simsons"].reading.concurring.cyclic === true && read["four-simsons"].reading.supporting.ninePointRadii.each.every((r) => r.equalsHalfR === true) === true);
+check("four-squares-from-temple: the saved four squares are rebuilt", read["four-squares-from-temple"]?.savedMatchesCore === true && typeof read["four-squares-from-temple"].reading.squares.sideRatio_big_to_small === "number");
+check("four-touching-circles: the inverted contacts lie on one curve", read["four-touching-circles"]?.valid === true && read["four-touching-circles"].core.valid === true && typeof read["four-touching-circles"].core.parity === "object");
+check("four-touching-circles-3: four external touches keep the fourth contact on the circle", read["four-touching-circles-3"]?.core.chain.externalTouches === 4 && read["four-touching-circles-3"].core.chain.fourthContactOnCircle === true && read["four-touching-circles-3"].core.chain.parity === "even");
+check("four-turtles: five turtles need 1.447214 side lengths to meet", read["four-turtles"]?.valid === true && Math.abs(read["four-turtles"].core.pursuit.distanceOverSide - 1.447214) < 1e-6 && read["four-turtles"].core.logSpiralMatches === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2730,6 +2740,30 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("four-feet-on-bisectors/feet and angle: collinear feet, corrected A/2+C/2", feet.claims.collinear === true && feet.claims.cyclic === true && angle.claims.printedAngleIsCorrect === false && angle.claims.equalAnglesAMN_AIN === true);
   const thm = runGameLogic("four-griffiths", "check_theorems", {});
   check("four-griffiths/check_theorems: line, pedal and nine-point concurrences all hold", thm.collinear.holds === true && thm.pedalConcurrence.holds === true && thm.ninePointConcurrence.holds === true && thm.unitCircle.holds === true && thm.allHold === true);
+}
+
+// The batch-29 tutor actions all run their real cores, not just their saved positions.
+{
+  const lab = runGameLogic("four-incident-circles", "label_order_caveat", {});
+  check("four-incident-circles/label_order_caveat: cyclic order still sums to 180 after a drag", lab.comparison.openingCircularSums.both180 === true && lab.comparison.afterCircularSums.both180 === true && lab.comparison.afterNameSums.both180 === false);
+  const iff = runGameLogic("four-incircles", "five_incircles_theorem", { ratio: 1.6 });
+  check("four-incircles/five_incircles_theorem: the iff equality and shared numerator", iff.theorem.iffHolds === true && typeof iff.theorem.sharedNumeratorIdentity === "string" && iff.theorem.appletMatched === true);
+  const sang = runGameLogic("four-incircles-in-triangle", "sangaku_answer", {});
+  check("four-incircles-in-triangle/sangaku_answer: exact factor and the applet's sqrt3 misprint", Math.abs(sang.side.exact - (Math.sqrt(21) - 3) / 4) < 1e-9 && Math.abs(sang.side.misprintedAppletLine * Math.sqrt(3) - sang.side.exact) < 1e-9);
+  const sim = runGameLogic("four-np-circles", "cyclic_simson_lines", {});
+  check("four-np-circles/cyclic_simson_lines: pedal circles drop to Simson lines", sim.degeneratePedalCount === 0 && typeof sim.common === "object" && typeof sim.tolerance === "number");
+  const ped = runGameLogic("four-pedal-circles", "simson_nine_point", {});
+  check("four-pedal-circles/simson_nine_point: eight circles and four Simson lines concur", ped.valid === true && ped.concurrent === true && ped.maxResidual < 1e-8);
+  const half = runGameLogic("four-simsons", "half_scale_and_midpoints", {});
+  check("four-simsons/half_scale: nine-point radii R/2 and H the shared midpoint", half.ninePointRadii.each.every((r) => r.equalsHalfR === true) === true && half.homothetyMidpoints.each.every((p) => p.isH === true) === true);
+  const sq = runGameLogic("four-squares-from-temple", "check_claims", { A: [125, 375], B: [250, 375], C: [400, 375] });
+  check("four-squares-from-temple/check_claims: on the line-up both squares double", sq.allHold === true && sq.collinear.exactlyCollinear === true && sq.collinear.doublingHolds === true && sq.collinear.angleUBVDegrees === 90);
+  const inv = runGameLogic("four-touching-circles", "invert_at_e", {});
+  check("four-touching-circles/invert_at_e: touching circles invert to parallel lines", inv.valid === true && inv.imageLinesOfTouchingCircles.parallel === true && inv.collinearContacts.collinear === true);
+  const odd = runGameLogic("four-touching-circles-3", "even_vs_odd", {});
+  check("four-touching-circles-3/even_vs_odd: odd tangency parity breaks concyclicity", odd.difference.strictlyConcyclic.even === true && odd.difference.strictlyConcyclic.odd === false && odd.difference.externalTouches.odd === 3);
+  const meet = runGameLogic("four-turtles", "meeting", { n: 4, side: 300, speed: 1 });
+  check("four-turtles/meeting: four turtles each crawl exactly one side", meet.distanceEqualsVT === true && meet.forFourTurtles.distanceEqualsOneSide === true && meet.distanceOverSide === 1);
 }
 
 // A game with no reader, and a position that makes no sense.

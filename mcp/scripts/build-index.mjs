@@ -759,6 +759,16 @@ const CORE_GLOBALS = {
   "four-crossing-circles/four-crossing-circles-core.js": ["FourCrossingCirclesCore"],
   "four-feet-on-bisectors/four-feet-on-bisectors-core.js": ["FourFeetOnBisectorsCore"],
   "four-griffiths/four-griffiths-core.js": ["FourGriffithsCore"],
+  "four-incident-circles/four-incident-circles-core.js": ["FourIncidentCirclesCore"],
+  "four-incircles/four-incircles-core.js": ["FourIncirclesCore"],
+  "four-incircles-in-triangle/four-incircles-in-triangle-core.js": ["FourIncirclesInTriangleCore"],
+  "four-np-circles/four-np-circles-core.js": ["FourNpCirclesCore"],
+  "four-pedal-circles/four-pedal-circles-core.js": ["FourPedalCirclesCore"],
+  "four-simsons/four-simsons-core.js": ["FourSimsonsCore"],
+  "four-squares-from-temple/four-squares-from-temple-core.js": ["FourSquaresFromTempleCore"],
+  "four-touching-circles/four-touching-circles-core.js": ["FourTouchingCirclesCore"],
+  "four-touching-circles-3/four-touching-circles-3-core.js": ["FourTouchingCircles3Core"],
+  "four-turtles/four-turtles-core.js": ["FourTurtlesCore"],
 };
 
 const games = [];
