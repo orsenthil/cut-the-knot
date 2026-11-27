@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>de Villiers 4 &mdash; coolmaths</title>
+<meta name="description" content="Three similar triangles sit on the sides and diagonal of a quadrilateral. Drag the corners and tips: can you make their three tips line up with the crossing point of the extended sides?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/de-villiers-4/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="de Villiers 4">
+<meta property="og:description" content="Three similar triangles sit on the sides and diagonal of a quadrilateral. Drag the corners and tips: can you make their three tips line up with the crossing point of the extended sides?">
+<meta property="og:url" content="https://coolmaths.ai/de-villiers-4/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2; opacity: 0.7; }
+  #board .base { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .tri { stroke-width: 2; stroke-linejoin: round; fill-opacity: 0.07; }
+  #board .tri-p { stroke: var(--accent); fill: var(--accent); }
+  #board .tri-q { stroke: var(--good); fill: var(--good); }
+  #board .tri-r { stroke: var(--highlight); fill: var(--highlight); }
+  #board .extension { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 5; }
+  #board .claim-line { fill: none; stroke: var(--good); stroke-width: 3; stroke-dasharray: 9 6; }
+  #board .s-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .hint-line { fill: none; stroke: var(--highlight); stroke-width: 3; }
+  #board .hint-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .angle { fill: none; stroke: var(--bad); stroke-width: 2; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.85rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="de-villiers-4" data-kind="demo">
+<main id="main">
+  <h1>de Villiers 4</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a drawing, not a game: the three triangle tips can end up on one straight line with the point where the long sides meet.<br>
+    <strong>How to play:</strong> Drag the seven dots, or focus one and use the arrow keys. Tick Names, Angles or Hint, and press Show the claim to see the line.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="-40 -10 500 500" role="group"
+         aria-label="A quadrilateral ABCD with similar triangles on AC, DC and DB; their tips P, Q and R can be dragged"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="angles" type="checkbox"> Angles</label>
+    <label><input id="hint" type="checkbox"> Hint</label>
+    <button id="alignBtn" type="button">Show the claim</button>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three triangles sit on a four-sided shape. Their tips move together in a surprising way: with the right angle at each tip, all three tips and the crossing point of two extended sides fall on a single line.</p>
+
+      <h2>One rule for all three triangles</h2>
+      <p>The triangles ACP, DCQ and DBR are <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similar_triangles" target="_blank" rel="noopener">similar</a>: each is made by turning and scaling the segment it stands on. In the code the same multiplier <code>z = coef &times; (cos t + i sin t)</code> sends AC to AP, DC to DQ and DB to DR. Drag a tip and the applet measures that multiplier; drag a corner and all three tips are rebuilt with it. This is why the three triangles keep their shape as you move the picture.</p>
+
+      <h2>The angle at S</h2>
+      <p>Let S be the crossing point of the lines AD and BC, extended if needed. The page claims that if the angle at each tip (APC, DQC and DRB) equals the angle <code>ASB</code>, then P, Q, R and S are <a class="wiki-term" data-wiki="Collinearity" href="https://en.wikipedia.org/wiki/Collinearity" target="_blank" rel="noopener">collinear</a>. The logic test builds those triangles from scratch on a square, a rectangle, a tilted shape, a crossed shape, a dart and twelve hundred random <a class="wiki-term" data-wiki="Quadrilateral" href="https://en.wikipedia.org/wiki/Quadrilateral" target="_blank" rel="noopener">quadrilaterals</a> at five sizes: in every case where a triangle with that tip angle exists, one of the two mirror choices puts all four points on one line. For an obtuse angle at S the triangles need to be longer and thinner; the test covers those too.</p>
+
+      <h2>Why the tips line up</h2>
+      <p>From the similarity, <code>angle(AP, AC) = angle(DQ, DC) = angle(DR, DB)</code> and <code>AP/AC = DQ/DC = DR/DB</code>. A <a class="wiki-term" data-wiki="Rotation" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a> about A through the first of these angles turns AC towards AP and BC towards a line parallel to PQ; the rotation about B does the same for AD and QR. Because the two sides meet at S at angle <code>ASB</code>, the two turns balance exactly: PQ and QR have the same direction. The page's proof also constructs CE parallel and equal to AD and DG parallel and equal to CB to get there.</p>
+
+      <h2>Quirks and additions</h2>
+      <p>The original applet only draws its red dashed line when Q is within half a unit of the line through P and R. It does not check S, so the line can appear while S is elsewhere; this page says so in the status instead. Unlike its siblings, this applet puts triangles on two diagonals and one side (the first deVilliers applet puts them on all four sides and gets a parallelogram; deVilliers 2 and 3 study perpendicular bisectors of an inscriptible quadrilateral). The Show the claim button and the clamped handles are modern conveniences, not controls in the Java applet.</p>
+
+      <p class="tip">Press Show the claim, then drag tip P a little: the dashed line disappears until the tip angle again matches the angle at S.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/deVilliers4.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="de-villiers-4-core.js"></script>
+<script src="de-villiers-4.js"></script>
+</body>
+</html>
