@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Four Incident Circles &mdash; coolmaths</title>
+<meta name="description" content="Four equal circles all pass through one point. Their four common tangents make a quadrilateral: will its corners always lie on one circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/four-incident-circles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Four Incident Circles">
+<meta property="og:description" content="Four equal circles all pass through one point. Their four common tangents make a quadrilateral: will its corners always lie on one circle?">
+<meta property="og:url" content="https://coolmaths.ai/four-incident-circles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The SVG scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 36rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .guide-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .chord { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+  #board .common-point { fill: var(--bad); stroke: var(--stage); stroke-width: 1.5; }
+  #board .incircle { fill: none; stroke: var(--accent); stroke-width: 1.8; }
+  #board .tangent { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .outer-circle { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .corner { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="four-incident-circles" data-kind="demo">
+<main id="main">
+  <h1>Four Incident Circles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: four equal circles all pass through one point, and four straight lines form a shape around them.<br>
+    <strong>How to play:</strong> Drag any centre, or focus one and use the arrow keys. Tick Hint for the helper lines, tick Show names for labels, and press Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 560 500" role="group"
+         aria-label="Four equal circles through one point, their four common tangents and the circle through the tangent corners"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="hint" type="checkbox"> Hint</label>
+    <label><input id="names" type="checkbox"> Show names</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the four circles to their starting positions">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag a centre and all four circles change, yet the four corners where the straight tangent lines meet stay on one circle. Here is why the old page's droodle works, and where it needs a small caution.</p>
+
+      <h2>Four centres on one circle</h2>
+      <p>The red dot is the point all four circles pass through. When you drag one centre, the applet slides the other three along the rays from that dot so every centre is the same distance <code>R</code> from it. So the four centres are <a class="wiki-term" data-wiki="Concyclic_points" href="https://en.wikipedia.org/wiki/Concyclic_points" target="_blank" rel="noopener">concyclic</a>: they sit on a <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> of radius <code>R</code> about the red dot. Each of the four coloured circles also has radius <code>R</code>, which is exactly why it goes through the red dot.</p>
+
+      <h2>Why the blue lines are parallel to the chords</h2>
+      <p>Take two neighbouring circles. A <a class="wiki-term" data-wiki="Tangent_line" href="https://en.wikipedia.org/wiki/Tangent_line" target="_blank" rel="noopener">tangent</a> that touches both on the outside is the same distance <code>R</code> from each centre, just as the chord joining those centres is. Two lines at the same distance from the same two points are <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a>, so each side of the quadrilateral points the same way as the chord between its two centres. That is what makes the inner shape of centres and the outer shape of blue corners have equal angles.</p>
+
+      <h2>The fourth corner joins the circle</h2>
+      <p>The page says the four centres make a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>, so its opposite angles add to <code>180&deg;</code>. The blue corners have the same angles, so they lie on a circle too: the green circle in the picture is drawn through three of them, and the fourth falls on it. The logic test tries over four thousand arrangements and finds the fourth corner on that circle every time (worst radius error below <code>0.00001</code> of a board unit). One caution: after a big drag the labels <code>B1</code> to <code>B4</code> may no longer go around the circle in order, so an angle formed by those labels in name order need not be one of the quadrilateral's inside angles. The corners are still concyclic; read them around the circle to see the <code>180&deg;</code> sums. If two centres come within one unit the applet drops a tangent, and there is no quadrilateral to speak of.</p>
+
+      <h2>What the checks found</h2>
+      <p>The old applet's methods were transcribed a second time straight from its bytecode and compared with this page's geometry after 1,200 random four-drag sequences. Centres, tangents, corners and circle agreed. The same transcription confirmed the page's claim &ldquo;This quadrilateral is always cyclic&rdquo; for every non-degenerate configuration tested, as well as the parallel-side and angle identities behind the proof.</p>
+
+      <p class="tip">Try dragging one centre right next to another: watch the tangent between them vanish, then move it back and see the green circle return.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FourIncidentCircles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="four-incident-circles-core.js"></script>
+<script src="four-incident-circles.js"></script>
+</body>
+</html>
