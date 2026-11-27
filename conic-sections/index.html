@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Conic Sections &mdash; coolmaths</title>
+<meta name="description" content="Slice a double cone with a tilted plane and watch the cut become a circle, ellipse, parabola or hyperbola. Which angle decides which curve you see?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/conic-sections/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Conic Sections">
+<meta property="og:description" content="Slice a double cone with a tilted plane and watch the cut become a circle, ellipse, parabola or hyperbola. Which angle decides which curve you see?">
+<meta property="og:url" content="https://coolmaths.ai/conic-sections/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 46rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .axis, #board .curve-axis { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 5 7; }
+  #board .base-mark { stroke: var(--border-strong); stroke-width: 2; stroke-dasharray: 3 4; }
+  #board .tilt-arc { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 4; }
+  #board .pivot { fill: var(--muted); }
+  #board .nappe { fill: var(--accent); opacity: 0.09; stroke: none; }
+  #board .generator { stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; }
+  #board .apex { fill: var(--ink); }
+  #board .plane-line { stroke: var(--accent); stroke-width: 3.5; stroke-linecap: round; }
+  #board .plane-line.solid { stroke: var(--ink); stroke-width: 5; }
+  #board .plane-band { fill: var(--accent); opacity: 0.12; stroke: none; }
+  #board .plane-band.solid { fill: var(--highlight); opacity: 0.45; }
+  #board .position-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .curve { fill: none; stroke: var(--good); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+  #board .curve-b { stroke: var(--accent); }
+  #board .section-vertex { fill: var(--bad); }
+  #board .small-label { fill: var(--muted); font-size: 0.85rem; pointer-events: none; }
+  #board .curve-title { fill: var(--accent); font-size: 1.05rem; font-weight: 700; text-anchor: middle; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5.5; }
+  .controls { align-items: center; gap: 0.5rem 0.9rem; flex-wrap: wrap; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; max-width: 100%; }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+  .controls input[type="range"] { width: min(11rem, 55vw); max-width: 100%; accent-color: var(--accent); }
+  .controls output { min-width: 4rem; font-variant-numeric: tabular-nums; }
+  #familyOut { font-weight: 700; color: var(--accent); }
+  #math .claim { overflow-x: auto; }
+  #math code { white-space: normal; }
+</style>
+</head>
+<body data-game="conic-sections" data-kind="demo">
+<main id="main">
+  <h1>Conic Sections</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#coordinates">Coordinates</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This shows the shape you get when a flat sheet cuts through a double cone.<br>
+    <strong>How to play:</strong> Drag the dot on the tilt arc or slide the dot on the cone's middle line. You can also use the sliders or press a shape button.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 340" role="group"
+         aria-label="A double cone on the left with a movable cutting plane and a tilt arc; the curve made by the cut is drawn on the right"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="betaRange">Plane tilt <input id="betaRange" type="range" min="0" max="80" step="any" aria-label="Plane tilt in degrees, from zero to eighty"></label>
+    <output id="betaOut" for="betaRange">25.0&deg;</output>
+    <label for="offsetRange">Plane position <input id="offsetRange" type="range" min="-12" max="12" step="0.25" aria-label="Distance of the plane from the cone's vertex, from minus twelve to twelve"></label>
+    <output id="offsetOut" for="offsetRange">7.0</output>
+  </div>
+
+  <div class="controls" aria-label="Try each kind of section">
+    <button type="button" data-preset="circle" aria-label="Set a tilt of zero to show a circle">Circle</button>
+    <button type="button" data-preset="ellipse" aria-label="Set a small tilt to show an ellipse">Ellipse</button>
+    <button type="button" data-preset="parabola" aria-label="Match the tilt to a generator to show a parabola">Parabola</button>
+    <button type="button" data-preset="hyperbola" aria-label="Set a large tilt to show a hyperbola">Hyperbola</button>
+    <button type="button" data-preset="vertex" aria-label="Move the plane through the cone's vertex">Through the vertex</button>
+    <button id="opaqueBtn" type="button" aria-pressed="false" aria-label="Change whether the cutting plane is drawn as transparent or opaque">Show plane as opaque</button>
+    <button id="linkBtn" type="button" aria-pressed="false" aria-label="Change whether the cone and the plane move together">Move objects separately</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the tilt and the plane position">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <div class="controls"><span id="familyOut" aria-live="polite"></span></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A tilted sheet can cut a <a class="wiki-term" data-wiki="Cone_(geometry)" href="https://en.wikipedia.org/wiki/Cone_(geometry)" target="_blank" rel="noopener">cone</a> in several different curves. The surprise is that only two angles decide which one you get, and that the cut through the vertex is a smaller, sharper version of the same answer.</p>
+
+      <h2>The two angles on the page</h2>
+      <p>The original applet's page calls them <code>&alpha;</code>, the angle a line on the cone makes with its base, and <code>&beta;</code>, the angle the cutting <a class="wiki-term" data-wiki="Plane_(geometry)" href="https://en.wikipedia.org/wiki/Plane_(geometry)" target="_blank" rel="noopener">plane</a> makes with that base. Both are acute; <code>&beta;</code> may be zero. In the applet's own geometry the cone has radius <code>6</code> and height <code>12</code>, so <code>tan(&alpha;) = 12/6 = 2</code> and <code>&alpha; &asymp; 63.435&deg;</code>. This port keeps that cone and moves only the plane, so the tilt arc covers <code>0&deg; &le; &beta; &le; 80&deg;</code> and crosses <code>&alpha;</code>.</p>
+      <p>The page's claim, checked in the logic test over every whole degree and many random ones, is:</p>
+      <div class="claim"><code>&beta; &lt; &alpha; &rarr; ellipse (or a point at the vertex)</code><br>
+        <code>&beta; = &alpha; &rarr; parabola (or one line at the vertex)</code><br>
+        <code>&beta; &gt; &alpha; &rarr; hyperbola (or two lines at the vertex)</code><br>
+        <code>&beta; = 0 &rarr; the ellipse is a circle</code></div>
+      <p>These are the four <a class="wiki-term" data-wiki="Conic_section" href="https://en.wikipedia.org/wiki/Conic_section" target="_blank" rel="noopener">conic sections</a> named on the page. Every one of the claims holds for the acute angles the applet allows.</p>
+
+      <h2>Why the comparison works</h2>
+      <p>Put the cone's vertex at the origin and its axis along <code>x</code>. A double cone of radius <code>6</code> and height <code>12</code> is <code>y&sup2; + z&sup2; = m&sup2; x&sup2;</code> with <code>m = 6/12 = cot(&alpha;)</code>. A plane tilted by <code>&beta;</code> is <code>x &minus; y tan(&beta;) = d</code>, where <code>d</code> is where it crosses the axis. Using coordinates <code>(u, v)</code> inside the plane turns the cut into</p>
+      <blockquote><code>A u&sup2; + B u + C + v&sup2; = 0</code><br>
+        <code>A = cos&sup2;(&beta;) &minus; m&sup2; sin&sup2;(&beta;)</code></blockquote>
+      <p>The sign of <code>A</code> alone decides the shape: it is positive exactly when <code>tan(&beta;) &lt; 1/m = tan(&alpha;)</code>. Positive gives an <a class="wiki-term" data-wiki="Ellipse" href="https://en.wikipedia.org/wiki/Ellipse" target="_blank" rel="noopener">ellipse</a>, zero gives a <a class="wiki-term" data-wiki="Parabola" href="https://en.wikipedia.org/wiki/Parabola" target="_blank" rel="noopener">parabola</a>, negative gives a <a class="wiki-term" data-wiki="Hyperbola" href="https://en.wikipedia.org/wiki/Hyperbola" target="_blank" rel="noopener">hyperbola</a>. At <code>&beta; = 0</code> the two half-widths of the ellipse are both <code>|d| m</code>, so it is a <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>, just as the page says.</p>
+
+      <h2>What happens at the vertex</h2>
+      <p>When the plane passes through the vertex, <code>d = 0</code> and the whole curve shrinks onto that point. The logic test checks the three cases: a point when <code>&beta; &lt; &alpha;</code>, one line when <code>&beta; = &alpha;</code> (the plane lies along a generator), and a pair of lines when <code>&beta; &gt; &alpha;</code>. Move the plane dot onto the black vertex to see them; move it away again and the curve opens out.</p>
+
+      <h2>What changed from the Java applet</h2>
+      <p>The original was a Java 3D scene: you rotated, slid and zoomed a finite cone and a square translucent plane with the mouse, with radio buttons for <em>separate</em> or <em>combined</em> motion and <em>transparent</em> or <em>opaque</em> plane. It never named the curve. This port shows the same geometry as a flat side view plus the cut seen face-on, with two draggable dots and sliders in place of the mouse gestures; the two radio choices are the two toggle buttons. The cone keeps the applet's <code>6</code> by <code>12</code> shape, so the angle comparison above is the page's, not a new rule.</p>
+
+      <p class="tip">Try Circle, then Ellipse, then Parabola and Hyperbola in that order. Watch what happens as the tilt passes the generator angle, then press Through the vertex.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ConicSections.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="conic-sections-core.js"></script>
+<script src="conic-sections.js"></script>
+</body>
+</html>
