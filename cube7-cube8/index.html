@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cube Counting Ambiguity &mdash; coolmaths</title>
+<meta name="description" content="A flat drawing of little cubes can be read as seven cubes or as eight. Turn the view: how many do you see now?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cube7-cube8/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cube Counting Ambiguity">
+<meta property="og:description" content="A flat drawing of little cubes can be read as seven cubes or as eight. Turn the view: how many do you see now?">
+<meta property="og:url" content="https://coolmaths.ai/cube7-cube8/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  .cube-face {
+    fill: var(--face-colour);
+    fill-opacity: var(--face-alpha, 1);
+    stroke: none;
+  }
+  .cube-face.c32, .cube-edge.c32 { --face-colour: color-mix(in srgb, var(--ink) 90%, var(--stage)); --edge-colour: var(--face-colour); }
+  .cube-face.c91, .cube-edge.c91 { --face-colour: color-mix(in srgb, var(--ink) 64%, var(--stage)); --edge-colour: var(--face-colour); }
+  .cube-face.c160, .cube-edge.c160 { --face-colour: color-mix(in srgb, var(--ink) 38%, var(--stage)); --edge-colour: var(--face-colour); }
+  .cube-face.c191, .cube-edge.c191 { --face-colour: color-mix(in srgb, var(--ink) 20%, var(--stage)); --edge-colour: var(--face-colour); }
+  .cube-edge {
+    fill: none;
+    stroke: var(--edge-colour);
+    stroke-opacity: var(--edge-alpha, 1);
+    stroke-width: 1.1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .view-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 3;
+    cursor: grab;
+  }
+  .view-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  .handle-caption {
+    fill: var(--muted);
+    font-size: 0.85rem;
+    pointer-events: none;
+  }
+  .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem 0.6rem;
+    width: 100%;
+    max-width: 30rem;
+  }
+  .control-row label { min-width: 6rem; font-size: 0.95rem; }
+  .control-row output { min-width: 3rem; text-align: right; font-variant-numeric: tabular-nums; }
+  .control-row input[type="range"] {
+    flex: 1 1 9rem;
+    min-width: 6rem;
+    max-width: 14rem;
+    accent-color: var(--accent);
+  }
+  .control-row button {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0.4rem 0.7rem;
+  }
+</style>
+</head>
+<body data-game="cube7-cube8" data-kind="demo">
+<main id="main">
+  <h1>Cube Counting Ambiguity</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This picture shows little cubes that can be counted in two different ways.<br>
+    <strong>How to play:</strong> Drag the purple dot or use the sliders to turn the view. Look carefully and decide whether you see seven cubes or eight.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 380" role="group"
+         aria-label="A slanted drawing of a pile of cubes, with a draggable view-angle point underneath"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label for="angle">Slant</label>
+      <button id="angleDown" type="button" aria-label="Decrease the slant by five degrees">&minus;</button>
+      <input id="angle" type="range" min="15" max="60" step="1" value="45" aria-label="Slant angle in degrees">
+      <button id="angleUp" type="button" aria-label="Increase the slant by five degrees">+</button>
+      <output id="angleOut" for="angle">45°</output>
+    </div>
+    <div class="control-row">
+      <label for="size">Cube size</label>
+      <button id="sizeDown" type="button" aria-label="Make the cubes smaller">&minus;</button>
+      <input id="size" type="range" min="2" max="10" step="1" value="2" aria-label="Cube size from 2 to 10">
+      <button id="sizeUp" type="button" aria-label="Make the cubes bigger">+</button>
+      <output id="sizeOut" for="size">2</output>
+    </div>
+    <div class="control-row">
+      <label for="trans">Fading</label>
+      <button id="transDown" type="button" aria-label="Fade the other set of faces">&minus;</button>
+      <input id="trans" type="range" min="-127" max="127" step="1" value="0" aria-label="Face fading from minus 127 to 127">
+      <button id="transUp" type="button" aria-label="Fade the first set of faces">+</button>
+      <output id="transOut" for="trans">0</output>
+    </div>
+    <div class="control-row">
+      <button id="resetBtn" type="button" class="primary" aria-label="Reset the view to its starting position">Reset view</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The same lines can draw two different piles of cubes. Nothing in the picture has to change for your answer to change.</p>
+
+      <h2>One drawing, two readings</h2>
+      <p>The picture is a flat <a class="wiki-term" data-wiki="Necker_cube" href="https://en.wikipedia.org/wiki/Necker_cube" target="_blank" rel="noopener">Necker cube</a> in disguise. Its slanted lines say “this edge goes back”, but they do not say how far back. Without that clue, your mind chooses a reading, and a moment later it may choose the other one. The applet's page puts it plainly: you may see either seven cubes or eight, and staring at the picture can flip which count you believe.</p>
+
+      <h2>Why the count can change by one</h2>
+      <p>In an <a class="wiki-term" data-wiki="Isometric_graphics" href="https://en.wikipedia.org/wiki/Isometric_graphics" target="_blank" rel="noopener">oblique projection</a> one rhombus can be a side of two different cubes: in this drawing rhombus 16 is the left face under one diamond and the right face above another. If you group it with the first diamond you get one cube; group it with the second and the cubes shift, so the total changes by one. The logic test finds this shared face by matching every side rhombus against every diamond.</p>
+
+      <h2>What the three sliders really do</h2>
+      <p>The slant runs from 15° to 60°; its cosine sets the width of a cube face and its sine sets the height. The size runs from 2 to 10 and scales everything by <code>round(height / 1.4 / (N + 5))</code>. The fading runs from &minus;127 to 127 and sets an <a class="wiki-term" data-wiki="Opacity_(optics)" href="https://en.wikipedia.org/wiki/Opacity_(optics)" target="_blank" rel="noopener">opacity</a> of <code>min(255, 255 ± 2T)</code>. The test checked all 46 × 9 × 255 combinations at two canvas sizes: every one paints the same 33 rhombi in the same order, so the sliders change the view, never the answer.</p>
+
+      <p class="tip">Try the fading slider: the hidden corner appears, and the count you first chose stops feeling so certain.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Cube7Cube8.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cube7-cube8-core.js"></script>
+<script src="cube7-cube8.js"></script>
+</body>
+</html>
