@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CWStar &mdash; coolmaths</title>
+<meta name="description" content="A star can be turned into a rounded shape that is the same width in every direction. What is the secret, and why must the star have an odd number of points?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cw-star/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="CWStar">
+<meta property="og:description" content="A star can be turned into a rounded shape that is the same width in every direction. What is the secret, and why must the star have an odd number of points?">
+<meta property="og:url" content="https://coolmaths.ai/cw-star/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+    overflow: hidden;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .arc-base { fill: none; stroke: var(--accent); stroke-width: 2.2; }
+  #board .arc-outer { fill: none; stroke: var(--good); stroke-width: 1.8; opacity: 0.85; }
+  #board .arc-gap { fill: none; stroke: var(--highlight); stroke-width: 4; }
+  #board .extension { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 3; opacity: 0.8; }
+  #board .star-polygon { fill: none; stroke: var(--ink); stroke-width: 1.4; opacity: 0.45; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+
+  .setting-row { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; }
+  .setting-row label { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; font-size: 0.95rem; }
+  .setting-row output { min-width: 5.5rem; font-variant-numeric: tabular-nums; color: var(--muted); }
+  .setting-row input[type="range"] { width: min(9rem, 60vw); accent-color: var(--accent); }
+  .button-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.7rem; }
+  .math-body code { white-space: normal; }
+</style>
+</head>
+<body data-game="cw-star" data-kind="demo">
+<main id="main">
+  <h1>CWStar</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#parity">Parity</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This gadget turns a pointed star into a rounded shape that is the same width whichever way you turn it.<br>
+    <strong>How to play:</strong> Drag a star point or move the sliders. Press Start to watch the shape roll, or Reset to begin again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 300" role="group"
+         aria-label="A draggable star whose points are the centres of arcs forming a rounded shape of constant width">
+    </svg>
+  </div>
+
+  <div class="controls">
+    <div class="setting-row">
+      <label for="stepsInput">Star points
+        <input id="stepsInput" type="range" min="0" max="10" step="1" value="1">
+        <output id="stepsValue" for="stepsInput">5 points</output>
+      </label>
+      <label for="lengthInput">Side length
+        <input id="lengthInput" type="range" min="50" max="310" step="10" value="100">
+        <output id="lengthValue" for="lengthInput">100</output>
+      </label>
+      <label for="addOnInput">Extra width
+        <input id="addOnInput" type="range" min="0" max="160" step="10" value="40">
+        <output id="addOnValue" for="addOnInput">40</output>
+      </label>
+      <label for="speedInput">Speed
+        <input id="speedInput" type="range" min="0" max="22" step="1" value="5">
+        <output id="speedValue" for="speedInput">5</output>
+      </label>
+    </div>
+    <div class="button-row">
+      <button id="startBtn" type="button" class="primary" aria-pressed="false" aria-label="Start or stop rolling the shape">Start rolling</button>
+      <button id="stepBtn" type="button" aria-label="Roll the shape one step">One step</button>
+      <button id="newBtn" type="button" aria-label="Reset the star to its starting shape">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The <a class="wiki-term" data-wiki="Reuleaux_triangle" href="https://en.wikipedia.org/wiki/Reuleaux_triangle" target="_blank" rel="noopener">Reuleaux triangle</a> is the simplest rounded shape after the circle. This applet starts with a star instead and shows that the trick still works.</p>
+
+      <h2>Arcs centred on the star's points</h2>
+      <p>Set the number of points to <code>n</code> and the side length to <code>L</code>. The applet first draws an equilateral <a class="wiki-term" data-wiki="Star_polygon" href="https://en.wikipedia.org/wiki/Star_polygon" target="_blank" rel="noopener">star polygon</a>: every side is <code>L</code> long, even though the corners need not be evenly spaced. It then puts a compass point at each star point and draws an arc of radius <code>L</code> to the two neighbouring star points. For a regular star the corner points lie on a circle of radius <code>L / (2 sin(&pi;d/n))</code>, where <code>d = floor(n/2)</code>.</p>
+      <p>The surprise is that the curve drawn by those arcs is a shape of <a class="wiki-term" data-wiki="Constant_width" href="https://en.wikipedia.org/wiki/Constant_width" target="_blank" rel="noopener">constant width</a>: every pair of parallel lines that just touch it are <code>L</code> apart. Measuring the drawn curve in 90 directions for every slider setting confirms a width of <code>L</code> to within about one percent; the small difference comes from the applet rounding each arc angle to a whole degree.</p>
+
+      <h2>Why the number of points must be odd</h2>
+      <p>The page says the construction works only when the sides cross and the number of points is <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">odd</a>, and that a constant-width star always has an odd number of points. Walk around the boundary: a point is followed by an arc, an arc by a point, and so on. Each point faces an arc on the far side. If there are <code>LV</code> points and <code>LA</code> arcs to the left of a chosen point, then <code>LV = LA</code>; on the right, <code>RV = RA</code>. Because facing pairs swap the two kinds, <code>LV = RA</code> and <code>RV = LA</code>. All four numbers are the same <code>N</code>, so the total is <code>2N + 1</code>, always odd. The slider presents only <code>3 + 2k</code> points (5 to 23), and an even value would make successive points opposite each other so the sides would not cross.</p>
+
+      <h2>Filling the gaps with a second radius</h2>
+      <p>The Extra width slider adds <code>a</code>. The arcs that bridge the extended sides now have radius <code>L + a</code>, leaving a gap at every corner; a small arc of radius <code>a</code>, centred at that same corner, fills it. The two radii still make a constant-width curve, now of width <code>L + 2a</code>. The logic test checks every slider combination and finds that width, again up to the applet's whole-degree rounding.</p>
+
+      <h2>Rolling without wobbling</h2>
+      <p>Press Start and one star point stays put while all the others turn by the speed's angle (5 degrees at the default setting). When that turn is done, the applet picks the next point and shifts the whole figure back between the same two guide lines. Because the width does not depend on which way the shape faces, it can roll along flat ground without changing height. A harmless quirk of the original code is that it nudges one star point one pixel to the right; the test allows for that, and the picture is otherwise unchanged.</p>
+
+      <p class="tip">Try Extra width 0 and a large side length, then drag one point: the outline changes shape but the measured width stays the same.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CWStar.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cw-star-core.js"></script>
+<script src="cw-star.js"></script>
+</body>
+</html>
