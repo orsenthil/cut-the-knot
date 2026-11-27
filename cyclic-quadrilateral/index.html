@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cyclic Quadrilateral &mdash; coolmaths</title>
+<meta name="description" content="Drag four corners around a circle. Will the centres of the four triangles inside always be the corners of a rectangle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cyclic-quadrilateral/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cyclic Quadrilateral">
+<meta property="og:description" content="Drag four corners around a circle. Will the centres of the four triangles inside always be the corners of a rectangle?">
+<meta property="og:url" content="https://coolmaths.ai/cyclic-quadrilateral/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2.2; }
+  #board .diagonal { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 6 5; }
+  #board .rectangle-side { stroke: var(--accent); stroke-width: 3; }
+  #board .angle-bisector { stroke: var(--muted); stroke-width: 1.2; }
+  #board .rhombus-line { stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 8 5; }
+  #board .arc-line { stroke: var(--accent); stroke-width: 2.2; }
+  #board .incircle { fill: none; stroke: var(--good); stroke-width: 1.5; }
+  #board .incenter-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .arc-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="cyclic-quadrilateral" data-kind="demo">
+<main id="main">
+  <h1>Cyclic Quadrilateral</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: four corners on a circle make four triangles, and the centres of those triangles always make a rectangle.<br>
+    <strong>How to play:</strong> Drag the corners A, B, C and D around the circle, or focus a corner and use the arrow keys. Tick the boxes to show the triangle centres, circles, lines and names.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 560 400" role="group"
+         aria-label="Four draggable corners on a circle with their four triangle incenters, the rectangle they form, arc bisectors and incircles"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="incenters" type="checkbox"> Incenters</label>
+    <label><input id="incircles" type="checkbox"> Incircles</label>
+    <label><input id="rectangle" type="checkbox"> Rectangle</label>
+    <label><input id="diagonals" type="checkbox"> Diagonals</label>
+    <label><input id="arcBisectors" type="checkbox"> Arc bisectors</label>
+    <label><input id="angleBisectors" type="checkbox"> Angle bisectors</label>
+    <label><input id="rhombus" type="checkbox"> Rhombus</label>
+    <label><input id="names" type="checkbox"> Show names</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag a corner and the four triangles change shape completely, yet their centres keep making a rectangle. The old cut-the-knot page called this a Japanese theorem. Its live version now shows a GeoGebra sketch instead of the Java applet; the archived 2012 page really does embed <code>CODE="CyclicQuadrilateral"</code>, and this port follows that applet and its article.</p>
+
+      <h2>The claim on the old page</h2>
+      <p>Every four corners on a circle make four triangles: ABC, ACD, ABD and BCD. The exact claim is: <em>the incenters of the four triangles form a rectangle</em>. An <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> is the point inside a triangle where its three angle-splitting lines meet; it is also the centre of the circle touching all three sides. The claim is one of the <a class="wiki-term" data-wiki="Japanese_theorem_for_cyclic_polygons" href="https://en.wikipedia.org/wiki/Japanese_theorem_for_cyclic_polygons" target="_blank" rel="noopener">Japanese theorems for cyclic polygons</a>, carved on a temple tablet in Yamagata prefecture in 1880. Tick "Incenters" and "Rectangle" to see it.</p>
+
+      <h2>Why the corners are square</h2>
+      <p>Inscribed angles that stand on the same chord are equal. In triangle BCD the angle at the incenter is <code>90° + ∠BDC/2</code>; in triangle ABC it is <code>90° + ∠BAC/2</code>. Because ABCD is a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>, those two angles at D and A are equal, so the four cyclic quadrilaterals in the old proof force a right angle at every corner of the incenter figure. The logic test checks all 4,845 quadrilaterals formed by choosing four of twenty equally spaced points on the circle, plus 500 random ones elsewhere: the corner angles are right to within a tiny drawing error in every case.</p>
+
+      <h2>The radius sum and the rhombus</h2>
+      <p>The tablet also records <code>rABC + rACD = rABD + rBCD</code>, where each <em>r</em> is the radius of one triangle's <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a>. That identity makes the four lines through the incenters parallel to the diagonals enclose a <a class="wiki-term" data-wiki="Rhombus" href="https://en.wikipedia.org/wiki/Rhombus" target="_blank" rel="noopener">rhombus</a>: tick "Rhombus". Both claims hold in every tested configuration. One quirk stays faithful to the applet: for a triangle with a side shorter than about 0.32 board units, the applet's own distance routine gives up and the radius sum visibly fails. The test records this instead of hiding it.</p>
+
+      <h2>The arc midpoints</h2>
+      <p>Let P, Q, R and S be the midpoints of the arcs AB, CD, BC and AD. The page says <code>PQ ⟂ RS</code>, that both lines are parallel to sides of the rectangle and pass through their midpoints, and that these arc bisectors are the rhombus's diagonals. With arcs taken along the sides of the quadrilateral, the test confirms all of this. The applet uses a shortcut: it rotates a corner through half the <em>smaller</em> angle to the next corner. When a side spans more than half the circle, that is not the arc along the side, so the drawn lines can miss a right angle. The page's claim is true; this drawing follows the applet's shortcut, as the original did.</p>
+
+      <p class="tip">Try ticking all the boxes, then drag one corner so close to its neighbour that the side almost vanishes: which of the three patterns breaks first?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CyclicQuadrilateral.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cyclic-quadrilateral-core.js"></script>
+<script src="cyclic-quadrilateral.js"></script>
+</body>
+</html>
