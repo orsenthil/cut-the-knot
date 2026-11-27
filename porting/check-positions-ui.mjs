@@ -1102,6 +1102,19 @@ const GAMES = {
   "conjugality": (page) => dragFirstHandle(page),
   "conjugate-diameters": (page) => dragFirstHandle(page),
   "connes": (page) => dragFirstHandle(page),
+  "continuous-curve": (page) => dragFirstHandle(page),
+  "contrast": (page) => dragFirstHandle(page),
+  "contrast-2": (page) => dragFirstHandle(page),
+  "contrast-3": (page) => dragFirstHandle(page),
+  "contrast-4": async (page) => {
+    await page.locator("#board .patch-handle").first().focus();
+    await page.keyboard.press("ArrowRight");
+  },
+  "contrast-ii": (page) => dragFirstHandle(page),
+  "cosine-law": (page) => dragFirstHandle(page),
+  "cosine-law-unfolded": (page) => dragFirstHandle(page),
+  "coupled-impossible-fork": (page) => dragFirstHandle(page),
+  "coxeter-tangent-circles": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

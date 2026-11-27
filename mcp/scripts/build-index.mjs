@@ -639,6 +639,16 @@ const CORE_GLOBALS = {
   "conjugality/conjugality-core.js": ["ConjugalityCore"],
   "conjugate-diameters/conjugate-diameters-core.js": ["ConjugateDiametersCore"],
   "connes/connes-core.js": ["ConnesCore"],
+  "continuous-curve/continuous-curve-core.js": ["ContinuousCurveCore"],
+  "contrast/contrast-core.js": ["ContrastCore"],
+  "contrast-2/contrast-2-core.js": ["Contrast2Core"],
+  "contrast-3/contrast-3-core.js": ["Contrast3Core"],
+  "contrast-4/contrast-4-core.js": ["Contrast4Core"],
+  "contrast-ii/contrast-ii-core.js": ["ContrastIiCore"],
+  "cosine-law/cosine-law-core.js": ["CosineLawCore"],
+  "cosine-law-unfolded/cosine-law-unfolded-core.js": ["CosineLawUnfoldedCore"],
+  "coupled-impossible-fork/coupled-impossible-fork-core.js": ["CoupledImpossibleForkCore"],
+  "coxeter-tangent-circles/coxeter-tangent-circles-core.js": ["CoxeterTangentCirclesCore"],
 };
 
 const games = [];

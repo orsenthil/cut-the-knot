@@ -11,7 +11,7 @@
 
 import { readFileSync, readdirSync } from "node:fs";
 
-import { describePosition } from "../src/games/registry.ts";
+import { describePosition, runGameLogic } from "../src/games/registry.ts";
 import { cores } from "../src/generated/cores.js";
 import { gameModules } from "../src/generated/games.ts";
 
@@ -2245,6 +2245,16 @@ check("conjugate-diameters: the saved ellipse is readable", read["conjugate-diam
 check("connes: the saved triangle is not equilateral", read.connes?.reading.equilateral === false);
 check("circumsogonal: each saved reflected line is the reflection of VP", read["circumsogonal"]?.reading.checks.eachLineIsTheReflectionOfVP === true);
 check("cleaver: the saved triangle's cleaver halves the perimeter", read["cleaver"]?.reading.checks.allHold === true);
+check("continuous-curve: the saved dot sits on the redrawn unbroken spiral", read["continuous-curve"]?.savedPointMatchesCore === true && read["continuous-curve"].continuity.oneUnbrokenPolyline === true && read["continuous-curve"].continuity.drawnLegs === 26);
+check("contrast: both bars share one flat grey under the ramp", read.contrast?.valid === true && read.contrast.bothBarsShareOneGrey === true && read.contrast.barGray === 127 && read.contrast.probeGrey === 130);
+check("contrast-2: the six patches share a shade over alternating bands", read["contrast-2"]?.reading.everyPatchSameShade === true && read["contrast-2"].reading.patches.length === 6 && read["contrast-2"].reading.samples.left.onA === "dark" && read["contrast-2"].reading.samples.right.onA === "light");
+check("contrast-3: the whole annulus is one grey while the squares differ", read["contrast-3"]?.ring.oneUniformGray === true && read["contrast-3"].ring.grayByte === 128 && read["contrast-3"].tones.right === 255 && read["contrast-3"].shift.dy === 0);
+check("contrast-4: three upper and three lower patches share one grey", read["contrast-4"]?.bandCount === 6 && read["contrast-4"].patchCount === 6 && read["contrast-4"].fills.patch === "#808080" && read["contrast-4"].patchMinusAverage === 0);
+check("contrast-ii: interleaved grids carry one colour at unequal sizes", read["contrast-ii"]?.reading.grids.small.count === 64 && read["contrast-ii"].reading.grids.big.count === 49 && read["contrast-ii"].reading.colour.allSquaresSame === true && read["contrast-ii"].reading.claims.oneColour === true);
+check("cosine-law: CP is AB and both cuttings give the law of cosines", read["cosine-law"]?.reading.cp.equal === true && read["cosine-law"].reading.cp.perpendicular === true && read["cosine-law"].reading.dissection.bothCuttingsAgree === true && read["cosine-law"].reading.dissection.lawOfCosinesHolds === true);
+check("cosine-law-unfolded: the median is an altitude and the law holds", read["cosine-law-unfolded"]?.copyOfAB.CPequalsAB === true && read["cosine-law-unfolded"].copyOfAB.perpendicularToAB === true && read["cosine-law-unfolded"].parallelogramCTPR.medianIsAltitude === true && read["cosine-law-unfolded"].lawOfCosines.holds === true);
+check("coupled-impossible-fork: two possible halves couple only at W = 500", read["coupled-impossible-fork"]?.beamsEqual === true && read["coupled-impossible-fork"].halfTurnCongruent === true && read["coupled-impossible-fork"].middleBeamGap === 0 && read["coupled-impossible-fork"].coupled === true);
+check("coxeter-tangent-circles: the second family shares the six touching points", read["coxeter-tangent-circles"]?.valid === true && read["coxeter-tangent-circles"].tangencyResiduals.every((r) => r === 0) && read["coxeter-tangent-circles"].beecroft.sharedTouchingPoints === true && read["coxeter-tangent-circles"].beecroft.mutuallyTangent === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2270,6 +2280,32 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   const dh = at("delta-hedging", { seed: 3, holdings: new Array(20).fill(0), shares: 0 });
   check("delta-hedging: a month without shares has a result", dh.finished !== null && dh.finished.noHedge === dh.finished.you);
 }
+// The batch-17 tutor actions all run their real cores, not just their saved positions.
+{
+  const cc = runGameLogic("continuous-curve", "trace", { margin: 20, spread: 5, legs: 26 });
+  check("continuous-curve/trace: the spiral is one unbroken polyline", cc.continuity.oneUnbrokenPolyline === true && cc.continuity.drawnLegs === 26 && cc.stoppedEarly === false);
+  const cg = runGameLogic("contrast", "gradient", { minColor: 120, maxColor: 121, probeX: 250 });
+  check("contrast/gradient: a one-step range still paints both greys", cg.ramp.distinctGreys === 2 && cg.ramp.firstColumn.index === 120 && cg.ramp.lastColumn.index === 121);
+  const c2 = runGameLogic("contrast-2", "shade", { percent: 70 });
+  check("contrast-2/shade: Java's 70% byte is 179, 105% caps at white", c2.shadeByte === 179 && c2.examples[105] === 255 && c2.cappedAtWhite === false);
+  const c3 = runGameLogic("contrast-3", "slide_to_point", { point: { x: 422, y: 190 } });
+  check("contrast-3/slide_to_point: dragging reads H from the point", c3.hFromPoint === 19 && c3.point.x === 422);
+  const c4 = runGameLogic("contrast-4", "average", {});
+  check("contrast-4/average: the patch sits at the mean of the bands", c4.average === 50 && c4.patchMinusAverage === 0 && c4.patchGrey === "#808080");
+  const cii = runGameLogic("contrast-ii", "nearly_equal", { n: 8 });
+  check("contrast-ii/nearly_equal: the closest grid sizes are equal at part 53", cii.found === true && cii.closest.part === 53 && cii.closest.difference === 0);
+  const cl = runGameLogic("cosine-law", "two_cuttings", {});
+  check("cosine-law/two_cuttings: both cuttings give the same heptagon area", cl.dissection.bothCuttingsAgree === true && cl.dissection.lawOfCosinesHolds === true && cl.dissection.lawResidual === 0);
+  const cu = runGameLogic("cosine-law-unfolded", "unfold", {});
+  check("cosine-law-unfolded/unfold: CP equals AB and is perpendicular", cu.copyOfAB.CPequalsAB === true && cu.copyOfAB.perpendicularToAB === true && cu.parallelogramCTPR.diagonalsBisect === true && cu.lawOfCosines.holds === true);
+  const ci = runGameLogic("coupled-impossible-fork", "sweep", { from: 250, to: 500, step: 50 });
+  check("coupled-impossible-fork/sweep: the gap closes only at W = 500", ci.samples.filter((s) => s.coupled).length === 1 && ci.samples.at(-1).middleBeamGap === 0);
+  const cx = runGameLogic("coxeter-tangent-circles", "compare_families", {
+    A: { x: 242.131231, y: 96.027289 }, B: { x: 198.166808, y: 208.43536 }, C: { x: 302.724261, y: 147.285163 }, innerCircle: true,
+  });
+  check("coxeter-tangent-circles/compare_families: both families share the touching points", cx.contactLengths.unique === true && cx.inner.touchesAllThree === true && cx.outer.touchesAllThree === true && cx.inner.beecroft.sharedTouchingPoints === true);
+}
+
 // A game with no reader, and a position that makes no sense.
 check("a game with no reader gives null", describePosition("hanoi", {}, 1) === null);
 let threw = false;
