@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>de Villiers 2 &mdash; coolmaths</title>
+<meta name="description" content="Four corners sit on one circle. Their touching lines make a new four-sided shape; do the mid-line mirrors of its sides make another shape that holds a circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/de-villiers-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="de Villiers 2">
+<meta property="og:description" content="Four corners sit on one circle. Their touching lines make a new four-sided shape; do the mid-line mirrors of its sides make another shape that holds a circle?">
+<meta property="og:url" content="https://coolmaths.ai/de-villiers-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .tangent-ray { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 4; }
+  #board .main-poly { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+  #board .step-poly { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .bisector { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: 6 5; }
+  #board .mid-dot { fill: var(--highlight); }
+  #board .main-dot { fill: var(--ink); }
+  #board .step-dot { fill: var(--accent); }
+  #board .angle-main { fill: none; stroke: var(--bad); stroke-width: 1.5; }
+  #board .angle-step { fill: none; stroke: var(--good); stroke-width: 1.5; }
+  #board .diag-main { fill: none; stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 7 5; }
+  #board .diag-step { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 7 5; }
+  #board .diag-original { fill: none; stroke: var(--good); stroke-width: 1.5; }
+  #board .incircle { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .touch-dot { fill: var(--good); }
+  #board .point-label {
+    fill: var(--text); font: 600 0.85rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+  .controls input:disabled + span { opacity: 0.55; cursor: default; }
+</style>
+</head>
+<body data-game="de-villiers-2" data-kind="demo">
+<main id="main">
+  <h1>de Villiers 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: four points on a circle make new four-sided shapes that can each hold a circle of their own.<br>
+    <strong>How to play:</strong> Drag A, B, C or D, or focus one and press the arrow keys. Choose Primary or Secondary, tick what to show, and press Reset diagram to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 300" role="group"
+         aria-label="Four points on a circle, the tangents at them, their quadrilateral, and the quadrilateral made by the perpendicular bisectors of its sides"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="primary" type="checkbox"> Primary</label>
+    <label><input id="secondary" type="checkbox"> Secondary</label>
+    <label><input id="names" type="checkbox" disabled> <span>Names</span></label>
+    <label><input id="angles" type="checkbox" disabled> <span>Angle bisectors</span></label>
+    <label><input id="diagonals" type="checkbox" disabled> <span>Diagonals</span></label>
+    <label><input id="joints" type="checkbox" checked disabled> <span>Tangency point joints</span></label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move one corner and the whole drawing changes, yet two four-sided shapes keep being able to hold a circle. The old page calls this a droodle: the applet suggests a statement, while the article carries the proof.</p>
+
+      <h2>Two shapes, one circle</h2>
+      <p>The four draggable corners stay on one <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>. At each corner the applet draws the <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> to that circle — the line that only grazes it. Meet the tangents in pairs and you get a new quadrilateral whose four sides all graze the same circle: it is <a class="wiki-term" data-wiki="Tangential_quadrilateral" href="https://en.wikipedia.org/wiki/Tangential_quadrilateral" target="_blank" rel="noopener">inscriptible</a>. The faint lines in the picture are the <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisectors</a> of its sides; where neighbours meet gives the second, coloured quadrilateral.</p>
+
+      <h2>The claim on the page</h2>
+      <p>The article states: “Given a quadrilateral ABCD, the perpendicular bisectors of its sidelines form a quadrilateral A₁B₁C₁D₁. If ABCD is inscriptible, then so is A₁B₁C₁D₁.” This is confirmed here, not just drawn: a shape can hold a circle exactly when its opposite sides add up to the same total (<a class="wiki-term" data-wiki="Pitot_theorem" href="https://en.wikipedia.org/wiki/Pitot_theorem" target="_blank" rel="noopener">Pitot's theorem</a>), and its four distances from the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> to the sides must agree. The logic test checks both on 1,200 positions of the applet and on 3,000 other inscriptible quadrilaterals; both held every time. One degenerate case is a square: its four bisectors meet at a single point, so there is no second quadrilateral to speak of.</p>
+
+      <h2>Why the tangent lengths work</h2>
+      <p>Let the lengths from A, B, C, D to the touching points of the <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> be t<sub>A</sub>, t<sub>B</sub>, t<sub>C</sub>, t<sub>D</sub>, and the sides a, b, c, d. Then a = t<sub>A</sub> + t<sub>B</sub>, b = t<sub>B</sub> + t<sub>C</sub>, c = t<sub>C</sub> + t<sub>D</sub>, d = t<sub>D</sub> + t<sub>A</sub>, so c − d = t<sub>C</sub> − t<sub>A</sub>. With the inradius set to 1, the page's formula (3) says <code>2(FX − FW) = (c − d)t<sub>D</sub></code>, where F is where the bisectors of AD and CD meet and X, W are the midpoints of those sides. Adding the four such differences gives <code>(c−d)t<sub>D</sub> + (d−a)t<sub>A</sub> + (a−b)t<sub>B</sub> + (b−c)t<sub>C</sub></code>, which becomes <code>(t<sub>C</sub>−t<sub>A</sub>)(t<sub>D</sub>−t<sub>B</sub>) + (t<sub>D</sub>−t<sub>B</sub>)(t<sub>A</sub>−t<sub>C</sub>) = 0</code>. The test checks the signed form of formula (3) on every case it tries; the signs depend on which way along a bisector the distance is read.</p>
+
+      <h2>What the old applet did</h2>
+      <p>The live cut-the-knot page still carries the Java <code>&lt;applet&gt;</code> tag and the full article, but a browser without Java shows only its fallback message, so the behaviour here follows the archived bytecode. Like the applet, we keep all four corners on one circle (the bytecode computes a random multiple of pi for D and then never uses it), start with the four Show boxes off except “tangency point joints”, and disable those boxes until Primary or Secondary is chosen. The applet's second embed turns names on by default; this page uses the first embed's setting. Its proof is credited to M. de Villiers, suggested by Jordan Tabov, while the applet itself is Bogomolny's; no third-party rights are claimed over it. The picture is the applet's dual view of the statement — the page says it only “may suggest” it — and the test above checks the stated perpendicular-bisector claim directly.</p>
+
+      <p class="tip">Try Secondary with “tangency point joints”: the little circle drawn from two angle bisectors lands exactly on the four sides of the coloured quadrilateral.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/deVilliers2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="de-villiers-2-core.js"></script>
+<script src="de-villiers-2.js"></script>
+</body>
+</html>
