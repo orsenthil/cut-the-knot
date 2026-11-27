@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eurica Cyclic &mdash; coolmaths</title>
+<meta name="description" content="Four circles drawn on a cyclic quadrilateral all meet at one point, and that point lines up with the two places where opposite sides meet. Can you see why it happens?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/eurica-cyclic/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Eurica Cyclic">
+<meta property="og:description" content="Four circles drawn on a cyclic quadrilateral all meet at one point, and that point lines up with the two places where opposite sides meet. Can you see why it happens?">
+<meta property="og:url" content="https://coolmaths.ai/eurica-cyclic/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 8 6; }
+  #board .quad {
+    fill: var(--accent); fill-opacity: 0.08; stroke: var(--ink);
+    stroke-width: 2.2; cursor: grab; pointer-events: all;
+  }
+  #board .side { stroke: var(--ink); stroke-width: 2; }
+  #board .miquel { fill: none; stroke: var(--accent); stroke-width: 2; opacity: 0.85; }
+  #board .miquel-1 { stroke-dasharray: 14 7; }
+  #board .miquel-2 { stroke-width: 1.6; }
+  #board .miquel-3 { stroke-width: 1.6; stroke-dasharray: 14 7; }
+  #board .hint-line { stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 6 5; }
+  #board .hint-arc { fill: none; stroke: var(--highlight); stroke-width: 2; }
+  #board .extra-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .pick-dot { fill: none; stroke: var(--bad); stroke-width: 3; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; padding: 0.4rem 0.55rem; min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="eurica-cyclic" data-kind="demo">
+<main id="main">
+  <h1>Eurica Cyclic</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: four circles drawn around a four-sided shape always meet at one point.<br>
+    <strong>How to play:</strong> Drag the corners A, B, C and D, or drag the whole shape; focus a corner and use the arrow keys to nudge it. Tick the boxes to show names, the angle hint, or the applet's own choice of the meeting point.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 550" role="group"
+         aria-label="Four draggable corners on a circle, their extended sides, four circles through them and their common point K"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Show names</label>
+    <label><input id="hint" type="checkbox"> Show hint</label>
+    <label><input id="showPick" type="checkbox"> Applet's K</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag one corner and four circles chase it, yet they still share a single point. The old page asks two things: do the circles always meet, and does that meeting point sit on the line through P and Q? The live cut-the-knot page now shows a GeoGebra sketch; the archived 28 July 2011 page really embeds <code>CODE="EuricaCyclic"</code> with <code>ShowNames=1</code>, and this port follows that Java applet and its article.</p>
+
+      <h2>The exact claim</h2>
+      <p>Let P be where the lines AB and CD meet, and Q where BC and AD meet. Draw the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircles</a> C(ABQ), C(BCP), C(ADP) and C(CDQ). The page claims all four pass through one point K, and that K is <a class="wiki-term" data-wiki="Collinearity" href="https://en.wikipedia.org/wiki/Collinearity" target="_blank" rel="noopener">collinear</a> with P and Q. It also says the circles meet even when ABCD is not a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>; only the line through P and Q needs the circle. The logic test checks 4,080 drawable four-corner choices in a regular grid, 6,845 cyclic cases in all and 2,000 non-cyclic ones: concurrency holds throughout and collinearity holds on the circle and fails off it.</p>
+
+      <h2>Why four circles meet</h2>
+      <p>This is the <a class="wiki-term" data-wiki="Miquel_point" href="https://en.wikipedia.org/wiki/Miquel_point" target="_blank" rel="noopener">Miquel point</a> of a complete quadrilateral. The circles C(ABQ) and C(BCP) already share B; their other meeting point is K. Because B, A, Q, K lie on one circle and B, P, C, K on another, the angles at K match the angles at A and C, which forces K onto C(ADP) and C(CDQ) as well. The test found no counterexample: the largest distance from the computed K to any of the four circles, measured against the size of the picture, was below 10<sup>-7</sup>.</p>
+
+      <h2>Why K lands on PQ</h2>
+      <p>Here the four corners do sit on one circle, so <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angles</a> give <code>∠BCD + ∠BAD = 180°</code>. As P and Q lie on extensions of the sides, <code>∠BCD + ∠BCP = 180°</code> and <code>∠BAD + ∠BAQ = 180°</code>. In the two circles through K, <code>∠BCP + ∠BKP = 180°</code> and <code>∠BAQ + ∠BKQ = 180°</code>. Adding these with the first pair gives</p>
+      <blockquote><code>∠BKP + ∠BKQ = 180°</code>,</blockquote>
+      <p>which is exactly what it means for P, K and Q to lie on one straight line. Every one of the 6,845 cyclic cases tested had this sum, to within a ten-millionth of the picture's size.</p>
+
+      <h2>One shortcut in the Java applet</h2>
+      <p>Two circles meet in two points: B and K. The applet's <code>Other()</code> method keeps the first one unless it is within one unit of P, so it often shows B where the page's K should be: in 2,517 of the 4,080 grid cases. This port follows the page's claim and draws the point that really lies on all four circles. Tick "Applet's K" to see a red ring at the Java applet's raw choice when it differs. Two more guards from the bytecode remain faithful: a side pair whose line determinant is below one has no intersection drawn, and two circles whose centres are within a unit of each other fall back to their centre.</p>
+
+      <p class="tip">Try dragging one corner far off the grey circle: the four circles still meet, but the line through P and Q misses K. Press Reset to put everything back.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EuricaCyclic.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="eurica-cyclic-core.js"></script>
+<script src="eurica-cyclic.js"></script>
+</body>
+</html>
