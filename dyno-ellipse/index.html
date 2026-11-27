@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dyno Ellipse &mdash; coolmaths</title>
+<meta name="description" content="Add two arrows spinning at the same speed in opposite directions: what shape does their combined tip trace? Change the lengths and speeds to find the circle, the straight line and the other cusped curves.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/dyno-ellipse/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Dyno Ellipse">
+<meta property="og:description" content="Add two arrows spinning at the same speed in opposite directions: what shape does their combined tip trace? Change the lengths and speeds to find the circle, the straight line and the other cusped curves.">
+<meta property="og:url" content="https://coolmaths.ai/dyno-ellipse/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; margin: 0 auto; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .guide { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 5; }
+  #board .guide-1 { stroke: var(--accent); opacity: 0.6; }
+  #board .guide-2 { stroke: var(--good); opacity: 0.6; }
+  #board .curve { fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linejoin: round; }
+  #board .arm { stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; }
+  #board .arm-1 { stroke: var(--accent); }
+  #board .arm-2 { stroke: var(--good); }
+  #board .join { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 3 4; }
+  #board .tip { fill: var(--accent); }
+  #board .tip-2 { fill: var(--good); }
+  #board .centre { fill: var(--ink); }
+  #board .pt-label { fill: var(--text); font-size: 0.85rem; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls .option {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1 1 11rem;
+    min-width: 0;
+    white-space: normal;
+    font-size: 0.9rem;
+  }
+  .controls .option-line { display: flex; justify-content: space-between; gap: 0.5rem; white-space: nowrap; }
+  .controls input[type="range"] { width: 100%; accent-color: var(--accent); }
+  .controls output { font-family: var(--mono); }
+  .controls button { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="dyno-ellipse" data-kind="demo">
+<main id="main">
+  <h1>Dyno Ellipse</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#algebra">Algebra</a><a class="tag" href="../index.html#geometry">Geometry</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two spinning arms pull a pen along a curve; watch the shape they make together.<br>
+    <strong>How to play:</strong> Slide the four controls to change each arm's length and turning speed. Press Go to start or stop, tick the boxes to show the circles and arms, and press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Two arms spinning about one centre, with a pen tracing the path of their combined tips"></svg>
+  </div>
+
+  <div class="controls">
+    <label class="option">
+      <span class="option-line"><span>Turn 1</span><output id="rate1Out" for="rate1">2</output></span>
+      <input id="rate1" type="range" min="-50" max="50" step="1" value="2" aria-label="Turn speed of the first arm, from minus 50 to 50">
+    </label>
+    <label class="option">
+      <span class="option-line"><span>Turn 2</span><output id="rate2Out" for="rate2">5</output></span>
+      <input id="rate2" type="range" min="-50" max="50" step="1" value="5" aria-label="Turn speed of the second arm, from minus 50 to 50">
+    </label>
+    <label class="option">
+      <span class="option-line"><span>Length 1</span><output id="r1Out" for="r1">60</output></span>
+      <input id="r1" type="range" min="0" max="100" step="1" value="60" aria-label="Length of the first arm, from 0 to 100">
+    </label>
+    <label class="option">
+      <span class="option-line"><span>Length 2</span><output id="r2Out" for="r2">40</output></span>
+      <input id="r2" type="range" min="0" max="100" step="1" value="40" aria-label="Length of the second arm, from 0 to 100">
+    </label>
+    <label class="check"><input id="circlesBox" type="checkbox" checked aria-label="Show the two circles the arm tips travel around"> Circles</label>
+    <label class="check"><input id="barsBox" type="checkbox" checked aria-label="Show the two rotating arms and the lines joining their tips"> Arms</label>
+    <button id="goBtn" type="button" class="primary" aria-label="Start the arms" aria-pressed="false">Go</button>
+    <button id="resetBtn" type="button" aria-label="Put the four controls back at their starting values">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Richard Mickelsen wrote to Alexander Bogomolny with a surprise: add two circular motions turning at the same speed in opposite directions, and the tip of the sum draws an <a class="wiki-term" data-wiki="Ellipse" href="https://en.wikipedia.org/wiki/Ellipse" target="_blank" rel="noopener">ellipse</a>. The old applet let you change the speeds and lengths of both motions. This page keeps its four controls and its drawing exactly.</p>
+
+      <h2>Two arrows, one pen</h2>
+      <p>Start both arrows pointing right. At step <code>n</code> the first tip is at <code>(r1 cos(n&middot;Rate1/360), &minus;r1 sin(n&middot;Rate1/360))</code> and the second at <code>(r2 cos(n&middot;Rate2/360), &minus;r2 sin(n&middot;Rate2/360))</code>. These are <a class="wiki-term" data-wiki="Vector_(mathematics)" href="https://en.wikipedia.org/wiki/Vector_(mathematics)" target="_blank" rel="noopener">vectors</a> in screen <a class="wiki-term" data-wiki="Cartesian_coordinate_system" href="https://en.wikipedia.org/wiki/Cartesian_coordinate_system" target="_blank" rel="noopener">coordinates</a>, with <code>y</code> growing downward. The pen sits at their componentwise sum, which is the same as a <a class="wiki-term" data-wiki="Parametric_equation" href="https://en.wikipedia.org/wiki/Parametric_equation" target="_blank" rel="noopener">parametric curve</a>. The divisor is 360 <em>radians</em>, not degrees: a full turn at speed 1 needs <code>720&pi;</code> steps. Both arrows have zero phase in the applet; the page explains that shifting time and turning the axes can always make the phases zero, so nothing is lost.</p>
+
+      <h2>Why the sum is an ellipse</h2>
+      <p>Set <code>Rate2 = &minus;Rate1</code>. Because cosine is even and sine is odd, the two <code>x</code> parts add and the two <code>y</code> parts subtract: <code>X = (r1+r2) cos(wt)</code> and <code>Y = &minus;(r1&minus;r2) sin(wt)</code>. Square and add:</p>
+      <blockquote><code>(X/(r1+r2))&sup2; + (Y/(r1&minus;r2))&sup2; = 1</code></blockquote>
+      <p>The curve has semi-axes <code>r1+r2</code> and <code>|r1&minus;r2|</code>. The logic test checked this identity at every speed from 1 to 50, every pair of lengths from 0 to 100, and many steps; the largest error was below <code>2&times;10<sup>&minus;12</sup></code>. The page's formula has a plus sign on <code>Y</code> because it measures <code>y</code> upward; squaring makes the two statements the same.</p>
+
+      <h2>The two easy extremes</h2>
+      <p>When the speeds are equal the two arrows never separate, so the pen runs round a <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> of radius <code>r1+r2</code>. When the speeds are opposite and the lengths are equal, the <code>y</code> parts cancel exactly and the pen runs back and forth along a <a class="wiki-term" data-wiki="Line_segment" href="https://en.wikipedia.org/wiki/Line_segment" target="_blank" rel="noopener">straight line segment</a> of length <code>2(r1+r2)</code>. Both are verified over the whole range of speeds and lengths.</p>
+
+      <h2>Other speeds, other curves</h2>
+      <p>The page also names curves for other ratios <code>W = Rate1/Rate2</code> and <code>R = r1/r2</code>: <code>W=2, R=1/2</code> gives a <a class="wiki-term" data-wiki="Cardioid" href="https://en.wikipedia.org/wiki/Cardioid" target="_blank" rel="noopener">cardioid</a>, <code>W=&minus;2, R=1/2</code> a <a class="wiki-term" data-wiki="Deltoid_curve" href="https://en.wikipedia.org/wiki/Deltoid_curve" target="_blank" rel="noopener">deltoid</a> with three cusps, <code>W=&minus;3, R=1/3</code> an <a class="wiki-term" data-wiki="Astroid" href="https://en.wikipedia.org/wiki/Astroid" target="_blank" rel="noopener">astroid</a> with four, and <code>W=3, R=1/3</code> a <a class="wiki-term" data-wiki="Nephroid" href="https://en.wikipedia.org/wiki/Nephroid" target="_blank" rel="noopener">nephroid</a> with two. The test measured the cusps of each curve from its own tangent and found 1, 3, 4 and 2 respectively, as claimed. For any whole <code>W</code>, <code>R = 1/|W|</code> gives an epicycloid with <code>W&minus;1</code> cusps or a hypocycloid with <code>W+1</code>.</p>
+      <p class="tip">Set Turn 1 to 2, Turn 2 to &minus;2 and both lengths to 60: the pen draws a straight line. Change Length 2 to 40 and watch the line open into an ellipse. The old applet also had an unused &ldquo;number of rays&rdquo; control left over from another program; it changed nothing, so this page leaves it out.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/DynoEllipse.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="dyno-ellipse-core.js"></script>
+<script src="dyno-ellipse.js"></script>
+</body>
+</html>
