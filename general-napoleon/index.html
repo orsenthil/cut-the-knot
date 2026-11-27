@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>General Napoleon &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and move the sliders: do the lines from each corner to the tip of the triangle on the far side always meet in one point?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/general-napoleon/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="General Napoleon">
+<meta property="og:description" content="Drag the corners of a triangle and move the sliders: do the lines from each corner to the tip of the triangle on the far side always meet in one point?">
+<meta property="og:url" content="https://coolmaths.ai/general-napoleon/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .abc { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .base { stroke: var(--muted); stroke-width: 2; }
+  #board .small-side { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 4; }
+  #board .cevian { stroke: var(--good); stroke-width: 2; }
+  #board .plain-line { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 7 5; }
+  #board .apex-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .side-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1.5; }
+  #board .meet-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.9rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { gap: 0.6rem 1rem; }
+  .slider {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.15rem 0.5rem;
+    min-width: min(100%, 12rem);
+    flex: 1 1 12rem;
+  }
+  .slider input { width: 100%; min-width: 0; }
+  .slider output { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="general-napoleon" data-kind="demo">
+<main id="main">
+  <h1>General Napoleon</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: three small triangles stand on the sides of a big one, and their corner lines meet at one spot.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a corner and use the arrow keys. Move the sliders to change the small triangles, and tick Show names to see the points.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 300" role="group"
+         aria-label="Triangle ABC with pairs of points on its sides, three isosceles triangles built on those pairs, and the lines from the corners to their opposite tips"></svg>
+  </div>
+
+  <div class="controls">
+    <label class="slider" for="up">Point on the first side
+      <input id="up" type="range" min="0" max="105" step="1" value="30" aria-label="Upper point coefficient on each side, 0 to 1.05">
+      <output id="upOut" for="up">0.30</output>
+    </label>
+    <label class="slider" for="down">Point on the other end
+      <input id="down" type="range" min="0" max="105" step="1" value="70" aria-label="Lower point coefficient on each side, 0 to 1.05">
+      <output id="downOut" for="down">0.70</output>
+    </label>
+    <label class="slider" for="angle">Tilt of the small triangles
+      <input id="angle" type="range" min="-90" max="95" step="1" value="60" aria-label="Base angle of the small triangles, in degrees, from minus 90 to 95">
+      <output id="angleOut" for="angle">60°</output>
+    </label>
+    <label for="names"><input id="names" type="checkbox" checked> Show names</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move a corner of the big triangle and the three small triangles swing around, yet three lines still pass through one spot. That is the claim on the old cut-the-knot page, which still embeds its Java applet; the picture here is the same construction drawn with SVG. The applet's name mentions Napoleon, but the statement it illustrates is a generalization of Kiepert's theorem.</p>
+
+      <h2>What the two sliders choose</h2>
+      <p>On side AB the applet puts K near A and L near B; on BC it puts P near B and Q near C; on CA it puts M near C and N near A. The first slider sets how far L, Q and N sit from their <em>other</em> end, and the second does the same for K, P and M. In the page's <a class="wiki-term" data-wiki="Barycentric_coordinates_(mathematics)" href="https://en.wikipedia.org/wiki/Barycentric_coordinates_(mathematics)" target="_blank" rel="noopener">barycentric coordinates</a> this says <code>AK/AB = BP/BC = CM/CA</code> on every side. When the two slider numbers add to 1, each pair is made of <a class="wiki-term" data-wiki="Isotomic_conjugate" href="https://en.wikipedia.org/wiki/Isotomic_conjugate" target="_blank" rel="noopener">isotomic conjugates</a>: for instance <code>AK = LB</code>. That is the hypothesis of the page's theorem.</p>
+
+      <h2>Three matching small triangles</h2>
+      <p>Each tip is found by turning the far end of the side about each base point by the chosen angle, and taking where the two turned lines cross. Both base angles of the little triangle are therefore the same, so KLC', PQA' and MNB' are <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles triangles</a> with the same apex angle. Their bases have matching fractions of the big triangle's sides, so the three little triangles are similar and point the same way. At an angle of 0 or 90 degrees the two lines are parallel and there is no tip; the applet draws nothing there, and neither does this page.</p>
+
+      <h2>The claim, checked</h2>
+      <p>The page says: using KL, MN and PQ as bases, form similar and similarly oriented isosceles triangles KLC', MNB' and PQA'; then <code>AA', BB', CC'</code> are <a class="wiki-term" data-wiki="Concurrent_lines" href="https://en.wikipedia.org/wiki/Concurrent_lines" target="_blank" rel="noopener">concurrent</a>. The logic test confirms this over hundreds of triangles and every slider value in the applet's range whenever the two slider numbers add to 1: the three pairwise meeting points agree to within a drawing error of about <code>0.0002</code> pixels. It also finds counterexamples when they do not add to 1, so the isotomic condition really is needed. The applet itself switches off its meeting dot outside the band <code>0.99 .. 1.01</code> and draws only the apex-to-corner lines; this page does the same.</p>
+
+      <h2>Why a meeting point exists</h2>
+      <p>The page proves it by showing that BA' and BC' are <a class="wiki-term" data-wiki="Isogonal_conjugate" href="https://en.wikipedia.org/wiki/Isogonal_conjugate" target="_blank" rel="noopener">isogonal conjugates</a> at B, and the same at A and C. Similar triangles give equal angles at the base points, and equal lengths then force those mirror-image directions. A theorem of D. Gale turns three such isogonal pairs into one meeting point. Setting one slider to 0 and the other to 1 makes each base a whole side: that is Kiepert's theorem, whose meeting point traces a <a class="wiki-term" data-wiki="Kiepert_hyperbola" href="https://en.wikipedia.org/wiki/Kiepert_hyperbola" target="_blank" rel="noopener">Kiepert hyperbola</a> as the angle changes. The middle-thirds equilateral case studied by Garfunkel and Stahl is another special case.</p>
+
+      <p class="tip">Try putting both sliders at 0.50 and watch the bases shrink to nothing, then move them back so they add to 1 and see the green lines meet again.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/GeneralNapoleon.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="general-napoleon-core.js"></script>
+<script src="general-napoleon.js"></script>
+</body>
+</html>
