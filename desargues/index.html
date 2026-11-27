@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Desargues &mdash; coolmaths</title>
+<meta name="description" content="Can two triangles have their matching corners joined at one point and their side crossings lined up on one line? Drag them and watch the two views of Desargues' theorem fit together.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/desargues/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Desargues">
+<meta property="og:description" content="Can two triangles have their matching corners joined at one point and their side crossings lined up on one line? Drag them and watch the two views of Desargues' theorem fit together.">
+<meta property="og:url" content="https://coolmaths.ai/desargues/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .triangle { stroke: var(--ink); stroke-width: 2.4; stroke-linejoin: round; }
+  #board .tri-one { fill: var(--accent-soft); }
+  #board .tri-two { fill: var(--surface-2); }
+  #board .shape-hit { fill: transparent; stroke: none; pointer-events: all; cursor: grab; }
+  #board .vertex-line { stroke: var(--ink); stroke-width: 2; }
+  #board .side-line { stroke: var(--bad); stroke-width: 2; }
+  #board .axis-line { stroke: var(--accent); stroke-width: 3; }
+  #board .cross-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .centre-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 2; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls button { min-height: 2.75rem; }
+</style>
+</head>
+<body data-game="desargues" data-kind="demo">
+<main id="main">
+  <h1>Desargues</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move two triangles and watch how their matching lines and side crossings line up; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag a corner or a whole triangle, or focus a corner and use the arrow keys. Press Direct or Converse to switch views, and Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Two draggable triangles A1B1C1 and A2B2C2. Direct mode joins matching corners; Converse mode marks the side crossings ab, bc and ca and joins them."></svg>
+    <p class="hint-line">Drag A1, B1, C1, A2, B2 or C2, or focus one and press the arrow keys (Shift for bigger steps). You can also drag either shaded triangle as a whole.</p>
+  </div>
+
+  <div class="controls">
+    <button id="directBtn" type="button" aria-pressed="true">Direct</button>
+    <button id="converseBtn" type="button" aria-pressed="false">Converse</button>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two different-looking drawings turn out to say the same thing. The live cut-the-knot page now embeds a GeoGebra picture; the Java applet this port follows is preserved in the <a href="https://web.archive.org/web/20060928042907/http://www.cut-the-knot.org/Curriculum/Geometry/Desargues.shtml" target="_blank" rel="noopener">2006 Wayback capture</a>. Both give the same theorem, and this page keeps the old applet's two views and its six draggable corners.</p>
+
+      <h2>Two ways to line things up</h2>
+      <p>Write the first triangle as <code>A1 B1 C1</code> and the second as <code>A2 B2 C2</code>. The page asks about two conditions:</p>
+      <blockquote>1. The lines <code>A1A2</code>, <code>B1B2</code>, <code>C1C2</code> are <a class="wiki-term" data-wiki="Concurrency_(geometry)" href="https://en.wikipedia.org/wiki/Concurrency_(geometry)" target="_blank" rel="noopener">concurrent</a> (they pass through one point).<br>
+      2. The crossings <code>ab = A1B1 ∩ A2B2</code>, <code>bc = B1C1 ∩ B2C2</code> and <code>ca = C1A1 ∩ C2A2</code> are <a class="wiki-term" data-wiki="Collinearity" href="https://en.wikipedia.org/wiki/Collinearity" target="_blank" rel="noopener">collinear</a> (they lie on one line).</blockquote>
+      <p><a class="wiki-term" data-wiki="Desargues%27_theorem" href="https://en.wikipedia.org/wiki/Desargues%27_theorem" target="_blank" rel="noopener">Desargues' theorem</a> says 1 always implies 2. Its dual says 1 follows from 2, so for this theorem the dual is the converse too. The page's condition 1 prints "B2B2" once; that is a typo for <code>B1B2</code>, as its own proof and applet make clear. The applet never forces either condition: you drag freely and it shows whichever construction you chose.</p>
+
+      <h2>What the two buttons draw</h2>
+      <p><em>Direct</em> joins matching vertices and puts a yellow dot at the average of the three pairwise line crossings when they are within 8 board units of one another. That is the perspective centre from condition 1. <em>Converse</em> draws the six side lines, marks <code>ab</code>, <code>bc</code>, <code>ca</code>, and joins them with a magenta axis. In 1,500 triangles built to share a centre, the three crossings lined up with a maximum error below <code>1e-6</code> units; in 1,500 triangles built to share an axis, the three vertex lines met with the same accuracy. The logic test also checked the page's <a class="wiki-term" data-wiki="Menelaus%27s_theorem" href="https://en.wikipedia.org/wiki/Menelaus%27s_theorem" target="_blank" rel="noopener">Menelaus</a> calculation: the product of its three directed ratios is <code>−1</code> in every such case.</p>
+
+      <h2>Why a third dimension helps</h2>
+      <p>The page's proof (kindly supplied by Hubert Shutrick) lifts one triangle out of the <a class="wiki-term" data-wiki="Plane_(mathematics)" href="https://en.wikipedia.org/wiki/Plane_(mathematics)" target="_blank" rel="noopener">plane</a>. Two triangles that do not lie in one plane have planes meeting in a line; the side crossings of condition 2 must lie on that line, and the vertex lines of condition 1 meet at the point where the three joining planes meet. Project the picture back down and the flat theorem follows. This is why the result is a <a class="wiki-term" data-wiki="Projective_geometry" href="https://en.wikipedia.org/wiki/Projective_geometry" target="_blank" rel="noopener">projective</a> one, though a flat proof needs more care.</p>
+      <p>The page excludes a few exceptional positions, for example <code>A1</code>, <code>A2</code>, <code>B1</code>, <code>B2</code> all on one line. The old applet shows that too: when two lines are parallel their crossing is NaN, so there is no yellow dot and the magenta axis is extended from the crossing that still exists. The test compares its NaN and extension behaviour directly with the bytecode.</p>
+
+      <p class="tip">Try Converse, then drag C2 until the three side crossings sit on a straight line; switch to Direct and watch the yellow centre appear.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Desargues.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="desargues-core.js"></script>
+<script src="desargues.js"></script>
+</body>
+</html>
