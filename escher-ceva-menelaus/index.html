@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Escher Ceva Menelaus &mdash; coolmaths</title>
+<meta name="description" content="Move the dots on a triangle's sides: when do its three cross-lines meet at one point, and how many 3-4-5 Escher patterns work?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/escher-ceva-menelaus/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Escher Ceva Menelaus">
+<meta property="og:description" content="Move the dots on a triangle's sides: when do its three cross-lines meet at one point, and how many 3-4-5 Escher patterns work?">
+<meta property="og:url" content="https://coolmaths.ai/escher-ceva-menelaus/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 1rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linejoin: round; }
+  #board .grid-tick { fill: var(--muted); }
+  #board .cevian { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 7 4; }
+  #board .center-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .pt-label {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .vertex-label { fill: var(--ink); }
+  #board .b-label { fill: var(--accent); }
+  #board .c-label, #board .center-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .c-handle { fill: var(--good); }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .stepper { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.95rem; }
+  .stepper input { width: 4rem; }
+</style>
+</head>
+<body data-game="escher-ceva-menelaus" data-kind="demo">
+<main id="main">
+  <h1>Escher Ceva Menelaus</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the dots on a triangle and see whether its three cross-lines meet at one point.<br>
+    <strong>How to play:</strong> Drag a dot with a mouse or finger, or focus it and use the arrow keys. Change the number boxes to split each side into more or fewer equal parts.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 300" role="group"
+         aria-label="A triangle with six draggable side dots and three lines joining them"></svg>
+  </div>
+
+  <div class="controls">
+    <label class="stepper" for="divAB">Parts on A<sub>1</sub>A<sub>2</sub>
+      <input id="divAB" type="number" min="2" max="30" step="1" value="3"
+             aria-label="Number of equal parts on side A1 A2, from 2 to 30">
+    </label>
+    <label class="stepper" for="divBC">Parts on A<sub>2</sub>A<sub>3</sub>
+      <input id="divBC" type="number" min="2" max="30" step="1" value="4"
+             aria-label="Number of equal parts on side A2 A3, from 2 to 30">
+    </label>
+    <label class="stepper" for="divCA">Parts on A<sub>3</sub>A<sub>1</sub>
+      <input id="divCA" type="number" min="2" max="30" step="1" value="5"
+             aria-label="Number of equal parts on side A3 A1, from 2 to 30">
+    </label>
+    <button id="resetBtn" type="button" class="primary"
+            aria-label="Reset the triangle and the six side dots">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two old triangle facts, <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a> and <a class="wiki-term" data-wiki="Menelaus%27_theorem" href="https://en.wikipedia.org/wiki/Menelaus%27_theorem" target="_blank" rel="noopener">Menelaus' theorem</a>, turn out to be two special cases of one equation. This applet lets you move six side dots and watch that equation decide whether three lines meet.</p>
+
+      <h2>Turn side dots into numbers</h2>
+      <p>On the side A<sub>2</sub>A<sub>3</sub>, the article measures B<sub>1</sub> and C<sub>1</sub> from opposite ends. If the side is split into <code>N</code> equal parts and a B dot is <code>i</code> ticks from its first corner, its number is <code>b = (N&minus;i)/i</code>. A C dot <code>i</code> ticks from that same corner gives <code>c = i/(N&minus;i)</code>. A C dot at the corner itself gives <code>c = 0</code>. These are the same signed ratios used in <a class="wiki-term" data-wiki="Barycentric_coordinate_system" href="https://en.wikipedia.org/wiki/Barycentric_coordinate_system" target="_blank" rel="noopener">barycentric coordinates</a>: B<sub>1</sub> has coordinates <code>(0:b<sub>1</sub>:1)</code> and C<sub>1</sub> has <code>(0:1:c<sub>1</sub>)</code>, with the other sides following the same pattern. The opening picture has <code>b = (1/4, 3, 1/2)</code> and <code>c = (3/2, 0, 1/2)</code>.</p>
+      <p>One small quirk is kept from the Java applet: the number boxes read 3, 4, 5 on load, but the drawn grids are 3, 5, 4 until you move a box. Both are the same three side lengths, and the logic test pins the exact starting order.</p>
+
+      <h2>One equation decides everything</h2>
+      <p>The page states, and the logic test checks, that C<sub>1</sub>B<sub>2</sub>, C<sub>2</sub>B<sub>3</sub> and C<sub>3</sub>B<sub>1</sub> are concurrent exactly when</p>
+      <blockquote><code>b<sub>1</sub>b<sub>2</sub>b<sub>3</sub> + c<sub>1</sub>c<sub>2</sub>c<sub>3</sub> + b<sub>1</sub>c<sub>1</sub> + b<sub>2</sub>c<sub>2</sub> + b<sub>3</sub>c<sub>3</sub> = 1</code></blockquote>
+      <p>The three line equations in barycentric coordinates have a coefficient <a class="wiki-term" data-wiki="Determinant" href="https://en.wikipedia.org/wiki/Determinant" target="_blank" rel="noopener">determinant</a>; it vanishes precisely when the left side is 1. The test compares that formula with the drawn lines at every integer dot choice on a 3-4-5 triangle (271 finite cases) and at 4,000 random choices with up to 30 parts per side. It also follows the applet's own <code>Ratio()</code> and <code>Formula()</code> methods a second time, from the bytecode, and a green dot appears here under the same <code>|1 &minus; F| &lt; 0.01</code> test the applet uses.</p>
+
+      <h2>Escher's twelve patterns</h2>
+      <p>The page says that dividing the sides into 3, 4 and 5 parts gives twelve concurrences known to M. C. Escher. That claim is confirmed: put B one tick after C on every side, try all six ways of assigning 3, 4 and 5 to the three sides, and exactly two patterns per assignment work &mdash; twelve in all. The opening picture is one of them. Other integer dot choices can also satisfy the equation, so twelve counts Escher's adjacent-tick patterns, not every possible choice of six dots. This is a different Escher result from the Napoleon-hexagon applet called <em>Escher's Theorem</em>: that one uses 120&deg; rotations and a tessellation, not triangle sides cut into 3, 4 and 5 pieces.</p>
+
+      <h2>Ceva and Menelaus hide inside it</h2>
+      <p>If each C dot sits at the first corner of its side, then <code>c<sub>1</sub> = c<sub>2</sub> = c<sub>3</sub> = 0</code> and the equation becomes <code>b<sub>1</sub>b<sub>2</sub>b<sub>3</sub> = 1</code>, the Ceva condition. If each C dot is moved onto its B dot, then <code>b<sub>i</sub>c<sub>i</sub> = 1</code>, and the equation becomes <code>b<sub>1</sub>b<sub>2</sub>b<sub>3</sub> + 1/(b<sub>1</sub>b<sub>2</sub>b<sub>3</sub>) = &minus;2</code>, so the product is <code>&minus;1</code>: Menelaus. The test confirms both reductions in 600 cases each.</p>
+
+      <p class="tip">Try putting every B dot one tick after its C dot, then change only one side: the green crossing disappears at once.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EscherCevaMenelaus.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="escher-ceva-menelaus-core.js"></script>
+<script src="escher-ceva-menelaus.js"></script>
+</body>
+</html>
