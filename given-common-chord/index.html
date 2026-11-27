@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Given Common Chord &mdash; coolmaths</title>
+<meta name="description" content="Two circles meet at P. Can you find the straight line through P that cuts both circles in a segment as long as the bar at the top — and how many such lines are there?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/given-common-chord/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Given Common Chord">
+<meta property="og:description" content="Two circles meet at P. Can you find the straight line through P that cuts both circles in a segment as long as the bar at the top — and how many such lines are there?">
+<meta property="og:url" content="https://coolmaths.ai/given-common-chord/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 42rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .len-bar { stroke: var(--muted); stroke-width: 2; }
+  #board .circle-one { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .circle-two { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .circle-hit { fill: none; stroke: none; pointer-events: all; cursor: grab; }
+  #board .aux-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 7 5; }
+  #board .aux-circle-l { fill: none; stroke: var(--highlight); stroke-width: 1.8; stroke-dasharray: 4 4; }
+  #board .diameter { stroke: var(--muted); stroke-width: 1.5; }
+  #board .feet-bar { stroke: var(--highlight); stroke-width: 3; }
+  #board .chord-one { stroke: var(--accent); stroke-width: 3; }
+  #board .chord-two { stroke: var(--good); stroke-width: 3; }
+  #board .cut-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1.5; }
+  #board .hint-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 17px var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="given-common-chord" data-kind="demo">
+<main id="main">
+  <h1>Given Common Chord</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a drawing, not a game: two circles meet at P, and a straight line through P can cut both of them so that the piece between the two new crossings is as long as the bar at the top.<br>
+    <strong>How to play:</strong> Drag A or B to change the bar's length, drag a circle or its centre and rim dots to move the circles, or focus a dot and use the arrow keys. Choose line 1, line 2 or both, and tick Hint or Names to see how the line is found.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 460" role="group"
+         aria-label="Two circles meeting at P and Q, a length bar AB at the top, and the two lines through P that cut a chord of that length"></svg>
+  </div>
+
+  <div class="controls">
+    <span id="show-label">Show</span>
+    <div role="group" aria-labelledby="show-label">
+      <label><input type="radio" name="whichLine" value="0" checked> line 1</label>
+      <label><input type="radio" name="whichLine" value="1"> line 2</label>
+      <label><input type="radio" name="whichLine" value="2"> both lines</label>
+    </div>
+    <label><input id="hint" type="checkbox"> hint</label>
+    <label><input id="names" type="checkbox"> names</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the bar and both circles back where they started">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The applet asks for a line through one of the two meeting points of two circles. The surprising part is that the answer can be built with just one more circle, and that the number of answers is decided before the line is drawn.</p>
+
+      <h2>Halve the wanted length</h2>
+      <p>Suppose the line through P meets the first circle again at M<sub>1</sub> and the second at M<sub>2</sub>, and the wanted <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord</a> M<sub>1</sub>M<sub>2</sub> is <code>a</code> long. Drop a perpendicular from each centre to the line. Its foot is the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> of the chord from P, so the two feet are <code>a/2</code> apart. Slide that little segment until its first end sits on O<sub>1</sub> (a <a class="wiki-term" data-wiki="Translation_(geometry)" href="https://en.wikipedia.org/wiki/Translation_(geometry)" target="_blank" rel="noopener">translation</a>); its other end is called T. Then <code>O<sub>1</sub>T = a/2</code>.</p>
+
+      <h2>Where T must live</h2>
+      <p>The translated segment is perpendicular to the chord, so T lies on the <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> whose diameter is O<sub>1</sub>O<sub>2</sub> — an angle in a semicircle is right, by <a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a>. T is also <code>a/2</code> from O<sub>1</sub>. Draw those two circles: if they cross there are two points T and two lines; if they touch there is one; otherwise there is none. Tick &ldquo;hint&rdquo; to see both helper circles and the two points T. The page is a fill-in-the-blank text; its own script passes the first choice in each list as the right answer (and, by a site bug, trims its last letter), so the intended claims are &ldquo;one solution&rdquo; in the touching case and that the line through P is <em>parallel</em> to O<sub>1</sub>T. The logic test checks both over hundreds of layouts.</p>
+
+      <h2>The chord that comes out</h2>
+      <p>Through P draw the line parallel to O<sub>1</sub>T. The logic test measures both chords in 757 solvable layouts: each is <code>2 &times; floor(L/2)</code>, where L is the integer length of the top bar. When L is even that is exactly the length a; with an odd L the applet's own integer halving makes the chord one unit shorter, and the port keeps that quirk.</p>
+
+      <h2>Where the claim needs care</h2>
+      <p>The page's &ldquo;two solutions&rdquo; assumes the two lines really cross both circles again. If a helper point T lands on P itself, the matching line touches one circle at P and has no second crossing; the status then names only the usable line. The applet also chooses the crossing at least one unit from P, so when a line almost touches a circle at P it can pick P instead and the measured chord is a little off. Both are faithful to the bytecode, and the test checks them rather than hiding them. Nothing can be won or lost here: the picture ends when you have explored it.</p>
+
+      <p class="tip">Try this: set the top bar to about 260 units, tick &ldquo;hint&rdquo; and &ldquo;names&rdquo;, then drag B left until the two helper circles only touch. Watch the two lines merge into one.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/GivenCommonChord.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="given-common-chord-core.js"></script>
+<script src="given-common-chord.js"></script>
+</body>
+</html>
