@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cevian Triangle &mdash; coolmaths</title>
+<meta name="description" content="Drag a point P inside a triangle and watch the cevian triangle it makes: do the matching sides of the two triangles always meet on one line?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cevian-triangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cevian Triangle">
+<meta property="og:description" content="Drag a point P inside a triangle and watch the cevian triangle it makes: do the matching sides of the two triangles always meet on one line?">
+<meta property="og:url" content="https://coolmaths.ai/cevian-triangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-abc { fill: var(--accent-soft); stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .tri-cevian { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .cevian { stroke: var(--muted); stroke-width: 1.8; stroke-dasharray: 6 4; }
+  #board .guide { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-opacity: 0.55; }
+  #board .guide-alt { fill: none; stroke: var(--accent); stroke-width: 1.2; stroke-opacity: 0.55; stroke-dasharray: 3 5; }
+  #board .axis { stroke: var(--good); stroke-width: 3; }
+  #board .axis-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .foot-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 17px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .small-label { font-size: 14px; }
+  #board .point-label { fill: var(--accent); }
+  #board .axis-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .p-handle { fill: var(--highlight); stroke: var(--ink); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="cevian-triangle" data-kind="demo">
+<main id="main">
+  <h1>Cevian Triangle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the point P or a corner of a triangle and watch a smaller triangle appear inside it.<br>
+    <strong>How to play:</strong> Drag with a mouse or finger, or focus a dot and use the arrow keys. Press Show names to label the points and Check the theorem to test what you see.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="A triangle ABC, a point P inside it, the cevian triangle Pa Pb Pc, and the three intersections L, M, N of matching sides"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle and point P to their starting positions">Reset</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Toggle the labels on the points">Show names</button>
+    <button id="checkBtn" type="button" aria-label="Check whether L, M and N lie on one line">Check the theorem</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Draw three lines through one point inside a triangle. They cut out a smaller triangle. Stretch the sides of both triangles and something surprising happens: three new meeting points fall on a single straight line.</p>
+
+      <h2>One point, three lines</h2>
+      <p>Start with triangle <code>ABC</code> and any point <code>P</code>. The line from <code>A</code> through <code>P</code> meets the opposite side <code>BC</code> at <code>Pa</code>; in the same way <code>Pb</code> lies on <code>CA</code> and <code>Pc</code> lies on <code>AB</code>. Lines like these are called <a class="wiki-term" data-wiki="Cevian" href="https://en.wikipedia.org/wiki/Cevian" target="_blank" rel="noopener">cevians</a>, and <code>PaPbPc</code> is the cevian triangle of <code>P</code>. Because each line <code>A Pa</code>, <code>B Pb</code>, <code>C Pc</code> passes through <code>P</code>, the two triangles are said to be <em>perspective from a point</em>. The logic test checks that all three feet really fall on their opposite sides, on hundreds of triangles with <code>P</code> inside and outside.</p>
+
+      <h2>A straight line from two triangles</h2>
+      <p>Now match the sides: let <code>L = AB ∩ PaPb</code>, <code>M = BC ∩ PbPc</code> and <code>N = CA ∩ PcPa</code>. <a class="wiki-term" data-wiki="Desargues%27_theorem" href="https://en.wikipedia.org/wiki/Desargues%27_theorem" target="_blank" rel="noopener">Desargues' theorem</a> says that two triangles perspective from a point are also <em>perspective from a line</em>: <code>L</code>, <code>M</code> and <code>N</code> are always collinear. That green line is the axis. The logic test compares all six intersections with a second transcription of the applet's own line-intersection method on hundreds of configurations, including <code>P</code> at a corner and <code>P</code> on a side. If two matching sides happen to be parallel, their meeting point runs off the picture (the old applet printed NaN); the axis is then the line through the other two points.</p>
+
+      <h2>The orthic triangle</h2>
+      <p>Put <code>P</code> at the <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a>. The cevians become the <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitudes</a>, and the cevian triangle becomes the <a class="wiki-term" data-wiki="Altitude_(triangle)#Orthic_triangle" href="https://en.wikipedia.org/wiki/Altitude_(triangle)#Orthic_triangle" target="_blank" rel="noopener">orthic triangle</a>; its axis is called the orthic axis. The old page says the sides of <code>ABC</code> are external <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">bisectors</a> of the orthic triangle, and links <a class="wiki-term" data-wiki="Menelaus%27_theorem" href="https://en.wikipedia.org/wiki/Menelaus%27_theorem" target="_blank" rel="noopener">Menelaus' theorem</a> for the collinearity. Both are literally true for an acute triangle. In an obtuse triangle the same side line bisects the <em>internal</em> angle at two of the feet instead, so the page's wording is too narrow; the collinearity still holds. The logic test checks this on hundreds of acute and obtuse triangles.</p>
+
+      <p class="tip">Try dragging P close to a side, or make a long thin triangle: watch which of L, M and N shoots far away while the green line stays straight.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CevianTriangle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cevian-triangle-core.js"></script>
+<script src="cevian-triangle.js"></script>
+</body>
+</html>
