@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equilateral Triangles on a Parallelogram &mdash; coolmaths</title>
+<meta name="description" content="Build equilateral triangles on the sides of a parallelogram, then again on their tips. Where does the second set land?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equi-tri-on-para/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Equilateral Triangles on a Parallelogram">
+<meta property="og:description" content="Build equilateral triangles on the sides of a parallelogram, then again on their tips. Where does the second set land?">
+<meta property="og:url" content="https://coolmaths.ai/equi-tri-on-para/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The square board scales with its viewBox; colours are only site tokens. */
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-fill-first { fill: var(--accent); fill-opacity: 0.14; stroke: none; }
+  #board .tri-fill-second { fill: var(--highlight); stroke: none; }
+  #board .tri-side-first { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .tri-side-second { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .middle-outline { fill: var(--bad); fill-opacity: 0.06; stroke: var(--bad); stroke-width: 3; }
+  #board .final-outline { fill: none; stroke: var(--good); stroke-width: 6; stroke-opacity: 0.6; }
+  #board .base-outline { fill: none; stroke: var(--ink); stroke-width: 2; stroke-dasharray: 6 5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.9rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="equi-tri-on-para" data-kind="demo">
+<main id="main">
+  <h1>Equilateral Triangles on a Parallelogram</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: put equilateral triangles on the sides of a four-sided shape and see where their tips land.<br>
+    <strong>How to play:</strong> Drag A, B, C or D to change the shape, or focus a point and use the arrow keys. Tick the boxes to show names, the first triangles or the second triangles.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 480 480" role="group"
+         aria-label="A parallelogram with equilateral triangles on its sides and on the sides of their tips; the four corner points can be dragged"></svg>
+  </div>
+
+  <div class="controls">
+    <span>Show</span>
+    <label><input id="names" type="checkbox"> names</label>
+    <label><input id="first" type="checkbox"> first step</label>
+    <label><input id="second" type="checkbox"> second step</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the diagram to its opening shape">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Here is a small surprise from Honsberger (pp. 278–279), as stated on the applet's cut-the-knot page: put <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangles</a> on all four sides of a parallelogram, all turned the same way; their four tips form another <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a>. Put equilateral triangles on that one, turned the opposite way, and the new four tips land exactly on the corners you started with. The test checked all three parts of that claim on 365 shapes, including crossed, flat and tiny ones; all of them held. The live article now shows a GeoGebra figure; the Java applet this port follows is visible in the <a href="https://web.archive.org/web/20151208234729id_/http://www.cut-the-knot.org/Curriculum/Geometry/EquiTriOnPara.shtml" target="_blank" rel="noopener">2015 capture of the same page</a>, with the <code>EquiTriOnPara</code> applet and its three checkboxes.</p>
+
+      <h2>Two rounds of triangles</h2>
+      <p>Drag a corner and watch the corner opposite it move, so the four corners always stay a parallelogram. The first round builds X on AB, Y on BC, Z on CD and W on DA, each tip found by turning the next corner about the previous one by 60°. The second round builds P on XY, Q on YZ, R on ZW and S on WX with the turn reversed. Tick <em>first step</em> or <em>second step</em> to tint each round; the boxes match the applet's "first step" and "second step" checkboxes, and the applet's <code>show</code> parameter (set to 0 on the archived page) is the default for <em>names</em>. There is nothing to win: dragging one corner keeps the drawing true, and Reset returns it to its opening shape.</p>
+
+      <h2>Why the middle tips make a parallelogram</h2>
+      <p>Write one sixth-turn as a <a class="wiki-term" data-wiki="Complex_number" href="https://en.wikipedia.org/wiki/Complex_number" target="_blank" rel="noopener">complex number</a> <code>c = (1 + i√3)/2</code>, so <code>1 − c = (1 − i√3)/2</code>. The page's formula (1) says <code>X = cA + (1 − c)B</code>, and similarly <code>Y = cB + (1 − c)C</code>, <code>Z = cC + (1 − c)D</code>, <code>W = cD + (1 − c)A</code>. A parallelogram has <code>A + C = B + D</code>. Add opposite tips: <code>X + Z = c(A + C) + (1 − c)(B + D) = A + C</code>, and the same sum comes from <code>Y + W</code>. Equal sums of opposite corners are exactly the test for a parallelogram, so XYZW always is one.</p>
+
+      <h2>Why the last tips land on the first corners</h2>
+      <p>The second round turns the other way, so <code>P = (1 − c)X + cY</code>, and likewise for Q, R and S. Substituting formula (1) into this gives <code>P = (c² + (1 − c)²)B + c(1 − c)A + c(1 − c)C</code>. Since <code>c² + (1 − c)² = −1</code> and <code>c(1 − c) = 1</code>, that is <code>P = A − B + C</code>. The parallelogram relation says <code>A − B = D − C</code>, hence <code>P = D</code>. The same algebra gives <code>Q = A</code>, <code>R = B</code> and <code>S = C</code>: the second parallelogram is not merely equal in shape to the first, it is the very same four points. This is an <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a> of the construction, with no need for the parallelogram to be rectangular or even convex.</p>
+
+      <p class="tip">Tick both step boxes, drag A across the middle and see the two tinted sets of triangles turn in opposite directions while the green outline stays on the dashed one.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EquiTriOnPara.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="equi-tri-on-para-core.js"></script>
+<script src="equi-tri-on-para.js"></script>
+</body>
+</html>
