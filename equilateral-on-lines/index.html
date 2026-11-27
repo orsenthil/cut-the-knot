@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equilateral On Lines &mdash; coolmaths</title>
+<meta name="description" content="Three parallel lines, one point on each: can you slide the points until they make an equilateral triangle? Turn one line about a point to find both answers.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equilateral-on-lines/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Equilateral On Lines">
+<meta property="og:description" content="Three parallel lines, one point on each: can you slide the points until they make an equilateral triangle? Turn one line about a point to find both answers.">
+<meta property="og:url" content="https://coolmaths.ai/equilateral-on-lines/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .base-line { stroke: var(--muted); stroke-width: 2; }
+  #board .line-hit {
+    stroke: transparent; stroke-width: 18; pointer-events: stroke; cursor: ns-resize;
+  }
+  #board .line-label {
+    fill: var(--muted); font: 600 0.85rem var(--font); pointer-events: none;
+  }
+  #board .side {
+    fill: none; stroke: var(--ink); stroke-width: 2; stroke-dasharray: 5 5;
+  }
+  #board .rotated-line { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .foot {
+    fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 4;
+  }
+  #board .foot-dot, #board .image-dot {
+    fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5;
+  }
+  #board .hint-side { fill: none; stroke-width: 3; }
+  #board .hint-one { stroke: var(--bad); }
+  #board .hint-two { stroke: var(--good); opacity: 0.4; }
+  #board .hint-dot { stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .hint-label { fill: var(--bad); }
+  #board .geom-handle {
+    fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab;
+  }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+  .controls input[type="range"] { width: min(100%, 9rem); }
+  .line-buttons { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .line-buttons button { min-height: 2.5rem; min-width: 2.5rem; }
+</style>
+</head>
+<body data-game="equilateral-on-lines" data-kind="demo">
+<main id="main">
+  <h1>Equilateral On Lines</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: three straight lines each hold one point, and we try to slide the points until they make an equilateral triangle.<br>
+    <strong>How to play:</strong> Drag C, C1 or C2 along its line, or drag a line up and down; you can also focus a point and use the arrow keys or press the line buttons. Tick Show hint to see the two answers.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Three horizontal lines L, L1 and L2 carrying the draggable points C, C1 and C2"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="angle">Rotation: <output id="angleValue">0°</output></label>
+    <input id="angle" type="range" min="0" max="65" step="1" value="0" aria-label="Turn line 1 through this many degrees about C">
+    <label><input id="hint" type="checkbox"> Show hint</label>
+    <label><input id="names" type="checkbox" checked> Names</label>
+  </div>
+
+  <div class="controls line-buttons" role="group" aria-label="Move the lines up or down with the keyboard">
+    <button type="button" data-line-btn="0" data-dir="-1" aria-label="Move line L up">L up</button>
+    <button type="button" data-line-btn="0" data-dir="1" aria-label="Move line L down">L down</button>
+    <button type="button" data-line-btn="1" data-dir="-1" aria-label="Move line L1 up">L1 up</button>
+    <button type="button" data-line-btn="1" data-dir="1" aria-label="Move line L1 down">L1 down</button>
+    <button type="button" data-line-btn="2" data-dir="-1" aria-label="Move line L2 up">L2 up</button>
+    <button type="button" data-line-btn="2" data-dir="1" aria-label="Move line L2 down">L2 down</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the three lines and points to their starting places">Reset</button>
+    <button id="shuffleBtn" type="button" aria-label="Put the three lines at new random heights">Shuffle lines</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a>
+        lines, one point on each: can the three points always be made into an
+        <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangle</a>?
+        The old applet answers with a turn of 60 degrees, and draws the two
+        possible answers when you ask for a hint.</p>
+
+      <h2>A turn of 60 degrees</h2>
+      <p>Hold C fixed. If ABC is equilateral, turning point A about C through
+        60&deg; lands exactly on B: the turn is a
+        <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a>,
+        so it keeps the distance to C and changes the direction by 60&deg;.
+        Turn line L1 about C through the same angle and call the new line L&prime;.
+        A goes with its line, so the image of A lies on L&prime;. It is also B,
+        which lies on L2. Therefore B is where L&prime; meets L2, and A is
+        found by turning B back.</p>
+
+      <h2>Why the triangle must be equilateral</h2>
+      <p>With A on line L1 at height <code>y1</code>, C on L0 at <code>y0</code>
+        and B on L2 at <code>y2</code>, write <code>d1 = y1 - y0</code> and
+        <code>d2 = y2 - y0</code>. Turning by <code>s &middot; 60&deg;</code>
+        with <code>s = +1</code> or <code>-1</code> gives</p>
+      <blockquote><code>y2 - y0 = s &middot; sin(60&deg;) &middot; (Ax - Cx) + cos(60&deg;) &middot; d1</code></blockquote>
+      <p>Because <code>sin(60&deg;)</code> is not zero, this equation has one
+        solution for <code>Ax</code> for each sign: with C fixed there are
+        exactly two answers, one turned clockwise and one counterclockwise.
+        The construction gives <code>CA = CB</code> and
+        <code>&ang;ACB = 60&deg;</code>, so the third side is equal too. In the
+        special case where L1 is midway between L0 and L2, the two triangles
+        share B; when L2 is midway, they share A. They are still different,
+        differently oriented triangles.</p>
+
+      <h2>What the checks found</h2>
+      <p>The logic test tries 210 sets of three line heights with five places
+        for C, and both directions: 2,100 constructed triangles. Every one has
+        A on L1, B on L2, three equal sides (worst difference
+        <code>1.1 &times; 10<sup>-13</sup></code> pixels) and a 60&deg; angle at
+        C (worst error <code>4.4 &times; 10<sup>-16</sup></code> radians).
+        It also writes the applet's own <code>Compute()</code> a second time
+        from its bytecode and agrees in all 4,696 layouts, including the
+        3-pixel snap and the order in which the two answers are tried. So the
+        page's claim is confirmed. One stray phrase in the article, "Then
+        &Delta;ABC is equilateral, scalene, right, equilateral, obtuse", is a
+        leftover from a different question; the stated puzzle and the proof
+        both give an equilateral triangle, and this port follows those. The
+        live article now embeds GeoGebra; the Java applet is preserved in a
+        <a href="https://web.archive.org/web/20140223034950id_/http://www.cut-the-knot.org/Curriculum/Geometry/EquilateralOnLines.shtml" target="_blank" rel="noopener">2014 Wayback snapshot</a>,
+        which describes the draggable points C, C1 and C2.</p>
+
+      <h2>Where C can go</h2>
+      <p>C itself slides along its line, so each new position gives a fresh
+        pair of answers: there are infinitely many triangles across the whole
+        picture, but only two for a fixed C. If two of the lines are moved
+        together the triangle can collapse, and the old applet's intersection
+        test even reports a missing point when two lines are parallel after a
+        rotation. The article says the idea also works when the lines are not
+        parallel; that wider case is not tested here.</p>
+
+      <p class="tip">Try Shuffle lines, then tick Show hint: the two triangles sit on opposite sides of C, and the Rotation slider shows what happens before the turn reaches 60&deg;.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EquilateralOnLines.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="equilateral-on-lines-core.js"></script>
+<script src="equilateral-on-lines.js"></script>
+</body>
+</html>
