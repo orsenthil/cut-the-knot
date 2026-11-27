@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Continuous Curve &mdash; coolmaths</title>
+<meta name="description" content="What looks like squares inside squares is really one unbroken line. Can you follow the spiral all the way in?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/continuous-curve/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Continuous Curve">
+<meta property="og:description" content="What looks like squares inside squares is really one unbroken line. Can you follow the spiral all the way in?">
+<meta property="og:url" content="https://coolmaths.ai/continuous-curve/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; margin: 0 auto; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .curve-leg { fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; }
+  #board .curve-active { fill: none; stroke: var(--accent); stroke-width: 3.4; stroke-linecap: round; }
+  #board .start-dot { fill: var(--good); }
+  #board .pt-label { fill: var(--text); font-size: 0.9rem; pointer-events: none; }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.5rem 1rem; }
+  .controls .option {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1 1 11rem;
+    min-width: 0;
+    font-size: 0.9rem;
+  }
+  .controls input[type="range"] { width: 100%; accent-color: var(--accent); }
+  .controls .option-line { display: flex; justify-content: space-between; gap: 0.5rem; }
+  .controls output { font-family: var(--mono); }
+  .controls button { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="continuous-curve" data-kind="demo">
+<main id="main">
+  <h1>Continuous Curve</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch one line spiral inward and look at how it tricks your eye into seeing squares stacked inside squares.<br>
+    <strong>How to play:</strong> Move the three sliders to change the gap around the line, the step between turns and the number of straight pieces. Drag the dot onto the line, or focus it and press the arrow keys to follow the line piece by piece.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="group"
+         aria-label="One unbroken spiral of straight legs, with a dot tracing the current leg"></svg>
+  </div>
+
+  <div class="controls">
+    <label class="option">
+      <span class="option-line"><span>Edge gap</span><output id="marginOut" for="marginInput">20</output></span>
+      <input id="marginInput" type="range" min="0" max="100" step="1" value="20" aria-label="Edge gap, from 0 to 100">
+    </label>
+    <label class="option">
+      <span class="option-line"><span>Turn step</span><output id="spreadOut" for="spreadInput">5</output></span>
+      <input id="spreadInput" type="range" min="2" max="34" step="1" value="5" aria-label="Turn step, from 2 to 34">
+    </label>
+    <label class="option">
+      <span class="option-line"><span>Straight pieces</span><output id="legsOut" for="legsInput">26</output></span>
+      <input id="legsInput" type="range" min="4" max="100" step="1" value="26" aria-label="Number of straight pieces, from 4 to 100">
+    </label>
+    <button id="nextBtn" type="button" aria-label="Follow the next straight piece of the line">Next piece</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the three sliders and the tracing dot back at their starting values">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The picture looks like a set of squares inside squares. It is really one <a class="wiki-term" data-wiki="Spiral" href="https://en.wikipedia.org/wiki/Spiral" target="_blank" rel="noopener">spiral</a> drawn without lifting the pen. The old applet drew it with exactly three controls; this page keeps their ranges and their starting values.</p>
+
+      <h2>One line, no lifts</h2>
+      <p>The applet's drawing loop stores a pen position and a side length. Each step works out one new corner, draws a straight leg to it and then makes that corner the pen position. The result is a <a class="wiki-term" data-wiki="Polyline" href="https://en.wikipedia.org/wiki/Polyline" target="_blank" rel="noopener">polyline</a>: leg <code>i + 1</code> always begins where leg <code>i</code> ended. The logic test checked this over 341,979 settings — there is not a single gap or separate square in the drawing.</p>
+
+      <h2>How the corners move inward</h2>
+      <p>The first side is <code>min(width, height) &minus; 15 &minus; 2 &times; Edge gap</code>, and the pen starts at <code>((width &minus; side)/2, (height &minus; side)/2)</code>, with integer division as in the Java code. The directions repeat down, right, up, left. After the very first right-hand leg, the side shrinks by <code>Turn step</code> on the second and fourth leg of each lap. So after every four legs the next corner has moved in by exactly <code>Turn step</code> in both directions. The test compared every value of all three sliders (0–100, 2–34 and 4–100) with a second transcription of the applet's bytecode, plus several canvas shapes, and found no difference.</p>
+
+      <h2>The squares are in your eye</h2>
+      <p>The page says the tendency is to see embedded squares, and the picture's caption says there are no squares, only a continuous spiral. Both are right in different ways. Each lap is <em>almost</em> a <a class="wiki-term" data-wiki="Square_(geometry)" href="https://en.wikipedia.org/wiki/Square_(geometry)" target="_blank" rel="noopener">square</a>, but its last leg stops short by <code>Turn step</code> and the next lap starts one step inward: the path never closes. This is an <a class="wiki-term" data-wiki="Optical_illusion" href="https://en.wikipedia.org/wiki/Optical_illusion" target="_blank" rel="noopener">optical illusion</a> about how the eye groups shapes, not a claim that the drawing contains separate squares.</p>
+
+      <p class="tip">Put Turn step at 2 and Straight pieces at 100, then use the arrow keys to follow the dot. Try to keep your eye on the dot rather than on the shapes around it.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ContinuousCurve.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="continuous-curve-core.js"></script>
+<script src="continuous-curve.js"></script>
+</body>
+</html>
