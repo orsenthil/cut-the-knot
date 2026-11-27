@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Concurrency &mdash; coolmaths</title>
+<meta name="description" content="Drag six lines around a triangle and watch three at a time meet in a single point. Which triples of isogonal lines are always concurrent?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/concurrency/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Concurrency">
+<meta property="og:description" content="Drag six lines around a triangle and watch three at a time meet in a single point. Which triples of isogonal lines are always concurrent?">
+<meta property="og:url" content="https://coolmaths.ai/concurrency/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .triangle { stroke: var(--ink); stroke-width: 2; fill: none; }
+  #board .ray { stroke: var(--accent); stroke-width: 1.5; opacity: 0.65; }
+  #board .mirror { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 5 4; opacity: 0.55; }
+  #board .family-line { stroke: var(--bad); stroke-width: 3; stroke-linecap: round; }
+  #board .angle-arc { fill: none; stroke: var(--muted); stroke-width: 1.5; pointer-events: none; }
+  #board .meeting { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .meeting-ring { fill: none; stroke: var(--good); stroke-width: 1.5; opacity: 0.6; }
+  #board .pt-label { fill: var(--text); font-size: 1rem; font-weight: 700; pointer-events: none; }
+  #board .geom-handle { stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .vertex-handle { fill: var(--ink); }
+  #board .ray-handle { fill: var(--accent); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+  .families { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .families button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body data-game="concurrency" data-kind="demo">
+<main id="main">
+  <h1>Concurrency</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Six lines run through a triangle, and each choice of three of them meets in a single spot.<br>
+    <strong>How to play:</strong> Drag a dot, or focus it and use the arrow keys. Press a family button to choose which three lines to follow, or press Reset to start again.
+  </div>
+
+  <div class="controls families" aria-label="Choose a family of three lines">
+    <button type="button" data-mode="2" aria-pressed="false" aria-label="Show family 1, the lines PU, QV and RW">1 &middot; PU, QV, RW</button>
+    <button type="button" data-mode="0" aria-pressed="true" aria-label="Show family 2, the lines AP, BQ and CR">2 &middot; AP, BQ, CR</button>
+    <button type="button" data-mode="1" aria-pressed="false" aria-label="Show family 3, the lines AU, BV and CW">3 &middot; AU, BV, CW</button>
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 260" role="group"
+         aria-label="A triangle with a draggable corner and line point at each corner, and three highlighted lines meeting in one point"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="trisectBtn" type="button" aria-label="Move the line points so each pair of lines trisects its corner">Trisect angles</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle and the line points to their starting places">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three lines usually miss one another and make a little triangle. That does not happen here: whatever you do to the six dots, every chosen family of three lines still passes through the same point.</p>
+
+      <h2>Mirror lines at a corner</h2>
+      <p>At each corner of the triangle there are two lines that are reflections of one another in the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a>. Such a pair is called <a class="wiki-term" data-wiki="Isogonal_conjugate" href="https://en.wikipedia.org/wiki/Isogonal_conjugate" target="_blank" rel="noopener">isogonal</a>. The applet picks one line with a draggable dot, turns the far side of the corner by the measured angle, and draws the partner through the result. The logic test reads that construction again from the Java bytecode and compares every angle, mirror point and crossing on 400 generated pictures.</p>
+
+      <h2>The page's three triples</h2>
+      <p>The old page names six crossing points of the isogonal lines and claims that <code>PU, QV, RW</code>, <code>AP, BQ, CR</code>, and <code>AU, BV, CW</code> are each concurrent. That claim holds: across 400 generated triangles and line choices, all three triples met in one point every time, and the three meeting points are generally different from each other. One sentence on the page says P is the intersection of BV and CV, but those two lines already share V; the three families the applet actually draws are the ones checked here.</p>
+
+      <h2>Why Ceva's theorem applies</h2>
+      <p>Let S be where the line from A meets the opposite side BC. Lyness's proportion is <code>BS/SC = (cot b &minus; cot B)/(cot g &minus; cot C)</code>, where B and C are the triangle's corner angles and b and g are the angles the two isogonal lines make with the sides. Because the same ratio appears upside down at the next corner, the three ratios cancel. <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a> then forces the three lines to meet. The test checked the proportion and its product <code>1</code> on 300 generated pictures where the reflected line stays inside its corner.</p>
+
+      <h2>Equal parts</h2>
+      <p>The page singles out the case where each isogonal pair cuts its corner into equal parts. Press <em>Trisect angles</em> to see that case: the three families still meet. Equal parts are a pretty special case, not a requirement. The original applet also pulls the reflected point back by the length of the dragged line, so a very long line can move the drawn point past its corner; the line itself, and the concurrency, do not change.</p>
+
+      <p class="tip">Try dragging one line point far from its corner, then switch families: the meeting point moves, but the three red lines keep meeting in one spot.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Concurrency.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="concurrency-core.js"></script>
+<script src="concurrency.js"></script>
+</body>
+</html>
