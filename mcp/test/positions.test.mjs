@@ -2325,6 +2325,16 @@ check("eschers-theorem: the turns concur and the saved picture agrees with the c
 check("euclid: the similar-shape area law holds under the displayed rounding", read.euclid?.valid === true && read.euclid.reading.displayedSumMatchesHyp === false && typeof read.euclid.law.residuals.legSumMinusHyp === "number");
 check("euclid-i43: every diagonal cell mirrors across AC with equal area", read["euclid-i43"]?.reading.allGreenPairsMatch === true && read["euclid-i43"].reading.allPiecesTile === true && read["euclid-i43"].reading.allPairsMatch === true);
 check("euclid-i43-extended: the compensating piece equals XNCP off the diagonal", read["euclid-i43-extended"]?.reading.compensates === true && read["euclid-i43-extended"].reading.plainEuclidI43Matches === false && read["euclid-i43-extended"].reading.tOnAx === true);
+check("euclids-segment-division: parallels cut BC into equal thirds", read["euclids-segment-division"]?.valid === true && read["euclids-segment-division"].reading.equallySpaced === true && read["euclids-segment-division"].reading.crossingsOnBC.length === 4);
+check("euler-60: the saved non-60 triangle has an Euler line but no cut", read["euler-60"]?.reading.sixtyCorner === null && read["euler-60"].reading.eulerLine.visible === true && read["euler-60"].reading.cut === null);
+check("euler-and-fermat: ten Euler lines concur at the centroid", read["euler-and-fermat"]?.valid === true && read["euler-and-fermat"].tenConcurrentAtG === true && read["euler-and-fermat"].napoleonOuter === true && read["euler-and-fermat"].napoleonInner === true && read["euler-and-fermat"].rotationSendsOToP === true);
+check("euler-collinearity: drawn and formula concurrency agree on line GP", read["euler-collinearity"]?.reading.concurrence.agreement === 0 && read["euler-collinearity"].reading.locus.lineGP !== null && read["euler-collinearity"].reading.euler.PIsCircumcenter === false);
+check("euler-line-simple: O, G, H are collinear with GH = 2GO", read["euler-line-simple"]?.valid === true && read["euler-line-simple"].euler.collinear === true && read["euler-line-simple"].euler.ratioGHequals2GO === true);
+check("euler-nagel-in-quad: H'N'G'O' lie on one line with 1:1 and 2:1", read["euler-nagel-in-quad"]?.claims.collinear === true && read["euler-nagel-in-quad"].claims.nMidpoint === true && read["euler-nagel-in-quad"].claims.gRatio === true && read["euler-nagel-in-quad"].savedMatchesCore === true);
+check("euler-to-euler: the second Euler line is parallel to BC", read["euler-to-euler"]?.ready === true && read["euler-to-euler"].reading.claims.parallel === true && read["euler-to-euler"].savedReadable === true);
+check("eurica-cyclic: the saved K is the true concurrence point", read["eurica-cyclic"]?.derived.concurrent === true && read["eurica-cyclic"].derived.savedKIsMiquel === true);
+check("evelyn: the six-circle triangle chain closes and all tangencies hold", read.evelyn?.savedReadable === true && read.evelyn.reading.claims.atMostSix === true && read.evelyn.reading.claims.closesAfterSix === true && read.evelyn.reading.allTangenciesHold === true);
+check("evelyn-n: the triangle chain repeats after six circles", read["evelyn-n"]?.savedMatchesCore === true && read["evelyn-n"].chainLength === 6 && read["evelyn-n"].reading.isEvelynTriangle === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2573,6 +2583,39 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   const ca = runGameLogic("euclid-i43-extended", "compensating_areas", { region: "ABD" });
   const sp = runGameLogic("euclid-i43-extended", "same_side_pair", { region: "BCD" });
   check("euclid-i43-extended/areas: ASRQ compensates XNCP off the diagonal", ca.compensates === true && ca.proofAreaMatches === true && ca.plainEuclidI43Matches === false && sp.equal === true && sp.tOnAx === true);
+}
+
+// The batch-25 tutor actions all run their real cores, not just their saved positions.
+{
+  const ep = runGameLogic("euclids-segment-division", "equal_parts", { n: 4 });
+  check("euclids-segment-division/equal_parts: every interval matches |BC|/N", ep.equallySpaced === true && ep.formulaHolds === true && ep.intervalLengths.length === 4);
+  const cut = runGameLogic("euler-60", "euler_line_cut", { vertex: "B", ratio: 1.2 });
+  const dom = runGameLogic("euler-60", "ratio_domain", {});
+  check("euler-60/euler_line_cut: BP=BQ=PQ and AP+CQ=PQ inside the ratio domain", cut.reading.cut.BP_eq_BQ_eq_PQ === true && cut.reading.cut.AP_plus_CQ_eq_PQ === true && cut.reading.cut.inDomain === true && dom.domain.length > 0);
+  const ef = runGameLogic("euler-and-fermat", "euler_lines", {});
+  const nr = runGameLogic("euler-and-fermat", "napoleon_and_rotation", {});
+  check("euler-and-fermat/lines and Napoleon: ten Euler lines meet at G", ef.usable === true && ef.tenEulerLines.count === 10 && ef.tenEulerLines.concurrentAtG === true && ef.triangleCfF.eulerLineThroughG === true && nr.rotation.sendsOToP === true);
+  const cc = runGameLogic("euler-collinearity", "concurrence", {});
+  const el = runGameLogic("euler-collinearity", "euler_line", {});
+  check("euler-collinearity/concurrence and Euler line: formula agrees and GH=2GO", cc.concurrence.agreement === 0 && el.collinear.GHoverGO === 2 && el.samples.length === 8);
+  const es = runGameLogic("euler-line-simple", "euler_line", {});
+  const ap = runGameLogic("euler-line-simple", "antipode_parallelogram", {});
+  check("euler-line-simple/Euler line: parallelogram halves the median and GH=2GO", es.euler.collinear === true && es.euler.ratioGHequals2GO === true && Object.values(ap.checks).every(Boolean) === true);
+  const rl = runGameLogic("euler-nagel-in-quad", "remarkable_line", {});
+  const cy = runGameLogic("euler-nagel-in-quad", "cyclic_case", {});
+  check("euler-nagel-in-quad/line and cyclic case: ratios 1:1, 2:1 and 1:2, 1:1", rl.claims.collinear === true && rl.claims.nMidpoint === true && rl.claims.gRatio === true && cy.claims.cyclic === true && cy.claims.cyclicClaim === true);
+  const it = runGameLogic("euler-to-euler", "euler_iteration", {});
+  const cp = runGameLogic("euler-to-euler", "check_parallel", {});
+  check("euler-to-euler/iteration: AMN's Euler line parallels BC", it.ready === true && it.claims.parallel === true && cp.allHold === true);
+  const mp = runGameLogic("eurica-cyclic", "miquel_point", { anglesDegrees: [0, 22.5, 45, 247.5] });
+  const shortcut = runGameLogic("eurica-cyclic", "applet_shortcut", { anglesDegrees: [0, 22.5, 45, 247.5] });
+  check("eurica-cyclic/Miquel point: true K concurs while the applet shortcut picks B", mp.concurrent === true && mp.collinear === true && mp.appletKIsMiquel === false && shortcut.appletPickIsB === true);
+  const six = runGameLogic("evelyn", "six_circle_chain", {});
+  const seventh = runGameLogic("evelyn", "seventh_circle", { w: 120, h: 360, Ta: 0.1 });
+  check("evelyn/six circles: the chain closes but the next circle can miss the side", six.circleCount === 6 && six.allTangenciesHold === true && seventh.closesAfterSix === false);
+  const chain = runGameLogic("evelyn-n", "chain_period", { n: 6, ta: 0.7 });
+  const dist = runGameLogic("evelyn-n", "even_n_distance", { n: 4, taA: 0.5, taB: 0.95 });
+  check("evelyn-n/chain period: even n repeats after n circles and the distance claim fails", chain.programCap === 12 && chain.regularPolygonPeriod === 6 && chain.repeatsPastCap === true && dist.pageClaimHolds === false);
 }
 
 // A game with no reader, and a position that makes no sense.

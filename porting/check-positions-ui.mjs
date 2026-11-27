@@ -1188,6 +1188,16 @@ const GAMES = {
   "euclid": (page) => dragFirstHandle(page),
   "euclid-i43": (page) => dragFirstHandle(page),
   "euclid-i43-extended": (page) => dragFirstHandle(page),
+  "euclids-segment-division": (page) => dragFirstHandle(page),
+  "euler-60": (page) => dragFirstHandle(page),
+  "euler-and-fermat": (page) => dragFirstHandle(page),
+  "euler-collinearity": (page) => dragFirstHandle(page),
+  "euler-line-simple": (page) => dragFirstHandle(page),
+  "euler-nagel-in-quad": (page) => dragFirstHandle(page),
+  "euler-to-euler": (page) => dragFirstHandle(page),
+  "eurica-cyclic": (page) => dragFirstHandle(page),
+  "evelyn": (page) => dragFirstHandle(page),
+  "evelyn-n": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

@@ -719,6 +719,16 @@ const CORE_GLOBALS = {
   "euclid/euclid-core.js": ["EuclidCore"],
   "euclid-i43/euclid-i43-core.js": ["EuclidI43Core"],
   "euclid-i43-extended/euclid-i43-extended-core.js": ["EuclidI43ExtendedCore"],
+  "euclids-segment-division/euclids-segment-division-core.js": ["EuclidsSegmentDivisionCore"],
+  "euler-60/euler-60-core.js": ["Euler60Core"],
+  "euler-and-fermat/euler-and-fermat-core.js": ["EulerAndFermatCore"],
+  "euler-collinearity/euler-collinearity-core.js": ["EulerCollinearityCore"],
+  "euler-line-simple/euler-line-simple-core.js": ["EulerLineSimpleCore"],
+  "euler-nagel-in-quad/euler-nagel-in-quad-core.js": ["EulerNagelInQuadCore"],
+  "euler-to-euler/euler-to-euler-core.js": ["EulerToEulerCore"],
+  "eurica-cyclic/eurica-cyclic-core.js": ["EuricaCyclicCore"],
+  "evelyn/evelyn-core.js": ["EvelynCore"],
+  "evelyn-n/evelyn-n-core.js": ["EvelynNCore"],
 };
 
 const games = [];
