@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Euler to Euler &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle: its Euler line cuts two sides at M and N. Is the Euler line of triangle AMN always parallel to the third side?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/euler-to-euler/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Euler to Euler">
+<meta property="og:description" content="Drag the corners of a triangle: its Euler line cuts two sides at M and N. Is the Euler line of triangle AMN always parallel to the third side?">
+<meta property="og:url" content="https://coolmaths.ai/euler-to-euler/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .euler-line { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 7 4; }
+  #board .euler2-line { stroke: var(--bad); stroke-width: 3; }
+  #board .angle-arc { fill: none; stroke: var(--bad); stroke-width: 2; }
+  #board .centroid-dot { fill: #dc2626; stroke: var(--stage); stroke-width: 2; }
+  #board .circum-dot { fill: #15803d; stroke: var(--stage); stroke-width: 2; }
+  #board .ortho-dot { fill: #2563eb; stroke: var(--stage); stroke-width: 2; }
+  #board .cross-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 2; }
+  #board .two { stroke-width: 2.5; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .cross-label { fill: var(--bad); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="euler-to-euler" data-kind="demo">
+<main id="main">
+  <h1>Euler to Euler</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the corners of a triangle and watch a line that can be found again inside a smaller triangle.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a corner and use the arrow keys. Press Show names and Show Euler line to follow the line as it crosses the sides.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle with its Euler line cutting sides AB and AC at M and N, and the Euler line of triangle AMN"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset triangle</button>
+    <button id="eulerBtn" type="button" aria-pressed="false" aria-label="Toggle the Euler line of triangle AMN">Show Euler line</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Toggle the point names A, B, C, M and N">Show names</button>
+    <button id="centroidBtn" type="button" aria-pressed="false" aria-label="Toggle the centroids of both triangles">Show centroid</button>
+    <button id="circumBtn" type="button" aria-pressed="false" aria-label="Toggle the circumcenters of both triangles">Show circumcenter</button>
+    <button id="orthoBtn" type="button" aria-pressed="false" aria-label="Toggle the orthocenters of both triangles">Show orthocenter</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A triangle has several special centres. For most triangles they sit on one straight line, and that line can be used to build a new triangle. The surprising part is that the new triangle has its own line, and it points in a fixed direction.</p>
+
+      <h2>One line through three centres</h2>
+      <p>The <a class="wiki-term" data-wiki="Centroid" href="https://en.wikipedia.org/wiki/Centroid" target="_blank" rel="noopener">centroid</a> is the balance point, the <a class="wiki-term" data-wiki="Circumcenter" href="https://en.wikipedia.org/wiki/Circumcenter" target="_blank" rel="noopener">circumcenter</a> is the centre of the circle through the corners, and the <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a> is where the three altitudes meet. These three points lie on the <a class="wiki-term" data-wiki="Euler_line" href="https://en.wikipedia.org/wiki/Euler_line" target="_blank" rel="noopener">Euler line</a>. Press the three centre buttons to see them; the dashed line is drawn through the last two of them. In an <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangle</a> all three coincide, so there is no one line to draw.</p>
+
+      <h2>A second triangle from the first line</h2>
+      <p>The first line crosses line AB at M and line AC at N. Those two points and A make a new triangle AMN. The page states exactly one claim:</p>
+      <blockquote><code>Let the Euler line of ΔABC meet line AB in M and line AC in N. Then the Euler line of ΔAMN is parallel to BC.</code></blockquote>
+      <p>The logic test checks this on an integer grid and on thousands of random triangles, using both the applet's own arithmetic and an independent coordinate calculation. It holds every time both Euler lines exist and M and N are distinct. The live page now shows a GeoGebra drawing instead of the Java applet; an <a href="https://web.archive.org/web/20070713195416id_/http://www.cut-the-knot.org/Curriculum/Geometry/EulerToEuler.shtml" target="_blank" rel="noopener">archived 2007 snapshot</a> at the same address embeds <code>CODE="EulerToEuler"</code> and carries the same sentence.</p>
+
+      <h2>Why the new line keeps its direction</h2>
+      <p>Put A at the origin and write the other corners as vectors <code>b</code> and <code>c</code>. The Euler line of ABC is parallel to <code>b + c − 3O</code>, where O is its circumcenter. If M = <code>m b</code> and N = <code>n c</code>, the circumcenter <code>O′</code> of AMN can be written <code>p b + q c</code>. Solving the two perpendicular-bisector equations for M and N gives <code>p + q = (m + n)/3</code>. The Euler line of AMN therefore points along <code>m b + n c − 3O′</code>, whose cross product with <code>c − b</code> is zero. So it is parallel to BC. This is the corollary the article draws from the <a class="wiki-term" data-wiki="Complete_quadrilateral" href="https://en.wikipedia.org/wiki/Complete_quadrilateral" target="_blank" rel="noopener">complete quadrilateral</a> theorem: if one of four lines is parallel to the Euler line of the triangle made by the other three, the same is true for each of the four.</p>
+
+      <h2>What the applet leaves undrawn</h2>
+      <p>The Java code needs the two centres of a triangle to be more than half a unit apart before it draws an Euler line, and it rejects a line intersection when the determinant is below one. Those are drawing limits, not exceptions to the claim: the test checks the claim only where a line can actually be drawn. With an isosceles triangle at A, M and N both fall on A, so there is no new triangle to measure. The original checkboxes are shown here as buttons so they can be used with a keyboard or a finger.</p>
+
+      <p class="tip">Try making AB and AC almost equal, then drag A a little to one side: watch the second line swing until it is parallel to BC again.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EulerToEuler.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="euler-to-euler-core.js"></script>
+<script src="euler-to-euler.js"></script>
+</body>
+</html>
