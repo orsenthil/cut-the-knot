@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ellipse In Arbelos &mdash; coolmaths</title>
+<meta name="description" content="A small circle and a big circle touch inside a crescent. Move the point that sizes the small one: where do the centres of circles fitted between them lie, and why is that path an ellipse?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/ellipse-in-arbelos/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Ellipse In Arbelos">
+<meta property="og:description" content="A small circle and a big circle touch inside a crescent. Move the point that sizes the small one: where do the centres of circles fitted between them lie, and why is that path an ellipse?">
+<meta property="og:url" content="https://coolmaths.ai/ellipse-in-arbelos/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circle-fill { fill: var(--accent); fill-opacity: 0.09; }
+  #board .circle-cut { fill: var(--stage); }
+  #board .outline { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .diameter { stroke: var(--muted); stroke-width: 1.5; }
+  #board .focus { fill: var(--ink); }
+  #board .locus { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .chain-circle { fill: var(--accent); fill-opacity: 0.10; stroke: var(--good); stroke-width: 2; }
+  #board .chain-centre { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  #board .point-label { fill: var(--text); font-size: 12px; pointer-events: none; }
+  .controls { width: 100%; max-width: 40rem; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls .option { display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.35rem; font-size: 0.95rem; min-width: 0; max-width: 100%; white-space: normal; }
+  .controls input[type="range"] { width: min(8rem, 40vw); max-width: 100%; min-width: 0; accent-color: var(--accent); }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="ellipse-in-arbelos" data-kind="demo">
+<main id="main">
+  <h1>Ellipse In Arbelos</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: two touching circles hold a crescent with a chain of circles inside it.<br>
+    <strong>How to play:</strong> Drag the point C along the straight line, or focus it and use the arrow keys. Change the sliders to add circles or move the chain, and watch where the centres go.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Two circles touching at A, a dashed ellipse through the centres of the blue circles in the gap, and a draggable point C on the diameter AB."></svg>
+  </div>
+
+  <div class="controls">
+    <label class="option" for="nRange">Circles: <output id="nOut" for="nRange">3</output>
+      <input id="nRange" type="range" min="1" max="20" step="1" value="3" aria-label="Number of circles in the chain, from one to twenty"></label>
+    <label class="option" for="tRange">Chain shift: <output id="tOut" for="tRange">1.00</output>
+      <input id="tRange" type="range" min="-15" max="15" step="0.05" value="1" aria-label="Chain shift, from minus fifteen to fifteen"></label>
+    <label class="option" for="ellipseChk"><input id="ellipseChk" type="checkbox" checked aria-label="Show or hide the dashed ellipse"> Show the ellipse</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset C, the number of circles and the chain shift">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move C and the two circles change size. The blue circles still fit in the gap, and every centre lands on the same dashed <a class="wiki-term" data-wiki="Ellipse" href="https://en.wikipedia.org/wiki/Ellipse" target="_blank" rel="noopener">ellipse</a>. What fixes that curve?</p>
+
+      <h2>Two distances that add up</h2>
+      <p>Let the small circle have radius <code>a1</code> and the big one radius <code>a2</code>, with <code>a2 &gt; a1</code>. A gap circle of radius <code>r</code> touches the small circle from outside and the big circle from inside. Its centre is therefore <code>a1 + r</code> from the small centre and <code>a2 &minus; r</code> from the big centre. Adding gives the constant</p>
+      <blockquote><code>(a1 + r) + (a2 &minus; r) = a1 + a2</code></blockquote>
+      <p>The set of points whose distances from two fixed points add to a constant is an ellipse. Those two fixed points are the centres of the given circles: the ellipse's foci.</p>
+
+      <h2>The two widths of the ellipse</h2>
+      <p>The foci sit <code>a2 &minus; a1</code> apart, and the constant sum is <code>a1 + a2</code>, so the long <a class="wiki-term" data-wiki="Semi-major_and_semi-minor_axes" href="https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes" target="_blank" rel="noopener">semiaxis</a> is the <a class="wiki-term" data-wiki="Arithmetic_mean" href="https://en.wikipedia.org/wiki/Arithmetic_mean" target="_blank" rel="noopener">arithmetic mean</a> <code>(a1 + a2)/2</code>. At the top of the ellipse the three centres make an isosceles triangle. Pythagoras gives</p>
+      <blockquote><code>h&sup2; = ((a1 + a2)/2)&sup2; &minus; ((a2 &minus; a1)/2)&sup2; = a1 a2</code></blockquote>
+      <p>So the short semiaxis is the <a class="wiki-term" data-wiki="Geometric_mean" href="https://en.wikipedia.org/wiki/Geometric_mean" target="_blank" rel="noopener">geometric mean</a> <code>&radic;(a1 a2)</code>. The article's printed formula has the root; a plain-text copy that drops it is just a transcription loss. The logic test checks both widths over 200 positions of C.</p>
+
+      <h2>The chain of touching circles</h2>
+      <p>Write <code>&tau; = a1 a2 + s&sup2;(a2 &minus; a1)&sup2;</code>. Then the circle with radius <code>r = a1 a2 (a2 &minus; a1)/&tau;</code> and centre <code>(a1 a2 (a1 + a2)/&tau;, 2 s r)</code> fits the gap for any real <code>s</code>, and <code>y = 2 s r</code>. Each circle in this chain touches A1, A2 and its neighbour. The article proves this by <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">inversion</a>: the chain becomes a row of equal circles between two parallel lines. The test checks the distances directly for negative, fractional and large values of <code>s</code>. It also confirms the article's extras: the contact chord passes through <code>(2 a1 a2/(a1 + a2), 0)</code>, that point makes a <a class="wiki-term" data-wiki="Harmonic_division_(geometry)" href="https://en.wikipedia.org/wiki/Harmonic_division_(geometry)" target="_blank" rel="noopener">harmonic set</a> with 0, a1 and a2, and when the small diameter is two thirds of the big one, <code>r</code> at <code>s = 1</code> is one seventh of the big diameter.</p>
+
+      <h2>About the original</h2>
+      <p>The applet had a number spinner from 1 to 20 circles and a scrollbar from &minus;300 to 300, read as a shift from &minus;15 to 15; both are kept here. It picked the starting C at random near the middle of AB. This page starts it exactly in the middle, and keeps C a few pixels off the ends so the circles do not collapse. Its own "about" text was a leftover from a polygon applet and is not reproduced. Everything else, including the order of the chain <code>s = T, T+1, T&minus;1, T+2, &hellip;</code>, follows the bytecode. The page still embeds the Java applet, so no archive was needed.</p>
+
+      <p class="tip">Set the chain shift to 0, then move C: the first circle becomes the largest gap circle, still with its centre on the dashed ellipse.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EllipseInArbelos.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="ellipse-in-arbelos-core.js"></script>
+<script src="ellipse-in-arbelos.js"></script>
+</body>
+</html>
