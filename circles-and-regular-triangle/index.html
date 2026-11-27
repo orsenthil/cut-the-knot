@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circles And Regular Triangle &mdash; coolmaths</title>
+<meta name="description" content="Three circles fit around a triangle inside a circle. Slide point B along the diameter and see whether the smallest circle's centre stays straight above it?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circles-and-regular-triangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circles And Regular Triangle">
+<meta property="og:description" content="Three circles fit around a triangle inside a circle. Slide point B along the diameter and see whether the smallest circle's centre stays straight above it?">
+<meta property="og:url" content="https://coolmaths.ai/circles-and-regular-triangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri { fill: var(--highlight); opacity: 0.16; }
+  #board .circle-big { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .circle-mid { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .circle-small { fill: none; stroke: var(--bad); stroke-width: 3; }
+  #board .diameter { stroke: var(--muted); stroke-width: 2; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .radius { stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 4 4; }
+  #board .qb { stroke: var(--good); stroke-width: 3; }
+  #board .right-angle { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .angle-mark { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .tangency-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .center-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="circles-and-regular-triangle" data-kind="demo">
+<main id="main">
+  <h1>Circles And Regular Triangle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: three circles fit around a triangle, and the smallest one's centre always sits straight above the point B.<br>
+    <strong>How to play:</strong> Drag B along the line from A to C, or focus B and use the arrow keys. Tick the boxes to show point names, equal angles, the square corner, or colours.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Circle S with diameter AC, circle G with diameter AB, an isosceles triangle BCE, and a small circle Q tucked between S, G and the side BE"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="premise" type="checkbox"> Premise</label>
+    <label><input id="statement" type="checkbox"> Statement</label>
+    <label><input id="colors" type="checkbox"> Colors</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put point B back where it started">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>An 1803 temple problem hides a stubborn fact: wherever you put B on the diameter, the centre of the little circle stays directly above B. Drag B and watch the square corner refuse to change.</p>
+
+      <h2>The question on the tablet</h2>
+      <p>Start with a <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> S, centre O and <a class="wiki-term" data-wiki="Diameter" href="https://en.wikipedia.org/wiki/Diameter" target="_blank" rel="noopener">diameter</a> AC, and choose a point B on AC. Circle G has diameter AB. Point E lies on S directly over the midpoint of BC, so BCE is a triangle; circle W is tucked into the curved gap between S, G and the sloping side BE. This is a <a class="wiki-term" data-wiki="Sangaku" href="https://en.wikipedia.org/wiki/Sangaku" target="_blank" rel="noopener">Sangaku</a> problem: prove that the line from B to the centre Q of W is perpendicular to AC. The original page links two proofs using <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">inversion</a>, one with negative power; here the claim is checked by computing the circle instead.</p>
+
+      <h2>Why the triangle is isosceles</h2>
+      <p>E is placed above D, the midpoint of BC, and S is centred on the same horizontal line, so E is the same distance from B and from C: BCE is an <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles triangle</a>. Write <code>a = AB</code> and <code>c = AC</code>. Then <code>EB = EC = &radic;(c(c &minus; a)/2)</code> while <code>BC = c &minus; a</code>. Those are equal only when <code>a = c/2</code>, so the triangle is <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral</a> only when B is the midpoint of AC. The applet's name says "regular triangle", but the page states an isosceles one; the logic test confirms the title is true at that midpoint alone.</p>
+
+      <h2>The circle in the gap</h2>
+      <p>Put <code>t = a/c</code>. The applet places Q above B by <code>t/(1 + t) &times; &radic;(2(1 &minus; t)) &times; c</code> and gives W the radius <code>t(1 &minus; t)/(1 + t) &times; c</code>, which simplifies to <code>r = a(c &minus; a)/(a + c)</code>. Three <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> contacts follow: <code>|OQ| + r = c/2</code> (W touches S from inside), <code>|PQ| = a/2 + r</code> (W touches G from outside), and the distance from Q to the line BE is exactly r. Tick "Premise" to see the two radii drawn to the touch points and the matching angle marks at B and C.</p>
+
+      <h2>The right angle</h2>
+      <p>Q has exactly B's horizontal coordinate: it was placed straight above B. AC is horizontal, so QB and AC are <a class="wiki-term" data-wiki="Perpendicular" href="https://en.wikipedia.org/wiki/Perpendicular" target="_blank" rel="noopener">perpendicular</a> and meet at 90&deg;. Tick "Statement" for the line QB and its two right-angle marks. The logic test compares the computation with a second transcription of the applet's own method at 604 positions of B: the angle is 90&deg; at every one, and all three tangencies hold.</p>
+
+      <p class="tip">Try this: tick "Premise" and "Statement", then drag B close to A or close to C. W shrinks towards nothing, but its centre stays on the vertical through B and both right-angle marks stay square.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CirclesAndRegularTriangle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circles-and-regular-triangle-core.js"></script>
+<script src="circles-and-regular-triangle.js"></script>
+</body>
+</html>
