@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Central Angles In Cube &mdash; coolmaths</title>
+<meta name="description" content="Drag the three points inside a cube and look at the angles at its middle. Why does a face diagonal give 109.47°, an edge give 70.53°, and why do they add to 180°?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/central-angles-in-cube/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Central Angles In Cube">
+<meta property="og:description" content="Drag the three points inside a cube and look at the angles at its middle. Why does a face diagonal give 109.47°, an edge give 70.53°, and why do they add to 180°?">
+<meta property="og:url" content="https://coolmaths.ai/central-angles-in-cube/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+
+  #board .cube-face {
+    fill: var(--muted); fill-opacity: 0.06;
+    stroke: var(--muted); stroke-opacity: 0.5; stroke-width: 1.2;
+  }
+  #board .cube-edge { stroke: var(--muted); stroke-width: 1.3; stroke-opacity: 0.7; }
+  #board .cube-edge.back { stroke-dasharray: 4 4; stroke-opacity: 0.32; }
+  #board .tetra-edge { stroke: var(--muted); stroke-width: 1.8; stroke-opacity: 0.85; }
+  #board .tetra-edge.back { stroke-dasharray: 5 4; stroke-opacity: 0.4; }
+  #board .ray {
+    fill: none; stroke-width: 3.2; stroke-linecap: round;
+  }
+  #board .ray-obtuse { stroke: var(--accent); }
+  #board .ray-acute { stroke: var(--good); }
+  #board .ray-3 { stroke-dasharray: 5 4; stroke-width: 2; }
+  #board .angle-arc { fill: none; stroke-width: 2.5; }
+  #board .angle-arc-obtuse { stroke: var(--accent); }
+  #board .angle-arc-acute { stroke: var(--good); }
+  #board .centre-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 2; }
+  #board .ray-end { fill: var(--accent); stroke: var(--stage); stroke-width: 1.2; }
+  #board .point-label {
+    fill: var(--text); font: 700 0.95rem var(--font); pointer-events: none;
+  }
+  #board .angle-label {
+    font: 700 0.9rem var(--font); pointer-events: none;
+  }
+  #board .angle-label-obtuse { fill: var(--accent); }
+  #board .angle-label-acute { fill: var(--good); }
+  #board .vertex-label {
+    fill: var(--muted); font: 500 0.75rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls button[aria-pressed="true"] {
+    background: var(--accent-soft); border-color: var(--accent);
+  }
+</style>
+</head>
+<body data-game="central-angles-in-cube" data-kind="demo">
+<main id="main">
+  <h1>Central Angles In Cube</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: it shows the angles you can make at the middle of a cube.<br>
+    <strong>How to play:</strong> Drag P, Q and R onto corners of the cube, or focus one and use the arrow keys. Press Obtuse, Acute or Both to draw the rays, and use the other buttons to turn the cube.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 460 380" role="group"
+         aria-label="A cube with a dot at its centre and three draggable points joined to the centre"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="noneBtn" type="button" aria-pressed="true" aria-label="Hide both groups of rays">None</button>
+    <button id="obtuseBtn" type="button" aria-pressed="false" aria-label="Draw the obtuse angle across a face diagonal">Obtuse</button>
+    <button id="acuteBtn" type="button" aria-pressed="false" aria-label="Draw the acute angle across a cube edge">Acute</button>
+    <button id="bothBtn" type="button" aria-pressed="false" aria-label="Draw both angles at once">Both</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the three points back where the applet had them and hide the rays">Reset</button>
+    <button id="snapBtn" type="button" aria-pressed="true" aria-label="Turn snapping to cube corners on or off">Snap to corners</button>
+    <button id="tetraBtn" type="button" aria-pressed="false" aria-label="Show or hide the tetrahedron inside the cube">Show tetrahedron</button>
+    <button id="turnLeft" type="button" aria-label="Turn the cube to the left">&larr; turn</button>
+    <button id="turnRight" type="button" aria-label="Turn the cube to the right">turn &rarr;</button>
+    <button id="tiltUp" type="button" aria-label="Tilt the cube upwards">&uarr; tilt</button>
+    <button id="tiltDown" type="button" aria-label="Tilt the cube downwards">&darr; tilt</button>
+    <button id="zoomIn" type="button" aria-label="Make the cube bigger">Zoom in</button>
+    <button id="zoomOut" type="button" aria-label="Make the cube smaller">Zoom out</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Discussion by Scott E. Brodie on the original page. Join the middle of a <a class="wiki-term" data-wiki="Cube" href="https://en.wikipedia.org/wiki/Cube" target="_blank" rel="noopener">cube</a> to two corners and you get a central angle. Only two different answers are possible when the corners sit on the cube, and one is the exact complement of the other.</p>
+
+      <h2>Two angles at the middle</h2>
+      <p>Name the top face A, B, C, D and the face below it A', B', C', D', with each dashed letter directly under its plain one. Let O be the middle of the cube. The angle AOC goes from O to two opposite corners of one face, across a face diagonal: it is obtuse. The angle COC' goes to two corners joined by a cube edge: it is acute. The applet draws the first group with the "obtuse" checkbox and the second with "acute"; both boxes start unchecked, so the opening picture here also shows no rays. Press a button to draw them.</p>
+
+      <h2>The cosine is a dot product</h2>
+      <p>Put the cube of side 2 around the origin, as the page does, so A is (1, 1, 1) and C is (-1, -1, 1). The <a class="wiki-term" data-wiki="Dot_product" href="https://en.wikipedia.org/wiki/Dot_product" target="_blank" rel="noopener">dot product</a> of those two vectors is <code>1(-1) + 1(-1) + 1(1) = -1</code>, while each has length <code>sqrt(3)</code>. So <code>cos(t) = -1/3</code> and <code>t = arccos(-1/3) ≈ 109.47122°</code>. For an edge, C·C' = <code>1 + 1 - 1 = 1</code>, so <code>cos(s) = 1/3</code> and <code>s ≈ 70.52878°</code>.</p>
+      <p>The page writes "arccos(s) = 1/3" where it means <code>cos(s) = 1/3</code>; the logic test checks both numbers directly, and they hold for every cube size it tries. This same angle is a building block of diamond and ice crystals.</p>
+
+      <h2>Why the two angles make 180°</h2>
+      <p>A and C' lie on a body diagonal, so the line AC' runs straight through O. Angle AOC plus angle COC' is therefore a straight angle: <code>s + t = 180°</code>. The page also looks at the <a class="wiki-term" data-wiki="Right_triangle" href="https://en.wikipedia.org/wiki/Right_triangle" target="_blank" rel="noopener">right triangle</a> ACC'. For a cube of side 2 its legs are 2 and <code>2 sqrt(2)</code>, its hypotenuse is <code>2 sqrt(3)</code>, and the middle of that hypotenuse is O. The line from C to O is a median of length <code>sqrt(3)</code>, exactly half the hypotenuse. The test checks these lengths and the straight line at five cube sizes.</p>
+
+      <h2>A tetrahedron hiding in the cube</h2>
+      <p>Four alternate corners A, C, B' and D' form a regular <a class="wiki-term" data-wiki="Tetrahedron" href="https://en.wikipedia.org/wiki/Tetrahedron" target="_blank" rel="noopener">tetrahedron</a>. Every pair of its corners is a face diagonal of the cube, so all six angles at O are the same obtuse angle t; the logic test checks all six at every size. Press Show tetrahedron to see those four corners. The applet's "acute" group has one harmless quirk: the bytecode creates the ray OQ twice, so the second ray is drawn over the first rather than joining Q to R.</p>
+
+      <p class="tip">Press Both, then drag R onto the corner opposite P. The two numbers on the arcs always add to 180°.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CentralAnglesInCube.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="central-angles-in-cube-core.js"></script>
+<script src="central-angles-in-cube.js"></script>
+</body>
+</html>
