@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Expanded Incircle &mdash; coolmaths</title>
+<meta name="description" content="Slide a point along a triangle's side: will six dots stay on one circle, and can their arcs form a shape of constant width?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/expanded-incircle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Expanded Incircle">
+<meta property="og:description" content="Slide a point along a triangle's side: will six dots stay on one circle, and can their arcs form a shape of constant width?">
+<meta property="og:url" content="https://coolmaths.ai/expanded-incircle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  .tri-fill { fill: var(--accent-soft); stroke: var(--ink); stroke-width: 2; }
+  .rotation-arc { fill: none; stroke: var(--highlight); stroke-width: 3; }
+  .incircle { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 5 4; }
+  .six-circle { fill: none; stroke: var(--accent); stroke-width: 3.5; }
+  .chord { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 4 4; }
+  .cevian { stroke: var(--bad); stroke-width: 1.6; }
+  .conway-spoke { stroke: var(--good); stroke-width: 1.2; stroke-dasharray: 6 5; }
+  .touch-dot { fill: var(--good); }
+  .i-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  .six-dot { fill: var(--accent); stroke: var(--ink); stroke-width: 1.2; }
+  .pt-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    pointer-events: none;
+  }
+  .pt-label.vertex-label { font-weight: 700; }
+  .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2.5;
+    cursor: grab;
+  }
+  .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem 1rem;
+  }
+  .control-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body data-game="expanded-incircle" data-kind="demo">
+<main id="main">
+  <h1>Expanded Incircle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the corners of a triangle and slide a point along its bottom side to watch six dots stay on one circle.<br>
+    <strong>How to play:</strong> Drag A, B, C or P with a mouse or finger, or focus one with Tab and press the arrow keys. Tick a box to show or hide a guide.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Triangle ABC with a point P on side BC, its five rotations, the incircle and a circle through six points"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label><input id="namesCheck" type="checkbox"> names</label>
+      <label><input id="rotationsCheck" type="checkbox"> rotations</label>
+      <label><input id="circleCheck" type="checkbox"> circle</label>
+      <label><input id="incircleCheck" type="checkbox"> incircle</label>
+      <label><input id="gergonneCheck" type="checkbox"> Gergonne / Adams lines</label>
+      <button id="resetBtn" type="button" class="primary" aria-label="Put the triangle and point P back at their starting positions">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Six dots ride on the sides of a triangle. Slide the starting dot and the other five move with it, yet they always sit on one circle whose centre never leaves the middle of the <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a>. Push the starting dot far outside the triangle and the arcs traced by the rotations outline a shape of constant width.</p>
+
+      <h2>Six equal steps around the triangle</h2>
+      <p>Start at <code>P</code> on <code>BC</code>. Turn the line around corner <code>B</code> until it lands on <code>AB</code>: that gives <code>Q</code> with <code>BQ = BP</code>. Turn around <code>A</code> to get <code>R</code>, around <code>C</code> to get <code>P'</code>, then again to get <code>Q'</code> and <code>R'</code>. The <a class="wiki-term" data-wiki="Tangent_lines_to_circles" href="https://en.wikipedia.org/wiki/Tangent_lines_to_circles" target="_blank" rel="noopener">tangents</a> from one corner are equal: <code>BD = BF</code>, <code>CE = CD</code> and <code>AE = AF</code>. Subtracting them gives the page's chain <code>FQ = ER = DP' = FQ' = ER' = DP</code>, so the walk closes and <code>CP = CR'</code>. (The page prints <code>AE = EF</code>; the equal pair is <code>AE = AF</code>.)</p>
+
+      <h2>Why one circle holds all six</h2>
+      <p>The points <code>D</code>, <code>E</code>, <code>F</code> where the incircle touches the sides are exactly halfway along the three equal segments <code>PP'</code>, <code>RR'</code> and <code>QQ'</code>. Each segment is at right angles to the radius from the incenter <code>I</code> to its touch point. So every one of the six dots is the same distance from <code>I</code>, and they share a circle centred there. When the starting dot is at <code>D</code>, three turns bring it back to <code>D</code>. The logic test checks all of this on hundreds of triangles and six positions of <code>P</code>. Tick "rotations" to watch the arcs; tick "Gergonne / Adams lines" to see the three lines that meet at the <a class="wiki-term" data-wiki="Gergonne_point" href="https://en.wikipedia.org/wiki/Gergonne_point" target="_blank" rel="noopener">Gergonne point</a> for one special position of <code>P</code>.</p>
+
+      <h2>Conway's circle and constant width</h2>
+      <p>Let <code>a = BC</code>, <code>b = CA</code>, <code>c = AB</code> and <code>s = (a+b+c)/2</code>. Conway produces each side beyond a corner by the opposite side length, plus the same extra amount <code>x</code>: at <code>B</code>, by <code>b + x</code>. Then <code>DP = s + x</code> and <code>EA' = EC'</code>, which puts the six new points on the very same circle in Eves' problem. All three chords <code>PP'</code>, <code>QQ'</code>, <code>RR'</code> have length <code>2(s+x) = a+b+c+2x</code>, and each rotated arc has that radius; three such pairs of arcs form a <a class="wiki-term" data-wiki="Constant_width" href="https://en.wikipedia.org/wiki/Constant_width" target="_blank" rel="noopener">curve of constant width</a>. The page's last paragraph calls the chords <code>(a+b+c)/2 + x</code>; the tests find that this is the half-chord <code>DP</code>, not the chord.</p>
+
+      <p class="tip">Slide P past B so all six dots lie outside the triangle, then switch on rotations: the orange arcs make a shape you can squeeze between two parallel lines a fixed distance apart. Which two lines touch it there?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ExpandedIncircle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="expanded-incircle-core.js"></script>
+<script src="expanded-incircle.js"></script>
+</body>
+</html>
