@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Funny Square &mdash; coolmaths</title>
+<meta name="description" content="Three dots sit on one straight line and build a four-sided shape. Drag them anywhere: will it ever stop being a square?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/funny-square/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Funny Square">
+<meta property="og:description" content="Three dots sit on one straight line and build a four-sided shape. Drag them anywhere: will it ever stop being a square?">
+<meta property="og:url" content="https://coolmaths.ai/funny-square/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .base-line { stroke: var(--muted); stroke-width: 2; }
+  #board .square { fill: var(--accent); fill-opacity: 0.08; stroke: var(--good); stroke-width: 3; }
+  #board .perp { stroke: var(--accent); stroke-width: 2.5; }
+  #board .guide { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .hint-line { stroke: var(--highlight); stroke-width: 4; }
+  #board .hint-angle { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .derived-dot { fill: var(--ink); }
+  #board .hint-dot { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 5; }
+  #board .point-label { fill: var(--text); font-size: 18px; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  .controls button { min-height: 2.5rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="funny-square" data-kind="demo">
+<main id="main">
+  <h1>Funny Square</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a><a class="tag" href="../index.html#coordinates">Coordinates</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> Three dots on one straight line build a four-sided shape that stays a square.<br>
+    <strong>How to play:</strong> Drag the dots, or focus one and use the arrow keys. Tick the boxes to see the construction lines or the matching triangles.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 480 440" role="group"
+         aria-label="Three draggable dots on a horizontal base line, with the square they build above and below it."></svg>
+  </div>
+
+  <div class="controls">
+    <label class="option" for="namesChk"><input id="namesChk" type="checkbox" checked aria-label="Show point names"> Show names</label>
+    <label class="option" for="constructionChk"><input id="constructionChk" type="checkbox" aria-label="Show the construction lines"> Construction</label>
+    <label class="option" for="hintChk"><input id="hintChk" type="checkbox" aria-label="Show the matching triangles"> Hint</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Start a new diagram">New diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag a dot and the shape changes size and turns, yet its four sides stay equal and its corners stay right angles. This is the <a class="wiki-term" data-wiki="Square" href="https://en.wikipedia.org/wiki/Square" target="_blank" rel="noopener">square</a> the original page calls "from nowhere".</p>
+
+      <h2>The three upright lines</h2>
+      <p>The page's exact claim is that <code>P</code> and <code>Q</code> lie on <code>AR</code> with <code>AP = QR</code>, and that <a class="wiki-term" data-wiki="Perpendicular" href="https://en.wikipedia.org/wiki/Perpendicular" target="_blank" rel="noopener">perpendicular</a> lines at <code>P</code>, <code>Q</code> and <code>R</code> have <code>PD = PR</code>, <code>QB = QR</code> and <code>RC = PQ</code>. Then <code>ABCD</code> is a square. The logic test checks all six lengths and every corner across 672 configurations, including <code>P</code> and <code>Q</code> outside the segment and <code>A</code> and <code>R</code> the other way round. The claim holds in every one.</p>
+
+      <h2>Why it always works</h2>
+      <p>Write <code>u = AP</code> and <code>v = PR</code> as signed lengths, and take screen coordinates with <code>y</code> growing downward. Put <code>A = (a, y)</code>, so <code>P = (a+u, y)</code>, <code>R = (a+u+v, y)</code> and, because <code>QR = u</code>, <code>Q = (a+v, y)</code>. The three perpendiculars end at</p>
+      <blockquote><code>B = (a+v, y+u)</code>, <code>D = (a+u, y&minus;v)</code>, <code>C = (a+u+v, y+u&minus;v)</code>.</blockquote>
+      <p>Now two <a class="wiki-term" data-wiki="Euclidean_vector" href="https://en.wikipedia.org/wiki/Euclidean_vector" target="_blank" rel="noopener">vectors</a> do all the work: <code>AB = (v, u)</code> and <code>AD = (u, &minus;v)</code>. Their dot product is <code>uv &minus; uv = 0</code>, so the corner at <code>A</code> is a right angle, and both have length <code>&radic;(u&sup2; + v&sup2;)</code>. Also <code>BC = AD</code> and <code>CD = &minus;AB</code>, so the shape is a square. The page says its triangle proof needs adjusting when the points fall outside <code>AR</code>; this vector proof does not, because signed lengths work there too.</p>
+
+      <h2>A quirk in the old bytecode</h2>
+      <p>A literal reading of the applet's <code>Compute()</code> gives <code>Q.x = R.x &minus; P.x &minus; A.x</code>. That agrees with <code>AP = QR</code> only when <code>A.x = 0</code>; at any other offset it draws a different quadrilateral. This port follows the page's stated construction instead, so the picture is a square wherever you drag the base line. The logic test transcribes the bytecode a second time, confirms it agrees with this core at the origin in 105 cases, and confirms that the bytecode's own default diagram fails the page's claim while this one passes.</p>
+
+      <p class="tip">Try dragging <code>P</code> past <code>R</code>, then tick <strong>Hint</strong>: the triangle <code>BTC</code> appears with <code>BT</code> running along the base and <code>CT</code> equal to <code>PD</code>.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FunnySquare.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="funny-square-core.js"></script>
+<script src="funny-square.js"></script>
+</body>
+</html>
