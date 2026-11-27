@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fagnano III &mdash; coolmaths</title>
+<meta name="description" content="Roll an acute triangle over its sides: which line joining a point to its copy is shortest, and how does it fold into the orthic triangle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/fagnano-iii/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Fagnano III">
+<meta property="og:description" content="Roll an acute triangle over its sides: which line joining a point to its copy is shortest, and how does it fold into the orthic triangle?">
+<meta property="og:url" content="https://coolmaths.ai/fagnano-iii/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+    border-radius: 8px;
+  }
+  #board .tri { fill: none; stroke: var(--muted); stroke-width: 1.4; }
+  #board .tri-base { stroke: var(--ink); stroke-width: 2.4; }
+  #board .tri-roll { stroke: var(--accent); stroke-width: 1.8; }
+  #board .altitude { stroke: var(--bad); stroke-width: 1.3; stroke-dasharray: 4 4; }
+  #board .c-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 4; }
+  #board .bisector { stroke: var(--good); stroke-width: 2; }
+  #board .projection { stroke: var(--good); stroke-width: 1.6; opacity: 0.8; }
+  #board .mid-line { stroke: var(--accent); stroke-width: 2.6; }
+  #board .map-line { stroke: var(--accent); stroke-width: 1.8; }
+  #board .aux-dot { fill: var(--good); }
+  #board .mid-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .map-dot { fill: var(--accent); }
+  #board .point-label {
+    fill: var(--text);
+    font-size: 0.95rem;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible {
+    outline: none;
+    stroke: var(--good);
+    stroke-width: 5;
+  }
+  #board .point-handle { fill: var(--good); }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.4rem 0 0;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="fagnano-iii" data-kind="demo">
+<main id="main">
+  <h1>Fagnano III</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A triangle rolls over its sides and leaves a trail of copies; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the four dots to move the triangle and the dot on its bottom side. Tick the boxes to show the helper lines, the copies, the names or where the dot goes.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="A triangle ABC, its rolled copies, a point P on side AB, and the Samelson construction lines"></svg>
+    <p class="hint">Keyboard: Tab to a dot, then use the arrow keys (Shift makes a bigger step).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="altitudesBox" type="checkbox"> Show altitudes</label>
+    <label><input id="constructionBox" type="checkbox"> Show construction</label>
+    <label><input id="mapBox" type="checkbox"> Show mapping</label>
+    <label><input id="namesBox" type="checkbox"> Show names</label>
+    <label><input id="moreBox" type="checkbox"> More triangles</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Fagnano's problem asks for the smallest triangle you can fit inside an acute one. This applet draws Hans Samelson's third proof: roll the triangle over its sides until a short straight line turns into the answer.</p>
+
+      <h2>Rolling around one corner</h2>
+      <p>Start with <code>ABC</code>. Reflect <code>B</code> in the side <code>CA</code>, then reflect <code>A</code> in the new side <code>B'C</code>, then reflect <code>C</code> in <code>A'B'</code>. Both mirrors pass through <code>C</code>, so the first three triangles share that corner. The side <code>AB</code> and its image <code>A'B'</code> meet at <code>O</code> at an angle of <code>180&deg; &minus; 2C</code>, so for an acute triangle the two lines are never parallel. Both are the same distance <code>h<sub>c</sub></code> from <code>C</code>. The logic test checked this on 441 acute grid triangles and hundreds of random ones; the largest angle error was under <code>0.01</code> radians.</p>
+
+      <h2>The bisector and the midpoint M</h2>
+      <p>Because the two copies of side <code>c</code> are equally far from <code>C</code>, the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> <code>m</code> at <code>O</code> passes through <code>C</code>. Reflect each copy of <code>B</code> in <code>m</code> and take the two midpoints: they are <code>M</code> on <code>AB</code> and <code>M'</code> on <code>A'B'</code>. <code>M</code> is exactly the foot of the <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a> from <code>C</code>, <code>MM'</code> is perpendicular to <code>m</code>, and the next copy of <code>M</code> is the reflection of <code>M</code> in <code>M'</code>. Tick "Show construction" to see all three midpoints.</p>
+
+      <h2>Why this line is the shortest</h2>
+      <p>Take any point <code>P</code> on <code>AB</code> and mark where it lands on the rolled side and on the last copy. The two legs are always equal, and the gap between the first and last copy is a fixed <a class="wiki-term" data-wiki="Translation_(geometry)" href="https://en.wikipedia.org/wiki/Translation_(geometry)" target="_blank" rel="noopener">translation</a>. An isosceles triangle with a fixed base is shortest when it flattens, so the broken line is shortest exactly when the three copies of <code>P</code> lie straight — which happens at <code>P = M</code>. The test scanned every hundredth of the side in 441 configurations and found no exception. When the three pieces are folded back, their lengths are the three sides of the <a class="wiki-term" data-wiki="Orthic_triangle" href="https://en.wikipedia.org/wiki/Orthic_triangle" target="_blank" rel="noopener">orthic triangle</a>, which solves <a class="wiki-term" data-wiki="Fagnano%27s_problem" href="https://en.wikipedia.org/wiki/Fagnano%27s_problem" target="_blank" rel="noopener">Fagnano's problem</a>.</p>
+
+      <h2>Where the drawing differs from the text</h2>
+      <p>The page numbers the rolled triangles <code>t1, t2, t3</code>; the applet's own objects start with the original as <code>t0</code>, so its <code>t0</code> and <code>t2</code> are the page's <code>t1</code> and <code>t3</code>. The port keeps the applet's numbering. The applet also rounds a nearly vertical mirror by reflecting across <code>x = A.x</code> instead of the true line; in a handful of drawings this shifts the two legs by about one or two board units, so the "equal legs" and "straight at M" checks allow that much. The claims are meant for acute triangles: pull a corner out and the status line says plainly that they no longer apply.</p>
+
+      <p class="tip">Tick "Show mapping", then drag <code>P</code> onto the foot of the altitude: the two blue legs straighten into one line. Tick "More triangles" to follow the same pattern further along the strip.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FagnanoIII.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="fagnano-iii-core.js"></script>
+<script src="fagnano-iii.js"></script>
+</body>
+</html>
