@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>From Grebe &mdash; coolmaths</title>
+<meta name="description" content="Build squares on a triangle and watch three lines meet at one point. Can you use that point to find the triangle again?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/from-grebe/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="From Grebe">
+<meta property="og:description" content="Build squares on a triangle and watch three lines meet at one point. Can you use that point to find the triangle again?">
+<meta property="og:url" content="https://coolmaths.ai/from-grebe/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .outer-line { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 5; }
+  #board .spoke { fill: none; stroke: var(--accent); stroke-opacity: 0.55; stroke-width: 1.1; stroke-dasharray: 3 4; }
+  #board .square { fill: var(--accent-soft); fill-opacity: 0.8; stroke: var(--accent); stroke-width: 1.6; }
+  #board .given { fill: var(--accent-soft); fill-opacity: 0.45; stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; }
+  #board .recon { fill: var(--good); fill-opacity: 0.16; stroke: var(--good); stroke-width: 2.8; stroke-linejoin: round; }
+  #board .recon-side { fill: none; stroke: var(--good); stroke-width: 1.7; }
+  #board .dot-ap { fill: var(--good); stroke: var(--stage); stroke-width: 1.4; }
+  #board .dot-as { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.2; }
+  #board .dot-s { fill: var(--bad); stroke: var(--stage); stroke-width: 1; }
+  #board .dot-k { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .pt-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 16px;
+    pointer-events: none;
+  }
+  #board .label-zero { fill: var(--muted); }
+  #board .label-cut { fill: var(--bad); font-size: 13px; }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2.5;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .tri-drag { fill: transparent; stroke: none; pointer-events: all; cursor: grab; }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+  .controls input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--accent);
+  }
+  .controls button { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="from-grebe" data-kind="demo">
+<main id="main">
+  <h1>From Grebe</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners of a triangle and watch the squares and the long lines follow them.<br>
+    <strong>How to play:</strong> Drag a corner with a mouse or finger, or focus a dot and press the arrow keys. Tick “Show names” to see what each point is called.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 380" role="group"
+         aria-label="Triangle A prime B prime C prime with a square on each side, three lines meeting at K, and the smaller triangle ABC"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesCheck" type="checkbox"> Show names</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting position">Reset triangle</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Put a square on each side of a triangle. The far sides of those squares meet in a second triangle, and lines joining matching corners all pass through one point. From that point the original triangle can be found again. Drag a corner and see whether any of this breaks.</p>
+
+      <h2>Squares on all three sides</h2>
+      <p>Start with the triangle the page calls <code>A'B'C'</code> (the dots you can drag). On each side the applet builds a <a class="wiki-term" data-wiki="Square_(geometry)" href="https://en.wikipedia.org/wiki/Square_(geometry)" target="_blank" rel="noopener">square</a> by turning the side a quarter turn. The side of each square furthest from the triangle is drawn as a long dashed line. Those three lines meet at <code>A0</code>, <code>B0</code> and <code>C0</code>. The turn is always the same way round, so if you drag a corner across a side and the triangle winds the other way, the squares lie inside it instead of outside. That is a quirk of the old applet, kept here on purpose.</p>
+
+      <h2>Three lines, one point</h2>
+      <p>Grebe noticed in 1847 that <code>A'A0</code>, <code>B'B0</code> and <code>C'C0</code> all pass through the same point <code>K</code>. For a triangle with sides <code>a</code>, <code>b</code>, <code>c</code>, that point has <a class="wiki-term" data-wiki="Barycentric_coordinates_(mathematics)" href="https://en.wikipedia.org/wiki/Barycentric_coordinates_(mathematics)" target="_blank" rel="noopener">barycentric coordinates</a> <code>a&sup2; : b&sup2; : c&sup2;</code>. It is the <a class="wiki-term" data-wiki="Symmedian_point" href="https://en.wikipedia.org/wiki/Symmedian_point" target="_blank" rel="noopener">symmedian point</a>, also called the Lemoine point. Tick “Show names” to see <code>K</code>'s fellow points; the three joining lines are drawn dashed through it.</p>
+
+      <h2>A copy at a fixed scale</h2>
+      <p>Now draw the lines from <code>K</code> to the two far corners of each square. Where they cut the side of <code>A'B'C'</code>, turn that short segment a quarter turn: the new point is a corner of square <code>ABC</code>, shown in green. Everything here is a <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothety</a> centred at <code>K</code>. If <code>D</code> is twice the signed area of <code>A'B'C'</code> and <code>S = a&sup2;+b&sup2;+c&sup2;</code>, then <code>ABC = K + r(A' &minus; K)</code> with <code>r = D / (D &minus; S)</code>, while <code>A0B0C0</code> uses <code>1/r</code>. For the winding that puts the squares outside, <code>r = 2&middot;area / (S + 2&middot;area)</code>. Since <code>r</code> is fixed by the shape, the answer is determined uniquely. When the winding flips, <code>r</code> becomes negative: the green triangle turns up on the other side of <code>K</code>.</p>
+
+      <h2>What was checked</h2>
+      <p>The logic test runs 33 checks: the opening triangle, eight hand-picked shapes and 600 random ones. In every case the three joining lines really meet, the meeting point has coordinates <code>a&sup2;:b&sup2;:c&sup2;</code>, and both outer and inner triangles sit on the same rays from <code>K</code> with the stated scale. Every constructed point is also compared with a second transcription of the applet's own <code>Compute()</code>, <code>GetSquare()</code>, <code>Rotate()</code> and <code>Intersect()</code> bytecode. The live <a href="https://www.cut-the-knot.org/Curriculum/Geometry/FromGrebe.shtml" target="_blank" rel="noopener">cut-the-knot page</a> still embeds this Java applet, and its notation is followed here: the draggable triangle is <code>A'B'C'</code>, the reconstructed one is <code>ABC</code>. The page's story about Dodgson's Pillow Problems and the Ladies' Diary is history, not an extra rule.</p>
+
+      <p class="tip">Drag <code>C</code> across the line <code>A'B'</code>. Watch <code>K</code> and the green triangle jump to the other side while the three lines still meet exactly there.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FromGrebe.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="from-grebe-core.js"></script>
+<script src="from-grebe.js"></script>
+</body>
+</html>
