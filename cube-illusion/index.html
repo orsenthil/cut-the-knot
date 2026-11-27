@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cube Illusion &mdash; coolmaths</title>
+<meta name="description" content="Is this a small cube standing in a tiled corner, or a big cube with a corner cut away? Can you see both shapes in the very same drawing?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cube-illusion/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cube Illusion">
+<meta property="og:description" content="Is this a small cube standing in a tiled corner, or a big cube with a corner cut away? Can you see both shapes in the very same drawing?">
+<meta property="og:url" content="https://coolmaths.ai/cube-illusion/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .ill-edge,
+  #board .ill-long,
+  #board .ill-short {
+    fill: none;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+  #board .ill-edge { stroke: var(--ink); stroke-width: 2.2; }
+  #board .ill-long { stroke: var(--muted); stroke-width: 1; }
+  #board .ill-short { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 2 2; }
+  #board .ill-edge.reading-small { stroke: var(--accent); stroke-width: 3.6; }
+  #board .ill-edge.reading-cut { stroke: var(--highlight); stroke-width: 3.6; }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible {
+    outline: none;
+    stroke: var(--good);
+    stroke-width: 5;
+  }
+  .dials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: center;
+    width: 100%;
+  }
+  .dial {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.95rem;
+  }
+  .dial input[type="range"] {
+    width: min(9rem, 42vw);
+    min-height: 2rem;
+  }
+  .toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    width: 100%;
+  }
+  .toggles label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.25rem;
+  }
+  .readout {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+</style>
+</head>
+<body data-game="cube-illusion" data-kind="demo">
+<main id="main">
+  <h1>Cube Illusion</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This drawing can look like a small cube in a corner or a big cube with a corner cut off.<br>
+    <strong>How to play:</strong> Move the sliders or drag the corner dot to change the drawing. Press the two highlight buttons to see each shape.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 320" role="group"
+         aria-label="A cube drawing that can be read as a small cube in a tiled corner or a big cube with a corner cut away"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="dials">
+      <label class="dial" for="angle">Tilt
+        <input id="angle" type="range" min="15" max="60" step="5" value="45"
+               aria-label="Tilt angle, from 15 to 60 degrees">
+      </label>
+      <label class="dial" for="nSize">Big cube
+        <input id="nSize" type="range" min="2" max="10" step="1" value="6"
+               aria-label="Size of the big cube, from 2 to 10 units">
+      </label>
+      <label class="dial" for="mSize">Small corner
+        <input id="mSize" type="range" min="1" max="10" step="1" value="3"
+               aria-label="Size of the small corner, from 1 to 10 units, never larger than the big cube">
+      </label>
+      <span class="readout" id="sizeReadout">45° · 6 / 3</span>
+    </div>
+    <div class="toggles">
+      <label for="longLines"><input id="longLines" type="checkbox" checked> Long grid lines</label>
+      <label for="shortLines"><input id="shortLines" type="checkbox" checked> Short grid lines</label>
+    </div>
+    <button id="showSmall" type="button" aria-label="Highlight the small cube in the tiled corner">See the small cube</button>
+    <button id="showCut" type="button" aria-label="Highlight the big cube with a corner cut away">See the cut corner</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the tilt and both cube sizes">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The same straight lines can be two different solids. Nothing here says which edges are in front, so your eyes settle on one shape — and can switch to the other without the drawing changing at all.</p>
+
+      <h2>One angle, one grid</h2>
+      <p>The applet draws every line on the same slanted grid. If <code>u</code> is the rounded unit length and <code>t</code> is the tilt, one grid step is
+        <code>(1.6u cos t, u sin t)</code>. Vertical edges use only the second part. Because one number <code>t</code> fixes every direction, there is no
+        <a class="wiki-term" data-wiki="Orthographic_projection" href="https://en.wikipedia.org/wiki/Orthographic_projection" target="_blank" rel="noopener">perspective</a> cue to tell you which way the cube points; the test confirms the step ratio is <code>tan(t) / 1.6</code> for all ten tilts.</p>
+
+      <h2>Two solids, the same strokes</h2>
+      <p>The outer outline has six corner points and the inner one has six more; eighteen heavy strokes join them. Read the small hexagon as a cube sitting in a tiled corner, or read the big hexagon as a cube with one corner sliced away. Both readings use exactly those eighteen strokes. This is the trick behind the
+        <a class="wiki-term" data-wiki="Necker_cube" href="https://en.wikipedia.org/wiki/Necker_cube" target="_blank" rel="noopener">Necker cube</a>: the
+        <a class="wiki-term" data-wiki="Ambiguous_image" href="https://en.wikipedia.org/wiki/Ambiguous_image" target="_blank" rel="noopener">ambiguous image</a> has no depth information to prefer one reading. The page's claim that there are at least two ways to see it is checked against every setting: each reading closes into its own hexagon on the very same edges.</p>
+
+      <h2>What the sliders change</h2>
+      <p>Tilt runs from 15° to 60° in steps of 5°, the big cube from 2 to 10 units, and the small corner from 1 to 10. On every slider move the original sets <code>M = min(N, M)</code>, so the small corner cannot outgrow the big cube; this port keeps that quirk. Both grid checkboxes start checked, and the two highlight buttons are a modern aid — the original had no buttons beyond its sliders and checkboxes. When <code>M = N</code>, three of the joining strokes shrink to points in the original too.</p>
+
+      <p class="tip">Try tilt 15° with a big cube of 10 and a small corner of 2, then click each highlight button without touching the drawing.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CubeIllusion.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cube-illusion-core.js"></script>
+<script src="cube-illusion.js"></script>
+</body>
+</html>
