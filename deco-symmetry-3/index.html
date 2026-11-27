@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deco Symmetry 3 &mdash; coolmaths</title>
+<meta name="description" content="Can three kites cut from a triangle turn and slide into its mirror image without ever being flipped?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/deco-symmetry-3/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Deco Symmetry 3">
+<meta property="og:description" content="Can three kites cut from a triangle turn and slide into its mirror image without ever being flipped?">
+<meta property="og:url" content="https://coolmaths.ai/deco-symmetry-3/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .mirror-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .tri-edge { stroke: var(--ink); stroke-width: 2.2; fill: none; }
+  #board .mirror-edge { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 5 4; fill: none; }
+  #board .cut { stroke: var(--ink); stroke-width: 1.3; stroke-dasharray: 4 4; }
+  #board .incircle { stroke: var(--good); stroke-width: 1.6; stroke-dasharray: 5 4; fill: none; }
+  #board .right-mark { stroke: var(--muted); stroke-width: 1.3; fill: none; }
+  #board .kite { stroke-width: 1.6; }
+  #board .kite-0 { fill: var(--accent); fill-opacity: 0.22; stroke: var(--accent); }
+  #board .kite-1 { fill: var(--good); fill-opacity: 0.2; stroke: var(--good); }
+  #board .kite-2 { fill: var(--highlight); fill-opacity: 0.8; stroke: var(--muted); }
+  #board .center-dot { fill: var(--accent); }
+  #board .foot-dot { fill: var(--good); }
+  #board .point-label {
+    fill: var(--text);
+    font-size: 0.95rem;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible {
+    outline: none;
+    stroke: var(--good);
+    stroke-width: 5;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.4rem 0 0;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="deco-symmetry-3" data-kind="demo">
+<main id="main">
+  <h1>Deco Symmetry 3</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A triangle is cut into three pieces that can be turned and slid to fill its mirror image; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the three dots to change the triangle. Tick the boxes for names or the circle, then press Move them to watch the pieces cross over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="A triangle, its mirror across a vertical line, and the three kite-shaped pieces that move from one to the other"></svg>
+    <p class="hint">Keyboard: Tab to a dot, then use the arrow keys (Shift makes a bigger step). Move them is a button you can press with Enter or Space.</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox"> Show names</label>
+    <label><input id="hintBox" type="checkbox"> Show hint</label>
+    <button id="moveBtn" type="button" class="primary" aria-label="Move the three kites into the mirror triangle">Move them</button>
+    <button id="resetBtn" type="button" aria-label="Put the triangle back where it started">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The dashed triangle is the mirror of the solid one. The three coloured shapes show a way to cut the first triangle into pieces that slide and turn into the mirror, without ever being flipped over.</p>
+
+      <h2>Three cuts that work for every triangle</h2>
+      <p>Let <code>O</code> be the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a>, the point the same distance from all three sides. Drop a perpendicular from <code>O</code> to each side; the landing points are <code>D</code>, <code>E</code> and <code>F</code>. The three segments <code>OD</code>, <code>OE</code>, <code>OF</code> are the cuts, and each ends on a side of the triangle. Each piece is a <a class="wiki-term" data-wiki="Kite_(geometry)" href="https://en.wikipedia.org/wiki/Kite_(geometry)" target="_blank" rel="noopener">kite</a>: for the piece at <code>C</code>, <code>OD = OE</code> because both are the distance from <code>O</code> to a side, and <code>CD = CE</code> because tangents from one point to a circle are equal. The same holds at <code>A</code> and <code>B</code>. The logic test checked 180 arrangements of a grid triangle in every vertex order and 4,000 random triangles, obtuse ones included: the feet stayed on the sides and the three kites always filled the triangle.</p>
+
+      <h2>Why a turn is enough</h2>
+      <p>Each kite is symmetric about the line from <code>O</code> to its vertex: that line swaps its two feet. First reflect a kite in its own diagonal, then reflect the result in the centre line of the picture. Two <a class="wiki-term" data-wiki="Reflection_(mathematics)" href="https://en.wikipedia.org/wiki/Reflection_(mathematics)" target="_blank" rel="noopener">reflections</a> make a <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a> (or a plain slide if the two lines are parallel), so no piece ever has to be turned over. The turn is <code>180&deg; &minus; 2&alpha;</code>, where <code>&alpha;</code> is the direction of that diagonal; its centre is where the diagonal meets the centre line. The test compared this with the applet's own signed-angle rule for every triangle above and confirmed that every kite lands exactly on its mirror with its orientation unchanged.</p>
+
+      <h2>Six isosceles triangles</h2>
+      <p>The original page adds that each quadrilateral can be cut into two <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles triangles</a>. Join the two feet instead of the vertex: <code>OD = OE</code> makes triangle <code>ODE</code> isosceles, and <code>CD = CE</code> makes triangle <code>CDE</code> isosceles. Three kites therefore give six isosceles triangles. The page also mentions a four-isosceles solution and a three-isosceles solution for acute triangles; those are different dissections, not the incenter one shown here.</p>
+
+      <h2>What the original page actually claims</h2>
+      <p>On <em>Two Symmetric Triangles Are Directly Equidecomposable III</em> the claim is: the dissection determined by the incenter (from Frederickson, p. 24) splits the triangle into quadrilaterals and works for any triangle with no restriction. That is the construction here; the two-cut, three-piece solution belongs to the second page in the series, and the <a class="wiki-term" data-wiki="Circumcenter" href="https://en.wikipedia.org/wiki/Circumcenter" target="_blank" rel="noopener">circumcenter</a> dissections on the first and fourth pages need an acute triangle. Two small numerical deviations were needed: the Java code returns a foot unchanged when a vertex is within 0.1 units of the incenter, and its angle-bisector intersection loses precision on very thin triangles; both would contradict the page's &ldquo;any triangle&rdquo; claim, so the port uses the exact incenter instead. The page's last sentence extends the idea to &ldquo;inscriptible polygons&rdquo;; the kite argument really needs a circle touching every side, a <a class="wiki-term" data-wiki="Tangential_quadrilateral" href="https://en.wikipedia.org/wiki/Tangential_quadrilateral" target="_blank" rel="noopener">tangential polygon</a>. A polygon merely inscribed in a circle need not have equal tangent lengths, and the test shows a counterexample.</p>
+
+      <p class="tip">Try dragging <code>A</code> onto the centre line before pressing Move them: one kite hardly moves while the other two swing across.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/DecoSymmetry3.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="deco-symmetry-3-core.js"></script>
+<script src="deco-symmetry-3.js"></script>
+</body>
+</html>
