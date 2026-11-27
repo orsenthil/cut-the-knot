@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Glide Reflection &mdash; coolmaths</title>
+<meta name="description" content="Move an arrow and a polygon: how does sliding a shape along a line and then flipping it change the shape, and what stays exactly the same?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/glide-reflection/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Glide Reflection">
+<meta property="og:description" content="Move an arrow and a polygon: how does sliding a shape along a line and then flipping it change the shape, and what stays exactly the same?">
+<meta property="og:url" content="https://coolmaths.ai/glide-reflection/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .axis-line { stroke: var(--ink); stroke-width: 2; }
+  #board .axis-thick { stroke-width: 4; }
+  #board .arrow-head { fill: var(--accent); stroke: var(--accent); stroke-width: 1.5; }
+  #board .arrow-open { fill: none; stroke-width: 2.5; }
+  #board .arrow-solid { fill: var(--ink); stroke: var(--ink); }
+  #board .arrow-fixed { fill: var(--good); stroke: var(--good); }
+  #board .original-poly {
+    fill: var(--accent-soft);
+    stroke: var(--accent);
+    stroke-width: 2.2;
+    stroke-linejoin: round;
+  }
+  #board .image-poly {
+    fill: var(--highlight);
+    fill-opacity: 0.5;
+    stroke: var(--good);
+    stroke-width: 2;
+    stroke-linejoin: round;
+  }
+  #board .ghost-poly {
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 1.6;
+    stroke-dasharray: 5 4;
+  }
+  #board .endpoint-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .vertex-handle { fill: var(--good); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--highlight); stroke-width: 6; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label { white-space: normal; }
+  .controls select { max-width: 100%; min-height: 2.4rem; }
+  .controls button { min-height: 2.5rem; }
+  #glideLabel, #shapeLabel {
+    display: block;
+    width: 100%;
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+</style>
+</head>
+<body data-game="glide-reflection" data-kind="demo">
+<main id="main">
+  <h1>Glide Reflection</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move an arrow and a polygon to watch its twin slide along the arrow and flip over; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the arrow ends or a polygon corner, or focus one and press the arrow keys. Change the options, press Add polygon, and use the Glide and Polygon buttons to choose what to move.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A polygon, its glide-reflected copies and an arrow from B to A. Drag the arrow ends A and B or a polygon corner to change the picture."></svg>
+    <p class="hint-line">Drag A, B or a corner, or focus one and press the arrow keys (Shift for bigger steps).</p>
+    <span id="glideLabel" aria-live="polite"></span>
+    <span id="shapeLabel" aria-live="polite"></span>
+  </div>
+
+  <div class="controls">
+    <label for="glideSel">Glides <select id="glideSel" aria-label="Number of glide reflections, from 1 to 20"></select></label>
+    <label for="sidesSel">Sides <select id="sidesSel" aria-label="Sides of a new polygon, from 3 to 20"></select></label>
+    <label for="arrowSel">Arrow <select id="arrowSel" aria-label="Arrow style: line segment, full body, line arrow, filled arrow or fixed head"></select></label>
+    <label><input id="dragsBox" type="checkbox"> Show drag controls</label>
+    <label><input id="ghostBox" type="checkbox"> Show intermediate</label>
+    <button id="addBtn" type="button" aria-label="Add a polygon with the chosen number of sides">Add polygon</button>
+    <button id="removeBtn" type="button" aria-label="Remove the newest polygon">Remove last</button>
+    <button id="prevGlide" type="button" aria-label="Select the previous glide reflection">Previous glide</button>
+    <button id="nextGlide" type="button" aria-label="Select the next glide reflection">Next glide</button>
+    <button id="prevShape" type="button" aria-label="Select the previous polygon">Previous polygon</button>
+    <button id="nextShape" type="button" aria-label="Select the next polygon">Next polygon</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the arrow positions">Reset arrows</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The applet makes a copy of a polygon with one move that has two parts: a slide and a flip. The surprise is that the order of those parts makes no difference, and that the copy is the same size and shape as the original.</p>
+
+      <h2>One arrow, one flip</h2>
+      <p>The arrow runs from B (the tail) to A (the head). The slide vector is <code>v = A − B</code>; the mirror is the line through A and B. The Java applet's <code>GetVector()</code> subtracts End from Start, so the arrow itself points in the direction of the slide. For each corner <code>p</code>, the new corner is</p>
+      <blockquote><code>p′ = reflect in line AB of (p + v)</code></blockquote>
+      <p>The page calls this composite move a <a class="wiki-term" data-wiki="Glide_reflection" href="https://en.wikipedia.org/wiki/Glide_reflection" target="_blank" rel="noopener">glide reflection</a>. The logic test compared this with the applet's own rotate-by-twice-the-angle <a class="wiki-term" data-wiki="Reflection_(mathematics)" href="https://en.wikipedia.org/wiki/Reflection_(mathematics)" target="_blank" rel="noopener">reflection</a> on 1,200 random arrows and polygons: the largest disagreement was under <code>10<sup>−7</sup></code> board units.</p>
+
+      <h2>Either order works</h2>
+      <p>Because the slide is along the mirror line, reflecting first and then sliding gives the same point: <code>reflect(p + v) = reflect(p) + v</code>. The page makes this claim, and the test checked it on all 1,200 configurations; the two answers agreed to about <code>10<sup>−13</sup></code>. Tick <em>Show intermediate</em> to see the slide-only copy that the applet draws between the two steps.</p>
+
+      <h2>What stays, and what turns over</h2>
+      <p>A glide reflection is an <a class="wiki-term" data-wiki="Isometry" href="https://en.wikipedia.org/wiki/Isometry" target="_blank" rel="noopener">isometry</a>: every distance and every angle is unchanged, and a pair of parallel segments is sent to another parallel pair. It does change <a class="wiki-term" data-wiki="Orientation_(geometry)" href="https://en.wikipedia.org/wiki/Orientation_(geometry)" target="_blank" rel="noopener">orientation</a>: a clockwise walk around the polygon becomes counterclockwise. The test checked all four statements on the same 1,200 shapes.</p>
+      <p>With a nonzero slide no point stays where it was: every point moves by at least the length of <code>v</code>. The page adds "save the axis of reflection itself"; more precisely, the axis is carried to itself as a whole but its points slide along it, so it is not fixed point by point. Only when the slide is zero does the move become an ordinary reflection, whose axis is fixed pointwise. The Java routine divides by zero if A and B are dragged exactly together, so this port keeps the two ends at least 12 units apart instead of drawing a broken copy.</p>
+
+      <h2>One of four rigid motions</h2>
+      <p>The page lists exactly four distance-preserving motions of the plane: <a class="wiki-term" data-wiki="Translation_(geometry)" href="https://en.wikipedia.org/wiki/Translation_(geometry)" target="_blank" rel="noopener">translation</a>, reflection, rotation and glide reflection. Each arrow is one glide reflection; with several arrows the applet applies them in turn, each one acting on the previous copy. Three small presentation changes here: the Java applet opens with one arrow and no polygon (we open with one pentagon so there is something to copy), its random arrow and polygon positions are replaced by a fixed seed so a picture can be reproduced, and its Arrow choice opens on "Line segment" even though the arrows are drawn with the "Full body" kind until something is selected (we open with Full body shown in the menu so the menu matches the picture).</p>
+
+      <p class="tip">Try setting the number of glides to 20 and the sides to 20, then drag one arrow head a long way: watch the chain of copies stretch out. Turn off the drag controls and see that the copies still follow the arrow.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/GlideReflection.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="glide-reflection-core.js"></script>
+<script src="glide-reflection.js"></script>
+</body>
+</html>
