@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>de Villiers &mdash; coolmaths</title>
+<meta name="description" content="Build similar triangles on the sides of any quadrilateral. Will their four free tips always form a parallelogram?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/de-villiers/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="de Villiers">
+<meta property="og:description" content="Build similar triangles on the sides of any quadrilateral. Will their four free tips always form a parallelogram?">
+<meta property="og:url" content="https://coolmaths.ai/de-villiers/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .quad { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .para { fill: var(--accent); fill-opacity: 0.1; stroke: var(--good); stroke-width: 3; }
+  #board .angle-arc { fill: none; stroke: var(--highlight); stroke-width: 2.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.85rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .apex-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .apex-handle:focus-visible { stroke: var(--accent); }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="de-villiers" data-kind="demo">
+<main id="main">
+  <h1>de Villiers</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: the four free tips always make a shape whose opposite sides match.<br>
+    <strong>How to play:</strong> Drag A, B, C or D to change the four-sided shape, or drag P, Q, R or S to change the triangles. Focus a point and use the arrow keys, and tick the boxes to show names, the outline or the angle marks.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 460 300" role="group"
+         aria-label="A quadrilateral with a similar triangle on each side; the four corner points and four triangle tips can be dragged"></svg>
+  </div>
+
+  <div class="controls">
+    <span>Show</span>
+    <label><input id="names" type="checkbox"> names</label>
+    <label><input id="para" type="checkbox"> parallelogram</label>
+    <label><input id="angles" type="checkbox"> angles</label>
+    <button id="newBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move one point and four triangles change at once, yet their free tips still form a parallelogram. Michael de Villiers discovered this as a generalisation of the equilateral-triangle case. The page states it for any quadrilateral; the logic test tried over 4,000 random shapes, turns and scales and found no exception. The live page now shows a GeoGebra figure dated 13 March 2017; the original Java applet is visible in the <a href="https://web.archive.org/web/20060928052502/http://www.cut-the-knot.org/Curriculum/Geometry/deVilliers.shtml" target="_blank" rel="noopener">28 September 2006 snapshot of the same address</a>.</p>
+
+      <h2>One turn and one stretch</h2>
+      <p>The applet keeps one turn <code>q</code> and one stretch <code>r</code> for all four triangles. On a side from X to Y it puts the free tip at <code>X + r·turn(Y − X, q)</code>: start at X, turn the step to Y, then stretch it. That is a <a class="wiki-term" data-wiki="Spiral_similarity" href="https://en.wikipedia.org/wiki/Spiral_similarity" target="_blank" rel="noopener">spiral similarity</a>. Because every triangle uses the same turn and stretch, the four triangles are <a class="wiki-term" data-wiki="Similarity_(geometry)" href="https://en.wikipedia.org/wiki/Similarity_(geometry)" target="_blank" rel="noopener">similar triangles</a>: their angles at P, Q, R, S match, and so do their angles at the shared corners A, B, C, D.</p>
+
+      <h2>Why the tips make a parallelogram</h2>
+      <p>Write the turn and stretch together as one number <code>k</code>. Then the four tips are simply <code>P = (1−k)A + kB</code>, <code>Q = (1−k)C + kB</code>, <code>R = (1−k)C + kD</code> and <code>S = (1−k)A + kD</code>. Add opposite corners: <code>P + R = Q + S</code>, whatever A, B, C and D are. Equal sums of opposite corners are exactly the test for a <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a>. This is why a crossed or dented quadrilateral works too: no convexity is needed. Tick the middle box to trace the four tips.</p>
+
+      <h2>The ratios on the page</h2>
+      <p>The page claims <code>PB/PA = QB/QC = RD/RC = SD/SA</code> and then that the product <code>(PB/PA)(QC/QB)(RD/RC)(SA/SD)</code> is 1. Both are true, and the test checks them on every generated case: each triangle contributes a ratio and its partner contributes the reciprocal, so the product is a <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothety</a> of scale 1, which is the identity. One printed detail is wrong: formulas (1) and (3) write <code>RD/DC</code> where line (2) writes <code>RD/RC</code>. As printed, that product equals the stretch <code>r</code>, so it is 1 only for the starting equilateral figure (<code>r = 1</code>); with <code>RD/RC</code> it is always 1. We follow the applet's construction and the page's stated parallelogram claim.</p>
+
+      <p class="tip">Drag P until the four triangles have a different shape, then drag A: the new shape of the triangles stays, and the outline of PQRS stays a parallelogram.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/deVilliers.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="de-villiers-core.js"></script>
+<script src="de-villiers.js"></script>
+</body>
+</html>
