@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Euclid's Proof of Pythagoras &mdash; coolmaths</title>
+<meta name="description" content="Three matching triangles grow on the sides of a right triangle as you move a point. Why do the two smaller areas add up to the big one?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/euclid/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Euclid's Proof of Pythagoras">
+<meta property="og:description" content="Three matching triangles grow on the sides of a right triangle as you move a point. Why do the two smaller areas add up to the big one?">
+<meta property="og:url" content="https://coolmaths.ai/euclid/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; margin: 0 auto; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board .base-tri { fill: var(--highlight); fill-opacity: 0.12; stroke: var(--muted); stroke-width: 2; }
+  #board .tri { stroke-width: 2.4; stroke-linejoin: round; }
+  #board .tri-long { fill: var(--accent); fill-opacity: 0.2; stroke: var(--accent); }
+  #board .tri-short { fill: var(--bad); fill-opacity: 0.16; stroke: var(--bad); }
+  #board .tri-hyp { fill: var(--good); fill-opacity: 0.09; stroke: var(--good); }
+  #board .right-mark { fill: none; stroke: var(--ink); stroke-width: 1.6; }
+  #board .eye-white { fill: #fff; }
+  #board .eye-lid { fill: #9aa1ad; stroke: none; pointer-events: none; }
+  #board .eye-iris { fill: #2d5fd0; }
+  #board .eye-pupil { fill: #16181d; }
+  #board .eye-rim { fill: none; stroke: #16181d; stroke-width: 1.4; pointer-events: none; }
+  #board .num { font-size: 16px; font-weight: 650; font-variant-numeric: tabular-nums; pointer-events: none; }
+  #board .num-long { fill: var(--accent); }
+  #board .num-short { fill: var(--bad); }
+  #board .num-hyp { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 5; }
+  .readout { margin: 0.4rem 0 0; font-size: 0.95rem; color: var(--muted); text-align: center; overflow-wrap: anywhere; }
+</style>
+</head>
+<body data-game="euclid" data-kind="demo">
+<main id="main">
+  <h1>Euclid's Proof of Pythagoras</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Three matching triangles sit on the sides of a right triangle, and you can move the one on the sloping side. There is nothing to win or lose: watch how their sizes change together.<br>
+    <strong>How to play:</strong> Drag the round point, or focus it and use the arrow keys. Press At the corner or Fold in to see the two special pictures.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="group"
+         aria-label="A right triangle with three matching triangles built on its sides and three pairs of eyes following a draggable point. The three coloured numbers at the lower right give their areas."></svg>
+    <p class="readout">Magenta is the long side, red is the short side, green is the sloping side.</p>
+  </div>
+
+  <div class="controls">
+    <button id="cornerBtn" type="button" class="primary" aria-label="Move the point to the triangle's right-angle corner">At the corner</button>
+    <button id="foldBtn" type="button" aria-label="Show the fold-in configuration from the applet's picture">Fold in</button>
+    <button id="resetBtn" type="button" aria-label="Put the moving point back at its starting position">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The old picture is simple: build three matching triangles on the three sides of a right triangle. Move one corner and all three change together. The two small ones can fill the big one exactly — or at least that is what the applet's numbers suggest.</p>
+
+      <h2>Matching shapes and matching sizes</h2>
+      <p>The fixed triangle has a short leg of 90 and a long leg of 180, meeting at a right angle. The green triangle is built on the sloping side from the point you move. The magenta and red triangles are copies of it turned and shrunk onto the long and short legs. In <a class="wiki-term" data-wiki="Euclid%27s_Elements" href="https://en.wikipedia.org/wiki/Euclid%27s_Elements" target="_blank" rel="noopener">Euclid's Elements</a>, Book VI, Propositions 19 and 20 say that <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similar_triangles" target="_blank" rel="noopener">similar triangles</a> have areas in the duplicate (squared) ratio of their matching sides. Here the copy on the long leg is scaled by about 0.894 and the one on the short leg by about 0.447, so their <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">areas</a> scale by about 0.8 and 0.2. Those add to 1.</p>
+
+      <h2>Why the areas add up</h2>
+      <p>For any right triangle with legs <code>a</code> and <code>b</code> and sloping side <code>c</code>, the copy on each leg is scaled by that leg divided by <code>c</code>. Its area is therefore scaled by the square of that fraction. Adding the two gives
+        <code>(a/c)² + (b/c)² = (a² + b²)/c² = 1</code>,
+        which is the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a> in disguise. Put the point at the right-angle corner: the green triangle is then the original one, and the other two lie along the <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a> from that corner. Press At the corner to see 6480 + 1620 = 8100. The logic test checked the area law on thousands of non-thin positions.</p>
+
+      <h2>What the applet's numbers really do</h2>
+      <p>The page says the numbers are found with the Pythagorean theorem and <a class="wiki-term" data-wiki="Heron%27s_formula" href="https://en.wikipedia.org/wiki/Heron%27s_formula" target="_blank" rel="noopener">Heron's formula</a>, and that the two small areas add to the big one in two suggestive configurations. Both displayed sums are reproduced here: 6480 + 1620 = 8100 at the corner, and 7020 + 1800 = 8820 in the fold-in view. But the applet is not exact. It rounds the two new corners to whole pixels, its turn is <code>pi/6 - 0.06</code> rather than exactly <code>atan(1/2)</code>, and after rounding the red number it adds 45 whenever that number ends in 5 — a leftover quirk. In the fold-in view the red number was 1755 before that bump. Across all 40,401 whole-pixel points on the canvas the displayed parts add up at 15,082 of them, not at every one. The exact law belongs to the unrounded triangles; the numbers are the applet's pixel version of it.</p>
+
+      <p class="tip">Try moving the point along a line parallel to the sloping side: the green number stays the same while the other two trade places.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/euclid.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="euclid-core.js"></script>
+<script src="euclid.js"></script>
+</body>
+</html>
