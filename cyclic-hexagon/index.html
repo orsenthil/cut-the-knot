@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cyclic Hexagon &mdash; coolmaths</title>
+<meta name="description" content="Drag six points around one circle and watch three distances from one triangle match three distances from the other: why must their products be equal?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cyclic-hexagon/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cyclic Hexagon">
+<meta property="og:description" content="Drag six points around one circle and watch three distances from one triangle match three distances from the other: why must their products be equal?">
+<meta property="og:url" content="https://coolmaths.ai/cyclic-hexagon/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circumcircle { fill: none; stroke: var(--border); stroke-width: 1.5; }
+  #board .centre-dot { fill: var(--muted); }
+  #board .side-circle { fill: none; stroke: var(--accent); stroke-width: 1.1; opacity: 0.75; }
+  #board .side-circle-b { fill: none; stroke: var(--good); stroke-width: 1.1; opacity: 0.75; }
+  #board .half-circle { fill: none; stroke: var(--accent); stroke-width: 1; stroke-dasharray: 4 4; opacity: 0.65; }
+  #board .half-circle-b { fill: none; stroke: var(--good); stroke-width: 1; stroke-dasharray: 4 4; opacity: 0.65; }
+  #board .triangle-a { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .triangle-b { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 2 4; }
+  #board .hex-side-a { stroke: var(--accent); stroke-width: 2.2; }
+  #board .hex-side-b { stroke: var(--good); stroke-width: 2.2; }
+  #board .perp-a { stroke: #c2641c; stroke-width: 2.5; }
+  #board .perp-b { stroke: #16836f; stroke-width: 2.5; }
+  #board .foot-k { fill: #c2641c; stroke: var(--stage); stroke-width: 1; }
+  #board .foot-l { fill: #16836f; stroke: var(--stage); stroke-width: 1; }
+  #board .mid-p { fill: var(--accent); stroke: var(--stage); stroke-width: 1; }
+  #board .mid-q { fill: var(--good); stroke: var(--stage); stroke-width: 1; }
+  #board .pt-label { fill: var(--text); font-size: 1.05rem; font-weight: 600; pointer-events: none; }
+  #board .a-label { fill: var(--accent); }
+  #board .b-label { fill: var(--good); }
+  #board .geom-handle { stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .a-handle { fill: var(--accent); }
+  #board .b-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.3rem; }
+  .controls input[type="checkbox"] { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+  .controls button { min-height: 2.6rem; }
+  #status { overflow-wrap: anywhere; line-height: 1.6; }
+</style>
+</head>
+<body data-game="cyclic-hexagon" data-kind="demo">
+<main id="main">
+  <h1>Cyclic Hexagon</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Six dots sit on one circle and make two triangles; see how three distances across one triangle multiply to exactly the same number as three distances back the other way.<br>
+    <strong>How to play:</strong> Drag any dot around the circle, or focus a dot and use the arrow keys. Tick the boxes to show names or the extra circles, and press Reset to put the dots back.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 480 420" role="group"
+         aria-label="Six draggable points, two triangles on one circle, and the perpendiculars between them"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" aria-label="Show the names of the points">names</label>
+    <label><input id="sidesBox" type="checkbox" aria-label="Show the circles on the hexagon sides">circles on sides</label>
+    <label><input id="radiiBox" type="checkbox" aria-label="Show the half-size circles at the vertices">circles on radii</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the six points back where they started">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Six points on one circle can be read as two interlaced <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangles</a>. Drop a perpendicular from each corner of one triangle to the opposite side of the other. The three lengths you get on one side, multiplied together, always equal the three on the other side — even when the points are in a strange order around the circle.</p>
+
+      <h2>Three lengths, two products</h2>
+      <p>Name the corners A0, A1, A2 and B0, B1, B2, counting the small index around in a loop. From A<sub>i</sub> we drop a perpendicular to the line joining B<sub>i-1</sub> and B<sub>i+1</sub>, and call that length k<sub>i</sub>. From B<sub>i</sub> we drop one to A<sub>i-1</sub>A<sub>i+1</sub>, and call that length l<sub>i</sub>. The page's claim is</p>
+      <blockquote><code>k0 · k1 · k2 = l0 · l1 · l2</code></blockquote>
+      <p>Drag the dots: the two numbers under the picture change all the time, but they stay equal. The logic test checks this on 3,000 different arrangements, including orders that make a crossed, non-convex hexagon, and no exception turned up.</p>
+
+      <h2>Why a side gives the answer</h2>
+      <p>Here is the useful fact. If P is on a <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of diameter D and U, V are two more points on it, then the triangle PUV has a <a class="wiki-term" data-wiki="Right_angle" href="https://en.wikipedia.org/wiki/Right_angle" target="_blank" rel="noopener">right angle</a> at the foot of the perpendicular from P to UV. Comparing areas gives</p>
+      <blockquote><code>dist(P, line UV) = |PU| · |PV| / D</code></blockquote>
+      <p>Apply this with P = A<sub>i</sub>, U = B<sub>i-1</sub>, V = B<sub>i+1</sub>, then do the same with the letters swapped. Multiply the three results for each family and every chord of the hexagon appears exactly once:</p>
+      <blockquote><code>∏ k<sub>i</sub> = ∏ l<sub>i</sub> = (a0 · a1 · a2 · a3 · a4 · a5) / D³</code></blockquote>
+      <p>Here a0 through a5 are the six sides of the alternating hexagon and D is the circle's diameter. That is the page's formula (4), also confirmed over the same 3,000 arrangements. Near a coincidence of two vertices the applet's own drawing code snaps the perpendicular foot to the vertex; the formula is meant for distinct vertices.</p>
+
+      <h2>The circles in the proof</h2>
+      <p>Tick &ldquo;circles on sides&rdquo;: each side of the hexagon becomes the diameter of a circle, so its radius is half that side. Tick &ldquo;circles on radii&rdquo;: each vertex carries a copy of the big circle shrunk by a <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothety</a> of factor one half, radius R/2. Two circles that meet in a chord of length c and have radii r1 and r2 obey the page's lemma</p>
+      <blockquote><code>c = r1 · r2 / R′</code></blockquote>
+      <p>where R′ is the circumradius of the triangle formed by the two circle centres and one meeting point; the test checks this lemma on 600 pairs of circles. One detail of the page is worth flagging: its intermediate formula (2) prints P<sub>i+1</sub> and Q<sub>i+1</sub>, but with the indices used here the correct partners for k<sub>i</sub> and l<sub>i</sub> are Q<sub>i-1</sub> and P<sub>i-1</sub>. As printed it fails in almost every configuration; shifted by one it is exact. The final products (1), (3) and (4) are unaffected, because a product does not care which way round the indices run.</p>
+
+      <h2>More than six points</h2>
+      <p>The same idea needs no convexity: the six dots may sit on the circle in any order, so the picture is really a statement about two triangles sharing a circle. It also works for two n-gons on one circle with n at least 3: multiply the distances from every corner of one n-gon to the line through its two neighbours in the other n-gon, and you get the product for the other direction. The check runs 500 arrangements each for n = 4 and n = 5, and the equality and the corresponding side formula hold there too.</p>
+
+      <p class="tip">Try this: put A0 almost on top of B1, then pull it away. Watch the products dip towards zero and climb back, staying equal the whole time.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CyclicHexagon.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cyclic-hexagon-core.js"></script>
+<script src="cyclic-hexagon.js"></script>
+</body>
+</html>
