@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Half Area Of Quadrilateral 2 &mdash; coolmaths</title>
+<meta name="description" content="Can one straight line from C split a four-sided shape into two equal parts? Drag the corners and see how a parallel line decides where to cut.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/half-area-of-quadrilateral-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Half Area Of Quadrilateral 2">
+<meta property="og:description" content="Can one straight line from C split a four-sided shape into two equal parts? Drag the corners and see how a parallel line decides where to cut.">
+<meta property="og:url" content="https://coolmaths.ai/half-area-of-quadrilateral-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.6rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .diag { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 8 6; }
+  #board .parallel { fill: none; stroke: var(--bad); stroke-width: 2; stroke-dasharray: 6 5; }
+  #board .half-quad { fill: var(--accent); fill-opacity: 0.16; stroke: none; }
+  #board .half-tri { fill: var(--good); fill-opacity: 0.24; stroke: none; }
+  #board .bisector { fill: none; stroke: var(--good); stroke-width: 4; stroke-linecap: round; }
+  #board .hint-side { fill: none; stroke: var(--highlight); stroke-width: 9; }
+  #board .hint-parallel { fill: none; stroke: var(--highlight); stroke-width: 6; stroke-dasharray: 5 6; }
+  #board .hint-kline { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: 8 6; }
+  #board .aux-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 2; }
+  #board .mid-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .k-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .point-label {
+    fill: var(--text); font: 600 1rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="half-area-of-quadrilateral-2" data-kind="demo">
+<main id="main">
+  <h1>Half Area Of Quadrilateral 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: one straight line from C can split a four-sided shape into two equal parts.<br>
+    <strong>How to play:</strong> Drag the corners A, B, C and D, or focus a corner and use the arrow keys. Tick Hint to see the midpoint line that picks the cut.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 500" role="group"
+         aria-label="A quadrilateral whose four corners can be dragged, with the parallel to AC through B or D, the midpoint M of the cut side, and the bisecting line from C"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox" aria-label="Show the point names A, B, C, D, E and M"> Names</label>
+    <label><input id="hint" type="checkbox" aria-label="Show the hint through the midpoint of BD"> Hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the quadrilateral to its starting position">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the corners of a four-sided shape and a line from C still cuts it exactly in half. The trick is to draw a parallel first, then take a midpoint. This is Professor McWorter's answer to the problem that the earlier applet solved from the midpoint of a diagonal.</p>
+
+      <h2>A parallel line, then a midpoint</h2>
+      <p>Draw the diagonal <code>AC</code>. Through either B or D draw a line <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a> to <code>AC</code>; it meets the opposite side at E. If it was drawn through D, E lies on line AB and M is the midpoint of BE. If it was drawn through B, E lies on line AD and M is the midpoint of DE. The applet picks the first case when M lies on AB, and the second otherwise. The segment <code>CM</code> is the cut.</p>
+
+      <h2>Why the little triangle is halved</h2>
+      <p>M is the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> of the side of triangle CBE (or CDE) that lies on AB (or AD). A segment from a vertex to the midpoint of the opposite side is a <a class="wiki-term" data-wiki="Median_(geometry)" href="https://en.wikipedia.org/wiki/Median_(geometry)" target="_blank" rel="noopener">median</a>: it divides that triangle into two equal areas. That part is true whatever the shape does.</p>
+
+      <h2>Why the triangle is the whole shape</h2>
+      <p>The parallel through D (or B) makes E and D (or E and B) sit on a line parallel to AC. Triangles with the same base AC and vertices on that line have equal <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a>. Swapping one triangle for the other shows that triangle CBE, or CDE, has exactly the area of the whole <a class="wiki-term" data-wiki="Quadrilateral" href="https://en.wikipedia.org/wiki/Quadrilateral" target="_blank" rel="noopener">quadrilateral</a>. Halving the triangle therefore halves the quadrilateral, provided M really lies on a side of it.</p>
+
+      <h2>Does one case always work?</h2>
+      <p>The page says one of the two cases always takes place. Here is its reason: K, the midpoint of BD, lies inside that diagonal, so the parallel to AC through K crosses either AB or AD. In triangle BDE (or DBE) the segment from the midpoint K of BD parallel to DE ends at the midpoint of BE (or DE), which is exactly M. Tick Hint to see that line. The logic test confirms the claim on more than thirty thousand generated convex quadrilaterals with no failure: CM halves the shape every time. One quirk is kept from the applet: its <code>AreParallel</code> test uses the tolerance <code>0.005</code>, so when DA and DB are almost the same direction it sets E = B or E = D without intersecting. For those nearly flat corners the drawn cut is slightly off, and the status says so.</p>
+
+      <p class="tip">Tick Hint and drag a corner until the two coloured parts look equal; then try to make the warning about uneven parts appear.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HalfAreaOfQuadrilateral2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="half-area-of-quadrilateral-2-core.js"></script>
+<script src="half-area-of-quadrilateral-2.js"></script>
+</body>
+</html>
