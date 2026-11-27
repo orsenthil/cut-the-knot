@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Griffiths Collinearity &mdash; coolmaths</title>
+<meta name="description" content="A line crosses the three sides of a triangle. Do the three circles built from those crossing points always have their centers on one line?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/griffiths-collinearity/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Griffiths Collinearity">
+<meta property="og:description" content="A line crosses the three sides of a triangle. Do the three circles built from those crossing points always have their centers on one line?">
+<meta property="og:url" content="https://coolmaths.ai/griffiths-collinearity/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .pedal-circle { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 7 5; }
+  #board .axis-line { stroke: var(--good); stroke-width: 2; }
+  #board .transversal { stroke: var(--bad); stroke-width: 2; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 1.6; opacity: 0.85; }
+  #board .perp { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 3 4; }
+  #board .feet-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1.5; }
+  #board .centre-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.2; }
+  #board .common-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="griffiths-collinearity" data-kind="demo">
+<main id="main">
+  <h1>Griffiths Collinearity</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a drawing, not a game: three circles made from where a line crosses a triangle always have their centers on one straight line.<br>
+    <strong>How to play:</strong> Drag a corner of the triangle or the line: its ends turn it and its middle slides it. Focus a dot and use the arrow keys instead, and tick the boxes to show perpendiculars, circles and names.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 400" role="group"
+         aria-label="Triangle ABC, a line crossing its sides at P, Q and R, the perpendiculars from those points, their three pedal circles and the line through the circles' centers"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="perps" type="checkbox"> Perpendiculars</label>
+    <label><input id="circles" type="checkbox"> Circles</label>
+    <label><input id="names" type="checkbox" checked> Names</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Take any triangle and draw any line across it. The line meets the three sides at P, Q and R. From each of those points, drop perpendiculars to all three sides; each set of three feet lies on a circle. The surprise is that the three circles are tied together: their centers lie on one line, and when the circles overlap they overlap in the same two places.</p>
+
+      <h2>Three points, three circles</h2>
+      <p>P is where the line meets side BC, Q where it meets CA and R where it meets AB. Drop perpendiculars from P to the three sides, and the three feet form a <a class="wiki-term" data-wiki="Pedal_triangle" href="https://en.wikipedia.org/wiki/Pedal_triangle" target="_blank" rel="noopener">pedal triangle</a>; the circle through its feet is P's pedal circle. Do the same for Q and R. The old applet builds the same three circles: it uses each crossing point itself on the side it already lies on, and the perpendicular foot on each of the other two sides.</p>
+
+      <h2>The line need not go through the center</h2>
+      <p>Griffiths' own theorem says that if a point moves along a line through the triangle's <a class="wiki-term" data-wiki="Circumcenter" href="https://en.wikipedia.org/wiki/Circumcenter" target="_blank" rel="noopener">circumcenter</a>, its pedal circle always passes through one fixed point on the <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">nine-point circle</a>. Hubert Shutrick noticed more: for the three places where such a line cuts the sides, the pedal circles share a second point too, so their centers line up. He then found that the line does <em>not</em> have to pass through the circumcenter at all. The page has a typo saying it "does need" to; the rest of the page, the applet and the logic test agree that it does not. The green line in the picture is found from the three circle centers, and the two purple dots are the circles' common points.</p>
+
+      <h2>What coaxal means</h2>
+      <p>Circles whose centers are <a class="wiki-term" data-wiki="Collinearity" href="https://en.wikipedia.org/wiki/Collinearity" target="_blank" rel="noopener">collinear</a> and whose pairs share the same <a class="wiki-term" data-wiki="Radical_axis" href="https://en.wikipedia.org/wiki/Radical_axis" target="_blank" rel="noopener">radical axis</a> are called coaxal. Here, whenever two of the pedal circles really meet, both meeting points lie on the third circle as well. Sometimes one circle sits completely inside another: then there are no real common points to draw, but the three centers are still on one line. The logic test checks this on more than a hundred generated triangles and transversals, including the applet's own default line.</p>
+
+      <h2>How this differs from its siblings</h2>
+      <p>The Griffiths applet keeps one triangle and puts its line through the circumcenter. FourGriffiths puts four points on one circle, sends the line through that circle's center and lines up four Griffiths points. This applet keeps one triangle but frees the line: move it away from the circumcenter and the common point generally leaves the nine-point circle, while the centers still fall into a line. Put the line back through the circumcenter and that point returns to the nine-point circle, which the logic test confirms exactly. The old applet rotates the line when you drag near an end and slides it when you drag the middle; this port gives the middle its own handle so a keyboard can slide it too. The page embeds the applet twice, once with names off and once with names on; here names start on. Its still wider claim about a crossing line and three concurrent cevians is proved elsewhere; this drawing only shows the three pedal circles.</p>
+
+      <p class="tip">Try sliding the line with its middle handle, then rotating it with an end handle: watch the green line of centers tilt while the two purple common points move along it.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/GriffithsCollinearity.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="griffiths-collinearity-core.js"></script>
+<script src="griffiths-collinearity.js"></script>
+</body>
+</html>
