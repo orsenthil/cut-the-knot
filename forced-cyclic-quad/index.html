@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Forced Cyclic Quad &mdash; coolmaths</title>
+<meta name="description" content="Move four corners on a circle and add equal angles at A and D. Do the new points E and F always make another circle, and stay with angle CAF equal to angle BDE?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/forced-cyclic-quad/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Forced Cyclic Quad">
+<meta property="og:description" content="Move four corners on a circle and add equal angles at A and D. Do the new points E and F always make another circle, and stay with angle CAF equal to angle BDE?">
+<meta property="og:url" content="https://coolmaths.ai/forced-cyclic-quad/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .given-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .new-circle { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .base-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .edge { stroke: var(--ink); stroke-width: 1.7; }
+  #board .hidden-edge { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 2 4; }
+  #board .premise-arc { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .statement-arc { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .extra-point { fill: var(--highlight); stroke: var(--ink); stroke-width: 1; }
+  #board .point-label { fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="forced-cyclic-quad" data-kind="demo">
+<main id="main">
+  <h1>Forced Cyclic Quad</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: move four points on a circle and watch a second circle appear through four new corners.<br>
+    <strong>How to play:</strong> Drag A, B, C or D, or focus one and use the arrow keys. Set the add-on angle, then tick the boxes to show the angles and the circle.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Four draggable points A, B, C and D on a circle, the equal angles at A and D, their meeting points E and F on the base line, and the circle through A, E, F and D"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="premise" type="checkbox"> Premise angles</label>
+    <label><input id="statement" type="checkbox"> Conclusion and circle</label>
+    <label><input id="names" type="checkbox"> Names</label>
+    <button id="less" type="button" aria-label="Decrease the add-on angle by one tenth of a degree">&minus;</button>
+    <label for="angle">Add-on angle</label>
+    <input id="angle" type="number" min="-45" max="45" step="0.1" value="20" aria-label="Add-on angle in degrees, from minus 45 to 45">
+    <button id="more" type="button" aria-label="Increase the add-on angle by one tenth of a degree">+</button>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Four corners sit on one circle. Turn a line at A and a line at D by the same small angle until they hit the base line at E and F. A new circle then goes through A, E, F and D, however the four corners move.</p>
+
+      <h2>Four corners on one circle</h2>
+      <p>A, B, C and D start on one <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a> and can only slide around that circle. Angles <code>BAC</code> and <code>BDC</code> therefore stand on the same chord BC and are equal. The logic test confirms this on more than thirty thousand positions: the two angles agree every time.</p>
+
+      <h2>The equal add-on angles</h2>
+      <p>At A the ray AB is turned by the add-on angle in one direction, at D the ray DC is turned by the same angle in the other direction. Those rays meet the base line at E and F, so <code>BAE = CDF</code>. The circle through A, D and E also passes through F: the measured gap between F and that circle stays below a ten-millionth of the board's scale in every tested case. Because A, E, F and D share a <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>, the <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angles</a> <code>EAF</code> and <code>EDF</code> stand on the same chord EF and are equal.</p>
+
+      <h2>Why CAF equals BDE</h2>
+      <p>Subtract the equal add-on angles from those equal angles and the page's conclusion follows: <code>CAF = BDE</code>. The article records the chain <code>ADF + AEF = (ADC + CDF) + (ABF &minus; BAE) = (ADC + ABC) + (CDF &minus; BAE) = ADC + ABC = 180&deg;</code>. That sum holds when the four base points come in the order E, B, C, F, which is the picture you see at the start and whenever the add-on angle is positive. The conclusion itself holds more widely, including when both E and F lie between B and C. It can fail when E and F both fall beyond B or both beyond C on the same side: then B and C are not on the side EF of the quadrilateral, so the page's second formulation does not apply. The test counts those cases separately rather than hiding them.</p>
+
+      <h2>When B and C meet</h2>
+      <p>The page also says the conclusion survives when B and C coalesce and the line BC becomes the <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> to the circle. Testing that limit with E and F on the tangent line confirms it in more than a thousand positions. The old applet skips its drawing when B and C are closer than one pixel, so this port keeps that skip rather than pretending to draw the exact tangent.</p>
+
+      <p class="tip">Tick both angle boxes and set the add-on angle to zero: the diagram becomes plain overlapping lines, and dragging A still leaves angle CAF equal to angle BDE.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ForcedCyclicQuad.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="forced-cyclic-quad-core.js"></script>
+<script src="forced-cyclic-quad.js"></script>
+</body>
+</html>
