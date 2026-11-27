@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equal Areas, IMO 2007 &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle: why do the two shaded pieces, cut out by the bisector at C and the midpoints of the two sides, always have exactly the same area?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equal-areas-imo-2007/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Equal Areas, IMO 2007">
+<meta property="og:description" content="Drag the corners of a triangle: why do the two shaded pieces, cut out by the bisector at C and the midpoints of the two sides, always have exactly the same area?">
+<meta property="og:url" content="https://coolmaths.ai/equal-areas-imo-2007/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .shaded-area { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.4; }
+  #board .circumcircle { fill: none; stroke: var(--muted); stroke-width: 1.6; }
+  #board .triangle { fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linejoin: round; }
+  #board .bisector { stroke: var(--ink); stroke-width: 1.6; stroke-dasharray: 6 4; }
+  #board .perp-bisector { stroke: var(--good); stroke-width: 1.6; stroke-dasharray: 4 4; }
+  #board .radius-line { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 3 4; }
+  #board .angle-mark { fill: none; stroke: var(--highlight); stroke-width: 3; }
+  #board .construct-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .center-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 700;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.45rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="equal-areas-imo-2007" data-kind="demo">
+<main id="main">
+  <h1>Equal Areas, IMO 2007</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This picture shows a triangle and two shaded pieces; wherever you put the corners, the two pieces cover the same amount of space.<br>
+    <strong>How to play:</strong> Drag the corners A, B and C, or focus one and use the arrow keys. Tick names or details to see more marks, then press Reset.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Triangle ABC and its circumcircle, with the bisector from C meeting the circle again at R. The triangles RPK and RQL are shaded. Drag A, B or C, or focus a corner and use the arrow keys."></svg>
+    <p class="hint-line">Drag a corner, or focus it and press the arrow keys (Shift for bigger steps). The status line gives the two areas.</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Names</label>
+    <label><input id="detailsBox" type="checkbox" data-label="details"> Details</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the triangle to its opening position">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move any corner of this triangle and the two shaded pieces change shape and size together. Problem 4 of the 2007 International Mathematical Olympiad asks why their areas are always the same. The applet draws both the statement and the construction; this page follows it exactly.</p>
+
+      <h2>One line, three crossings</h2>
+      <p>Start at C. The <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> of angle BCA runs from C through the point S on side AB and on to the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>, where it meets the circle again at R. K is the midpoint of BC and L the midpoint of AC. The <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a> of BC passes through both K and the circle's centre, so where it crosses CR is P. Likewise the perpendicular bisector of AC crosses CR at Q.</p>
+      <blockquote><code>CP = BC / (2 cos(C/2))</code> and <code>CQ = AC / (2 cos(C/2))</code></blockquote>
+      <p>Those two lengths follow from the right triangles CPK and CQL: each has a half-side as one leg and half of angle C at C.</p>
+
+      <h2>Both areas are the same number</h2>
+      <p>Write <code>a = BC</code>, <code>b = AC</code> and let C be the angle at C. The circle through A, B and C gives <code>CR = 2R sin(A + C/2)</code>. The height of triangle RPK above the line CR is <code>(a/2) sin(C/2)</code>, so</p>
+      <blockquote><code>2 · Area(RPK) = (CR − CP) · (a/2) sin(C/2) = ab tan(C/2) / 4</code></blockquote>
+      <p>and therefore <code>Area(RPK) = ab tan(C/2) / 8</code>. Repeating the same calculation with L, Q and b gives exactly <code>Area(RQL) = ab tan(C/2) / 8</code>. The <a class="wiki-term" data-wiki="Law_of_sines" href="https://en.wikipedia.org/wiki/Law_of_sines" target="_blank" rel="noopener">law of sines</a>, <code>a = 2R sin A</code> and <code>b = 2R sin B</code>, is what makes the two answers collapse to one. The logic test compared the two <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">areas</a> on more than a thousand triangles, including thin ones and the cases where the chord CR is nearly horizontal: they agree to floating-point precision, and the closed form agrees too. The claim is true.</p>
+
+      <h2>The other solution and the applet's leftovers</h2>
+      <p>The companion page "Triangles with Equal Area II" gives a short synthetic proof using similar triangles <a class="wiki-term" data-wiki="Congruence_(geometry)" href="https://en.wikipedia.org/wiki/Congruence_(geometry)" target="_blank" rel="noopener">congruence</a> and equal angles; its stained symbols are a transcription artefact, not a different theorem. That page no longer embeds the Java applet — the verified page with the live applet is the "Triangles with Equal Area" page linked in the byline below.</p>
+      <p>The bytecode also computes Kp, Lp, Cp, Kh and Lh, but never draws them. They are leftovers from a related construction; the logic test reproduces them to check faithfulness, while the picture shows only what the applet shows. "Names" starts ticked and "Details" starts unticked, exactly as in the applet.</p>
+
+      <p class="tip">Tick details, then drag C until angle C is almost a straight angle. Watch the two shaded areas grow while the two numbers in the status line stay equal.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EqualAreasIMO2007.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="equal-areas-imo-2007-core.js"></script>
+<script src="equal-areas-imo-2007.js"></script>
+</body>
+</html>
