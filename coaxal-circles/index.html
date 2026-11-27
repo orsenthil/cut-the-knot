@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Coaxal Circles &mdash; coolmaths</title>
+<meta name="description" content="Drag A and B and watch two families of circles rearrange themselves. Can you see why every circle in one family crosses every circle in the other at a right angle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/coaxal-circles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Coaxal Circles">
+<meta property="og:description" content="Drag A and B and watch two families of circles rearrange themselves. Can you see why every circle in one family crosses every circle in the other at a right angle?">
+<meta property="og:url" content="https://coolmaths.ai/coaxal-circles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour comes from a site token. */
+  #stage { width: 100%; max-width: 34rem; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .axis { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 7 5; }
+  #board .axis-bisector { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .circle-one { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: 0.72; }
+  #board .circle-two { fill: none; stroke: var(--good); stroke-width: 1.5; opacity: 0.72; }
+  #board .circle-diameter { fill: none; stroke: var(--good); stroke-width: 2.4; }
+  #board .mid-dot { fill: var(--ink); }
+  #board .point-label { fill: var(--text); font: 600 1rem var(--font); pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; white-space: normal; }
+  .controls label[for="n"] { flex-wrap: wrap; justify-content: center; }
+</style>
+</head>
+<body data-game="coaxal-circles" data-kind="demo">
+<main id="main">
+  <h1>Coaxal Circles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: it shows two families of circles that cross each other at right angles.<br>
+    <strong>How to play:</strong> Drag A or B along the line, or focus one and use the arrow keys. Change N, tick Family 1 or Family 2, and press Reset to put the points back.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 440" role="group"
+         aria-label="Points A and B on a horizontal line, with blue circles centred on that line and green circles passing through both points"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="n">Circles per family (N)
+      <input id="n" type="number" min="1" max="100" step="1" value="5" aria-label="Number of circles per family, from 1 to 100">
+    </label>
+    <label><input id="familyOne" type="checkbox" checked> Family 1</label>
+    <label><input id="familyTwo" type="checkbox"> Family 2</label>
+    <label><input id="names" type="checkbox"> Show names</label>
+    <button id="resetBtn" type="button" class="primary">Reset points</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move A and B and the picture changes, but the two families keep meeting at right angles. The old applet drew this with a green and an orange gradient; here each family has one clear colour so the pattern is easier to see.</p>
+
+      <h2>Two families of circles</h2>
+      <p>Let the midpoint of AB be <code>X</code> and let <code>s = AB/2</code>. The first family puts a centre <code>t</code> units from X along the line AB, with radius <code>√(t² − s²)</code>; since <code>t</code> starts at <code>s + 10</code>, no centre lies between A and B. These are the <a class="wiki-term" data-wiki="Apollonian_circle" href="https://en.wikipedia.org/wiki/Apollonian_circle" target="_blank" rel="noopener">Apollonian circles</a>, and they nest without crossing. The second family puts a centre <code>u</code> units from X on the perpendicular bisector, with radius <code>√(u² + s²)</code>, plus the circle on AB as diameter. Every one of those circles passes through both A and B. The logic test compares all of these numbers with a fresh transcription of the applet's own loops for 252 settings of A, B and N.</p>
+
+      <h2>One shared radical axis</h2>
+      <p>For a first-family circle, the power of a point <code>(X, y)</code> on the upright line is <code>s² + (y − y₀)²</code> — the same number for every <code>t</code>. For a second-family circle, the power of a point <code>(x, y₀)</code> on the line AB is <code>(x − X)² − s²</code> — the same for every <code>u</code>. So any two circles in a family share the same <a class="wiki-term" data-wiki="Radical_axis" href="https://en.wikipedia.org/wiki/Radical_axis" target="_blank" rel="noopener">radical axis</a>: the upright line for the first family, the line AB for the second. That shared axis is why they are called coaxal. As a circle of the first family grows, its arc beside X settles onto that upright line: the straight-line member of the family is the <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a> of AB.</p>
+
+      <h2>Why the crossings are square</h2>
+      <p>Take a circle with parameter <code>t</code> from the first family and one with <code>u</code> from the second. Their centres are <code>√(t² + u²)</code> apart, while the squares of their radii add to <code>(t² − s²) + (u² + s²) = t² + u²</code>. Since centre distance squared equals the sum of the radii squared, the circles are orthogonal. The same calculation works for the circle on AB as diameter (<code>u = 0</code>). The article's other half says that two pencils of circles tangent at one point are orthogonal too when their axes are the two perpendicular lines through that point: their centres are <code>t</code> and <code>u</code> from the point, so the same sum of squares applies. The article proves the first half by <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">inversion</a> in a circle centred at A: the circles through A and B become straight lines through one point, the Apollonian circles become circles centred at that point, and inversion keeps angles. The test checks every pair of drawn circles, not just a few samples.</p>
+
+      <h2>What the old page and applet said</h2>
+      <p>The article states that no two Apollonian circles intersect; that is confirmed, but it applies to the first family only — all circles of the second family deliberately meet at A and B. The applet's N spinner runs from 1 to 100 with a default of 5, Family 1 starts on and Family 2 off. Its Reset method was empty, so the Reset points button here is a small convenience, and its red/orange gradients are replaced by two site colours. The live cut-the-knot page no longer embeds the Java applet; an <a href="https://web.archive.org/web/20060928043809id_/http://www.cut-the-knot.org/Curriculum/Geometry/CoaxalCircles.shtml" target="_blank" rel="noopener">archived capture from 2006</a> shows <code>APPLET CODE="CoaxalCircles" WIDTH=600 HEIGHT=550</code> on this same page, which is how the options and formulas above were checked.</p>
+
+      <p class="tip">Tick Family 2, then drag A and B close together: every green circle still crosses every blue one at a right angle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CoaxalCircles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="coaxal-circles-core.js"></script>
+<script src="coaxal-circles.js"></script>
+</body>
+</html>
