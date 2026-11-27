@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Diameters In Concurrent Circles &mdash; coolmaths</title>
+<meta name="description" content="Three circles pass through one point. If two of the lines through it are diameters, must the third be too?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/diameters-in-concurrent-circles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Diameters In Concurrent Circles">
+<meta property="og:description" content="Three circles pass through one point. If two of the lines through it are diameters, must the third be too?">
+<meta property="og:url" content="https://coolmaths.ai/diameters-in-concurrent-circles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.75rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .cc-circle { fill: none; stroke: var(--ink); stroke-width: 2; stroke-opacity: 0.55; }
+  #board .circleP { stroke-dasharray: 1 0; }
+  #board .circleQ { stroke-dasharray: 1 0; }
+  #board .chord { stroke: var(--ink); stroke-width: 1.5; stroke-opacity: 0.7; }
+  #board .chordA { stroke: var(--accent); }
+  #board .chordB { stroke: var(--accent); }
+  #board .chordC { stroke: var(--accent); }
+  #board .derived { fill: var(--highlight); stroke: var(--stage); stroke-width: 1; }
+  #board .hint-triangle { fill: none; stroke: var(--bad); stroke-width: 2; stroke-dasharray: 6 5; }
+  #board .point-label { fill: var(--text); font-size: 15px; pointer-events: none; }
+  #board .centre-label { fill: var(--accent); font-size: 15px; font-weight: 600; pointer-events: none; }
+  #board .eye { fill: var(--stage); stroke: var(--ink); stroke-width: 1.5; }
+  #board .pupil { fill: var(--ink); }
+  #board .eye.awake { fill: var(--highlight); stroke: var(--good); }
+  #board .pupil.awake { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+  #newBtn { min-height: 2.5rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="diameters-in-concurrent-circles" data-kind="demo">
+<main id="main">
+  <h1>Diameters In Concurrent Circles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> Three circles that all pass through one point, and the lines that might run straight through their middles.<br>
+    <strong>How to play:</strong> Drag the dots O, P, Q and R, or focus one and press the arrow keys. Tick the boxes to show point names or the faint triangle.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Three circles through O, the draggable centres P, Q and R, and the chords A to D, B to E and C to F."></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Show names</label>
+    <label><input id="extra" type="checkbox"> Show hint triangle</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the diagram to the starting circles">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The original page asks a question it calls a mathematical droodle: three circles meet at one point O and meet each other again at D, E and F. The lines OD, OE and OF hit the circles again at A, B and C. If OA and OB go straight through the centres of their circles, must OC do the same?</p>
+
+      <h2>The exact claim</h2>
+      <p>The answer is yes. <code>OA</code> is a <a class="wiki-term" data-wiki="Diameter" href="https://en.wikipedia.org/wiki/Diameter" target="_blank" rel="noopener">diameter</a> exactly when the circle's centre lies on the segment from O to A. The page says that once two of these three segments are diameters, the third must be too. The logic test builds 3,000 exact arrangements with two diameters in them and finds the third in every one. It also finds arrangements with only one, so having just one is not enough. The applet uses a tolerance of <code>0.05</code> when it decides whether a centre lies on a segment, so a very near miss can light up a dot.</p>
+
+      <h2>How the other points are found</h2>
+      <p>Circle (P) has centre P and passes through O; (Q) and (R) are built the same way. D is the second meeting point of (Q) and (R), E of (P) and (R), and F of (P) and (Q). Each such pair shares the line through O perpendicular to the line joining its two centres: their <a class="wiki-term" data-wiki="Radical_axis" href="https://en.wikipedia.org/wiki/Radical_axis" target="_blank" rel="noopener">radical axis</a>. Then A is where the line OD meets circle (P) again, B is where OE meets (Q), and C is where OF meets (R). The port's core uses the same quadratics and the same choice of "the other intersection" as the applet's bytecode.</p>
+
+      <h2>Why the third diameter follows</h2>
+      <p>Invert the picture in a circle centred at O. Each circle through O turns into a straight line, and the three new lines form a triangle whose vertices come from D, E and F. Lines through O stay lines through O, so AD, BE and CF become three lines through O in that triangle. A diameter is perpendicular to its circle, and inversion keeps angles, so two of those lines are altitudes. Their meeting point is the <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a>, which forces the third line to be an altitude as well. Inverting back gives the third diameter. There is a plain algebra version too: write p, q, r for the vectors from O to the three centres; all three diameters occur exactly when <code>p&middot;q = p&middot;r = q&middot;r</code>.</p>
+
+      <h2>The eyes and the faint triangle</h2>
+      <p>The original droodle has three small eyes that open when all three diameters are found; this page keeps that little sign. The "Show hint triangle" box draws the dashed triangle ABC, matching the applet's extra option. One harmless quirk is kept: the old page passes a parameter named <code>ShowNames</code>, but the bytecode reads <code>show</code>, so the point labels start hidden even though the page asks for them. The "Show names" box turns them on. The page also notes that the whole result still works with radical axes in place of common chords; that wider claim is not tested here.</p>
+
+      <p class="tip">Try to make OA and OB diameters, then guess where C must land before you turn on the hint triangle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/DiametersInConcurrentCircles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="diameters-in-concurrent-circles-core.js"></script>
+<script src="diameters-in-concurrent-circles.js"></script>
+</body>
+</html>
