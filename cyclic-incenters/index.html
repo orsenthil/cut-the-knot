@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cyclic Incenters &mdash; coolmaths</title>
+<meta name="description" content="Drag four points around a circle to build a box that just fits it. Do the centres of the four little circles inside always sit on one circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cyclic-incenters/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cyclic Incenters">
+<meta property="og:description" content="Drag four points around a circle to build a box that just fits it. Do the centres of the four little circles inside always sit on one circle?">
+<meta property="og:url" content="https://coolmaths.ai/cyclic-incenters/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .main-circle { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .inscribed { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .tangential { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .tangent-line { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+  #board .tangent-diagonal { fill: none; stroke: var(--bad); stroke-width: 1.5; }
+  #board .inscribed-diagonal { fill: none; stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 6 4; }
+  #board .bisector { fill: none; stroke: var(--highlight); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .center-line { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+  #board .homothety { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+  #board .add-on { fill: none; stroke: var(--accent); stroke-width: 1; stroke-dasharray: 3 3; }
+  #board .claim-tangent { fill: none; stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 6 4; }
+  #board .mid-segment { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .small-circle { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .big-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .claim-circle { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .circum-circle { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+  #board .second-circle { fill: none; stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 4 4; }
+  #board .second-claim-circle { fill: none; stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 6 4; }
+  #board .incenter-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .big-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1.5; }
+  #board .center-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .cross-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="cyclic-incenters" data-kind="demo">
+<main id="main">
+  <h1>Cyclic Incenters</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: four dots on a round loop make a box around it, and four small circles inside always sit on another round loop.<br>
+    <strong>How to play:</strong> Drag the dots A, B, C and D, or focus a dot and use the arrow keys. Tick the boxes to show circles, lines and names.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Four draggable points on a circle, the box made by its tangents, and the four incenters inside it"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="opt-names" type="checkbox"> Names</label>
+    <label><input id="opt-diagonals" type="checkbox"> Diagonals</label>
+    <label><input id="opt-bisectors" type="checkbox"> Bisectors</label>
+    <label><input id="opt-inscribedDiagonals" type="checkbox"> Inscribed diagonals</label>
+    <label><input id="opt-bigCircles" type="checkbox"> Big circles</label>
+    <label><input id="opt-smallCircles" type="checkbox"> Small circles</label>
+    <label><input id="opt-circle" type="checkbox"> Circle</label>
+    <label><input id="opt-centerLines" type="checkbox"> Center lines</label>
+    <label><input id="opt-circumcircles" type="checkbox"> Circumcircles</label>
+    <label><input id="opt-inscribedPolygon" type="checkbox"> Inscribed polygon</label>
+    <label><input id="opt-addOn" type="checkbox"> Add on</label>
+    <label><input id="opt-point" type="checkbox"> Point</label>
+    <label><input id="opt-segment" type="checkbox"> Segment</label>
+    <label><input id="opt-tangents" type="checkbox"> Tangents</label>
+    <label><input id="opt-homotheties" type="checkbox"> Homotheties</label>
+    <label><input id="opt-secondIteration" type="checkbox"> Second iteration</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move one dot and the whole drawing changes, yet four small circle centres keep landing on one circle. This is Christopher Bradley's conjecture, proved by Darij Grinberg on the cut-the-knot page. The live article still embeds the Java applet it describes; here the four dots of that applet are draggable with a mouse or the arrow keys.</p>
+
+      <h2>A box around the circle</h2>
+      <p>The four dots lie on one circle. At each dot the applet draws the <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> to that circle; neighbouring tangents meet in a four-sided figure with the circle as its <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a>. Such a figure is a <a class="wiki-term" data-wiki="Tangential_quadrilateral" href="https://en.wikipedia.org/wiki/Tangential_quadrilateral" target="_blank" rel="noopener">tangential quadrilateral</a>: its opposite sides add up the same way, <code>AB + CD = BC + DA</code>. The logic test checks that all four sides stay one radius from the centre, to drawing precision.</p>
+
+      <h2>Four triangles around the crossing</h2>
+      <p>Where the box's diagonals cross, call the point P. The triangles PAB, PBC, PCD and PDA each have an <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a>, marked X, Y, Z and W. An incenter is where two <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisectors</a> meet, so XZ and YW must pass straight through P: they halve pairs of opposite angles there. The same diagonal point comes from the diagonals AC and BD of the four dots on the circle.</p>
+
+      <h2>Bradley's circle</h2>
+      <p>The page's claim is that X, Y, Z and W are <a class="wiki-term" data-wiki="Concyclic_points" href="https://en.wikipedia.org/wiki/Concyclic_points" target="_blank" rel="noopener">concyclic</a>. One proof uses the <a class="wiki-term" data-wiki="Power_of_a_point" href="https://en.wikipedia.org/wiki/Power_of_a_point" target="_blank" rel="noopener">power of a point</a>: with R the external centre of similarity of two of the large incircles, one gets <code>RX · RY = RZ · RW</code>, which puts all four on a circle. The check measures the distance of W from the circle through X, Y and Z on the starting figure, on four fixed figures and on over a thousand generated ones: it never exceeds a few trillionths of a drawing unit. The claim is confirmed for every case tried.</p>
+
+      <h2>The centre and the extra circles</h2>
+      <p>The centre O′ of Bradley's circle is where the lines A′C′ and B′D′ meet; those join the centres of large incircles of triangles made from the box's corners. The applet draws that point for "Point" and those lines for "Center lines". Its "Second iteration" repeats the whole construction using the tangents to Bradley's circle at X, Y, Z and W; the four new incenters are concyclic as well. The page also claims <code>1/x + 1/z = 1/y + 1/w</code> for the four small radii, and the check finds that too. One deviation is deliberate: the applet builds its box from tangents at four dots instead of letting you drag the box's corners directly. Every convex tangential quadrilateral can be built this way, so the geometry is the same.</p>
+
+      <p class="tip">Tick "Small circles" and "Circle", then drag a dot close to its neighbour: the green circle grows, but W stays on it.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CyclicIncenters.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cyclic-incenters-core.js"></script>
+<script src="cyclic-incenters.js"></script>
+</body>
+</html>
