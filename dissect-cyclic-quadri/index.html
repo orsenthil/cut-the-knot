@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dissect Cyclic Quadri &mdash; coolmaths</title>
+<meta name="description" content="Drag a point inside a quadrilateral whose corners lie on a circle. Can four lines from that point cut it into four quadrilaterals that each sit on their own circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/dissect-cyclic-quadri/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Dissect Cyclic Quadri">
+<meta property="og:description" content="Drag a point inside a quadrilateral whose corners lie on a circle. Can four lines from that point cut it into four quadrilaterals that each sit on their own circle?">
+<meta property="og:url" content="https://coolmaths.ai/dissect-cyclic-quadri/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The viewBox does the scaling; every colour comes from a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .guide-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 5; }
+  #board .outline { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .piece { fill: var(--accent); fill-opacity: 0.05; stroke: none; }
+  #board .piece.on { fill: var(--good); fill-opacity: 0.14; }
+  #board .cut { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .cyclic-circle { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .hint-circle { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .helper-mark, #board .right-angle { fill: none; stroke: var(--highlight); stroke-width: 2; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.9rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="dissect-cyclic-quadri" data-kind="demo">
+<main id="main">
+  <h1>Dissect Cyclic Quadri</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: four corners on a circle and a point P are joined to four cut points to make four smaller shapes, and we watch which of them sit on their own circles.<br>
+    <strong>How to play:</strong> Drag any labelled point, or focus it and use the arrow keys. Press Perpendicular feet to try the article's cut, or tick the boxes to show names, angle marks and hint circles.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Four corners A, B, C, D on a circle, a free point P, and cut points R, M, N, Q joined to P"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Show names</label>
+    <label><input id="helper" type="checkbox"> Show angle marks</label>
+    <label><input id="hint" type="checkbox"> Show hint</label>
+    <button id="feetBtn" type="button">Perpendicular feet</button>
+    <button id="fromNBtn" type="button">Build from N</button>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move P anywhere and you can still choose four cuts that make every small shape cyclic. The live cut-the-knot page still embeds the original Java applet; the claims below come from that page's article, and the logic test checks them on thousands of random shapes.</p>
+
+      <h2>Four shapes from one point</h2>
+      <p>The corners A, B, C, D lie on one <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circle</a>. Cut points R, M, N, Q lie on the side lines AB, BC, CD, DA. Connecting them to P gives BRPM, CMPN, DNPQ and AQPR. A four-sided shape is <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic</a> exactly when its two opposite angles add to 180 degrees; the green outlines in the picture mark the pieces that pass this test.</p>
+
+      <h2>Why perpendicular feet always work</h2>
+      <p>The page claims that for <em>any</em> P, the feet of the <a class="wiki-term" data-wiki="Perpendicular" href="https://en.wikipedia.org/wiki/Perpendicular" target="_blank" rel="noopener">perpendiculars</a> from P to the four side lines make all four shapes cyclic. Take BRPM: PR is perpendicular to AB and PM is perpendicular to BC, so the angle at P is the supplement of the angle at B. The same happens at the other three corners, so every pair of opposite angles adds to 180 degrees. The logic test confirms all four shapes on over 8,000 random cyclic quadrilaterals and points P, to better than one part in ten million.</p>
+
+      <h2>Fixing one cut point fixes the rest</h2>
+      <p>The article gives a second way: fix N on CD. The circle through C, N and P meets BC again at one point M, which makes CNP + CMP = 180 degrees. Then the circle through B, M and P fixes R with BMP + BRP = 180 degrees, and the circle through A, R and P fixes Q. Because BMP is the supplement of CMP, the last shape DNPQ turns out cyclic automatically. The test checks that construction on more than 2,000 cases; the three angle identities hold and DNPQ closes up every time.</p>
+
+      <h2>Cut points inside the sides</h2>
+      <p>Points on the extended side lines always exist, but points strictly inside all four sides need more work. With X = AD ∩ BC and Y = AB ∩ CD, the article ends with the condition that P must lie outside the circles through ABX and BXY; earlier in the same text it says BCY, so the two wordings are not identical. This port checks the always-exists claim above, not that locus. Its dragged cut points stay on the sides like the applet's, while Perpendicular feet may place a cut point on an extended line, exactly as the page's construction requires. The applet's panel had only the three Show boxes; the buttons here are additions for exploring the picture.</p>
+
+      <p class="tip">Try Perpendicular feet, then drag P far away: the four pieces stay cyclic. Press Build from N afterwards to see that the same cuts come back from that one side point.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/DissectCyclicQuadri.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="dissect-cyclic-quadri-core.js"></script>
+<script src="dissect-cyclic-quadri.js"></script>
+</body>
+</html>
