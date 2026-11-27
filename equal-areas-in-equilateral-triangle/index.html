@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equal Areas In Equilateral Triangle &mdash; coolmaths</title>
+<meta name="description" content="Move M inside an equilateral triangle. The six pieces change shape, but do the three purple pieces always have the same total area as the three green ones?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equal-areas-in-equilateral-triangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Equal Areas In Equilateral Triangle">
+<meta property="og:description" content="Move M inside an equilateral triangle. The six pieces change shape, but do the three purple pieces always have the same total area as the three green ones?">
+<meta property="og:url" content="https://coolmaths.ai/equal-areas-in-equilateral-triangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .piece { stroke: none; }
+  #board .piece-0, #board .bar-0 { fill: var(--accent); fill-opacity: 0.42; }
+  #board .piece-2, #board .bar-2 { fill: var(--accent); fill-opacity: 0.28; }
+  #board .piece-4, #board .bar-4 { fill: var(--accent); fill-opacity: 0.35; }
+  #board .piece-1, #board .bar-1 { fill: var(--good); fill-opacity: 0.42; }
+  #board .piece-3, #board .bar-3 { fill: var(--good); fill-opacity: 0.28; }
+  #board .piece-5, #board .bar-5 { fill: var(--good); fill-opacity: 0.35; }
+  #board .bar { stroke: var(--border-strong); stroke-width: 0.6; }
+  #board .triangle-outline { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .spoke { stroke: var(--ink); stroke-width: 1.4; stroke-opacity: 0.7; }
+  #board .foot { fill: var(--ink); }
+  #board .hint-line { fill: none; stroke: var(--bad); stroke-width: 1.8; stroke-dasharray: 5 4; }
+  #board .hint-dot { fill: var(--bad); }
+  #board .right-mark { fill: none; stroke: var(--bad); stroke-width: 1.6; }
+  #board .pt-label { fill: var(--text); font-size: 1rem; font-weight: 600; pointer-events: none; }
+  #board .small-label { fill: var(--muted); font-size: 0.85rem; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+  #namesBox, #hintBox { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+</style>
+</head>
+<body data-game="equal-areas-in-equilateral-triangle" data-kind="demo">
+<main id="main">
+  <h1>Equal Areas In Equilateral Triangle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the point M inside the triangle and watch the six coloured pieces change.<br>
+    <strong>How to play:</strong> Drag M, or focus it and use the arrow keys. Tick "names" or "hint" to see more, and press Reset to put M back.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 360" role="group"
+         aria-label="An equilateral triangle ABC with a draggable point M inside it, its three feet on the sides, six coloured pieces and two area bars"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" aria-label="Show the names of the points">names</label>
+    <label><input id="hintBox" type="checkbox" aria-label="Show the hint: parallels, right angles and small triangle names">hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset point M to its starting position">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move M anywhere you like: the six pieces change shape, yet three of them always have exactly as much area as the other three. The two little bars under the picture show the two totals.</p>
+
+      <h2>Six pieces, two groups</h2>
+      <p>Let A′, B′ and C′ be the <a class="wiki-term" data-wiki="Pedal_point" href="https://en.wikipedia.org/wiki/Pedal_point" target="_blank" rel="noopener">feet</a> of the perpendiculars from M to BC, CA and AB. The six segments from M cut the <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangle</a> into six pieces. The green ones are AMB′, BMC′ and CMA′; the purple ones are A′MB, B′MC and C′MA. The claim on the cut-the-knot page is</p>
+      <blockquote><code>Area(AMB′) + Area(BMC′) + Area(CMA′) = Area(A′MB) + Area(B′MC) + Area(C′MA).</code></blockquote>
+      <p>The original applet coloured the six pieces red, grey, yellow, magenta, blue and dark orange. Here the same alternating pieces share two colours so the two groups are easy to follow.</p>
+
+      <h2>Each piece is base times height</h2>
+      <p>Every small triangle stands on part of a side of ABC, and its height is the distance from M to that side. Twice its area is just <code>base &times; height</code>. If the distances from M to BC, CA and AB are <code>dA</code>, <code>dB</code>, <code>dC</code>, then each distance times the whole side equals the same number: twice the area of ABC. This is <a class="wiki-term" data-wiki="Viviani%27s_theorem" href="https://en.wikipedia.org/wiki/Viviani%27s_theorem" target="_blank" rel="noopener">Viviani's theorem</a>: <code>dA + dB + dC</code> is always the altitude of ABC.</p>
+      <p>Write the position of M with three numbers <code>a + b + c = 1</code>, one for each vertex. Then <code>dA = a &times; h</code>, <code>dB = b &times; h</code>, <code>dC = c &times; h</code>, where h is the altitude. A perpendicular foot splits its side in a predictable way: on AB, for instance, the piece next to A has length <code>(b + c/2) &times; side</code>.</p>
+
+      <h2>Why the totals are equal</h2>
+      <p>Multiply those distances and pieces out. Adding the three green products gives</p>
+      <blockquote><code>whole &times; (ab + bc + ca + (a&sup2; + b&sup2; + c&sup2;)/2),</code></blockquote>
+      <p>where <code>whole</code> is twice the area of ABC. The purple products add up to exactly the same expression, because <code>(a + b + c)&sup2; = 1</code>. So each group is half of <code>whole</code>, which is the area of ABC. The logic test checks this at every point of a fine grid and at hundreds of random positions, and also compares every computed value with a second transcription of the applet's own bytecode.</p>
+
+      <h2>Where the picture came from</h2>
+      <p>The live cut-the-knot page now shows a still photograph in place of the Java applet; archived captures from 2010&ndash;2014 still embed <code>EqualAreasInEquilateralTriangle</code>. Its rules and its two checkboxes, "names" and "hint", are reproduced here. The hint draws the three parallels and their six right angles, as the page's proof suggests. One deliberate change: the Java applet stopped drawing when M was dragged outside, while here M simply stops at the edge; the claim is unchanged. Bogomolny thanks Manuel Silva of Portugal for bringing the problem to his attention.</p>
+
+      <p class="tip">Try moving M very close to a corner, then to the middle of a side. Watch the two bars: each keeps filling exactly half the width.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EqualAreasInEquilateralTriangle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="equal-areas-in-equilateral-triangle-core.js"></script>
+<script src="equal-areas-in-equilateral-triangle.js"></script>
+</body>
+</html>
