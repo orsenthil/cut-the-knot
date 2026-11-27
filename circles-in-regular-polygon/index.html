@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circles In Regular Polygon &mdash; coolmaths</title>
+<meta name="description" content="Join one corner of a regular polygon to all the others. Will the incenters, centroids and angle-bisector feet of the triangles each land on a circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circles-in-regular-polygon/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circles In Regular Polygon">
+<meta property="og:description" content="Join one corner of a regular polygon to all the others. Will the incenters, centroids and angle-bisector feet of the triangles each land on a circle?">
+<meta property="og:url" content="https://coolmaths.ai/circles-in-regular-polygon/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  .poly-fill { fill: var(--accent-soft); stroke: var(--ink); stroke-width: 2; }
+  .diagonal { stroke: var(--muted); stroke-width: 1.2; }
+  .bisector { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 4 3; }
+  .incircle { fill: none; stroke: var(--good); stroke-width: 1.4; stroke-dasharray: 4 4; }
+  .i-circle { fill: none; stroke: var(--accent); stroke-width: 2.4; }
+  .c-circle { fill: none; stroke: var(--good); stroke-width: 2.4; }
+  .t-circle { fill: none; stroke: var(--bad); stroke-width: 2.4; }
+  .a-circle { fill: none; stroke: var(--muted); stroke-width: 2.4; stroke-dasharray: 6 4; }
+  .incenter-dot { fill: var(--accent); }
+  .centroid-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1; }
+  .foot-dot { fill: var(--muted); }
+  .point-label {
+    fill: var(--text); font-family: var(--font); font-size: 13px;
+    pointer-events: none; font-weight: 700;
+  }
+  .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .control-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.9rem; }
+  .control-row label {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    font-size: 0.92rem; cursor: pointer;
+  }
+  .n-value { display: inline-block; min-width: 1.2em; text-align: center; font-weight: 700; }
+</style>
+</head>
+<body data-game="circles-in-regular-polygon" data-kind="demo">
+<main id="main">
+  <h1>Circles In Regular Polygon</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> There is nothing to win here: lines from the top corner cut a regular polygon into triangles, and dots and circles appear in them.<br>
+    <strong>How to play:</strong> Drag the top corner to turn the polygon, use + and &minus; to change how many sides it has, and tick the boxes to show the dots and circles.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A regular polygon with diagonals from the top vertex A, draggable around its circumcircle, with optional incircles, centroids, angle-bisector feet and four circles"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <button id="nMinus" type="button" aria-label="Use one fewer side">&minus;</button>
+      <span>Sides: <span id="nValue" class="n-value">5</span></span>
+      <button id="nPlus" type="button" aria-label="Use one more side">+</button>
+      <button id="resetBtn" type="button" class="primary" aria-label="Put the polygon back at its starting position">Reset</button>
+    </div>
+    <div class="control-row">
+      <label><input id="incirclesCheck" type="checkbox"> incircles</label>
+      <label><input id="incentersCheck" type="checkbox"> incenters</label>
+      <label><input id="centroidsCheck" type="checkbox"> centroids</label>
+      <label><input id="bisectorsCheck" type="checkbox"> bisectors</label>
+      <label><input id="iCircleCheck" type="checkbox"> iCircle</label>
+      <label><input id="cCircleCheck" type="checkbox"> cCircle</label>
+      <label><input id="tCircleCheck" type="checkbox"> tCircle</label>
+      <label><input id="aCircleCheck" type="checkbox"> aCircle</label>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Jeremy Dunn looked at a <a class="wiki-term" data-wiki="Regular_polygon" href="https://en.wikipedia.org/wiki/Regular_polygon" target="_blank" rel="noopener">regular polygon</a>, joined one corner A to all the others, and noticed that dots and circles line up in a surprising way. Two of his five guesses hold for every size, and two of them stop working once the polygon has more than six sides. The logic test checked all of them for every size from 5 to 30.</p>
+
+      <h2>The circle through the centroids</h2>
+      <p>The <a class="wiki-term" data-wiki="Centroid" href="https://en.wikipedia.org/wiki/Centroid" target="_blank" rel="noopener">centroid</a> of a triangle is two thirds of the way from A to the middle of the opposite side. The middles of the polygon's sides lie on one circle, so squashing that circle towards A by two thirds puts every centroid on another circle, <code>cCircle</code>. The same squash leaves it <a class="wiki-term" data-wiki="Tangent_lines_to_circles" href="https://en.wikipedia.org/wiki/Tangent_lines_to_circles" target="_blank" rel="noopener">tangent</a> to the two sides that meet at A. This is claim 2 (and the extra observation 4), and it is true for every polygon the applet offers.</p>
+
+      <h2>Incenters and the tangent circle</h2>
+      <p>The dot at the <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incenter</a> of each triangle is the centre of its incircle. For five or six sides the incenters all lie on one circle, <code>iCircle</code> &mdash; but from seven sides on they do not: the circle the applet draws through three of them misses the others. The large red circle <code>tCircle</code> is different: it encloses every incircle, touches each one on the inside, and also touches the polygon's <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> exactly at A. That is claim 3, and it holds for every size.</p>
+
+      <h2>The feet of the angle bisectors</h2>
+      <p>Draw the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> from A in each triangle and mark where it lands on the far side. For a hexagon the four feet form an isosceles trapezoid, which is a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>, so <code>aCircle</code> passes through all four. The page says this is "definitely true for N = 6"; the test agrees, and finds that it fails for seven or more sides just as claim 1 does.</p>
+
+      <h2>How long are the diagonals?</h2>
+      <p>With the circumcircle of radius 1 and A at one end, the page measures chords from the point opposite A and gets <code>a<sub>k</sub> = 2|cos(&pi;k/N)|</code>. That formula is correct for those chords. The diagonals actually drawn from A have length <code>2|sin(&pi;k/N)|</code>, and the logic test confirms both. Each angle at A is one <code>(N&minus;1)st</code> part of the polygon's angle, <code>2&pi;(N&minus;2)/N</code>.</p>
+
+      <p class="tip">Set the slider to 6 and tick every box to see all four circles at once. Then add one side and watch which circles stop passing through their dots.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CirclesInRegularPolygon.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circles-in-regular-polygon-core.js"></script>
+<script src="circles-in-regular-polygon.js"></script>
+</body>
+</html>
