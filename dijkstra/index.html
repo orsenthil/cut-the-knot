@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dijkstra &mdash; coolmaths</title>
+<meta name="description" content="Move a triangle's corners and watch two smaller copies of it compare its angles. When do they leave a gap, fit exactly, or overlap?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/dijkstra/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Dijkstra">
+<meta property="og:description" content="Move a triangle's corners and watch two smaller copies of it compare its angles. When do they leave a gap, fit exactly, or overlap?">
+<meta property="og:url" content="https://coolmaths.ai/dijkstra/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; margin: 0 auto; padding: 0.5rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board .area-fill { fill: rgba(91, 191, 191, 0.3); }
+  #board .triangle-edge { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .stripe-short { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 4 4; }
+  #board .stripe-long { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 10 4 2 4; }
+  #board .attach-line { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 3 4; }
+  #board .key-line { stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
+  #board .hint-arc-beta { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .hint-arc-alpha { fill: none; stroke: var(--accent); stroke-width: 3; }
+  #board .pt-label {
+    fill: var(--text); font-size: 0.95rem; font-weight: 650; pointer-events: none;
+    paint-order: stroke; stroke: var(--stage); stroke-width: 3px;
+  }
+  #board .hint-label {
+    fill: var(--good); font-size: 0.95rem; font-weight: 700; pointer-events: none;
+    paint-order: stroke; stroke: var(--stage); stroke-width: 3px;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 5; }
+  .controls { justify-content: center; flex-wrap: wrap; gap: 0.5rem; }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+  .controls button[aria-pressed="true"] { border-color: var(--accent); background: var(--highlight); }
+  .controls button:disabled { opacity: 0.55; cursor: not-allowed; }
+  #status { text-align: center; overflow-wrap: anywhere; }
+</style>
+</head>
+<body data-game="dijkstra" data-kind="demo">
+<main id="main">
+  <h1>Dijkstra</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the corners of a triangle and watch two extra lines show whether its two smaller copies leave a gap, fit exactly, or overlap.<br>
+    <strong>How to play:</strong> Drag a blue dot, or focus it and use the arrow keys. Press the buttons to show areas, color, hints or names, or try a shape button to jump to a triangle.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 450" role="group"
+         aria-label="Triangle ABC with two lines from C and a stripe through C. Drag A, B or C to change the triangle."></svg>
+  </div>
+
+  <div class="controls" aria-label="Show parts of the diagram">
+    <button id="areasBtn" type="button" aria-pressed="false" aria-label="Show or hide the striped area pieces">Areas</button>
+    <button id="colorBtn" type="button" aria-pressed="false" disabled aria-label="Show or hide the colored area pieces; needs Areas on">Color</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show or hide the angle marks">Hint</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show or hide the point names">Names</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the triangle to its starting position">Reset</button>
+  </div>
+
+  <div class="controls" aria-label="Try a triangle shape">
+    <button type="button" data-shape="obtuse" aria-label="Try a triangle whose angle at C is greater than a right angle">Gap at C</button>
+    <button type="button" data-shape="right" aria-label="Try a triangle whose angle at C is a right angle">Right at C</button>
+    <button type="button" data-shape="acute" aria-label="Try a triangle whose angle at C is less than a right angle">Overlap at C</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move one corner of the triangle and the two small copies drawn from C change size. Which copy is bigger tells you whether the square on AB is bigger or smaller than the other two squares put together. That is Dijkstra's restatement of the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a>.</p>
+
+      <h2>Two copies of the same triangle</h2>
+      <p>Write the angles as <code>alpha</code> at A, <code>beta</code> at B and <code>gamma</code> at C, opposite the sides <code>a = BC</code>, <code>b = CA</code> and <code>c = AB</code>. The applet draws <code>CL</code> so that angle <code>ACL = beta</code>, and <code>CN</code> so that angle <code>BCN = alpha</code>. Because L and N sit on the line AB, both small triangles have the same three angles as ABC. They are <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similar_triangles" target="_blank" rel="noopener">similar triangles</a>: ACL matches ABC with <code>A→A, C→B, L→C</code>, and BCN matches it with <code>B→B, C→A, N→C</code>. Press Hint to see the matching angles at C. The logic test checked both angle equalities and the side ratios in 1,360 non-degenerate triangles.</p>
+
+      <h2>Compare the areas</h2>
+      <p>All three triangles have the same height above the line AB, and the <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> of a triangle is half its base times its height. Similarity then gives one positive number <code>k</code> with</p>
+      <blockquote><code>area(ACL) = k·b²,&nbsp; area(BCN) = k·a²,&nbsp; area(ABC) = k·c².</code></blockquote>
+      <p>The striped rectangles in the applet have twice those areas, so the same comparison applies to both. The page prints <code>area(ACL)/a² = area(BCN)/b²</code>, but the construction gives <code>area(ACL)/b² = area(BCN)/a² = area(ABC)/c²</code>: the page swaps those two numerators. The test found the printed version false whenever <code>a</code> and <code>b</code> differ. Adding the pieces hides the slip, so the page's final claim is still true:</p>
+      <blockquote><code>sign(area(ACL) + area(BCN) − area(ABC)) = sign(a² + b² − c²).</code></blockquote>
+
+      <h2>Why the angles give the same sign</h2>
+      <p>Since the three angles add to 180°, <code>alpha + beta − gamma</code> has the same sign as <code>90° − gamma</code>. When <code>gamma</code> is obtuse the pieces leave a gap, as in the starting triangle; when it is exactly 90° they fit and CL and CN coincide at the foot H, giving the familiar square-on-the-hypotenuse picture; when it is acute the pieces overlap. The <a class="wiki-term" data-wiki="Law_of_cosines" href="https://en.wikipedia.org/wiki/Law_of_cosines" target="_blank" rel="noopener">law of cosines</a> says <code>c² = a² + b² − 2ab·cos(gamma)</code>, hence <code>a² + b² − c² = 2ab·cos(gamma)</code> and its sign is the sign of <code>90° − gamma</code> too. The logic test compared all three signs in 1,360 configurations — a lattice of positions for C plus 900 random triangles — including exact right triangles, and they agreed every time.</p>
+
+      <h2>What changed from the applet</h2>
+      <p>The four buttons stand for the applet's four checkboxes; Color is switched off and disabled unless Areas is on, just as the old panel enforced it. Here you drag the three corners (the Java applet also let you drag the whole triangle), and three shape buttons jump to a triangle with a gap, an exact fit or an overlap. The status line says in words what the picture shows. The original applet is Bogomolny's; the algebraic proof quoted on his page is credited to Guoping Zeng and was not transcribed here. This is an illustration: there is no win or loss, only a picture to explore.</p>
+
+      <p class="tip">Turn on Color, Names and Hint, then press Right at C. Watch L and N merge into H, then press a neighbouring shape button and see the pieces separate again.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/Dijkstra.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="dijkstra-core.js"></script>
+<script src="dijkstra.js"></script>
+</body>
+</html>
