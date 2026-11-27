@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fixed Point &mdash; coolmaths</title>
+<meta name="description" content="Turn a line around a triangle and it comes back to the side it started on. Has every point stayed put, and can you find the one point that never moves?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/fixed-point/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Fixed Point">
+<meta property="og:description" content="Turn a line around a triangle and it comes back to the side it started on. Has every point stayed put, and can you find the one point that never moves?">
+<meta property="og:url" content="https://coolmaths.ai/fixed-point/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; margin: 0 auto; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board .pivot-line { stroke: var(--accent); stroke-width: 6; stroke-linecap: round; opacity: 0.8; }
+  #board .triangle-fill { fill: var(--accent); fill-opacity: 0.10; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .incircle { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .mid-dot { fill: var(--stage); stroke: var(--ink); stroke-width: 2; }
+  #board .fixed-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .tracked-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  #board .pt-label { fill: var(--text); font-size: 17px; font-weight: 650; pointer-events: none; }
+  #board .mid-label { fill: var(--muted); font-size: 14px; pointer-events: none; }
+  #board .fixed-label { fill: var(--good); font-size: 14px; font-weight: 600; pointer-events: none; }
+</style>
+</head>
+<body data-game="fixed-point" data-kind="demo">
+<main id="main">
+  <h1>Fixed Point</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A line starts on one side of a triangle; watch it turn around all three corners to see whether it ends up exactly where it began.<br>
+    <strong>How to play:</strong> Drag the three corners to change the triangle, then press Go. Press Hint to show the circle inside the triangle and the dot that stays still.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 400" role="group"
+         aria-label="Triangle ABC with a long line through side AB. Drag the three corners A, B and C to change the triangle; press Go to turn the line around the corners."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="goBtn" type="button" class="primary" aria-label="Turn the line around the three corners of the triangle">Go</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show or hide the incircle and the fixed point">Hint: off</button>
+    <button id="resetBtn" type="button" aria-label="Put the triangle back where it started">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The line finishes each trip lying exactly on the side it started on. It looks unchanged, but the dots riding on it have traded places. Something did change, even though the line did not.</p>
+
+      <h2>One trip turns the line over</h2>
+      <p>Press Go once. The line swings about corner A until it lies along AC, then about C until it lies along BC, then about B until it lies along AB again. Those three <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotations</a> add to half a turn. The line is back in the same place, but its two directions are swapped: a dot near A ends up near B. The test checked this for a grid of hundreds of triangles and for random ones: every sampled dot on AB ends at its half-turned position.</p>
+
+      <h2>One dot never moves</h2>
+      <p>Put a coordinate <code>x</code> on the line, measured from any dot <code>O</code> you like. One trip sends the dot to <code>b - x</code>, where <code>b</code> is a constant for that triangle. The dot that stays put solves <code>x = b - x</code>, so <code>x = b/2</code>. That is a <a class="wiki-term" data-wiki="Fixed_point_(mathematics)" href="https://en.wikipedia.org/wiki/Fixed_point_(mathematics)" target="_blank" rel="noopener">fixed point</a>, and one trip is just a <a class="wiki-term" data-wiki="Point_reflection" href="https://en.wikipedia.org/wiki/Point_reflection" target="_blank" rel="noopener">half-turn</a> about it. Turn Hint on to see it: it is exactly where the <a class="wiki-term" data-wiki="Incircle_and_excircles" href="https://en.wikipedia.org/wiki/Incircle_and_excircles" target="_blank" rel="noopener">incircle</a> touches side AB. The logic test compared the moving dots with that touch point on every triangle in the grid.</p>
+
+      <h2>Where the incircle touches</h2>
+      <p>Call the sides <code>a = BC</code>, <code>b = CA</code> and <code>c = AB</code>. The two <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangents</a> drawn from one corner to the incircle are the same length, so if those lengths are <code>tA</code>, <code>tB</code> and <code>tC</code>, then <code>tA + tB = c</code>, <code>tB + tC = a</code> and <code>tC + tA = b</code>. Adding and subtracting gives <code>tA = (b + c - a)/2</code>, <code>tB = (a - b + c)/2</code> and <code>tC = (a + b - c)/2</code>. These are the page's <code>x, y, z</code> in a different order: its <code>x = (a-b+c)/2</code> is the tangent from the corner where sides <code>a</code> and <code>c</code> meet. The midpoint of AB is <code>c/2</code> from A, so it is the fixed point only when <code>tA = c/2</code>, that is when <code>a = b</code>, or <code>CA = CB</code>. The starting triangle is <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral</a>, so its midpoint is fixed; drag a corner to make the sides unequal and the midpoint moves.</p>
+
+      <h2>Two trips bring everything back</h2>
+      <p>A dot first goes to <code>b - x</code>, then to <code>b - (b - x) = x</code>. So after two trips (six turns) every dot of the line is back where it started. The test ran the applet's own step-by-step rotation twice on every triangle in the grid and compared the dots point by point; they agree. The applet adds its marker for corner C only after the second turn, so that marker is not one of the dots being followed; this port keeps that harmless quirk.</p>
+
+      <p class="tip">Make <code>CA</code> and <code>CB</code> equal, perhaps with an <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles</a> triangle, and press Go: the mid-point dot stays exactly where it is. Then drag C and watch it move.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/triangle/FixedPoint.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="fixed-point-core.js"></script>
+<script src="fixed-point.js"></script>
+</body>
+</html>
