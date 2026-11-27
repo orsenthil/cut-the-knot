@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circle Center By Ruler &mdash; coolmaths</title>
+<meta name="description" content="Two circles cross. Using only straight lines through their meeting points, can you find the centre of one circle, and what stays the same as you move the points?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circle-center-by-ruler/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circle Center By Ruler">
+<meta property="og:description" content="Two circles cross. Using only straight lines through their meeting points, can you find the centre of one circle, and what stays the same as you move the points?">
+<meta property="og:url" content="https://coolmaths.ai/circle-center-by-ruler/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circle-a { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .circle-b { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .line-strong { stroke: var(--ink); stroke-width: 2.5; }
+  #board .line-mid { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .line-soft { stroke: var(--muted); stroke-width: 1.5; }
+  #board .line-diameter { stroke: var(--good); stroke-width: 2; stroke-dasharray: 3 4; }
+  #board .cross-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1; }
+  #board .pivot-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1; }
+  #board .center-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .hint-arc { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .hint-arc.alt { stroke: var(--good); }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .glabel.center-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="circle-center-by-ruler" data-kind="demo">
+<main id="main">
+  <h1>Circle Center By Ruler</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the dots to move two crossing circles and watch their straight lines point to the middle of one circle.<br>
+    <strong>How to play:</strong> Drag M, N, A or B' with a mouse or finger, or focus a dot and use the arrow keys. Press Check the claims to see what never changes.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Two crossing circles with ruler lines through their intersection points, and the diameter found from them"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the four draggable points">Reset diagram</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point names">Hide names</button>
+    <button id="centerBtn" type="button" aria-pressed="false" aria-label="Toggle the centre of the first circle">Show center O</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the four matching angle marks">Show equal angles</button>
+    <button id="checkBtn" type="button" aria-label="Check the equal chords and the diameter">Check the claims</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Steinhaus asked for the centre of a circle using only a ruler, when a second circle crossing it is available. Drag the points and watch the lines: two lengths stay equal, and two crossings line up with the centre.</p>
+
+      <h2>Two circles and four ruler lines</h2>
+      <p>The circles meet at M and N. A sits on the first circle and B' on the second. The line AM meets the second circle again at B; the line BN meets the first circle again at C. Starting from B' instead gives A' and C' on the first circle. Only straight lines are drawn, yet the picture already hides the centre.</p>
+
+      <h2>Why the two short chords match</h2>
+      <p>The four marked angles ∠AMA', ∠CNC', ∠BMB' and ∠BNB' stand on chords of the same two circles. An <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angle</a> standing on one chord has the same sine wherever its vertex sits on the circle. Angles from opposite arcs add to 180°, so the applet's "equal angles" are equal or supplementary in the ordinary 0–180° sense; their sines are always the same. The logic test checks those sines on thousands of diagrams. A <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord</a> of radius R cut by an inscribed angle θ has length <code>2·R·sin(θ)</code>, so <code>AA' = CC'</code>.</p>
+
+      <h2>Lengths that do not move</h2>
+      <p>Add arc AC' to the equal arcs AA' and CC' and you get another equal pair: arcs AC and A'C', so their chords match too. The test confirms <code>AC = A'C'</code> both as B' travels around its circle and as A travels around the first circle, with the two circles held fixed; a different second circle gives a different length. That is the second result on the original page: the length of AC does not depend on where B sits on its circle.</p>
+
+      <h2>The diameter through P and Q</h2>
+      <p>Let <code>P = AC ∩ A'C'</code> and <code>Q = AA' ∩ CC'</code>. The page says these two points lie on the diameter of the first circle perpendicular to AC' (or A'C'). The test measures the offset of O, P and Q from one straight line on thousands of diagrams and finds it at machine precision. When A' falls onto A, the lines AA' and CC' become the <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangents</a> at A and C: Q is then checked against the diameter perpendicular to chord AC instead, because P is the crossing of two nearly identical lines and cannot be located reliably. Two such diameters meet at the <a class="wiki-term" data-wiki="Circumcenter" href="https://en.wikipedia.org/wiki/Circumcenter" target="_blank" rel="noopener">centre O</a>, which is what the ruler-only construction wants.</p>
+
+      <p class="tip">Try Show equal angles, then drag B' close to B: the four marks stay the same size even as the lines sweep across the picture.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CircleCenterByRuler.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circle-center-by-ruler-core.js"></script>
+<script src="circle-center-by-ruler.js"></script>
+</body>
+</html>
