@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Close To Hilbert &mdash; coolmaths</title>
+<meta name="description" content="A single arc becomes a path through a square: can four copies of the last step fill the same space?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/close-to-hilbert/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Close To Hilbert">
+<meta property="og:description" content="A single arc becomes a path through a square: can four copies of the last step fill the same space?">
+<meta property="og:url" content="https://coolmaths.ai/close-to-hilbert/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: .5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  #board .frame { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .curve { fill: none; stroke: var(--accent); stroke-width: 1.7;
+    stroke-linecap: round; stroke-linejoin: round; }
+  #board .endpoint { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .slider-track { stroke: var(--muted); stroke-width: 3; stroke-linecap: round; }
+  #board .tick { fill: var(--muted); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .hint { fill: var(--text); font-size: .85rem; pointer-events: none; }
+  .controls button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body data-game="close-to-hilbert" data-kind="demo">
+<main id="main">
+  <h1>Close To Hilbert</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#limits">Limits</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch a single curve grow into a path that winds all through a square.<br>
+    <strong>How to play:</strong> Press Next step or click the picture to grow it. Switch between semicircles and tents, drag the slider, or press Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 320 320" role="group" tabindex="0"
+         aria-label="A growing space-filling curve. Press Enter for the next step, or move the step slider."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="nextBtn" type="button" class="primary" aria-label="Show the next step">Next step</button>
+    <button id="resetBtn" type="button" aria-label="Start again at step one">Reset</button>
+    <button id="semiBtn" type="button" aria-pressed="true" aria-label="Draw the curve with semicircles">Semicircles</button>
+    <button id="tentBtn" type="button" aria-pressed="false" aria-label="Draw the curve with tents">Tents</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The applet replaces each straight piece of a curve by four smaller pieces.
+        It starts with just one arc, yet after a few clicks the picture is a tight
+        path through a square. The same trick works whether the little pieces are
+        semicircles or tents.</p>
+
+      <h2>Four copies of the previous step</h2>
+      <p>Write the four directions as <code>0</code> down, <code>1</code> right,
+        <code>2</code> up and <code>3</code> left. Step 1 is the word <code>1</code>.
+        Each later word is made as
+        <code>reverse3(previous) + previous + previous + complement(previous)</code>:
+        the two middle copies are exactly the same, one outer copy is turned and
+        reflected, and the other is complemented. That is an
+        <a class="wiki-term" data-wiki="L-system" href="https://en.wikipedia.org/wiki/L-system" target="_blank" rel="noopener">L-system</a>
+        rule, and it makes the word <code>4^(n-1)</code> letters long at step
+        <code>n</code>. The core was checked against the applet's own word over
+        steps 1 to 10.</p>
+
+      <h2>Smaller steps, same square</h2>
+      <p>Every click halves the walking step, so four times as many pieces fit
+        into the same region. The route's bounding rectangle is <code>side</code>
+        wide and <code>side - step</code> high; as the step shrinks, those two
+        lengths approach the same square. The curve is continuous: each new arc
+        or tent starts where the last one ended. A check over steps 1 to 7
+        found that every crossing point of that grid lies within one shrinking
+        step of the route, so in the limit the drawing gets dense in the square.
+        This is what the page means by a
+        <a class="wiki-term" data-wiki="Space-filling_curve" href="https://en.wikipedia.org/wiki/Space-filling_curve" target="_blank" rel="noopener">space-filling curve</a>.
+        The finite pictures are not quite square, and an odd step makes the
+        applet truncate its arc boxes by half a unit; both quirks are kept.</p>
+
+      <h2>Close to Hilbert, not Hilbert</h2>
+      <p>The classic <a class="wiki-term" data-wiki="Hilbert_curve" href="https://en.wikipedia.org/wiki/Hilbert_curve" target="_blank" rel="noopener">Hilbert curve</a>
+        starts from a U shape and passes through every point of its grid once.
+        Here the starting piece is one semicircle or one tent, so from step 3
+        onwards the route crosses some grid points twice. The page's claim about
+        filling a square is therefore a claim about the limit, not about any one
+        approximation: the test confirms the four-copy rule, the continuity and
+        the shrinking grid, and also confirms those repeated crossings. Bogomolny
+        notes that Hilbert himself gave his curve as one example of a general
+        1891 construction, which is what this applet illustrates.</p>
+
+      <p class="tip">Try switching between semicircles and tents at the deepest step: the route is identical, only the little bulges change.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CloseToHilbert.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="close-to-hilbert-core.js"></script>
+<script src="close-to-hilbert.js"></script>
+</body>
+</html>
