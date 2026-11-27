@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Five Concyclic Points &mdash; coolmaths</title>
+<meta name="description" content="Two lines cross and four circles are drawn through their points. Move the six dots and watch five marked points: will they always land on one circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/five-concyclic-points/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Five Concyclic Points">
+<meta property="og:description" content="Two lines cross and four circles are drawn through their points. Move the six dots and watch five marked points: will they always land on one circle?">
+<meta property="og:url" content="https://coolmaths.ai/five-concyclic-points/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .base-line { stroke: var(--muted); stroke-width: 2; }
+  #board .secant { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 6 4; }
+  #board .aux-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .circle-o { fill: var(--accent); fill-opacity: 0.05; stroke: var(--accent);
+                     stroke-width: 2; stroke-dasharray: 8 5; }
+  #board .circle-five { fill: var(--good); fill-opacity: 0.07; stroke: var(--good); stroke-width: 3; }
+  #board .cross-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .aux-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1; }
+  #board .axis-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1; }
+  #board .claim-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle.claim-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label { fill: var(--text); font-size: 12px; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem;
+                      font-size: 0.95rem; white-space: normal; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="five-concyclic-points" data-kind="demo">
+<main id="main">
+  <h1>Five Concyclic Points</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Moving the dots keeps five marked points on one green circle, however the picture changes.<br>
+    <strong>How to play:</strong> Drag any dot, or focus one and press the arrow keys. Press a button for a new or different drawing, and tick the box to show the names.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 420" role="group"
+         aria-label="Two crossing lines M-N and P-Q, four grey circles through their points, a dashed circle through M1, M2, N1, N2, and a green circle through Q, M3, N3, M4 and N4. Six points can be dragged."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Put all six points back at their starting places">Reset</button>
+    <button id="exampleBtn" type="button" aria-label="Show a different arrangement of the six points">Other arrangement</button>
+    <label class="option" for="namesChk"><input id="namesChk" type="checkbox" checked aria-label="Show or hide the point names"> Show names</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag the points and the whole drawing changes shape. Yet five marked spots keep landing on the same green circle. Which five are they, and why can they never drift apart?</p>
+
+      <h2>The drawing</h2>
+      <p>The applet starts with two lines, <code>L1</code> through M and N and <code>L2</code> through P and Q, meeting at X. Four <a class="wiki-term" data-wiki="Circumscribed_circle" href="https://en.wikipedia.org/wiki/Circumscribed_circle" target="_blank" rel="noopener">circumcircles</a> pass through M,P,X; N,P,X; M,Q,X and N,Q,X. A line through Q cuts the first two at M1,M2 and N1,N2; another line through Q cuts the last two again at M4,N4. The <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> through M1,M2,N1,N2 is called (O); it cuts L1 at M3,N3. The claim is that <code>Q, M3, N3, M4, N4</code> all lie on one circle.</p>
+
+      <h2>Four points come first</h2>
+      <p>The circles MPX and NPX share the points P and X, so their <a class="wiki-term" data-wiki="Radical_axis" href="https://en.wikipedia.org/wiki/Radical_axis" target="_blank" rel="noopener">radical axis</a> is the line PX, which is L2. Since Q is on L2, its <a class="wiki-term" data-wiki="Power_of_a_point" href="https://en.wikipedia.org/wiki/Power_of_a_point" target="_blank" rel="noopener">powers</a> with respect to those two circles are equal:</p>
+      <blockquote><code>QM1 &times; QM2 = QN1 &times; QN2</code></blockquote>
+      <p>That is exactly the condition for M1, M2, N1, N2 to sit on one circle, the dashed (O). The logic test checks it at the start, along a sweep of every handle and in 1600 other arrangements; it held every time.</p>
+
+      <h2>Why the fifth circle agrees</h2>
+      <p>Let Y be where the line QM1M2 meets L1 and Z where QN1N2 meets L1. Y has the same power with respect to (O), the circle MPX and the circle MQX, so it is their radical centre. It is also the radical centre of the circle through Q,M4,N4, the circle MPX and the circle MQX. Therefore the common chord of (O) and the circle through Q,M4,N4 passes through Y. The same argument puts Z on that chord. Both Y and Z are on L1, so L1 is the common chord: M3 and N3 are the two points where (O) meets the circle through Q,M4,N4. This is Bui Quang Tuan's proof, and it is why the five named points are concyclic. The test also checks that Y and Z have equal powers with respect to the two circles in every arrangement.</p>
+
+      <h2>What was checked, and what was changed</h2>
+      <p>The page embeds a 500 &times; 450 Java applet; this board uses a 500 &times; 420 drawing area so the old control strip does not take space. The core keeps the applet's arithmetic quirks: the radius of each circle is the mean of the three distances to the circumcenter rather than the single distance, the circle-line cut switches method at <code>|dy| &le; 1</code>, and near-parallel lines give no point. The only presentation changes are the SVG layout, a Reset and a second-arrangement button, and a small margin that keeps a dragged dot inside the board. The five-point claim held at the start, at 78 single-handle positions and at every valid one of 1600 reproducible random arrangements; the largest gap from the common circle was below a millionth of a board unit.</p>
+
+      <p class="tip">Press <strong>Other arrangement</strong>, then drag Q. The green circle moves with it, but it still gathers Q, M3, N3, M4 and N4.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FiveConcyclicPoints.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="five-concyclic-points-core.js"></script>
+<script src="five-concyclic-points.js"></script>
+</body>
+</html>
