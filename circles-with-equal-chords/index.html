@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circles With Equal Chords &mdash; coolmaths</title>
+<meta name="description" content="Two circles and a line sit on the board. Can you find a second line, parallel to the first, that cuts the same length chord from both circles?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circles-with-equal-chords/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circles With Equal Chords">
+<meta property="og:description" content="Two circles and a line sit on the board. Can you find a second line, parallel to the first, that cuts the same length chord from both circles?">
+<meta property="og:url" content="https://coolmaths.ai/circles-with-equal-chords/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .given-circle { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2.4; }
+  #board .other-circle { stroke: var(--good); }
+  #board .translated-circle { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .guide-line { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; }
+  #board .given-line { stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; }
+  #board .solution-line { stroke: var(--good); stroke-width: 3.4; stroke-linecap: round; }
+  #board .end-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .second-dot { fill: var(--highlight); }
+  #board .t-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.4; }
+  #board .foot-dot { fill: var(--muted); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .pt-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line { margin: 0.5rem 0 0; color: var(--muted); font-size: 0.9rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+</style>
+</head>
+<body data-game="circles-with-equal-chords" data-kind="demo">
+<main id="main">
+  <h1>Circles With Equal Chords</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move two circles and a line, and watch a green line find equal chords in both circles. There is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the blue points to move the line and the circles, or focus one and use the arrow keys. Tick the boxes to show the names and the construction.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 280" role="group"
+         aria-label="Two circles with centres O and O-prime, a draggable line L, and a green line cutting equal chords AB and CD. Drag the blue points or focus them and use the arrow keys."></svg>
+    <p class="hint-line">Drag L, O, O' or a radius point; focus one and press the arrow keys for smaller moves (Shift for bigger ones).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesCheck" type="checkbox" data-label="names"> Names</label>
+    <label><input id="hintCheck" type="checkbox" data-label="the construction"> Show hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Back to the opening circles and line">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two different circles can be crossed by one straight line so that both <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chords</a> are the same length. Drag the points and the green line follows; the two chords stay equal every time a solution exists.</p>
+
+      <h2>Slide one circle along L</h2>
+      <p>Imagine cutting the first chord out and sliding that whole circle along L until the chord lands on the second circle. The centre O moves to T, where the line through O parallel to L meets the line through O' <a class="wiki-term" data-wiki="Perpendicular" href="https://en.wikipedia.org/wiki/Perpendicular" target="_blank" rel="noopener">perpendicular</a> to L. A <a class="wiki-term" data-wiki="Translation_(geometry)" href="https://en.wikipedia.org/wiki/Translation_(geometry)" target="_blank" rel="noopener">translation</a> keeps every length the same, so the circle centred at T with the first radius has a chord CD just like AB. Tick <em>Show hint</em> to see T, that dashed circle and the two construction lines. Its common chord with the second circle is CD; moving CD back gives AB.</p>
+
+      <h2>Where the green line sits</h2>
+      <p>Write the distances of O and O' from L as <code>h₁</code> and <code>h₂</code>, and their radii as <code>r₁</code> and <code>r₂</code>. A line at signed distance <code>t</code> from L cuts a chord of length <code>2√(r² − (h − t)²)</code> — that is the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a> in the right triangle from the centre to the chord. Setting the two lengths equal and cancelling the <code>t²</code> terms leaves the single value</p>
+      <blockquote><code>t = (h₁ + h₂)/2 + (r₁² − r₂²)/(2(h₂ − h₁))</code></blockquote>
+      <p>when <code>h₁ ≠ h₂</code>. The logic test compared this formula with the applet's construction on more than a thousand layouts, including tilted lines; the largest difference was below one millionth of a drawing unit.</p>
+
+      <h2>One, none, or infinitely many</h2>
+      <p>The page says there may be one solution, none, or — when the circles are equal and L is parallel to the line of centres — infinitely many. All three are true: on a grid of 225 distance-and-radius choices there were 38 one-solution cases, 182 with none, and 5 with infinitely many. When <code>h₁ = h₂</code> the formula above has no denominator: equal radii make every parallel line work, unequal radii make none work.</p>
+      <p>One honest difference: the applet's circle-crossing helper treats nearly coincident centres as a single point, so it reports no crossing in the infinitely-many case. Our picture follows the applet's construction and shows no green line there, while the statement above follows the page and the mathematics. The applet also leaves the picture blank when a radius is under two units, when O' is within one unit of L, or when the common chord is shorter than one unit; those guards are copied here.</p>
+
+      <p class="tip">Tick the hint, then drag R' towards O'. Watch the dashed circle stop crossing the second one: that is exactly when the green line and both equal chords disappear.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CirclesWithEqualChords.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circles-with-equal-chords-core.js"></script>
+<script src="circles-with-equal-chords.js"></script>
+</body>
+</html>
