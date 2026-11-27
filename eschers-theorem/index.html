@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eschers Theorem &mdash; coolmaths</title>
+<meta name="description" content="Move a corner of the triangle and watch Escher's hexagon keep its shape. Why do the three long lines always meet at one point?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/eschers-theorem/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Eschers Theorem">
+<meta property="og:description" content="Move a corner of the triangle and watch Escher's hexagon keep its shape. Why do the three long lines always meet at one point?">
+<meta property="og:url" content="https://coolmaths.ai/eschers-theorem/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tess-cell { stroke: none; fill-opacity: 0.13; }
+  #board .tess-0 { fill: var(--accent); }
+  #board .tess-1 { fill: var(--good); }
+  #board .tess-2 { fill: var(--bad); }
+  #board .tess-3 { fill: var(--highlight); }
+  #board .tess-4 { fill: var(--ink); }
+  #board .tess-5 { fill: var(--muted); }
+  #board .fixed-tri { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 5; }
+  #board .move-tri { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .spoke { stroke: var(--ink); stroke-width: 1.5; stroke-opacity: 0.45; }
+  #board .hint-line { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .cevian { stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: 7 4; }
+  #board .angle-mark { fill: none; stroke: var(--bad); stroke-width: 2; }
+  #board .q-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .apex-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 2; }
+  #board .f-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .pt-label { fill: var(--text); font-size: 1.05rem; font-weight: 600; pointer-events: none; }
+  #board .q-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; min-height: 2.5rem; }
+  .controls input[type="checkbox"] { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+</style>
+</head>
+<body data-game="eschers-theorem" data-kind="demo">
+<main id="main">
+  <h1>Eschers Theorem</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: move one corner and watch a special hexagon and three lines keep their surprising properties.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus one and use the arrow keys. Tick the boxes to show names, 120&deg; angles, the meeting point, hexagon copies and the Napoleon triangles.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 420" role="group"
+         aria-label="Escher's theorem: three draggable points A, B and C around a fixed equilateral triangle A prime, B prime, C prime"></svg>
+  </div>
+
+  <div class="controls" aria-label="Things to show">
+    <label><input id="namesBox" type="checkbox" aria-label="Show names of the points"> names</label>
+    <label><input id="anglesBox" type="checkbox" aria-label="Show the 120 degree angles"> 120&deg; angles</label>
+    <label><input id="concurrencyBox" type="checkbox" aria-label="Show the three concurrent lines"> concurrency</label>
+    <label><input id="tessBox" type="checkbox" aria-label="Show copies of the hexagon that tile the plane"> tessellation</label>
+    <label><input id="hintBox" type="checkbox" aria-label="Show the Napoleon triangles and their centres"> hint</label>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the diagram to its starting position">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>M. C. Escher used a six-sided tile that fits with copies of itself. J. F. Rigby turned the observation into a theorem: once two corners of a triangle are built from an equilateral triangle by 120&deg; turns, the third 120&deg; turn happens by itself, and three long lines meet at one point.</p>
+
+      <h2>Build the moving triangle</h2>
+      <p>The yellow points A′, B′, C′ are the corners of a fixed <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangle</a>. Put B anywhere. Turn B around A′ by 120&deg; to get C, and turn C around B′ by 120&deg; to get A. Then A′B = A′C and B′A = B′C, and the turn at C′ comes out as 120&deg; too. Drag a handle and the other two corners are rebuilt the same way the applet rebuilt them. Rigby noted that all three turns must go the same way round the triangle; the logic test flips one turn and the three lines no longer meet.</p>
+
+      <h2>Six corners that tile the plane</h2>
+      <p>The hexagon A C′ B A′ C B′ is the tile. Turning a whole hexagon by 120&deg; about any of its corners gives another copy, so copies fit edge to edge without gaps: this is the <a class="wiki-term" data-wiki="Tessellation" href="https://en.wikipedia.org/wiki/Tessellation" target="_blank" rel="noopener">tessellation</a> in the page's second claim. The port creates exactly the 138 copies the applet's three rotation patterns create, and the logic test checks that every one has the same six side lengths. Tick <em>tessellation</em> and <em>hint</em> to see how this grows out of the Napoleon picture.</p>
+
+      <h2>Why the three lines meet</h2>
+      <p>Build <a class="wiki-term" data-wiki="Napoleon%27s_theorem" href="https://en.wikipedia.org/wiki/Napoleon%27s_theorem" target="_blank" rel="noopener">Napoleon triangles</a> on the sides of ABC: their outer tips are A″, B″, C″ (tick <em>hint</em>). The centres of those three triangles are A′, B′, C′, which is why A′B′C′ is equilateral. That ABC and A′B′C′ are in perspective &mdash; AA′, BB′, CC′ meet in one point &mdash; is the content of <a class="wiki-term" data-wiki="Kiepert_conics" href="https://en.wikipedia.org/wiki/Kiepert_conics" target="_blank" rel="noopener">Kiepert's theorem</a>. The page's claim held at every one of the 1,575 dragged positions the logic test tried; the meeting point can be far outside the picture.</p>
+
+      <h2>Not the Ceva&ndash;Menelaus applet</h2>
+      <p>That sister applet fixes how points divide the sides and asks when three other lines meet, using an equation in <a class="wiki-term" data-wiki="Barycentric_coordinates" href="https://en.wikipedia.org/wiki/Barycentric_coordinates" target="_blank" rel="noopener">barycentric coordinates</a>. Here no ratio is typed in: the whole triangle moves, and the two facts to check are the 120&deg; turns and the common point of AA′, BB′, CC′. Both pages draw Escher-like tilings, but the claims and the controls are different.</p>
+
+      <p class="tip">Try ticking <em>hint</em> and <em>tessellation</em> together, then drag A slowly: the coloured tiles swing around while the three marked angles stay at 120&deg;.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EschersTheorem.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="eschers-theorem-core.js"></script>
+<script src="eschers-theorem.js"></script>
+</body>
+</html>
