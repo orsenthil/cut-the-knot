@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Feuerbach Treasure &mdash; coolmaths</title>
+<meta name="description" content="Four triangles share a single circle: can it really touch the incircle and three excircles of each one? Drag the corners and count the sixteen touching circles.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/feuerbach-treasure/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Feuerbach Treasure">
+<meta property="og:description" content="Four triangles share a single circle: can it really touch the incircle and three excircles of each one? Drag the corners and count the sixteen touching circles.">
+<meta property="og:url" content="https://coolmaths.ai/feuerbach-treasure/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linejoin: round; }
+  #board .altitude { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .npc { fill: var(--accent); fill-opacity: 0.07; stroke: var(--accent); stroke-width: 2.6; }
+  #board .npc-center { fill: var(--accent); }
+  #board .feuer-circle.incircle { fill: var(--bad); fill-opacity: 0.07; stroke: var(--bad); stroke-width: 2; }
+  #board .feuer-circle.excircle { fill: none; stroke: var(--bad); stroke-width: 1.4; stroke-opacity: 0.7; stroke-dasharray: 6 5; }
+  #board .tan-dot { stroke: var(--stage); stroke-width: 1.6; }
+  #board .tan-in { fill: var(--good); }
+  #board .tan-ex { fill: var(--highlight); }
+  #board .h-point { fill: var(--ink); }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 17px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="feuerbach-treasure" data-kind="demo">
+<main id="main">
+  <h1>Feuerbach Treasure</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a drawing, not a game: four different triangles share one circle.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus one and use the arrow keys. Press the triangle buttons to show the circles that touch the shared one.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 280" role="group"
+         aria-label="A triangle with three draggable corners, its shared nine-point circle and the incircles and excircles of the chosen triangles"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle and hide all four triangles">Reset</button>
+    <button id="allBtn" type="button" aria-pressed="false" aria-label="Show or hide all four triangles">Show all four</button>
+    <button id="abcBtn" type="button" aria-pressed="false" aria-label="Show or hide the circles of triangle ABC">ABC</button>
+    <button id="abhBtn" type="button" aria-pressed="false" aria-label="Show or hide the circles of triangle ABH">ABH</button>
+    <button id="bchBtn" type="button" aria-pressed="false" aria-label="Show or hide the circles of triangle BCH">BCH</button>
+    <button id="cahBtn" type="button" aria-pressed="false" aria-label="Show or hide the circles of triangle CAH">CAH</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show or hide the point names">Show names</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move one corner of the triangle and almost everything in the picture changes. One circle does not: the same circle goes on touching the circles of all four triangles at once.</p>
+
+      <h2>One corner becomes the orthocenter</h2>
+      <p>The <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a> H is where the three altitudes of ABC meet. Now look at the other three corners: because AH is perpendicular to BC, A is the orthocenter of BCH, and the same holds for B in CAH and for C in ABH. The four points A, B, C, H are an orthocentric group: each one is the orthocenter of the triangle made by the other three.</p>
+
+      <h2>Four triangles, one nine-point circle</h2>
+      <p>Every triangle has a <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">nine-point circle</a>. It passes through the midpoints of the three sides, the feet of the three altitudes, and the points halfway from the orthocenter to each corner. Since the four triangles here swap the roles of their corners and their orthocenter, those nine points come from the same four points every time: all four triangles have exactly the same nine-point circle. The applet builds it as the circumcircle of the three side midpoints; the logic test checks that its centre and radius agree for all four triangles on hundreds of shapes.</p>
+
+      <h2>Sixteen circles touch it</h2>
+      <p>By <a class="wiki-term" data-wiki="Feuerbach%27s_theorem" href="https://en.wikipedia.org/wiki/Feuerbach%27s_theorem" target="_blank" rel="noopener">Feuerbach's theorem</a>, the nine-point circle of a triangle touches its <a class="wiki-term" data-wiki="Incircle_and_excircles" href="https://en.wikipedia.org/wiki/Incircle_and_excircles" target="_blank" rel="noopener">incircle</a> and all three excircles. Each of the four triangles has four such circles, so the shared circle touches <code>4 &times; 4 = 16</code> circles. The page says "in general", and that matters: if ABC has a right angle then H lands on a corner, two of the triangles collapse, and only eight circles remain. The logic test checks the sixteen circles are distinct for ordinary triangles and confirms this exception.</p>
+
+      <h2>Where the dot lands</h2>
+      <p>The applet finds each touching point by starting at a small circle's centre and moving towards the nine-point centre by the fraction <code>r / d</code> of the gap, where <code>r</code> is the small circle's radius and <code>d</code> the distance between centres. For an excircle the two circles meet between their centres; for the incircle, which sits inside the nine-point circle, the touch point is on the far side, so the step is subtracted: <code>d = R &minus; r</code> instead of <code>d = R + r</code>. The test puts a dot on all sixteen pairs and checks each one lies on both circles.</p>
+
+      <p class="tip">Try pressing all four triangle buttons, then drag a corner until one angle is a right angle: watch two sets of circles disappear while the purple circle stays put.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FeuerbachTreasure.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="feuerbach-treasure-core.js"></script>
+<script src="feuerbach-treasure.js"></script>
+</body>
+</html>
