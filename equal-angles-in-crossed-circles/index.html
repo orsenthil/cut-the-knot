@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equal Angles In Crossed Circles &mdash; coolmaths</title>
+<meta name="description" content="Two circles cross and a straight chord cuts through both. Drag the four points: will the two pairs of marked angles stay equal?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equal-angles-in-crossed-circles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Equal Angles In Crossed Circles">
+<meta property="og:description" content="Two circles cross and a straight chord cuts through both. Drag the four points: will the two pairs of marked angles stay equal?">
+<meta property="og:url" content="https://coolmaths.ai/equal-angles-in-crossed-circles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.75rem;
+    margin-inline: auto;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circle-main { fill: none; stroke: var(--accent); stroke-width: 2.2; }
+  #board .circle-small { fill: none; stroke: var(--good); stroke-width: 2.2; }
+  #board .chord-line { stroke: var(--ink); stroke-width: 2; stroke-opacity: 0.8; }
+  #board .spoke { stroke: var(--ink); stroke-width: 1.4; stroke-opacity: 0.55; }
+  #board .extra-line { stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 3 5; }
+  #board .angle-main { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round; }
+  #board .angle-extra { fill: none; stroke: var(--good); stroke-width: 2.6; stroke-linecap: round; }
+  #board .cross-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 0.85rem;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .label-st { fill: var(--ink); }
+  #board .label-h { fill: var(--muted); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls button[aria-pressed="true"] { border-color: var(--accent); }
+</style>
+</head>
+<body data-game="equal-angles-in-crossed-circles" data-kind="demo">
+<main id="main">
+  <h1>Equal Angles In Crossed Circles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two circles overlap and a straight line cuts across both; watch two pairs of angles that stay equal as the circles change.<br>
+    <strong>How to play:</strong> Drag the four dots S, T, RB and RS with a mouse or finger, or focus a dot and use the arrow keys. Press Statement or Extra to show the marked angles and the dashed lines.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="group"
+         aria-label="Two overlapping circles through S and T, a straight chord cutting both, and the four angles at S and T"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Show or hide the point names">Names</button>
+    <button id="statementBtn" type="button" aria-pressed="false" aria-label="Show or hide the two equal angle pairs">Statement</button>
+    <button id="extraBtn" type="button" aria-pressed="false" aria-label="Show or hide the dashed chords and second angle pair">Extra</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Put the four points back where they started">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two circles cross at S and T. A straight <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord</a> of one cuts the other at P and Q. The page claims that the angle at S marked by A and P equals the angle at T marked by B and Q — and that a second pair, B,S,Q and A,T,P, is equal too. The live cut-the-knot page still embeds Bogomolny's Java applet; this page draws the same construction with draggable points. It is a picture to explore, not a game to win.</p>
+
+      <h2>Two four-corner circles</h2>
+      <p>ASTB is a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">four-corner circle</a>: all four points lie on the larger circle, so its opposite angles add to 180°. PSTQ lies on the smaller one, so its opposite angles do the same. Using the <a class="wiki-term" data-wiki="Exterior_angle" href="https://en.wikipedia.org/wiki/Exterior_angle" target="_blank" rel="noopener">outside-angle</a> relation at S and then at Q:</p>
+      <blockquote>
+        <code>∠ASP = ∠AST − ∠PST</code><br>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp; = (180° − ∠ABT) − (180° − ∠PQT)</code><br>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp; = ∠BTQ.</code>
+      </blockquote>
+      <p>Because A, P, Q and B are on one straight line, the two angles being subtracted are the angles that line makes at B and at Q; their difference is exactly the angle at T between TB and TQ.</p>
+
+      <h2>The second pair</h2>
+      <p><a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">Angles standing on the same arc</a> are equal: ∠ASB = ∠ATB in the larger circle and ∠PSQ = ∠PTQ in the smaller. Subtracting twice equal angles from equal angles leaves <code>∠ATP = ∠BSQ</code>. Press Extra to see the dashed lines SB, SQ, TA and TP that frame this second pair.</p>
+
+      <h2>What the checks found</h2>
+      <p>The logic test compares the page with a second transcription of the applet's bytecode on the opening picture, sweeps of every handle and over 3,000 random configurations. On every non-degenerate drawing where the chord of one circle really crosses the other (the picture the page describes), both angle pairs agree to better than a billionth of a radian, and the two four-corner relations hold. The claim is not unconditional: drag the chord clear of the shared lens, so P and Q lie outside the span AB, and the marked angles need not match; the test pins down such a counterexample. If S or T lands on the chord the picture collapses and there are no arcs to compare, so the test leaves those cases out. Two faithful quirks remain: the applet calls the left point S regardless of which handle was dragged there, it calls the larger-radius circle the big one, and when S and T come within one unit it keeps the previous picture. This is different from the sibling applet <em>Equal Angles In Crossing Circles</em>, which claims equal chord lengths AB = CD for two lines through a crossing point and has switches for adjusting circles or chords; here there is one chord and no lengths to compare.</p>
+
+      <p class="tip">Turn on Statement and Extra, then drag RS until P and Q slide between A and B: the two readouts stay equal. Now pull the chord outside the shared lens and watch them part company.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EqualAnglesInCrossedCircles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="equal-angles-in-crossed-circles-core.js"></script>
+<script src="equal-angles-in-crossed-circles.js"></script>
+</body>
+</html>
