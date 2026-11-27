@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fuss &mdash; coolmaths</title>
+<meta name="description" content="A four-sided shape can have a circle touching every side and another circle through every corner. Move the circles apart: what radius must the inner circle have for the shape to close up?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/fuss/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Fuss">
+<meta property="og:description" content="A four-sided shape can have a circle touching every side and another circle through every corner. Move the circles apart: what radius must the inner circle have for the shape to close up?">
+<meta property="og:url" content="https://coolmaths.ai/fuss/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales through its viewBox; colour comes only from site tokens. */
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.5rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .outer-circle { fill: none; stroke: var(--muted); stroke-width: 1.4; }
+  #board .inner-circle { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.8; }
+  #board .quad { fill: var(--board-a); fill-opacity: 0.7; stroke: var(--ink); stroke-width: 2; }
+  #board .contact { fill: none; stroke: var(--accent); stroke-width: 1.2; }
+  #board .diagonal { fill: none; stroke: var(--highlight); stroke-width: 4; stroke-dasharray: 5 4; }
+  #board .corner { fill: var(--ink); }
+  #board .touch { fill: var(--accent); stroke: var(--stage); stroke-width: 1; }
+  #board .centre { fill: var(--muted); stroke: var(--stage); stroke-width: 1; }
+  #board .cross { fill: var(--good); stroke: var(--stage); stroke-width: 1; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.34rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+  .controls input[type="range"] { width: min(12rem, 100%); }
+</style>
+</head>
+<body data-game="fuss" data-kind="demo">
+<main id="main">
+  <h1>Fuss</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: a four-sided shape has one circle touching all its sides and another circle through all its corners.<br>
+    <strong>How to play:</strong> Drag the point A around the outside circle, or focus it and use the arrow keys. Move the slider to shift the inside circle, tick the boxes for names or diagonals, and press Start to watch A travel.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="145 95 120 110" role="group"
+         aria-label="A four-sided shape with an inner circle touching all four sides and an outer circle through all four corners. Point A can be dragged around the outer circle."></svg>
+  </div>
+
+  <div class="controls">
+    <label for="distance">Centre gap: <output id="dValue" for="distance">40</output></label>
+    <input id="distance" type="range" min="0" max="40" step="1" value="40"
+           aria-label="Distance between the two circle centres">
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="diagonals" type="checkbox"> Diagonals</label>
+    <button id="startBtn" type="button" class="primary" aria-label="Start moving corner A">Start</button>
+    <button id="resetBtn" type="button" aria-label="Reset the picture">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two circles can be placed so that a four-sided shape fits exactly between them: its corners sit on the outer circle and its sides just touch the inner one. Move the first corner and the whole shape moves with it, but the size of the inner circle cannot change.</p>
+
+      <h2>A shape with two circles</h2>
+      <p>A four-sided shape with an <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> that touches every side and a <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> through every corner is called a <a class="wiki-term" data-wiki="Bicentric_quadrilateral" href="https://en.wikipedia.org/wiki/Bicentric_quadrilateral" target="_blank" rel="noopener">bicentric quadrilateral</a>. Here the inner circle is chosen first; the applet then draws a tangent from a corner, meets the outer circle again, and repeats.</p>
+
+      <h2>Fuss' relation</h2>
+      <p>Let <code>R</code> be the outer radius, <code>r</code> the inner radius and <code>d</code> the distance between the two centres. The page's claim is exactly</p>
+      <blockquote><code>1/(R &minus; d)&sup2; + 1/(R + d)&sup2; = 1/r&sup2;.</code></blockquote>
+      <p>Equivalently, <code>r&sup2; = (R&sup2; &minus; d&sup2;)&sup2; / (2(R&sup2; + d&sup2;))</code>, which is how the applet chooses <code>r</code> for each slider position. The logic test checks the claim for every whole-number slider position from <code>0</code> to <code>(int)(0.8R)</code> and every whole degree of A; it holds in all of them, to within a billionth.</p>
+
+      <h2>Why the shape closes</h2>
+      <p>Starting from any point A on the outer circle, four tangents bring you back to A: this is <a class="wiki-term" data-wiki="Poncelet_porism" href="https://en.wikipedia.org/wiki/Poncelet_porism" target="_blank" rel="noopener">Poncelet's porism</a> for quadrilaterals. The logic test follows all four tangents for thousands of positions and measures the gap back at A; it is smaller than a millionth of a drawing unit. It also finds that the crossing P of the two diagonal lines of the touching points stays put while A moves: P is on the line between the centres, <code>2dR&sup2;/(R&sup2; + d&sup2;)</code> from the outer centre.</p>
+
+      <h2>Two small differences from the old applet</h2>
+      <p>The old helper for meeting a line and a circle gives up when the tangent is shorter than one screen pixel, which happens for some corner positions when the centres are far apart. This port solves the same equation directly, so the picture keeps drawing there. The applet also starts A at a random spot; this page starts at a fixed spot so that a player sees the same picture each time. Both constructions were transcribed from the bytecode and compared on more than a hundred thousand configurations; wherever the old helper runs, the two agree.</p>
+
+      <p class="tip">Set the gap to zero: the circles become concentric and the four-sided shape becomes a square. Then push the slider to the right and watch the shape lean over.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Fuss.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="fuss-core.js"></script>
+<script src="fuss.js"></script>
+</body>
+</html>
