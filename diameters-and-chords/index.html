@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Diameters And Chords &mdash; coolmaths</title>
+<meta name="description" content="Drag points around a circle and watch the crossings of three diameters and two chords. Do the two A points meet exactly when the two K points meet?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/diameters-and-chords/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Diameters And Chords">
+<meta property="og:description" content="Drag points around a circle and watch the crossings of three diameters and two chords. Do the two A points meet exactly when the two K points meet?">
+<meta property="og:url" content="https://coolmaths.ai/diameters-and-chords/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .diameter { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .chord { fill: none; stroke: var(--ink); stroke-width: 1.8; }
+  #board .extension { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: 7 6; }
+  #board .aux { fill: none; stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 3 5; }
+  #board .hexagon { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: 8 4; }
+  #board .aux-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1; }
+  #board .cross-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1; }
+  #board .centre-dot { fill: var(--muted); }
+  #board .k-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.85rem var(--font); pointer-events: none;
+  }
+  #board .k-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="diameters-and-chords" data-kind="demo">
+<main id="main">
+  <h1>Diameters And Chords</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: lines cross a circle in a pattern that links two pairs of points.<br>
+    <strong>How to play:</strong> Drag the round points, or focus one and use the arrow keys. Tick a box to show names or a hint, or press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 360" role="group"
+         aria-label="A circle with three diameters and two chords, with six draggable points"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox" checked> Names</label>
+    <label><input id="hint" type="checkbox" checked> Hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the six points around the circle and watch what happens to the two yellow K points. The picture is set up so that two pairs of points either both meet or both stay apart. That is not an accident.</p>
+
+      <h2>What the picture builds</h2>
+      <p>The centre O is marked. Each of <code>BB<sub>t</sub></code>, <code>CC<sub>t</sub></code> and <code>M<sub>t</sub>N<sub>t</sub></code> goes straight through O, so each is a
+        <a class="wiki-term" data-wiki="Diameter" href="https://en.wikipedia.org/wiki/Diameter" target="_blank" rel="noopener">diameter</a>
+        of the <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>: its ends are opposite each other. The chords <code>BA<sub>b</sub></code> and <code>CA<sub>c</sub></code> cross the third diameter at M and N. Then <code>K<sub>b</sub></code> is the other point where the line <code>NB<sub>t</sub></code> meets the circle, and <code>K<sub>c</sub></code> comes from <code>MC<sub>t</sub></code>. Dragging either end of <code>M<sub>t</sub>N<sub>t</sub></code> keeps the two ends opposite, just as in the old applet.</p>
+
+      <h2>The claim, and why it is true</h2>
+      <p>The page asks us to prove an <a class="wiki-term" data-wiki="Logical_equivalence" href="https://en.wikipedia.org/wiki/Logical_equivalence" target="_blank" rel="noopener">if and only if</a>: <code>A<sub>b</sub> = A<sub>c</sub></code> exactly when <code>K<sub>b</sub> = K<sub>c</sub></code>. Suppose first that the two A points have merged into one point A. Look at the six points <code>A, B, B<sub>t</sub>, K<sub>b</sub>, C<sub>t</sub>, C</code> around the circle. In this hexagon, opposite sides meet at N (from <code>AC</code> and <code>B<sub>t</sub>K<sub>b</sub></code>), at O (from <code>BB<sub>t</sub></code> and <code>C<sub>t</sub>C</code>) and at some point M′ (from <code>AB</code> and <code>K<sub>b</sub>C<sub>t</sub></code>).</p>
+      <p>By <a class="wiki-term" data-wiki="Pascal%27s_theorem" href="https://en.wikipedia.org/wiki/Pascal%27s_theorem" target="_blank" rel="noopener">Pascal's theorem</a> those three meeting points lie on one line. Two of them, N and O, lie on the diameter <code>M<sub>t</sub>N<sub>t</sub></code>, so M′ lies on that diameter too. But M is where AB crosses that same diameter, so M′ = M. The line <code>MC<sub>t</sub></code> is therefore the line <code>K<sub>b</sub>C<sub>t</sub></code>, which is exactly how <code>K<sub>c</sub></code> was made. Hence <code>K<sub>c</sub> = K<sub>b</sub></code>.</p>
+
+      <h2>The other way, and what the checks found</h2>
+      <p>The two roles can be swapped: start from a single K point, rebuild the two lines through it and read off the two A points. The same hexagon argument then forces <code>A<sub>b</sub> = A<sub>c</sub></code>. The logic test does this in both directions on thousands of generated pictures and also compares every computed point with a second, independent transcription of the applet's own method. The claim holds whenever B, C and <code>M<sub>t</sub></code> are distinct points. One caveat: the old applet calls the A points "together" when they are less than one pixel apart, and if B and C are themselves almost on top of each other, the two K points can be under a pixel apart for that trivial reason while the A points are far apart. The exact statement is unaffected.</p>
+      <p>The old page embeds two copies of the Java applet, one with the names and hints switched off and one with them on; browsers no longer run that plug-in, so the picture here follows the applet's bytecode and the page's written solution. The old "hint" checkbox had an empty drawing method; here it highlights the Pascal hexagon instead. That is the one deliberate change.</p>
+
+      <p class="tip">Try dragging <code>A<sub>c</sub></code> onto <code>A<sub>b</sub></code> with the arrow keys: watch the two yellow K points merge at the same moment.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/DiametersAndChords.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="diameters-and-chords-core.js"></script>
+<script src="diameters-and-chords.js"></script>
+</body>
+</html>
