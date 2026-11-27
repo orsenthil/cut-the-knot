@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equilic Quad &mdash; coolmaths</title>
+<meta name="description" content="Three equilateral triangles sit on the sides of a four-sided shape. Drag the points: will their three tips always line up?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equilic-quad/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Equilic Quad">
+<meta property="og:description" content="Three equilateral triangles sit on the sides of a four-sided shape. Drag the points: will their three tips always line up?">
+<meta property="og:url" content="https://coolmaths.ai/equilic-quad/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .guide-circle { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 5; }
+  #board .secant { stroke: var(--muted); stroke-width: 1.5; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .triangle-side { stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
+  #board .collinear-line { stroke: var(--muted); stroke-width: 1.5; }
+  #board .segment-pr { stroke: var(--bad); stroke-width: 2.5; stroke-linecap: round; }
+  #board .apex-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .base-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1; }
+  #board .angle-mark { fill: none; stroke: var(--highlight); stroke-width: 3; }
+  #board .side-tick { stroke: var(--good); stroke-width: 2.5; stroke-linecap: round; }
+  #board .hint-side { stroke: var(--good); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="equilic-quad" data-kind="demo">
+<main id="main">
+  <h1>Equilic Quad</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: three equal-sided triangles sit on a four-sided shape, and their three top tips always land on one straight line.<br>
+    <strong>How to play:</strong> Drag S around the circle, or C and D along the sloping lines. You can also focus a point and use the arrow keys; tick the boxes to show names, angle marks or a hint.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A four-sided shape with three equilateral triangles built on its sides, and their three tips on one red straight line through S"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="construction" type="checkbox"> Angle marks</label>
+    <label><input id="hint" type="checkbox"> Hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the diagram to its starting position">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The old page still shows the Java applet (with a "browser is not set to run Java applets" fallback). Its statement is due to Jack Garfunkel: build <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangles</a> on AC, DC and DB, away from AB, and their tips P, Q and R line up. Drag the three handles and watch the red line: it never bends.</p>
+
+      <h2>The four-sided shape</h2>
+      <p>A, B and S lie on one <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>. C is placed on the line from B to S and D on the line from A to S at the same distance from B and A, so <code>AD = BC</code>. The two lines meet at S at 60°, which is what makes <code>ABCD</code> an equilic <a class="wiki-term" data-wiki="Quadrilateral" href="https://en.wikipedia.org/wiki/Quadrilateral" target="_blank" rel="noopener">quadrilateral</a>. In this picture AD and BC are marked with matching ticks when you tick "Angle marks".</p>
+
+      <h2>Turn each side by sixty degrees</h2>
+      <p>The page's proof uses a <a class="wiki-term" data-wiki="Rotation_(geometry)" href="https://en.wikipedia.org/wiki/Rotation_(geometry)" target="_blank" rel="noopener">rotation</a> of 60° about A: triangle AQB is equilateral, so it carries B to Q, and triangle ACP is equilateral, so it carries C to P. Therefore the segment <code>BC</code> lands on <code>PQ</code>: those two lengths are equal and differ in direction by 60°. A second 60° turn about B carries <code>AD</code> onto <code>QR</code>, so <code>AD = QR</code> too.</p>
+
+      <h2>One straight line</h2>
+      <p>Because <code>AD = BC</code>, the two lengths <code>PQ</code> and <code>QR</code> are equal. The turns point them along the same <a class="wiki-term" data-wiki="Collinearity" href="https://en.wikipedia.org/wiki/Collinearity" target="_blank" rel="noopener">straight line</a>, so P, Q and R are one line; S, where AD and BC meet, lies on that line as well. The logic test checks this, the three equilateral triangles and the length equations on thousands of dragged positions, and finds no exception.</p>
+
+      <h2>What the test also found</h2>
+      <p>The proof's middle step needs S on the arc of the circle away from the chord AB, which is where the starting picture puts it. If you drag S onto the arc between A and B, the triangles still have collinear tips, but triangle AQB is no longer equilateral and the triangles are no longer "away from AB": the drawing keeps the same turn, while the page's wording describes only the starting arc. The applet itself allows both arcs; the test records both rather than hiding the difference.</p>
+
+      <p class="tip">Try "Hint" to see the two sides of triangle AQB that carry B to Q, then drag S around the whole circle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EquilicQuad.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="equilic-quad-core.js"></script>
+<script src="equilic-quad.js"></script>
+</body>
+</html>
