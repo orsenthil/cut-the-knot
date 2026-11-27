@@ -699,6 +699,16 @@ const CORE_GLOBALS = {
   "eppstein/eppstein-core.js": ["EppsteinCore"],
   "equal-angles-in-crossed-circles/equal-angles-in-crossed-circles-core.js": ["EqualAnglesInCrossedCirclesCore"],
   "equal-angles-in-crossing-circles/equal-angles-in-crossing-circles-core.js": ["EqualAnglesInCrossingCirclesCore"],
+  "equal-angles-in-two-circles/equal-angles-in-two-circles-core.js": ["EqualAnglesInTwoCirclesCore"],
+  "equal-areas-imo-2007/equal-areas-imo-2007-core.js": ["EqualAreas2007Core"],
+  "equal-areas-in-equilateral-triangle/equal-areas-in-equilateral-triangle-core.js": ["EqualAreasInEquilateralTriangleCore"],
+  "equal-circles-orthocenter/equal-circles-orthocenter-core.js": ["EqualCirclesOrthocenterCore"],
+  "equiangular-poly/equiangular-poly-core.js": ["EquiangularPolyCore"],
+  "equichordal/equichordal-core.js": ["EquichordalCore"],
+  "equilateral-345/equilateral-345-core.js": ["Equilateral345Core"],
+  "equilateral-on-lines/equilateral-on-lines-core.js": ["EquilateralOnLinesCore"],
+  "equilateral-triangles/equilateral-triangles-core.js": ["EquilateralTrianglesCore"],
+  "equilic-quad/equilic-quad-core.js": ["EquilicQuadCore"],
 };
 
 const games = [];

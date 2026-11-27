@@ -1168,6 +1168,16 @@ const GAMES = {
   "eppstein": (page) => dragFirstHandle(page),
   "equal-angles-in-crossed-circles": (page) => dragFirstHandle(page),
   "equal-angles-in-crossing-circles": (page) => dragFirstHandle(page),
+  "equal-angles-in-two-circles": (page) => dragFirstHandle(page),
+  "equal-areas-imo-2007": (page) => dragFirstHandle(page),
+  "equal-areas-in-equilateral-triangle": (page) => dragFirstHandle(page),
+  "equal-circles-orthocenter": (page) => dragFirstHandle(page),
+  "equiangular-poly": (page) => dragFirstHandle(page),
+  "equichordal": (page) => dragFirstHandle(page),
+  "equilateral-345": (page) => dragFirstHandle(page),
+  "equilateral-on-lines": (page) => dragFirstHandle(page),
+  "equilateral-triangles": (page) => dragFirstHandle(page),
+  "equilic-quad": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

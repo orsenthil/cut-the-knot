@@ -2305,6 +2305,16 @@ check("envelopes-in-ellipse: focal chords touch one confocal ellipse", read["env
 check("eppstein: opposite tangency chords concur at the weighted centre", read.eppstein?.savedReadable === true && read.eppstein.reading.concurrence.concurrent === true && read.eppstein.reading.collinearity.collinear === true);
 check("equal-angles-in-crossed-circles: the two angle pairs are equal", read["equal-angles-in-crossed-circles"]?.core.angles.bothEqual === true && read["equal-angles-in-crossed-circles"].core.drawing.drawn === true);
 check("equal-angles-in-crossing-circles: two equal-angle lines cut equal chords", read["equal-angles-in-crossing-circles"]?.valid === true && read["equal-angles-in-crossing-circles"].chords.equal === true && read["equal-angles-in-crossing-circles"].anglesAtP.equalLeans === true);
+check("equal-angles-in-two-circles: tangent chord gives both angle equalities", read["equal-angles-in-two-circles"]?.core.drawing.pictured === true && read["equal-angles-in-two-circles"].equalitiesHold === true && read["equal-angles-in-two-circles"].core.angles.bothEqual === true);
+check("equal-areas-imo-2007: the two shaded triangles have the same area", read["equal-areas-imo-2007"]?.degenerate === false && read["equal-areas-imo-2007"].reading.areas.equal === true && read["equal-areas-imo-2007"].reading.closedForm.matches === true && read["equal-areas-imo-2007"].result === "done");
+check("equal-areas-in-equilateral-triangle: the two pedal area triples agree", read["equal-areas-in-equilateral-triangle"]?.reconstruction.equilateral === true && read["equal-areas-in-equilateral-triangle"].reading.MInside === true && read["equal-areas-in-equilateral-triangle"].reading.equality.greenEqualsPurple === true);
+check("equal-circles-orthocenter: four circles have one radius and diameter", read["equal-circles-orthocenter"]?.valid === true && read["equal-circles-orthocenter"].savedMatchesCore === true && read["equal-circles-orthocenter"].reading.equalRadii === true && read["equal-circles-orthocenter"].reading.equalDiameters === true && read["equal-circles-orthocenter"].reading.allHold === true);
+check("equiangular-poly: signed distances to the side lines sum to the offsets", read["equiangular-poly"]?.reading.signedSum === read["equiangular-poly"].offsetsSum && read["equiangular-poly"].reading.convex === true && read["equiangular-poly"].reading.equiangular === true);
+check("equichordal: odd knobs keep the chord and radius sum constant", read.equichordal?.valid === true && read.equichordal.radiusSum.bothOdd === true && read.equichordal.radiusSum.sumIsConstant === true && read.equichordal.chord === 184);
+check("equilateral-345: the dragged corner is not at the proof angle", read["equilateral-345"]?.valid === true && read["equilateral-345"].reading.hexagon.atProofAngle === false && read["equilateral-345"].reading.are3_4_5 === false);
+check("equilateral-on-lines: two mirror solutions keep their saved corners", read["equilateral-on-lines"]?.saved.solutions.length === 2 && read["equilateral-on-lines"].finishedFromSave === false && typeof read["equilateral-on-lines"].reading.placement === "object");
+check("equilateral-triangles: three rotations give an equilateral midpoint triangle", read["equilateral-triangles"]?.valid === true && read["equilateral-triangles"].midpointTriangle.equilateral === true && read["equilateral-triangles"].complexCriterion.holds === true);
+check("equilic-quad: P, Q, R and S are collinear with the three kites equilateral", Object.values(read["equilic-quad"]?.claims ?? {}).every(Boolean) === true && read["equilic-quad"].savedMatchesCore === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2491,6 +2501,35 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("equal-angles-in-crossed-circles/outside_lens: the identity fails off the lens", outside.comparison.openingEqual === true && outside.comparison.outsideEqual === false && outside.comparison.outsideNested === false);
   const shu = runGameLogic("equal-angles-in-crossing-circles", "shutrick_identity", {});
   check("equal-angles-in-crossing-circles/shutrick_identity: chord lengths survive a sweep", shu.base.valid === true && shu.sweep.allHold === true && shu.sweep.worst.chordDifference === 0);
+}
+
+// The batch-23 tutor actions all run their real cores, not just their saved positions.
+{
+  const ea = runGameLogic("equal-angles-in-two-circles", "equal_angles", {});
+  const out = runGameLogic("equal-angles-in-two-circles", "outside_circle", {});
+  check("equal-angles-in-two-circles/equal_angles: tangent chord gives both equalities", ea.angles.bothEqual === true && Object.values(ea.proof.angleSums).every((s) => s.is180) === true && out.comparison.outsideEqual === false);
+  const vc = runGameLogic("equal-areas-imo-2007", "verify_claim", { samples: 8 });
+  check("equal-areas-imo-2007/verify_claim: equal areas survive a C sweep", vc.sweep.holds === true && vc.sweep.drawn === 8 && vc.sweep.worstRelativeGap < 1e-8);
+  const sm = runGameLogic("equal-areas-in-equilateral-triangle", "slide_m", {});
+  check("equal-areas-in-equilateral-triangle/slide_m: area equality holds at every M", sm.invariants.equalAtEveryPosition === true && sm.invariants.positionsChecked === 6);
+  const anti = runGameLogic("equal-circles-orthocenter", "anticomplementary", {});
+  check("equal-circles-orthocenter/anticomplementary: the outer triangle has area ratio four", anti.allHold === true && anti.areaRatio === 4 && anti.checks.HIsCircumcenterOfOuter === true);
+  const ds = runGameLogic("equiangular-poly", "distance_sum", {});
+  const cx = runGameLogic("equiangular-poly", "converse_counterexamples", {});
+  check("equiangular-poly/distance_sum: signed totals stay fixed, ordinary totals do not", ds.signedSumIsOffsetsSum === true && ds.unsignedMatchesWhenInside === true && cx.converseBeyondTriangles === true);
+  const rs = runGameLogic("equichordal", "radius_sum", {});
+  check("equichordal/radius_sum: odd power and frequency give a constant sum", rs.bothOdd === true && rs.sumIsConstant === true && rs.sumRange.spread === 0);
+  const hex = runGameLogic("equilateral-345", "hexagon_proof", { side: 200, angle: 60 });
+  const app = runGameLogic("equilateral-345", "applet_scale_constant", { side: 200 });
+  check("equilateral-345/hexagon_proof: six pieces make twice the triangle", hex.hexagon.areaRatio === 2 && hex.claim.sumsAgree === true && app.sideRelativeError > 0);
+  const rot = runGameLogic("equilateral-on-lines", "rotation_solution", { lines: [120, 170, 225], C: [205, 120], angle: 0 });
+  check("equilateral-on-lines/rotation_solution: both mirror placements are equilateral", rot.solutions.length === 2 && rot.solutions.every((s) => s.equilateral === true) === true);
+  const mt = runGameLogic("equilateral-triangles", "midpoint_triangle", {});
+  const cri = runGameLogic("equilateral-triangles", "cube_root_identity", {});
+  check("equilateral-triangles/midpoint_triangle: on and off circle the midpoint triangle stays equilateral", mt.midpointTriangle.equilateral === true && cri.onCircle.held === cri.onCircle.of && cri.offCircle.held === cri.offCircle.of);
+  const col = runGameLogic("equilic-quad", "collinearity_and_triangles", {});
+  const arc = runGameLogic("equilic-quad", "arc_sweep", {});
+  check("equilic-quad/collinearity and arcs: P,Q,R,S always line up, AQB only on one arc", col.line.holds === true && arc.collinearEverywhere === true && arc.aqbOnOppositeArc.allEquilateral === true && arc.aqbOnSmallArc.noneEquilateral === true);
 }
 
 // A game with no reader, and a position that makes no sense.
