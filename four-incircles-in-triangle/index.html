@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Four Incircles in a Triangle &mdash; coolmaths</title>
+<meta name="description" content="Four circles sit in an equilateral triangle. Can you slide a point until all four are the same size, and find how long the middle triangle's side is compared with the big one?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/four-incircles-in-triangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Four Incircles in a Triangle">
+<meta property="og:description" content="Four circles sit in an equilateral triangle. Can you slide a point until all four are the same size, and find how long the middle triangle's side is compared with the big one?">
+<meta property="og:url" content="https://coolmaths.ai/four-incircles-in-triangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .track { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .outer-triangle { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .corner-circle { fill: var(--accent); fill-opacity: 0.14; stroke: var(--accent); stroke-width: 2.5; }
+  #board .middle-circle { fill: var(--good); fill-opacity: 0.16; stroke: var(--good); stroke-width: 2.5; }
+  #board .cevian { stroke: var(--ink); stroke-width: 1.5; stroke-opacity: 0.65; }
+  #board .extension { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 4; }
+  #board .parallel { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 6 4; }
+  #board .vertex-dot { fill: var(--ink); }
+  #board .inner-dot { fill: var(--accent); }
+  #board .centre-dot { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label { fill: var(--text); font-size: 12px; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="four-incircles-in-triangle" data-kind="demo">
+<main id="main">
+  <h1>Four Incircles in a Triangle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Four circles sit inside an equilateral triangle, and the challenge is to slide one point until all four circles are the same size.<br>
+    <strong>How to play:</strong> Drag the blue point along the curved path, or focus it and use the arrow keys. Turn left and Turn right take smaller steps; Show names labels the points.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="An equilateral triangle with a movable point on the arc through A and B, three corner circles and one circle in the middle"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="leftBtn" type="button" aria-label="Turn point T one step to the left">Turn left</button>
+    <button id="rightBtn" type="button" aria-label="Turn point T one step to the right">Turn right</button>
+    <label class="option" for="namesChk"><input id="namesChk" type="checkbox"> Show names</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Put point T back where it started">New diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Slide the point and four circles change together. At one position all four have the same radius. This is a <a class="wiki-term" data-wiki="Sangaku" href="https://en.wikipedia.org/wiki/Sangaku" target="_blank" rel="noopener">sangaku</a>, a puzzle from a Japanese temple tablet. The applet's own page is <a href="https://www.cut-the-knot.org/Curriculum/Geometry/FourIncirclesInTriangle.shtml" target="_blank" rel="noopener">here</a>; the <a href="https://www.cut-the-knot.org/triangle/FourIncirclesInTriangle.shtml" target="_blank" rel="noopener">proof page</a> no longer embeds the Java applet, but its claim is the one tested below.</p>
+
+      <h2>The sliding point</h2>
+      <p>The point <code>T</code> moves on the circle through <code>A</code> and <code>B</code>. On the arc between them, the angle <code>TAB</code> is the angle that the three lines through the corners make with the sides. The applet rotates each side ray by that angle and stretches it, so the three new points form an <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangle</a> <code>A'B'C'</code> for every position of <code>T</code>. The logic test checks that the three sides of <code>A'B'C'</code> agree at more than two thousand positions on five different triangles.</p>
+
+      <h2>Four equal circles</h2>
+      <p>Each corner circle is the <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> of a <code>120&deg;</code> corner triangle, and the fourth circle is the incircle of <code>A'B'C'</code>. An equilateral triangle of side <code>l</code> has <a class="wiki-term" data-wiki="Inradius" href="https://en.wikipedia.org/wiki/Inradius" target="_blank" rel="noopener">inradius</a> <code>r = l&radic;3/6</code>, so <code>l = 2&radic;3 r</code>. The three corner incircles always have the same radius; the puzzle is to make that radius equal to <code>r</code> too. At that moment the three incenter points form an equilateral triangle of side <code>4r</code>.</p>
+
+      <h2>The answer, and a misprint</h2>
+      <p>Write <code>x = AB</code> and <code>l = A'B'</code>. Adding the four triangle areas gives <code>3xr + &radic;3 r&sup2; + (3/2)lr = x&sup2;&radic;3/4</code>; substituting <code>r = l&radic;3/6</code> leaves <code>6xl + 4l&sup2; - 3x&sup2; = 0</code>, whose positive root is</p>
+      <blockquote><code>A'B' = AB (&radic;21 - 3)/4 &asymp; 0.3956 AB.</code></blockquote>
+      <p>The proof page states exactly this. The applet's own page prints <code>AB&radic;3/(3 + &radic;21) &asymp; 0.2284 AB</code> near the top, which is too small by a factor of <code>&radic;3</code>; George Zettler's proof further down that same page gives the correct root. The logic test measures the configuration at the match and confirms <code>0.3956439...</code>, so the printed first line is a misprint and the two proofs are right.</p>
+
+      <h2>What the applet leaves out</h2>
+      <p>When the radii match, the applet draws lines parallel to the three corner lines on the far side of the middle circle; each one touches the other three circles. It calls the picture finished whenever the two radii differ by less than half a pixel, so a small range of positions counts, not one exact point. The applet starts <code>T</code> at a random angle just off the sliding circle and snaps it there on the first drag; this port starts it on the sliding arc at <code>70&deg;</code>, the middle of that random range. It also adds Turn buttons, a dashed guide for the arc, and holds the last good picture when <code>T</code> leaves the arc; the circles, lines and the matching test themselves follow the applet.</p>
+
+      <p class="tip">Put <code>T</code> at the top of the arc, then press Turn left a few times and watch the three corner circles shrink as the middle one grows.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FourIncirclesInTriangle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="four-incircles-in-triangle-core.js"></script>
+<script src="four-incircles-in-triangle.js"></script>
+</body>
+</html>
