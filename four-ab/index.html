@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Four AB &mdash; coolmaths</title>
+<meta name="description" content="A circle is drawn around a point P in the first quadrant. Add the pieces in quadrants 1 and 3, subtract those in 2 and 4 — what do you get?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/four-ab/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Four AB">
+<meta property="og:description" content="A circle is drawn around a point P in the first quadrant. Add the pieces in quadrants 1 and 3, subtract those in 2 and 4 — what do you get?">
+<meta property="og:url" content="https://coolmaths.ai/four-ab/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 40rem; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .quad-1, #board .quad-3 { fill: var(--accent); fill-opacity: 0.24; }
+  #board .quad-2, #board .quad-4 { fill: var(--bad); fill-opacity: 0.16; }
+  #board .circle-outline { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .axis { stroke: var(--muted); stroke-width: 2; }
+  #board .extra { stroke: var(--good); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .axis-label, #board .area-label, #board .point-label {
+    fill: var(--text); font-size: 19px; pointer-events: none;
+  }
+  #board .area-label { font-weight: 600; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls .option {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.95rem; min-width: 0; white-space: normal;
+  }
+  .controls input[type="range"] { width: min(9rem, 100%); accent-color: var(--accent); }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="four-ab" data-kind="demo">
+<main id="main">
+  <h1>Four AB</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> A circle sits around a dot in the corner where the two lines cross, and those lines cut it into four pieces.<br>
+    <strong>How to play:</strong> Drag the yellow dot to move the circle, slide the bar to change its size, and tick the box to see two extra lines.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 412" role="group"
+         aria-label="A circle around the draggable point P, split by the x and y axes into four coloured pieces labelled S1 to S4, with optional lines at x equals 2a and y equals 2b.">
+      <defs>
+        <clipPath id="quad-1"><rect x="320" y="0" width="320" height="206"/></clipPath>
+        <clipPath id="quad-2"><rect x="0" y="0" width="320" height="206"/></clipPath>
+        <clipPath id="quad-3"><rect x="0" y="206" width="320" height="206"/></clipPath>
+        <clipPath id="quad-4"><rect x="320" y="206" width="320" height="206"/></clipPath>
+      </defs>
+    </svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the circle to its starting place and size">Reset</button>
+    <label class="option" for="radiusSlider">Radius
+      <input id="radiusSlider" type="range" min="0" max="100" step="1" value="50"
+             aria-label="Circle radius as a percent of the applet's full range">
+      <output id="radiusOut" for="radiusSlider">50</output>
+    </label>
+    <label class="option" for="extraChk">
+      <input id="extraChk" type="checkbox" aria-label="Show or hide the extra lines x equals 2a and y equals 2b">
+      Show extra
+    </label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The two axes cut the circle into four pieces. Add the pieces in quadrants 1 and 3, subtract those in 2 and 4, and the answer turns out not to depend on the size of the circle &mdash; as long as the circle is big enough.</p>
+
+      <h2>The four pieces</h2>
+      <p>Let the centre be <code>P = (a, b)</code> with <code>a &gt; 0</code> and <code>b &gt; 0</code>, and let the radius be <code>r</code>. The <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> of the circle in each of the four <a class="wiki-term" data-wiki="Quadrant_(geometry)" href="https://en.wikipedia.org/wiki/Quadrant_(geometry)" target="_blank" rel="noopener">quadrants</a> is <code>S1</code>, <code>S2</code>, <code>S3</code>, <code>S4</code>. The problem asks for</p>
+      <blockquote><code>S1 &minus; S2 + S3 &minus; S4 = 4ab &nbsp; when &nbsp; r &gt; &radic;(a&sup2; + b&sup2;).</code></blockquote>
+      <p>That square-root condition says the circle swallows a whole rectangle with corners <code>(0,0)</code> and <code>(2a,2b)</code>; its farthest corners are each <code>&radic;(a&sup2;+b&sup2;)</code> from P.</p>
+
+      <h2>Why the pieces cancel</h2>
+      <p>Draw the two extra lines <code>x = 2a</code> and <code>y = 2b</code> (the tick box in the picture). Together with the axes they split the disk into a central rectangle <code>2a &times; 2b</code> and eight curved bits. The disk is symmetric about its centre <code>P = (a,b)</code>, so reflection in <code>x = a</code> or <code>y = b</code> pairs every curved bit with an equal one in a quadrant of the opposite sign. By <a class="wiki-term" data-wiki="Symmetry" href="https://en.wikipedia.org/wiki/Symmetry" target="_blank" rel="noopener">symmetry</a> all those pairs cancel in the alternating sum. Only the middle rectangle is left, with area <code>2a &times; 2b = 4ab</code>.</p>
+      <p>The logic test checked this at every small whole-number pair <code>(a,b)</code> and thousands of radii: equality holds exactly when <code>r &ge; &radic;(a&sup2;+b&sup2;)</code>. Slide the radius below that mark and the displayed sum falls short of <code>4ab</code>, as it should.</p>
+
+      <h2>The same answer in one integral</h2>
+      <p>The alternating sum is the <a class="wiki-term" data-wiki="Integral" href="https://en.wikipedia.org/wiki/Integral" target="_blank" rel="noopener">integral</a> of <code>sign(x)sign(y)</code> over the disk. Slice the disk into horizontal chords of half-height <code>&radic;(r&sup2; &minus; v&sup2;)</code>. Each chord contributes <code>2 min(a, &radic;(r&sup2; &minus; v&sup2;)) sign(v + b)</code>, so</p>
+      <blockquote><code>S1 &minus; S2 + S3 &minus; S4 = 4 &int;<sub>0</sub><sup>b</sup> min(a, &radic;(r&sup2; &minus; t&sup2;)) dt.</code></blockquote>
+      <p>The integrand switches from <code>a</code> to the circle's half-height at <code>t = &radic;(r&sup2; &minus; a&sup2;)</code>. If the radius is large enough, that switch happens past <code>t = b</code>, so the integrand is simply <code>a</code> all the way and the integral is <code>4ab</code>. This is the same cancellation in algebraic clothes.</p>
+
+      <h2>About the original applet</h2>
+      <p>The cut-the-knot page still embeds the Java applet. Its canvas put P at <code>(w/6, h/8)</code> from the origin and chose an initial radius <code>&radic;(a&sup2;+b&sup2;) + floor(min(a,b)/10)</code>; its scroll bar ran from 0 to 100 in practice (declared maximum 105 with extent 5) and set the radius to <code>2 &times; step &times; value/100</code>. Here that scroll bar is a percent slider, the starting values are the same, and P is kept in the first quadrant as the puzzle asks. The applet's internal "about" text was a leftover naming a different proof (Pythagorean Theorem, Proof #36) and changes nothing, so it is not reproduced. The live HTML states the radius condition with a square root; a plain-text copy of the page can drop the radical, so the logic test uses the square-root version.</p>
+
+      <p class="tip">Tick <strong>Show extra</strong>, then slide the radius down until the sum stops matching <code>4ab</code>. Push it back up past <code>&radic;(a&sup2;+b&sup2;)</code> and watch the answer snap to <code>4ab</code> again.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FourAB.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="four-ab-core.js"></script>
+<script src="four-ab.js"></script>
+</body>
+</html>
