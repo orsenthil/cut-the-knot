@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cross Points in a Polygon &mdash; coolmaths</title>
+<meta name="description" content="Drag a point P around an odd-sided polygon: why is the number of lines that cross the opposite sides always odd, and why does the product of the signed fractions equal 1?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/ceva-in-ngon/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cross Points in a Polygon">
+<meta property="og:description" content="Drag a point P around an odd-sided polygon: why is the number of lines that cross the opposite sides always odd, and why does the product of the signed fractions equal 1?">
+<meta property="og:url" content="https://coolmaths.ai/ceva-in-ngon/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .polygon-edge {
+    fill: var(--accent); fill-opacity: 0.08;
+    stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round;
+  }
+  #board .cevian { fill: none; stroke: var(--muted); stroke-width: 1.8; stroke-dasharray: 6 5; }
+  #board .cross-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .vlabel, #board .plabel {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .plabel { fill: var(--good); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls button { min-height: 2.5rem; }
+  .n-readout { white-space: nowrap; line-height: 2.5rem; }
+  #nOut { font-variant-numeric: tabular-nums; min-width: 1.5rem; text-align: center; }
+</style>
+</head>
+<body data-game="ceva-in-ngon" data-kind="demo">
+<main id="main">
+  <h1>Cross Points in a Polygon</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore: drag a point P and the corners of an odd-sided shape, and watch where lines from P cross the opposite sides.<br>
+    <strong>How to play:</strong> Drag P or a corner with a mouse or finger, or focus one and use the arrow keys. Change the number of sides with the buttons, then press Check the claims.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 360" role="group"
+         aria-label="An odd-sided polygon, a point P, the lines through P and each vertex, and the cross points lying on the opposite sides"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="nMinus" type="button" aria-label="Use a polygon with two fewer sides">&minus; 2 sides</button>
+    <span class="n-readout">Sides: <output id="nOut" for="nMinus nPlus">5</output></span>
+    <button id="nPlus" type="button" aria-label="Use a polygon with two more sides">+ 2 sides</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Make a new random picture with the same number of sides">New picture</button>
+    <button id="checkBtn" type="button" aria-label="Check the odd count and the product for this picture">Check the claims</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Choose a shape with an odd number of corners and put a point P anywhere. Join P to every corner. Some of those lines cross the side opposite their own corner: the little orange dots. However you drag P or the corners, the number of dots on the sides is odd, and a product made from the pieces of the sides is exactly 1.</p>
+
+      <h2>Which side is opposite?</h2>
+      <p>Number the corners A<sub>0</sub>, A<sub>1</sub>, and so on. With n corners, the side opposite A<sub>m</sub> runs from corner A<sub>k</sub> to corner A<sub>k+1</sub>, where <code>k = m + floor(n/2)</code>, counted around the shape. Because n is odd, this pairs things up neatly: if A<sub>k</sub>A<sub>k+1</sub> is opposite A<sub>m</sub>, then A<sub>m</sub>A<sub>m+1</sub> is opposite A<sub>k+1</sub>. The logic test checks this for every odd n from 3 to 21. This is the <a class="wiki-term" data-wiki="Polygon" href="https://en.wikipedia.org/wiki/Polygon" target="_blank" rel="noopener">polygon</a> version of the idea behind <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a>.</p>
+
+      <h2>Why an odd number of dots</h2>
+      <p>Move P slowly. A dot leaves its side only by passing an end of that side; that happens exactly when P crosses the diagonal joining the two corners. At that instant two dots change at once — one leaves a side while another arrives, or both leave together. So the count changes by two, and its <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a> never changes. Far away from the shape there is just one dot, so the count is always odd. The logic test confirms this in thousands of pictures for every odd n from 3 to 21; the count is never even.</p>
+      <p>The article also says that P outside the shape always gives one dot. That is true when the shape is convex. For a shape with a dent, an outside P can have 3, 5 or more dots — still odd. This page reports that difference plainly instead of hiding it.</p>
+
+      <h2>Why the product is 1</h2>
+      <p>For the side A<sub>k</sub>A<sub>k+1</sub> and its dot B, measure the two pieces along the direction of the side: <code>A<sub>k</sub>B / B A<sub>k+1</sub></code>. Count a piece as negative when B is outside the side. Comparing <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">areas</a> of triangles with the same altitude gives</p>
+      <blockquote><code>A<sub>k</sub>B / B A<sub>k+1</sub> = (PA<sub>k</sub> · sin A<sub>k</sub>PB) / (PA<sub>k+1</sub> · sin B P A<sub>k+1</sub>).</code></blockquote>
+      <p>Multiply all n fractions. Every length and every sine appears once on top and once below, because the opposite-side pairing works both ways. Everything cancels and the product is 1. Negative fractions come in pairs, which is another way to see the odd count. The logic test compares these fractions with the applet's own line intersection and with an independent area formula on thousands of pictures; the product stays 1 to within a billionth.</p>
+
+      <h2>When a dot disappears</h2>
+      <p>If P lines up exactly with a corner and the opposite side, the two lines are parallel and have no meeting point. The original applet gets a NaN there; this page simply stops showing that dot and asks you to move a point. The article excludes such positions, and so do the claims above.</p>
+
+      <p class="tip">Try 21 sides, put P near one corner, and then drag it right through the middle: watch two dots appear or disappear at a time.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CevaInNgon.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="ceva-in-ngon-core.js"></script>
+<script src="ceva-in-ngon.js"></script>
+</body>
+</html>
