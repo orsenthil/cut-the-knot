@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gergonne Medial &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle: do the perpendiculars from the middles of its sides to the touching triangle always meet at one point, and where is that point?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/gergonne-medial/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Gergonne Medial">
+<meta property="og:description" content="Drag the corners of a triangle: do the perpendiculars from the middles of its sides to the touching triangle always meet at one point, and where is that point?">
+<meta property="og:url" content="https://coolmaths.ai/gergonne-medial/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .incircle { fill: var(--good); fill-opacity: 0.09; stroke: var(--good); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  #board .contact { fill: none; stroke: var(--accent); stroke-width: 2.4; stroke-linejoin: round; }
+  #board .medial { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .perpendicular { fill: none; stroke: var(--bad); stroke-width: 2.6; }
+  #board .concurrency { fill: none; stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 7 5; }
+  #board .foot-dot { fill: var(--bad); }
+  #board .touch-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .incenter-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .center-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  #board .right-mark { fill: none; stroke: var(--bad); stroke-width: 1.6; }
+  #board .hint-line { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 3 4; }
+  #board .hint-arc { fill: none; stroke: var(--highlight); stroke-width: 2.2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 0.95rem;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .glabel.small { font-size: 0.8rem; }
+  #board .touch-label { fill: var(--accent); }
+  #board .foot-label { fill: var(--bad); }
+  #board .center-label { fill: var(--highlight); }
+  #board .incenter-label { fill: var(--accent); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="gergonne-medial" data-kind="demo">
+<main id="main">
+  <h1>Gergonne Medial</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move a triangle and watch three lines drawn from the middles of its sides always meet at one spot.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a corner and use the arrow keys. Press Show hint to see why, and Check the claim to test your triangle.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 360" role="group"
+         aria-label="A triangle with its incircle, the touching triangle, the medial triangle and three perpendiculars meeting at one point"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset triangle</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Show or hide the names of the points">Hide names</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show or hide the proof hint">Show hint</button>
+    <button id="checkBtn" type="button" aria-label="Check that all three perpendiculars meet at one point">Check the claim</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The original page states: <em>&ldquo;Then the perpendiculars from the midpoints M<sub>a</sub>, M<sub>b</sub>, M<sub>c</sub> onto the opposite sides of A'B'C' are concurrent.&rdquo;</em> Drag the corners and watch the three red lines. They keep meeting at the same magenta point, however the triangle is stretched.</p>
+
+      <h2>Two triangles inside one</h2>
+      <p>Join the middles of the sides and you get the <a class="wiki-term" data-wiki="Medial_triangle" href="https://en.wikipedia.org/wiki/Medial_triangle" target="_blank" rel="noopener">medial triangle</a> M<sub>a</sub>M<sub>b</sub>M<sub>c</sub>. Each of its sides is parallel to a side of ABC. The <a class="wiki-term" data-wiki="Incircle_and_excircles" href="https://en.wikipedia.org/wiki/Incircle_and_excircles" target="_blank" rel="noopener">incircle</a> of ABC touches BC, CA and AB at A', B', C'; those three points form the Gergonne (contact) triangle. The applet drops a perpendicular from each midpoint onto the far side of that contact triangle and calls the feet D, E and F. It crosses the first two perpendiculars to get T.</p>
+
+      <h2>Why the three lines meet</h2>
+      <p>The two tangents drawn from A to the incircle have the same length, so triangle AB'C' is isosceles. Its base B'C' is therefore perpendicular to the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> from A. The perpendicular from M<sub>a</sub> to B'C' is parallel to that bisector. Because the medial triangle is a half-turned, half-size copy of ABC under a <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothety</a>, that same line bisects the angle at M<sub>a</sub>. The other two perpendiculars bisect the angles at M<sub>b</sub> and M<sub>c</sub>, and three angle bisectors of one triangle always meet.</p>
+
+      <h2>Where T sits, and the way back</h2>
+      <p>The meeting point is the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> of the medial triangle: if I is the incenter of ABC, then <code>T = (A + B + C - I) / 2</code> (treating the corners as vectors). The logic test checks this identity, all three right angles and the concurrence on 19,000-plus triangles, including obtuse and very thin ones, and finds no counterexample. This also proves the reverse claim: by <a class="wiki-term" data-wiki="Maxwell%27s_theorem" href="https://en.wikipedia.org/wiki/Maxwell%27s_theorem" target="_blank" rel="noopener">Maxwell's theorem</a>, orthology is symmetric, so the perpendiculars from A', B', C' to the sides of the medial triangle meet at I. Here that is easy to see: each side of the medial triangle is parallel to a side of ABC, so those three lines are just the radii of the incircle.</p>
+      <p>The applet has only the two switches &ldquo;names&rdquo; and &ldquo;hint&rdquo; and no win or loss, so this page is a demonstration. Its Reset and Check the claim buttons only change what is shown; the geometry is the applet's own. The two copies of the applet on the original page differ only in whether names are shown at first; this page starts with them on, as in the explained copy.</p>
+
+      <p class="tip">Press Show hint, then make the triangle almost flat. The equal-angle marks still fit, until the triangle is too thin to measure.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/GergonneMedial.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="gergonne-medial-core.js"></script>
+<script src="gergonne-medial.js"></script>
+</body>
+</html>
