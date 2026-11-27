@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circle Through Incenter &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and watch the circle through two corners and its incenter. Does it always cut equal lengths off the two sides?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circle-through-incenter/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circle Through Incenter">
+<meta property="og:description" content="Drag the corners of a triangle and watch the circle through two corners and its incenter. Does it always cut equal lengths off the two sides?">
+<meta property="og:url" content="https://coolmaths.ai/circle-through-incenter/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 1rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .side-line { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 9 6; }
+  #board .bisector { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 6; }
+  #board .bisector.hinted { stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: none; }
+  #board .abi-circle { fill: var(--accent); fill-opacity: 0.09; stroke: var(--accent); stroke-width: 2.5; }
+  #board .equal-chord { fill: none; stroke: var(--good); stroke-width: 3.5; stroke-linecap: round; }
+  #board .tick { stroke: var(--good); stroke-width: 3; stroke-linecap: round; }
+  #board .cross-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .incenter-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .center-dot, #board .hint-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  #board .premise-arc { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .premise-arc.alt { stroke: var(--highlight); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 21px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .cross-label { fill: var(--good); }
+  #board .center-label, #board .hint-label { fill: var(--highlight); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  .controls { flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; }
+  .controls input { width: 1.15rem; height: 1.15rem; accent-color: var(--accent); }
+</style>
+</head>
+<body data-game="circle-through-incenter" data-kind="demo">
+<main id="main">
+  <h1>Circle Through Incenter</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners of a triangle and watch the circle through two corners and the middle of its angle bisectors.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a corner and use the arrow keys. Tick the boxes to show the clues and press Reset triangle to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 450" role="group"
+         aria-label="A triangle ABC, the circle through A, B and its incenter I, and the two points X and Y where that circle meets the sides"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset triangle</button>
+    <label><input id="showStatement" type="checkbox" checked aria-label="Show the two equal lengths AX and BY"> Show statement</label>
+    <label><input id="showPremises" type="checkbox" aria-label="Show the equal angle arcs that form the premises"> Show premises</label>
+    <label><input id="showHint" type="checkbox" aria-label="Show the point J, the circle's center and the bisector from C"> Show hint</label>
+    <label><input id="showNames" type="checkbox" checked aria-label="Show the point names A, B, C, X, Y, I, J and O"> Show names</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Draw a circle through two corners of a triangle and through the point where its three angle bisectors meet. Wherever you drag the corners, the circle slices equal lengths off the two sides that meet at the third corner.</p>
+
+      <h2>The circle and its middle</h2>
+      <p>The point <code>I</code> is the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a>: it is the same distance from all three sides, because it lies on every <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a>. The circle through <code>A</code>, <code>B</code> and <code>I</code> is just the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of those three points. Its centre <code>O</code> turns out to lie on the bisector from <code>C</code>: turn on Show hint to see that line pass straight through the middle of the circle. The logic test checks this on more than three hundred triangles, and it holds every time.</p>
+
+      <h2>Two equal cuts</h2>
+      <p>Let <code>X</code> be the second point where the circle meets the line <code>AC</code>, and <code>Y</code> the second point where it meets <code>BC</code>. The claim is <code>AX = BY</code>. It comes from an angle count: writing half the angles of the triangle as <code>α, β, γ</code>, the angle <code>AIB</code> is <code>90° + γ</code>, and the arcs cut off by the two chords then work out equal. Equal arcs give equal <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chords</a>, and so <code>AX = BY</code>. Show premises marks those angles; Show statement marks the two matching lengths. The test compares the applet's own circle-and-line calculation with the page's formula on every triangle and finds the lengths agree.</p>
+      <p>The applet's original problem puts <code>X</code> on <code>AC</code> and <code>Y</code> on <code>BC</code>. The later summary page swaps those two letters; the applet and the original problem agree with this page. The condition <code>AC ≠ BC</code> in the problem is a red herring: when the two sides are equal, <code>X</code> is simply <code>A</code> and <code>Y</code> is <code>B</code>, so both lengths are zero.</p>
+
+      <h2>More places the centre goes</h2>
+      <p>The centre of <code>(ABI)</code> also sits on the circumcircle of <code>ABC</code>, another fact the test confirms on every configuration. The circle itself is symmetric about the bisector from <code>C</code>, because its centre lies on that line. The second crossing <code>J</code> of the circle with the bisector is the point used in the angle count; Show hint draws it.</p>
+
+      <h2>A chord as long as AB</h2>
+      <p>There is a point <code>E</code> on the circle with <code>BE = AB</code>. For that point, <code>angle ABE = angle ACB</code>, and the chord <code>BE</code> is perpendicular to the line from <code>B</code> to the circumcenter of <code>ABC</code>. The applet mentions both properties on its summary page; the logic test checks them by constructing <code>E</code> and measuring, rather than taking the statement on trust.</p>
+
+      <p class="tip">Try a long, thin triangle: the circle may leave the picture, but the two coloured cuts stay the same length.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CircleThroughIncenter.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circle-through-incenter-core.js"></script>
+<script src="circle-through-incenter.js"></script>
+</body>
+</html>
