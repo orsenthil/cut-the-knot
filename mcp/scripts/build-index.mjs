@@ -629,6 +629,16 @@ const CORE_GLOBALS = {
   "circum-simson/circum-simson-core.js": ["CircumSimsonCore"],
   "circumsogonal/circumsogonal-core.js": ["CircumsogonalCore"],
   "cleaver/cleaver-core.js": ["CleaverCore"],
+  "clifford-theorem/clifford-theorem-core.js": ["CliffordTheoremCore"],
+  "close-to-hilbert/close-to-hilbert-core.js": ["CloseToHilbertCore"],
+  "coaxal-circles/coaxal-circles-core.js": ["CoaxalCirclesCore"],
+  "common-tangent-sangaku/common-tangent-sangaku-core.js": ["CommonTangentSangakuCore"],
+  "concurrency/concurrency-core.js": ["ConcurrencyCore"],
+  "conditional-probability/conditional-probability-core.js": ["ConditionalProbabilityCore"],
+  "conic-sections/conic-sections-core.js": ["ConicSectionsCore"],
+  "conjugality/conjugality-core.js": ["ConjugalityCore"],
+  "conjugate-diameters/conjugate-diameters-core.js": ["ConjugateDiametersCore"],
+  "connes/connes-core.js": ["ConnesCore"],
 };
 
 const games = [];

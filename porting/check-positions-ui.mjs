@@ -1092,6 +1092,16 @@ const GAMES = {
   "circum-simson": (page) => dragFirstHandle(page),
   "circumsogonal": (page) => dragFirstHandle(page),
   "cleaver": (page) => dragFirstHandle(page),
+  "clifford-theorem": (page) => dragFirstHandle(page),
+  "close-to-hilbert": (page) => dragFirstHandle(page),
+  "coaxal-circles": (page) => dragFirstHandle(page),
+  "common-tangent-sangaku": (page) => dragFirstHandle(page),
+  "concurrency": (page) => dragFirstHandle(page),
+  "conditional-probability": (page) => dragFirstHandle(page),
+  "conic-sections": (page) => dragFirstHandle(page),
+  "conjugality": (page) => dragFirstHandle(page),
+  "conjugate-diameters": (page) => dragFirstHandle(page),
+  "connes": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

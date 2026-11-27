@@ -2233,6 +2233,16 @@ check("circular-poggendorf: the bar's pieces fit the circle by construction", re
 check("circumcenter-on-angle-bisector: O lies on AI and midpoints IE", read["circumcenter-on-angle-bisector"]?.reading.allHold === true);
 check("circum-quadri: the contact chords meet at the diagonal intersection", read["circum-quadri"]?.reading.meeting.holds === true);
 check("circum-simson: antipodal Simson lines and the nine-point circle check out", read["circum-simson"]?.check_claims.allHold === true);
+check("clifford-theorem: the four-circle chain is closed", read["clifford-theorem"]?.ringClosed === true && typeof read["clifford-theorem"].cliffordPairs === "number");
+check("close-to-hilbert: the four-copy rule holds at the saved level", read["close-to-hilbert"]?.reading.fourCopyRuleHolds === true && read["close-to-hilbert"].reading.continuous === true);
+check("coaxal-circles: the two pencils are orthogonal throughout", read["coaxal-circles"]?.orthogonality.allOrthogonal === true && read["coaxal-circles"].orthogonality.orthogonalPairs === 90);
+check("common-tangent-sangaku: the saved tangency configuration is valid", read["common-tangent-sangaku"]?.valid === true);
+check("concurrency: the three isogonal triples concur and Ceva's product is one", read.concurrency?.ceva.productIsOne === true && read.concurrency.ceva.cyclicProduct === 1);
+check("conditional-probability: the saved rectangles are dependent but total probability holds", read["conditional-probability"]?.independence.holds === false && read["conditional-probability"].lawOfTotalProbability.equalsP_B === true);
+check("conic-sections: the saved plane makes an ellipse", read["conic-sections"]?.family === "ellipse" && read["conic-sections"].savedReadable === true);
+check("conjugality: the saved side points are not collinear", read.conjugality?.reading.ratioProduct !== -1);
+check("conjugate-diameters: the saved ellipse is readable", read["conjugate-diameters"]?.savedReadable === true);
+check("connes: the saved triangle is not equilateral", read.connes?.reading.equilateral === false);
 check("circumsogonal: each saved reflected line is the reflection of VP", read["circumsogonal"]?.reading.checks.eachLineIsTheReflectionOfVP === true);
 check("cleaver: the saved triangle's cleaver halves the perimeter", read["cleaver"]?.reading.checks.allHold === true);
 {
