@@ -2255,6 +2255,16 @@ check("cosine-law: CP is AB and both cuttings give the law of cosines", read["co
 check("cosine-law-unfolded: the median is an altitude and the law holds", read["cosine-law-unfolded"]?.copyOfAB.CPequalsAB === true && read["cosine-law-unfolded"].copyOfAB.perpendicularToAB === true && read["cosine-law-unfolded"].parallelogramCTPR.medianIsAltitude === true && read["cosine-law-unfolded"].lawOfCosines.holds === true);
 check("coupled-impossible-fork: two possible halves couple only at W = 500", read["coupled-impossible-fork"]?.beamsEqual === true && read["coupled-impossible-fork"].halfTurnCongruent === true && read["coupled-impossible-fork"].middleBeamGap === 0 && read["coupled-impossible-fork"].coupled === true);
 check("coxeter-tangent-circles: the second family shares the six touching points", read["coxeter-tangent-circles"]?.valid === true && read["coxeter-tangent-circles"].tangencyResiduals.every((r) => r === 0) && read["coxeter-tangent-circles"].beecroft.sharedTouchingPoints === true && read["coxeter-tangent-circles"].beecroft.mutuallyTangent === true);
+check("cross-circle: the new perpendiculars meet at the half-turn image of P", read["cross-circle"]?.concurrent === true && read["cross-circle"].concurrenceError < 1e-8 && read["cross-circle"].reading.concurrence.meetsAtHalfTurnImage === true);
+check("crowded-chair: both crossings lie on the square's circle with equal secants", read["crowded-chair"]?.claims.allHold === true && read["crowded-chair"].secants.appletLabels.equal === true && read["crowded-chair"].secants.pageLabels.equal === false && read["crowded-chair"].result === "done");
+check("cube7-cube8: rhombus 16 carries both cube readings", read["cube7-cube8"]?.coreReading.faceCount === 33 && read["cube7-cube8"].coreReading.sharedFace.agreesWithSecondReading === true && read["cube7-cube8"].savedMatchesCore === true);
+check("cube-illusion: one 18-stroke drawing fits both cube readings", read["cube-illusion"]?.heavyStrokes === 18 && read["cube-illusion"].bothReadingsFit === true && Math.abs(read["cube-illusion"].tiltRatio - 0.625) < 1e-12);
+check("cut-cube: the saved section is rebuilt from the cube and plane transforms", read["cut-cube"]?.reading.section.sides === 3 && read["cut-cube"].reading.savedSectionMatches === true && read["cut-cube"].reading.isIllustration === true);
+check("cut-cylinder: the saved tilted sheet gives an ellipse", read["cut-cylinder"]?.savedReadable === true && read["cut-cylinder"].family === "ellipse" && read["cut-cylinder"].visible === true && read["cut-cylinder"].semiAxes.v === 6);
+check("cw-crossed-lines: six radii close a convex constant-width curve", read["cw-crossed-lines"]?.core.distinctRadii === 6 && read["cw-crossed-lines"].core.closes === true && read["cw-crossed-lines"].core.convex === true && read["cw-crossed-lines"].core.constantWidth === true);
+check("cw-star: the five-point star keeps base and widened widths", read["cw-star"]?.star.odd === true && read["cw-star"].widths.base === 100 && read["cw-star"].widths.widened === 180 && read["cw-star"].freshStarComparison.countMatches === true);
+check("cyclic-hexagon: the two perpendicular products equal the side formula", read["cyclic-hexagon"]?.core.products.equal === true && read["cyclic-hexagon"].core.formulaFourHolds === true && read["cyclic-hexagon"].core.chordLemmaAllAgree === true && read["cyclic-hexagon"].allPointsOnCircle === true);
+check("cyclic-incenters: four incenters are concyclic and both identities hold", read["cyclic-incenters"]?.savedMatchesCore === true && Object.values(read["cyclic-incenters"].core.claims).every(Boolean) === true && read["cyclic-incenters"].core.power.holds === true && read["cyclic-incenters"].core.reciprocalRadii.holds === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2304,6 +2314,30 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
     A: { x: 242.131231, y: 96.027289 }, B: { x: 198.166808, y: 208.43536 }, C: { x: 302.724261, y: 147.285163 }, innerCircle: true,
   });
   check("coxeter-tangent-circles/compare_families: both families share the touching points", cx.contactLengths.unique === true && cx.inner.touchesAllThree === true && cx.outer.touchesAllThree === true && cx.inner.beecroft.sharedTouchingPoints === true);
+}
+
+// The batch-18 tutor actions all run their real cores, not just their saved positions.
+{
+  const cc = runGameLogic("cross-circle", "check_concurrence", {});
+  check("cross-circle/check_concurrence: the trace keeps the half-turn concurrence", cc.allHold === true && cc.trace.allConcurrent === true && cc.trace.drawnCount === 8);
+  const ch = runGameLogic("crowded-chair", "secants", { A: [198, 187], B: [91, 187], C: [251.5, 279.665] });
+  check("crowded-chair/secants: the applet labels satisfy the secant identity", ch.appletLabels.equal === true && ch.pageLabels.equal === false && ch.crossings.U.x !== undefined && ch.crossings.V.x !== undefined);
+  const c78 = runGameLogic("cube7-cube8", "picture", { angle: 45, n: 2, trans: 0 });
+  check("cube7-cube8/picture: 33 rhombi and a face shared by both readings", c78.faceCount === 33 && c78.sharedFace.agreesWithSecondReading === true && c78.slidersWereClamped === false);
+  const ci = runGameLogic("cube-illusion", "two_readings", { angle: 45, n: 6, m: 2 });
+  check("cube-illusion/two_readings: nine strokes per reading share one tilt", ci.heavyStrokes === 18 && ci.readings.small.closed === true && ci.readings.cut.closed === true && ci.tilt.agree === true);
+  const ccu = runGameLogic("cut-cube", "five_cuts", {});
+  check("cut-cube/five_cuts: no plane section has more than six sides", ccu.maxSides === 6 && ccu.overSix.length === 0 && ccu.cuts.length === 5);
+  const cyl = runGameLogic("cut-cylinder", "classify_section", { tilt: 30, offset: 2 });
+  check("cut-cylinder/classify_section: a tilted sheet cuts an ellipse", cyl.family === "ellipse" && cyl.visible === true && cyl.semiAxes.v === cyl.radius);
+  const w = runGameLogic("cw-crossed-lines", "width", {});
+  check("cw-crossed-lines/width: convex means constant width", w.convex === true && w.constantWidth === true && w.width.spread < 1e-8);
+  const star = runGameLogic("cw-star", "construction", { steps: 1, length: 100, addOn: 40 });
+  check("cw-star/construction: an odd star has width L and widened L + 2a", star.star.odd === true && star.widths.base === 100 && star.widths.widened === 180 && star.arcRadii.gap === 40);
+  const hex = runGameLogic("cyclic-hexagon", "perpendicular_products", {});
+  check("cyclic-hexagon/perpendicular_products: k and l products agree", hex.products.equal === true && hex.products.kProduct === 343000 && hex.chordLemma.allAgree === true);
+  const inc = runGameLogic("cyclic-incenters", "bradley_circle", {});
+  check("cyclic-incenters/bradley_circle: the four incenters lie on one circle", inc.circle.wResidual < 1e-8 && inc.centerFromLines.x === inc.circle.center.x && Object.values(inc.claims).every(Boolean) === true);
 }
 
 // A game with no reader, and a position that makes no sense.

@@ -649,6 +649,16 @@ const CORE_GLOBALS = {
   "cosine-law-unfolded/cosine-law-unfolded-core.js": ["CosineLawUnfoldedCore"],
   "coupled-impossible-fork/coupled-impossible-fork-core.js": ["CoupledImpossibleForkCore"],
   "coxeter-tangent-circles/coxeter-tangent-circles-core.js": ["CoxeterTangentCirclesCore"],
+  "cross-circle/cross-circle-core.js": ["CrossCircleCore"],
+  "crowded-chair/crowded-chair-core.js": ["CrowdedChairCore"],
+  "cube7-cube8/cube7-cube8-core.js": ["Cube7Cube8Core"],
+  "cube-illusion/cube-illusion-core.js": ["CubeIllusionCore"],
+  "cut-cube/cut-cube-core.js": ["CutCubeCore"],
+  "cut-cylinder/cut-cylinder-core.js": ["CutCylinderCore"],
+  "cw-crossed-lines/cw-crossed-lines-core.js": ["CwCrossedLinesCore"],
+  "cw-star/cw-star-core.js": ["CwStarCore"],
+  "cyclic-hexagon/cyclic-hexagon-core.js": ["CyclicHexagonCore"],
+  "cyclic-incenters/cyclic-incenters-core.js": ["CyclicIncentersCore"],
 };
 
 const games = [];

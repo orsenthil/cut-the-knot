@@ -1115,6 +1115,19 @@ const GAMES = {
   "cosine-law-unfolded": (page) => dragFirstHandle(page),
   "coupled-impossible-fork": (page) => dragFirstHandle(page),
   "coxeter-tangent-circles": (page) => dragFirstHandle(page),
+  "cross-circle": (page) => dragFirstHandle(page),
+  "crowded-chair": (page) => dragFirstHandle(page),
+  "cube7-cube8": async (page) => {
+    await page.locator("#board .view-handle").first().focus();
+    await page.keyboard.press("ArrowRight");
+  },
+  "cube-illusion": (page) => dragFirstHandle(page),
+  "cut-cube": (page) => dragFirstHandle(page),
+  "cut-cylinder": (page) => dragFirstHandle(page),
+  "cw-crossed-lines": (page) => dragFirstHandle(page),
+  "cw-star": (page) => dragFirstHandle(page),
+  "cyclic-hexagon": (page) => dragFirstHandle(page),
+  "cyclic-incenters": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },
