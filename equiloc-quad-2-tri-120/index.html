@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equiloc Quad 2Tri 120 &mdash; coolmaths</title>
+<meta name="description" content="Two equal-sided triangles are drawn on the diagonals of a four-sided shape. Drag the points: will their tips always meet on the blue line?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equiloc-quad-2-tri-120/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Equiloc Quad 2Tri 120">
+<meta property="og:description" content="Two equal-sided triangles are drawn on the diagonals of a four-sided shape. Drag the points: will their tips always meet on the blue line?">
+<meta property="og:url" content="https://coolmaths.ai/equiloc-quad-2-tri-120/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .guide-circle { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 5; }
+  #board .secant { stroke: var(--muted); stroke-width: 1.5; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .triangle-side { stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
+  #board .bisector { stroke: var(--good); stroke-width: 2.5; stroke-linecap: round; }
+  #board .tip-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .base-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1; }
+  #board .angle-mark { fill: none; stroke: var(--highlight); stroke-width: 3; }
+  #board .side-tick { stroke: var(--good); stroke-width: 2.5; stroke-linecap: round; }
+  #board .hint-side { stroke: var(--good); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .hint-angle { fill: none; stroke: var(--highlight); stroke-width: 3; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="equiloc-quad-2-tri-120" data-kind="demo">
+<main id="main">
+  <h1>Equiloc Quad 2Tri 120</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: two equal-sided triangles are built on a four-sided shape, and their two top tips land on one point on the blue line.<br>
+    <strong>How to play:</strong> Drag S around the circle, or C and D along the sloping lines. You can also focus a point and use the arrow keys; tick the boxes for names, side marks or a hint.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A four-sided shape with two equilateral triangles on its diagonals; their two tips meet on a blue line through S"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="construction" type="checkbox"> Side marks</label>
+    <label><input id="hint" type="checkbox"> Hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the diagram to its starting position">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The old page still shows the Java applet. It says that when two <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangles</a> are drawn on the diagonals AC and DB of a shape with AD = BC, their tips P and R coincide, and that this point lies on the bisector of the angle at S. Drag the handles and watch the blue line: on the starting arc the two tips stay stuck together.</p>
+
+      <h2>A shape made from one circle</h2>
+      <p>A, B and S sit on one <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>. C is placed on the line from B towards S and D on the line from A towards S, both the same distance from B and A, so <code>AD = BC</code>. This is what the page calls an antiequilic <a class="wiki-term" data-wiki="Quadrilateral" href="https://en.wikipedia.org/wiki/Quadrilateral" target="_blank" rel="noopener">quadrilateral</a>. The page's opening line calls AD and BC "equal opposite diagonals inclined at 120°"; in the quadrilateral ABCD they are opposite sides, and the 120° is the <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angle</a> <code>ASB</code> at the point where those sides meet. The drawn diagonals AC and DB are not equal and are not 120° apart in general; the logic test measures them over thousands of positions rather than repeating that wording.</p>
+
+      <h2>Why the two tips meet</h2>
+      <p>On the starting arc, <code>ASB = 120°</code>, so a <a class="wiki-term" data-wiki="Rotation_(geometry)" href="https://en.wikipedia.org/wiki/Rotation_(geometry)" target="_blank" rel="noopener">turn</a> of 60° carries the direction of SA exactly halfway to SB. Write S as the origin, let <code>u</code> point to A and <code>v</code> to B with <code>v = rot(-120°)u</code>, and let the equal distance be <code>t</code>. Then <code>A = a·u</code>, <code>B = b·v</code>, <code>C = (b-t)·v</code> and <code>D = (a-t)·u</code>. Turning C about A by +60° and D about B by -60° gives</p>
+      <blockquote><code>P = A + rot₆₀(C - A) = (a + b - t)·w</code><br><code>R = B + rot₋₆₀(D - B) = (a + b - t)·w</code></blockquote>
+      <p>where <code>w = rot₆₀(u)</code> is the direction of the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">bisector</a> of angle ASB. The two expressions are the same, so P and R coincide, and the common point is on that bisector. The logic test checks this identity, both equilateral triangles and the equal sides for every dragged position it visits.</p>
+
+      <h2>The blue line and the hint</h2>
+      <p>The blue segment joins S to T, the point of the circle directly below its centre. Triangle ABT is equilateral, so T is where the two tips meet when C is dragged onto B and D onto A (equal distance <code>t = 0</code>). Tick "Hint" to see the sides AT and BT and their angle marks; the applet draws the same lines. Tick "Side marks" for the matching one-, two- and three-stroke sides of the two triangles.</p>
+
+      <h2>Where the claim stops</h2>
+      <p>Drag S past A or B onto the other arc. The angle at S becomes 60°, the algebra above no longer applies, and the two tips normally drift apart; the applet itself hides R's name once they are more than ten units apart. The page's claim holds on the arc where the angle is 120°, which is where the applet starts. Our test checks both arcs and reports what actually happens instead of claiming the coincidence is universal.</p>
+
+      <p class="tip">Try the Hint, then drag S all the way round the circle and watch the status line say when the tips stop meeting.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EquilocQuad2Tri120.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="equiloc-quad-2-tri-120-core.js"></script>
+<script src="equiloc-quad-2-tri-120.js"></script>
+</body>
+</html>
