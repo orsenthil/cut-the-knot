@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Four 9-Point Circles &mdash; coolmaths</title>
+<meta name="description" content="Drag the four corners of a quadrilateral. Do its four nine-point circles and four pedal circles always pass through the same point?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/four-np-circles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Four 9-Point Circles">
+<meta property="og:description" content="Drag the four corners of a quadrilateral. Do its four nine-point circles and four pedal circles always pass through the same point?">
+<meta property="og:url" content="https://coolmaths.ai/four-np-circles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.5rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .quad-edge { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linejoin: round; }
+  #board .quad-diagonal { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 5 5; }
+  #board .nine-circle { fill: none; stroke: var(--bad); stroke-width: 2; }
+  #board .pedal-circle { fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-dasharray: 6 4; }
+  #board .center-edge { fill: none; stroke: var(--bad); stroke-width: 1.4; stroke-dasharray: 4 4; }
+  #board .nine-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1.2; }
+  #board .mid-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1; }
+  #board .foot-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1; }
+  #board .common-halo { fill: var(--highlight); stroke: none; }
+  #board .common-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .tri-edge { stroke: var(--good); stroke-width: 4; stroke-linecap: round; }
+  #board .perp-side { stroke: var(--muted); stroke-width: 1.2; }
+  #board .perp-vertex { stroke: var(--bad); stroke-width: 1.8; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 14px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .corner-label { fill: var(--ink); }
+  #board .center-label { fill: var(--bad); font-size: 11px; }
+  #board .common-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-width: 0; }
+</style>
+</head>
+<body data-game="four-np-circles" data-kind="demo">
+<main id="main">
+  <h1>Four 9-Point Circles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the four corners of a shape and watch the circles that follow them all meet at one spot.<br>
+    <strong>How to play:</strong> Drag a blue corner with a mouse or finger, or focus one and use the arrow keys. Tick the boxes to show the circles, their centres, the feet and the midpoints; press Highlight to step through the triangles or Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A quadrilateral with four draggable corners, its four nine-point circles, and the pedal circles of the four triangles"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="centersBox" type="checkbox" aria-label="Show the four nine-point centres"> Nine-point centres</label>
+    <label><input id="circlesBox" type="checkbox" aria-label="Show the four nine-point circles"> Nine-point circles</label>
+    <label><input id="midsBox" type="checkbox" aria-label="Show the six side and diagonal midpoints"> Midpoints</label>
+    <label><input id="centerQuadBox" type="checkbox" aria-label="Join the four nine-point centres"> Centre quadrilateral</label>
+    <label><input id="pedalBox" type="checkbox" aria-label="Show the four pedal circles"> Pedal circles</label>
+    <label><input id="pedalPointsBox" type="checkbox" aria-label="Show the feet of the perpendiculars"> Pedal points</label>
+    <button id="cycleBtn" type="button" aria-label="Highlight the next triangle and the lines from its leftover corner">Highlight</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Move the four corners back to their starting places">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Choose any four corners, and each group of three makes a triangle with its own nine-point circle. The fourth corner makes a circle too, from the feet of its perpendiculars to that triangle. The surprise is that all eight circles pass through one point, even when the shape is lopsided.</p>
+
+      <h2>Four nine-point circles</h2>
+      <p>For triangle BCD, let O be its <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>'s centre and H its <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a>. Its <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">nine-point circle</a> has centre N at the midpoint of OH and radius R/2. It passes through the three side midpoints, the three perpendicular feet and the three midpoints from the vertices to H. The other three corners give three more such circles. The applet builds N the same way and gets the radius as the mean of the distances from N to the three side midpoints, which is exactly R/2.</p>
+
+      <h2>Four pedal circles</h2>
+      <p>Drop perpendiculars from A onto the sides of triangle BCD. Their three feet lie on the <em>pedal circle</em> of A with respect to BCD; doing this for B, C and D gives four more circles. When the fourth corner happens to sit on the triangle's circumcircle the three feet line up: the circle flattens into a <a class="wiki-term" data-wiki="Simson_line" href="https://en.wikipedia.org/wiki/Simson_line" target="_blank" rel="noopener">Simson line</a>, and the drawing correctly shows no circle. Tick "Pedal points" to see the twelve feet.</p>
+
+      <h2>The concurrence claim, checked</h2>
+      <p>The original page claims: <q>for an arbitrary quadrilateral ABCD, the 9-point circles of triangles BCD, CDA, DAB, ABC and the pedal circles of the corresponding remaining point, are concurrent.</q> It first states the weaker result for a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>, where the pedal circles become four Simson lines. The logic test checks all 12,650 four-corner choices on a 5×5 grid (9,278 of them non-degenerate), 400 random quadrilaterals and 400 cyclic ones. The worst relative mismatch of a circle through the common point was about 2×10<sup>-14</sup> on the grid, so the claim holds as stated; on the cyclic samples the same point also lies on all four Simson lines.</p>
+
+      <h2>Applet quirks kept here</h2>
+      <p>All six checkboxes start unticked in the applet, and clicking its canvas cycles a green triangle highlight through BCD, CDA, DAB, ABC and none — this page keeps both. The bytecode has a <code>DrawSimsons</code> flag, but no control ever sets it, so no Simson lines are drawn except as the limiting case of a pedal circle. Its Reset adds 10 to the y-coordinate before taking the sine for the third point, a harmless slip that this page reproduces, and the opening picture is therefore not quite cyclic. The yellow dot M is calculated by intersecting two nine-point circles; the applet does not draw it.</p>
+
+      <p class="tip">Tick both circle boxes and drag one corner around: M stays where all the circles cross. Press Highlight to walk through the four triangles and see the perpendiculars from the missing corner.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FourNPCircles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="four-np-circles-core.js"></script>
+<script src="four-np-circles.js"></script>
+</body>
+</html>
