@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Euler and Fermat &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle: do the Euler lines made from its two Fermat points and any three of the five points all pass through the same spot?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/euler-and-fermat/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Euler and Fermat">
+<meta property="og:description" content="Drag the corners of a triangle: do the Euler lines made from its two Fermat points and any three of the five points all pass through the same spot?">
+<meta property="og:url" content="https://coolmaths.ai/euler-and-fermat/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .abc-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .napoleon-fill.outer { fill: var(--accent); fill-opacity: 0.10; }
+  #board .napoleon-fill.inner { fill: var(--accent); fill-opacity: 0.16; }
+  #board .fermat-fill { fill: var(--highlight); fill-opacity: 0.18; }
+  #board .napoleon-edge { fill: none; stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .napoleon-edge.outer { stroke: var(--accent); }
+  #board .napoleon-edge.inner { stroke: var(--muted); }
+  #board .euler-line { fill: none; stroke: var(--good); stroke-width: 2.4; }
+  #board .guide-line { fill: none; stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 3 5; }
+  #board .cevian-line { fill: none; stroke: var(--highlight); stroke-width: 1.5; stroke-dasharray: 2 5; }
+  #board .key-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .aux-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .angle-arc { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .point-label, #board .angle-label {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .angle-label { font-size: 13px; }
+  #board .geom-handle { fill: var(--highlight); stroke: var(--ink); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .show-row { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .show-row label { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .show-row input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+</style>
+</head>
+<body data-game="euler-and-fermat" data-kind="demo">
+<main id="main">
+  <h1>Euler and Fermat</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners of a triangle and watch three straight lines still pass through the same point.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a corner and use the arrow keys. Tick the boxes to show the point names or the marked angles.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="-50 -20 580 430" role="group"
+         aria-label="A triangle with its two Fermat points, the two Napoleon triangles, and three Euler lines passing through the centroid"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="show-row">
+      <label><input id="showNames" type="checkbox" aria-label="Show the names of the points">Show names</label>
+      <label><input id="showAngles" type="checkbox" aria-label="Show the marked special angles">Show special angles</label>
+    </div>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle and both checkboxes">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Build an equilateral triangle on each side of a triangle. Take the centres of those three triangles, and do it again on the other side: the two new triangles have the same centre. Something even stranger happens with the two Fermat points.</p>
+
+      <h2>Two Fermat points and two Napoleon triangles</h2>
+      <p>The outer equilateral triangles give A′B′C′ and the inner ones give a′b′c′; these are the two <a class="wiki-term" data-wiki="Napoleon%27s_theorem" href="https://en.wikipedia.org/wiki/Napoleon%27s_theorem" target="_blank" rel="noopener">Napoleon triangles</a>. Both are equilateral and both have the same centre as ABC: their <a class="wiki-term" data-wiki="Centroid" href="https://en.wikipedia.org/wiki/Centroid" target="_blank" rel="noopener">centroid</a> G, the average <code>(A + B + C) / 3</code>. The lines from each corner to the far tip of the equilateral triangle on the opposite side meet at a <a class="wiki-term" data-wiki="Fermat_point" href="https://en.wikipedia.org/wiki/Fermat_point" target="_blank" rel="noopener">Fermat point</a>. Turn the equilateral triangles the other way and the same construction gives the second one, F and f.</p>
+
+      <h2>Ten Euler lines, one point</h2>
+      <p>The <a class="wiki-term" data-wiki="Euler_line" href="https://en.wikipedia.org/wiki/Euler_line" target="_blank" rel="noopener">Euler line</a> of a triangle joins its centroid to its <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcenter</a>. Choose any three of the five points A, B, C, F, f: there are ten ways. The page claims all ten Euler lines pass through G. The logic test checks every one of the ten on hundreds of triangles — the claim holds. This drawing shows the three lines for F, f and one corner (A, B or C); the page says the other seven are proved elsewhere.</p>
+
+      <h2>The 120-degree turn</h2>
+      <p>For the triangle CfF, call its centroid G′ and its circumcenter O. P is where B′C′ meets a′c′. A turn of <code>120°</code> about G sends O exactly to P, so <code>∠OGP = 120°</code> and O, G, a′, P lie on one circle; B′ lies on that circle too. The marked angles then match: <code>∠OGB′ = ∠Oa′B′ = ∠Pc′C′ = ∠fBA = ∠fF′A</code>. They are equal as directed angles, so an ordinary angle may appear instead as its supplement — the test accepts either.</p>
+
+      <h2>Why G is on the line</h2>
+      <p>M is the midpoint of AB and m the midpoint of Ff. Both G and G′ divide their segments in the ratio <code>2 : 1</code>, so <code>GG′ ∥ Mm</code>. The applet reflects F in M to make F′ (the page's text says f, a slip: the angles it quotes only work for F), and that gives <code>Mm ∥ F′f</code>. The angle chain above gives <code>F′f ∥ GO</code>. Put those together and <code>G′, G, O</code> are collinear — G lies on the Euler line of CfF. By the same argument it lies on the other two drawn lines.</p>
+
+      <p class="tip">Tick "Show special angles" and drag a corner: the marked angles change, but the three green lines keep crossing at G.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EulerAndFermat.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="euler-and-fermat-core.js"></script>
+<script src="euler-and-fermat.js"></script>
+</body>
+</html>
