@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ceva Nest &mdash; coolmaths</title>
+<meta name="description" content="Nest two cevian triangles inside a triangle: do the lines joining matching corners always meet at one point? Drag the five dots and find out.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/ceva-nest/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Ceva Nest">
+<meta property="og:description" content="Nest two cevian triangles inside a triangle: do the lines joining matching corners always meet at one point? Drag the five dots and find out.">
+<meta property="og:url" content="https://coolmaths.ai/ceva-nest/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .outer-side { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; }
+  #board .q-side { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; }
+  #board .r-side { fill: none; stroke: var(--good); stroke-width: 2.2; stroke-linejoin: round; }
+  #board .p-cevian { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 4 4; }
+  #board .q-cevian { stroke: var(--accent); stroke-width: 1.4; stroke-opacity: 0.65; }
+  #board .join-line { stroke: var(--good); stroke-width: 1.8; stroke-dasharray: 6 4; }
+  #board .proof-line { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 3 4; }
+  #board .proof-line.alt { stroke: var(--accent); stroke-width: 1.3; }
+  #board .q-dot { fill: var(--accent); }
+  #board .r-dot { fill: var(--good); }
+  #board .s-dot { fill: var(--muted); }
+  #board .t-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1; }
+  #board .x-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .q-label { fill: var(--accent); }
+  #board .r-label { fill: var(--good); }
+  #board .x-label, #board .proof-label { fill: var(--muted); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .inner-handle { fill: var(--highlight); stroke: var(--ink); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="ceva-nest" data-kind="demo">
+<main id="main">
+  <h1>Ceva Nest</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Build one triangle inside another, then a third inside that, and watch three lines meet in one spot.<br>
+    <strong>How to play:</strong> Drag any of the five dots with a mouse or finger, or focus a dot and use the arrow keys. Press Check the claim, and use the buttons to show names or the proof points.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="A triangle with two nested cevian triangles, five draggable points and three lines meeting at X"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset all five points to their starting places">Reset diagram</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show the names of the points">Show names</button>
+    <button id="proofBtn" type="button" aria-pressed="false" aria-label="Show the S and T points used in the proof">Show proof points</button>
+    <button id="checkBtn" type="button" aria-label="Check that the three lines meet at one point">Check the claim</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Choose a point inside a triangle and draw lines from the three corners through it. The places where those lines hit the far sides make a new triangle. Do it again with a second point, and something unexpected happens: lines joining matching corners of the first and last triangles always pass through a single point. Drag the dots and see if you can break it.</p>
+
+      <h2>The first cevian triangle</h2>
+      <p>A line from a corner of a triangle to the opposite side is called a <a class="wiki-term" data-wiki="Cevian" href="https://en.wikipedia.org/wiki/Cevian" target="_blank" rel="noopener">cevian</a>. For a point P, the three cevians through it land at Q1, Q2 and Q3; those three points form the <a class="wiki-term" data-wiki="Cevian_triangle" href="https://en.wikipedia.org/wiki/Cevian_triangle" target="_blank" rel="noopener">cevian triangle</a> of P. <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a> says why the lines met at P in the first place: the three ratios along the sides multiply to <code>1</code>. The logic test measures that product for hundreds of positions, including points outside the triangle.</p>
+
+      <h2>Nest a second triangle</h2>
+      <p>Now take a second point Q and do the same thing inside triangle Q1Q2Q3. Its cevian feet are R1, R2 and R3. The claim on the original page is that triangles P1P2P3 and R1R2R3 are <a class="wiki-term" data-wiki="Perspective_(geometry)" href="https://en.wikipedia.org/wiki/Perspective_(geometry)" target="_blank" rel="noopener">perspective</a> from a point: <code>P1R1</code>, <code>P2R2</code> and <code>P3R3</code> meet at the dot called X here. The test checks this over hundreds of diagrams, with P and Q inside, outside and near the edges. The three crossings of the lines agree to within rounding, and both Ceva products stay equal to <code>1</code>.</p>
+
+      <h2>Why the meeting survives</h2>
+      <p>Turn on Show proof points to see S and T. S<sub>k</sub> is where the cevian from P<sub>k</sub> cuts the far side of the Q triangle; T<sub>k</sub> is where the line from P<sub>k</sub> to R<sub>k</sub> cuts the far side of the P triangle. A <a class="wiki-term" data-wiki="Cross-ratio" href="https://en.wikipedia.org/wiki/Cross-ratio" target="_blank" rel="noopener">cross-ratio</a> keeps its value when four points on a line are projected from another point. Applying that three times turns the Ceva product of the Q triangle into the Ceva product for the lines P<sub>k</sub>T<sub>k</sub>. Since the first is <code>1</code>, so is the second, and Ceva's theorem gives the common point. The logic test checks that cross-ratio equality for every pair of proof points it can compute.</p>
+
+      <h2>What the applet draws</h2>
+      <p>The original applet had five draggable dots, and two check boxes named Show names and Show extra: they did exactly what the two buttons here do. It placed X at the average of the three pairwise line crossings. If two lines are almost parallel, that crossing is unreliable, so this page stops drawing the construction and asks you to move the dots apart. The puzzle was proposed by H. Glicher and solved by Daniele Donini in <cite>Mathematics Magazine</cite>.</p>
+
+      <p class="tip">Try putting P and Q outside the outer triangle, or make the triangle very flat. The three lines still find X.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CevaNest.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="ceva-nest-core.js"></script>
+<script src="ceva-nest.js"></script>
+</body>
+</html>
