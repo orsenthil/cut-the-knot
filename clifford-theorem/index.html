@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Clifford Theorem &mdash; coolmaths</title>
+<meta name="description" content="Four circles meet in a ring: if one crossing from each pair lies on a circle, must the other four crossings lie on a circle too?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/clifford-theorem/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Clifford Theorem">
+<meta property="og:description" content="Four circles meet in a ring: if one crossing from each pair lies on a circle, must the other four crossings lie on a circle too?">
+<meta property="og:url" content="https://coolmaths.ai/clifford-theorem/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 36rem;
+    padding: 0.5rem;
+    overflow-x: auto;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    min-width: 24rem;
+    height: auto;
+    touch-action: none;
+  }
+  .base-circle { fill: none; stroke: var(--good); stroke-width: 2; opacity: 0.7; }
+  .spoke { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  .red-circle { fill: none; stroke: var(--bad); stroke-width: 3; }
+  .blue-circle { fill: none; stroke: var(--accent); stroke-width: 3; }
+  .crossing { fill: var(--muted); }
+  .z-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1.5; }
+  .w-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  .z-label { fill: var(--bad); font: 600 15px var(--font); pointer-events: none; }
+  .w-label { fill: var(--accent); font: 600 15px var(--font); pointer-events: none; }
+  .num-label { fill: var(--text); font: 600 15px var(--font); pointer-events: none; }
+  .eye-white { fill: var(--stage); stroke: var(--ink); stroke-width: 1.5; }
+  .eye-iris { fill: var(--ink); }
+  .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2.5;
+    cursor: grab;
+  }
+  .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+</style>
+</head>
+<body data-game="clifford-theorem" data-kind="demo">
+<main id="main">
+  <h1>Clifford Theorem</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#complex-analysis">Complex Analysis</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the dots that hold four circles and watch the points where they cross.<br>
+    <strong>How to play:</strong> Drag any dot with a mouse or finger, or focus one and press the arrow keys to move it. Press Reset to put the circles back.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 450" role="group"
+         aria-label="Four circles with draggable centres and rim points, their crossing points, and Clifford circles through them"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the four circles back where they started">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Four circles make a ring. At each join they cross in two points. Pick one crossing from every join: if those four points sit on a circle, then the four crossings you did not pick sit on a circle too. Move the dots and the picture keeps making that happen &mdash; and sometimes it shows more than one pair of circles.</p>
+
+      <h2>Four circles, four pairs of crossings</h2>
+      <p>The circles are numbered 1 to 4. Circle 1 meets circle 2, circle 2 meets circle 3, circle 3 meets circle 4, and circle 4 meets circle 1. Write the two crossings at join <code>k</code> as <code>z<sub>k</sub></code> and <code>w<sub>k</sub></code>. Circle <code>k</code> carries both <code>z<sub>k-1</sub></code> and <code>z<sub>k</sub></code>, and also <code>w<sub>k-1</sub></code> and <code>w<sub>k</sub></code>. The green circles are the four you can move; the red one passes through four chosen crossings and the blue one through the other four.</p>
+      <p>The circles have to meet in this order for the picture to work. The applet tries the orders 1234, 1243 and 1324 and uses the first one whose four neighbouring pairs all cross. It never grows or shrinks a circle by itself: you do that with the rim dot, because each circle's centre is one dot and its radius is the distance to the other dot.</p>
+
+      <h2>Angles and complex numbers</h2>
+      <p>The page's proof uses <a class="wiki-term" data-wiki="Complex_number" href="https://en.wikipedia.org/wiki/Complex_number" target="_blank" rel="noopener">complex numbers</a>. By <a class="wiki-term" data-wiki="Euler%27s_formula" href="https://en.wikipedia.org/wiki/Euler%27s_formula" target="_blank" rel="noopener">Euler's formula</a>, the ratio <code>(a-c)/(b-c)</code> has size <code>r</code> and angle <code>g</code>, where <code>g</code> is the angle the two segments make at <code>c</code>. Four points are <a class="wiki-term" data-wiki="Concyclic_points" href="https://en.wikipedia.org/wiki/Concyclic_points" target="_blank" rel="noopener">concyclic</a> exactly when the <a class="wiki-term" data-wiki="Cross-ratio_(mathematics)" href="https://en.wikipedia.org/wiki/Cross-ratio_(mathematics)" target="_blank" rel="noopener">cross ratio</a> <code>[(a-c)/(b-c)] / [(a-d)/(b-d)]</code> is a real number: equal angles on the same chord, or angles that add to 180&deg;.</p>
+      <p>Each of the four circle joins gives a real cross ratio, because the four points at that join lie on one of the green circles. Multiply the four real ratios and the answer is still real.</p>
+
+      <h2>What the product really says</h2>
+      <p>The page then says that the product of (1) to (4) equals (5), the <code>z</code> cross ratio times the <code>w</code> cross ratio. That step is wrong. The logic test tried 600 sets of arbitrary points, and the product never equalled (5); the quotient was not even a real number, apart from rare coincidences. What is true for any eight points is</p>
+      <blockquote><code>(5) = (1)·(3) / ((2)·(4))</code></blockquote>
+      <p>The test confirms this identity on the same 600 sets. With it the proof works. Each of (1) to (4) is real, because its four points lie on one green circle, so (5) is real. A product of two complex numbers that is real makes one factor real exactly when the other is. So if the <code>z</code> cross ratio is real, the <code>w</code> cross ratio is too, and the <code>w</code> points are concyclic. The test also builds 1,200 rings in which the <code>z</code> points are exactly concyclic. In every one the <code>w</code> points are concyclic too, and the applet finds a red/blue pair. Random circles almost never pass.</p>
+
+      <h2>Rectangles after inversion</h2>
+      <p>Gerald Brown pointed out a pretty special case: four circles through one common point, each crossing two of the others at right angles (and touching the fourth there, since their centres lie on the same axis). An <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">inversion</a> centred at that point turns two of them into vertical lines and the other two into horizontal lines. Their other four crossings become the corners of a rectangle, which is a cyclic figure, so the original four crossings are concyclic as well. The test checks 300 such rings: after inversion the four images have equal diagonals, the same midpoint and right angles.</p>
+
+      <p class="tip">Start at Reset and drag just one rim dot. How many red/blue pairs can you make appear? Then try to arrange all four circles through nearly one point, and watch the Clifford circles grow.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CliffordTheorem.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="clifford-theorem-core.js"></script>
+<script src="clifford-theorem.js"></script>
+</body>
+</html>
