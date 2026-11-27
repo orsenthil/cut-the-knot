@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equal Angles In Two Circles &mdash; coolmaths</title>
+<meta name="description" content="Two circles cross and a line touching one of them at P cuts the other at A and B. Drag the four points: do the two pairs of marked angles always stay equal?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equal-angles-in-two-circles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Equal Angles In Two Circles">
+<meta property="og:description" content="Two circles cross and a line touching one of them at P cuts the other at A and B. Drag the four points: do the two pairs of marked angles always stay equal?">
+<meta property="og:url" content="https://coolmaths.ai/equal-angles-in-two-circles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.75rem;
+    margin-inline: auto;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circle-main { fill: none; stroke: var(--accent); stroke-width: 2.2; }
+  #board .circle-small { fill: none; stroke: var(--good); stroke-width: 2.2; }
+  #board .chord-line { stroke: var(--ink); stroke-width: 2.4; }
+  #board .st-line { stroke: var(--ink); stroke-width: 1.4; stroke-opacity: 0.6; }
+  #board .spoke { stroke: var(--ink); stroke-width: 1.4; stroke-opacity: 0.55; }
+  #board .extra-line { stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 3 5; }
+  #board .angle-main { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round; }
+  #board .angle-extra { fill: none; stroke: var(--good); stroke-width: 2.6; stroke-linecap: round; }
+  #board .cross-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 0.85rem;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .hint-label { fill: var(--muted); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls button[aria-pressed="true"] { border-color: var(--accent); }
+</style>
+</head>
+<body data-game="equal-angles-in-two-circles" data-kind="demo">
+<main id="main">
+  <h1>Equal Angles In Two Circles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two circles overlap and a straight line touches one at P and crosses the other at A and B; watch two corner angles that stay the same.<br>
+    <strong>How to play:</strong> Drag the dots S, T, RB and RS with a mouse or finger, or focus a dot and use the arrow keys. Press Names, Statement, Hint or Extra to show the labels and the marked angles.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="group"
+         aria-label="Two overlapping circles through S and T, a line touching the smaller circle at P and cutting the larger one at A and B, with the marked angles at S and T"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Show or hide the point names">Names</button>
+    <button id="statementBtn" type="button" aria-pressed="false" aria-label="Show or hide the two equal angle pairs">Statement</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show or hide the proof's lettered angles">Hint</button>
+    <button id="extraBtn" type="button" aria-pressed="false" aria-label="Show or hide the dashed chords and second angle pair">Extra</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Put the four points back where they started">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two circles cross at S and T. One circle has a point P on it that lies inside the other circle. A straight <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord</a> AB of the outer circle just touches the inner circle at P. The page claims <code>∠ASP = ∠BTP</code> and <code>∠ATP = ∠BSP</code>. Drag the four points and see for yourself: it is a picture to explore, not a game to win. The live cut-the-knot page still embeds Bogomolny's Java applet; this page draws the same construction with draggable points.</p>
+
+      <h2>One angle, two names</h2>
+      <p>A <a class="wiki-term" data-wiki="Tangent_line" href="https://en.wikipedia.org/wiki/Tangent_line" target="_blank" rel="noopener">tangent</a> to the inner circle at P and the chord PT make the same angle as the one PT makes on the opposite arc: <code>∠PST = ∠BPT</code> (the page calls this angle <em>u</em> when Hint is on). The angle sum in triangle BPT is then</p>
+      <blockquote><code>∠PBT + ∠BPT + ∠BTP = 180°.</code></blockquote>
+      <p>S and T lie on the outer circle with A and B, so ABTS is a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>: <code>∠AST + ∠ABT = 180°</code>. Split the first angle at P and use <code>∠PST = ∠BPT</code>:</p>
+      <blockquote>
+        <code>∠ASP + ∠PST + ∠ABT = 180°</code><br>
+        <code>∠PBT + ∠BPT + ∠BTP = 180°</code><br>
+        <code>⇒ ∠ASP = ∠BTP.</code>
+      </blockquote>
+
+      <h2>The second pair</h2>
+      <p><a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">Angles standing on the same arc</a> give <code>∠ASB = ∠ATB</code> in the outer circle. Split them at P: <code>∠ASB = ∠ASP + ∠BSP</code> and <code>∠ATB = ∠ATP + ∠BTP</code>. The equal sums and the first pair <code>∠ASP = ∠BTP</code> leave <code>∠ATP = ∠BSP</code>. Press Extra to see the dashed lines SB and TA that frame this second pair.</p>
+
+      <h2>How this differs from its siblings</h2>
+      <p>Here the chord AB touches the inner circle at just one point P; there is no second crossing Q. The applet <em>Equal Angles In Crossed Circles II</em> replaces that tangency by a chord cutting the other circle at P and Q, and claims <code>∠ASP = ∠BTQ</code> and <code>∠ATP = ∠BSQ</code>. <em>Equal Chords in Crossing Circles</em> is different again: two lines through a crossing point, a claim about equal chord lengths, and switches for adjusting circles or chords. This applet keeps its own four checkboxes — names, statement, hint and extra — and its larger-radius circle is always called the outer one.</p>
+
+      <h2>What the checks found</h2>
+      <p>The logic test compares every field with a second transcription of the applet's own bytecode on the opening picture, 360 sweeps of the handles, and over 4,000 random and near-opening drawings. On every drawing that matches the page's description — P on the inner circle and inside the outer one — both angle pairs agree to better than a billionth of a radian, as do the tangent–chord step and the two 180° angle sums. The claim is not unconditional: pull P outside the outer circle and the two marked angles can become <em>supplementary</em> instead of equal (they add to 180°); the test pins down such a case. Two faithful quirks stay: when S and T come within one unit the applet draws ST as the tangent at T instead of stopping, and when the three points defining a circle are collinear there is no picture and the previous drawing is kept.</p>
+
+      <p class="tip">Turn on Statement and Hint, then drag RS a little: the two angles marked x stay the same while the proof letters u, v, y and z move. Now pull P outside the other circle and watch the x angles part company.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EqualAnglesInTwoCircles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="equal-angles-in-two-circles-core.js"></script>
+<script src="equal-angles-in-two-circles.js"></script>
+</body>
+</html>
