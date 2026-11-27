@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Euclid's Segment Division &mdash; coolmaths</title>
+<meta name="description" content="Can you cut a segment into any number of equal pieces without measuring it? Drag the points and change N to see Euclid's parallel-line construction.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/euclids-segment-division/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Euclid's Segment Division">
+<meta property="og:description" content="Can you cut a segment into any number of equal pieces without measuring it? Drag the points and change N to see Euclid's parallel-line construction.">
+<meta property="og:url" content="https://coolmaths.ai/euclids-segment-division/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    touch-action: none;
+  }
+  #board .guide { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 5 5; opacity: 0.65; }
+  #board .segment { stroke: var(--ink); stroke-width: 2.8; stroke-linecap: round; }
+  #board .join { stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round; }
+  #board .parallel { stroke: var(--muted); stroke-width: 1.8; }
+  #board .mark { fill: var(--accent); }
+  #board .cut { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .tick { stroke: var(--highlight); stroke-width: 3.2; stroke-linecap: round; }
+  #board .pt-label { fill: var(--text); font-size: 0.9rem; font-weight: 600; pointer-events: none; }
+  #board .mark-label { fill: var(--muted); font-size: 0.72rem; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .control-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .control-row button { min-width: 2.5rem; min-height: 2.5rem; }
+  #nOut { min-width: 5rem; text-align: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+</style>
+</head>
+<body data-game="euclids-segment-division" data-kind="demo">
+<main id="main">
+  <h1>Euclid's Segment Division</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a><a class="tag" href="../index.html#fractions">Fractions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> See how parallel lines can split a segment into equal pieces without measuring it.<br>
+    <strong>How to play:</strong> Drag the dots A, B and C, press + or − to choose how many pieces you want, and tick Show names or Show hint.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="group"
+         aria-label="Euclid's segment division: equal marks on the sloping line from B, lines parallel to B N C, and the crossings that cut B C"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <button id="minusBtn" type="button" aria-label="Use one fewer part">&minus;</button>
+      <output id="nOut" aria-label="Number of equal parts of the segment">3 parts</output>
+      <button id="plusBtn" type="button" aria-label="Use one more part">+</button>
+    </div>
+    <label><input id="namesBox" type="checkbox"> Show names</label>
+    <label><input id="hintBox" type="checkbox"> Show hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Draw a sloping line through one end of a segment, step off equal marks on it, then draw parallel lines back. The places where they land on the segment are exactly equally spaced. No ruler needed.</p>
+
+      <h2>Step off equal marks</h2>
+      <p>Let the segment be <code>BC</code>. Draw a line through B at a positive angle to BC and put A on it. Call the step from B to A <code>d = A − B</code>. Starting at B, the marks are <code>B</code>, <code>B + d</code> (that is A), <code>B + 2d</code>, and so on up to <code>B + Nd</code>, written <code>B<sub>N</sub></code>. Every one of those steps has the same length, copied from the first one.</p>
+
+      <h2>Why the cuts come out equal</h2>
+      <p>Join <code>B<sub>N</sub></code> to C and draw through each mark <code>B<sub>i</sub></code> a <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a> to that line. It meets the <a class="wiki-term" data-wiki="Line_segment" href="https://en.wikipedia.org/wiki/Line_segment" target="_blank" rel="noopener">segment</a> at <code>D<sub>i</sub></code>. The triangles <code>B B<sub>i</sub> D<sub>i</sub></code> and <code>B B<sub>N</sub> C</code> share the angle at B and have parallel third sides, so they are <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similar_triangles" target="_blank" rel="noopener">similar triangles</a> with scale <code>i/N</code>:</p>
+      <blockquote><code>D<sub>i</sub> = B + (i/N)(C − B)</code></blockquote>
+      <p>That is the page's exact claim: the parallels cross BC at points that divide it into N equal parts. The logic test confirms it for every N the applet allows (1 to 20) and many positions of A, B and C, and compares the crossings with a second transcription of the applet's own line-intersection code. Moving A changes the marks but never the crosses.</p>
+
+      <h2>What the applet leaves out</h2>
+      <p>The page asks for a positive angle: if A is dragged onto BC, the parallel lines lie along BC and the original applet's intersection divides by zero. This page keeps the marks visible but hides the parallel lines and crossings in that case. The page shows the applet twice, once with Show = 0 and once with Show = 1; the boxes here start as both shown, following the <a class="wiki-term" data-wiki="Euclid%27s_Elements" href="https://en.wikipedia.org/wiki/Euclid%27s_Elements" target="_blank" rel="noopener">Elements</a> illustration, and can be ticked off.</p>
+
+      <p class="tip">Try A far away from B and then very close: the crosses on BC stay put. Turn on Show hint to see the matching equal-length marks on both lines.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EuclidsSegmentDivision.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="euclids-segment-division-core.js"></script>
+<script src="euclids-segment-division.js"></script>
+</body>
+</html>
