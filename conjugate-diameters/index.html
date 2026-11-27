@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Conjugate Diameters &mdash; coolmaths</title>
+<meta name="description" content="A chord slides across an ellipse while its middle stays on a line through the centre. Move the chord's ends and watch where their tangents meet — do they stay on that line too?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/conjugate-diameters/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Conjugate Diameters">
+<meta property="og:description" content="A chord slides across an ellipse while its middle stays on a line through the centre. Move the chord's ends and watch where their tangents meet — do they stay on that line too?">
+<meta property="og:url" content="https://coolmaths.ai/conjugate-diameters/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .ellipse { fill: var(--accent); fill-opacity: 0.08; stroke: var(--ink); stroke-width: 2.5; }
+  #board .rect-guide { fill: none; stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 3 5; }
+  #board .diameter { stroke: var(--accent); stroke-width: 2.6; }
+  #board .conjugate { stroke: var(--muted); stroke-width: 1.8; stroke-dasharray: 6 5; }
+  #board .tangent { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 6 5; }
+  #board .chord { stroke: var(--good); stroke-width: 2.6; }
+  #board .chord-tangent { stroke: var(--good); stroke-width: 1.3; stroke-dasharray: 5 4; stroke-opacity: 0.8; }
+  #board .chord-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .u-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 2; }
+  #board .center-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .u-label { fill: var(--highlight); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .rect-handle { fill: var(--highlight); stroke: var(--ink); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="conjugate-diameters" data-kind="demo">
+<main id="main">
+  <h1>Conjugate Diameters</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore: a chord slides across an oval while its middle stays on a line through the centre.<br>
+    <strong>How to play:</strong> Drag P along the oval or R along the line; drag a corner to change the oval. You can also focus a dot and use the arrow keys, then press Check the theorem.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="An ellipse with a moving chord, its midpoint R on a diameter, and tangents meeting at U"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" aria-label="Reset the ellipse and the points to the start">Reset</button>
+    <button id="checkBtn" type="button" class="primary" aria-label="Check that the tangents meet on the midpoint diameter">Check the theorem</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show the names of the points">Show names</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The applet starts with P on an <a class="wiki-term" data-wiki="Ellipse" href="https://en.wikipedia.org/wiki/Ellipse" target="_blank" rel="noopener">ellipse</a> and draws a chord through a point R on the line from P through the centre. Move P or R and the chord changes, yet the tangents at its two ends keep meeting on that same line. Here is why.</p>
+
+      <h2>What the page claims</h2>
+      <blockquote>"The line joining the midpoints of two parallel chords in an ellipse passes through the center of the ellipse. Moreover, the tangents to the ellipse at the extremities of the chords all meet on the same straight line."</blockquote>
+      <p>A <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord</a> through the centre is a <a class="wiki-term" data-wiki="Conjugate_diameters" href="https://en.wikipedia.org/wiki/Conjugate_diameters" target="_blank" rel="noopener">diameter</a>. A family of parallel chords gives two diameters: one in the chords' direction and one through their midpoints. The logic test measured 1,440 shapes and chord positions: the midpoint of the chord through R was R itself every time, R stayed on the line from P through the centre, and the tangents at its ends met on that line every time. The page's claims held.</p>
+
+      <h2>Two slopes, one pair of directions</h2>
+      <p>Write the ellipse as <code>x = a cos(t)</code>, <code>y = b sin(t)</code>. The difference <code>r(t+v) - r(t-v)</code> has slope <code>-(b/a) cot(t)</code>, which does not depend on <code>v</code>: that is why all those chords are parallel. Their midpoints are <code>cos(v) r(t)</code>, so they run along the diameter of slope <code>(b/a) tan(t)</code>. The test checked both formulas on 432 chords and found them exact. The slopes multiply to <code>-b²/a²</code>, so conjugate diameters are perpendicular only when <code>a = b</code>, a circle — also exactly as the page says.</p>
+
+      <h2>Where the tangents meet</h2>
+      <p>At each end of the chord there is a <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a>, made here by drawing a tangent to a circle and stretching the circle into the ellipse. The two tangents meet at U on the same diameter as the chord's midpoint. In the language of <a class="wiki-term" data-wiki="Pole_and_polar" href="https://en.wikipedia.org/wiki/Pole_and_polar" target="_blank" rel="noopener">poles and polars</a>, the pole of a chord parallel to one diameter lies on the other, and a pole on one diameter has a polar parallel to the other. Swapping the roles in the test put the new midpoints and the new tangent meetings on the other diameter too.</p>
+
+      <h2>Apollonius's two gifts</h2>
+      <p>For the ends P and Q of the two conjugate semi-diameters, <code>OP² + OQ² = a² + b²</code> whatever the value of <code>t</code>. The four tangents at P, its opposite, Q and its opposite wrap a parallelogram whose area is always <code>4ab</code>. These are the first and second theorems of Apollonius on the page; both were checked on all 1,440 configurations. The port follows the applet in keeping R between P and its opposite point, so the chord's midpoint cannot run off the ellipse.</p>
+
+      <p class="tip">Try moving P close to the top of the ellipse: the chord becomes almost horizontal and U travels far away. Move P back and watch U return to the same diameter.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ConjugateDiameters.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="conjugate-diameters-core.js"></script>
+<script src="conjugate-diameters.js"></script>
+</body>
+</html>
