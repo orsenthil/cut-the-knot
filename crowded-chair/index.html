@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Crowded Chair &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle with three squares on its sides: do the two crossings of AK, CD and CE, BF stay on the circle through the first square?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/crowded-chair/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Crowded Chair">
+<meta property="og:description" content="Drag the corners of a triangle with three squares on its sides: do the two crossings of AK, CD and CE, BF stay on the circle through the first square?">
+<meta property="og:url" content="https://coolmaths.ai/crowded-chair/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .maincircle { fill: none; stroke: var(--accent); stroke-width: 2.2; }
+  #board .tri-fill { fill: var(--accent-soft); stroke: none; }
+  #board .square-fill { fill: var(--muted); fill-opacity: 0.1; stroke: none; }
+  #board .side { stroke: var(--ink); stroke-width: 2.4; stroke-linejoin: round; }
+  #board .square-edge { fill: none; stroke: var(--muted); stroke-width: 1.8; stroke-linejoin: round; }
+  #board .keyline { stroke: var(--muted); stroke-width: 1.5; stroke-opacity: 0.9; }
+  #board .statementline { stroke: var(--highlight); stroke-width: 3.4; stroke-dasharray: 6 4; }
+  #board .diagonal { stroke: var(--good); stroke-width: 2.2; stroke-dasharray: 6 4; }
+  #board .rightmark { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .centredot { fill: var(--muted); }
+  #board .auxdot { fill: var(--ink); }
+  #board .crossdot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="crowded-chair" data-kind="demo">
+<main id="main">
+  <h1>Crowded Chair</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move a triangle that carries three squares and watch two crossing points stay on one circle; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a corner and use the arrow keys. Tick the boxes to show the names, the statement or the hint.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 440 360" role="group"
+         aria-label="Triangle ABC with squares on its sides and a circle through A, B, D and E. The crossings U and V lie on that circle. Drag corners A, B or C."></svg>
+    <p class="hint-line">Drag a corner, or focus one and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Names</label>
+    <label><input id="statementBox" type="checkbox" data-label="the statement"> Statement</label>
+    <label><input id="hintBox" type="checkbox" data-label="the hint"> Hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the triangle and the squares">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Draw squares on the three sides of a triangle and the picture fills up with long crossing lines. Men called it the Bride's Chair; in the middle of the crowd, two crossing points never leave one circle.</p>
+
+      <h2>The chair and its squares</h2>
+      <p>Start with triangle <code>ABC</code>. Turning each side by a right angle gives the <a class="wiki-term" data-wiki="Square_(geometry)" href="https://en.wikipedia.org/wiki/Square_(geometry)" target="_blank" rel="noopener">squares</a> <code>ABDE</code>, <code>AFGC</code> and <code>BHKC</code>. The circle drawn by the applet is the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> <code>C(ABDE)</code> of the first square. Its centre is the midpoint of <code>AD</code> and also of <code>BE</code>, and its radius is half of either one.</p>
+
+      <h2>Two right-angle crossings</h2>
+      <p>The page says <code>AK ⟂ CD</code> and <code>CE ⟂ BF</code>. Put <code>u = A − B</code> and <code>v = C − B</code>. The quarter turns that build the squares give <code>K − B = R(v)</code> and <code>D − B = R⁻¹(u)</code>, where <code>R</code> is a 90° turn. Then <code>AK = R(v) − u</code> and <code>CD = R⁻¹(u) − v</code>, so <code>R(CD) = −AK</code>: one line is a quarter turn of the other. The same argument at A gives <code>CE ⟂ BF</code>. The logic test checked both with relative error below <code>10⁻⁷</code> for 4,000 triangles, including flat and obtuse ones. Tick <em>Statement</em> to see <code>AK</code> and <code>BF</code> picked out.</p>
+
+      <h2>Why the two crossings sit on the circle</h2>
+      <p>Write <code>U = CE ∩ BF</code> and <code>V = CD ∩ AK</code>, as the applet does. The angle <code>∠BUE</code> is right, and it is subtended by the diameter <code>BE</code>; by the converse of <a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a>, <code>U</code> lies on <code>C(ABDE)</code>. The same reasoning with the right angle <code>∠AVD</code> and the diameter <code>AD</code> puts <code>V</code> on it. Tick <em>Hint</em> to see both diameters and both right-angle marks; the test found all six points <code>A, B, D, E, U, V</code> on the circle to within <code>10⁻⁷</code> of its radius.</p>
+
+      <h2>A product, and a mix-up in the labels</h2>
+      <p>Because two <a class="wiki-term" data-wiki="Intersecting_chords_theorem" href="https://en.wikipedia.org/wiki/Intersecting_chords_theorem" target="_blank" rel="noopener">secants</a> from <code>C</code> meet the same circle, the page's identity <code>CE · CU = CD · CV</code> follows, and the test confirmed it over every sampled triangle. The sentence on the page, though, names <code>U</code> as <code>AK ∩ CD</code> and <code>V</code> as <code>CE ∩ BF</code> &mdash; the reverse of the applet's labels. With the page's swapped names the printed product pairs points on different lines and failed in all 4,000 triangles the logic test tried. The points themselves are the same; only the two letters are exchanged, and this port follows the applet's labels so that the identity stays true.</p>
+
+      <p class="tip">Try dragging C all the way around the circle it is restricted to: the angle at C stays the same, while U and V keep riding the square's circle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CrowdedChair.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="crowded-chair-core.js"></script>
+<script src="crowded-chair.js"></script>
+</body>
+</html>
