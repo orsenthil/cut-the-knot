@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Edge Illusion &mdash; coolmaths</title>
+<meta name="description" content="Can you see a triangle or square that no one drew? Change the circles, the edges and the colours to find out when the shape appears or fades.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/edge-illusion/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Edge Illusion">
+<meta property="og:description" content="Can you see a triangle or square that no one drew? Change the circles, the edges and the colours to find out when the shape appears or fades.">
+<meta property="og:url" content="https://coolmaths.ai/edge-illusion/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.75rem;
+  }
+  #board {
+    --board-paper: var(--stage);
+    --board-ink: var(--ink);
+    --paint-0: #4a7dff;
+    --paint-1: #e35d5d;
+    --paint-2: #2fa0a0;
+    --paint-3: #cf63d6;
+    --paint-4: #4ba55b;
+    --paint-5: #e6a6bd;
+    --paint-6: #e5a244;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board.switched {
+    --board-paper: var(--ink);
+    --board-ink: var(--stage);
+  }
+  #board .field { fill: var(--board-paper); }
+  #board .frame { fill: none; stroke: var(--board-ink); stroke-width: 1; }
+  #board .mask { fill: var(--board-paper); stroke: none; }
+  #board .pac.filled { stroke: none; }
+  #board .pac.filled.ink { fill: var(--board-ink); }
+  #board .pac.filled.paper { fill: var(--board-paper); }
+  #board .pac.filled.c0 { fill: var(--paint-0); }
+  #board .pac.filled.c1 { fill: var(--paint-1); }
+  #board .pac.filled.c2 { fill: var(--paint-2); }
+  #board .pac.filled.c3 { fill: var(--paint-3); }
+  #board .pac.filled.c4 { fill: var(--paint-4); }
+  #board .pac.filled.c5 { fill: var(--paint-5); }
+  #board .pac.filled.c6 { fill: var(--paint-6); }
+  #board .pac.outlined { fill: none; stroke-width: 1.2; }
+  #board .pac.outlined.ink { stroke: var(--board-ink); }
+  #board .pac.outlined.c0 { stroke: var(--paint-0); }
+  #board .pac.outlined.c1 { stroke: var(--paint-1); }
+  #board .pac.outlined.c2 { stroke: var(--paint-2); }
+  #board .pac.outlined.c3 { stroke: var(--paint-3); }
+  #board .pac.outlined.c4 { stroke: var(--paint-4); }
+  #board .pac.outlined.c5 { stroke: var(--paint-5); }
+  #board .pac.outlined.c6 { stroke: var(--paint-6); }
+  #board .edge-stroke { stroke: var(--board-ink); stroke-width: 1.4; }
+  #board .extra-fill { stroke: none; }
+  #board .extra-fill.ink { fill: var(--board-ink); }
+  #board .extra-fill.c0 { fill: var(--paint-0); }
+  #board .extra-line { fill: none; stroke-width: 1.2; }
+  #board .extra-line.ink { stroke: var(--board-ink); }
+  #board .extra-line.c0 { stroke: var(--paint-0); }
+  #board .extra-base { stroke: var(--board-ink); stroke-width: 1.2; }
+  #board .ruler-line, #board .ruler-tick { stroke: var(--muted); stroke-width: 1.5; }
+  #board .ruler-label {
+    fill: var(--text); font-size: 0.78rem; text-anchor: middle; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--board-paper); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0 0; }
+  .controls { flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .controls > * { min-width: 0; max-width: 100%; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; max-width: 100%; }
+  .controls input[type="range"] { width: min(8rem, 40vw); max-width: 100%; }
+  .controls output { min-width: 2.5rem; font-variant-numeric: tabular-nums; }
+  .segmented { display: inline-flex; flex-wrap: wrap; gap: 0.35rem; max-width: 100%; }
+  .segmented button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body data-game="edge-illusion" data-kind="demo">
+<main id="main">
+  <h1>Edge Illusion</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is an illusion to explore, not a game to win: a triangle or a square seems to appear even though no one draws its sides.<br>
+    <strong>How to play:</strong> Change the shape, the number of circles and how much of each circle you see, then try the four drawing modes. Drag the dot on the ruler or focus it and use the arrow keys; press S to switch the colours.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 370" role="group"
+         aria-label="Rings of shrinking circles at the corners of an unfinished triangle or square, with a fill ruler below"></svg>
+    <p class="hint">Drag the purple dot on the ruler, or focus it and press the arrow keys. Keys: [ and ] change the number of circles, &minus; and + change the fill, T changes the shape, M the drawing mode, S the colours, X the extra shapes, R resets.</p>
+  </div>
+
+  <div class="controls" aria-label="Illusion options">
+    <label for="nInput">Circles <input id="nInput" type="range" min="1" max="10" step="1" value="2" aria-label="Number of shrinking circles at each corner, from 1 to 10"><output id="nOut" for="nInput">2</output></label>
+    <label for="partInput">Fill <input id="partInput" type="range" min="0" max="100" step="1" value="50" aria-label="How much of each circle you see, from 0 to 100 percent"><output id="partOut" for="partInput">50%</output></label>
+    <div class="segmented" role="group" aria-label="Shape">
+      <button id="triangleBtn" type="button" aria-pressed="true" aria-label="Show the triangle">Triangle</button>
+      <button id="squareBtn" type="button" aria-pressed="false" aria-label="Show the square">Square</button>
+    </div>
+    <div class="segmented" role="group" aria-label="Drawing mode">
+      <button id="modePlain" type="button" aria-pressed="true" aria-label="Draw plain: only outlines of the circles">Plain</button>
+      <button id="modeEdges" type="button" aria-pressed="false" aria-label="Show edges: add short strokes along the missing sides">Edges</button>
+      <button id="modeFill" type="button" aria-pressed="false" aria-label="Fill color: alternate filled circles with the background">Fill</button>
+      <button id="modePaint" type="button" aria-pressed="false" aria-label="Paint: fill the circles with seven colours">Paint</button>
+    </div>
+    <label for="switchBtn"><input id="switchBtn" type="checkbox" aria-label="Switch colors: exchange the colour of the drawing and the background"> Switch colors</label>
+    <label for="extraBtn"><input id="extraBtn" type="checkbox" aria-label="Extra shapes: add small corner pieces along the sides"> Extra shapes</label>
+    <button id="lessN" type="button" aria-label="Use fewer circles, from 2">&minus; circles</button>
+    <button id="moreN" type="button" aria-label="Use more circles, from 2">+ circles</button>
+    <button id="lessPart" type="button" aria-label="Fill less of each circle, from 50 percent">&minus; fill</button>
+    <button id="morePart" type="button" aria-label="Fill more of each circle, from 50 percent">+ fill</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset to a triangle with 2 circles at 50 percent fill">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Nothing here changes colour in the middle of the picture. The surprise is what your eyes make of the pieces around it: the classic <a class="wiki-term" data-wiki="Kanizsa_figure" href="https://en.wikipedia.org/wiki/Kanizsa_figure" target="_blank" rel="noopener">Kanizsa figure</a>. Here is the page's own claim and exactly what the applet draws.</p>
+
+      <h2>The claim, word for word</h2>
+      <p>Bogomolny's page says: <q>Do you perceive edgeless triangle (square)? Does this shape appear brighter than the surrounding background? (Compare this to the Simultaneous Contrast Illusion.) The effect is known as a subjective (or illusory ) contour. For a recognizable simlpe shape the brain appears to supply edges. Once edges are used elsewhere the shape becomes less prominent.</q> (The spelling and spacing are the original page's.) A computer can check the drawable part of that: in the plain, fill and paint modes no line joins the corners, and the middle is filled with the same field colour as the outside. It cannot check what you see. "Brighter" is a fact about eyes, not about the paint; this is a <a class="wiki-term" data-wiki="Illusory_contour" href="https://en.wikipedia.org/wiki/Illusory_contour" target="_blank" rel="noopener">subjective contour</a>, not a shaded polygon.</p>
+
+      <h2>Where the circles sit</h2>
+      <p>Let <code>R = min(width, height) / 3</code> with Java's integer division, and let the centre be <code>(cx, cy)</code>. The <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a> puts three corner centres at angles <code>90&deg; + 120&deg;i</code> on that circle, with its centre lowered by <code>cy / 12</code>; the <a class="wiki-term" data-wiki="Square_(geometry)" href="https://en.wikipedia.org/wiki/Square_(geometry)" target="_blank" rel="noopener">square</a> puts four at <code>45&deg; + 90&deg;i</code> with no lowered centre. Every <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> centre uses Java's <code>Math.round</code>, and the ruler distance <code>D</code> between the first two centres is truncated to a whole number. With <code>N</code> rings and <code>P</code> percent fill, the applet's step is <code>D &middot; P / 100 / (2N &minus; 1) / 2</code>; ring <code>j</code> has radius <code>round((2N &minus; j &minus; 1) &middot; step)</code>. The test compares all of these with a second transcription of the bytecode.</p>
+
+      <h2>Why the middle looks empty</h2>
+      <p>The rings are drawn first. Then the polygon through the corner centres is filled with the <em>background</em> colour, so the parts of the rings inside it vanish under a patch exactly the same colour as the rest of the field. That is the "edgeless" triangle or square: only the notches facing inward are left. Press <strong>Edges</strong> and the applet adds pairs of short strokes along the two sides meeting at each corner. Those strokes are the edges that the brain had been supplying, which is why the shape becomes less prominent when they are there. The status line counts them.</p>
+
+      <h2>Options, defaults and small changes</h2>
+      <p>The live cut-the-knot page still embeds the Java applet with <code>CODE="EdgeIllusion"</code>, <code>archive="CTKUtility.zip,EdgeIllusion.zip"</code> and <code>bcolor=ffffff</code>, so no Wayback copy was needed. The applet opens on a triangle with <code>N = 2</code>, <code>P = 50</code> and Draw plain checked. Its AWT scrollbars are <code>Scrollbar(0, 2, 1, 1, 11)</code> and <code>Scrollbar(0, 50, 5, 0, 105)</code>, so usable values are <code>1..10</code> and <code>0..100</code> &mdash; the maximum stops at <code>maximum &minus; visibleAmount</code>. Its foreground is <code>fcolor=000000</code>; here the two roles follow the site's light and dark colour tokens, and Switch colors trades them as the applet does. Paint mode's seven fixed colours are the applet's own palette, brightened a little so they read at night. Extra shapes use the applet's own odd factors, <code>sqrt(3)/2</code> for the triangle and <code>1/2</code> for the square. The logic test checks all 32,320 option combinations at the board size and 1,792 more at four other sizes; no rule was simplified.</p>
+
+      <p class="tip">Start with the triangle at 2 circles, press Edges to see the missing sides appear, then press Paint and Extra shapes before switching the colours.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EdgeIllusion.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="edge-illusion-core.js"></script>
+<script src="edge-illusion.js"></script>
+</body>
+</html>
