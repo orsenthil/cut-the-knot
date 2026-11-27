@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circle Division &mdash; coolmaths</title>
+<meta name="description" content="Drag A and C around the circle: can two parallel chords cut off exactly a third of it?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circle-division/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circle Division">
+<meta property="og:description" content="Drag A and C around the circle: can two parallel chords cut off exactly a third of it?">
+<meta property="og:url" content="https://coolmaths.ai/circle-division/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    touch-action: none;
+  }
+  #board .circle { fill: none; stroke: var(--ink); stroke-width: 2.2; }
+  #board .guide { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 5 5; }
+  #board .band { fill: var(--accent); opacity: 0.16; stroke: none; pointer-events: none; }
+  #board .chord-bc { stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; }
+  #board .chord-ez { stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
+  #board .hint-line { stroke: var(--good); stroke-width: 1.8; stroke-dasharray: 4 4; }
+  #board .hint-arc { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .construct-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .cross-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .mark { fill: var(--muted); }
+  #board .pt-label { fill: var(--text); font-size: 0.85rem; font-weight: 600; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+</style>
+</head>
+<body data-game="circle-division" data-kind="demo">
+<main id="main">
+  <h1>Circle Division</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move two points around a circle and watch a pair of parallel lines cut off a piece of it.<br>
+    <strong>How to play:</strong> Drag A or C, or focus one and press the arrow keys. Tick Show names or Show hint to see how the lines are built, and press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Circle division: two draggable points A and C on the circle, the parallel chords EZ and BC, and the band between them"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox"> Show names</label>
+    <label><input id="hintBox" type="checkbox"> Show hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Take two points on a circle. The drawing finds two parallel lines that fence off a slice of the circle, and the size of that slice is decided by just one thing: how far apart the two points are around the circle.</p>
+
+      <h2>Finding E and B</h2>
+      <p>Let D be the centre. The <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord</a> AC has its midpoint M on the line from D that meets it at a right angle. Follow that line from M to the circle: you land on E, the middle of the shorter <a class="wiki-term" data-wiki="Arc_(geometry)" href="https://en.wikipedia.org/wiki/Arc_(geometry)" target="_blank" rel="noopener">arc</a> AC. Now draw the line through D <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a> to AC; where it meets the circle, away from A, is B.</p>
+
+      <h2>The second parallel line</h2>
+      <p>Join B to C. Through E draw another line parallel to BC, and call its other meeting point with the circle Z. The chords EZ and BC are parallel, so the four points Z, B, C, E fence off one band. The hint also shows K, where the line AB crosses EZ, and marks the two equal arcs EA and ZB that Euclid's proof uses.</p>
+
+      <h2>How big is the band?</h2>
+      <p>If the shorter arc AC is a fraction <code>f</code> of a whole turn, the band has exactly fraction <code>f</code> of the circle's area: <code>band area = f × πR²</code>. The opening picture puts A and C at the corners of an <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangle</a>: the arc is 120°, so <code>f = 120/360 = 1/3</code> and the band is one third of the circle. The same idea gives 1/4 for a square's side and 1/5 for a pentagon's: each is a side of an inscribed <a class="wiki-term" data-wiki="Regular_polygon" href="https://en.wikipedia.org/wiki/Regular_polygon" target="_blank" rel="noopener">regular polygon</a>. The logic test measures the band for many arcs and checks every one of those fractions. The article adds that a heptagon cannot be made with ruler and compass, though here you can simply drag the points to that angle.</p>
+
+      <p class="tip">Drag A closer to C and watch the band shrink. Drag A halfway around the circle so AC is a diameter: the band takes exactly half the circle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CircleDivision.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circle-division-core.js"></script>
+<script src="circle-division.js"></script>
+</body>
+</html>
