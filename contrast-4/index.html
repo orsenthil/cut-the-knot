@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contrast 4 &mdash; coolmaths</title>
+<meta name="description" content="Six grey rectangles are painted the very same shade on striped bands, yet some look lighter. Change the bands and the shades to see White's illusion.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/contrast-4/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Contrast 4">
+<meta property="og:description" content="Six grey rectangles are painted the very same shade on striped bands, yet some look lighter. Change the bands and the shades to see White's illusion.">
+<meta property="og:url" content="https://coolmaths.ai/contrast-4/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.8rem;
+    overflow: hidden;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+    --dark-band: #000000;
+    --light-band: #ffffff;
+    --patch-grey: #808080;
+  }
+  #board .frame { fill: none; stroke: var(--border); stroke-width: 1.5; }
+  #board .band-dark { fill: var(--dark-band); }
+  #board .band-light { fill: var(--light-band); }
+  #board .patch { fill: var(--patch-grey); }
+  #board .patch-focus { fill: none; stroke: var(--focus); stroke-width: 3; pointer-events: none; }
+  #board .row-label {
+    fill: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  #board .patch-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .patch-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  .slider-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.7rem;
+    margin: 0.35rem 0;
+  }
+  .slider-row label { min-width: 7rem; color: var(--muted); }
+  .slider-row input[type="range"] {
+    flex: 1 1 9rem;
+    min-width: 6rem;
+    max-width: 18rem;
+    accent-color: var(--accent);
+  }
+  .slider-row output {
+    min-width: 4.5rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+  .slider-row button { min-width: 2.5rem; min-height: 2.5rem; font-size: 1.1rem; }
+  #resetBtn { margin-top: 0.5rem; min-height: 2.5rem; }
+  button:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-game="contrast-4" data-kind="demo">
+<main id="main">
+  <h1>Contrast 4</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#geometry">Geometry</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Six grey rectangles sit on striped bands; every one is painted exactly the same grey, though some look lighter.<br>
+    <strong>How to play:</strong> Drag the blue dot to visit a rectangle, or focus it and use the arrow keys. Move the sliders to change the bands and the shades.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="group"
+         aria-label="Six striped bands with six identical grey patches, three high and three low"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="slider-row">
+      <label for="wInput">Band width</label>
+      <button type="button" data-step="w:-5" aria-label="Make the bands five units narrower">&minus;</button>
+      <input id="wInput" type="range" min="40" max="105" step="1" value="50" data-option="w" aria-label="Band width, from 40 to 105">
+      <button type="button" data-step="w:5" aria-label="Make the bands five units wider">+</button>
+      <output id="out-w" for="wInput">50</output>
+    </div>
+    <div class="slider-row">
+      <label for="hInput">Patch height</label>
+      <button type="button" data-step="h:-5" aria-label="Make the patches five units shorter">&minus;</button>
+      <input id="hInput" type="range" min="0" max="105" step="1" value="50" data-option="h" aria-label="Patch height, from 0 to 105">
+      <button type="button" data-step="h:5" aria-label="Make the patches five units taller">+</button>
+      <output id="out-h" for="hInput">50</output>
+    </div>
+    <div class="slider-row">
+      <label for="grayInput">Patch shade</label>
+      <button type="button" data-step="gray:-5" aria-label="Make the patches five units darker">&minus;</button>
+      <input id="grayInput" type="range" min="0" max="105" step="1" value="50" data-option="gray" aria-label="Shade of all six patches, from 0 to 105">
+      <button type="button" data-step="gray:5" aria-label="Make the patches five units lighter">+</button>
+      <output id="out-gray" for="grayInput">50 (#808080)</output>
+    </div>
+    <div class="slider-row">
+      <label for="minInput">Dark band</label>
+      <button type="button" data-step="min:-5" aria-label="Make the dark bands five units darker">&minus;</button>
+      <input id="minInput" type="range" min="0" max="105" step="1" value="0" data-option="min" aria-label="Shade of the dark bands, from 0 to 105">
+      <button type="button" data-step="min:5" aria-label="Make the dark bands five units lighter">+</button>
+      <output id="out-min" for="minInput">0 (#000000)</output>
+    </div>
+    <div class="slider-row">
+      <label for="maxInput">Light band</label>
+      <button type="button" data-step="max:-5" aria-label="Make the light bands five units darker">&minus;</button>
+      <input id="maxInput" type="range" min="0" max="105" step="1" value="100" data-option="max" aria-label="Shade of the light bands, from 0 to 105">
+      <button type="button" data-step="max:5" aria-label="Make the light bands five units lighter">+</button>
+      <output id="out-max" for="maxInput">100 (#ffffff)</output>
+    </div>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put every slider back to its starting value">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The surprise is not a trick with paint. All six small rectangles are filled with one colour; the striped background makes your eyes report two different colours.</p>
+
+      <h2>One grey, six patches</h2>
+      <p>The applet paints six tall bands, alternating dark and light, and lays six patches on them: three near the top of the dark bands and three near the bottom of the light bands. Every patch gets the very same <a class="wiki-term" data-wiki="Luminance" href="https://en.wikipedia.org/wiki/Luminance" target="_blank" rel="noopener">luminance</a>. That is the page's claim, "The gray rectangle are of the same shade", and the logic test confirms it for all 6,996 band-width and patch-height settings: the six fills are always identical. What changes is your <a class="wiki-term" data-wiki="Simultaneous_contrast" href="https://en.wikipedia.org/wiki/Simultaneous_contrast" target="_blank" rel="noopener">simultaneous contrast</a> with the neighbouring band. The page also says the patches that look lighter are the ones inside the darker bands.</p>
+
+      <h2>Six pieces, not three</h2>
+      <p>This is the vertical, V-shaped version of <a class="wiki-term" data-wiki="White%27s_illusion" href="https://en.wikipedia.org/wiki/White%27s_illusion" target="_blank" rel="noopener">White's illusion</a>. In the opening picture each patch is 72 units tall but only 22 wide, so its long vertical sides touch the stripes next door: a patch on a dark band touches a light one, and a patch on a light band touches dark ones. The illusion still appears, which is the page's second claim. Bogomolny explains it by the eye joining the six visible pieces into one bar, as though a longer band hid the middle, and reading its lightness as an average of the pieces and their surroundings. With the opening dark and light at 0 and 100, that average is <code>(0 + 100) / 2 = 50</code>, the middle grey <code>#808080</code> painted on all six patches; the logic test checks this for every evenly spaced pair of band shades. This is a proposal about seeing, not a calculation the program makes: it always paints one grey.</p>
+
+      <h2>Where the numbers come from</h2>
+      <p>The picture is 400 by 400. The bands start 20 units from the top and bottom, so they are 360 units tall. A band is <code>round((height × 2/3) × (W/100) / 6)</code> units wide, with W between 40 and 105; the six patches in a row are twice <code>round((bandHeight/2.5) × (H/100) / 2)</code> units tall, with H between 0 and 105. The logic test compares every one of those 6,996 pairs with a second transcription of the applet's own draw method, rectangle by rectangle. The three colour sliders run from 0 to 105 just as in the applet and make a grey from three equal channels; above 100 the old Java colour constructor would throw an exception, so this port saturates to white instead of breaking the picture. Adelson's <a class="wiki-term" data-wiki="T-junction" href="https://en.wikipedia.org/wiki/T-junction" target="_blank" rel="noopener">T-junction</a> explanation was written for the horizontal version; the page argues it does not apply here, and this port follows that reading.</p>
+
+      <p class="tip">Set the patch shade to 50 and slide the dark and light bands close together, then far apart. Does the grey itself ever change?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Contrast4.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="contrast-4-core.js"></script>
+<script src="contrast-4.js"></script>
+</body>
+</html>
