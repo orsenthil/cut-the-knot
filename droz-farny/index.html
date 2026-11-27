@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Droz Farny &mdash; coolmaths</title>
+<meta name="description" content="Turn two perpendicular lines through a triangle's orthocenter and watch the marks halfway along the three cut-off segments: why do they always land on one straight line?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/droz-farny/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Droz Farny">
+<meta property="og:description" content="Turn two perpendicular lines through a triangle's orthocenter and watch the marks halfway along the three cut-off segments: why do they always land on one straight line?">
+<meta property="og:url" content="https://coolmaths.ai/droz-farny/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+    border-radius: 8px;
+  }
+  #board .tri-edge { stroke: var(--ink); stroke-width: 2; fill: none; }
+  #board .given-line { stroke: var(--accent); stroke-width: 2; fill: none; }
+  #board .second-line { stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 7 4; fill: none; }
+  #board .altitude { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; fill: none; }
+  #board .reflect-line { stroke: var(--highlight); stroke-width: 1.6; fill: none; }
+  #board .premise { stroke: var(--highlight); stroke-width: 1.4; fill: none; }
+  #board .midline { stroke: var(--good); stroke-width: 3; fill: none; }
+  #board .proof-circle { fill: none; stroke: var(--muted); stroke-width: 1.4; }
+  #board .circle-x { stroke: var(--accent); }
+  #board .circle-y { stroke: var(--good); }
+  #board .circle-z { stroke: var(--highlight); }
+  #board .cut-dot { fill: var(--ink); opacity: 0.7; }
+  #board .mid-dot { fill: var(--good); }
+  #board .ortho-dot { fill: var(--accent); }
+  #board .reflect-dot { fill: var(--highlight); }
+  #board .aux-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text);
+    font-size: 0.9rem;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .point-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible {
+    outline: none;
+    stroke: var(--good);
+    stroke-width: 5;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.4rem 0 0;
+  }
+  .controls {
+    align-items: flex-start;
+  }
+  .controls fieldset {
+    flex: 1 1 14rem;
+    min-width: 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 0.7rem;
+  }
+  .controls legend {
+    color: var(--muted);
+    font-size: 0.9rem;
+    padding: 0 0.3rem;
+  }
+  .option-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.1rem 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="droz-farny" data-kind="demo">
+<main id="main">
+  <h1>Droz Farny</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two straight lines cross at one point in a triangle, and the three marks halfway along the pieces they cut off on the sides always lie on one straight line; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the four dots to move the triangle and the crossing lines. Tick the boxes to show the names, circles, altitudes or the line through the marks.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Triangle ABC with two perpendicular lines through the point H, six points where they meet the sides, and the three midpoints"></svg>
+    <p class="hint">Keyboard: Tab to a dot, then use the arrow keys (Shift makes a bigger step).</p>
+  </div>
+
+  <div class="controls">
+    <fieldset>
+      <legend>Show</legend>
+      <div class="option-grid">
+        <label><input id="namesBox" type="checkbox"> names</label>
+        <label><input id="altBox" type="checkbox"> altitudes</label>
+        <label><input id="premBox" type="checkbox"> premises</label>
+        <label><input id="lineBox" type="checkbox"> line</label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Circles</legend>
+      <div class="option-grid">
+        <label><input id="xxBox" type="checkbox"> XX'H</label>
+        <label><input id="yyBox" type="checkbox"> YY'H</label>
+        <label><input id="zzBox" type="checkbox"> ZZ'H</label>
+        <label><input id="abcBox" type="checkbox"> ABC</label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Reflections of H in</legend>
+      <div class="option-grid">
+        <label><input id="hrefABBox" type="checkbox"> AB</label>
+        <label><input id="hrefBCBox" type="checkbox"> BC</label>
+        <label><input id="hrefACBox" type="checkbox"> AC</label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Reflections of XYZ in</legend>
+      <div class="option-grid">
+        <label><input id="xyzABBox" type="checkbox"> AB</label>
+        <label><input id="xyzBCBox" type="checkbox"> BC</label>
+        <label><input id="xyzACBox" type="checkbox"> AC</label>
+      </div>
+    </fieldset>
+    <button id="resetBtn" type="button" class="primary">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Droz-Farny's theorem is a surprise: move the triangle or turn the two lines any way you like, and the three halfway marks still fall on a single line. The applet draws the pieces the proof uses.</p>
+
+      <h2>One right angle on each side</h2>
+      <p>Let the two lines through the <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a> H cut the side BC at X and X'. Because the lines are perpendicular, the angle at H in the triangle XHX' is a right angle. A right triangle's hypotenuse is a diameter of its <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>, so the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> Ma of XX' is the centre of a circle through H, X and X'. The same is true of Y, Y' and Mb on CA, and of Z, Z' and Mc on AB. Tick XX'H, YY'H and ZZ'H to see the three circles.</p>
+
+      <h2>Why the three marks line up</h2>
+      <p>Take H as the origin and the two given lines as the axes. The six cuts are then (a,0), (0,b), (c,0), (0,d), (e,0) and (0,f). A point made with the same number t on each side is (ta, (1&minus;t)b), and the three such points are collinear exactly when the determinant of the rows <code>ta, (1-t)b, 1</code> is zero. It equals <code>t(1-t)</code> times the determinant with rows <code>a, b, 1</code>, so it is enough to prove that one determinant vanishes. The page's analytic proof does this with the altitude equations; the logic test checked both the determinant identity on 600 arbitrary cuts and the vanishing determinant on more than 1,900 triangle-and-line configurations. It also checked t = 0, 1, values between them, and values outside [0,1].</p>
+
+      <h2>The reflections in the picture</h2>
+      <p>Reflect H in the three sides to get Ka, Kb and Kc. Each reflection lies both on the circumcircle of ABC and on the circle through H and the matching pair of cuts — for example Ka lies on the circle with centre Ma. The reflections of the line XYZ in the sides meet on the circumcircle at Q. Tick the reflection boxes and ABC to watch this; the point M is the second common point of the three circles, and the logic test checked that it lies on each of them.</p>
+
+      <h2>Trivial and degenerate cases</h2>
+      <p>The original page calls two cases obvious: a right triangle, and a line that is one of the altitudes. A line parallel to a side never meets it, so one of the six cuts runs off to infinity and there is no midpoint to mark; the theorem is about the ordinary finite cases. The test checks that the illustration stays usable at those edges. The sibling applet DrozFarnyCircles is a different theorem: two congruent circles for a pair of isogonal conjugates. It makes no midpoint claim, so none of its assertions are used here. The manifest's first URL pointed to a mobile page with the algebraic proof and no applet; the verified applet page is <a href="https://www.cut-the-knot.org/Curriculum/Geometry/DrozFarny.shtml" target="_blank" rel="noopener">Droz-Farny Line Theorem</a>.</p>
+
+      <p class="tip">Try ticking only the line box, then drag P until the two lines turn: the green line through the three cross marks stays straight.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/DrozFarny.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="droz-farny-core.js"></script>
+<script src="droz-farny.js"></script>
+</body>
+</html>
