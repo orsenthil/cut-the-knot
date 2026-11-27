@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Conditional Probability &mdash; coolmaths</title>
+<meta name="description" content="Move two rectangles over a grid of equally likely dots and watch the five probabilities change. Can you make the two events independent, then break that independence by changing the grid?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/conditional-probability/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Conditional Probability">
+<meta property="og:description" content="Move two rectangles over a grid of equally likely dots and watch the five probabilities change. Can you make the two events independent, then break that independence by changing the grid?">
+<meta property="og:url" content="https://coolmaths.ai/conditional-probability/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 46rem; margin: 0 auto; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board .dot { fill: var(--muted); opacity: 0.6; }
+  #board .rect-a { fill: var(--accent); fill-opacity: 0.16; stroke: var(--accent); stroke-width: 2.5; }
+  #board .rect-b { fill: var(--highlight); stroke: var(--good); stroke-width: 2.5; }
+  #board .rect-i { fill: var(--good); fill-opacity: 0.4; stroke: none; }
+  #board .rect-label { fill: var(--text); font-size: 17px; font-weight: 700; pointer-events: none; }
+  #board .corner-a { fill: var(--accent); }
+  #board .corner-b { fill: var(--good); }
+  #board .geom-handle { stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 5; }
+  .controls { justify-content: center; gap: 0.5rem 0.8rem; flex-wrap: wrap; }
+  .controls label { white-space: normal; }
+  .controls input[type="number"] { width: 4.5rem; max-width: 100%; font: inherit; color: var(--text);
+    background: var(--card); border: 1px solid var(--border-strong); border-radius: 0.45rem; padding: 0.25rem; }
+  #readout {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+    gap: 0.35rem 0.8rem; max-width: 46rem; margin: 0.8rem auto 0;
+    font-variant-numeric: tabular-nums; overflow-wrap: anywhere;
+  }
+  #readout span { padding: 0.35rem 0.5rem; background: var(--surface); border-radius: 0.5rem; }
+  #readout output { font-weight: 700; color: var(--accent); }
+  #cells { grid-column: 1 / -1; color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body data-game="conditional-probability" data-kind="demo">
+<main id="main">
+  <h1>Conditional Probability</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#probability">Probability</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is not a game to win: two coloured rectangles mark two groups of equally likely dots, and the numbers show how likely each group is.<br>
+    <strong>How to play:</strong> Drag a corner dot to move or change a rectangle, or focus it and use the arrow keys. Change the grid sizes in the boxes, then press Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 320" role="group"
+         aria-label="A grid of dots with two drag-able rectangles, A and B, and five probability readouts below. Drag the eight corner dots to change the rectangles."></svg>
+    <div id="readout" aria-live="polite">
+      <span>P(A) = <output id="out-pa"></output></span>
+      <span>P(B) = <output id="out-pb"></output></span>
+      <span>P(A and B) = <output id="out-pi"></output></span>
+      <span>P(A given B) = <output id="out-pab"></output></span>
+      <span>P(B given A) = <output id="out-pba"></output></span>
+      <span id="cells"></span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label for="nxInput">Columns (Nx)</label>
+    <input id="nxInput" type="number" min="10" max="30" step="1" value="25" aria-label="Number of grid columns, from 10 to 30">
+    <label for="nyInput">Rows (Ny)</label>
+    <input id="nyInput" type="number" min="10" max="30" step="1" value="20" aria-label="Number of grid rows, from 10 to 30">
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset both rectangles and the grid to the starting position">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two rectangles move over a grid of equally likely dots. Change their size and the readouts change too. The applet's page claims two formulas for conditional probabilities and a test for independence: do they always agree?</p>
+
+      <h2>Counting the dots</h2>
+      <p>There are <code>Nx × Ny</code> dots, each equally likely. A rectangle covers a whole number of grid cells, so <code>P(A) = cells in A / (Nx × Ny)</code>, and the same goes for B. Where the rectangles overlap, that part is counted once: <code>P(A and B)</code> is the number of cells in the overlap divided by all the dots. Corners snap to grid lines, so every displayed number is a fraction of one grid. This is the idea behind <a class="wiki-term" data-wiki="Probability" href="https://en.wikipedia.org/wiki/Probability" target="_blank" rel="noopener">probability</a> in a finite <a class="wiki-term" data-wiki="Sample_space" href="https://en.wikipedia.org/wiki/Sample_space" target="_blank" rel="noopener">sample space</a>.</p>
+
+      <h2>What “given B” means</h2>
+      <p>If we are told that B happened, only the dots inside B remain possible. Of those, the ones that also lie in A give <code>P(A given B) = P(A and B) / P(B)</code>. Swapping the letters gives <code>P(B given A) = P(A and B) / P(A)</code>. These are the two formulas printed on the applet's page, and the logic test checks all five readouts against a second transcription of the applet's bytecode for every Nx and Ny from 10 to 30. If B has no cells at all, the applet divides zero by zero and displays <code>NaN</code>: the formula needs <code>P(B) &gt; 0</code>. This is the definition of <a class="wiki-term" data-wiki="Conditional_probability" href="https://en.wikipedia.org/wiki/Conditional_probability" target="_blank" rel="noopener">conditional probability</a>.</p>
+
+      <h2>Independence</h2>
+      <p>The page says A and B are independent when <code>P(A given B) = P(A)</code>, which it calls “the same as” <code>P(B given A) = P(B)</code>, and adds <code>P(A and B) = P(A) × P(B)</code>. All three are equivalent when both rectangles have cells: with <code>N = Nx × Ny</code>, each condition is the integer equality <code>overlap × N = cells in A × cells in B</code>. The test confirms this for thousands of rectangles. One caveat: with an empty rectangle a conditional is <code>NaN</code>, so the first two statements cannot be equal while the product statement still holds — the page's “which is the same” silently assumes positive probabilities. Independence in this sense is called <a class="wiki-term" data-wiki="Statistical_independence" href="https://en.wikipedia.org/wiki/Statistical_independence" target="_blank" rel="noopener">statistical independence</a>.</p>
+
+      <h2>Changing the whole grid</h2>
+      <p>The applet's page gives an independent pair on <code>25 × 20</code> dots: A covers 20 cells, B covers 25, and their overlap is 1 cell, so <code>1/500 = (20/500) × (25/500)</code>. Change only the columns to <code>24 × 20</code>: the same rectangles still give the same two conditional probabilities, but now <code>1/480</code> is not <code>(20/480) × (25/480)</code>, so the events become dependent. Keeping the conditionals is not enough; the total number of dots matters. The article at the catalogue address (Scott E. Brodie's) makes the related claim that the pieces <code>A ∩ Bᵢ</code> add back up to A, and that <code>P(A) = Σ P(A given Bᵢ) P(Bᵢ)</code> for mutually exclusive, exhaustive <code>Bᵢ</code> — the test checks that identity for every grid here. That article has formulas but no applet; the interactive applet is on the <a href="https://www.cut-the-knot.org/Curriculum/Probability/ConditionalProbability.shtml" target="_blank" rel="noopener">Conditional Probability and Independent Events</a> page, which is the page credited in the byline.</p>
+
+      <p class="tip">Drag A until it barely touches B, then slide one more cell: watch the overlap readout jump from zero and the two conditional probabilities change together.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Probability/ConditionalProbability.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="conditional-probability-core.js"></script>
+<script src="conditional-probability.js"></script>
+</body>
+</html>
