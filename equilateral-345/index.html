@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equilateral 345 &mdash; coolmaths</title>
+<meta name="description" content="A point inside an equilateral triangle is 3, 4 and 5 units from its three corners. How long is each side of the triangle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equilateral-345/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Equilateral 345">
+<meta property="og:description" content="A point inside an equilateral triangle is 3, 4 and 5 units from its three corners. How long is each side of the triangle?">
+<meta property="og:url" content="https://coolmaths.ai/equilateral-345/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 44rem; margin: 0 auto; padding: 0.6rem; overflow-x: auto; }
+  #board { display: block; width: 100%; max-width: 40rem; height: auto; touch-action: none; }
+  #board .copy-outline { fill: var(--highlight); fill-opacity: 0.08; stroke: var(--muted);
+    stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .copy-outline.proof { stroke: var(--accent); stroke-dasharray: none; fill-opacity: 0.05; }
+  #board .tri-outline { fill: var(--accent); fill-opacity: 0.12; stroke: var(--ink); stroke-width: 2.6; }
+  #board .hexagon { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linejoin: round; }
+  #board .equi-fill { fill: var(--accent); fill-opacity: 0.32; }
+  #board .right-fill { fill: var(--good); fill-opacity: 0.28; }
+  #board .spoke { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .dot-p { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .dot-image { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label { fill: var(--text); font-size: 19px; font-weight: 650; pointer-events: none; }
+  #board .length-label { fill: var(--good); font-size: 17px; font-weight: 650; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 5; }
+  #readout { margin: 0.4rem 0 0; text-align: center; font-size: 0.95rem;
+    font-variant-numeric: tabular-nums; overflow-wrap: anywhere; color: var(--text); }
+  .dial { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+  .dial input { width: min(14rem, 60vw); }
+  .dial output { min-width: 2.5rem; font-variant-numeric: tabular-nums; }
+  .dial label, .flags label { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .dial input[type="range"], .flags input { min-height: 1.5rem; min-width: 1.5rem; }
+</style>
+</head>
+<body data-game="equilateral-345" data-kind="demo">
+<main id="main">
+  <h1>Equilateral 345</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture puzzle: a point inside an equilateral triangle sits 3, 4 and 5 steps from the three corners, and we want to know how long each side is.<br>
+    <strong>How to play:</strong> Drag a corner dot or turn the dial to swing copies of the triangle around. Tick names or lengths to see them, then press Show the 60° proof.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="100 30 440 400" role="group"
+         aria-label="An equilateral triangle ABC with a point P inside it. A dial turns copies of the triangle around the corners; at 60 degrees a hexagon made from three equilateral and three right triangles appears. Drag the corner dots to reshape the triangle."></svg>
+    <p id="readout" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <div class="dial">
+      <label for="angle">Turn the copies</label>
+      <input id="angle" type="range" min="0" max="65" step="1" value="0"
+             aria-label="Rotation angle in degrees, from 0 to 65">
+      <output id="angleOut" for="angle">0°</output>
+    </div>
+    <div class="flags">
+      <label for="names"><input id="names" type="checkbox"> show names</label>
+      <label for="lengths"><input id="lengths" type="checkbox"> show lengths</label>
+    </div>
+    <button id="proofBtn" type="button" class="primary" aria-label="Turn the copies to 60 degrees to see the proof picture">Show the 60° proof</button>
+    <button id="resetBtn" type="button" aria-label="Put the triangle and the dial back where they started">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The surprise is that three distances measured from one point inside a triangle pin down the triangle's size. Rotate a copy of the triangle around each corner by 60°, and those distances become the sides of pieces that fit a hexagon twice as big as the triangle.</p>
+
+      <h2>A right triangle hiding in the lengths</h2>
+      <p>The numbers 3, 4 and 5 are the sides of a <a class="wiki-term" data-wiki="Right_triangle" href="https://en.wikipedia.org/wiki/Right_triangle" target="_blank" rel="noopener">right triangle</a>, because <code>3² + 4² = 5²</code>. By the converse of the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a>, any triangle with those three side lengths must have a right angle. Its area is <code>3 × 4 / 2 = 6</code>. Tick <em>show lengths</em> on the board to see where the three distances sit.</p>
+
+      <h2>Turning by 60 degrees</h2>
+      <p>Turn the <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangle</a> by 60° around each of its corners, all in the same direction. Four copies now make one bigger equilateral triangle, with three images of P inside it. The hexagon <code>A Pc B Pa C Pb</code> has <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> twice that of ABC: the part left over is each of the triangles ABP, BCP and CAP twice. The hexagon also splits into three equilateral triangles with sides 3, 4 and 5, and three copies of the right triangle from above. The logic test checked both area sums on 175 different sizes.</p>
+
+      <h2>Two area sums, one answer</h2>
+      <p>Writing <code>A(x) = x²√3/4</code> for the area of an equilateral triangle of side <code>x</code>, the hexagon gives<br>
+      <code>2a²√3/4 = (3² + 4² + 5²)√3/4 + 3 × (3 × 4 / 2)</code>.<br>
+      That simplifies to <code>a² = 25 + 12√3</code>, so <code>a ≈ 6.7664</code> when the distances really are 3, 4 and 5. The button sets the dial to 60°; away from 60° the copies are still turning, but they do not line up into the hexagon. The live cut-the-knot page now shows a GeoGebra picture instead of the Java applet; the controls here follow the applet preserved in a <a href="https://web.archive.org/web/20100120072430/http://www.cut-the-knot.org/Curriculum/Geometry/Equilateral345.shtml" target="_blank" rel="noopener">2010 Wayback snapshot</a>. One applet quirk is kept: its FindP places P using <code>24 + 12√3</code> instead of <code>25 + 12√3</code>, so its drawn distances are about 1% away from 3:4:5. The answer above is the exact one.</p>
+
+      <p class="tip">Set the dial to 60°, tick both boxes, then drag corner A. Watch the three coloured pieces travel with the corner while P stays put, just as in the Java applet.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Equilateral345.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="equilateral-345-core.js"></script>
+<script src="equilateral-345.js"></script>
+</body>
+</html>
