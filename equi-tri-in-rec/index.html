@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equi Tri In Rec &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a rectangle or a slanted parallelogram. Do the three sides of triangle APQ always stay equal?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equi-tri-in-rec/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Equi Tri In Rec">
+<meta property="og:description" content="Drag the corners of a rectangle or a slanted parallelogram. Do the three sides of triangle APQ always stay equal?">
+<meta property="og:url" content="https://coolmaths.ai/equi-tri-in-rec/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    touch-action: none;
+  }
+  #board .tri-apq { fill: var(--accent); opacity: 0.16; }
+  #board .tri-small { fill: var(--highlight); opacity: 0.22; }
+  #board .para-outline { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; }
+  #board .apq-outline { fill: none; stroke: var(--good); stroke-width: 2.4; stroke-linejoin: round; }
+  #board .small-side { stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  #board .extend-line { stroke: var(--ink); stroke-width: 1.5; opacity: 0.65; }
+  #board .hint-line { stroke: var(--bad); stroke-width: 2.4; stroke-dasharray: 7 5; }
+  #board .angle { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .aux-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .pt-label { fill: var(--text); font-size: 0.85rem; font-weight: 600; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="equi-tri-in-rec" data-kind="demo">
+<main id="main">
+  <h1>Equi Tri In Rec</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch a triangle that keeps three equal sides while the shape around it bends.<br>
+    <strong>How to play:</strong> Drag the corners A, B, C or D, or focus a corner and use the arrow keys. Tick the boxes to show names, angles or guiding lines, then press Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="group"
+         aria-label="A four-sided shape ABCD with equilateral triangles on two sides and the triangle APQ. Drag A, B, C or D."></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" aria-label="Show point names"> Names</label>
+    <label><input id="statementBox" type="checkbox" aria-label="Show the three equal angles of triangle APQ"> Statement</label>
+    <label><input id="premiseBox" type="checkbox" aria-label="Show the equilateral triangles and their angles"> Premise</label>
+    <label><input id="hintBox" type="checkbox" aria-label="Show the parallel lines XY and PQ"> Hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the picture">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The picture starts as a rectangle, but pull a corner and it becomes a slanted four-sided shape. The orange triangle APQ still has three equal sides. Nothing about the rectangle's right angles is needed.</p>
+
+      <h2>Two small triangles on neighbouring sides</h2>
+      <p>On side BC we build an <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangle</a> BCY, and on side CD another one, CDX. Both are turned the same way: the applet takes each side, <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotates</a> a copy of it by 60° about one end, and lets the two rays meet at the new point. X and Y move whenever a corner moves, and each small triangle always has three equal sides.</p>
+
+      <h2>Where P and Q come from</h2>
+      <p>Extend AX until it meets the line BC; that is P. Extend AY until it meets the line CD; that is Q. In a rectangle, X is the midpoint of AP and Y is the midpoint of AQ, so APQ is a copy of AXY made twice as large — a <a class="wiki-term" data-wiki="Dilation_(geometry)" href="https://en.wikipedia.org/wiki/Dilation_(geometry)" target="_blank" rel="noopener">dilation</a> with coefficient 2. For a slanted shape the multiplier changes, but AX : AP and AY : AQ stay equal. That is why XY and PQ are <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a>; tick <em>Hint</em> to see the two lines.</p>
+
+      <h2>Why the orange triangle cannot change shape</h2>
+      <p>Write <code>u = B − A</code> and <code>v = D − A</code>, so <code>C = A + u + v</code>. A 60° turn takes X to <code>A + v + R₊u</code> and Y to <code>A + u + R₋v</code>. Applying <code>R₋</code> to the first vector gives the second, so AXY is equilateral for <em>any</em> <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a>, not just a rectangle. P and Q are the same multiple of AX and AY, so APQ is just AXY turned and enlarged: equilateral too. The logic test checks this on rectangles, every one-corner drag and hundreds of random shapes, and confirms the page's proviso — if the two small triangles are turned opposite ways, the claim fails every time. One detail the picture shows but the short wording hides: P and Q lie on the <em>lines</em> BC and CD, and for a very wide or tall rectangle one of them falls beyond the side itself.</p>
+
+      <p class="tip">Pull D far to the right and watch Q slide past C onto the extension of CD; the three sides of APQ still match.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EquiTriInRec.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="equi-tri-in-rec-core.js"></script>
+<script src="equi-tri-in-rec.js"></script>
+</body>
+</html>
