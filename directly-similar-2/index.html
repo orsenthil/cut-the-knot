@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Directly Similar 2 &mdash; coolmaths</title>
+<meta name="description" content="Two matching triangles and a point P make a third triangle. Drag the corners and the point: why does the new triangle keep the same shape?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/directly-similar-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Directly Similar 2">
+<meta property="og:description" content="Two matching triangles and a point P make a third triangle. Drag the corners and the point: why does the new triangle keep the same shape?">
+<meta property="og:url" content="https://coolmaths.ai/directly-similar-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .triangle { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .triangle.primed { stroke-dasharray: 9 6; }
+  #board .triangle.made { stroke: var(--accent); stroke-width: 3.5; }
+  #board .match { fill: none; stroke-width: 2; opacity: 0.85; }
+  #board .match-0 { stroke: var(--bad); }
+  #board .match-1 { stroke: var(--good); }
+  #board .match-2 { stroke: var(--accent); }
+  #board .match.marked { stroke-width: 4; stroke-dasharray: 5 5; }
+  #board .hint-arc { fill: none; stroke-width: 2.5; }
+  #board .arc-0 { stroke: var(--bad); }
+  #board .arc-1 { stroke: var(--good); }
+  #board .arc-2 { stroke: var(--accent); }
+  #board .p-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  #board .f-dot { fill: var(--stage); stroke: var(--ink); stroke-width: 2; }
+  #board .pt-label { fill: var(--text); font-size: 1.05rem; font-weight: 600; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+  .controls input[type="checkbox"] { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+</style>
+</head>
+<body data-game="directly-similar-2" data-kind="demo">
+<main id="main">
+  <h1>Directly Similar 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two matching triangles and a point P make a third triangle. There is nothing to win: the new triangle always keeps the same shape.<br>
+    <strong>How to play:</strong> Drag a blue dot, or focus one and press the arrow keys. Tick "Show names" or "Show hint" to see more, and press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 500" role="group"
+         aria-label="Two matching triangles, a point P, and the third triangle built from their matching corners"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" aria-label="Show the point names">Show names</label>
+    <label><input id="hintBox" type="checkbox" aria-label="Show matching angles and links">Show hint</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset all six dots to the starting positions">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move any blue dot: the coloured lines change length and direction, yet the outline by P keeps the same corner angles as both given triangles. The live cut-the-knot page shows a still picture in place of the applet; the Java version was checked in the <a href="https://web.archive.org/web/20080829200817/http://www.cut-the-knot.org/Curriculum/Geometry/DirectlySimilar2.shtml" target="_blank" rel="noopener">29 August 2008 archive</a>, which carries the same explanation and the <code>DirectlySimilar2</code> applet embedded twice, at 500 by 500 pixels.</p>
+
+      <h2>The claim on the page</h2>
+      <p>Here <code>P + XY</code> means: start at P and make the same step that takes X to Y. The archived page says, exactly:</p>
+      <blockquote>Given two similar <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangles</a> ABC and A'B'C' and a point P, let A<sub>1</sub> = P + AA', B<sub>1</sub> = P + BB', and C<sub>1</sub> = P + CC'. Then triangle A<sub>1</sub>B<sub>1</sub>C<sub>1</sub> is similar to ABC and A'B'C'.</blockquote>
+      <p>It adds that for any two <a class="wiki-term" data-wiki="Similarity_(geometry)" href="https://en.wikipedia.org/wiki/Similarity_(geometry)" target="_blank" rel="noopener">directly similar figures</a> S and S', the same construction traces a figure similar to both, and connects this to the Fundamental Theorem of Directly Similar Figures and to <a class="wiki-term" data-wiki="Spiral_similarity" href="https://en.wikipedia.org/wiki/Spiral_similarity" target="_blank" rel="noopener">spiral similarities</a>. The proof refers to a formula with m = 1 and l = &minus;1; the next section is that formula in words.</p>
+
+      <h2>Why subtracting matching steps keeps the shape</h2>
+      <p>Write the points as <a class="wiki-term" data-wiki="Complex_number" href="https://en.wikipedia.org/wiki/Complex_number" target="_blank" rel="noopener">complex numbers</a>. Directly similar triangles have one complex number q with Z'<sub>k</sub> &minus; Z'<sub>0</sub> = q (Z<sub>k</sub> &minus; Z<sub>0</sub>) for k = 1, 2: the same <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a> and scaling from every corresponding vertex. For the page's new corners W<sub>k</sub> = p + Z'<sub>k</sub> &minus; Z<sub>k</sub>, the differences are</p>
+      <blockquote><code>W<sub>k</sub> &minus; W<sub>0</sub> = (Z'<sub>k</sub> &minus; Z'<sub>0</sub>) &minus; (Z<sub>k</sub> &minus; Z<sub>0</sub>) = (q &minus; 1)(Z<sub>k</sub> &minus; Z<sub>0</sub>)</code></blockquote>
+      <p>One multiplier, (q &minus; 1), takes every side of ABC to the matching side of A<sub>1</sub>B<sub>1</sub>C<sub>1</sub>; that is exactly the page's l = &minus;1 against m = 1. The third triangle is also similar to A'B'C', because its sides are (1 &minus; 1/q) times theirs. If q = 1, the two triangles are translates: q &minus; 1 is zero and all three new corners land on one point. The page does not mention this case; the test counts it separately instead of calling it a counterexample.</p>
+
+      <h2>What the applet draws, and how this differs from Directly Similar 1</h2>
+      <p>The canvas let you drag A, B, C, A' (= D), B' (= E) and P. It built C' (= F) from the two signed angles of ABC: rotate the ray D&rarr;E by the angle at A, rotate E&rarr;D by the angle at B, and cross the two lines. Then it drew A<sub>1</sub> = P + A &minus; A' and its two partners, the three matching links, and the new triangle. Note the sign: the page's AA' is A' &minus; A, while the canvas uses A &minus; A'. The two figures are half-turns of each other about P, so both have the same shape. <em>Directly Similar 1</em> instead used two squares given by opposite corners, had no checkboxes, used the page's sign, and never completed a third corner. This applet even keeps an unused <code>GetSquare</code> method copied from that sibling; the logic test ignores it. <em>Show hint</em> marks matching angles and links, and <em>Show names</em> labels the corners; both were off in the page's first copy and on in its second.</p>
+
+      <h2>What the logic test checks</h2>
+      <p>The test writes the applet's layout, angle, rotation, intersection and translation methods a second time from the bytecode and compares them with the port over 644 canvas sizes, 2,025 structured and 5,000 random completions, and 5,000 translations. It then checks the page's claim over more than 5,000 configurations in three positions of P and over 5,000 independently generated directly similar figures (including a five-point figure). It also checks the collapse when q = 1, the missing third vertex when two dragged points nearly coincide, and that a mirror image &mdash; an <em>opposite</em> similarity &mdash; does not satisfy the direct-similarity claim. The port changes only the presentation: theme colours, larger dots, dashed outline for A'B'C' and a graceful empty picture instead of a Java exception when a triangle cannot be completed.</p>
+
+      <p class="tip">Try dragging A' onto A. The two given triangles are then translates, and A<sub>1</sub>B<sub>1</sub>C<sub>1</sub> shrinks to one point at P.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/DirectlySimilar2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="directly-similar-2-core.js"></script>
+<script src="directly-similar-2.js"></script>
+</body>
+</html>
