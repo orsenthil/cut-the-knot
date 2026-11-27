@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Orthocenter and Three Equal Circles &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and watch the three circles through its orthocenter. Why are they all the same size as the triangle's own circumcircle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equal-circles-orthocenter/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Orthocenter and Three Equal Circles">
+<meta property="og:description" content="Drag the corners of a triangle and watch the three circles through its orthocenter. Why are they all the same size as the triangle's own circumcircle?">
+<meta property="og:url" content="https://coolmaths.ai/equal-circles-orthocenter/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour comes from a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .circle-a { fill: none; stroke: var(--accent); stroke-width: 2.2; }
+  #board .circle-b { fill: none; stroke: var(--good); stroke-width: 2.2; }
+  #board .circle-c { fill: none; stroke: var(--bad); stroke-width: 2.2; }
+  #board .circumcircle { fill: none; stroke: var(--ink); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .tri-abc { fill: var(--accent-soft); stroke: var(--ink); stroke-width: 2.4; }
+  #board .outer-tri { fill: none; stroke: var(--highlight); stroke-width: 3; }
+  #board .altitude { stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 3 4; }
+  #board .side-line { stroke: var(--muted); stroke-width: 1.2; opacity: 0.65; }
+  #board .diameter { stroke: var(--good); stroke-width: 2.6; }
+  #board .right-angle { fill: none; stroke: var(--highlight); stroke-width: 1.8; }
+  #board .h-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.4; }
+  #board .outer-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.4; }
+  #board .centre-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1.2; }
+  #board .point-label {
+    fill: var(--text);
+    font: 600 0.95rem var(--font);
+    pointer-events: none;
+  }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2.5;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+  .controls input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--accent);
+  }
+  .controls button { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="equal-circles-orthocenter" data-kind="demo">
+<main id="main">
+  <h1>Orthocenter and Three Equal Circles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: the three circles through two corners and the point where a triangle's heights meet are the same size as the circle around the whole triangle.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a dot and use the arrow keys. Tick the boxes to show names, heights, the equal diameters or the outside triangle.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 440 320" role="group"
+         aria-label="Triangle ABC, its three circles through the orthocenter H, and the diameters HA prime, HB prime, HC prime"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Show names</label>
+    <label><input id="premise" type="checkbox"> Show premise</label>
+    <label><input id="statement" type="checkbox"> Show statement</label>
+    <label><input id="hint" type="checkbox"> Show hint</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Draw a new starting triangle">New diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Start with any triangle. Each pair of corners and the point where the three heights meet determines a circle. The surprise is that all three of those circles are the same size as the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of the triangle you started with. Drag a corner and see if you can break that.</p>
+
+      <h2>The point where the heights meet</h2>
+      <p>The three lines from a corner straight across the opposite side meet at the <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a> <code>H</code>. For <code>ABC</code>, the circle through <code>B</code>, <code>C</code> and <code>H</code> has the same radius as the circle through <code>A</code>, <code>B</code> and <code>C</code>. The same goes for the circles through <code>C,A,H</code> and <code>A,B,H</code>. "Equal" here means equal in size, not the very same circle: the three new circles pass through different points.</p>
+
+      <h2>Reflecting the point across a side</h2>
+      <p>Here is the page's first proof. Let the <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a> from <code>A</code> meet <code>BC</code> at <code>Ha</code>, and let it cross the circumcircle again at <code>P</code>. Reflecting <code>H</code> in <code>BC</code> lands exactly on <code>P</code>, so <code>Ha</code> is the midpoint of <code>H P</code>. Triangles <code>HBC</code> and <code>PBC</code> then have the same base and the same height, hence they are congruent and their circumcircles are equal. But <code>P</code> is already on the circumcircle of <code>ABC</code>, so that circle <em>is</em> the circle through <code>B</code>, <code>C</code> and <code>H</code>.</p>
+
+      <h2>Three equal diameters</h2>
+      <p>Write the corners as vectors from the circumcenter <code>O</code>. Then <code>H = A + B + C &minus; 2O</code>. The point opposite <code>H</code> on the circle through <code>B,C,H</code> is <code>A&prime; = B + C &minus; A</code>, and cyclically <code>B&prime; = C + A &minus; B</code> and <code>C&prime; = A + B &minus; C</code>. So <code>A</code>, <code>B</code> and <code>C</code> are the midpoints of <code>B&prime;C&prime;</code>, <code>C&prime;A&prime;</code> and <code>A&prime;B&prime;</code>: <code>A&prime;B&prime;C&prime;</code> is the <a class="wiki-term" data-wiki="Medial_triangle" href="https://en.wikipedia.org/wiki/Medial_triangle" target="_blank" rel="noopener">anticomplementary triangle</a> of <code>ABC</code>, with four times its area and <code>H</code> as its circumcenter. The three diameters <code>HA&prime;</code>, <code>HB&prime;</code> and <code>HC&prime;</code> all equal <code>2R</code>, the circumdiameter. Tick "Show hint" and "Show premise" to see the right angles which say that those segments really are diameters.</p>
+
+      <h2>What was checked</h2>
+      <p>The logic test checks all of the page's claims on the opening shape, ten hand-picked triangles, a grid of 400 shapes and 700 random ones: equal radii, equal diameters, <code>H</code> as the outer triangle's circumcenter, the three straight lines <code>A&prime;BC&prime;</code> and so on, the four congruent triangles, the area ratio four, and the reflected point on the circumcircle. Every number is compared with a second transcription of the applet's own bytecode and with the closed formulas above; all of them agree. A triangle that is flat, or right-angled so one of the three circles degenerates, is refused, as the applet's own guard did. The live <a href="https://www.cut-the-knot.org/Curriculum/Geometry/EqualCirclesOrthocenter.shtml" target="_blank" rel="noopener">cut-the-knot page</a> now has a GeoGebra figure instead of the Java applet; a <a href="https://web.archive.org/web/20100120073241/http://www.cut-the-knot.org/Curriculum/Geometry/EqualCirclesOrthocenter.shtml" target="_blank" rel="noopener">2010 capture</a> shows the original <code>EqualCirclesOrthocenter</code> applet on that address. That old page also passed a <code>ShowNames</code> parameter the applet never read, so all four boxes start unchecked here, and the "New diagram" button is an addition for exploration.</p>
+
+      <p class="tip">Tick "Show premise" and then "Show hint": the six little square corners at A, B and C show why the lines from H are diameters of equal circles.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EqualCirclesOrthocenter.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="equal-circles-orthocenter-core.js"></script>
+<script src="equal-circles-orthocenter.js"></script>
+</body>
+</html>
