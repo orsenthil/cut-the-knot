@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eyeball 2 &mdash; coolmaths</title>
+<meta name="description" content="Drag two circles and their tangent lines: will the two green circles inside them always have the same radius?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/eyeball-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Eyeball 2">
+<meta property="og:description" content="Drag two circles and their tangent lines: will the two green circles inside them always have the same radius?">
+<meta property="og:url" content="https://coolmaths.ai/eyeball-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .centre-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 7 6; }
+  #board .main-circle { fill: var(--accent); fill-opacity: 0.08; stroke: var(--ink); stroke-width: 2.5; }
+  #board .tangent { stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
+  #board .inner-circle { fill: var(--good); fill-opacity: 0.5; stroke: var(--good); stroke-width: 3; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .radius-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 6; }
+  #board .point-label { fill: var(--text); font-size: 19px; font-weight: 600; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls button { min-height: 2.5rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="eyeball-2" data-kind="demo">
+<main id="main">
+  <h1>Eyeball 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> Two circles, straight lines touching them, and a small green circle inside each one.<br>
+    <strong>How to play:</strong> Drag the four dots, or focus one and use the arrow keys. Move the circles and their rims to see what changes and what stays the same.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 400" role="group"
+         aria-label="Two circles with four tangents from their farthest points and two green inner circles. Four dots can be dragged to change the picture."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Put both circles back where they started">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the dots and the two green circles grow or shrink together. What looks like a free choice of sizes is really one formula with the two circles swapped.</p>
+
+      <h2>Four touching lines</h2>
+      <p>Let the circles have centres <code>A</code>, <code>B</code>, radii <code>RA</code>, <code>RB</code>, and centre distance <code>AB</code>. The dot <code>P</code> is the point of the first circle farthest from <code>B</code>, and <code>Q</code> is the point of the second farthest from <code>A</code>. From each of these points two <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> lines touch the other circle. The lines and the arc between them make the two curved, "isosceles" triangles. The drawing works exactly when neither circle swallows the other's far point: <code>AB &gt; |RA &minus; RB|</code>. The logic test checks that boundary across thousands of configurations.</p>
+
+      <h2>One radius from similar triangles</h2>
+      <p>For the tangent line <code>PT</code>, the radius <code>BT</code> is perpendicular to it, so <code>PTB</code> is a right triangle with <code>PB = RA + AB</code> and <code>BT = RB</code>. The green <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> of the curved triangle touches the same line at <code>S</code>; its centre <code>R</code> lies <code>PR = 2RA &minus; RS</code> from <code>P</code>, because the little circle touches the big one at the point facing the other circle. The two right triangles are <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similar_triangles" target="_blank" rel="noopener">similar</a>, so</p>
+      <blockquote><code>PB / BT = PR / RS</code><br><code>(RA + AB) / RB = (2RA &minus; RS) / RS</code><br><code>RS = 2 RA RB / (RA + RB + AB)</code></blockquote>
+
+      <h2>Why the two circles match</h2>
+      <p>The formula is unchanged when <code>A</code> and <code>B</code> are swapped, and swapping them is exactly how the second curved triangle is made. So its circle has the same radius. This is the page's exact claim — the two "incircles" are always equal — and the logic test confirms it, including that each green circle really touches its two tangent lines and its own circle from the inside. It also confirms that when <code>AB &lt; |RA &minus; RB|</code> there are no tangents at all, so the claim is only about the drawable cases. This differs from the sibling <em>Eyeball</em> applet, whose single orange circle has radius <code>AB/2</code> at the midpoint of the centres; the two theorems are not the same statement.</p>
+
+      <h2>An old tablet, and a small quirk</h2>
+      <p>The page calls this an 1842 <a class="wiki-term" data-wiki="Sangaku" href="https://en.wikipedia.org/wiki/Sangaku" target="_blank" rel="noopener">sangaku</a> from Aichi prefecture. Its live page now embeds a GeoGebra picture instead of the Java applet; the 2012 <a href="https://web.archive.org/web/20120310232416id_/http://www.cut-the-knot.org/Curriculum/Geometry/Eyeball2.shtml" target="_blank" rel="noopener">archived page</a> does embed <code>APPLET CODE="Eyeball2"</code>. One quirk: the Java code places its two green circles at the <em>outer</em> points <code>P</code> and <code>Q</code>, touching their own circles there, while the page's diagram and proof place them on the sides facing each other, touching the tangents. Both placements use the same radius, which is what the theorem asserts; this port follows the page's diagram.</p>
+
+      <p class="tip">Try moving a rim dot until one circle nearly contains the other: the tangents disappear just as the green radius would outgrow the smaller circle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Eyeball2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="eyeball-2-core.js"></script>
+<script src="eyeball-2.js"></script>
+</body>
+</html>
