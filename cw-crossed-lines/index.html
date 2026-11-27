@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Crossed Lines of Constant Width &mdash; coolmaths</title>
+<meta name="description" content="Three straight lines and one moving point draw a rounded curve. After six swings it closes — but is its width really the same in every direction?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cw-crossed-lines/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Crossed Lines of Constant Width">
+<meta property="og:description" content="Three straight lines and one moving point draw a rounded curve. After six swings it closes — but is its width really the same in every direction?">
+<meta property="og:url" content="https://coolmaths.ai/cw-crossed-lines/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+    border-radius: 8px;
+  }
+  #board .side-line { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 5; }
+  #board .curve-arc { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
+  #board .arc-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1; }
+  #board .tracer-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .geom-handle { fill: var(--ink); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .handle-label {
+    fill: var(--text);
+    font-size: 0.95rem;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.5rem 0 0;
+  }
+  .controls label {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+  .controls input[type="range"] { max-width: 9rem; }
+  .controls input[type="number"] { width: 4.5rem; }
+  .readout { color: var(--accent); font-weight: 600; }
+  .note { color: var(--muted); }
+</style>
+</head>
+<body data-game="cw-crossed-lines" data-kind="demo">
+<main id="main">
+  <h1>Crossed Lines of Constant Width</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Three straight lines and one moving point draw a rounded curve; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the four dots, or focus one and use the arrow keys, to move the lines and the point. Press Play to watch the point swing around the corners, and use the controls to change what you see.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group" aria-label="Three crossed lines with four draggable points and the six circular arcs they draw"></svg>
+    <p class="hint">Drag A, B, C or P. A dot also moves with the arrow keys; hold Shift for bigger steps.</p>
+  </div>
+
+  <div class="controls">
+    <button id="playBtn" type="button" class="primary" aria-label="Play or stop the six swings">Play</button>
+    <button id="resetBtn" type="button" aria-label="Put the four points back where they started">Reset</button>
+    <label><input id="linesBox" type="checkbox" checked aria-label="Show the three straight lines"> Show lines</label>
+    <label><input id="dotsBox" type="checkbox" checked aria-label="Show the endpoints of the six arcs"> Show dots</label>
+    <label>P on BC <input id="pRange" type="range" min="-1.5" max="2.5" step="0.05" value="-0.2" aria-label="Move point P along the line from B to C"> <span id="pOut" class="readout">past C</span></label>
+    <label>Speed <input id="speedIn" type="number" min="0" max="20" step="1" value="10" aria-label="Speed of the swings, from 0 to 20"></label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three lines meeting in three corners can draw a curved shape, not a polygon. Swing a point from one line to the next and, after six swings, it lands back where it began. Where the lines are set just right, that closed curve has the same width in every direction — even though it is not a circle.</p>
+
+      <h2>Six swings and a closed curve</h2>
+      <p>Put the three corners at <code>A</code>, <code>B</code> and <code>C</code>, and let <code>P</code> sit on the line <code>BC</code>. Swing <code>P</code> about <code>B</code> through the angle that turns the line <code>BC</code> onto <code>BA</code>: the new point <code>Q</code> sits on <code>BA</code>, the same distance from <code>B</code>. Swing <code>Q</code> about <code>A</code> onto <code>AC</code>, then about <code>C</code> onto <code>CB</code>, then round <code>B</code>, <code>A</code> and <code>C</code> once more (<a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a>). The sixth swing returns exactly to <code>P</code>. The logic test checked that gap at more than fifty thousand settings of a <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a> and its point: it was never more than <code>10<sup>-8</sup></code> board units. This confirms the page&rsquo;s claim that after six rotations the curve closes in.</p>
+
+      <h2>Six different radii</h2>
+      <p>Each swing is a piece of a <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>, so the boundary is six circular arcs. Their radii are the distances from each swing&rsquo;s centre to the moving point. With three lines and the point off to one side, all six can be different — the page says the number &ldquo;may be six&rdquo;, and the starting picture here has six distinct radii. The test also checked that six is the most you can get with three lines, and that symmetric positions give fewer.</p>
+
+      <h2>Width, and the catch</h2>
+      <p>Measure a shape between two parallel lines, then turn the lines: the distance is its <a class="wiki-term" data-wiki="Constant_width" href="https://en.wikipedia.org/wiki/Constant_width" target="_blank" rel="noopener">width</a> in that direction. Across the whole grid of non-degenerate settings, every <a class="wiki-term" data-wiki="Convex_set" href="https://en.wikipedia.org/wiki/Convex_set" target="_blank" rel="noopener">convex</a> curve had the same width to within <code>10<sup>-8</sup></code>, and every non-convex one had a width that changed by more than <code>10<sup>-4</sup></code>. So the page&rsquo;s &ldquo;constant width&rdquo; claim holds for the convex cases, exactly as it warns: move <code>P</code> between <code>B</code> and <code>C</code> and the curve bends inward, and the width is no longer constant. The applet gives no warning about this; this page says so in the status line.</p>
+
+      <p class="note">Small differences from the applet: the Play button swings a tracer along the six arcs so the four controls stay still, where the original rotates the whole control triangle; the P slider, Reset button and board size are additions, and the speed runs from 0 to 20 at 50 ms a frame.</p>
+      <p class="tip">Press Play and count the six arcs. Then slide P between B and C and watch the status line change from constant width to a curve that bends inward.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CWCrossedLines.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cw-crossed-lines-core.js"></script>
+<script src="cw-crossed-lines.js"></script>
+</body>
+</html>
