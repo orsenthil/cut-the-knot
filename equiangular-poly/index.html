@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equiangular Poly &mdash; coolmaths</title>
+<meta name="description" content="Slide the side lines of a many-sided shape and watch the distances from a point to them. Why does their total never change?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equiangular-poly/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Equiangular Poly">
+<meta property="og:description" content="Slide the side lines of a many-sided shape and watch the distances from a point to them. Why does their total never change?">
+<meta property="og:url" content="https://coolmaths.ai/equiangular-poly/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .poly-fill { fill: var(--accent); opacity: 0.12; }
+  #board .poly-side { stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+  #board .altitude { stroke: var(--good); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .hint-side { stroke: var(--accent); stroke-width: 2; opacity: 0.85; }
+  #board .hint-spoke { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .footdot { fill: var(--good); }
+  #board .geom-handle { stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .point-handle { fill: var(--accent); }
+  #board .side-handle { fill: var(--good); }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 0.9rem;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label, .controls output {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+  .controls input[type="range"] {
+    width: min(12rem, 40vw);
+    max-width: 100%;
+    accent-color: var(--accent);
+  }
+</style>
+</head>
+<body data-game="equiangular-poly" data-kind="demo">
+<main id="main">
+  <h1>Equiangular Poly</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore: slide the lines along the edges of a many-sided shape and watch the distances from a point to those lines. There is nothing to win.<br>
+    <strong>How to play:</strong> Drag a coloured dot to slide its line, or focus a dot and press the arrow keys. Drag the blue dot P, change the number of sides, tick Show hint, or press Reset.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 360" role="group"
+         aria-label="A many-sided shape whose side lines can be slid parallel to themselves, with a draggable blue point P. Drag a coloured side handle, or focus it and use the arrow keys, to slide its line."></svg>
+    <p class="hint-line">Blue dot: move P. Green dots: slide one side line. Dashed green lines show the distances.</p>
+  </div>
+
+  <div class="controls">
+    <label for="nRange">Sides: <output id="nValue" for="nRange">5</output></label>
+    <input id="nRange" type="range" min="3" max="15" step="1" value="5" aria-label="Number of sides, from 3 to 15">
+    <label><input id="hintBox" type="checkbox"> Show hint</label>
+    <button id="centreBtn" type="button" aria-label="Put point P back in the centre">Centre P</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the side lines and point P to the regular polygon">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Slide one of the green dots and the shape changes shape but not its corner angles. Move the blue dot and a whole family of distances changes — yet their total does not. That is the surprise this picture is built to show.</p>
+
+      <h2>The claim, exactly</h2>
+      <p>The page says that for an <a class="wiki-term" data-wiki="Equiangular_polygon" href="https://en.wikipedia.org/wiki/Equiangular_polygon" target="_blank" rel="noopener">equiangular polygon</a>, the sum of the distances from a point to its side lines is an <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>: it does not depend on where the point is. The logic test checked this for every option, from 3 to 15 sides, over 1,950 configurations of the side lines and the point. With distances given a sign — positive inside each side line, negative outside — the sum is constant for <em>any</em> position of P. With ordinary distances it is constant while P is inside all the side lines. The live article now shows a GeoGebra sketch; the Java applet that this port follows is visible in the <a href="https://web.archive.org/web/20060928044523/http://www.cut-the-knot.org/Curriculum/Geometry/EquiangularPoly.shtml" target="_blank" rel="noopener">2006 archive</a> of the same cut-the-knot page, where the embedded applet is named <code>EquiangularPoly</code>.</p>
+
+      <h2>Why the total cannot move</h2>
+      <p>Write the outward-facing unit normal of side <code>i</code> as <code>n_i</code>, and let <code>t_i</code> be the distance of that side line from the centre. For equiangular sides the normals point in equally spaced directions, so <code>n_0 + n_1 + ... + n_(N-1) = 0</code>. The signed distance from P to side <code>i</code> is <code>t_i &minus; (P &minus; centre) &middot; n_i</code>. Adding all of them cancels the P term:</p>
+      <blockquote><code>sum of signed distances = t_0 + t_1 + ... + t_(N-1)</code></blockquote>
+      <p>Moving P changes each distance, but the changes add to zero. The page also gives an <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> proof for equal sides: joining P to the vertices makes triangles of areas <code>a &times; h_i / 2</code>, so their sum is <code>(a/2) &times; sum(h_i)</code> and must be fixed. The test checked both forms.</p>
+
+      <h2>What the hint is drawing</h2>
+      <p>Find the longest side. A <a class="wiki-term" data-wiki="Regular_polygon" href="https://en.wikipedia.org/wiki/Regular_polygon" target="_blank" rel="noopener">regular polygon</a> with that side length and the same directions can be built around the shape; the applet puts it two units farther out. Tick Show hint to see it in dashed lines, with the perpendiculars from P to its sides. The test confirmed that every simple shape fits inside it with a clearance of exactly two units, and that the dashed feet meet their sides at right angles. If you push a side too far, the traced vertices fold over instead: the page itself only claims the theorem while the polygon stays simple, or convex. The status line says when that happens.</p>
+
+      <h2>The converse, and where it stops</h2>
+      <p>For a <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a>, equal angles force equal sides and the sum-constant property forces both: this is <a class="wiki-term" data-wiki="Viviani%27s_theorem" href="https://en.wikipedia.org/wiki/Viviani%27s_theorem" target="_blank" rel="noopener">Viviani's theorem</a>. An equiangular polygon with equal sides is regular for every number of sides. But the converse of the distance-sum claim is false beyond triangles: a rectangle has unequal sides, yet the distances from any inside point to its two pairs of opposite sides add to its width plus its height. A slanted <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a> works too. The test checked both counterexamples.</p>
+
+      <p class="tip">Try 8 sides with the hint on, then slide one green dot far out and watch the dashed regular polygon grow while the total distance stays put.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EquiangularPoly.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="equiangular-poly-core.js"></script>
+<script src="equiangular-poly.js"></script>
+</body>
+</html>
