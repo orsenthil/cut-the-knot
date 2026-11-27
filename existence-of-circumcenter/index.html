@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Existence Of Circumcenter &mdash; coolmaths</title>
+<meta name="description" content="Drag a triangle's corners: do the lines through the middles of its sides always meet at one point? Find the centre and draw the circle through all three corners.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/existence-of-circumcenter/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Existence Of Circumcenter">
+<meta property="og:description" content="Drag a triangle's corners: do the lines through the middles of its sides always meet at one point? Find the centre and draw the circle through all three corners.">
+<meta property="og:url" content="https://coolmaths.ai/existence-of-circumcenter/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .bisector { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .circumcircle { fill: var(--good); fill-opacity: 0.08; stroke: var(--good); stroke-width: 2.5; }
+  #board .radius-line { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 4 4; }
+  #board .center-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .tick { stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 17px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .center-label { fill: var(--good); }
+  #board .dot-label { fill: var(--muted); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .dot-handle { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="existence-of-circumcenter" data-kind="demo">
+<main id="main">
+  <h1>Existence Of Circumcenter</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move a triangle's corners and watch the lines through the small dots meet at one place.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a point and use the arrow keys. Slide the three dots onto the middles of their sides to draw the circle; the buttons reset the picture and hide the names.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 450 400" role="group"
+         aria-label="A triangle with three side dots, the lines through them, their meeting point O and the circle through all three corners"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle and the three side dots">Reset triangle</button>
+    <button id="snapBtn" type="button" aria-label="Put all three side dots exactly at the middles of their sides">Put dots at midpoints</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Hide or show the point names">Hide names</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Mark the middles of two sides of a triangle and draw a line straight out from each. The two lines always cross, and the crossing point is the centre of a circle through all three corners. This is Euclid IV.5, and there is no winning or losing here — just a picture you can test.</p>
+
+      <h2>A line of equal distances</h2>
+      <p>The <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a> of a segment is the place of points equally far from its two ends. In the picture, N sits on AB and M on AC. When a dot reaches its side's midpoint, its line is that bisector, so any point O on it has <code>AO = BO</code> and <code>AO = CO</code>. The page names M and N in the opposite order from the segments it bisects; the equality is the same either way.</p>
+
+      <h2>One point, three equal distances</h2>
+      <p>The two bisectors have one meeting point O. From the first line <code>AO = BO</code>; from the second <code>AO = CO</code>. By <a class="wiki-term" data-wiki="Transitive_relation" href="https://en.wikipedia.org/wiki/Transitive_relation" target="_blank" rel="noopener">transitivity</a>, <code>BO = CO</code> too. So all three distances are equal, and a circle centred at O with that radius goes through A, B and C. That circle is the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> and O is the <a class="wiki-term" data-wiki="Circumcenter" href="https://en.wikipedia.org/wiki/Circumcenter" target="_blank" rel="noopener">circumcenter</a>. The logic test checks these equalities, and that the circle passes through all three vertices, on more than eighteen thousand triangles.</p>
+
+      <h2>Inside, on a side, or outside</h2>
+      <p>The page says the two lines may meet inside the triangle, on the side BC, or outside BC. All three really happen: a triangle with a sharp angle at A keeps O inside; a right angle at A puts O at the midpoint of BC; an obtuse angle at A sends O outside. The logic test checks that the place of O follows the size of angle A over the whole grid of triangles and hundreds of random ones.</p>
+
+      <h2>What the dots are doing</h2>
+      <p>The applet lets you slide L, M and N along their sides and only draws the circle once all three are within 2 pixels of the true midpoints. It also draws the third bisector, through L, although the page only needs two. We keep that behaviour and add a button that places all three dots exactly, so the circle can be seen without a steady hand. A triangle whose three corners lie on one straight line has no circle: the applet stops drawing there.</p>
+
+      <p class="tip">Try a triangle with a right angle at A, then pull A past a right angle and watch O cross the side BC and move away outside.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Outline/Geometry/ExistenceOfCircumcenter.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="existence-of-circumcenter-core.js"></script>
+<script src="existence-of-circumcenter.js"></script>
+</body>
+</html>
