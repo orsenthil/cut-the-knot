@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equiloc Quad 2Tri &mdash; coolmaths</title>
+<meta name="description" content="Four midpoints of a four-sided shape with two equal sides form a rhombus. Drag the points: does it ever fail?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equiloc-quad-2-tri/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Equiloc Quad 2Tri">
+<meta property="og:description" content="Four midpoints of a four-sided shape with two equal sides form a rhombus. Drag the points: does it ever fail?">
+<meta property="og:url" content="https://coolmaths.ai/equiloc-quad-2-tri/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .guide-circle { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 5; }
+  #board .secant { stroke: var(--muted); stroke-width: 1.5; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .rhombus-side { stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
+  #board .base-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1; }
+  #board .mid-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .construction-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .construction-side { stroke: var(--good); stroke-width: 2; stroke-linecap: round; }
+  #board .hint-side { stroke: var(--highlight); stroke-width: 6; stroke-dasharray: 7 5; opacity: 0.8; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="equiloc-quad-2-tri" data-kind="demo">
+<main id="main">
+  <h1>Equiloc Quad 2Tri</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: join the middle points of a four-sided shape with two equal sides and the new shape always has four equal sides.<br>
+    <strong>How to play:</strong> Drag S around the circle, or C and D along the sloping lines. Tick the boxes to show point names, the joining lines or a hint; you can also focus a point and use the arrow keys.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A four-sided shape with two equal sides and the rhombus made by the midpoints of its sides and diagonals"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="construction" type="checkbox"> Construction</label>
+    <label><input id="hint" type="checkbox"> Hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the diagram to its starting position">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This old page still embeds the Java applet. Its diagram takes the midpoints of a four-sided shape whose sides <code>AD</code> and <code>BC</code> are equal, and draws a new four-sided shape <code>KMLN</code> inside. No matter how you drag the points, the new shape has four equal sides. The old article prints the midpoint list incorrectly; this page follows the applet's own code, as does the logic test.</p>
+
+      <h2>Midlines of triangles</h2>
+      <p>Join the midpoints of two sides of a <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a> and the new segment is parallel to the third side and half as long — the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> theorem. The applet puts K at the midpoint of <code>AC</code>, L at that of <code>BD</code>, M at that of <code>AB</code>, and N at that of <code>CD</code>. So in triangle <code>ABC</code>, <code>KM</code> is half of <code>BC</code>; in triangle <code>ABD</code>, <code>ML</code> is half of <code>AD</code>; in triangle <code>BCD</code>, <code>LN</code> is half of <code>BC</code>; and in triangle <code>ACD</code>, <code>NK</code> is half of <code>AD</code>.</p>
+
+      <h2>Why it is a rhombus</h2>
+      <p>Because <code>AD = BC</code>, all four of those halves are the same length, and the pairs are parallel to the same two lines. A <a class="wiki-term" data-wiki="Quadrilateral" href="https://en.wikipedia.org/wiki/Quadrilateral" target="_blank" rel="noopener">quadrilateral</a> with four equal sides and opposite sides parallel is a <a class="wiki-term" data-wiki="Rhombus" href="https://en.wikipedia.org/wiki/Rhombus" target="_blank" rel="noopener">rhombus</a>. The logic test checks this on thousands of dragged pictures and on 2,000 other four-sided shapes drawn at random with <code>AD = BC</code>: no exception. The angle between the two sides need not be 60 degrees; the random cases include many other angles.</p>
+
+      <h2>Where the sixty degrees come from</h2>
+      <p>A, B and S lie on one <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>, and the arc from A to B is 120 degrees, so the angle at S where the two equal sides meet is 60 degrees (or 120 on the other arc). The rhombus then has a short diagonal that cuts it into two <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangles</a>. At the start that diagonal is <code>KL</code>: triangles <code>KML</code> and <code>KNL</code> are equilateral. On the other arc the short diagonal is <code>MN</code> instead. The circle keeps the line angle at 60 degrees here; to see a rhombus at another angle, use a different four-sided shape.</p>
+
+      <h2>Three typos on the old page</h2>
+      <p>The printed list says the midpoints of <code>AC, AB, BD, AD</code>, which does <em>not</em> produce a rhombus; the code uses <code>AC, BD, AB, CD</code>. The page also calls triangle <code>KMN</code> equilateral, but at the starting position <code>KM</code> and <code>KN</code> are short while <code>MN</code> is long: the equilateral half is <code>KLM</code>. Finally, it names bases <code>CD</code> and <code>BC</code> for the midlines, where the sides in the code are <code>BC</code> and <code>AD</code>. The test asserts what is true and reports all three differences.</p>
+
+      <p class="tip">Try "Construction" to see the eight midlines and the two equal sides, then drag C past B: the shared length turns negative, D flips to the other side of A, and the rhombus survives.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EquilocQuad2Tri.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="equiloc-quad-2-tri-core.js"></script>
+<script src="equiloc-quad-2-tri.js"></script>
+</body>
+</html>
