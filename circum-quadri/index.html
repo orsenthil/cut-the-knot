@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circum Quadri &mdash; coolmaths</title>
+<meta name="description" content="Four dots on a circle make a four-sided shape around it. Do its diagonals and the lines across the dots always meet in one spot?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circum-quadri/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circum Quadri">
+<meta property="og:description" content="Four dots on a circle make a four-sided shape around it. Do its diagonals and the lines across the dots always meet in one spot?">
+<meta property="og:url" content="https://coolmaths.ai/circum-quadri/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circumcircle { fill: var(--accent); fill-opacity: 0.06; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .half-side { fill: none; stroke: var(--muted); stroke-width: 1.4; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .diagonal { stroke: var(--accent); stroke-width: 2.5; }
+  #board .chord { stroke: var(--highlight); stroke-width: 2.5; }
+  #board .meeting-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="circum-quadri" data-kind="demo">
+<main id="main">
+  <h1>Circum Quadri</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Four dots on a circle make a shape with four sides around it; four lines drawn across it always meet in one spot.<br>
+    <strong>How to play:</strong> Drag a dot with a mouse or finger, or focus one and use the arrow keys. Press Check the theorem to find the meeting spot.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Four draggable touch points on a circle, the four-sided shape their tangents make, and the four lines through its middle"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="checkBtn" type="button" class="primary" aria-label="Check whether the four lines meet in one point">Check the theorem</button>
+    <button id="newBtn" type="button" aria-label="Reset the four dots to their starting positions">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move any dot around the circle and the four-sided shape changes completely. Yet two lines joining opposite corners and two lines joining opposite dots still cross at one point. The original page states exactly this, and the logic test checks it.</p>
+
+      <h2>A shape wrapped around a circle</h2>
+      <p>At each dot there is just one line that touches the circle without cutting it: the <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a>. Two neighbouring tangents cross at a corner of a <a class="wiki-term" data-wiki="Quadrilateral" href="https://en.wikipedia.org/wiki/Quadrilateral" target="_blank" rel="noopener">quadrilateral</a>, so each of its four sides touches the circle. Here the dots are called A, B, C, D and the corners are P, Q, R, S. The original page calls the corners A, B, C, D and the touch points E, F, G, H: its line EG is our AC, its FH is our BD, and its diagonals are our PR and QS.</p>
+
+      <h2>Why all four lines meet</h2>
+      <p>Where the original page's diagonal AC meets the line EG at a point N, the two <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangles</a> AEN and CGN share an angle and have equal angles at E and G, because the tangents at the ends of a chord make equal angles with the chord. Comparing their areas two ways gives</p>
+      <blockquote><code>AN / CN = AE / CG</code></blockquote>
+      <p>So EG cuts the diagonal in the ratio of the two tangent lengths AE and CG. The same argument for FH gives AH / CF. But AE = AH and CG = CF, since two tangents drawn from one point to a circle are equal. Both lines cut the diagonal at the very same point. Doing it again for the other diagonal puts that point at the crossing of the diagonals: all four lines pass through M. The logic test checks both ratios, not just the meeting point, on every arrangement where they are well defined.</p>
+
+      <h2>A bigger theorem</h2>
+      <p>This is <a class="wiki-term" data-wiki="Brianchon%27s_theorem" href="https://en.wikipedia.org/wiki/Brianchon%27s_theorem" target="_blank" rel="noopener">Brianchon's theorem</a> with six tangents collapsed to four: two pairs of touch points pulled together leave a quadrilateral, and the three lines through opposite corners of the old hexagon become the diagonals and chords drawn here. The original page also mentions <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a> and a <a class="wiki-term" data-wiki="Pole_and_polar" href="https://en.wikipedia.org/wiki/Pole_and_polar" target="_blank" rel="noopener">pole and polar</a> argument; both work for any conic, not just a circle. This port draws the circle case the Java applet drew.</p>
+
+      <h2>What the test checked</h2>
+      <p>The logic test reproduces the applet's own circle, tangents and line crossings from its bytecode, then compares them with this page on the starting diagram and more than eight hundred other arrangements, including crossed and tightly clustered dots. Every side stays a tangent and all four lines meet, with an error below <code>1e-11</code> times the size of the drawing. When two tangents are exactly parallel, or so close to it that the old applet's <code>|det| &lt; 1</code> guard refused to draw, the status asks for another drag; no claim is made there.</p>
+      <p>The old applet picked its fourth dot at angle 4.5 but also computed a random angle it never used; this page starts at the four fixed angles so the opening picture is always the same. It uses a 400 by 250 board (the size the applet itself called optimal) instead of the 500 by 300 board of the archived page, and always labels the touch points although that page set <code>ShowNames=0</code>.</p>
+
+      <p class="tip">Drag one dot very close to its neighbour. One corner flies far away; press Check the theorem and watch the meeting dot stay with the four lines.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CircumQuadri.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circum-quadri-core.js"></script>
+<script src="circum-quadri.js"></script>
+</body>
+</html>
