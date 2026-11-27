@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Euclid I43 &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a parallelogram and watch the coloured pieces on opposite sides of the diagonal. Why do matching pieces always cover the same area?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/euclid-i43/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Euclid I43">
+<meta property="og:description" content="Drag the corners of a parallelogram and watch the coloured pieces on opposite sides of the diagonal. Why do matching pieces always cover the same area?">
+<meta property="og:url" content="https://coolmaths.ai/euclid-i43/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .piece { stroke: var(--ink); stroke-width: 0.6; fill-opacity: 0.42; }
+  #board .piece-a { fill: var(--bad); }
+  #board .piece-m { fill: var(--good); }
+  #board .piece-c { fill: var(--accent); }
+  #board .outline { fill: none; stroke: var(--ink); stroke-width: 2.2; }
+  #board .diagonal { stroke: var(--accent); stroke-width: 2.8; }
+  #board .cut { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 4; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.8rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls input[type="number"] { width: 6ch; min-width: 3.5rem; font: inherit; text-align: center; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="euclid-i43" data-kind="demo">
+<main id="main">
+  <h1>Euclid I43</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: pieces of the same colour on opposite sides of the slanted line always cover the same amount of space.<br>
+    <strong>How to play:</strong> Drag the corners A, B, C and D, or the numbered dots on the line. Use the minus and plus buttons to choose up to ten dots, or focus a dot and press the arrow keys.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A parallelogram with a diagonal, coloured pieces on both sides of it, draggable corners and up to ten draggable points on the diagonal"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="nInput">Points on the diagonal</label>
+    <button id="minusBtn" type="button" aria-label="Use one fewer divisor point">&minus;</button>
+    <input id="nInput" type="number" min="0" max="10" step="1" value="1" aria-label="Number of points on the diagonal, from 0 to 10">
+    <button id="plusBtn" type="button" aria-label="Use one more divisor point">+</button>
+    <button id="newBtn" type="button" aria-label="Make a new slanted parallelogram">New shape</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the diagram to its starting shape">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move a point along the diagonal and the coloured pieces change shape, but each colour still covers exactly as much space on one side of the diagonal as on the other. That is the small, surprising fact behind a proposition written down over two thousand years ago.</p>
+
+      <h2>One point on the diagonal</h2>
+      <p>Start with one dot K on the diagonal AC. Through K the picture draws a line parallel to AB and another parallel to AD. They cut the <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a> into one piece at A, one at C, and two green pieces facing each other across the diagonal. In the applet's own order those four fills are <code>A G K E</code>, <code>G B F K</code>, <code>H D E K</code> and <code>F C H K</code>. The page claims that pieces of the same colour on opposite sides have equal <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a>: here <code>Area(GBFK) = Area(HDEK)</code>. The logic test checks this on 250 shapes and dot positions, with the dot dragged freely along the diagonal; it holds every time.</p>
+
+      <h2>Equal triangles, equal leftovers</h2>
+      <p>Euclid's proof matches the triangles on the two sides: the page names <code>AKH</code>, <code>KCF</code> and <code>ACD</code> against <code>KEA</code>, <code>CGK</code> and <code>CBA</code>, equal by SSS or ASA. Take those equal triangles away from equal larger ones and the two green leftovers, called <code>HKFD</code> and <code>EBGK</code> on the page, must be equal even though their shapes differ. This is Proposition I.43 of <a class="wiki-term" data-wiki="Euclid's_Elements" href="https://en.wikipedia.org/wiki/Euclid%27s_Elements" target="_blank" rel="noopener">Euclid's Elements</a>; the argument is subtraction of <a class="wiki-term" data-wiki="Congruence_(geometry)" href="https://en.wikipedia.org/wiki/Congruence_(geometry)" target="_blank" rel="noopener">congruent</a> pieces, not a measurement.</p>
+
+      <h2>Ten points, still equal</h2>
+      <p>With two or more dots the parallel lines form a little grid. Each small rectangle in that grid is finally coloured by the last dot whose square covers it; the rectangle reflected across the diagonal is covered by exactly the same dot, so it gets the same colour and has the same area. The page says the statement stays true for any number of points and follows by repeating the one-point argument. The test searches all 140 combinations of every setting from 0 to 10 dots on many slanted shapes, including dragged dots: thousands of reflected pairs, all with matching colours and matching areas. The applet's spinner actually starts at 0, so an empty diagonal is included too, and the claim holds there in the only way it can: there are no pieces left to compare.</p>
+
+      <h2>How this differs from the extension</h2>
+      <p>This applet keeps every dot on the diagonal. The companion <em>Euclid I.43 Extended</em> page lets a single point X sit anywhere inside the parallelogram and builds an extra parallelogram <code>XBYD</code>, with points R, S, U, V, W, K, E and F, to make up the difference between the two areas; it also shows a second, same-side pair of equal areas. It credits Quang Tuan Bui for that extension. Here there is no construction and no off-diagonal point: the claim is only the original one, that same-coloured pieces on opposite sides of the diagonal match.</p>
+
+      <p class="tip">Try this: set ten dots, then drag the middle one. Two same-coloured pieces grow and shrink together, and the status line keeps calling the pairs equal.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EuclidI43.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="euclid-i43-core.js"></script>
+<script src="euclid-i43.js"></script>
+</body>
+</html>
