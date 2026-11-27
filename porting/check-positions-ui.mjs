@@ -1158,6 +1158,16 @@ const GAMES = {
   "dyno-ellipse": (page) => dragFirstHandle(page),
   "edge-illusion": (page) => dragFirstHandle(page),
   "eight-point-circle": (page) => dragFirstHandle(page),
+  "elkies": (page) => dragFirstHandle(page),
+  "ellipse-between-circles": (page) => dragFirstHandle(page),
+  "ellipse-by-van-schooten": (page) => dragFirstHandle(page),
+  "ellipse-focal": (page) => dragFirstHandle(page),
+  "ellipse-focus-directrix": (page) => dragFirstHandle(page),
+  "ellipse-in-arbelos": (page) => dragFirstHandle(page),
+  "envelopes-in-ellipse": (page) => dragFirstHandle(page),
+  "eppstein": (page) => dragFirstHandle(page),
+  "equal-angles-in-crossed-circles": (page) => dragFirstHandle(page),
+  "equal-angles-in-crossing-circles": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

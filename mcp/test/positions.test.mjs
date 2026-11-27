@@ -2295,6 +2295,16 @@ check("dupont-garden: each water jet follows the parabola over its flight", read
 check("dyno-ellipse: the saved pen is rebuilt exactly from the four sliders", read["dyno-ellipse"]?.valid === true && read["dyno-ellipse"].savedPenMatchesCore === true && read["dyno-ellipse"].savedEnd1MatchesCore === true && read["dyno-ellipse"].result === "done");
 check("edge-illusion: the middle has no drawn sides and is masked with the field colour", read["edge-illusion"]?.valid === true && read["edge-illusion"].noDrawnSides === true && read["edge-illusion"].middleIsFieldColour === true && read["edge-illusion"].edgeStrokes === 0);
 check("eight-point-circle: eight points share a circle about the centroid", read["eight-point-circle"]?.savedReadable === true && read["eight-point-circle"].claims.allEight === true && read["eight-point-circle"].claims.rectangle === true && read["eight-point-circle"].claims.diameters === true);
+check("elkies: the companion incircle chain closes after six circles", read.elkies?.savedReadable === true && read.elkies.reading.closed === true && read.elkies.reading.circleCount === 7 && read.elkies.agreement.withinTolerance === true);
+check("ellipse-between-circles: tangent circles trace the ellipse with the right axes", read["ellipse-between-circles"]?.valid === true && read["ellipse-between-circles"].tangency.allHold === true && Math.abs(read["ellipse-between-circles"].ellipse.majorAxis - 314.166667) < 1e-5 && Object.values(read["ellipse-between-circles"].savedMatchesCore).every(Boolean) === true);
+check("ellipse-by-van-schooten: the trammel circle and perpendicular diameter are rebuilt", read["ellipse-by-van-schooten"]?.diameter.isDiameter === true && Math.abs(read["ellipse-by-van-schooten"].OPperpendicularOQ.dot) < 1e-8 && read["ellipse-by-van-schooten"].radiusFromAB > 0);
+check("ellipse-focal: PF plus PF' is the constant 2a", read["ellipse-focal"]?.valid === true && read["ellipse-focal"].sumMatchesConstant === true && read["ellipse-focal"].focalDistances.sum === 192 && read["ellipse-focal"].circleCase === false);
+check("ellipse-focus-directrix: the ratio PF/PD equals the eccentricity under 1", read["ellipse-focus-directrix"]?.valid === true && read["ellipse-focus-directrix"].eccentricityBelowOne === true && read["ellipse-focus-directrix"].focalAxisPerpendicularToBothDirectrices === true && Math.abs(read["ellipse-focus-directrix"].ratio - read["ellipse-focus-directrix"].eccentricity) < 1e-9);
+check("ellipse-in-arbelos: chain centres lie on the mean-semiaxes ellipse", read["ellipse-in-arbelos"]?.valid === true && read["ellipse-in-arbelos"].derived.allCentresOnEllipse === true && read["ellipse-in-arbelos"].derived.allCirclesTouchBoth === true && read["ellipse-in-arbelos"].savedMatchesCore.all === true);
+check("envelopes-in-ellipse: focal chords touch one confocal ellipse", read["envelopes-in-ellipse"]?.result === "done" && read["envelopes-in-ellipse"].envelope === "ellipse" && read["envelopes-in-ellipse"].crossesBetweenFoci === false && typeof read["envelopes-in-ellipse"].confocalConstant === "number");
+check("eppstein: opposite tangency chords concur at the weighted centre", read.eppstein?.savedReadable === true && read.eppstein.reading.concurrence.concurrent === true && read.eppstein.reading.collinearity.collinear === true);
+check("equal-angles-in-crossed-circles: the two angle pairs are equal", read["equal-angles-in-crossed-circles"]?.core.angles.bothEqual === true && read["equal-angles-in-crossed-circles"].core.drawing.drawn === true);
+check("equal-angles-in-crossing-circles: two equal-angle lines cut equal chords", read["equal-angles-in-crossing-circles"]?.valid === true && read["equal-angles-in-crossing-circles"].chords.equal === true && read["equal-angles-in-crossing-circles"].anglesAtP.equalLeans === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2452,6 +2462,35 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   const eight = runGameLogic("eight-point-circle", "eight_points", {});
   const skew = runGameLogic("eight-point-circle", "skew_diagonals", {});
   check("eight-point-circle/eight_points: skewing the diagonals breaks the circle", eight.claims.allEight === true && eight.measures.footError < 1e-8 && skew.breaksTheTheorem === true && skew.skewed.claims.allEight === false);
+}
+
+// The batch-22 tutor actions all run their real cores, not just their saved positions.
+{
+  const six = runGameLogic("elkies", "six_circles", {});
+  const demir = runGameLogic("elkies", "demir_relation", {});
+  check("elkies/six_circles: seven circles close with six distinct radii", six.closed === true && six.circleCount === 7 && six.distinctCircles === 6 && demir.demirHolds === true && demir.tanRelationHolds === true);
+  const sweep = runGameLogic("ellipse-between-circles", "slider_sweep", {});
+  check("ellipse-between-circles/slider_sweep: tangency holds at every slider value", sweep.allTangent === true && sweep.allCentresOnEllipse === true && sweep.positionsChecked === 102);
+  const vs = runGameLogic("ellipse-by-van-schooten", "construction", {});
+  const slide = runGameLogic("ellipse-by-van-schooten", "slide", {});
+  check("ellipse-by-van-schooten/construction: a diameter and right angle give the axes", vs.angleAOB.isRight === true && vs.diameter.isDiameter === true && slide.radiusSpread < 1e-8 && slide.maxEllipseResidual < 1e-8);
+  const fs = runGameLogic("ellipse-focal", "focal_sum", { a: 96, b: 75, samples: 6 });
+  const fc = runGameLogic("ellipse-focal", "foci_and_circle", { pairs: [[96, 75], [75, 96], [80, 80]] });
+  check("ellipse-focal/focal_sum: every sample has the same focal sum", fs.sumIsConstant === true && fs.maxSumError < 1e-8 && fc.pairs.length === 3);
+  const fd = runGameLogic("ellipse-focus-directrix", "two_focus_directrix_pairs", {});
+  check("ellipse-focus-directrix/two_pairs: both pairs share an eccentricity below one", fd.count === 2 && fd.bothEccentricitiesBelowOne === true && fd.sameEccentricity === true && fd.focalAxisPerpendicularToBothDirectrices === true);
+  const locus = runGameLogic("ellipse-in-arbelos", "center_locus", { f: 0.5 });
+  const chain = runGameLogic("ellipse-in-arbelos", "tangent_chain", { f: 0.521053, n: 3, t: 1 });
+  check("ellipse-in-arbelos/locus and chain: centres and neighbours lie on the ellipse", locus.allCentresOnEllipse === true && locus.fociMatchSemiaxes === true && chain.allTouchBothCircles === true && chain.allNeighboursTouch === true);
+  const tr = runGameLogic("envelopes-in-ellipse", "trace", {});
+  const fr = runGameLogic("envelopes-in-ellipse", "focal_ray", {});
+  check("envelopes-in-ellipse/trace and focal_ray: chords share a confocal constant", tr.allChordsSameConstant === true && fr.equalsTwiceC === true && fr.aimedAtFocus === 1);
+  const ep = runGameLogic("eppstein", "compare_families", {});
+  check("eppstein/compare_families: both Soddy families concur and stay collinear", ep.bothConcurrent === true && ep.bothCollinear === true);
+  const outside = runGameLogic("equal-angles-in-crossed-circles", "outside_lens", {});
+  check("equal-angles-in-crossed-circles/outside_lens: the identity fails off the lens", outside.comparison.openingEqual === true && outside.comparison.outsideEqual === false && outside.comparison.outsideNested === false);
+  const shu = runGameLogic("equal-angles-in-crossing-circles", "shutrick_identity", {});
+  check("equal-angles-in-crossing-circles/shutrick_identity: chord lengths survive a sweep", shu.base.valid === true && shu.sweep.allHold === true && shu.sweep.worst.chordDifference === 0);
 }
 
 // A game with no reader, and a position that makes no sense.

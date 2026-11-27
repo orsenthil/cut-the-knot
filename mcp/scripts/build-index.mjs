@@ -689,6 +689,16 @@ const CORE_GLOBALS = {
   "dyno-ellipse/dyno-ellipse-core.js": ["DynoEllipseCore"],
   "edge-illusion/edge-illusion-core.js": ["EdgeIllusionCore"],
   "eight-point-circle/eight-point-circle-core.js": ["EightPointCircleCore"],
+  "elkies/elkies-core.js": ["ElkiesCore"],
+  "ellipse-between-circles/ellipse-between-circles-core.js": ["EllipseBetweenCirclesCore"],
+  "ellipse-by-van-schooten/ellipse-by-van-schooten-core.js": ["EllipseByVanSchootenCore"],
+  "ellipse-focal/ellipse-focal-core.js": ["EllipseFocalCore"],
+  "ellipse-focus-directrix/ellipse-focus-directrix-core.js": ["EllipseFocusDirectrixCore"],
+  "ellipse-in-arbelos/ellipse-in-arbelos-core.js": ["EllipseInArbelosCore"],
+  "envelopes-in-ellipse/envelopes-in-ellipse-core.js": ["EnvelopesInEllipseCore"],
+  "eppstein/eppstein-core.js": ["EppsteinCore"],
+  "equal-angles-in-crossed-circles/equal-angles-in-crossed-circles-core.js": ["EqualAnglesInCrossedCirclesCore"],
+  "equal-angles-in-crossing-circles/equal-angles-in-crossing-circles-core.js": ["EqualAnglesInCrossingCirclesCore"],
 };
 
 const games = [];
