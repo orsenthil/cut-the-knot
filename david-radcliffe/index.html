@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>David Radcliffe &mdash; coolmaths</title>
+<meta name="description" content="Build equilateral triangles on the sides of a regular polygon: why do their tips make a smaller copy, and what does that say about shapes drawn on a triangular grid?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/david-radcliffe/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="David Radcliffe">
+<meta property="og:description" content="Build equilateral triangles on the sides of a regular polygon: why do their tips make a smaller copy, and what does that say about shapes drawn on a triangular grid?">
+<meta property="og:url" content="https://coolmaths.ai/david-radcliffe/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .inward-tri { fill: var(--accent); fill-opacity: 0.18; stroke: none; }
+  #board .spoke { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .inner-poly { fill: none; stroke: var(--good); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .outer-poly { fill: none; stroke: var(--ink); stroke-width: 3.5; stroke-linejoin: round; }
+  #board .outer-dot { fill: var(--ink); }
+  #board .inner-dot { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .controls input { width: 4rem; min-height: 2.5rem; }
+  .controls button { min-height: 2.5rem; }
+  #status { min-height: 3rem; }
+</style>
+</head>
+<body data-game="david-radcliffe" data-kind="demo">
+<main id="main">
+  <h1>David Radcliffe</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#induction">Induction</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This picture puts a triangle on each side of a regular shape and joins the new points.<br>
+    <strong>How to play:</strong> Choose how many sides, drag the purple dot to turn the picture, and press Check the claim to read what happens.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 450" role="group"
+         aria-label="A regular polygon with equilateral triangles on its sides and a smaller polygon through their third vertices"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="lessBtn" type="button" aria-label="Use one fewer side">&minus; sides</button>
+    <label for="nInput">Sides <input id="nInput" type="number" min="3" max="30" step="1" value="4" aria-label="Number of sides, from 3 to 30"></label>
+    <button id="moreBtn" type="button" aria-label="Use one more side">+ sides</button>
+    <button id="checkBtn" type="button" class="primary" aria-label="Check the shrinking claim for this shape">Check the claim</button>
+    <button id="resetBtn" type="button" aria-label="Reset to four sides and turn the picture back to the start">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Why do the tips of the triangles make another <a class="wiki-term" data-wiki="Regular_polygon" href="https://en.wikipedia.org/wiki/Regular_polygon" target="_blank" rel="noopener">regular polygon</a>, and how does that answer a question about dots on a triangular grid? The construction is David Radcliffe's solution to a question from James Tanton; the applet and its page are by Alexander Bogomolny (copyright 1996–2018). The logic test checked every setting the applet offers, from 3 to 30 sides. The Java applet had only the sides spinner; the turning dot and Check button here are reading aids, not extra rules.</p>
+
+      <h2>A smaller copy every time</h2>
+      <p>Number the corners of a regular N-gon <code>V[0], V[1], ...</code> around a centre <code>O</code>. An <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangle</a> on the side from <code>V[i]</code> to <code>V[i+1]</code> has its tip at <code>U[i] = V[i] + rot60(V[i+1] - V[i])</code>, where rot60 is a turn through 60&deg;. Rotating the whole picture by <code>2&pi;/N</code> carries each side to the next, so it carries each tip to the next tip: the tips are equally spaced on a circle and form a regular N-gon.</p>
+      <blockquote><code>U[i] = &lambda; V[i]</code>, where <code>&lambda; = 1 + e<sup>i&pi;/3</sup>(e<sup>2&pi;i/N</sup> - 1)</code> and <code>|&lambda;| = |cos(&pi;/N) - &radic;3 sin(&pi;/N)| = |2 cos(&pi;/N + &pi;/3)|</code>.</blockquote>
+      <p>The test measured the tips for every N from 3 to 30: they agree with this formula and are always equally spaced. For N = 3 the factor is 1 (a same-size triangle turned halfway round); for N = 6 it is 0 (all six tips fall on the centre). For every other N in the range it is strictly between 0 and 1, so the new polygon is smaller. Those two exceptions are exactly the ones the page names.</p>
+
+      <h2>Why the grid keeps the new points</h2>
+      <p>Take the grid made by the vectors <code>u = (1,0)</code> and <code>v = (1/2, &radic;3/2)</code>. Its nodes are <code>m u + n v</code> with whole numbers <code>m, n</code> — the points called <a class="wiki-term" data-wiki="Eisenstein_integer" href="https://en.wikipedia.org/wiki/Eisenstein_integer" target="_blank" rel="noopener">Eisenstein integers</a>. A turn of 60&deg; about a node sends <code>u</code> to <code>v</code> and <code>v</code> to <code>v - u</code>, so <code>(m,n)</code> becomes <code>(-n, m+n)</code>: whole numbers stay whole numbers. The same is true for a turn the other way. Hence a segment between any two grid nodes is the base of exactly two equilateral triangles whose tips are also grid nodes; the test checked all 288 non-zero pairs with coordinates from &minus;8 to 8 in both directions.</p>
+
+      <h2>No square in the grid</h2>
+      <p>If a square with grid-node corners existed, the construction would give a smaller square, still with grid-node corners. Applying it again gives a smaller one, and another, for ever. There is no infinite strictly shrinking chain of shapes with whole-number coordinates, so no such square exists. This is <a class="wiki-term" data-wiki="Infinite_descent" href="https://en.wikipedia.org/wiki/Infinite_descent" target="_blank" rel="noopener">infinite descent</a>. The same argument rules out a grid-node regular N-gon for every N except 3 and 6, where the copy is not smaller. The applet draws the same figure for 3 and 6 sides so you can see why those two escape.</p>
+
+      <h2>A second way to shrink</h2>
+      <p>Radcliffe also noted that for corners <code>a, b, c, ...</code> the points <code>a + c - b</code>, <code>b + d - c</code>, ... make a smaller regular N-gon. For a regular N-gon centred at <code>O</code> each new point is <code>(2 cos(2&pi;/N) - 1) a</code>, so its size is multiplied by <code>|2 cos(2&pi;/N) - 1|</code>. The test checked every N from 3 to 30: that factor is below 1 except at N = 3 (factor 2), N = 4 (factor 1, a same-size square turned halfway round) and N = 6 (factor 0). Notice that N = 4 is an exception for this second construction but not for the triangle construction the applet draws, where the factor is about 0.52.</p>
+
+      <p class="tip">Try 4 sides and press Check the claim: the smaller square is why a square cannot sit on the grid. Then try 6 and 3 sides to see the two exceptions.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/DavidRadcliffe.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>).
+    Solution idea by David Radcliffe.
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="david-radcliffe-core.js"></script>
+<script src="david-radcliffe.js"></script>
+</body>
+</html>
