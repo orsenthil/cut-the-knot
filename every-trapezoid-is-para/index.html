@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Is Every Trapezoid a Parallelogram? &mdash; coolmaths</title>
+<meta name="description" content="A few similar triangles seem to prove that every trapezoid has equal bases. Drag the corners and find the one step that goes wrong.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/every-trapezoid-is-para/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Is Every Trapezoid a Parallelogram?">
+<meta property="og:description" content="A few similar triangles seem to prove that every trapezoid has equal bases. Drag the corners and find the one step that goes wrong.">
+<meta property="og:url" content="https://coolmaths.ai/every-trapezoid-is-para/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The viewBox scales with the board; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .trapezoid { fill: var(--highlight); opacity: 0.12; }
+  #board .edge { fill: none; stroke: var(--ink); stroke-width: 2.6; }
+  #board .extension { stroke: var(--muted); stroke-width: 1.5; }
+  #board .diagonal { stroke: var(--accent); stroke-width: 1.8; opacity: 0.9; }
+  #board .hint { stroke: var(--good); stroke-width: 1.7; stroke-dasharray: 7 5; }
+  #board .mark { stroke: var(--ink); stroke-width: 2; }
+  #board .aux-point { fill: var(--muted); stroke: var(--stage); stroke-width: 1.5; }
+  #board .cross-point { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="every-trapezoid-is-para" data-kind="demo">
+<main id="main">
+  <h1>Is Every Trapezoid a Parallelogram?</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: drag the corners of a trapezoid and see which lengths really match.<br>
+    <strong>How to play:</strong> Drag A, B, C or D, or focus a corner and use the arrow keys. Tick the boxes to show names, equal lengths, the claim or a hint.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="A trapezoid ABCD with its bases extended to F and E, its diagonal AC crossing BD at G and FE at H, and four draggable corners"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox" checked aria-label="Show point names"> Names</label>
+    <label><input id="statement" type="checkbox" aria-label="Show equal marks on AG and CH"> Claim</label>
+    <label><input id="premise" type="checkbox" aria-label="Show equal marks on the bases and their extensions"> Premise</label>
+    <label><input id="hint" type="checkbox" aria-label="Show the three parallel guide lines"> Hint</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Make a new trapezoid">New shape</button>
+    <button id="resetBtn" type="button" aria-label="Put the first trapezoid back">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>An argument looks like a proof that every trapezoid is a parallelogram. Move the corners: the two marked pieces of the diagonal stay the same length even when the two bases are very different. Where did the proof go wrong?</p>
+
+      <h2>The step that cheats</h2>
+      <p>Write the top base <code>AD = a</code>, the bottom base <code>BC = b</code>, and the pieces of the diagonal <code>x = AG</code>, <code>y = GH</code>, <code>z = CH</code>. The page's two similar-triangle proportions give <code>x = (a/b)(y + z)</code> and <code>z = (a/b)(x + y)</code>. Subtracting them gives <code>z - x = (a/b)(x - z)</code>. Dividing by <code>z - x</code> would give <code>a/b = -1</code>, and taking absolute values would force <code>a = b</code>. But that division is <a class="wiki-term" data-wiki="Division_by_zero" href="https://en.wikipedia.org/wiki/Division_by_zero" target="_blank" rel="noopener">division by zero</a>: the honest conclusion is <code>z - x = 0</code>, so <code>x = z</code>.</p>
+
+      <h2>What is really equal</h2>
+      <p>Adding the equal lengths makes two <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelograms</a>: AFBC and ACED. Hence <code>BF</code> is parallel and equal to <code>AC</code>. Two pairs of <a class="wiki-term" data-wiki="Similarity_(geometry)" href="https://en.wikipedia.org/wiki/Similarity_(geometry)" target="_blank" rel="noopener">similar triangles</a> then give the page's formulas (3) and (4): <code>x / BF = a / (a + b)</code> and <code>z / BF = a / (a + b)</code>. So <code>AG = CH</code> whatever the base lengths; the logic test confirms this and both formulas for 2,768 trapezoids, along with <code>CG / AG = AH / CH = b / a</code>.</p>
+
+      <h2>The algebra agrees</h2>
+      <p>Formulas (1) and (2) also imply <code>(x + y)/z = (z + y)/x</code>, or <code>x&sup2; + xy = z&sup2; + zy</code>. With <code>f(w) = w&sup2; + wy</code>, this says <code>f(x) = f(z)</code>. That <a class="wiki-term" data-wiki="Quadratic_function" href="https://en.wikipedia.org/wiki/Quadratic_function" target="_blank" rel="noopener">parabola</a> has its lowest point at <code>(-y/2, -y&sup2;/4)</code> and is strictly increasing for <code>w &gt; -y/2</code>, so two positive values with <code>y &gt; 0</code> cannot give the same answer unless they are equal. One detail the page leaves out: when the top base is longer than the bottom one, G and H swap places along AC, so <code>y = GH</code> becomes negative and that last monotonicity step needs the pictured order (bottom base longer). With GH signed along the diagonal, formulas (1) and (2) hold in both orders and <code>x = z</code> always does.</p>
+
+      <h2>So is every trapezoid one?</h2>
+      <p>No. One common definition of a <a class="wiki-term" data-wiki="Trapezoid" href="https://en.wikipedia.org/wiki/Trapezoid" target="_blank" rel="noopener">trapezoid</a> requires its two parallel sides to be unequal; the starting picture here has <code>a</code> about 56 and <code>b</code> about 133, yet <code>AG = CH</code>. The two marks mean the diagonal is cut in equal end pieces, not that the bases are equal. Test the "Claim" box to see those two pieces marked on the starting shape.</p>
+
+      <p class="tip">Try this: drag A to the right until AD is longer than BC. The marks on AG and CH still match; only the order of G and H along the diagonal changes.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EveryTrapezoidIsPara.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="every-trapezoid-is-para-core.js"></script>
+<script src="every-trapezoid-is-para.js"></script>
+</body>
+</html>
