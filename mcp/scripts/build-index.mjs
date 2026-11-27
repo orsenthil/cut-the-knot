@@ -769,6 +769,16 @@ const CORE_GLOBALS = {
   "four-touching-circles/four-touching-circles-core.js": ["FourTouchingCirclesCore"],
   "four-touching-circles-3/four-touching-circles-3-core.js": ["FourTouchingCircles3Core"],
   "four-turtles/four-turtles-core.js": ["FourTurtlesCore"],
+  "frieze/frieze-core.js": ["FriezeCore"],
+  "from-500/from-500-core.js": ["From500Core"],
+  "from-7/from-7-core.js": ["From7Core"],
+  "from-grebe/from-grebe-core.js": ["FromGrebeCore"],
+  "funny-square/funny-square-core.js": ["FunnySquareCore"],
+  "fuss/fuss-core.js": ["FussCore"],
+  "general-napoleon/general-napoleon-core.js": ["GeneralNapoleonCore"],
+  "gergonne-and-soddy/gergonne-and-soddy-core.js": ["GergonneAndSoddyCore"],
+  "gergonne-in-ellipse/gergonne-in-ellipse-core.js": ["GergonneInEllipseCore"],
+  "gergonne-medial/gergonne-medial-core.js": ["GergonneMedialCore"],
 };
 
 const games = [];

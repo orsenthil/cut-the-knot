@@ -1242,6 +1242,19 @@ const GAMES = {
   "four-touching-circles": (page) => dragFirstHandle(page),
   "four-touching-circles-3": (page) => dragFirstHandle(page),
   "four-turtles": (page) => dragFirstHandle(page),
+  "frieze": async (page) => {
+    await page.locator("#board .dot-handle").first().focus();
+    await page.keyboard.press("ArrowRight");
+  },
+  "from-500": (page) => dragFirstHandle(page),
+  "from-7": (page) => dragFirstHandle(page),
+  "from-grebe": (page) => dragFirstHandle(page),
+  "funny-square": (page) => dragFirstHandle(page),
+  "fuss": (page) => dragFirstHandle(page),
+  "general-napoleon": (page) => dragFirstHandle(page),
+  "gergonne-and-soddy": (page) => dragFirstHandle(page),
+  "gergonne-in-ellipse": (page) => dragFirstHandle(page),
+  "gergonne-medial": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

@@ -2375,6 +2375,16 @@ check("four-squares-from-temple: the saved four squares are rebuilt", read["four
 check("four-touching-circles: the inverted contacts lie on one curve", read["four-touching-circles"]?.valid === true && read["four-touching-circles"].core.valid === true && typeof read["four-touching-circles"].core.parity === "object");
 check("four-touching-circles-3: four external touches keep the fourth contact on the circle", read["four-touching-circles-3"]?.core.chain.externalTouches === 4 && read["four-touching-circles-3"].core.chain.fourthContactOnCircle === true && read["four-touching-circles-3"].core.chain.parity === "even");
 check("four-turtles: five turtles need 1.447214 side lengths to meet", read["four-turtles"]?.valid === true && Math.abs(read["four-turtles"].core.pursuit.distanceOverSide - 1.447214) < 1e-6 && read["four-turtles"].core.logSpiralMatches === true);
+check("frieze: the saved lattice obeys the additive diamond rule", read.frieze?.core.rule === "d = a + c - b + 1" && read.frieze.core.savedDoneMatchesCursors === true && read.frieze.core.diamondAudit !== undefined);
+check("from-500: the saved X on the diameter yields no drawing", read["from-500"]?.valid === false && read["from-500"].reason === "diameter" && read["from-500"].reading === null);
+check("from-7: one side length gives seven times the area", read["from-7"]?.core.matchesFormula === true && read["from-7"].core.measuredRatio === 7 && read["from-7"].N === 1);
+check("from-grebe: outer-square cevians meet at the Lemoine barycentre", read["from-grebe"]?.reading.valid === true && read["from-grebe"].reading.barycentric.matchesSideSquares === true && read["from-grebe"].reading.homothety.matches === true);
+check("funny-square: the saved base still produces a square", read["funny-square"]?.reading.square.isSquare === true && read["funny-square"].reading.lengths.apEqualsQr === true);
+check("fuss: the saved bicentric quadrilateral obeys the radius relation", read.fuss?.valid === true && read.fuss.fussRelationHolds === true && read.fuss.ponceletCloses === true);
+check("general-napoleon: equal-barycentric side pairs concur", read["general-napoleon"]?.stateIsIllustration === true && read["general-napoleon"].reading.concurrent === true && Object.values(read["general-napoleon"].claimAgreement).every(Boolean) === true);
+check("gergonne-and-soddy: Soddy and Gergonne lines are perpendicular", read["gergonne-and-soddy"]?.valid === true && read["gergonne-and-soddy"].reading.angleBetweenLines === 90 && read["gergonne-and-soddy"].reading.checks.perpendicular === true);
+check("gergonne-in-ellipse: ellipse and Gergonne point round-trip from the page", read["gergonne-in-ellipse"]?.savedMatchesCore.ellipse === true && read["gergonne-in-ellipse"].savedMatchesCore.G === true && typeof read["gergonne-in-ellipse"].gergonnePoint.x === "number");
+check("gergonne-medial: midpoint perpendiculars concur at the medial incenter", read["gergonne-medial"]?.valid === true && read["gergonne-medial"].reading.allClaimsHold === true && typeof read["gergonne-medial"].commonPoint.x === "number");
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2764,6 +2774,30 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("four-touching-circles-3/even_vs_odd: odd tangency parity breaks concyclicity", odd.difference.strictlyConcyclic.even === true && odd.difference.strictlyConcyclic.odd === false && odd.difference.externalTouches.odd === 3);
   const meet = runGameLogic("four-turtles", "meeting", { n: 4, side: 300, speed: 1 });
   check("four-turtles/meeting: four turtles each crawl exactly one side", meet.distanceEqualsVT === true && meet.forFourTurtles.distanceEqualsOneSide === true && meet.distanceOverSide === 1);
+}
+
+// The batch-30 tutor actions all run their real cores, not just their saved positions.
+{
+  const pat = runGameLogic("frieze", "pattern", {});
+  check("frieze/pattern: every diamond obeys the rule and modulo only recolours", pat.diamondAudit.allObey === true && pat.moduloOnlyRecolours.numbersUnchanged === true);
+  const sx = runGameLogic("from-500", "sweep_x", {});
+  check("from-500/sweep_x: tangents stay parallel or concurrent through the sweep", sx.allClaimsHold === true && sx.parallelDegrees.length === 1 && sx.concurrentCount === 3);
+  const seq = runGameLogic("from-7", "ratio_sequence", {});
+  check("from-7/ratio_sequence: ratios 7, 19, 37, 61", seq.rows.every((r) => r.matchesFormula === true) === true && seq.rows.map((r) => r.measuredRatio).join() === "7,19,37,61");
+  const gc = runGameLogic("from-grebe", "check_claims", {});
+  check("from-grebe/check_claims: Lemoine concurrence and homothetic reconstruction", gc.allHold === true && gc.KIsSymmedian === true && gc.reconstructedIsHomothetic === true);
+  const fs = runGameLogic("funny-square", "square_from_base", {});
+  check("funny-square/square_from_base: six lengths and a right-angled square", fs.square.isSquare === true && fs.lengths.apEqualsQr === true && fs.lengths.pdEqualsPr === true && fs.lengths.qbEqualsQr === true && fs.lengths.rcEqualsPq === true);
+  const pc = runGameLogic("fuss", "poncelet_closure", {});
+  check("fuss/poncelet_closure: tangents close with fixed radius and crossing", pc.summary.innerRadiusFixed === true && pc.summary.allClose === true && pc.summary.crossingOnCentreLine === true);
+  const ce = runGameLogic("general-napoleon", "counterexample", { up: 0.2, down: 0.6 });
+  check("general-napoleon/counterexample: isotomic concurs, non-isotomic does not", ce.isotomic.concurrent === true && ce.nonIsotomic.concurrent === false);
+  const ra = runGameLogic("gergonne-and-soddy", "right_angle", {});
+  check("gergonne-and-soddy/right_angle: perpendicular lines and Nobbs collinearity", ra.checks.perpendicular === true && ra.checks.nobbsCollinear === true && ra.checks.ceviansPassThroughGe === true && ra.checks.soddyDefined === true);
+  const dc = runGameLogic("gergonne-in-ellipse", "drag_and_check", { handle: "A", to: [130, 124] });
+  check("gergonne-in-ellipse/drag_and_check: cevians still concur after a touch drag", dc.stillConcurrent === true && dc.gergonneMovedBy > 0);
+  const mr = runGameLogic("gergonne-medial", "maxwell_reverse", {});
+  check("gergonne-medial/maxwell_reverse: contact-point perpendiculars meet at I", mr.allClaimsHold === true && mr.reverse.lines.every((l) => l.perpendicularAtI === true) === true);
 }
 
 // A game with no reader, and a position that makes no sense.
