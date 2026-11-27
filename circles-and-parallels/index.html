@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circles And Parallels &mdash; coolmaths</title>
+<meta name="description" content="P slides along the side of a triangle. Two circles through P meet again at Q — will the line PQ always pass through the same fixed point?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circles-and-parallels/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circles And Parallels">
+<meta property="og:description" content="P slides along the side of a triangle. Two circles through P meet again at Q — will the line PQ always pass through the same fixed point?">
+<meta property="og:url" content="https://coolmaths.ai/circles-and-parallels/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri { fill: var(--highlight); opacity: 0.10; }
+  #board .circle-a { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .circle-b { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .parallel { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .chord { stroke: var(--bad); stroke-width: 2.5; }
+  #board .tangent-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  #board .q-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .x-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="circles-and-parallels" data-kind="demo">
+<main id="main">
+  <h1>Circles And Parallels</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: two circles drawn through a point on a triangle's side meet again, and the line between the two meetings always aims at one fixed spot.<br>
+    <strong>How to play:</strong> Drag the points A, B, C and P, or focus one and use the arrow keys. Tick the boxes to show point names or a hint about why the spot never moves.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Triangle ABC with P on side AB, parallels from P to the other sides, two circles through P meeting again at Q, and the line PQ passing through the fixed point X"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="hint" type="checkbox"> Hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put all four points back where they started">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A problem from Honsberger's <em>Mathematical Delights</em> hides a very stubborn point. Move P along the side of the triangle and the two circles change size and position, yet the line joining their two meeting points keeps going through exactly the same spot.</p>
+
+      <h2>The two circles</h2>
+      <p>Pick P on AB. Draw PN parallel to BC until it meets AC at N, and PM parallel to AC until it meets BC at M. Now draw the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of triangle APN and the circumcircle of triangle BPM. Besides P they meet once more at Q. The logic test checks 736 drawings: P and Q both lie on each circle, N stays on AC, M stays on BC, and the two new lines really are parallel to the sides.</p>
+
+      <h2>The fixed point</h2>
+      <p>Let X be where the <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangents</a> to the circumcircle of ABC at A and at B meet. The page claims that every line PQ passes through this X. The test slides P through 7 positions on each of 15 different triangles: X moves less than a billionth of a unit, and its distance from the drawn line PQ is zero to the same precision. X also makes an <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles triangle</a> on AB: XA = XB, and the angle at A is angle C (or its supplement when C is obtuse).</p>
+
+      <h2>Why it must happen</h2>
+      <p>Because PN is parallel to BC, triangles ANP and ABC are scaled copies of one another about A (a <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothety</a>). Their circumcircles share the same tangent at A, so XA is tangent to the circle APN. In the same way XB is tangent to the circle BPM. Since XA = XB, X has the same power with respect to both circles: it lies on their <a class="wiki-term" data-wiki="Radical_axis" href="https://en.wikipedia.org/wiki/Radical_axis" target="_blank" rel="noopener">radical axis</a>, which for intersecting circles is exactly the common chord PQ. Tick &ldquo;Hint&rdquo; to see the circumcircle of ABC and the two tangents that build X.</p>
+
+      <h2>When the circles touch</h2>
+      <p>The page notes that if the two circles are tangent, their common tangent should take the place of PQ. The port draws that real tangent, through P and perpendicular to the line joining the two circle centres; the test finds tangencies and confirms that this line still goes through X. One difference from the original applet is deliberate: in the tangent case the applet drew the line through P perpendicular to PA instead, and that line misses X. The page's stated theorem wins here.</p>
+
+      <p class="tip">Try this: tick &ldquo;Names&rdquo; and &ldquo;Hint&rdquo;, then drag P from one end of AB to the other. Watch the line through P and Q swing around the dark point X without ever leaving it.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CirclesAndParallels.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circles-and-parallels-core.js"></script>
+<script src="circles-and-parallels.js"></script>
+</body>
+</html>
