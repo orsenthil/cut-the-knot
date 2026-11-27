@@ -2223,6 +2223,16 @@ check("circles-lined-on-tri-sides: equal N and M draw no triangle", read["circle
 check("circles-on-a-chord: the three chord formulas agree", read["circles-on-a-chord"]?.formulasAgree === true && read["circles-on-a-chord"].savedMatchesCore === true);
 check("circles-on-perp-bisector: the saved configuration is readable", read["circles-on-perp-bisector"]?.valid === true && read["circles-on-perp-bisector"].IIsIncircle === false);
 check("circle-square-circle: both saved boards are readable", read["circle-square-circle"]?.valid === true && read["circle-square-circle"].cupola !== null && read["circle-square-circle"].applet !== null);
+check("circles-through-orthocenter: six crossings share a circle about the circumcenter", read["circles-through-orthocenter"]?.reading.allHold === true);
+check("circles-with-equal-chords: the saved diagram yields equal chords", read["circles-with-equal-chords"]?.valid === true);
+check("circle-through-circumcenter: AO is perpendicular to PQ", read["circle-through-circumcenter"]?.reading.perpendicular.holds === true);
+check("circle-through-incenter: AX equals BY", read["circle-through-incenter"]?.reading.checks.AX_equals_BY === true);
+check("circle-through-incenter-2: XY is antiparallel to AB", read["circle-through-incenter-2"]?.reading.antiparallel.equal === true);
+check("circle-triplet: the saved circles match the exact construction", read["circle-triplet"]?.valid === true && Object.values(read["circle-triplet"].savedCirclesMatchCore).every(Boolean) === true);
+check("circular-poggendorf: the bar's pieces fit the circle by construction", read["circular-poggendorf"]?.claims.piecesFit === true);
+check("circumcenter-on-angle-bisector: O lies on AI and midpoints IE", read["circumcenter-on-angle-bisector"]?.reading.allHold === true);
+check("circum-quadri: the contact chords meet at the diagonal intersection", read["circum-quadri"]?.reading.meeting.holds === true);
+check("circum-simson: antipodal Simson lines and the nine-point circle check out", read["circum-simson"]?.check_claims.allHold === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);

@@ -617,6 +617,16 @@ const CORE_GLOBALS = {
   "circles-on-a-chord/circles-on-a-chord-core.js": ["CirclesOnAChordCore"],
   "circles-on-perp-bisector/circles-on-perp-bisector-core.js": ["CirclesOnPerpBisectorCore"],
   "circle-square-circle/circle-square-circle-core.js": ["CircleSquareCircleCore"],
+  "circles-through-orthocenter/circles-through-orthocenter-core.js": ["CirclesThroughOrthocenterCore"],
+  "circles-with-equal-chords/circles-with-equal-chords-core.js": ["CirclesWithEqualChordsCore"],
+  "circle-through-circumcenter/circle-through-circumcenter-core.js": ["CircleThroughCircumcenterCore"],
+  "circle-through-incenter/circle-through-incenter-core.js": ["CircleThroughIncenterCore"],
+  "circle-through-incenter-2/circle-through-incenter-2-core.js": ["CircleThroughIncenter2Core"],
+  "circle-triplet/circle-triplet-core.js": ["CircleTripletCore"],
+  "circular-poggendorf/circular-poggendorf-core.js": ["CircularPoggendorfCore"],
+  "circumcenter-on-angle-bisector/circumcenter-on-angle-bisector-core.js": ["CircumcenterOnAngleBisectorCore"],
+  "circum-quadri/circum-quadri-core.js": ["CircumQuadriCore"],
+  "circum-simson/circum-simson-core.js": ["CircumSimsonCore"],
 };
 
 const games = [];

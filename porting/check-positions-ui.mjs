@@ -1080,6 +1080,16 @@ const GAMES = {
     await page.locator("#cupolaBoard .geom-handle").first().focus();
     await page.keyboard.press("ArrowRight");
   },
+  "circles-through-orthocenter": (page) => dragFirstHandle(page),
+  "circles-with-equal-chords": (page) => dragFirstHandle(page),
+  "circle-through-circumcenter": (page) => dragFirstHandle(page),
+  "circle-through-incenter": (page) => dragFirstHandle(page),
+  "circle-through-incenter-2": (page) => dragFirstHandle(page),
+  "circle-triplet": (page) => dragFirstHandle(page),
+  "circular-poggendorf": (page) => dragFirstHandle(page),
+  "circumcenter-on-angle-bisector": (page) => dragFirstHandle(page),
+  "circum-quadri": (page) => dragFirstHandle(page),
+  "circum-simson": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },
