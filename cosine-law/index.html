@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cosine Law &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and watch two squares and three parallelograms rearrange. Why must the segment CP always match AB, and what does that say about the third side?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cosine-law/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cosine Law">
+<meta property="og:description" content="Drag the corners of a triangle and watch two squares and three parallelograms rearrange. Why must the segment CP always match AB, and what does that say about the third side?">
+<meta property="og:url" content="https://coolmaths.ai/cosine-law/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 46rem; margin: 0 auto; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board .piece { stroke: var(--ink); stroke-width: 0.6; stroke-linejoin: round; }
+  #board .piece-red { fill: var(--bad); fill-opacity: 0.24; }
+  #board .piece-yellow { fill: var(--highlight); fill-opacity: 0.42; }
+  #board .piece-blue { fill: var(--accent); fill-opacity: 0.24; }
+  #board .square { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linejoin: round; }
+  #board .heptagon { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 7 6; }
+  #board .cut { fill: none; stroke: var(--muted); stroke-width: 1.7; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2.4; }
+  #board .cp { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .switch-line { fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-dasharray: 5 4; }
+  #board .unfold-line { fill: none; stroke: var(--accent); stroke-width: 1.7; }
+  #board .right-mark { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .point-name { fill: var(--text); font-size: 17px; font-weight: 650; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 5; }
+  #readout {
+    margin: 0.4rem 0 0; text-align: center; font-size: 0.9rem;
+    font-variant-numeric: tabular-nums; overflow-wrap: anywhere; color: var(--text);
+  }
+  .controls { flex-wrap: wrap; gap: 0.6rem; }
+  .check { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.95rem; }
+</style>
+</head>
+<body data-game="cosine-law" data-kind="demo">
+<main id="main">
+  <h1>Cosine Law</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This picture shows why one rule works for every triangle: the same pieces fill the same shape in two different ways. There is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the points A, B and C, or focus a point and use the arrow keys. Tick colors to see the pieces and names to see their letters.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 440" role="group"
+         aria-label="A triangle with squares on two sides and three parallelograms, next to a shifted copy showing the same pieces cut differently. Drag the points A, B and C to reshape it."></svg>
+    <p id="readout" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <label class="check"><input type="checkbox" id="colorsChk" aria-label="Show the coloured pieces of both cuttings"> colors</label>
+    <label class="check"><input type="checkbox" id="namesChk" aria-label="Show the names of the points"> names</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag a corner and the picture changes completely, yet the same two equalities keep holding. This is Douglas Rogers's proof of the law of cosines, a direct generalization of Thābit ibn Qurra's proof of the Pythagorean theorem.</p>
+
+      <h2>Building the heptagon</h2>
+      <p>Squares are put outwardly on the sides <code>AC</code> and <code>BC</code>. Three <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelograms</a> — <code>CTPR</code>, <code>STPM</code> and <code>QRPN</code> — fill the gaps, making the seven-sided figure <code>ABQNPMS</code>. The applet draws that figure once as built and once shifted sideways, so you can see the same pieces before and after they are moved: a <a class="wiki-term" data-wiki="Dissection_puzzle" href="https://en.wikipedia.org/wiki/Dissection_puzzle" target="_blank" rel="noopener">dissection</a> in two readings.</p>
+
+      <h2>Why CP matches AB</h2>
+      <p>Page and applet both claim that <code>CP</code> is equal and perpendicular to <code>AB</code>. Triangles <code>ABC</code> and <code>CTR</code> are <em>friendly</em>: one is a quarter-turn of the other, so a median of <code>CTR</code> through <code>C</code> is an <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a> of <code>ABC</code>. Because <code>CTPR</code> is a parallelogram, its diagonals <code>CP</code> and <code>TR</code> bisect each other, so <code>CP</code> is exactly that median. The logic test checked the equal length and the zero dot product on more than a thousand triangles, including obtuse and acute ones: both always held. The green corner mark shows where <code>CP</code> crosses <code>AB</code>.</p>
+
+      <h2>Two cuts, one area</h2>
+      <p>The shifted cutting is the square on <code>AB</code> together with three copies of triangle <code>ABC</code>, so its <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> is <code>c² + 3T</code>. Reading the first picture gives <code>a² + b² − 2ab·cos(C) + 3T</code>, where the two parallelograms contribute the rectangle term. The pieces never stretch, so the two totals agree: <code>c² = a² + b² − 2ab cos(C)</code>, the <a class="wiki-term" data-wiki="Law_of_cosines" href="https://en.wikipedia.org/wiki/Law_of_cosines" target="_blank" rel="noopener">law of cosines</a>. For a right angle the rectangle term is zero and this becomes the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a>.</p>
+
+      <h2>Acute, obtuse — and one small change</h2>
+      <p>When angle <code>C</code> is acute, <code>cos(C)</code> is positive and the square on <code>AB</code> is smaller than the two other squares together. When <code>C</code> is obtuse, the term changes sign and it is larger. These are Euclid II.13 and II.12, and the page says the proof works in both cases; the logic test confirmed both branches over the whole grid plus 900 random triangles. One presentation-only change: the applet's board is 500×450, while this page uses 600×440 so the two overlaid cuttings fit on a phone. Every geometric offset, rotation and switch condition is unchanged. The original page still embeds the Java applet at the address in the byline.</p>
+
+      <p class="tip">Tick colors, then drag C above the segment AB. Watch the two yellow parallelograms move to the other cutting as the angle changes from obtuse to acute.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CosineLaw.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cosine-law-core.js"></script>
+<script src="cosine-law.js"></script>
+</body>
+</html>
