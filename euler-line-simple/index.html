@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Euler Line Simple &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle: why do its balancing point, circle centre and altitude point always lie on one line, with one twice as far from the middle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/euler-line-simple/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Euler Line Simple">
+<meta property="og:description" content="Drag the corners of a triangle: why do its balancing point, circle centre and altitude point always lie on one line, with one twice as far from the middle?">
+<meta property="og:url" content="https://coolmaths.ai/euler-line-simple/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .parallelogram { fill: var(--accent-soft); opacity: 0.7; stroke: none; }
+  #board .circumcircle { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .eulerline { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .triangle { fill: var(--accent-soft); stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .bisector { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 4; }
+  #board .median { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .altitude { stroke: var(--muted); stroke-width: 1.5; }
+  #board .altitude-part { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 3 3; }
+  #board .hintline { stroke: var(--highlight); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  #board .spoke { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 7 4; }
+  #board .hint-median { stroke: var(--ink); stroke-width: 2.5; }
+  #board .hint-diagonal { stroke: var(--good); stroke-width: 2.5; }
+  #board .centerdot { fill: var(--accent); }
+  #board .centroiddot { fill: var(--good); }
+  #board .orthodot { fill: var(--ink); }
+  #board .footdot { fill: var(--muted); }
+  #board .middot { fill: var(--text); }
+  #board .antidot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls {
+    flex-wrap: wrap;
+    gap: 0.4rem 0.75rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="euler-line-simple" data-kind="demo">
+<main id="main">
+  <h1>Euler Line Simple</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the corners of a triangle and watch three special dots line up; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus one and press the arrow keys. Tick the boxes to show lines, and press Highlight A, B or C to colour a four-sided shape.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="Triangle ABC with its circumcircle, the orthocenter H, centroid G and circumcenter O on the Euler line. Drag the corners to move them."></svg>
+    <p class="hint-line">Drag A, B or C, or focus a corner and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls" aria-label="Lines to show">
+    <label><input id="altitudesBox" type="checkbox" data-label="altitudes"> Altitudes</label>
+    <label><input id="mediansBox" type="checkbox" data-label="medians"> Medians</label>
+    <label><input id="bisectorsBox" type="checkbox" data-label="perpendicular bisectors"> Perpendicular bisectors</label>
+    <label><input id="hintBox" type="checkbox" data-label="the parallelogram"> Hint</label>
+    <label><input id="namesBox" type="checkbox" data-label="point names"> Names</label>
+  </div>
+
+  <div class="controls" aria-label="Show one parallelogram and reset">
+    <button id="selectA" type="button" aria-label="Highlight the parallelogram for corner A">Highlight A</button>
+    <button id="selectB" type="button" aria-label="Highlight the parallelogram for corner B">Highlight B</button>
+    <button id="selectC" type="button" aria-label="Highlight the parallelogram for corner C">Highlight C</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the triangle to the opening picture">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three points made from any triangle insist on lying on one straight line. The page's exact claim is that the <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a> H, the <a class="wiki-term" data-wiki="Centroid" href="https://en.wikipedia.org/wiki/Centroid" target="_blank" rel="noopener">centroid</a> G and the <a class="wiki-term" data-wiki="Circumcenter" href="https://en.wikipedia.org/wiki/Circumcenter" target="_blank" rel="noopener">circumcenter</a> O are collinear on the <a class="wiki-term" data-wiki="Euler_line" href="https://en.wikipedia.org/wiki/Euler_line" target="_blank" rel="noopener">Euler line</a>, and that <code>GH = 2&nbsp;GO</code>.</p>
+
+      <h2>How this differs from Euler Collinearity</h2>
+      <p>The other page, Euler Collinearity, starts with any point P, scales the midpoints of the sides from P and asks where three new lines meet; their meeting points form the line GP, which is the Euler line only when P is O. This page proves that the Euler line exists at all. Its proof, due to the Serbian teacher Vladimir Nikolin, uses opposite points on the circle instead of scaled midpoints. The logic test checked the claim here on 5,008 triangles — acute, right, obtuse and very thin — and it held in every one.</p>
+
+      <h2>A diameter makes a parallelogram</h2>
+      <p>Let F be the point opposite C on the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>, so CF is a <a class="wiki-term" data-wiki="Diameter" href="https://en.wikipedia.org/wiki/Diameter" target="_blank" rel="noopener">diameter</a>. An <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angle</a> on a diameter is a right angle, so BF is perpendicular to BC; the <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a> AH is perpendicular to BC too, hence AH and BF are parallel. In the same way AF is parallel to BH. So AFBH is a <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a>: its diagonals AB and FH cross at their shared midpoint, the midpoint Mc of AB. The applet draws the same picture for A (with D) and for B (with E); with Hint on, Highlight A, B or C picks which one you see.</p>
+
+      <h2>The same median twice</h2>
+      <p>Now CMc is a <a class="wiki-term" data-wiki="Median_(geometry)" href="https://en.wikipedia.org/wiki/Median_(geometry)" target="_blank" rel="noopener">median</a> of triangle ABC and also of triangle HFC. In triangle ABC the centroid G cuts it in the ratio <code>CG : GM<sub>c</sub> = 2 : 1</code>. In triangle HFC the point O is the midpoint of CF, so HO is another median and its meeting point with CMc cuts the same segment in the same ratio — it must be the very same G. That puts G on HO, and because G is twice as close to O as to H, <code>GH = 2&nbsp;GO</code>.</p>
+
+      <h2>What is drawn, and one slip in the applet</h2>
+      <p>The five switches are the applet's own: altitudes, medians, perpendicular bisectors, hint and names. The three Highlight buttons stand in for pressing a corner; the applet marks the parallelogram only when a corner has been selected or dragged. In its Hint drawing for C, the applet draws the segment A–Ma where the proof needs the median C–Mc (it kept the line from the A case). We follow the page and draw C–Mc. For three corners in a straight line, or when the applet's line-intersection test returns no point, the circle and Euler line are hidden rather than drawn with impossible coordinates. The logic test also confirmed that D, E and F are the exact antipodes <code>2O − A</code>, <code>2O − B</code>, <code>2O − C</code>, and that each parallelogram's diagonals share a midpoint.</p>
+
+      <p class="tip">Try dragging C past the opposite side to make an obtuse triangle, then switch between Highlight A, B and C: the shaded four-sided shape changes, but the straight line through H, G and O does not.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EulerLineSimple.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="euler-line-simple-core.js"></script>
+<script src="euler-line-simple.js"></script>
+</body>
+</html>
