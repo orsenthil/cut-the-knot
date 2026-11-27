@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ellipse Between Circles &mdash; coolmaths</title>
+<meta name="description" content="A third circle fits snugly between two nested circles. Where does its centre go as you slide it around?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/ellipse-between-circles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Ellipse Between Circles">
+<meta property="og:description" content="A third circle fits snugly between two nested circles. Where does its centre go as you slide it around?">
+<meta property="og:url" content="https://coolmaths.ai/ellipse-between-circles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; margin: 0 auto; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .axis { stroke: var(--muted); stroke-width: 1.4; }
+  #board .foci-line { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 3 4; }
+  #board .circle-big { fill: none; stroke: var(--ink); stroke-width: 2.4; }
+  #board .circle-small { fill: none; stroke: var(--good); stroke-width: 2.4; }
+  #board .circle-new { fill: none; stroke: var(--accent); stroke-width: 2.8; }
+  #board .locus { fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-dasharray: 6 5; opacity: 0.85; }
+  #board .focus-dot { fill: var(--ink); }
+  #board .new-dot { fill: var(--accent); }
+  #board .pt-label { fill: var(--text); font-size: 0.78rem; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls .option {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1 1 13rem;
+    min-width: 0;
+    font-size: 0.9rem;
+  }
+  .controls .option-line { display: flex; justify-content: space-between; gap: 0.5rem; }
+  .controls input[type="range"] { width: 100%; accent-color: var(--accent); }
+  .controls output { font-family: var(--mono); }
+  .controls button { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="ellipse-between-circles" data-kind="demo">
+<main id="main">
+  <h1>Ellipse Between Circles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#geometry">Geometry</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch a third circle fit between two others and see the curved path its centre follows.<br>
+    <strong>How to play:</strong> Slide the slider to move the third circle, or drag the two blue points to reshape the smaller circle. Press Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="A large circle and a smaller circle on the same line, a dashed ellipse through their centres, and a third circle touching both"></svg>
+  </div>
+
+  <div class="controls">
+    <label class="option">
+      <span class="option-line"><span>Slider</span><output id="sliderOut" for="slider">20</output></span>
+      <input id="slider" type="range" min="0" max="101" step="1" value="20"
+             aria-label="Position of the third circle, from 0 to 101">
+    </label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put both handles and the slider back at their starting positions">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two circles sitting one inside the other make a crescent called an <a class="wiki-term" data-wiki="Arbelos" href="https://en.wikipedia.org/wiki/Arbelos" target="_blank" rel="noopener">arbelos</a>. Move one end of the inner circle and the crescent becomes a "blunt" arbelos. Either way, a third circle can be tucked in so it touches both. Its centre always lands on the same <a class="wiki-term" data-wiki="Ellipse" href="https://en.wikipedia.org/wiki/Ellipse" target="_blank" rel="noopener">ellipse</a>.</p>
+
+      <h2>A distance that never changes</h2>
+      <p>Let the two given <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circles</a> have radii <code>R</code> (outer) and <code>r</code> (inner), and let the new circle have radius <code>&rho;</code>. It sits inside the big one, so its centre is <code>R &minus; &rho;</code> from the big centre. It sits outside the small one, so that distance is <code>r + &rho;</code>. Add them and the <code>&rho;</code> cancels:</p>
+      <blockquote><code>(R &minus; &rho;) + (r + &rho;) = R + r</code></blockquote>
+      <p>The sum is the same for every position of the new circle. A curve whose points keep a fixed sum of distances from two fixed points is an ellipse; those two points are its <a class="wiki-term" data-wiki="Focus_(geometry)" href="https://en.wikipedia.org/wiki/Focus_(geometry)" target="_blank" rel="noopener">foci</a>, here the centres of the two given circles, and its long axis is <code>R + r</code>. The logic test checked this sum at every slider position from 0 to 101 and thousands of handle positions: it always held.</p>
+
+      <h2>The short axis</h2>
+      <p>At the very top of the ellipse the new centre is the same distance from both foci. That makes an <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles triangle</a> with two sides <code>(R + r)/2</code> and a base equal to the distance <code>d</code> between the foci. The height of that triangle is the ellipse's short half-axis:</p>
+      <blockquote><code>h&sup2; = ((R + r)/2)&sup2; &minus; (d/2)&sup2;</code><br><code>short axis = 2h</code></blockquote>
+      <p>This is exactly the page's formula. When the inner circle really touches the outer one, <code>d = R &minus; r</code> and the formula simplifies to <code>h&sup2; = Rr</code>. Both forms were checked across the whole grid of configurations used above; the second is the true arbelos case, while the first still describes the blunt ones.</p>
+
+      <h2>What the slider does</h2>
+      <p>The old applet's scrollbar goes from 0 to 101. Its value <code>v</code> becomes <code>T = v/100</code>, and the chosen x-coordinate is <code>10 + T&times;380</code>. For most values the new circle is above the line of centres; when x runs past the end of the ellipse, the square root in the formula stops being real and the applet instead puts the circle at an end of the ellipse's long axis. Both branches were compared field for field with a second transcription of the applet's bytecode, and every centre still satisfies the ellipse equation. One quirk is kept: the applet chooses the upper or lower half from the sign of <code>T</code>, not from where the circles sit.</p>
+      <p class="tip">Drag point C until the small circle almost fills the big one, then slide: the dashed ellipse gets rounder. Drag C back near D and it becomes very thin.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EllipseBetweenCircles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="ellipse-between-circles-core.js"></script>
+<script src="ellipse-between-circles.js"></script>
+</body>
+</html>
