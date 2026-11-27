@@ -1037,6 +1037,16 @@ const GAMES = {
   "bulging-lines": (page) => dragFirstHandle(page),
   butterfly: (page) => dragFirstHandle(page),
   "butterfly-in-ellipse": (page) => dragFirstHandle(page),
+  "cabart-collinearity": (page) => dragFirstHandle(page),
+  "cantor-point": (page) => dragFirstHandle(page),
+  cardi: (page) => dragFirstHandle(page),
+  carnot: (page) => dragFirstHandle(page),
+  "carpets-in-parallelogram": (page) => dragFirstHandle(page),
+  "carpets-in-quadri": (page) => dragFirstHandle(page),
+  "carpets-in-quadri-2": (page) => dragFirstHandle(page),
+  "carpets-in-square": (page) => dragFirstHandle(page),
+  "carpets-in-square-2": (page) => dragFirstHandle(page),
+  "carpet-with-hole": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

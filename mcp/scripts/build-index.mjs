@@ -577,6 +577,16 @@ const CORE_GLOBALS = {
   "bulging-lines/bulging-lines-core.js": ["BulgingLinesCore"],
   "butterfly/butterfly-core.js": ["ButterflyCore"],
   "butterfly-in-ellipse/butterfly-in-ellipse-core.js": ["ButterflyInEllipseCore"],
+  "cabart-collinearity/cabart-collinearity-core.js": ["CabartCollinearityCore"],
+  "cantor-point/cantor-point-core.js": ["CantorPointCore"],
+  "cardi/cardi-core.js": ["CardiCore"],
+  "carnot/carnot-core.js": ["CarnotCore"],
+  "carpets-in-parallelogram/carpets-in-parallelogram-core.js": ["CarpetsInParallelogramCore"],
+  "carpets-in-quadri/carpets-in-quadri-core.js": ["CarpetsInQuadriCore"],
+  "carpets-in-quadri-2/carpets-in-quadri-2-core.js": ["CarpetsInQuadri2Core"],
+  "carpets-in-square/carpets-in-square-core.js": ["CarpetsInSquareCore"],
+  "carpets-in-square-2/carpets-in-square-2-core.js": ["CarpetsInSquare2Core"],
+  "carpet-with-hole/carpet-with-hole-core.js": ["CarpetWithHoleCore"],
 };
 
 const games = [];

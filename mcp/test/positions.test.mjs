@@ -2183,6 +2183,16 @@ check("bui-quang-tuan-2: the saved P reproduces the six-circle chain", read["bui
 check("bulging-lines: every line is straight and the layers are translations", read["bulging-lines"]?.illustration === true && read["bulging-lines"].metrics.side === 32);
 check("butterfly: the off-axis saved nexus breaks the reciprocal-sum equality", read.butterfly?.checks.reciprocal === false && read.butterfly.checks.midpoint === false);
 check("butterfly-in-ellipse: the even polygon keeps every side crossing pinned", read["butterfly-in-ellipse"]?.claims.holds === true && read["butterfly-in-ellipse"].savedReadable === true);
+check("cabart-collinearity: the two Kiepert points and nine-point centre align", read["cabart-collinearity"]?.isIllustration === true && read["cabart-collinearity"].reading.collinearity.holds === true);
+check("cantor-point: the midpoints' perpendiculars meet at the nine-point centre", read["cantor-point"]?.reading.claims.allHold === true && read["cantor-point"].degenerate === false);
+check("cardi: a chord through the cusp is four times the generating radius", read.cardi?.chordIsFourR === true && read.cardi.chordLength === read.cardi.fourR);
+check("carnot: equally inclined feet are collinear with Menelaus product minus one", read.carnot?.reading.collinearity.collinear === true && read.carnot.reading.menelaus.equalsMinusOne === true);
+check("carpets-in-parallelogram: painted red minus blue is half the parallelogram", read["carpets-in-parallelogram"]?.reading.areaCheck.holds === true);
+check("carpets-in-quadri: the quadrilateral carpet identity holds at the saved ratio", read["carpets-in-quadri"]?.reading.carpetIdentity.holds === true && read["carpets-in-quadri"].reading.convex === true);
+check("carpets-in-quadri-2: the four corner triangles equal PQRS", read["carpets-in-quadri-2"]?.reading.claims.carpet === true && read["carpets-in-quadri-2"].reading.claims.halves === true);
+check("carpets-in-square: the blue region equals the three red regions", read["carpets-in-square"]?.reading.equality.holds === true);
+check("carpets-in-square-2: red equals blue in the saved hint mode", Object.values(read["carpets-in-square-2"]?.reading.checks || {}).every(Boolean) === true);
+check("carpet-with-hole: the holed carpet has exactly the square's cell count", read["carpet-with-hole"]?.reading.identity.holds === true && read["carpet-with-hole"].reading.identity.materialCells === read["carpet-with-hole"].reading.identity.squareCells);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
