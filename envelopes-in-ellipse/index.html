@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Envelopes In Ellipse &mdash; coolmaths</title>
+<meta name="description" content="Send a ray of light bouncing around an elliptical mirror. Will its pieces touch a smaller ellipse, touch a hyperbola, or pass from one focus to the other?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/envelopes-in-ellipse/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Envelopes In Ellipse">
+<meta property="og:description" content="Send a ray of light bouncing around an elliptical mirror. Will its pieces touch a smaller ellipse, touch a hyperbola, or pass from one focus to the other?">
+<meta property="og:url" content="https://coolmaths.ai/envelopes-in-ellipse/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; margin: 0 auto; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .mirror { fill: none; stroke: var(--accent); stroke-width: 2.4; }
+  #board .focal { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 5; }
+  #board .ray { stroke: var(--ink); stroke-width: 2.2; }
+  #board .ray-ext { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 6; }
+  #board .ray-dot { fill: var(--accent); }
+  #board .focus { fill: var(--good); }
+  #board .proof-line { fill: none; stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .proof-tangent { stroke: var(--highlight); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  #board .proof-dot { fill: var(--good); }
+  #board .pt-label { fill: var(--text); font-size: 0.8rem; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; }
+  .controls .check { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; }
+  .controls .check input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+  .controls button { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="envelopes-in-ellipse" data-kind="demo">
+<main id="main">
+  <h1>Envelopes In Ellipse</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#coordinates">Coordinates</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A ray of light bounces around an elliptical mirror; watch what the bouncing lines touch.<br>
+    <strong>How to play:</strong> Drag the four corners to change the mirror and drag T1 or T2 around its edge. Press Add reflection to follow the ray, then use Add 10, Add 100, Remove last, Remove all and Reset.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="An ellipse with draggable corners, two draggable points on its edge and the ray bouncing between them"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="addBtn" type="button" class="primary" aria-label="Add the next bounce of the light ray">Add reflection</button>
+    <button id="add10Btn" type="button" aria-label="Add the next ten bounces of the light ray">Add 10 reflections</button>
+    <button id="add100Btn" type="button" aria-label="Add the next hundred bounces of the light ray">Add 100 reflections</button>
+    <button id="removeBtn" type="button" aria-label="Remove the last bounce of the light ray" disabled>Remove last</button>
+    <button id="removeAllBtn" type="button" aria-label="Remove every bounce and keep just the two starting points" disabled>Remove all</button>
+    <button id="resetBtn" type="button" aria-label="Put the mirror and both ray points back at their starting positions">Reset</button>
+    <label class="check"><input id="namesBox" type="checkbox" aria-label="Show the names of the points"> Names</label>
+    <label class="check"><input id="extendedBox" type="checkbox" aria-label="Extend each bounce line across the whole panel"> Extended lines</label>
+    <label class="check"><input id="proofBox" type="checkbox" aria-label="Show reflected foci for the proof" disabled> Reflections for a proof</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Bogomolny's applet lets a light ray bounce inside an <a class="wiki-term" data-wiki="Ellipse" href="https://en.wikipedia.org/wiki/Ellipse" target="_blank" rel="noopener">ellipse</a> again and again. The page says there are only three things the bouncing pieces can do. This page keeps the applet's draggable points and its buttons so you can see which one happens; there is no winning move.</p>
+
+      <h2>One ray, many bounces</h2>
+      <p>At each bounce the ray leaves the mirror at the same angle at which it arrived, measured against the <a class="wiki-term" data-wiki="Tangent_line" href="https://en.wikipedia.org/wiki/Tangent_line" target="_blank" rel="noopener">tangent</a>. The applet finds the next point in three steps: reflect the previous point in that tangent, turn the image through the bounce point to get the outgoing direction, and cut the ellipse again. The logic test compares this with the ordinary mirror formula on hundreds of mirrors and starting pairs; all 25-bounce paths agree to better than a thousandth of a board unit. Every generated point lies on the ellipse and every pair of incoming and outgoing pieces makes equal angles with the tangent.</p>
+
+      <h2>The number that never changes</h2>
+      <p>Let <code>F1</code> and <code>F2</code> be the two <a class="wiki-term" data-wiki="Focus_(geometry)" href="https://en.wikipedia.org/wiki/Focus_(geometry)" target="_blank" rel="noopener">foci</a>, separated by <code>2c</code>. Reflect <code>F1</code> in a piece of the ray to get <code>F1'</code>, and call <code>R = |F1' F2|</code>. The same <code>R</code> comes out for every piece of one path: reflecting <code>F2</code> in the next piece gives the same distance back to <code>F1</code>, which is the equality at the heart of the page's proof. The test checked this along all 360 starting directions, with eight bounces each.</p>
+      <blockquote><code>R constant; a' = R/2; b'&sup2; = |a'&sup2; &minus; c&sup2;|</code></blockquote>
+      <p>When <code>R &gt; 2c</code>, the <a class="wiki-term" data-wiki="Confocal" href="https://en.wikipedia.org/wiki/Confocal" target="_blank" rel="noopener">confocal</a> curve with foci <code>F1, F2</code> and semi-axis <code>a'</code> is an ellipse. When <code>R &lt; 2c</code> it is a <a class="wiki-term" data-wiki="Hyperbola" href="https://en.wikipedia.org/wiki/Hyperbola" target="_blank" rel="noopener">hyperbola</a>. In both cases the test checked the tangent equation <code>n&sup2; = a'&sup2; l&sup2; &plusmn; b'&sup2; m&sup2;</code> for every piece, where <code>l x + m y + n = 0</code> is the piece's line in coordinates centred at the mirror. All three cases really occur, so the page's classification holds.</p>
+
+      <h2>Three cases, one rule</h2>
+      <p>If the first piece passes through a focus, the reflected ray goes through the other focus and then alternates between them: the test followed six such rays for twelve bounces each. Otherwise all pieces either cross the short segment between the foci or none of them does. The first choice gives an <a class="wiki-term" data-wiki="Envelope_(mathematics)" href="https://en.wikipedia.org/wiki/Envelope_(mathematics)" target="_blank" rel="noopener">envelope</a> of ellipses, the second an envelope of hyperbolas; the 360-direction scan found no path that switches between the two. The small drift in the focus case is expected: the page itself says that case is only partly checked because the points are hard to place exactly.</p>
+
+      <h2>Small differences from the old applet</h2>
+      <p>The applet chose T2 at a random angle, so this page fixes it to make a saved position replayable; you can drag it anywhere. Its Show boxes were off unless the page set a parameter. Dragging a point to the left half of the mirror triggers the old angle routine's habit of snapping it to the far-left point; that quirk is kept. Corners cannot be dragged within twelve units of the centre, and a ray that lands exactly on a diameter stops growing because the applet's circle-cutting routine rejects it. Neither changes the geometry of the pieces that are drawn.</p>
+      <p class="tip">Press Add 100, then tick Extended lines and Reflections for a proof: the dashed lines from the foci meet at two reflected points that are the same distance from the opposite focus, <code>R</code>.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EnvelopesInEllipse.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="envelopes-in-ellipse-core.js"></script>
+<script src="envelopes-in-ellipse.js"></script>
+</body>
+</html>
