@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Evelyn &mdash; coolmaths</title>
+<meta name="description" content="Six circles fit into the corners of a triangle, each touching its neighbours. Can a seventh ever join the chain?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/evelyn/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Evelyn">
+<meta property="og:description" content="Six circles fit into the corners of a triangle, each touching its neighbours. Can a seventh ever join the chain?">
+<meta property="og:url" content="https://coolmaths.ai/evelyn/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: var(--highlight); fill-opacity: 0.07; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .guide-line { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 6 5; }
+  #board .foot-dot { fill: var(--muted); }
+  #board .chain-circle.red { fill: var(--bad); fill-opacity: 0.14; stroke: var(--bad); stroke-width: 2.5; }
+  #board .chain-circle.pink { fill: var(--muted); fill-opacity: 0.06; stroke: var(--ink); stroke-width: 1.8; stroke-opacity: 0.65; }
+  #board .handle-label { fill: var(--text); font-family: var(--font); font-size: 16px; font-weight: 600; pointer-events: none; }
+  #board .p-label { fill: var(--bad); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.45rem; }
+  .controls button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+</style>
+</head>
+<body data-game="evelyn" data-kind="demo">
+<main id="main">
+  <h1>Evelyn</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Six circles fit round a triangle, each one touching the sides and the circle before it.<br>
+    <strong>How to play:</strong> Drag the corner dots or the dot on the dotted line, or focus a dot and use the arrow keys. Choose a pair of circles to colour, then press Check the claim.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 450" role="group"
+         aria-label="A triangle with up to six tangent circles in its corners, three draggable corner dots A, B and C, and a draggable starting dot P on the dotted bisector at A"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="pair0" type="button" data-which="0" aria-pressed="false" aria-label="Colour the first pair of touching circles red">Pair 1</button>
+    <button id="pair1" type="button" data-which="1" aria-pressed="false" aria-label="Colour the second pair of touching circles red">Pair 2</button>
+    <button id="pair2" type="button" data-which="2" aria-pressed="false" aria-label="Colour the third pair of touching circles red">Pair 3</button>
+    <button id="pair3" type="button" data-which="3" aria-pressed="false" aria-label="Colour the fourth pair of touching circles red">Pair 4</button>
+    <button id="pair4" type="button" data-which="4" aria-pressed="false" aria-label="Colour the fifth pair of touching circles red">Pair 5</button>
+    <button id="pair5" type="button" data-which="5" aria-pressed="false" aria-label="Colour the sixth pair of touching circles red">Pair 6</button>
+    <button id="pair6" type="button" data-which="6" aria-pressed="true" aria-label="Colour all six circles red">Show all circles</button>
+    <button id="checkBtn" type="button" aria-label="Check that the circles touch the sides and their neighbours">Check the claim</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the triangle and the starting dot">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The old page states the <a class="wiki-term" data-wiki="Six_circles_theorem" href="https://en.wikipedia.org/wiki/Six_circles_theorem" target="_blank" rel="noopener">six circles theorem</a>: “In a triangle, any chain of circles that touch their neighbors and successive pairs of sides of the triangle counts at most six circles.” Drag P and watch what the seventh circle would do.</p>
+
+      <h2>A circle in every corner</h2>
+      <p>A circle <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> to two sides of a corner has its centre on the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> — the dotted line at A. P is that centre for the first circle, and its radius is its distance to either side through A. The next three centres lie on the bisectors at B, C and A again, so the chain visits the corners in the order A, B, C, A, B, C.</p>
+
+      <h2>Finding the next circle</h2>
+      <p>Write the bisector foot at corner B as C, the previous circle's centre as O and its radius as <code>r</code>. A new centre at <code>B + t·(C − B)</code> has radius <code>d·t</code>, where <code>d</code> is the distance from C to the side through A. Being tangent to the previous circle gives a <a class="wiki-term" data-wiki="Quadratic_equation" href="https://en.wikipedia.org/wiki/Quadratic_equation" target="_blank" rel="noopener">quadratic equation</a> <code>a·t² + 2b·t + c = 0</code>, with <code>a = |C−B|² − d²</code>, <code>b = (C−B)·(B−O) − r·d</code> and <code>c = |B−O|² − r²</code>. The applet keeps the root between 0 and 1 and draws up to five more circles.</p>
+
+      <h2>Why six is enough</h2>
+      <p>Starting with P at fraction <code>1 − Ta</code> along A's bisector, the chain comes back to exactly that circle after six steps. The logic test checks this for 156 triangle-and-start combinations and 600 extra random triangles: every circle that touches the two sides <em>as segments</em> also touches its neighbours, and the seventh circle is either the first again or does not fit. So the page's “at most six” claim holds where the theorem's circles lie inside the triangle.</p>
+
+      <h2>A quirk of the old drawing</h2>
+      <p>The applet's quadratic solver keeps its first root. With a very large first circle that root may put a circle tangent to a <em>line beyond</em> a side rather than to the side itself; then the seventh circle is not the first. The picture still stops at six circles, because the applet's loop draws only six. The logic test pins one such case (a narrow triangle with P near the bisector foot) and the difference from the sibling applet EvelynN: that one lets you grow an n-sided polygon and reports chains of up to <code>2n</code> circles, whereas this triangle-only applet reports six.</p>
+
+      <p class="tip">Try P close to A, then close to the dotted foot: how does the size of the first circle change the six that follow?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Evelyn.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="evelyn-core.js"></script>
+<script src="evelyn.js"></script>
+</body>
+</html>
