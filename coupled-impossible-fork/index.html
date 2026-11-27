@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Coupled Impossible Fork &mdash; coolmaths</title>
+<meta name="description" content="Can two ordinary 3D Pi-shaped pieces be joined so that the whole frame cannot exist? Drag the beam length and compare the two halves of this impossible frame.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/coupled-impossible-fork/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Coupled Impossible Fork">
+<meta property="og:description" content="Can two ordinary 3D Pi-shaped pieces be joined so that the whole frame cannot exist? Drag the beam length and compare the two halves of this impossible frame.">
+<meta property="og:url" content="https://coolmaths.ai/coupled-impossible-fork/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 46rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .frame-line { fill: none; stroke: var(--ink); stroke-width: 2.4;
+    stroke-linecap: round; stroke-linejoin: round; }
+  #board .frame-line.skeleton { stroke-width: 3.2; }
+  #board .frame-line.outline { stroke: var(--accent); stroke-width: 2.2; }
+  #board .frame-line.detail { stroke: var(--muted); stroke-width: 1.8; }
+  #board .frame-line.beam { stroke-width: 2.2; }
+  #board .cover-face { fill: var(--stage); stroke: none; }
+  #board .guide { fill: none; stroke: var(--muted); stroke-width: 1.4;
+    stroke-dasharray: 4 7; }
+  #board .meet-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .small-label { fill: var(--muted); font-size: 0.85rem; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5.5; }
+  .controls { align-items: center; gap: 0.5rem 0.9rem; flex-wrap: wrap; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem;
+    flex-wrap: wrap; max-width: 100%; }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+  .controls input[type="range"] { width: min(12rem, 55vw); max-width: 100%;
+    accent-color: var(--accent); }
+  .controls output { min-width: 4rem; font-variant-numeric: tabular-nums; }
+  #math code { white-space: normal; }
+</style>
+</head>
+<body data-game="coupled-impossible-fork" data-kind="demo">
+<main id="main">
+  <h1>Coupled Impossible Fork</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture of a frame that could not really be built in 3D.<br>
+    <strong>How to play:</strong> Slide the beam length or drag the dot on the bottom line to join or separate the two halves. Press the button to show the hidden edges.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 350" role="group"
+         aria-label="Two matching Pi shaped frames, one reflected from the other, joined by straight beams; a draggable dot at the bottom sets the beam length"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="wRange">Beam length <input id="wRange" type="range" min="250" max="500" step="1"
+      aria-label="Beam length, from 250 to 500; 500 joins the middle beams"></label>
+    <output id="wOut" for="wRange">500 / 500</output>
+  </div>
+
+  <div class="controls">
+    <button id="lessBtn" type="button" aria-pressed="false"
+      aria-label="Show or hide the rear edges of the two Pi pieces">Show the rear edges</button>
+    <button type="button" data-preset="joined" aria-label="Set the beam length to 500 so the middle beams join">Joined frame</button>
+    <button type="button" data-preset="gap" aria-label="Set the beam length to 250 so a gap appears between the middle beams">Visible gap</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the beam length and hide the rear edges">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The original page makes a surprising claim: this impossible frame is built from two ordinary 3D letters Pi, not from two impossible forks. The logic test checks the drawing that the Java applet actually makes and confirms the structural part of that claim.</p>
+
+      <h2>The exact claim on the page</h2>
+      <p>Bogomolny wrote: <em>This <a class="wiki-term" data-wiki="Impossible_object" href="https://en.wikipedia.org/wiki/Impossible_object" target="_blank" rel="noopener">impossible</a> frame is a combination of two 3D letters Pi. I first thought of it as a pair of impossible forks glued together but later realized that, for its construction, two perfectly possible shapes will suffice.</em> The applet has no text of its own to contradict this. In every one of the 251 slider settings and four canvas sizes tested, the right-hand half is exactly the <a class="wiki-term" data-wiki="Point_reflection" href="https://en.wikipedia.org/wiki/Point_reflection" target="_blank" rel="noopener">half-turn</a> image of the left: the same possible piece twice, not two different shapes. Each half's bar is made from two slanted steps and its two beams have equal length, so either half alone is an ordinary object. The impossibility appears only when the two copies are coupled.</p>
+
+      <h2>How the applet draws it</h2>
+      <p>The canvas divides its height into <code>t = height / 7</code>. Its slanted steps are <code>a = (t/2, -t/sqrt(3))</code> and <code>b = (-t/2, -t/sqrt(3))</code>; the seven points of one half use only these steps and their sums. The other half is <code>q = (2*cx - x, 2*cy - y)</code>, a half-turn about the canvas centre. A beam from <code>p</code> towards <code>q</code> stops at</p>
+      <blockquote><code>p + (q - p) * L / distance(p, q)</code><br>
+        <code>L = distance(p2, q8) * W / 1000,&nbsp; 250 &le; W &le; 500</code></blockquote>
+      <p>At <code>W = 500</code> the length <code>L</code> is exactly half the distance between <code>p8</code> and <code>q2</code>, so two opposing beams finish at the same point: the halves join. For smaller <code>W</code> a gap remains and the applet paints two small faces over the edges behind them. The test compares all 251 values of <code>W</code>, both edge modes and four canvas sizes with a second transcription of the bytecode; every point, face and line agrees.</p>
+
+      <h2>Why one flat picture can tell two stories</h2>
+      <p>A point on the page does not say how far away it is. Adding the same amount to all three <a class="wiki-term" data-wiki="Perspective_(graphic)" href="https://en.wikipedia.org/wiki/Perspective_(graphic)" target="_blank" rel="noopener">depth</a> coordinates moves a point nowhere on the flat page, so the left half can be read with one depth order and the right half with the opposite one. Each reading is fine on its own; demanding both at the joined ends at once is not. Pressing <em>Show the rear edges</em> draws the lines the default picture masks, which is the applet's <code>LessReal = 1</code> mode. The behaviour here matches the Java applet; only the presentation changed, with a slider and a draggable dot in place of its scrollbar and a modern SVG board in place of its AWT canvas.</p>
+
+      <p class="tip">Set <em>Visible gap</em>, then drag the bottom dot slowly right until the two beams meet under the green dot. Look at each half on its own: can you see why each piece could be built, but not both at once?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CoupledImpossibleFork.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="coupled-impossible-fork-core.js"></script>
+<script src="coupled-impossible-fork.js"></script>
+</body>
+</html>
