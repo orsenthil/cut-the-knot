@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>From 7 &mdash; coolmaths</title>
+<meta name="description" content="Stretch each side of a triangle by N copies of its own length: why is the new triangle 7, 19, 37, or 3N² + 3N + 1 times the area of the first one?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/from-7/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="From 7">
+<meta property="og:description" content="Stretch each side of a triangle by N copies of its own length: why is the new triangle 7, 19, 37, or 3N² + 3N + 1 times the area of the first one?">
+<meta property="og:url" content="https://coolmaths.ai/from-7/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .outer-fill { fill: var(--accent); opacity: 0.07; }
+  #board .small-fill { fill: var(--accent); opacity: 0.24; }
+  #board .para { opacity: 0.28; }
+  #board .para-0 { fill: #d979a8; }
+  #board .para-1 { fill: #a765bf; }
+  #board .para-2 { fill: #7e8ea8; }
+  #board .grid-line { stroke: var(--accent); stroke-width: 1; opacity: 0.55; }
+  #board .outer-side { stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; }
+  #board .extension { stroke: var(--accent); stroke-width: 1.4; stroke-dasharray: 5 4; opacity: 0.75; }
+  #board .side { stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; }
+  #board .xdot { fill: var(--accent); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label { min-height: 2.75rem; }
+  .n-group { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .n-group button { min-width: 2.5rem; padding: 8px 10px; }
+  .n-group input { min-height: 2.5rem; text-align: center; }
+</style>
+</head>
+<body data-game="from-7" data-kind="demo">
+<main id="main">
+  <h1>From 7</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Stretch the three sides of a triangle again and again and watch the outside triangle grow; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus one and press the arrow keys. Change N with the buttons or the number box, and tick Show grid or Add Color.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Triangle ABC with each side extended by N side-lengths to the outer triangle. Drag corners A, B or C to reshape it."></svg>
+    <p class="hint-line">Drag a corner, or focus one and use the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label class="n-group" for="num">N
+      <button id="lessBtn" type="button" aria-label="Decrease N by one">−</button>
+      <input id="num" type="number" min="1" step="1" value="1" aria-label="Number of side lengths to add to each side">
+      <button id="moreBtn" type="button" aria-label="Increase N by one">+</button>
+    </label>
+    <label><input id="gridBox" type="checkbox"> Show grid</label>
+    <label><input id="colorBox" type="checkbox"> Add Color</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Restore the opening triangle">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Start with any <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a> ABC. Walk around it in one direction and continue each side by N copies of its own length. Join the three new points. However you drag the corners, the outside triangle keeps the same multiple of the inside one. The original cut-the-knot page still embeds the Java applet and warns that it needs an old Java VM, so the rules and options here come from that live page and the applet's own bytecode.</p>
+
+      <h2>Put one side at a time</h2>
+      <p>The applet's <code>Extend(A, B, N)</code> means <code>B + N &times; (B − A)</code>: start at A, go to B, then keep going N more side-lengths. Doing this along AB, BC and CA gives the outer corners; going the opposite way gives three more points used for the coloured <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelograms</a>. All these steps are affine: sliding, turning or stretching the whole picture multiplies both <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">areas</a> by the same number, so their ratio cannot change.</p>
+      <blockquote><code>A′ = B + N(B − A), &nbsp; B′ = C + N(C − B), &nbsp; C′ = A + N(A − C)</code></blockquote>
+      <p>That is why the status line keeps showing the same multiple while you drag a corner.</p>
+
+      <h2>Where 3N² + 3N + 1 comes from</h2>
+      <p>Because the ratio is affine, we may place A at (0, 0), B at (1, 0) and C at (0, 1). The original area is 1/2. The new corners are <code>(N+1, 0)</code>, <code>(−N, N+1)</code> and <code>(0, −N)</code>. A <a class="wiki-term" data-wiki="Determinant" href="https://en.wikipedia.org/wiki/Determinant" target="_blank" rel="noopener">determinant</a> of two edge vectors gives twice the outer area:</p>
+      <blockquote><code>(−2N−1)(−N) − (N+1)(−N−1) = 3N² + 3N + 1</code></blockquote>
+      <p>Dividing by 1/2 leaves exactly that number as the ratio. The logic test checked this for 1,440 lattice triangles with N from 1 to 8, plus hundreds of random triangles with N up to 16 and random affine maps; it also matched a second transcription of the applet's drawing bytecode point by point.</p>
+
+      <h2>The sequence 7, 19, 37, …</h2>
+      <p>Put N = 1, 2, 3 and the formula gives 7, 19, 37, just as the page says. These are the <a class="wiki-term" data-wiki="Centered_hexagonal_number" href="https://en.wikipedia.org/wiki/Centered_hexagonal_number" target="_blank" rel="noopener">centered hexagonal numbers</a>, <a href="https://oeis.org/A003215" target="_blank" rel="noopener">OEIS A003215</a>. Each step adds <code>6(N+1)</code> copies of the small triangle, and <code>3N² + 3N + 1 = (N+1)³ − N³</code>. Tick Show grid to see the applet's own family of parallel lines, and Add Color to see its three shaded parallelograms: each one has <code>N(N+1)</code> times the base cross-product as its area. The page says "times greater than"; here that means "times as large as", the measured ratio of the two areas, which is what the construction gives.</p>
+
+      <p class="tip">Try N = 1, then drag a corner into a very long thin triangle: the outer area changes, but the ratio stays 7.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/From7.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="from-7-core.js"></script>
+<script src="from-7.js"></script>
+</body>
+</html>
