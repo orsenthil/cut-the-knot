@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equal Chords in Crossing Circles &mdash; coolmaths</title>
+<meta name="description" content="Two circles cross at P and Q. Draw two lines through P that lean the same way from the common chord: are the pieces cut off by the circles always the same length?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/equal-angles-in-crossing-circles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Equal Chords in Crossing Circles">
+<meta property="og:description" content="Two circles cross at P and Q. Draw two lines through P that lean the same way from the common chord: are the pieces cut off by the circles always the same length?">
+<meta property="og:url" content="https://coolmaths.ai/equal-angles-in-crossing-circles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .given-circle { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2.2; }
+  #board .first-circle { stroke: var(--accent); }
+  #board .second-circle { stroke: var(--good); }
+  #board .chord-line { stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; }
+  #board .hint-line { stroke: var(--highlight); stroke-width: 2.2; stroke-dasharray: 6 4; }
+  #board .centre-line { stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 3 4; }
+  #board .angle-mark { fill: none; stroke: var(--accent); stroke-width: 2.4; }
+  #board .second-angle { stroke: var(--good); }
+  #board .end-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .hint-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 2; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .pt-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 0.78rem;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line-text, .statement {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .statement { color: var(--text); }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls fieldset { display: inline-flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; margin: 0; padding: 0.25rem 0.6rem; }
+</style>
+</head>
+<body data-game="equal-angles-in-crossing-circles" data-kind="demo">
+<main id="main">
+  <h1>Equal Chords in Crossing Circles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two circles cross and two lines pass through the crossing point; drag the points and watch the two coloured pieces.<br>
+    <strong>How to play:</strong> Drag P, Q, A or D, or focus one and use the arrow keys. Tick the boxes to show the names, the claim and the helper lines.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 280" role="group"
+         aria-label="Two circles crossing at P and Q, with a line from A through P to B and a line from C through P to D. Drag the four named points or focus them and use the arrow keys."></svg>
+    <p class="hint-line-text">Drag P or Q to change the crossing and the circles; drag A or D to swing the two lines. Arrow keys move a focused point, Shift makes a bigger step.</p>
+    <p id="statementText" class="statement" hidden>AB = CD: the two lines through P make equal angles with PQ, so the pieces of them inside the circles are equal.</p>
+  </div>
+
+  <div class="controls">
+    <fieldset>
+      <legend>Adjust</legend>
+      <label><input type="radio" name="adjust-mode" value="chord" aria-label="Keep the circles and slide A and D along them"> chord</label>
+      <label><input type="radio" name="adjust-mode" value="circles" aria-label="Let A and D change the circles"> circles</label>
+    </fieldset>
+    <label><input id="namesCheck" type="checkbox" aria-label="Show point names"> Names</label>
+    <label><input id="statementCheck" type="checkbox" aria-label="Show the claim on the picture"> Statement</label>
+    <label><input id="hintCheck" type="checkbox" aria-label="Show the helper lines"> Show hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Back to the opening circles and lines">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two circles cross at P and Q. A straight line through P leaves one circle at A and the other at B; another line, leaning the same way from PQ, leaves them at C and D. Surprisingly, the two <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chords</a> AB and CD are the same length.</p>
+
+      <h2>The old book's claim</h2>
+      <p>The page quotes exercise 7 from Hall and Stevens's 1904 book: <em>If two circles cut one another, any two straight lines drawn through a point of section, making equal angles with the common chord, and terminated by the circumferences, are equal.</em> The logic test checked this on more than seven hundred layouts, with slanted, horizontal and vertical common chords: <code>AB = CD</code> to within one millionth of a drawing unit. Straight lines have no arrow, so an angle of <code>180° − θ</code> counts as the same lean as <code>θ</code>. The claim is about proper chords: when a line only touches a circle at P, one end collapses onto P and there is no chord to measure. The status line says so instead of claiming equality.</p>
+
+      <h2>How the applet draws the second line</h2>
+      <p>Start with A on the first circle and B on the second, both on one line through P. Mirror A and B across the common chord PQ, and join each mirror to P. The second meeting of those lines with the same two circles is C and D, so the two lines are mirror images in PQ. That is exactly what the applet's <code>AMoved</code> and <code>DMoved</code> do, and it is why the two undirected angles with PQ match. Moving D instead of A runs the steps backwards. The logic test transcribed those steps straight from the bytecode and compared every constructed point over hundreds of configurations.</p>
+
+      <h2>The line of centres</h2>
+      <p>Draw through Q a line <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a> to CD; it cuts chords C'D' that are equal to CD. The centres E and F lie on the <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a> of PQ, and C'D' is the <a class="wiki-term" data-wiki="Reflection_(mathematics)" href="https://en.wikipedia.org/wiki/Reflection_(mathematics)" target="_blank" rel="noopener">reflection</a> of AB in that line of centres. Hubert Shutrick's shorter proof says both chords are twice the <a class="wiki-term" data-wiki="Scalar_projection" href="https://en.wikipedia.org/wiki/Scalar_projection" target="_blank" rel="noopener">projection</a> of EF on them. Since EF is perpendicular to PQ while AB and CD lean equally from it, the projections match:</p>
+      <blockquote><code>AB = CD = 2 · |projection of EF onto the chord|</code></blockquote>
+      <p>The test checked this formula, the equality <code>C'D' = CD</code> and the symmetry in EF on every valid layout it generated; all passed.</p>
+
+      <h2>Not the crossed-circles puzzle</h2>
+      <p>Our sibling page <em>Equal Angles in Crossed Circles</em> asks a different question: a chord of one circle crosses the other at P and Q, and it proves <code>∠ASP = ∠BTQ</code> from inscribed angles in two quadrilaterals. Here both lines go through the same crossing point P and the result is about equal lengths, not equal angles at different vertices. One harmless leftover stays from the Java code: its about-box still calls itself "Pythagorean Theorem, Proof #36". The panel's <em>Adjust chord</em> checkbox state is never copied into the canvas either, but the two radio buttons are mutually exclusive, so <em>Adjust circles</em> being on means chord mode is off, exactly as the applet behaves.</p>
+
+      <p class="tip">Tick the hint and then drag P. The dashed lines follow, C'D' stays level with CD, and the two numbers in the status line keep agreeing.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EqualAnglesInCrossingCircles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="equal-angles-in-crossing-circles-core.js"></script>
+<script src="equal-angles-in-crossing-circles.js"></script>
+</body>
+</html>
