@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grebe &mdash; coolmaths</title>
+<meta name="description" content="Build squares on a triangle and watch the far sides meet in a second triangle. Do the three lines through matching corners really pass through one point?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/grebe/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Grebe">
+<meta property="og:description" content="Build squares on a triangle and watch the far sides meet in a second triangle. Do the three lines through matching corners really pass through one point?">
+<meta property="og:url" content="https://coolmaths.ai/grebe/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 36rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .square { fill: var(--accent-soft); fill-opacity: 0.6; stroke: var(--accent); stroke-width: 1.5; }
+  #board .triangle { fill: var(--ink); fill-opacity: 0.06; stroke: var(--ink); stroke-width: 2.4; stroke-linejoin: round; }
+  #board .outer-line { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 6 5; }
+  #board .red-line { fill: none; stroke: var(--bad); stroke-opacity: 0.65; stroke-width: 1.4; }
+  #board .mid-line { fill: none; stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 4 4; }
+  #board .spoke { fill: none; stroke: var(--accent); stroke-opacity: 0.8; stroke-width: 1.6; }
+  #board .dot-mode { fill: var(--good); stroke: var(--stage); stroke-width: 1.4; }
+  #board .dot-key { fill: var(--accent); stroke: var(--stage); stroke-width: 1.6; }
+  #board .pt-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 18px;
+    pointer-events: none;
+  }
+  #board .label-key { fill: var(--accent); font-weight: 600; }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2.5;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .tri-drag { fill: transparent; stroke: none; pointer-events: all; cursor: grab; }
+  .controls {
+    gap: 0.6rem 1rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+  .controls input[type="checkbox"], .controls input[type="radio"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--accent);
+  }
+  .controls button { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="grebe" data-kind="demo">
+<main id="main">
+  <h1>Grebe</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: drag the corners of a triangle and watch the squares and lines follow them.<br>
+    <strong>How to play:</strong> Drag a corner with a mouse or finger, or focus a dot and press the arrow keys. Pick a view below, and tick “Show names” to see what each point is called.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 550" role="group"
+         aria-label="Triangle ABC with a square on each side, three lines meeting at K, and the van Lamoen views"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesCheck" type="checkbox"> Show names</label>
+    <label><input type="radio" name="mode" value="grebe" checked> Grebe</label>
+    <label><input type="radio" name="mode" value="OK"> van Lamoen (OK)</label>
+    <label><input type="radio" name="mode" value="KO"> van Lamoen (KO)</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting position">Reset triangle</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Put a <a class="wiki-term" data-wiki="Square_(geometry)" href="https://en.wikipedia.org/wiki/Square_(geometry)" target="_blank" rel="noopener">square</a> on each side of a triangle. The far sides of the squares meet in a second triangle. Grebe's surprising discovery is that matching corners of the two triangles are joined by three lines that pass through one point. Drag the corners below and see whether that ever fails.</p>
+
+      <h2>The page's claim, in its own words</h2>
+      <p>The live <a href="https://www.cut-the-knot.org/Curriculum/Geometry/Grebe.shtml" target="_blank" rel="noopener">Grebe's Theorem page</a> now shows a GeoGebra picture instead of the Java applet; a <a href="https://web.archive.org/web/20060928034743id_/https://www.cut-the-knot.org/Curriculum/Geometry/Grebe.shtml" target="_blank" rel="noopener">2006 archive of the page</a> has the <code>Grebe</code> applet and its “Explanation” link. That link points to the Bride's Chair column, which states the claim exactly: “if the outer sides of Vecten's squares have been extended to form ΔA′B′C′, then the latter is similar, in fact homothetic, to ΔABC. The center of homothety is known as Lemoine's point or (in Germany) as Grebe's point.” This port keeps that forward construction. This is different from <em>From Grebe</em>, where you drag A′B′C′ and try to rebuild the original triangle.</p>
+
+      <h2>Where the common point sits</h2>
+      <p>The meeting point <code>K</code> is the <a class="wiki-term" data-wiki="Symmedian_point" href="https://en.wikipedia.org/wiki/Symmedian_point" target="_blank" rel="noopener">symmedian point</a>: in <a class="wiki-term" data-wiki="Barycentric_coordinates_(mathematics)" href="https://en.wikipedia.org/wiki/Barycentric_coordinates_(mathematics)" target="_blank" rel="noopener">barycentric coordinates</a> it is <code>a&sup2; : b&sup2; : c&sup2;</code>, where <code>a = BC</code>, <code>b = CA</code> and <code>c = AB</code>. The column adds that “for K the distances to the sides of ΔABC are proportional to the sides themselves”. Both statements hold in the check: the reflected-median construction used by the applet agrees with the closed form, and <code>d(K, BC)/a = d(K, CA)/b = d(K, AB)/c</code>. The lines <code>AA′</code>, <code>BB′</code> and <code>CC′</code> really do concur at <code>K</code>. That is why the old German name “Grebe's point” is another name for the Lemoine point.</p>
+
+      <h2>How much bigger is the new triangle?</h2>
+      <p>The two triangles are related by a <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothety</a> centred at <code>K</code>: <code>A′ = K + r(A &minus; K)</code>, and likewise for <code>B′</code> and <code>C′</code>. With <code>S = a&sup2;+b&sup2;+c&sup2;</code>, twice the signed area <code>D</code> and <code>r = (D &minus; S)/D</code>, the exterior winding gives <code>r = 1 + S/(2&middot;area)</code>. That factor depends only on the shape, not on where the triangle sits. One quirk of the old applet is kept here: the squares always turn the same way, so if you drag the corners so the triangle winds the other way, the squares lie inside it and <code>r</code> becomes negative.</p>
+
+      <h2>O and K are friends</h2>
+      <p>The two van Lamoen buttons show what the column calls friendship. In “(OK)”, <code>O_a</code>, <code>O_b</code>, <code>O_c</code> are the <a class="wiki-term" data-wiki="Circumcenter" href="https://en.wikipedia.org/wiki/Circumcenter" target="_blank" rel="noopener">circumcentres</a> of the flanks, the triangles <code>A CA BA</code>, <code>B CB AB</code> and <code>C AC BC</code>. Their triangle is homothetic to <code>ABC</code> from <code>K</code> with factor <code>(1+r)/2</code>, and <code>AO_a</code>, <code>BO_b</code>, <code>CO_c</code> pass through <code>K</code>. In “(KO)”, the circumcentre <code>O</code> of <code>ABC</code> joins the Lemoine points <code>K_a</code>, <code>K_b</code>, <code>K_c</code> of those flanks, and those three lines pass through <code>O</code>. Friendship is symmetric.</p>
+
+      <h2>What was checked</h2>
+      <p>The logic test runs 35 checks: the opening triangle, eight hand-picked shapes and 500 random ones. In each case it checks the concurrence, the barycentric coordinates, the distance ratios and both homothety factors, and it compares every constructed point with a second transcription of the applet's <code>FormSquare()</code>, <code>DrawGrebe()</code>, <code>DrawOK()</code>, <code>DrawKO()</code>, <code>ComputeLemoine()</code> and GeoSDoub's bytecode. The check found no false claim on the page: the homothety, the common point and the proportional distances all hold. The applet's own colour choices and serif labels are modernised; the geometry is not.</p>
+
+      <p class="tip">Tick “Show names” and switch between the three views. Watch <code>K</code> stay put while the circles of points move, then drag <code>C</code> across <code>AB</code> to see the factor turn negative.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Grebe.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="grebe-core.js"></script>
+<script src="grebe.js"></script>
+</body>
+</html>
