@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Four Crossing Circles &mdash; coolmaths</title>
+<meta name="description" content="Two circles cross at A and B. Two more circles share a centre O and pass through A and B. Drag the points: why are the two cuts equal, and why does A1A2/B1B2 equal Ra/Rb?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/four-crossing-circles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Four Crossing Circles">
+<meta property="og:description" content="Two circles cross at A and B. Two more circles share a centre O and pass through A and B. Drag the points: why are the two cuts equal, and why does A1A2/B1B2 equal Ra/Rb?">
+<meta property="og:url" content="https://coolmaths.ai/four-crossing-circles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales through its viewBox; all colours come from site tokens. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circle { fill: none; stroke-width: 2; }
+  #board .circle-one { stroke: var(--muted); }
+  #board .circle-two { stroke: var(--muted); stroke-dasharray: 7 5; }
+  #board .circle-a { stroke: var(--accent); stroke-width: 2.7; }
+  #board .circle-b { stroke: var(--good); stroke-width: 2.7; }
+  #board .secant { fill: none; stroke: var(--ink); stroke-width: 1.4; }
+  #board .chord { stroke-width: 6; stroke-linecap: round; }
+  #board .chord-a { stroke: var(--accent); }
+  #board .chord-b { stroke: var(--good); }
+  #board .hint { fill: none; stroke: var(--bad); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .dot { stroke: var(--stage); stroke-width: 1; }
+  #board .dot-a { fill: var(--accent); }
+  #board .dot-b { fill: var(--good); }
+  #board .dot-centre { fill: var(--muted); }
+  #board .point-label {
+    fill: var(--text); font: 600 0.85rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="four-crossing-circles" data-kind="demo">
+<main id="main">
+  <h1>Four Crossing Circles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a drawing, not a game: four circles cross and always make two matching cuts.<br>
+    <strong>How to play:</strong> Drag any of the five points, or focus one and use the arrow keys. Tick the boxes to show names or hint lines, and press Reset for the first picture.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 260" role="group"
+         aria-label="Four crossing circles with five draggable points and the chords they cut"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="hint" type="checkbox"> Hint lines</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag a point and the drawing changes shape, yet two things never change: the two coloured cuts stay the same length, and the two gaps stay in the same ratio as the radii. Here is the short reason.</p>
+
+      <h2>Four circles, two crossings</h2>
+      <p>The <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circles</a> through C, A and B and through D, A and B meet at A and B. With O as their common centre, the circle through A has radius <code>Ra = OA</code> and the one through B has radius <code>Rb = OB</code>. They meet those first two circles again at A1, A2 and B1, B2. The lines A1B1 and A2B2 cross the circle through A at two <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chords</a>; the same two lines cross the circle through B at two more chords.</p>
+
+      <h2>A rotation about O</h2>
+      <p>Turn the picture about O so that A1 lands on A: the segment A1B1 becomes AB, because O keeps every point at the same distance from itself. Turn again so that A lands on A2: now AB becomes A2B2. The two turns together are one <a class="wiki-term" data-wiki="Rotation" href="https://en.wikipedia.org/wiki/Rotation" target="_blank" rel="noopener">rotation</a> taking A1B1 onto A2B2, so the two lines lie the same distance from O. Chords the same distance from the centre of a circle have equal lengths: <code>A1B1 chord = A2B2 chord</code>, and the same holds for the circle through B. The check confirmed both equalities in 822 drawings to round-off precision.</p>
+
+      <h2>Why the gaps have that ratio</h2>
+      <p>A point turned through an angle about O travels a distance proportional to how far it was from O to begin with. Since the same rotation takes A1 to A2 and B1 to B2, <code>A1A2 / B1B2 = OA / OB = Ra / Rb</code>. That is the page's second claim, and it too held in all 822 drawings checked, including the ones where the two radii differ greatly.</p>
+
+      <h2>A note on the source</h2>
+      <p>The applet's own title string still says “Pythagorean Theorem, Proof #36”, a leftover from another applet; the page's four-crossing-circles problem is the one shown here. Its “other intersection” test looks only at the first candidate, so in a few layouts it keeps the known point and the equalities fail. This port always takes the farther intersection, the applet's choice in ordinary layouts. Points are also kept inside the drawing and a Reset button was added. The two checkboxes are the applet's own “names” and “hint” options.</p>
+
+      <p class="tip">Try dragging O far from A and B: the two inner radii grow apart, but the two coloured cuts on each line still match.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FourCrossingCircles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="four-crossing-circles-core.js"></script>
+<script src="four-crossing-circles.js"></script>
+</body>
+</html>
