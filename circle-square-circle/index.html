@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circle Square Circle &mdash; coolmaths</title>
+<meta name="description" content="A square turns inside a circle while a smaller circle keeps touching it. In the gothic cupola, what are the exact sizes of the small square and the circle on top?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circle-square-circle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circle Square Circle">
+<meta property="og:description" content="A square turns inside a circle while a smaller circle keeps touching it. In the gothic cupola, what are the exact sizes of the small square and the circle on top?">
+<meta property="og:url" content="https://coolmaths.ai/circle-square-circle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #cupolaBoard, #appletBoard { display: block; width: 100%; height: auto; touch-action: none; }
+  #appletBoard { margin-top: 0.5rem; }
+  .board-title { margin: 0.5rem 0 0.25rem; font-size: 0.95rem; color: var(--text); }
+  .board-title:first-child { margin-top: 0; }
+
+  #cupolaBoard .quarter-arc { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #cupolaBoard .base-line { stroke: var(--ink); stroke-width: 2; }
+  #cupolaBoard .guide { stroke: var(--highlight); stroke-width: 1.5; stroke-dasharray: 4 3; }
+  #cupolaBoard .big-square { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #cupolaBoard .small-square { fill: var(--accent); fill-opacity: 0.08; stroke: var(--ink); stroke-width: 2; }
+  #cupolaBoard .cupola-circle { fill: var(--accent); fill-opacity: 0.22; stroke: var(--good); stroke-width: 2.5; }
+
+  #appletBoard .axis { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 3; }
+  #appletBoard .ap-square-a { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #appletBoard .ap-circle-c { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #appletBoard .ap-square-b { fill: var(--accent); fill-opacity: 0.08; stroke: var(--accent); stroke-width: 2.5; }
+  #appletBoard .ap-circle-c2 { fill: none; stroke: var(--good); stroke-width: 2.5; }
+
+  #cupolaBoard .geom-handle, #appletBoard .geom-handle {
+    fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab;
+  }
+  #cupolaBoard .circle-handle, #appletBoard .turn-handle { fill: var(--good); }
+  #cupolaBoard .geom-handle:focus-visible, #appletBoard .geom-handle:focus-visible {
+    outline: none; stroke: var(--ink); stroke-width: 4;
+  }
+  .point-label { fill: var(--text); font-size: 12px; pointer-events: none; }
+
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls .option { display: inline-flex; flex-wrap: wrap; max-width: 100%; align-items: center; gap: 0.4rem; font-size: 0.95rem; }
+  .controls input[type="range"] { width: min(9rem, 48vw); accent-color: var(--accent); }
+  .controls output { min-width: 2.5rem; font-variant-numeric: tabular-nums; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="circle-square-circle" data-kind="demo">
+<main id="main">
+  <h1>Circle Square Circle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A circle sits inside a square, with a turning square and a smaller circle inside it, and a small square and circle fit under two curves. Drag the dots and see what keeps touching.<br>
+    <strong>How to play:</strong> Drag a labelled dot, or focus it and use the arrow keys. Slide the angle to turn a square, and use the buttons to start again or show the exact fit.
+  </div>
+
+  <div id="stage" class="stage">
+    <p class="board-title">The gothic cupola: drag A, B, G or O.</p>
+    <svg id="cupolaBoard" viewBox="0 0 360 260" role="group"
+         aria-label="A big square with two quarter curves, a small square inside it and a circle resting on top; four draggable points A, B, G and O."></svg>
+    <p class="board-title">The applet's picture: drag O, A2 or B, or slide the angle.</p>
+    <svg id="appletBoard" viewBox="0 0 360 260" role="group"
+         aria-label="A fixed square around a circle, a turning square inside it and a smaller circle inside that; three draggable points."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="fitBtn" type="button" aria-label="Move the small square and circle to their exact sizes">Show exact fit</button>
+    <button id="resetCupolaBtn" type="button" class="primary" aria-label="Put the gothic cupola back to its starting size">Reset cupola</button>
+  </div>
+
+  <div class="controls">
+    <label class="option" for="angleInput">Turning angle
+      <input id="angleInput" type="range" min="0" max="50" step="1" value="5" aria-label="Turning angle of the square, from 0 to 50 degrees">
+    </label>
+    <output id="angleOut" for="angleInput">5°</output>
+    <button id="angle45Btn" type="button" aria-label="Turn the square to 45 degrees">Turn to 45°</button>
+    <button id="resetAppletBtn" type="button" aria-label="Reset the turning square to its starting angle of 5 degrees">Reset applet</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>One picture has squares and circles tucked inside each other; the other hides a pair of fractions. Turn the square and the tangencies never change.</p>
+
+      <h2>A square, a circle, a square, a circle</h2>
+      <p>Start with a square A. Draw the <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> C that touches its four sides. A <a class="wiki-term" data-wiki="Inscribed_figure" href="https://en.wikipedia.org/wiki/Inscribed_figure" target="_blank" rel="noopener">square</a> B fits inside C, and a smaller circle fits inside B. If C has radius <code>R</code>, then B has side <code>R&radic;2</code> and its incircle has radius <code>R/&radic;2</code>. So the inner circle's area is exactly half the outer circle's:</p>
+      <blockquote><code>&pi; (R/&radic;2)&sup2; = &pi;R&sup2; / 2</code></blockquote>
+
+      <h2>Why turning changes nothing</h2>
+      <p>The corners of B sit on C at angles <code>45&deg; + &theta;</code>, <code>135&deg; + &theta;</code>, and so on. The distance from the shared centre to any side of B is its corner's radius times <code>cos 45&deg;</code>, which is always <code>R/&radic;2</code>. That is exactly the small circle's radius, so every side of B is <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> to it, whatever the angle. The applet's scroll bar runs from 0 to 50 degrees and starts at 5; the logic test checks all 51 positions on many board sizes. At exactly 45 degrees the applet also draws two lines through the midpoints of A's sides: a harmless quirk of its drawing code, not part of the rule.</p>
+
+      <h2>The cupola on the linked page</h2>
+      <p>The cut-the-knot page filed under this applet's name shows a different picture: two quarter circles in a square of side <code>S</code> form a gothic cupola, a small square of side <code>x</code> sits below, and a circle of radius <code>r</code> rests on it. Its corner G lies on a quarter circle, so by the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a>, <code>(S/2 + x/2)&sup2; + x&sup2; = S&sup2;</code>. That gives <code>5x&sup2; + 2Sx &minus; 3S&sup2; = 0</code>, with the positive root <code>x = 3S/5</code>. The circle touches the curved roof too: <code>(S/2)&sup2; + (x + r)&sup2; = (S &minus; r)&sup2;</code>, which with <code>x = 3S/5</code> gives <code>r = 39S/320</code>. The logic test confirms both fractions for hundreds of sizes. No applet is embedded on that page (checked the live page, its links and archived copies), so it is cited here as the closest verified article; the drawing follows the applet's own code.</p>
+
+      <p class="tip">Try <strong>Turn to 45°</strong> and drag A2 outward: the little circle stays tangent. Then drag G away from the fit and press <strong>Show exact fit</strong> to bring back both fractions.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/CircleSquareCircle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circle-square-circle-core.js"></script>
+<script src="circle-square-circle.js"></script>
+</body>
+</html>
