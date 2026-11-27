@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circles And Parallelogram &mdash; coolmaths</title>
+<meta name="description" content="Two circles drawn on a parallelogram meet again on a diagonal. Drag the points and see what stays the same: where do the circles meet, and how does the line between their centres behave?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circles-and-parallelogram/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circles And Parallelogram">
+<meta property="og:description" content="Two circles drawn on a parallelogram meet again on a diagonal. Drag the points and see what stays the same: where do the circles meet, and how does the line between their centres behave?">
+<meta property="og:url" content="https://coolmaths.ai/circles-and-parallelogram/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .para { fill: var(--highlight); opacity: 0.13; }
+  #board .circle-a { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .circle-c { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .ac { stroke: var(--bad); stroke-width: 2.5; }
+  #board .mn { stroke: var(--ink); stroke-width: 2; }
+  #board .side-guide { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .bisector { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  #board .kp { stroke: var(--bad); stroke-width: 3; }
+  #board .centers { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 8 5; }
+  #board .p-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1.5; }
+  #board .center-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="circles-and-parallelogram" data-kind="demo">
+<main id="main">
+  <h1>Circles And Parallelogram</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: two circles meet a second time on the diagonal of a slanted four-sided box.<br>
+    <strong>How to play:</strong> Drag the points A, B, C, D, M, N and K, or focus one and use the arrow keys. Tick the boxes to show point names, the line between the circle centres, or the hint.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A parallelogram ABCD with M and N on two sides and K on MN, and the two circles through A, M, K and C, N, K meeting again at P on the diagonal AC"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="centerLine" type="checkbox"> Centre line</label>
+    <label><input id="hint" type="checkbox"> Hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put all seven points back where they started">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag K along MN and watch the two circles: their second meeting point P slides along the diagonal AC. Two other things do not change at all &mdash; the slant of the line joining the centres, and its length.</p>
+
+      <h2>The second meeting point</h2>
+      <p>Start with a <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a> ABCD, a point M on AB and a point N on CD. Put K anywhere on MN. Draw the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of triangle AMK and the circumcircle of triangle CNK. Besides K they meet once more, at P. The page claims that P always lies on the diagonal AC, and the logic test checks this for more than two thousand drawings: the signed area of triangle ACP is zero every time.</p>
+
+      <h2>Why the angle stays put</h2>
+      <p>Because A, M, K and P lie on one circle, the angles at P and at M in that four-point ring add to 180&deg; (an <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">inscribed quadrilateral</a>). Since P is on AC, the angle between KP and the diagonal is just the angle at P. The angle at M is the angle between MA and MK: MA lies along the side AB, and MK lies along MN, so it depends on the parallelogram and on MN, but not on where K sits. The page says the angle KP makes with AC is independent of K, and the test confirms it: sliding K through many positions changes that angle by less than a billionth of a degree.</p>
+
+      <h2>The line between the centres</h2>
+      <p>Both circle centres are the same distance from K and from P, so they lie on the <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a> of the common chord KP. Each centre also lies on the perpendicular bisector of its own fixed chord, AM or CN. As K slides, those two fixed lines do not move, so the centres slide along them in step: the line joining them keeps the same direction and the same length. Tick &ldquo;Hint&rdquo; to see the bisectors and the chord KP; tick &ldquo;Centre line&rdquo; to see the pair of centres.</p>
+
+      <h2>When the circles touch</h2>
+      <p>Move K to where MN crosses AC. The two circles then have only one common point, K = P, and their common <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> there makes the same angle with AC as the chord KP did just before the two points merged. The test checks this limit on nearly a hundred parallelograms, comparing the tangent angle with the chord angle a little way along MN.</p>
+
+      <p class="tip">Try this: tick both &ldquo;Hint&rdquo; and &ldquo;Centre line&rdquo;, then drag K slowly towards the diagonal. Watch KP turn into the short line through K where the two circles touch, while the dashed line between the centres keeps its slant.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CirclesAndParallelogram.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circles-and-parallelogram-core.js"></script>
+<script src="circles-and-parallelogram.js"></script>
+</body>
+</html>
