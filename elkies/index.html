@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Six Circles Theorem (Elkies) &mdash; coolmaths</title>
+<meta name="description" content="Move the corners of a triangle and watch a chain of six circles. Does the seventh circle ever differ from the first?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/elkies/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Six Circles Theorem (Elkies)">
+<meta property="og:description" content="Move the corners of a triangle and watch a chain of six circles. Does the seventh circle ever differ from the first?">
+<meta property="og:url" content="https://coolmaths.ai/elkies/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .side { stroke: var(--ink); stroke-width: 2; }
+  #board .base { stroke: var(--muted); stroke-width: 2.5; }
+  #board .cut { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .incircle { fill: var(--accent); fill-opacity: 0.06; stroke: var(--accent); stroke-width: 2.5; }
+  #board .incircle.pair { stroke: var(--good); stroke-width: 3.5; fill-opacity: 0.13; }
+  #board .incircle.first { stroke: var(--highlight); stroke-width: 4; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .p-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  #board .point-label { fill: var(--text); font-size: 12px; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls fieldset { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; }
+  .controls legend { padding: 0 0.25rem; font-size: 0.95rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.95rem; }
+  .controls input[type="radio"] { width: 1.15rem; height: 1.15rem; }
+  .controls button { min-height: 2.5rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="elkies" data-kind="demo">
+<main id="main">
+  <h1>Six Circles Theorem (Elkies)</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> A triangle with circles tucked inside it, one after another, and the seventh circle lands back on the first.<br>
+    <strong>How to play:</strong> Drag a corner or the dot on the side, or focus a dot and use the arrow keys. Pick a pair of circles to colour, or show them all.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="A triangle with a movable point P on side A1 A2 and a chain of six circles inside it."></svg>
+  </div>
+
+  <div class="controls">
+    <fieldset>
+      <legend>Colour which pair?</legend>
+      <label><input type="radio" name="pair" value="6" checked aria-label="Show all six circles"> All circles</label>
+      <label><input type="radio" name="pair" value="0" aria-label="Show pair number 1"> Pair 1</label>
+      <label><input type="radio" name="pair" value="1" aria-label="Show pair number 2"> Pair 2</label>
+      <label><input type="radio" name="pair" value="2" aria-label="Show pair number 3"> Pair 3</label>
+      <label><input type="radio" name="pair" value="3" aria-label="Show pair number 4"> Pair 4</label>
+      <label><input type="radio" name="pair" value="4" aria-label="Show pair number 5"> Pair 5</label>
+      <label><input type="radio" name="pair" value="5" aria-label="Show pair number 6"> Pair 6</label>
+    </fieldset>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the triangle and the cut to the starting diagram">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag the triangle about and the circles change size, but the chain never grows past six. That is the Six Circles Theorem, posed by Noam Elkies and proved by Jiro Fukuta.</p>
+
+      <h2>Companion incircles</h2>
+      <p>Cut a <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a> from a corner to a point on the opposite side. You get two smaller triangles, each with its own <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a>: these two are <em>companions</em>. Now cut again from the next corner along a <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> to the circle you just drew, and take the new incircle. The applet draws the first circle and then six more.</p>
+
+      <h2>A rule every two circles obey</h2>
+      <p>Let <code>r</code> be the big triangle's inradius, <code>r<sub>n</sub></code> the radius of circle <code>n</code>, and <code>h<sub>n</sub></code> the <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a> from corner <code>A<sub>n</sub></code>. Demir's relation says</p>
+      <blockquote><code>1/r<sub>n</sub> + 1/r<sub>n+1</sub> &minus; r/(r<sub>n</sub>r<sub>n+1</sub>) = 2/h<sub>n+2</sub>.</code></blockquote>
+      <p>Write <code>s</code> for the <a class="wiki-term" data-wiki="Semiperimeter" href="https://en.wikipedia.org/wiki/Semiperimeter" target="_blank" rel="noopener">semiperimeter</a>. Since the triangle's area is both <code>rs</code> and <code>a<sub>n</sub>h<sub>n</sub>/2</code>, the right side can be rewritten with the sides. Combining three such equations gives</p>
+      <blockquote><code>(r/r<sub>n</sub> &minus; 1)(r/r<sub>n+3</sub> &minus; 1) = tan&sup2;(a<sub>n</sub>/2).</code></blockquote>
+      <p>The logic test checks both equations at all six steps of hundreds of triangles; they hold.</p>
+
+      <h2>Why six is the end</h2>
+      <p>Replace <code>n</code> by <code>n+3</code> in that last equation. The angle repeats every three corners, so the right side does not change:</p>
+      <blockquote><code>(r/r<sub>n</sub> &minus; 1)(r/r<sub>n+3</sub> &minus; 1) = (r/r<sub>n+3</sub> &minus; 1)(r/r<sub>n+6</sub> &minus; 1).</code></blockquote>
+      <p>Because <code>r<sub>n+3</sub> &lt; r</code>, the common factor is not zero and can be cancelled: <code>r<sub>n</sub> = r<sub>n+6</sub></code>. The chain of radii repeats after six. Our test also checks the stronger drawing fact: the seventh circle returns to the first one's centre and radius, so at most six distinct circles appear. A symmetric triangle can repeat earlier radii, but never more than six circles.</p>
+
+      <h2>This page, and one small change</h2>
+      <p>The applet has six "Show pair #" choices and "Show all circles"; we use one radio group so choosing a pair takes effect straight away. Its unused <code>GetNextCircle</code> and <code>GetTouchingCircle</code> routines are not copied, as nothing calls them. The applet lets point P reach a corner, where one incircle shrinks to nothing; here P stops a hair inside the side so the picture is always defined. Both changes are to the controls, not to the theorem. There is no win or loss: exploring the picture finishes a play.</p>
+
+      <p class="tip">Try <strong>Pair 3</strong>, then drag P close to A1: one circle in the pair becomes tiny while its companion stays large, yet the seventh circle still lands on the first.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Elkies.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="elkies-core.js"></script>
+<script src="elkies.js"></script>
+</body>
+</html>
