@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Four Circle Sangaku &mdash; coolmaths</title>
+<meta name="description" content="Move a point on a circle and watch three smaller circles change. Is the middle circle always the average of the other two?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/four-circle-sangaku/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Four Circle Sangaku">
+<meta property="og:description" content="Move a point on a circle and watch three smaller circles change. Is the middle circle always the average of the other two?">
+<meta property="og:url" content="https://coolmaths.ai/four-circle-sangaku/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .big-circle { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .diameter { stroke: var(--ink); stroke-width: 2; }
+  #board .chord { stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 5 3; }
+  #board .side { stroke: var(--ink); stroke-width: 1.5; stroke-opacity: 0.55; }
+  #board .incircle { fill: var(--good); fill-opacity: 0.14; stroke: var(--good); stroke-width: 2.5; }
+  #board .outer-circle { fill: #d98a45; fill-opacity: 0.16; stroke: #d98a45; stroke-width: 2.5; }
+  #board .hint-line { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .hint-segment { stroke: var(--accent); stroke-width: 2; }
+  #board .geom-dot { fill: var(--ink); }
+  #board .hint-dot { fill: var(--accent); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label { fill: var(--text); font-size: 12px; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="four-circle-sangaku" data-kind="demo">
+<main id="main">
+  <h1>Four Circle Sangaku</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> Three smaller circles sit around a triangle inside a big circle; move one point and watch their sizes change.<br>
+    <strong>How to play:</strong> Drag the point C around the big circle, or focus it and use the arrow keys. Turn it with the buttons and tick hint to see the extra lines.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 260" role="group"
+         aria-label="A circle with a horizontal diameter, a movable point C on the circle, and three smaller circles whose sizes follow C"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="leftBtn" type="button" aria-label="Turn point C one step left">Turn left</button>
+    <button id="rightBtn" type="button" aria-label="Turn point C one step right">Turn right</button>
+    <label class="option" for="namesChk"><input id="namesChk" type="checkbox"> Show names</label>
+    <label class="option" for="hintChk"><input id="hintChk" type="checkbox"> Show hint</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Put point C back where it started">New diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the point C around the circle. The three smaller circles change size, but a simple relationship between them never does. This is a <a class="wiki-term" data-wiki="Sangaku" href="https://en.wikipedia.org/wiki/Sangaku" target="_blank" rel="noopener">sangaku</a>, a Japanese temple geometry puzzle.</p>
+
+      <h2>The four circles</h2>
+      <p>The line <code>AB</code> goes straight through the middle <code>O</code> of the large circle, so its length is <code>2R</code>. The point <code>C</code> lies on the circle, and <code>D</code> is its mirror image across <code>AB</code>; the chord <code>CD</code> is perpendicular to <code>AB</code>. One circle is the <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> of triangle <code>ABC</code>. The other two lie on the far side of <code>AB</code>, each touching <code>AB</code> and the inside of the large circle.</p>
+
+      <h2>Where the two outer radii come from</h2>
+      <p>Let <code>d</code> be the distance from <code>O</code> to <code>CD</code>. Joining the large circle's centre to an outer centre makes a right triangle with legs <code>R &minus; r</code> and <code>r &plusmn; d</code>. The <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a> gives <code>(r &plusmn; d)&sup2; + r&sup2; = (R &minus; r)&sup2;</code>, which solves to</p>
+      <blockquote><code>rR = &minus;(R + d) + &radic;(2R(R + d))</code><br><code>rL = &minus;(R &minus; d) + &radic;(2R(R &minus; d))</code></blockquote>
+      <p>The applet uses a signed distance instead: it adds <code>+1</code> or <code>&minus;1</code> times <code>K.x &minus; O.x</code>, where <code>K</code> is the foot of <code>C</code> on <code>AB</code>. That gives the same pair of radii, with left and right exchanged when <code>C</code> moves to the other half of the circle.</p>
+
+      <h2>The average is the inradius</h2>
+      <p>Because <code>AB</code> is a diameter, <code>ABC</code> is a <a class="wiki-term" data-wiki="Right_triangle" href="https://en.wikipedia.org/wiki/Right_triangle" target="_blank" rel="noopener">right triangle</a> with legs <code>a = &radic;(2R(R + d))</code> and <code>b = &radic;(2R(R &minus; d))</code> and hypotenuse <code>2R</code>. Its <a class="wiki-term" data-wiki="Inradius" href="https://en.wikipedia.org/wiki/Inradius" target="_blank" rel="noopener">inradius</a> is <code>(a + b &minus; 2R)/2</code>. Substituting the two formulas above shows this is exactly <code>(rR + rL)/2</code>. The logic test checks this and both formulas at more than 1,700 positions on five circle sizes, and agrees with a second transcription of the applet's own computation at every one.</p>
+
+      <h2>The two tangent lines</h2>
+      <p>Tick <strong>Show hint</strong>: the lines through the outer centres <code>P</code> and <code>Q</code> touch the incircle, because <code>P.x = I.x &minus; r</code> and <code>Q.x = I.x + r</code>. Their feet <code>S</code> and <code>T</code> on <code>AB</code> are <code>2r</code> apart, and the midpoint of <code>ST</code> is <code>W</code>, exactly where the incircle touches <code>AB</code>. At the ends the picture degenerates: the old applet stops updating near <code>A</code> and divides by zero at <code>B</code>, so this page holds the last good diagram there.</p>
+
+      <p class="tip">Turn C until it is directly above O: the two outer circles become equal. Then tick hint and drag C across the top, watching the tangent lines slide with it.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FourCircleSangaku.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="four-circle-sangaku-core.js"></script>
+<script src="four-circle-sangaku.js"></script>
+</body>
+</html>
