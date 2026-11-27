@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Euler 60 &mdash; coolmaths</title>
+<meta name="description" content="Drag a triangle until one corner reads 60 degrees. Will the line through its centroid, circumcenter and orthocenter cut off an equilateral triangle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/euler-60/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Euler 60">
+<meta property="og:description" content="Drag a triangle until one corner reads 60 degrees. Will the line through its centroid, circumcenter and orthocenter cut off an equilateral triangle?">
+<meta property="og:url" content="https://coolmaths.ai/euler-60/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .triangle { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .euler-line { stroke: var(--bad); stroke-width: 4; stroke-linecap: round; }
+  #board .cut-line { stroke: var(--accent); stroke-width: 3; stroke-dasharray: 5 4; }
+  #board .cut-point { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .sixty-arc { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .center-dot { stroke: var(--stage); stroke-width: 1.5; }
+  #board .centroid-dot { fill: var(--bad); }
+  #board .circumcenter-dot { fill: var(--good); }
+  #board .orthocenter-dot { fill: var(--accent); }
+  #board .pt-label, #board .center-label {
+    fill: var(--text); font-size: 1.05rem; font-weight: 600; pointer-events: none;
+  }
+  #board .center-label { fill: var(--muted); font-size: 0.9rem; }
+  #board .eye-white { fill: var(--stage); stroke: var(--ink); stroke-width: 1.2; }
+  #board .eye-iris { fill: var(--ink); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; }
+  .controls input[type="checkbox"] { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+</style>
+</head>
+<body data-game="euler-60" data-kind="demo">
+<main id="main">
+  <h1>Euler 60</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: move a triangle until one corner measures 60 degrees and see which line appears.<br>
+    <strong>How to play:</strong> Drag a corner, or focus it and use the arrow keys. Tick the boxes to show the centre points, or press a preset button to try a 60-degree triangle.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle with draggable corners A, B and C, its Euler line, and three small eyes"></svg>
+  </div>
+
+  <div class="controls">
+    <button type="button" data-sixty="1.2" aria-label="Make a 60 degree angle at B with the sides in a 1.2 to 1 ratio">60&deg; at B</button>
+    <button type="button" data-sixty="2.2" aria-label="Make a 60 degree angle at B with one side more than twice the other">Long side</button>
+    <button type="button" data-sixty="1" aria-label="Make an equilateral triangle">Equilateral</button>
+    <label><input type="checkbox" data-center="centroid" aria-label="Show the centroid">Centroid</label>
+    <label><input type="checkbox" data-center="circumcenter" aria-label="Show the circumcenter">Circumcenter</label>
+    <label><input type="checkbox" data-center="orthocenter" aria-label="Show the orthocenter">Orthocenter</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Something odd happens when a triangle has a 60 degree corner: the line joining its circumcenter and orthocenter cuts the two sides meeting at that corner into an equilateral triangle. Drag the corners to find it, then check the three centre points.</p>
+
+      <h2>One line, three centres</h2>
+      <p>The <a class="wiki-term" data-wiki="Centroid" href="https://en.wikipedia.org/wiki/Centroid" target="_blank" rel="noopener">centroid</a>, the <a class="wiki-term" data-wiki="Circumcenter" href="https://en.wikipedia.org/wiki/Circumcenter" target="_blank" rel="noopener">circumcenter</a> and the <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a> line up on the <a class="wiki-term" data-wiki="Euler_line" href="https://en.wikipedia.org/wiki/Euler_line" target="_blank" rel="noopener">Euler line</a>. The applet draws it in red and opens its three little eyes when any angle is 60 degrees, within <code>0.01</code> radians. Its checkboxes mark G (centroid), O (circumcenter) and H (orthocenter). If the triangle is equilateral, O and H are the same point, so no line is drawn.</p>
+
+      <h2>Where the line crosses the sides</h2>
+      <p>Put the 60 degree corner at B, let <code>AB = c</code> and <code>BC = a</code>. A direct calculation from the two centre points gives</p>
+      <blockquote><code>BP = BQ = PQ = (a + c) / 3</code></blockquote>
+      <p>on the rays BA and BC. Because the angle between those rays is 60 degrees and the two distances from B are equal, triangle PBQ is an <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangle</a>. The line is also perpendicular to the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">bisector</a> of the 60 degree angle — that is the reformulation on the original page. The logic test checks both facts for 41 different side ratios.</p>
+
+      <h2>When the condition fits, and a typo</h2>
+      <p>The page says that for such a triangle <code>AP + CQ = PQ</code> is both necessary and sufficient. That holds on the segments exactly when <code>1/2 &le; a/c &le; 2</code>: with <code>t = (a + c)/3</code> we get <code>AP + CQ = (2c - a + 2a - c)/3 = t = PQ</code>. Press "Long side" to see the other case: one point lands beyond a corner, so the equality fails inside the triangle. Solution 1 on the page prints the slope of AH as <code>1/&radic;1</code>; its own coordinates give <code>1/&radic;3</code>, which is what makes AH perpendicular to BC. The live page now embeds a GeoGebra drawing instead of the Java applet (its <a href="https://web.archive.org/web/2017id_/http://www.cut-the-knot.org/m/Geometry/Euler60.shtml" target="_blank" rel="noopener">2017 Wayback snapshot</a> does too), so the behaviour here comes from the Euler60 bytecode; the claim quoted above is the one printed on the live page. The page credits the problem to Leo Giugiuc, Kadir Altintas and Ruben Dario, and the applet itself to Alexander Bogomolny.</p>
+
+      <p class="tip">Try the three presets in order: 60&deg; at B, Long side, Equilateral. Tick all three centre boxes and watch where O and H sit each time.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/m/Geometry/Euler60.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="euler-60-core.js"></script>
+<script src="euler-60.js"></script>
+</body>
+</html>
