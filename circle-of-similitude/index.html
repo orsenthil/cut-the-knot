@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circle Of Similitude &mdash; coolmaths</title>
+<meta name="description" content="Two circles sit apart, and a blue circle passes through the two places where their common tangents meet. Slide a point around that blue circle: why do the two circles look the same size from wherever it stands?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circle-of-similitude/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circle Of Similitude">
+<meta property="og:description" content="Two circles sit apart, and a blue circle passes through the two places where their common tangents meet. Slide a point around that blue circle: why do the two circles look the same size from wherever it stands?">
+<meta property="og:url" content="https://coolmaths.ai/circle-of-similitude/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .baseline { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .common-tangent { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .circle-main { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .circle-cs { fill: none; stroke: var(--accent); stroke-width: 3; }
+  #board .t-ray { stroke: var(--good); stroke-width: 2; }
+  #board .tan-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1; }
+  #board .centre-p { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .centre-q { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .angle { fill: none; stroke: var(--highlight); stroke-width: 3; }
+  #board .point-label { fill: var(--text); font: 600 0.9rem var(--font); pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; white-space: normal; }
+</style>
+</head>
+<body data-game="circle-of-similitude" data-kind="demo">
+<main id="main">
+  <h1>Circle Of Similitude</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: two circles and the blue circle through the places where their touching lines meet.<br>
+    <strong>How to play:</strong> Drag the dots, or focus one and use the arrow keys. Tick Names or Hint to change what is shown, and press Reset picture to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Two circles, their common tangent lines, the blue circle of similitude through the two centres of similarity, and a draggable point T on it"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox" checked> Names</label>
+    <label><input id="hint" type="checkbox"> Hint (show the equal angles)</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the picture to its starting circles">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move T anywhere on the blue circle and the two black circles keep the same ratio of distances, of tangent lengths and of apparent size. The picture is a theorem, not a puzzle with a win.</p>
+
+      <h2>Where the touching lines meet</h2>
+      <p>Two circles that lie apart have four <a class="wiki-term" data-wiki="Tangent_lines_to_circles" href="https://en.wikipedia.org/wiki/Tangent_lines_to_circles" target="_blank" rel="noopener">common tangents</a>. The two crossing ones meet at P between the centres, and the two outer ones meet at Q outside them. P and Q are the centres of the two <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homotheties</a> that turn one circle into the other, with scale factors <code>&minus;R2/R1</code> and <code>+R2/R1</code>. The blue circle is drawn on PQ as its diameter. The logic test builds the tangents exactly as the old applet's bytecode does, intersects them, and gets the same P and Q for every tested pair of circles.</p>
+
+      <h2>The blue circle keeps a distance ratio</h2>
+      <p>P divides the centres internally and Q divides them externally in the ratio <code>R1/R2</code>, so the circle with diameter PQ is the <a class="wiki-term" data-wiki="Apollonian_circle" href="https://en.wikipedia.org/wiki/Apollonian_circle" target="_blank" rel="noopener">circle of Apollonius</a> for those two centres. Every point T on it satisfies <code>d1/d2 = R1/R2</code>. The test walks right round the blue circle for hundreds of generated pairs and finds the ratios equal to within a billionth. When the radii are equal there is no outer centre: Q runs off to infinity and the blue circle becomes the straight line midway between the centres — the page assumes different radii, but the same ratio rule still holds there.</p>
+
+      <h2>Tangent lengths and equal angles</h2>
+      <p>A tangent from T touches a circle at right angles to its radius, so the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a> gives <code>d_i² = t_i² + R_i²</code>. Dividing the two copies by <code>d1/d2 = R1/R2</code> leaves <code>t1/t2 = R1/R2</code>, exactly as the page claims. The right triangles with sides <code>t_i</code>, <code>d_i</code> and <code>R_i</code> are <a class="wiki-term" data-wiki="Similarity_(geometry)" href="https://en.wikipedia.org/wiki/Similarity_(geometry)" target="_blank" rel="noopener">similar</a>, so the angle between the two tangents from T, <code>2·arcsin(R_i/d_i)</code>, is the same for both circles. Tick Hint to see those equal angles. The test checked both formulas at thousands of points and they agreed at every one. One small change from the old code: it placed the blue circle's centre at the average of the x coordinates, with the first circle's y, which is only right when the centres are level; this page uses the true midpoint of PQ so the theorem holds after any drag.</p>
+
+      <p class="tip">Make the radii equal and watch Q disappear; then drag the two circles closer together until P leaves the picture and the common tangents vanish.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CircleOfSimilitude.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circle-of-similitude-core.js"></script>
+<script src="circle-of-similitude.js"></script>
+</body>
+</html>
