@@ -1067,6 +1067,19 @@ const GAMES = {
   "circle-of-similitude-1": (page) => dragFirstHandle(page),
   "circle-on-cevian": (page) => dragFirstHandle(page),
   "circles-and-parallelogram": (page) => dragFirstHandle(page),
+  "circles-and-parallels": (page) => dragFirstHandle(page),
+  "circles-and-regular-triangle": (page) => dragFirstHandle(page),
+  "circles-and-square": (page) => dragFirstHandle(page),
+  "circles-cover-quadrilateral": (page) => dragFirstHandle(page),
+  "circles-in-circles-sangaku": (page) => dragFirstHandle(page),
+  "circles-in-regular-polygon": (page) => dragFirstHandle(page),
+  "circles-lined-on-tri-sides": (page) => dragFirstHandle(page),
+  "circles-on-a-chord": (page) => dragFirstHandle(page),
+  "circles-on-perp-bisector": (page) => dragFirstHandle(page),
+  "circle-square-circle": async (page) => {
+    await page.locator("#cupolaBoard .geom-handle").first().focus();
+    await page.keyboard.press("ArrowRight");
+  },
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

@@ -2213,6 +2213,16 @@ check("circle-of-similitude: the tangent intersections bound the similitude circ
 check("circle-of-similitude-1: the similitude circle is orthogonal to the centre-diameter circle", read["circle-of-similitude-1"]?.possible === true && read["circle-of-similitude-1"].orthogonal === true);
 check("circle-on-cevian: three diameter circles meet at the orthocenter", read["circle-on-cevian"]?.reading.axes.length === 3 && read["circle-on-cevian"].reading.orthocenter !== null);
 check("circles-and-parallelogram: the second circle intersection lies on AC", read["circles-and-parallelogram"]?.reading.onDiagonalAC.holds === true && read["circles-and-parallelogram"].reading.onDiagonalAC.crossProductResidual === 0);
+check("circles-and-parallels: PQ always passes through the fixed point X", read["circles-and-parallels"]?.reading.passesThroughX.holds === true && read["circles-and-parallels"].reading.fixedPoint !== null);
+check("circles-and-regular-triangle: QB is perpendicular to the diameter", read["circles-and-regular-triangle"]?.reading.qb.perpendicularToAC === true && read["circles-and-regular-triangle"].reading.qb.angleDegrees === 90);
+check("circles-and-square: the second circle intersection lies on AC", read["circles-and-square"]?.reading.onDiagonalAC.holds === true);
+check("circles-cover-quadrilateral: the covering hypothesis is tested on four triangles", read["circles-cover-quadrilateral"]?.reading.triangles.length === 4 && Object.values(read["circles-cover-quadrilateral"].matchesSaved).every(Boolean) === true);
+check("circles-in-circles-sangaku: r3 and r4 are equal at every position", read["circles-in-circles-sangaku"]?.r3 === read["circles-in-circles-sangaku"].r4 && Object.values(read["circles-in-circles-sangaku"].savedCirclesMatchCore).every(Boolean) === true);
+check("circles-in-regular-polygon: the saved vertices reproduce the polygon", read["circles-in-regular-polygon"]?.savedVerticesAgree === true && read["circles-in-regular-polygon"].maxVertexGap === 0);
+check("circles-lined-on-tri-sides: equal N and M draw no triangle", read["circles-lined-on-tri-sides"]?.reading.doNotDraw === true);
+check("circles-on-a-chord: the three chord formulas agree", read["circles-on-a-chord"]?.formulasAgree === true && read["circles-on-a-chord"].savedMatchesCore === true);
+check("circles-on-perp-bisector: the saved configuration is readable", read["circles-on-perp-bisector"]?.valid === true && read["circles-on-perp-bisector"].IIsIncircle === false);
+check("circle-square-circle: both saved boards are readable", read["circle-square-circle"]?.valid === true && read["circle-square-circle"].cupola !== null && read["circle-square-circle"].applet !== null);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);

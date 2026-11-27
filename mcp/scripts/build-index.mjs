@@ -607,6 +607,16 @@ const CORE_GLOBALS = {
   "circle-of-similitude-1/circle-of-similitude-1-core.js": ["CircleOfSimilitude1Core"],
   "circle-on-cevian/circle-on-cevian-core.js": ["CircleOnCevianCore"],
   "circles-and-parallelogram/circles-and-parallelogram-core.js": ["CirclesAndParallelogramCore"],
+  "circles-and-parallels/circles-and-parallels-core.js": ["CirclesAndParallelsCore"],
+  "circles-and-regular-triangle/circles-and-regular-triangle-core.js": ["CirclesAndRegularTriangleCore"],
+  "circles-and-square/circles-and-square-core.js": ["CirclesAndSquareCore"],
+  "circles-cover-quadrilateral/circles-cover-quadrilateral-core.js": ["CirclesCoverQuadrilateralCore"],
+  "circles-in-circles-sangaku/circles-in-circles-sangaku-core.js": ["CirclesInCirclesSangakuCore"],
+  "circles-in-regular-polygon/circles-in-regular-polygon-core.js": ["CirclesInRegularPolygonCore"],
+  "circles-lined-on-tri-sides/circles-lined-on-tri-sides-core.js": ["CirclesLinedOnTriSidesCore"],
+  "circles-on-a-chord/circles-on-a-chord-core.js": ["CirclesOnAChordCore"],
+  "circles-on-perp-bisector/circles-on-perp-bisector-core.js": ["CirclesOnPerpBisectorCore"],
+  "circle-square-circle/circle-square-circle-core.js": ["CircleSquareCircleCore"],
 };
 
 const games = [];
