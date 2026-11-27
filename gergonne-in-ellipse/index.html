@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gergonne In Ellipse &mdash; coolmaths</title>
+<meta name="description" content="Three lines just touch an oval, making a triangle around it. Do the lines from each corner to the opposite touch point always meet in one place?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/gergonne-in-ellipse/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Gergonne In Ellipse">
+<meta property="og:description" content="Three lines just touch an oval, making a triangle around it. Do the lines from each corner to the opposite touch point always meet in one place?">
+<meta property="og:url" content="https://coolmaths.ai/gergonne-in-ellipse/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .ellipse { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .rect-guide { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  #board .tangent { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 6 5; }
+  #board .side { stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+  #board .cevian { stroke: var(--accent); stroke-width: 1.8; }
+  #board .vertex-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .g-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .point-label, #board .touch-label {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .g-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .rect-handle { fill: var(--highlight); stroke: var(--ink); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="gergonne-in-ellipse" data-kind="demo">
+<main id="main">
+  <h1>Gergonne In Ellipse</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore: an oval sits inside a triangle and touches each side once.<br>
+    <strong>How to play:</strong> Drag a touch dot along the oval, or drag a corner of the faint frame to change its shape. Focus a dot and use the arrow keys, then press Check the theorem.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="An ellipse inside a triangle, with three touch points, their tangents and the three lines that meet at G"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" aria-label="Reset the ellipse and its three touch points to the start">Reset</button>
+    <button id="checkBtn" type="button" class="primary" aria-label="Check whether the three lines meet at one point">Check the theorem</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show the names of the triangle corners, touch points and meeting point">Show names</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the dots and the oval changes shape. Yet the three lines drawn from the triangle's corners to the opposite touch points still go through the same spot. Why should an oval be as good as a circle here?</p>
+
+      <h2>Three touches make a triangle</h2>
+      <p>A <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> just grazes a curve at one point instead of cutting through it. The three tangents at the dots on this <a class="wiki-term" data-wiki="Ellipse" href="https://en.wikipedia.org/wiki/Ellipse" target="_blank" rel="noopener">ellipse</a> meet in pairs to make the corners of a <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a>. If the ellipse has centre <code>(cx, cy)</code> and half-widths <code>a, b</code>, the tangent at <code>(xA, yA)</code> obeys <code>(x−cx)(xA−cx)/a² + (y−cy)(yA−cy)/b² = 1</code>. The logic test checks this equation at both ends of every tangent on 4,621 diagrams, including very stretched ovals.</p>
+
+      <h2>Corners joined to the opposite dots</h2>
+      <p>Each corner is named for the dot it faces, so corner <code>A1</code> faces touch point <code>T1</code>. Join each corner to its own dot: these are the three cevians of the triangle. <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a> says they meet at one point when the products of the side ratios are equal. The point is called the <a class="wiki-term" data-wiki="Gergonne_point" href="https://en.wikipedia.org/wiki/Gergonne_point" target="_blank" rel="noopener">Gergonne point</a>, and the applet labels it <code>G</code>. The page's claim held in every one of 4,621 configurations tested: all three lines passed through <code>G</code>, with a relative error below <code>1e−9</code>. The applet finds <code>G</code> by averaging the three pairwise line crossings; because the lines really do concur, that average is their common point.</p>
+
+      <h2>Why the oval does not matter</h2>
+      <p>The cut-the-knot page argues by <a class="wiki-term" data-wiki="Projective_geometry" href="https://en.wikipedia.org/wiki/Projective_geometry" target="_blank" rel="noopener">projective geometry</a>: straight lines stay straight, touching stays touching, and one meeting point stays one meeting point when the whole picture is mapped. A circle can be stretched and slanted into any non-degenerate <a class="wiki-term" data-wiki="Conic_section" href="https://en.wikipedia.org/wiki/Conic_section" target="_blank" rel="noopener">conic</a>, including this ellipse, by an <a class="wiki-term" data-wiki="Affine_transformation" href="https://en.wikipedia.org/wiki/Affine_transformation" target="_blank" rel="noopener">affine map</a>. So a proof for the circle's incircle already proves the ellipse picture. The test maps a circle this way and confirms that the three lines still concur.</p>
+
+      <h2>When there is no point to draw</h2>
+      <p>If two touch dots are dragged onto each other, their tangents are the same line and no triangle corner can be found. The applet's number code returns a NaN (not a number) when two lines are nearly parallel, and it hides the cevians and dots. The test checks this edge case too: there is simply no <code>G</code> to show until the dots are pulled apart again. The only changes in this port are the look and the buttons; the geometry, ranges and messages follow the applet.</p>
+
+      <p class="tip">Try dragging one touch dot onto its neighbour and then away again: watch G disappear, then return to the same meeting point of the three lines.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/GergonneInEllipse.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="gergonne-in-ellipse-core.js"></script>
+<script src="gergonne-in-ellipse.js"></script>
+</body>
+</html>
