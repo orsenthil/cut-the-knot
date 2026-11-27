@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circles And Square &mdash; coolmaths</title>
+<meta name="description" content="Two circles drawn on a square meet again at P. Drag the points M, N and K: will P ever leave the diagonal AC?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circles-and-square/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circles And Square">
+<meta property="og:description" content="Two circles drawn on a square meet again at P. Drag the points M, N and K: will P ever leave the diagonal AC?">
+<meta property="og:url" content="https://coolmaths.ai/circles-and-square/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .square { fill: var(--highlight); opacity: 0.13; }
+  #board .circle-a { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .circle-c { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .ac { stroke: var(--bad); stroke-width: 2.5; }
+  #board .mn { stroke: var(--ink); stroke-width: 2; }
+  #board .side-guide { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .p-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="circles-and-square" data-kind="demo">
+<main id="main">
+  <h1>Circles And Square</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: two circles drawn on a square always meet a second time on the same diagonal.<br>
+    <strong>How to play:</strong> Drag the points A, B, C, D, M, N and K, or focus a point and use the arrow keys. Tick Names for labels or press Reset diagram to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A square ABCD with M on AD, N on BC and K on MN, and the two circles through A, M, K and C, N, K meeting again at P on the diagonal AC"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Names</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put all seven points back where they started">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag the points and the two circles change shape. Their second meeting point moves too &mdash; but it never leaves the diagonal of the square. Why not?</p>
+
+      <h2>The picture</h2>
+      <p>Start with <a class="wiki-term" data-wiki="Square_(geometry)" href="https://en.wikipedia.org/wiki/Square_(geometry)" target="_blank" rel="noopener">square</a> ABCD. Choose M on side AD, N on side BC, and any point K on the line MN. Draw the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of triangle AMK and the circumcircle of triangle CNK. Besides K, the circles meet once more at P. The page claims P always lies on the diagonal AC, and the logic test confirms it for more than six hundred drawings: the signed area of triangle ACP is zero every time.</p>
+
+      <h2>Why the two angles add up</h2>
+      <p>When the four points A, M, K, P form a convex <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>, its opposite angles add to 180&deg;, so <code>&ang;APK + &ang;AMK = 180&deg;</code>. The sides AD and BC are parallel, and MK and NK are the same line seen from opposite ends, so <code>&ang;AMK = &ang;KNC</code>. Together, <code>&ang;APK + &ang;KPC = 180&deg;</code>, which is exactly what it means for A, P and C to lie on one straight <a class="wiki-term" data-wiki="Line_(geometry)" href="https://en.wikipedia.org/wiki/Line_(geometry)" target="_blank" rel="noopener">line</a>. The test checks both angle facts: the angles at M and N agree in every drawing, and the two angles at P add to a straight angle wherever AMKP is convex.</p>
+
+      <h2>It works beyond squares</h2>
+      <p>Nowhere in that argument did we use equal side lengths &mdash; only that AD is parallel to BC. So the claim also holds for rectangles and for any <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a>, as the page's remark says. The logic test draws slanted parallelograms too, and P lands on their diagonal AC as well.</p>
+
+      <h2>When the circles touch</h2>
+      <p>If K happens to sit where MN crosses AC, the circles have only one common point: P and K coincide on the diagonal, and the circles have a common <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> there. When the two crossings are less than a pixel apart, the applet's own rule for picking the point beside K can choose K itself; the test leaves those few near-touching drawings to the tangent check rather than claiming a visible second point.</p>
+
+      <p class="tip">Try this: drag M and N far apart, then slide K slowly along MN and watch P stay on the diagonal.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CirclesAndSquare.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circles-and-square-core.js"></script>
+<script src="circles-and-square.js"></script>
+</body>
+</html>
