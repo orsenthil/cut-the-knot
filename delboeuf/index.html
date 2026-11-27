@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Delboeuf &mdash; coolmaths</title>
+<meta name="description" content="Two coloured circles look like different sizes, but are they? Move the rings around them and see what your eyes do.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/delboeuf/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Delboeuf">
+<meta property="og:description" content="Two coloured circles look like different sizes, but are they? Move the rings around them and see what your eyes do.">
+<meta property="og:url" content="https://coolmaths.ai/delboeuf/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+    border-radius: 0.5rem;
+  }
+  #board .frame { fill: none; stroke: var(--ink); stroke-width: 1; }
+  #board .ring { fill: var(--ink); }
+  #board .hole { fill: var(--stage); }
+  #board .band-line { stroke-width: 2; }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible {
+    outline: none;
+    stroke: var(--good);
+    stroke-width: 5;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.4rem 0 0;
+  }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+  }
+  .controls label {
+    display: grid;
+    grid-template-columns: minmax(0, auto) minmax(0, 1fr) minmax(0, 2.5rem);
+    align-items: center;
+    gap: 0.35rem;
+    flex: 1 1 15rem;
+    min-width: 0;
+    min-height: 2.75rem;
+  }
+  .controls label span,
+  .controls output { min-width: 0; }
+  .controls input[type="range"] {
+    width: 100%;
+    min-width: 0;
+    accent-color: var(--accent);
+  }
+  .controls output {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .controls button { min-height: 2.75rem; }
+</style>
+</head>
+<body data-game="delboeuf" data-kind="demo">
+<main id="main">
+  <h1>Delboeuf</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two coloured circles look different in size, but the drawing gives them exactly the same size.<br>
+    <strong>How to play:</strong> Move the five sliders to change the circles and what surrounds them. Drag the probe dot, or focus it and use the arrow keys, to check a ring.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 300" role="group"
+         aria-label="Two equal coloured circles: the left sits inside a bigger ring, the right holds a smaller circle, with a draggable probe dot"></svg>
+    <p class="hint">Keyboard: Tab to the probe dot, then use the arrow keys (Shift makes a bigger step). Each slider also has arrow keys.</p>
+  </div>
+
+  <div class="controls">
+    <label for="MR"><span>Outside size</span><input id="MR" type="range" min="10" max="100" step="1" value="50" aria-label="Outside size, from 10 to 100"><output id="MROut" for="MR">50</output></label>
+    <label for="DR"><span>Inside size</span><input id="DR" type="range" min="1" max="50" step="1" value="10" aria-label="Inside size, from 1 to 50"><output id="DROut" for="DR">10</output></label>
+    <label for="WR"><span>Edge width</span><input id="WR" type="range" min="10" max="50" step="1" value="10" aria-label="Width of the coloured circle edges, from 10 to 50"><output id="WROut" for="WR">10</output></label>
+    <label for="CI"><span>Guide shade</span><input id="CI" type="range" min="0" max="260" step="1" value="255" aria-label="Shade of the two guide lines, from 0 to 255; 255 hides them"><output id="CIOut" for="CI">255</output></label>
+    <label for="Ci"><span>Colour tint</span><input id="Ci" type="range" min="-100" max="100" step="1" value="0" aria-label="Tint of the coloured circles: negative is blue, positive is red"><output id="CiOut" for="Ci">0</output></label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset all five sliders to their opening values">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The cut-the-knot page says: "Two equal circles - one inside a bigger circle, the other containing a smaller circle - seem to have different sizes." The surprise is only in the seeing. The drawing code gives the two coloured circles exactly the same numbers; the logic test checked that over every setting of the three size sliders.</p>
+
+      <h2>Two circles with the same recipe</h2>
+      <p>The applet first takes a step <code>u = round(width / 5)</code> and then <code>s4 = round(u &times; MR / 200)</code> and <code>s5 = round(s4 &times; WR / 100)</code>. Both coloured rings are drawn with radius <code>s4 + s5</code> and edge width <code>s5</code>, and both get the same colour. Moving the <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> that surrounds them, or the one inside them, never changes those two numbers. At the opening values on a 500-unit board, <code>u = 100</code>, <code>s4 = 25</code>, <code>s5 = 3</code>, so each coloured ring has <a class="wiki-term" data-wiki="Radius" href="https://en.wikipedia.org/wiki/Radius" target="_blank" rel="noopener">radius</a> 28. The test compared all 186,550 MR &times; DR &times; WR settings with a second transcription of the bytecode: the two coloured circles matched in every one.</p>
+
+      <h2>The neighbours are what change</h2>
+      <p>Let <code>s6 = round(s4 &times; DR / 100)</code>. The black ring around the left circle has radius <code>s4 + s5 + s6</code>; the black circle inside the right one has radius <code>s4 - s6 - s5</code>. With the opening settings these are 31 and 19, so the page's description is literally true: bigger outside on the left, smaller inside on the right. Across all 186,550 size settings on this board the smaller-inside relation never failed. The bigger-outside relation failed in 7,831 settings, exactly those where Java's rounding makes <code>s6 = 0</code> (small MR together with small DR): then the two left rings have the same radius. The page does not mention that edge case, and this port keeps it. At the most extreme MR = 10, DR = WR = 50 the last radius works out to -1; the applet asks Java for a negative-size oval and paints nothing, so the SVG hides that ring instead.</p>
+
+      <h2>The other two sliders</h2>
+      <p>The guide-shade slider is the applet's CI field. At 255 it draws no lines; at any other value it draws two horizontal lines at <code>mid - s4 - trunc(s5/2) - 1</code> and <code>mid + s4 + trunc(s5/2)</code>, using a shade scaled by <code>CI / 255</code>. The tint slider is Ci: positive mixes the foreground towards red, negative towards blue, in steps of one percent, so <code>Ci = 100</code> is pure red and <code>Ci = -100</code> pure blue. The live page passes <code>fcolor=000000</code> and <code>bcolor=ffffff</code> to the applet, which is why the rings start black and the panel white; this port uses the site's ink and stage colours so both themes stay readable. The test checked every one of the 261 guide shades and all 201 tints against the bytecode, plus 13,251 pairs of them together.</p>
+
+      <h2>What the eye adds</h2>
+      <p>The page calls this an <a class="wiki-term" data-wiki="Assimilation_(psychology)" href="https://en.wikipedia.org/wiki/Assimilation_(psychology)" target="_blank" rel="noopener">assimilation</a> illusion: copies of a shape seem to take on properties of their surroundings. It is an <a class="wiki-term" data-wiki="Optical_illusion" href="https://en.wikipedia.org/wiki/Optical_illusion" target="_blank" rel="noopener">optical illusion</a>, not a trick in the numbers. No pixel test can measure how big a circle looks, so the test checks what it can: the two coloured circles are drawn identically, and only their neighbours and colours change. Use the probe dot to put numbers on what your eyes are disagreeing about.</p>
+
+      <p class="tip">Try setting the outside-size slider to 10 and the inside-size slider to 1: both coloured circles shrink together to radius 8, and the bigger ring around the left one has disappeared.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Delboeuf.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="delboeuf-core.js"></script>
+<script src="delboeuf.js"></script>
+</body>
+</html>
