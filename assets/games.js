@@ -3729,5 +3729,13 @@ window.COOLMATHS = {
       kind: "demo",
       level: 3,
     },
+    {
+      slug: "circumsogonal",
+      title: "Isogonal Image of the Circumcircle",
+      blurb: "Mirror the lines from a point P to a triangle's corners in the angle bisectors, and they meet again at one point. Where must P be for the mirrored lines never to meet?",
+      tags: ["geometry", "triangles", "circles"],
+      kind: "demo",
+      level: 3,
+    },
   ],
 };

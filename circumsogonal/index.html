@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Isogonal Image of the Circumcircle &mdash; coolmaths</title>
+<meta name="description" content="Mirror the lines from a point P to a triangle's corners in the angle bisectors, and they meet again at one point. Where must P be for the mirrored lines never to meet?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circumsogonal/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Isogonal Image of the Circumcircle">
+<meta property="og:description" content="Mirror the lines from a point P to a triangle's corners in the angle bisectors, and they meet again at one point. Where must P be for the mirrored lines never to meet?">
+<meta property="og:url" content="https://coolmaths.ai/circumsogonal/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circum-circle { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 4 5; }
+  #board .tri-body { fill: var(--accent); fill-opacity: 0.06; cursor: move; }
+  #board .tri-side { stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; }
+  #board .p-line { stroke: var(--muted); stroke-width: 1.4; }
+  #board .iso-line { stroke: var(--good); stroke-width: 1.8; }
+  #board .angle-arc { fill: none; stroke: var(--highlight); stroke-width: 1.5; }
+  #board .par-arc { fill: none; stroke: var(--accent); stroke-width: 1.6; }
+  #board .q-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .p-label { fill: var(--accent); }
+  #board .q-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--ink); fill-opacity: 0.85; stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .p-handle { fill: var(--accent); fill-opacity: 1; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--highlight); stroke-width: 4; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="circumsogonal" data-kind="demo">
+<main id="main">
+  <h1>Isogonal Image of the Circumcircle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Three green lines are mirror copies of the lines from P to the corners. Find where they meet, and the places where they never meet.<br>
+    <strong>How to play:</strong> Drag P, a corner, or the inside of the triangle, or focus a dot and use the arrow keys. Press "P on circle" to put P on the dashed circle.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Triangle ABC on its circumcircle, a point P joined to the corners, and the three lines reflected in the angle bisectors, which meet at Q unless P is on the circle"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="snapBtn" type="button" aria-label="Move P straight onto the circumcircle">P on circle</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Put the triangle and P back where they started">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Pick any point P and draw its lines to the corners of a triangle. Mirror each of them in the bisector of its corner's angle. The three mirrored lines meet in one point, wherever P is, except when P sits on the circle through the corners.</p>
+
+      <h2>Isogonal lines</h2>
+      <p>At corner A, the line AP and its mirror image make equal angles with the two sides: the mirror image turns away from AC by exactly the angle AP turns away from AB. Lines in that relation are called isogonal. The marks show this: one arc pair at A, two at B, three at C. The applet does not reflect anything. It measures the angle from AP to AB and turns side AC by the same angle, which lands on the same line. The logic test compares this with a direct reflection in the <a class="wiki-term" data-wiki="Bisection#Angle_bisector" href="https://en.wikipedia.org/wiki/Bisection#Angle_bisector" target="_blank" rel="noopener">angle bisector</a> on 24,000 lines.</p>
+
+      <h2>The isogonal conjugate</h2>
+      <p>The three mirrored lines meet at the <a class="wiki-term" data-wiki="Isogonal_conjugate" href="https://en.wikipedia.org/wiki/Isogonal_conjugate" target="_blank" rel="noopener">isogonal conjugate</a> Q of P. In <a class="wiki-term" data-wiki="Barycentric_coordinate_system" href="https://en.wikipedia.org/wiki/Barycentric_coordinate_system" target="_blank" rel="noopener">barycentric coordinates</a>, if P = (α : β : γ) then</p>
+      <blockquote><code>Q = (a²/α : b²/β : c²/γ)</code></blockquote>
+      <p>where a, b and c are the side lengths. Applying the rule twice gives P back. The test confirms, on 8,000 random positions, that the three lines meet, that the meeting point is given by this formula, and that conjugating twice returns P. The incenter is its own conjugate. The circumcenter and the orthocenter are conjugates of each other.</p>
+
+      <h2>When P is on the circumcircle</h2>
+      <p>Put P on the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> and the three lines come out parallel. Q has gone off to the <a class="wiki-term" data-wiki="Point_at_infinity" href="https://en.wikipedia.org/wiki/Point_at_infinity" target="_blank" rel="noopener">line at infinity</a>. The marks at C show why. Angles BCP and BAP stand on the same arc, so by the <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angle theorem</a> they are equal, and so are ACP and ABP. Those equal angles turn the mirrored lines at A, B and C all the same way. The test puts P at 72 places around each of 100 circles and finds the lines parallel every time. As P comes close to the circle, Q runs further and further away.</p>
+
+      <h2>Faithful to the applet</h2>
+      <p>The applet treats P as on the circle when it is within 2 pixels of it. Then it draws no Q and marks the two angles at C instead, and so does this page. The applet opens with P exactly on the circle. That spot is hard to hit again with a mouse, so this page adds the "P on circle" button.</p>
+
+      <p class="tip">Move P slowly towards the dashed circle and watch Q race away. Then put P on the incenter (where the bisectors cross) and see that Q lands on top of it.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Circumsogonal.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circumsogonal-core.js"></script>
+<script src="circumsogonal.js"></script>
+</body>
+</html>
