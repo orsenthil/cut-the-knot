@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cosine Law Unfolded &mdash; coolmaths</title>
+<meta name="description" content="Squares grow on all three sides of a triangle. Drag the corners: why is the line through C a copy of AB, and how do the unfolded pieces prove the law of cosines?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/cosine-law-unfolded/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Cosine Law Unfolded">
+<meta property="og:description" content="Squares grow on all three sides of a triangle. Drag the corners: why is the line through C a copy of AB, and how do the unfolded pieces prove the law of cosines?">
+<meta property="og:url" content="https://coolmaths.ai/cosine-law-unfolded/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; margin: 0 auto; padding: 0.5rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board .fill-red { fill: var(--bad); fill-opacity: 0.18; }
+  #board .fill-blue { fill: var(--accent); fill-opacity: 0.22; }
+  #board .fill-orange { fill: var(--highlight); fill-opacity: 0.3; }
+  #board .fill-square { fill: var(--accent); fill-opacity: 0.08; }
+  #board .square-outline { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .edge { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .key-edge { fill: none; stroke: var(--accent); stroke-width: 3.5; }
+  #board .hint-edge { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .hint-dot { fill: var(--good); }
+  #board .pt-label {
+    fill: var(--text); font-size: 15px; font-weight: 650; pointer-events: none;
+    paint-order: stroke; stroke: var(--stage); stroke-width: 3px;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 5; }
+  .controls { justify-content: center; flex-wrap: wrap; gap: 0.5rem; }
+  .controls button[aria-pressed="true"] { border-color: var(--accent); background: var(--highlight); }
+  #status { text-align: center; overflow-wrap: anywhere; }
+</style>
+</head>
+<body data-game="cosine-law-unfolded" data-kind="demo">
+<main id="main">
+  <h1>Cosine Law Unfolded</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Three squares sit on the sides of a triangle; there is nothing to win or lose, just a picture that keeps working as you move it.<br>
+    <strong>How to play:</strong> Drag the three round points, or focus one and use the arrow keys. Press Colors, Names or Hint to show more of the picture, and Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 520" role="group"
+         aria-label="A triangle with a square on each side and an unfolded proof drawn around it. Drag the points A, B and C to change the triangle."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="colorsBtn" type="button" aria-pressed="false" aria-label="Show or hide the coloured dissection pieces">Colors</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show or hide the names of the points">Names</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show or hide the extra helper lines for the proof">Hint</button>
+    <button id="resetBtn" type="button" aria-label="Reset the triangle to its starting position">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A proof without words can still have a lot to say. Put a <a class="wiki-term" data-wiki="Square_(geometry)" href="https://en.wikipedia.org/wiki/Square_(geometry)" target="_blank" rel="noopener">square</a> on each side of any triangle, then move one corner. Some of the lines always keep the same length and direction relative to one another; that is the whole secret.</p>
+
+      <h2>A copy of AB through C</h2>
+      <p>Look at the highlighted segment from <code>C</code> to <code>P</code>. It is made by turning the side <code>AB</code> a quarter turn and sliding it to start at <code>C</code>. So <code>CP = AB</code> and <code>CP</code> is <a class="wiki-term" data-wiki="Perpendicular" href="https://en.wikipedia.org/wiki/Perpendicular" target="_blank" rel="noopener">perpendicular</a> to <code>AB</code>, whatever shape the triangle has. The logic test checked this for 1,050 positions: the length matches and the dot product of the two directions is zero every time. The square on <code>AB</code> also shows why: its side through <code>E</code> points the same way as <code>CP</code>.</p>
+
+      <h2>Friendly triangles and the median</h2>
+      <p>The two outer corners <code>T</code> and <code>R</code> make a triangle <code>CTR</code> with <code>CT = AC</code> and <code>CR = BC</code>. Bogomolny calls such triangles <em>friendly</em>: the <a class="wiki-term" data-wiki="Median_(geometry)" href="https://en.wikipedia.org/wiki/Median_(geometry)" target="_blank" rel="noopener">median</a> from <code>C</code> in one is the <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a> from <code>C</code> in the other. Here <code>CTPR</code> is a <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a>, so its diagonals <code>CP</code> and <code>TR</code> cut each other in half. That makes <code>CP</code> the median of <code>CTR</code>, and therefore the altitude of <code>ABC</code>. The two triangles have the same <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a>. The picture also looks <a class="wiki-term" data-wiki="Symmetry" href="https://en.wikipedia.org/wiki/Symmetry" target="_blank" rel="noopener">symmetric</a> about the midpoint <code>O</code> of <code>AB</code>: the test found this exactly true for the pairs <code>C/J</code>, <code>S/G</code>, <code>Q/F</code> and the two pairs in whichever unfolding is drawn. The page's word "appears" describes the visual impression, not an extra assertion.</p>
+
+      <h2>Unfolding into the law of cosines</h2>
+      <p>Press Colors. The two orange four-sided pieces are the unfolded parts of the squares on <code>AC</code> and <code>BC</code>. Each has area <code>AC · BC · |cos C|</code>. Adding the areas in the picture gives</p>
+      <blockquote><code>AC² + BC² = AB² + 2 · AC · BC · cos C</code></blockquote>
+      <p>which is the <a class="wiki-term" data-wiki="Law_of_cosines" href="https://en.wikipedia.org/wiki/Law_of_cosines" target="_blank" rel="noopener">law of cosines</a>, usually written <code>AB² = AC² + BC² − 2 · AC · BC · cos C</code>. When angle <code>C</code> is obtuse the orange pieces fold on the other side of the diagram; that is the switch the applet makes, and both cases were checked. This port keeps the applet's construction and options, adds a Reset button, and lets you move the three corners instead of dragging the whole triangle; the vertices stay inside the board.</p>
+
+      <p class="tip">Turn on Names and Hint, then make angle <code>C</code> almost a right angle. The orange pieces nearly vanish, and the picture becomes the Pythagorean dissection.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CosineLawUnfolded.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="cosine-law-unfolded-core.js"></script>
+<script src="cosine-law-unfolded.js"></script>
+</body>
+</html>
