@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circumcenter On Angle Bisector &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle: the circle through B, I and C keeps its centre on the line from A. Why does it never miss?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circumcenter-on-angle-bisector/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circumcenter On Angle Bisector">
+<meta property="og:description" content="Drag the corners of a triangle: the circle through B, I and C keeps its centre on the line from A. Why does it never miss?">
+<meta property="og:url" content="https://coolmaths.ai/circumcenter-on-angle-bisector/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .bic-circle { fill: var(--accent); fill-opacity: 0.10; stroke: var(--accent); stroke-width: 2; }
+  #board .bisector { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .ai-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .ai-line.on { stroke: var(--good); stroke-width: 3; stroke-dasharray: none; }
+  #board .external { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 3 5; }
+  #board .diameter { stroke: var(--highlight); stroke-width: 1.5; stroke-dasharray: 2 6; }
+  #board .foot-dot { fill: var(--muted); }
+  #board .center-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .circum-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .excenter-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  #board .mid-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1.5; }
+  #board .right-mark { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .half-arc { fill: none; stroke: var(--highlight); stroke-width: 2.5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 18px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .i-label { fill: var(--good); }
+  #board .o-label { fill: var(--accent); }
+  #board .e-label, #board .k-label, #board .l-label { fill: var(--highlight); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="circumcenter-on-angle-bisector" data-kind="demo">
+<main id="main">
+  <h1>Circumcenter On Angle Bisector</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners of a triangle and watch the circle through two corners and the middle point: its centre always lands on the line from the top corner.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a corner and use the arrow keys. Press the Show buttons to reveal more lines, then Check the claims.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle with its angle bisectors, the center I, the excenter E and the circle through B, I and C"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset triangle</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point names">Hide names</button>
+    <button id="statementBtn" type="button" aria-pressed="false" aria-label="Show the angle bisector from A">Show statement</button>
+    <button id="premiseBtn" type="button" aria-pressed="false" aria-label="Show the bisectors from B and C and the chord midpoints">Show premise</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show the outer bisectors and the excenter E">Show hint</button>
+    <button id="checkBtn" type="button" aria-label="Check the claims for this triangle">Check the claims</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move a corner of the triangle. Three special points move with it, and the circle through B, I and C keeps its centre on the line from A to I. That is the whole droodle: a fact that stays true for every triangle.</p>
+
+      <h2>Where I comes from</h2>
+      <p>Each corner has an <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a>, a line that cuts its angle into two equal parts. The three of them meet at one point, the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> I. So AI is the bisector at A, and I is equally far from all three sides. The applet finds I by intersecting the bisectors from B and C; the logic test checks that this is the same point as the side-length formula for the incenter on hundreds of triangles, acute, right and obtuse.</p>
+
+      <h2>The excenter on the same line</h2>
+      <p>At B and C there are also <em>outer</em> bisectors: each one is at right angles to the inner bisector at that corner. They meet at E, the <a class="wiki-term" data-wiki="Excenter" href="https://en.wikipedia.org/wiki/Excenter" target="_blank" rel="noopener">excenter</a> opposite A. Because the outer and inner bisectors are perpendicular, the angles IBE and ICE are right angles. The applet marks K and L, the midpoints of IB and IC, with little right-angle corners; those confirm that O, the centre of the circle through B, I and C, sits on the perpendicular bisectors of the two chords.</p>
+
+      <h2>A circle with diameter IE</h2>
+      <p>Since both IBE and ICE are right angles, B and C lie on the <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> whose diameter is IE: a right angle always subtends a diameter. That circle is exactly the one drawn here, the circumcircle of triangle BIC. Its centre O is the midpoint of IE. And because A, I and E lie on one straight line, O lies on AI too — which is the problem from Andreescu and Gelca's collection that the original page illustrates. The logic test verifies every link in this chain: IO = IB = IC, O is the midpoint of IE, and A, I, O, E are collinear.</p>
+
+      <h2>One more surprise</h2>
+      <p>The original page adds that O also lies on the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of ABC. This is not a side remark: it holds for every non-degenerate triangle tried, and the test compares it with an independent computation of that circle. Press Show hint to see E and the two outer bisectors, Show premise for K, L and the chord midpoints, and Show statement to pick out AI. Press Check the claims to test your current triangle.</p>
+
+      <p class="tip">Try making a very long, flat triangle: the centre O may leave the picture, but it still lies on the line AI and on the circle through A, B and C.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CircumcenterOnAngleBisector.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circumcenter-on-angle-bisector-core.js"></script>
+<script src="circumcenter-on-angle-bisector.js"></script>
+</body>
+</html>
