@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circle Of Similitude 1 &mdash; coolmaths</title>
+<meta name="description" content="Two circles and a third circle between them: why do the tangents from a point on it cut equal angles and equal lengths? Drag the dots and find out.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circle-of-similitude-1/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circle Of Similitude 1">
+<meta property="og:description" content="Two circles and a third circle between them: why do the tangents from a point on it cut equal angles and equal lengths? Drag the dots and find out.">
+<meta property="og:url" content="https://coolmaths.ai/circle-of-similitude-1/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage { width: 100%; max-width: 31rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .given-circle { fill: var(--accent); fill-opacity: 0.06; stroke: var(--ink); stroke-width: 2.5; }
+  #board .radius-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .centers-line { stroke: var(--muted); stroke-width: 1.5; }
+  #board .tangent-line { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 7 6; }
+  #board .diameter-circle { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 6 5; }
+  #board .similitude-circle { fill: var(--good); fill-opacity: 0.06; stroke: var(--good); stroke-width: 3; }
+  #board .radical-line { stroke: var(--bad); stroke-width: 2; stroke-dasharray: 8 5; }
+  #board .bisector-line { stroke: var(--accent); stroke-width: 2.5; }
+  #board .contact-line { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+  #board .chord-line { stroke: var(--highlight); stroke-width: 2.5; }
+  #board .chord-part { stroke: var(--good); stroke-width: 3; }
+  #board .projection-line { stroke: var(--bad); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .midpoint-line { stroke: var(--highlight); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .right-angle { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .angle-arc { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .special-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font-family: var(--font); font-size: 14px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .aux-handle { fill: var(--highlight); stroke: var(--ink); }
+  #board .t-handle { fill: var(--good); stroke: var(--stage); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="circle-of-similitude-1" data-kind="demo">
+<main id="main">
+  <h1>Circle Of Similitude 1</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: two circles and a third circle between them show four surprising equalities.<br>
+    <strong>How to play:</strong> Drag the five dots with a mouse or finger, or focus one and use the arrow keys. Press the statement buttons to show each idea, and Check all to see the equal numbers.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Two circles with centres O1 and O2, the circle of similitude between them, a point T on that circle, and the tangent contact points from T"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the two circles and the point T to the starting picture">Reset picture</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point names">Hide names</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the common tangents and other guide lines">Show guide lines</button>
+    <button id="s1Btn" type="button" aria-pressed="false" aria-label="Toggle statement 1: the two circles meet at right angles">Statement 1</button>
+    <button id="s2Btn" type="button" aria-pressed="false" aria-label="Toggle statement 2: the line TP bisects the angle at T">Statement 2</button>
+    <button id="s3Btn" type="button" aria-pressed="false" aria-label="Toggle statement 3: equal distances from the radical axis">Statement 3</button>
+    <button id="s4Btn" type="button" aria-pressed="false" aria-label="Toggle statement 4: the chord parts and tangent lengths are equal">Statement 4</button>
+    <button id="pairBtn" type="button" aria-pressed="true" aria-label="Switch between the L and M pairs of tangent contact points">Show M pair</button>
+    <button id="checkBtn" type="button" aria-label="Check and speak the measured equalities">Check all</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Take any point T on the orange circle between the two grey ones. Four things that look unrelated turn out to be equal: two angles, two distances from a line, and two lengths on a chord. Drag the dots and the equalities never break.</p>
+
+      <h2>Where the middle circle comes from</h2>
+      <p>The two common tangents that cross between the circles meet at the internal centre P; the two that do not cross meet at the external centre Q. Both are <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothety</a> centres: from P or Q one circle looks like a scaled copy of the other. The orange circle has PQ as its diameter, so its centre is the midpoint of P and Q and its radius is <code>|PQ| / 2</code>. It is also the <a class="wiki-term" data-wiki="Apollonian_circle" href="https://en.wikipedia.org/wiki/Apollonian_circle" target="_blank" rel="noopener">Apollonian circle</a> of the two centres for the ratio <code>r1 / r2</code>: every T on it satisfies <code>TO1 / TO2 = r1 / r2</code>. The logic test checks this at hundreds of positions, including tilted circles that the old applet could not draw.</p>
+
+      <h2>Right angles where the circles cross</h2>
+      <p>The grey circle drawn on O1O2 as a diameter meets the orange circle at E and F. Statement 1 says the two circles are <a class="wiki-term" data-wiki="Orthogonality" href="https://en.wikipedia.org/wiki/Orthogonality" target="_blank" rel="noopener">orthogonal</a>: the lines from E (or F) to the two centres make a right angle. In numbers, <code>dist(CS, CM)² = R² + RM²</code>, where CM is the midpoint of O1O2. The test finds the difference smaller than a millionth at every configuration it tries, so the page's claim holds.</p>
+
+      <h2>The angle cut in half</h2>
+      <p>From T draw the two tangents to each circle. They touch the first circle at L1 and M1, and the second at L2 and M2. Pairing L1 with L2 and M1 with M2, statement 2 says the line TP cuts both angles at T in half: <code>angle L1 T P = angle P T L2</code>. The old applet showed only one pair at a time; the L/M button here switches between them, and Check all speaks the two matching angles. The reason is that on the Apollonian circle TP is an angle bisector of <code>O1 T O2</code>, while TO1 and TO2 bisect the two tangent angles.</p>
+
+      <h2>Equal lengths, equal distances</h2>
+      <p>The <a class="wiki-term" data-wiki="Radical_axis" href="https://en.wikipedia.org/wiki/Radical_axis" target="_blank" rel="noopener">radical axis</a> is the line where the two circles have the same power. Statement 3 says L1 and L2 are the same distance from it, so the midpoint of L1L2 lies on it. Statement 4 says the line L1L2 cuts the circles again at K1 and K2 with <code>L1K1 = L2K2</code>; statement 4' says the same thing as <code>t(L1, c2) = t(L2, c1)</code>, where t is the length of a tangent segment. Each equality holds for both pairs in the logic test, and so does the page's converse: the tangents at L1 and L2 meet back on the orange circle.</p>
+      <p>Three small differences from the old applet are worth saying. Its page calls these "three" properties but shows four statements and four checkboxes; this port keeps all four. It starts with two equal circles, which sends Q to infinity and hides the construction although the page asks for different radii, so this port starts with unequal radii. Its radical-axis line is always vertical, even when the centres are tilted; this port draws the true line perpendicular to O1O2. Its four centre and radius dots can only slide horizontally; ours keep that same behaviour.</p>
+
+      <p class="tip">Press Statement 4, then drag T right round the orange circle: watch the two green chord parts stay the same length while their position changes.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CircleOfSimilitude1.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circle-of-similitude-1-core.js"></script>
+<script src="circle-of-similitude-1.js"></script>
+</body>
+</html>
