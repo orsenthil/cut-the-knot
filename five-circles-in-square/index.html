@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Five Circles In Square &mdash; coolmaths</title>
+<meta name="description" content="Four right triangles and a small square sit inside a bigger square, each with a circle tucked inside. Can you slide point E until all five circles are exactly the same size?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/five-circles-in-square/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Five Circles In Square">
+<meta property="og:description" content="Four right triangles and a small square sit inside a bigger square, each with a circle tucked inside. Can you slide point E until all five circles are exactly the same size?">
+<meta property="og:url" content="https://coolmaths.ai/five-circles-in-square/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 28rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .guide-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .outer-square { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .inner-square { fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-opacity: 0.55; }
+  #board .triangle { fill: var(--accent); fill-opacity: 0.06; stroke: var(--muted); stroke-width: 1; }
+  #board .incircle { fill: var(--accent); fill-opacity: 0.10; stroke: var(--accent); stroke-width: 2.5; }
+  #board .central-circle { stroke: var(--good); }
+  #board .hint-line { stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 4 3; }
+  #board .point-label { fill: var(--text); font-size: 13px; pointer-events: none; }
+  #board .angle-label { fill: var(--good); font-size: 14px; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .e-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  .controls button { min-height: 2.5rem; }
+  #status { min-height: 1.6rem; }
+</style>
+</head>
+<body data-game="five-circles-in-square" data-kind="demo">
+<main id="main">
+  <h1>Five Circles In Square</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> Four right triangles inside a square, each with a circle, and one more circle in the middle.<br>
+    <strong>How to play:</strong> Drag the dot E around the dashed circle, or focus it and use the arrow keys. Press Make circles equal to see when all five match.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="group"
+         aria-label="A square holding four right triangles and five circles. Drag the point E around the dashed circle to change them."></svg>
+  </div>
+
+  <div class="controls">
+    <label class="option" for="namesChk"><input id="namesChk" type="checkbox"> Show names</label>
+    <label class="option" for="statementChk"><input id="statementChk" type="checkbox" disabled> Show statement</label>
+    <label class="option" for="hintChk"><input id="hintChk" type="checkbox" disabled> Show hint</label>
+    <button id="equalBtn" type="button" aria-label="Move E so all five circles have the same radius">Make circles equal</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Start a new diagram with E back at its first position">New diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Five circles live in one drawing: one inside each of four right triangles and one inside the little square they leave behind. Move the dot E and every circle changes. Can all five ever be the same size?</p>
+
+      <h2>Four right triangles</h2>
+      <p>The dot E is kept on the circle that has the left side <code>AD</code> as its diameter, so by <a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a> the angle at E is a right angle. The three other dots are just E turned by quarter turns, so all four triangles are the same right triangle: legs <code>a</code> and <code>b</code>, hypotenuse <code>c</code>. Its <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> has radius</p>
+      <blockquote><code>r = (a + b &minus; c) / 2</code></blockquote>
+
+      <h2>The square in the middle</h2>
+      <p>The four rotated copies of E form a <a class="wiki-term" data-wiki="Square" href="https://en.wikipedia.org/wiki/Square" target="_blank" rel="noopener">square</a>. When <code>a &gt; b</code>, its side is <code>a &minus; b</code>, so the circle inside it has radius <code>(a &minus; b) / 2</code>. If E goes below the middle, the roles of <code>a</code> and <code>b</code> swap; the drawing still works, only the page's written formula changes sign. The logic test checks both formulas in thousands of positions.</p>
+
+      <h2>When all five match</h2>
+      <p>Set the two radii equal: <code>(a + b &minus; c)/2 = (a &minus; b)/2</code>. The <code>a</code> terms cancel and <code>c = 2b</code>. That makes a <a class="wiki-term" data-wiki="Special_right_triangle" href="https://en.wikipedia.org/wiki/Special_right_triangle" target="_blank" rel="noopener">30&ndash;60&ndash;90 triangle</a>, with the angle opposite <code>b</code> equal to 30&deg; and the other acute angle 60&deg;. The common radius is <code>c(&radic;3 &minus; 1)/4</code>. The logic test confirms the claim for many square sizes and finds no other angle where the radii are exactly equal; the applet calls it finished when they differ by less than half a pixel.</p>
+      <p>The live cut-the-knot page now shows a GeoGebra picture instead of the Java applet. A <a href="https://web.archive.org/web/20120117033301/http://www.cut-the-knot.org/Curriculum/Geometry/FiveCirclesInSquare.shtml" target="_blank" rel="noopener">2012 snapshot</a> embeds the applet named FiveCirclesInSquare, and the explanation above is the page's own. One tiny-canvas quirk is softened here: when E sits almost at the centre of a very small drawing, the applet's line-intersection routine returns a missing centre, while this page keeps the true centre of the square.</p>
+
+      <p class="tip">Try <strong>Make circles equal</strong>, then tick <em>Show hint</em> and <em>Show statement</em> to see the lines and angles the applet reveals at that moment.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FiveCirclesInSquare.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="five-circles-in-square-core.js"></script>
+<script src="five-circles-in-square.js"></script>
+</body>
+</html>
