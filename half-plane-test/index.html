@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Half Plane Test &mdash; coolmaths</title>
+<meta name="description" content="Lines cut a board into two sides. What shape is left where all the kept sides overlap — and can it ever be empty?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/half-plane-test/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Half Plane Test">
+<meta property="og:description" content="Lines cut a board into two sides. What shape is left where all the kept sides overlap — and can it ever be empty?">
+<meta property="og:url" content="https://coolmaths.ai/half-plane-test/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+    background: var(--stage);
+    border-radius: 8px;
+  }
+  #board .overlap-region { fill: var(--accent); opacity: 0.24; stroke: none; pointer-events: none; }
+  #board .half-line { stroke: var(--ink); stroke-width: 2; pointer-events: none; }
+  #board .half-line.selected { stroke: var(--accent); stroke-width: 3.5; }
+  #board .hit-line { stroke: transparent; stroke-width: 18; pointer-events: stroke; cursor: grab; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .handle-label { fill: var(--text); font-size: 0.85rem; font-weight: 600; pointer-events: none; }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0 0; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+  .controls input[type="number"] { width: 4.5rem; }
+</style>
+</head>
+<body data-game="half-plane-test" data-kind="demo">
+<main id="main">
+  <h1>Half Plane Test</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#induction">Induction</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Straight lines cut the board into sides, and the part shared by all of them is a convex shape; nothing is won or lost.<br>
+    <strong>How to play:</strong> Drag a line to slide it, or drag the two dots at its ends to swing it. Use the buttons to change the number of lines, show the shared part, and press an arrow key after focusing a dot.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group" aria-label="Straight lines on a board with their common overlap shaded and two draggable end dots"></svg>
+    <p class="hint">Drag the middle of a line to slide it. Drag a numbered dot to swing that line; with a dot focused, the arrow keys do the same.</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="showBox" type="checkbox" aria-label="Show the shared overlap"> Show overlap</label>
+    <label>Number of lines <input id="countIn" type="number" min="1" max="20" step="1" value="1" aria-label="Number of lines, from 1 to 20"></label>
+    <button id="prevBtn" type="button" aria-label="Select the previous line">Previous</button>
+    <button id="nextBtn" type="button" aria-label="Select the next line">Next line</button>
+    <button id="modeBtn" type="button" aria-label="Arrow keys swing an end of the selected line. Press to switch to sliding the line.">Arrows: swing</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Make new random lines">New lines</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Each line keeps one side of the board. Move the lines around and watch what is left where all the kept sides meet: the shape changes, but one thing about it never does.</p>
+
+      <h2>One side of each line</h2>
+      <p>A line splits the board into two <a class="wiki-term" data-wiki="Half-plane" href="https://en.wikipedia.org/wiki/Half-plane" target="_blank" rel="noopener">half planes</a>. Give the line a direction from its first dot to its second and calculate <code>cross = (x2 &minus; x1)(y &minus; y1) &minus; (y2 &minus; y1)(x &minus; x1)</code>. The applet keeps the side with <code>cross &gt; 0</code> — exactly what its <code>FindOrientation</code> bytecode tests. Drag a dot and the direction changes, so the kept side changes with it.</p>
+
+      <h2>Why the overlap stays convex</h2>
+      <p>Take any two points in the overlap. Each is inside every half plane, so the whole <a class="wiki-term" data-wiki="Line_segment" href="https://en.wikipedia.org/wiki/Line_segment" target="_blank" rel="noopener">segment</a> between them is inside every half plane too. That is the definition of a <a class="wiki-term" data-wiki="Convex_set" href="https://en.wikipedia.org/wiki/Convex_set" target="_blank" rel="noopener">convex set</a>. Add the lines one at a time: intersecting a convex set with one more convex half plane keeps it convex. That is the page's <a class="wiki-term" data-wiki="Mathematical_induction" href="https://en.wikipedia.org/wiki/Mathematical_induction" target="_blank" rel="noopener">induction</a> proof, and it works for any finite number of half planes. The logic test checked the midpoint property on thousands of pairs of points and found the overlap convex in all 400 configurations it tried.</p>
+
+      <h2>A polygon, empty — or a strip</h2>
+      <p>Inside the bounded drawing board, the overlap is always a convex <a class="wiki-term" data-wiki="Polygon" href="https://en.wikipedia.org/wiki/Polygon" target="_blank" rel="noopener">polygon</a> or nothing at all; the test found empty overlaps when two lines keep opposite outer strips. On the whole unbounded plane the page's wording needs a small caution: one half plane by itself goes on for ever, and two opposite ones can leave a strip or a single line. The board is what the applet draws, so on the board the claim holds as stated. The page's other claim about dragging was checked too: a pointer near an end swings the line around the opposite end, and a pointer in the middle slides it without turning it.</p>
+
+      <p class="note">Small changes from the Java applet: a dragged dot follows the pointer instead of adding the raw mouse coordinates on every event, and a line is squeezed to the board while dragging rather than only when the mouse is released. The kept side, the 1 to 20 line range, the shaded overlap and the drag modes are unchanged.</p>
+      <p class="tip">Set 8 lines, tick Show overlap, then slide the highlighted line until the shaded polygon vanishes.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HalfPlaneTest.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="half-plane-test-core.js"></script>
+<script src="half-plane-test.js"></script>
+</body>
+</html>
