@@ -2275,6 +2275,16 @@ check("deco-symmetry-2: two cuts at the altitude foot give three rotating pieces
 check("deco-symmetry-3: three incenter kites split into six isosceles halves", read["deco-symmetry-3"]?.core.kites.length === 3 && read["deco-symmetry-3"].core.isoscelesCount === 6 && read["deco-symmetry-3"].core.equalSidesHold === true && read["deco-symmetry-3"].core.partitionError === 0);
 check("deco-symmetry-4: midpoint cuts on the horizontal midline make three pieces", read["deco-symmetry-4"]?.valid === true && read["deco-symmetry-4"].cuts.DIsMidpointOfAB === true && read["deco-symmetry-4"].cuts.EIsMidpointOfAC === true && read["deco-symmetry-4"].domain.AOverSegmentBC === true && read["deco-symmetry-4"].pieces.length === 3);
 check("delboeuf: two equally sized rings sit in contrasting surrounds", read.delboeuf?.valid === true && read.delboeuf.colouredRingsIdentical === true && read.delboeuf.colouredRings[0].radius === 28 && read.delboeuf.neighbours.leftOuter.biggerThanColoured === true && read.delboeuf.neighbours.rightInner.smallerThanColoured === true);
+check("desargues: the explored direct figure is recorded with its Menelaus product", read.desargues?.reading.result === "done" && read.desargues.reading.mode === "direct" && typeof read.desargues.reading.menelaus.product === "number");
+check("detemple: exterior bisectors give a cyclic quadrilateral and a concentric incircle", read.detemple?.valid === true && Object.values(read.detemple.claims).every(Boolean) === true && read.detemple.big.c.x === read.detemple.small.c.x);
+check("de-villiers: similar triangles on the sides give a parallelogram", Object.values(read["de-villiers"]?.savedClaims ?? {}).every(Boolean) === true && read["de-villiers"].savedClaims.parallelogram === true);
+check("de-villiers-2: the bisector iterate of a tangential quadrilateral is inscriptible", Object.values(read["de-villiers-2"]?.savedClaims ?? {}).every(Boolean) === true && Object.values(read["de-villiers-2"].savedMatchesCore).every(Boolean) === true);
+check("de-villiers-3: the perpendicular-bisector image of a cyclic quadrilateral is cyclic", read["de-villiers-3"]?.valid === true && Object.values(read["de-villiers-3"].core.claims).every(Boolean) === true);
+check("de-villiers-4: the three similar triangles are rebuilt from the saved corners", read["de-villiers-4"]?.degenerate === false && Object.values(read["de-villiers-4"].reading.savedMatchesCore).every(Boolean) === true && read["de-villiers-4"].reading.triangles.length === 3);
+check("diameters-and-chords: the saved distances agree with the rebuilt Pascal figure", read["diameters-and-chords"]?.savedReadable === true && Object.values(read["diameters-and-chords"].agreement).every(Boolean) === true && read["diameters-and-chords"].aDistance > 0);
+check("diameters-in-concurrent-circles: all saved points and diameter flags agree", read["diameters-in-concurrent-circles"]?.savedReadable === true && Object.values(read["diameters-in-concurrent-circles"].agreement).every(Boolean) === true);
+check("dijkstra: the three signs agree and the page's swapped ratio is flagged", read.dijkstra?.reading.signs.allAgree === true && read.dijkstra.reading.proportionalAreas.proportionalHolds === true && read.dijkstra.reading.proportionalAreas.pageClaimHolds === false);
+check("directly-similar-1: translated vertices make a square with the page's steps", read["directly-similar-1"]?.valid === true && read["directly-similar-1"].reading.translated.isSquare === true && read["directly-similar-1"].reading.claim.allHold === true && read["directly-similar-1"].reading.collapsed === false);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2372,6 +2382,37 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("deco-symmetry-4/dissection: the cuts reach the midpoints on the mirror line", d4.valid === true && d4.cuts.DIsMidpointOfAB === true && d4.cuts.EIsMidpointOfAC === true && d4.pieces.length === 3);
   const db = runGameLogic("delboeuf", "equal_rings", { MR: 50, DR: 10, WR: 10, CI: 255, Ci: 0 });
   check("delboeuf/equal_rings: both coloured rings have the same radius and width", db.colouredRingsIdentical === true && db.colouredRings[0].radius === 28 && db.neighbours.leftOuter.biggerThanColoured === true && db.neighbours.rightInner.smallerThanColoured === true);
+}
+
+// The batch-20 tutor actions all run their real cores, not just their saved positions.
+{
+  const dc = runGameLogic("desargues", "direct_centre", { A1: [120, 80], B1: [280, 100], C1: [180, 240], A2: [80, 45], B2: [240, 125], C2: [186, 213], mode: "direct" });
+  const ca = runGameLogic("desargues", "converse_axis", { A1: [208, 85], B1: [204, 135], C1: [208, 145], A2: [205, 109.375], B2: [190, 187.5], C2: [190, 156.25], mode: "converse" });
+  check("desargues/centre and axis: both implications give Menelaus product -1", dc.menelaus.product === -1 && ca.menelaus.product === -1 && dc.residuals.collinearityError === 0 && ca.residuals.concurrencySpread === 0);
+  const ebc = runGameLogic("detemple", "exterior_bisector_circle", {});
+  const pin = runGameLogic("detemple", "perpendiculars_incircle", {});
+  check("detemple/bisectors and perpendiculars: cyclic outside, concentric incircle inside", ebc.claims.cyclic === true && pin.claims.inscriptible === true && pin.claims.concentric === true);
+  const dv = runGameLogic("de-villiers", "check_claims", {});
+  check("de-villiers/check_claims: similar triangles make a parallelogram", dv.allHold === true && dv.failed.length === 0 && dv.claims.parallelogram === true);
+  const dv2 = runGameLogic("de-villiers-2", "check_inscriptible", {});
+  check("de-villiers-2/check_inscriptible: the bisector iterate has an incircle", dv2.allHold === true && dv2.stepInradiusSpread === 0 && dv2.failed.length === 0);
+  const dv3 = runGameLogic("de-villiers-3", "halving_proof", {});
+  check("de-villiers-3/halving_proof: the bisector image stays cyclic", Object.values(dv3.claims).every(Boolean) === true && dv3.homothetyError < 1e-8 && dv3.pitotError < 1e-8);
+  const dv4 = runGameLogic("de-villiers-4", "similar_triangles", {
+    A: { x: 173.181818, y: 286.60254 }, B: { x: 304.784359, y: 250 }, C: { x: 268.181818, y: 113.39746 }, D: { x: 119.701043, y: 217.364818 },
+  });
+  check("de-villiers-4/similar_triangles: three triangles share a turn and scale", dv4.similar === true && dv4.triangles.length === 3 && dv4.triangles.every((t) => Math.abs(t.ratio - 1) < 1e-3));
+  const pac = runGameLogic("diameters-and-chords", "pascal_equivalence", { Ac: 1.727875959474386 });
+  const sweep = runGameLogic("diameters-and-chords", "coincidence_sweep", {});
+  check("diameters-and-chords/Pascal: the two coincidences agree", pac.coincidence.equivalenceHolds === true && pac.distances.abToAc === 0 && sweep.allOnePixelFlagsAgree === true);
+  const tft = runGameLogic("diameters-in-concurrent-circles", "two_force_third", {});
+  check("diameters-in-concurrent-circles/two_force_third: two diameters force the third", tft.twoForceThird === true && tft.oneDiameterIsNotEnough === true && tft.atSolved.flags.all === true);
+  const cs = runGameLogic("dijkstra", "compare_signs", { shape: "right" });
+  const pa = runGameLogic("dijkstra", "proportional_areas", { shape: "right" });
+  check("dijkstra/signs and areas: the signs agree and the swapped ratio is flagged", cs.signs.allAgree === true && pa.proportionalAreas.proportionalHolds === true && pa.proportionalAreas.pageClaimHolds === false);
+  const ts = runGameLogic("directly-similar-1", "translated_square", {});
+  const collapse = runGameLogic("directly-similar-1", "collapsing_case", { dx: 40, dy: -25 });
+  check("directly-similar-1/translations: the new square holds and translate pairs collapse", ts.claim.allHold === true && ts.translated.isSquare === true && collapse.allFourCornersCoincide === true && collapse.isSquare === false);
 }
 
 // A game with no reader, and a position that makes no sense.

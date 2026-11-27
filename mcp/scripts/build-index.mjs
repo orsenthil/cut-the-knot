@@ -669,6 +669,16 @@ const CORE_GLOBALS = {
   "deco-symmetry-3/deco-symmetry-3-core.js": ["DecoSymmetry3Core"],
   "deco-symmetry-4/deco-symmetry-4-core.js": ["DecoSymmetry4Core"],
   "delboeuf/delboeuf-core.js": ["DelboeufCore"],
+  "desargues/desargues-core.js": ["DesarguesCore"],
+  "detemple/detemple-core.js": ["DetempleCore"],
+  "de-villiers/de-villiers-core.js": ["DeVilliersCore"],
+  "de-villiers-2/de-villiers-2-core.js": ["DeVilliers2Core"],
+  "de-villiers-3/de-villiers-3-core.js": ["DeVilliers3Core"],
+  "de-villiers-4/de-villiers-4-core.js": ["DeVilliers4Core"],
+  "diameters-and-chords/diameters-and-chords-core.js": ["DiametersAndChordsCore"],
+  "diameters-in-concurrent-circles/diameters-in-concurrent-circles-core.js": ["DiametersInConcurrentCirclesCore"],
+  "dijkstra/dijkstra-core.js": ["DijkstraCore"],
+  "directly-similar-1/directly-similar-1-core.js": ["DirectlySimilar1Core"],
 };
 
 const games = [];
