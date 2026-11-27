@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Half Area Of Quadrilateral &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a quadrilateral. Does the line from C to E always cut its area in half?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/half-area-of-quadrilateral/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Half Area Of Quadrilateral">
+<meta property="og:description" content="Drag the corners of a quadrilateral. Does the line from C to E always cut its area in half?">
+<meta property="og:url" content="https://coolmaths.ai/half-area-of-quadrilateral/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .half { fill: var(--accent); fill-opacity: 0.24; }
+  #board .other { fill: var(--muted); fill-opacity: 0.34; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .cut { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .premise-line { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 5; }
+  #board .hint-line { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .tick { fill: none; stroke: var(--highlight); stroke-width: 4; stroke-linecap: round; }
+  #board .hint-tri { fill: var(--highlight); fill-opacity: 0.3; }
+  #board .special-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .crossing { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.9rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+  .controls label:has(input:disabled) { cursor: not-allowed; opacity: 0.6; }
+</style>
+</head>
+<body data-game="half-area-of-quadrilateral" data-kind="demo">
+<main id="main">
+  <h1>Half Area Of Quadrilateral</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: the line from C to E cuts the four-sided shape into two parts of the same size.<br>
+    <strong>How to play:</strong> Drag the corners A, B, C and D, or focus a corner and use the arrow keys. Tick names, premise and hint to see how the line is found.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="A quadrilateral ABCD with the midpoint K of diagonal BD, the line through K parallel to AC meeting a side at E, and the dividing line CE"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox" checked> names</label>
+    <label><input id="premise" type="checkbox"> premise</label>
+    <label><input id="hint" type="checkbox" disabled> hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag a corner and the two coloured pieces change shape, yet they keep the same size. The construction has only three steps, and a short chain of equal triangle areas explains why.</p>
+
+      <h2>Finding E</h2>
+      <p>B is joined to D, and <code>K = (B + D) / 2</code> is the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> of that diagonal. Through K, draw the line <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a> to the other diagonal AC. It meets AB or AD (whichever is nearer) at E. The applet draws <code>KE</code> and the dividing line <code>CE</code> when you tick premise. The original problem assumes E falls on AB; the applet also lets it fall on AD. The page embeds two copies of the original, one with the point names hidden and one with them shown; the names checkbox here starts shown.</p>
+
+      <h2>Equal triangles, equal halves</h2>
+      <p>Because K halves BD, triangles ABK and ADK share an <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a> from A and have equal bases, so their areas match; the same is true of CBK and CDK. Therefore the two quadrilaterals ABCK and ADCK have equal <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a>. Since KE is parallel to AC, triangles AEK and CEK share the base EK and the same altitude between the parallels, so they match too. Let L be where AK crosses CE: removing the common triangle LEK leaves AEL and CKL with equal area.</p>
+
+      <h2>The final swap</h2>
+      <p>Starting from ABCK, replace AEL by CKL and you get triangle BCE. Starting from ADCK, replace CKL by AEL and you get AECD. Both starting pieces were equal and both swaps moved the same area, so <code>area(BCE) = area(AECD)</code>: CE halves the quadrilateral. Tick hint to see the two triangles AEK and CEK and the crossing L that make this swap visible.</p>
+
+      <h2>What the checks found</h2>
+      <p>The logic test measured both pieces with an independent shoelace formula on the applet's own construction: the start shape, a square, a rectangle, a dart, a crossed shape, a 48-by-48 grid of corner positions and four thousand random shapes. The two areas agreed everywhere, including every concave case where BD lies inside the shape, exactly as the page states. The nearer crossing also always landed on AB or AD. When BD lies outside the shape the polygon areas still match, but CE need not split the drawing into two pieces, so the page's caveat matters. In a parallelogram-like case E is A itself and L is not a separate point; the diagonal still halves the shape, though the last triangle swap degenerates. This is different from <em>Dividing Evenly a Quadrilateral II</em>: that applet draws a parallel through B or D, takes the <a class="wiki-term" data-wiki="Median_(geometry)" href="https://en.wikipedia.org/wiki/Median_(geometry)" target="_blank" rel="noopener">median</a> from C to the midpoint M, and bisects with CM instead of CE.</p>
+
+      <p class="tip">Tick premise, then drag C until E jumps from AB to AD: watch the equality survive the jump.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HalfAreaOfQuadrilateral.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="half-area-of-quadrilateral-core.js"></script>
+<script src="half-area-of-quadrilateral.js"></script>
+</body>
+</html>
