@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Four Incircles &mdash; coolmaths</title>
+<meta name="description" content="Four dots on a line, two lines from the top point, and six circles: when the two outer small circles match, what happens to the two wider ones?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/four-incircles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Four Incircles">
+<meta property="og:description" content="Four dots on a line, two lines from the top point, and six circles: when the two outer small circles match, what happens to the two wider ones?">
+<meta property="og:url" content="https://coolmaths.ai/four-incircles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .base-line { stroke: var(--muted); stroke-width: 2; }
+  #board .ray { stroke: var(--ink); stroke-width: 1.5; stroke-opacity: 0.55; }
+  #board .incircle { fill-opacity: 0.08; stroke-width: 2.5; }
+  #board .level1 { fill: var(--accent); stroke: var(--accent); }
+  #board .level2 { fill: var(--good); stroke: var(--good); }
+  #board .level3 { fill: none; stroke: var(--highlight); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .apex-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  #board .point-label { fill: var(--text); font-size: 13px; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="four-incircles" data-kind="demo">
+<main id="main">
+  <h1>Four Incircles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> A triangle with two lines from its top point, making four smaller triangles with a circle in each one.<br>
+    <strong>How to play:</strong> Drag the dots, or focus one and use the arrow keys. Watch the two wider circles when the two outer circles become the same size.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Point A above a line of four draggable points B, C, D and E. Circles sit inside the triangles they form."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="equalBtn" type="button" aria-label="Move the dots so the two outer small circles are the same size">Make outer circles match</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Scatter the four dots again">New diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the four dots and all six circles change. Yet the moment the two outside small circles are the same size, the two middle circles are too &mdash; and that is no coincidence.</p>
+
+      <h2>The five circles</h2>
+      <p>The top point <code>A</code> is joined to four points on one straight line: <code>B</code>, <code>C</code>, <code>D</code>, <code>E</code> in that order. The two inner lines <code>AC</code> and <code>AD</code> are <a class="wiki-term" data-wiki="Cevian" href="https://en.wikipedia.org/wiki/Cevian" target="_blank" rel="noopener">cevians</a>. Each triangle has an <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a>: the three small ones in <code>ABC</code>, <code>ACD</code>, <code>ADE</code> (level 1), the two wider ones in <code>ABD</code>, <code>ACE</code> (level 2), and the one in the whole triangle <code>ABE</code> (level 3). The picture shows the level-2 and level-3 circles only when the outer level-1 circles match, just as the Java applet did. Its own test allows a one-pixel difference, because the dots are dragged by hand.</p>
+
+      <h2>What the page claims</h2>
+      <p>The cut-the-knot page states the Five Incircles Theorem of J. B. Tabov: the incircles of <code>ABC</code> and <code>ADE</code> are equal <strong>if and only if</strong> those of <code>ABD</code> and <code>ACE</code> are equal. It also gives Demir's weaker statement (B): if <code>ABC</code>, <code>ACD</code> and <code>ADE</code> all have equal incircles, then the level-2 circles match. (B) asks for more, so it says less. This is the claim tested here: over grids of exact configurations and thousands of random fans, the two equalities always hold together, and (B) follows. The live page still embeds the Java applet <code>FourIncircles</code>, so the original itself was available; no archive was needed.</p>
+
+      <h2>Why the two pairs match</h2>
+      <p>Drop a perpendicular from <code>A</code> to the base and call its length <code>h</code>. For a base point <code>X</code>, write <code>g(X) = (AX + signed distance of X from the foot) / h</code>. A short calculation with the <a class="wiki-term" data-wiki="Semiperimeter" href="https://en.wikipedia.org/wiki/Semiperimeter" target="_blank" rel="noopener">semiperimeter</a> gives</p>
+      <blockquote><code>r(A, X, Y) = h/2 &times; (1 &minus; g(X)/g(Y))</code></blockquote>
+      <p>So the outer level-1 circles match exactly when <code>g(B)/g(C) = g(D)/g(E)</code>, that is when <code>g(C)g(D) &minus; g(B)g(E) = 0</code>. The level-2 circles match when <code>g(B)/g(D) = g(C)/g(E)</code>, which is the very same numerator. Equally, if the three level-1 circles match, the <code>g</code> values form a <a class="wiki-term" data-wiki="Geometric_progression" href="https://en.wikipedia.org/wiki/Geometric_progression" target="_blank" rel="noopener">geometric progression</a> <code>g, gq, gq&sup2;, gq&sup3;</code>, so every circle spanning <code>k</code> gaps has radius <code>h/2 &times; (1 &minus; q<sup>&minus;k</sup>)</code> whatever <code>k</code> is. The page's semiperimeter equations (1)&ndash;(3) say the same thing; the logic test checks their algebra directly.</p>
+
+      <h2>A different four-incircles page</h2>
+      <p>The applet called <em>FourIncirclesInTriangle</em> belongs to another cut-the-knot page: a sangaku in an <em>equilateral</em> triangle with three equal-angle lines and the answer <code>l = x(&radic;21 &minus; 3)/4</code> for the inner side. That is not this picture: here the big triangle need not be equilateral and there are only two cevians, with an if-and-only-if about circle radii. Two small deviations are worth naming. Dragging <code>C</code> or <code>D</code> here slides its neighbour along too, keeping the gap <code>CD</code> fixed; the applet did that and the theorem does not need it. The <strong>Make outer circles match</strong> button is a modern convenience, not an applet control: it places the dots at a geometric progression so you can see the finished picture at once.</p>
+
+      <p class="tip">Try <strong>Make outer circles match</strong>, then move <code>A</code>: all the circles change, but the two pairs still match. Then press <strong>New diagram</strong> and chase the match by dragging <code>C</code> alone.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FourIncircles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="four-incircles-core.js"></script>
+<script src="four-incircles.js"></script>
+</body>
+</html>
