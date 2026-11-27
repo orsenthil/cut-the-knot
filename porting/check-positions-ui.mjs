@@ -1128,6 +1128,16 @@ const GAMES = {
   "cw-star": (page) => dragFirstHandle(page),
   "cyclic-hexagon": (page) => dragFirstHandle(page),
   "cyclic-incenters": (page) => dragFirstHandle(page),
+  "cyclic-quadrilateral": (page) => dragFirstHandle(page),
+  "cy-quadri": (page) => dragFirstHandle(page),
+  "dancing-squares": (page) => dragFirstHandle(page),
+  "dave-richeson": (page) => dragFirstHandle(page),
+  "david-radcliffe": (page) => dragFirstHandle(page),
+  "deco-symmetry": (page) => dragFirstHandle(page),
+  "deco-symmetry-2": (page) => dragFirstHandle(page),
+  "deco-symmetry-3": (page) => dragFirstHandle(page),
+  "deco-symmetry-4": (page) => dragFirstHandle(page),
+  "delboeuf": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

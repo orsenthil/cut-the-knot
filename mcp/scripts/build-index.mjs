@@ -659,6 +659,16 @@ const CORE_GLOBALS = {
   "cw-star/cw-star-core.js": ["CwStarCore"],
   "cyclic-hexagon/cyclic-hexagon-core.js": ["CyclicHexagonCore"],
   "cyclic-incenters/cyclic-incenters-core.js": ["CyclicIncentersCore"],
+  "cyclic-quadrilateral/cyclic-quadrilateral-core.js": ["CyclicQuadrilateralCore"],
+  "cy-quadri/cy-quadri-core.js": ["CyQuadriCore"],
+  "dancing-squares/dancing-squares-core.js": ["DancingSquaresCore"],
+  "dave-richeson/dave-richeson-core.js": ["DaveRichesonCore"],
+  "david-radcliffe/david-radcliffe-core.js": ["DavidRadcliffeCore"],
+  "deco-symmetry/deco-symmetry-core.js": ["DecoSymmetryCore"],
+  "deco-symmetry-2/deco-symmetry-2-core.js": ["DecoSymmetry2Core"],
+  "deco-symmetry-3/deco-symmetry-3-core.js": ["DecoSymmetry3Core"],
+  "deco-symmetry-4/deco-symmetry-4-core.js": ["DecoSymmetry4Core"],
+  "delboeuf/delboeuf-core.js": ["DelboeufCore"],
 };
 
 const games = [];

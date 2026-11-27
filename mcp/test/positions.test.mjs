@@ -2265,6 +2265,16 @@ check("cw-crossed-lines: six radii close a convex constant-width curve", read["c
 check("cw-star: the five-point star keeps base and widened widths", read["cw-star"]?.star.odd === true && read["cw-star"].widths.base === 100 && read["cw-star"].widths.widened === 180 && read["cw-star"].freshStarComparison.countMatches === true);
 check("cyclic-hexagon: the two perpendicular products equal the side formula", read["cyclic-hexagon"]?.core.products.equal === true && read["cyclic-hexagon"].core.formulaFourHolds === true && read["cyclic-hexagon"].core.chordLemmaAllAgree === true && read["cyclic-hexagon"].allPointsOnCircle === true);
 check("cyclic-incenters: four incenters are concyclic and both identities hold", read["cyclic-incenters"]?.savedMatchesCore === true && Object.values(read["cyclic-incenters"].core.claims).every(Boolean) === true && read["cyclic-incenters"].core.power.holds === true && read["cyclic-incenters"].core.reciprocalRadii.holds === true);
+check("cyclic-quadrilateral: inscribed incentres form a rectangle with the radius sum", read["cyclic-quadrilateral"]?.valid === true && Object.values(read["cyclic-quadrilateral"].claims).every(Boolean) === true && read["cyclic-quadrilateral"].savedMatchesCore === true);
+check("cy-quadri: angle-bisector crossings lie on one circle in both modes", read["cy-quadri"]?.claims.cyclic === true && read["cy-quadri"].claims.opposite180 === true && read["cy-quadri"].core.otherMode.claims.cyclic === true && read["cy-quadri"].savedMatchesCore === true);
+check("dancing-squares: the hinged grid's cell and coverage formulas hold", read["dancing-squares"]?.valid === true && read["dancing-squares"].reading.cell.matchesFormula === true && read["dancing-squares"].reading.coveredFraction.matchesFormula === true && read["dancing-squares"].reading.layers.tilesShown === 64);
+check("dave-richeson: the signed inradius sum is independent of triangulation", read["dave-richeson"]?.core.signedSumMatchesSaved === true && read["dave-richeson"].triangulation.independentOfTriangulation === true && read["dave-richeson"].convexFormula.holds === true);
+check("david-radcliffe: inward equilateral triangles shrink the polygon", read["david-radcliffe"]?.matchesCore === true && read["david-radcliffe"].smaller === true && Math.abs(read["david-radcliffe"].ratio - 0.517638) < 1e-6 && read["david-radcliffe"].exception === false);
+check("deco-symmetry: the four pieces land exactly on the mirror triangle", read["deco-symmetry"]?.pieceCount === 4 && read["deco-symmetry"].allPiecesLandExactly === true && read["deco-symmetry"].twoCutKite.cuts.join() === "DE,DF");
+check("deco-symmetry-2: two cuts at the altitude foot give three rotating pieces", read["deco-symmetry-2"]?.reading.checks.cuts === 2 && read["deco-symmetry-2"].reading.checks.pieces === 3 && Object.values(read["deco-symmetry-2"].reading.checks).every((v) => v === true || typeof v === "number") === true);
+check("deco-symmetry-3: three incenter kites split into six isosceles halves", read["deco-symmetry-3"]?.core.kites.length === 3 && read["deco-symmetry-3"].core.isoscelesCount === 6 && read["deco-symmetry-3"].core.equalSidesHold === true && read["deco-symmetry-3"].core.partitionError === 0);
+check("deco-symmetry-4: midpoint cuts on the horizontal midline make three pieces", read["deco-symmetry-4"]?.valid === true && read["deco-symmetry-4"].cuts.DIsMidpointOfAB === true && read["deco-symmetry-4"].cuts.EIsMidpointOfAC === true && read["deco-symmetry-4"].domain.AOverSegmentBC === true && read["deco-symmetry-4"].pieces.length === 3);
+check("delboeuf: two equally sized rings sit in contrasting surrounds", read.delboeuf?.valid === true && read.delboeuf.colouredRingsIdentical === true && read.delboeuf.colouredRings[0].radius === 28 && read.delboeuf.neighbours.leftOuter.biggerThanColoured === true && read.delboeuf.neighbours.rightInner.smallerThanColoured === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2338,6 +2348,30 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("cyclic-hexagon/perpendicular_products: k and l products agree", hex.products.equal === true && hex.products.kProduct === 343000 && hex.chordLemma.allAgree === true);
   const inc = runGameLogic("cyclic-incenters", "bradley_circle", {});
   check("cyclic-incenters/bradley_circle: the four incenters lie on one circle", inc.circle.wResidual < 1e-8 && inc.centerFromLines.x === inc.circle.center.x && Object.values(inc.claims).every(Boolean) === true);
+}
+
+// The batch-19 tutor actions all run their real cores, not just their saved positions.
+{
+  const cq = runGameLogic("cyclic-quadrilateral", "rectangle_and_radii", { anglesDegrees: [30, 150, 216, 300] });
+  check("cyclic-quadrilateral/rectangle_and_radii: the incentre rectangle and radius sum", Object.values(cq.claims).every(Boolean) === true && cq.rectangle.length === 4 && cq.radiusSum.holds === true);
+  const cq2 = runGameLogic("cy-quadri", "check_claims", {});
+  check("cy-quadri/check_claims: internal and external bisectors give cyclic crossings", cq2.internal.allHold === true && cq2.external.allHold === true);
+  const ds = runGameLogic("dancing-squares", "expand_reform", { side: 137 });
+  check("dancing-squares/expand_reform: a grid opens to a half-full checkerboard and reforms", Object.values(ds.claims).every(Boolean) === true && ds.allAngles.badCell === 0 && ds.allAngles.badDensity === 0);
+  const dr = runGameLogic("dave-richeson", "signed_inradius_sum", { n: 6, seeds: [1, 2, 3, 4, 5] });
+  check("dave-richeson/signed_inradius_sum: the sum survives five triangulations", dr.independentOfTriangulation === true && dr.spreadAcrossTriangulations === 0);
+  const rad = runGameLogic("david-radcliffe", "shrink", { N: 4 });
+  check("david-radcliffe/shrink: the inward equilateral polygon is smaller", rad.smaller === true && rad.collapses === false && Math.abs(rad.ratio - rad.measuredRatio) < 1e-12);
+  const d1 = runGameLogic("deco-symmetry", "dissection", {});
+  check("deco-symmetry/dissection: the four pieces land on the mirror triangle", d1.pieceCount === 4 && d1.allLandExactly === true && d1.twoCutKite.cuts.length === 2);
+  const d2 = runGameLogic("deco-symmetry-2", "two_cut_dissection", {});
+  check("deco-symmetry-2/two_cut_dissection: three pieces rotate at the altitude foot", d2.checks.cuts === 2 && d2.checks.pieces === 3 && d2.checks.everyPieceRotatesIntoPlace === true && d2.checks.piecesTileBothTriangles === true);
+  const d3 = runGameLogic("deco-symmetry-3", "kite_dissection", {});
+  check("deco-symmetry-3/kite_dissection: three kites split into six isosceles halves", d3.valid === true && d3.equalSidesHold === true && d3.isoscelesCount === 6 && d3.partitionError === 0);
+  const d4 = runGameLogic("deco-symmetry-4", "dissection", {});
+  check("deco-symmetry-4/dissection: the cuts reach the midpoints on the mirror line", d4.valid === true && d4.cuts.DIsMidpointOfAB === true && d4.cuts.EIsMidpointOfAC === true && d4.pieces.length === 3);
+  const db = runGameLogic("delboeuf", "equal_rings", { MR: 50, DR: 10, WR: 10, CI: 255, Ci: 0 });
+  check("delboeuf/equal_rings: both coloured rings have the same radius and width", db.colouredRingsIdentical === true && db.colouredRings[0].radius === 28 && db.neighbours.leftOuter.biggerThanColoured === true && db.neighbours.rightInner.smallerThanColoured === true);
 }
 
 // A game with no reader, and a position that makes no sense.
