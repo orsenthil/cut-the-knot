@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fermat Point &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and watch the lines drawn on equilateral triangles meet. Is that meeting point the one with the shortest total distance to the three corners?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/fermat-point/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Fermat Point">
+<meta property="og:description" content="Drag the corners of a triangle and watch the lines drawn on equilateral triangles meet. Is that meeting point the one with the shortest total distance to the three corners?">
+<meta property="og:url" content="https://coolmaths.ai/fermat-point/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .triangle { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .spoke { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .spoke-out { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .proof { fill: var(--accent); fill-opacity: 0.07; stroke: var(--accent); stroke-width: 1.5; }
+  #board .long { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .hint-a { stroke: var(--bad); stroke-width: 4; }
+  #board .hint-b { stroke: var(--good); stroke-width: 4; stroke-dasharray: 9 5; }
+  #board .hint-c { stroke: var(--accent); stroke-width: 4; stroke-dasharray: 2 4; }
+  #board .hint-arc { fill: none; stroke: var(--highlight); stroke-width: 4; }
+  #board .outer-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .turn-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .fermat-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 2; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.9rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle.drag-d { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="fermat-point" data-kind="demo">
+<main id="main">
+  <h1>Fermat Point</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a drawing, not a game: it shows the spot where the walk from all three corners of a triangle is shortest.<br>
+    <strong>How to play:</strong> Drag the blue points, or focus one and use the arrow keys. Tick the boxes to show names, the hint or the Fermat point, then press Reset diagram to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle with equilateral triangles on its sides, showing the Fermat point where three lines meet"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="hint" type="checkbox"> Hint</label>
+    <label><input id="fermat" type="checkbox"> Fermat point</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Fermat asked where to stand so that the walk to three given places is as short as possible. The picture turns each side of the triangle into an equilateral triangle, and the answer appears where three long lines cross.</p>
+
+      <h2>A broken line made straight</h2>
+      <p>Pick any point P inside the <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a> ABC. Turn the segment BP by 60° about B; P goes to P' and A goes to C'. The little triangle BPP' is equilateral, so <code>PB = P'P</code>, and the turn keeps lengths, so <code>PA = C'P'</code>. Therefore <code>PA + PB + PC = C'P' + P'P + PC</code>, a broken line from C' to C. A straight line is the shortest path between two places, so the sum is smallest exactly when P lies on CC'. The same argument from the other two corners puts P on AA' and BB' too. Those lines are the ones drawn here, and they meet at the <a class="wiki-term" data-wiki="Fermat_point" href="https://en.wikipedia.org/wiki/Fermat_point" target="_blank" rel="noopener">Fermat point</a> F.</p>
+
+      <h2>Three new corners</h2>
+      <p>A', B' and C' are the far corners of the three outward equilateral triangles on the sides — the configuration of <a class="wiki-term" data-wiki="Napoleon%27s_theorem" href="https://en.wikipedia.org/wiki/Napoleon%27s_theorem" target="_blank" rel="noopener">Napoleon's theorem</a>. At F the three lines cross at 120°, and the three angles around F are all 120°. The linked page also claims <code>AA' = BB' = CC' = FA + FB + FC</code>. The logic test confirms all of these on hundreds of non-obtuse triangles, to within a millionth: it checks the angles, the crossings, the equal lengths and the minimum itself by independent numerical search.</p>
+
+      <h2>When a corner is too wide</h2>
+      <p>The construction fails when an angle of ABC is 120° or more; then that corner is the answer. The test checks hundreds of such triangles: the corner wins the minimum, and the sum of the three unit directions from it has length at most 1, which is the mathematical way to say that moving away cannot help. The status line names the winning corner whenever this happens, just as the applet's 120° test does.</p>
+
+      <h2>The fourth point and the hint</h2>
+      <p>The green point D starts at the <a class="wiki-term" data-wiki="Centroid" href="https://en.wikipedia.org/wiki/Centroid" target="_blank" rel="noopener">centroid</a> <code>(A + B + C) / 3</code> but can be dragged independently, as in the applet. The hint draws three groups of equal lengths, such as <code>AD = ADb = CpDc</code>, and three 60° arcs at D; the test verifies those equalities on every generated triangle. When D is dragged to within one pixel of F the original applet brightens the three long lines; here they are drawn faintly all the time and brightened in that same case. The status line then calls D "F", again matching the applet's one-pixel rule.</p>
+
+      <p class="tip">Try dragging a corner until one angle passes 120°: the meeting point jumps to that corner.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FermatPoint.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="fermat-point-core.js"></script>
+<script src="fermat-point.js"></script>
+</body>
+</html>
