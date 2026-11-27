@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Coxeter Tangent Circles &mdash; coolmaths</title>
+<meta name="description" content="Three circles touch each other and a fourth fits in the gap. Can another four circles touch at exactly the same six spots, even after you drag the centres?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/coxeter-tangent-circles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Coxeter Tangent Circles">
+<meta property="og:description" content="Three circles touch each other and a fourth fits in the gap. Can another four circles touch at exactly the same six spots, even after you drag the centres?">
+<meta property="og:url" content="https://coolmaths.ai/coxeter-tangent-circles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 38rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .guide { stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 4 4; }
+  #board .circle-original { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .circle-original.filled { fill: var(--accent); fill-opacity: 0.12; }
+  #board .circle-fourth { fill: none; stroke: var(--accent); stroke-width: 3; }
+  #board .circle-fourth.filled { fill: var(--accent); fill-opacity: 0.16; }
+  #board .circle-second { fill: var(--good); fill-opacity: 0.07; stroke: var(--good); stroke-width: 2; }
+  #board .circle-second.filled { fill-opacity: 0.2; }
+  #board .contact-dot { fill: var(--good); }
+  #board .inner-contact { fill: var(--accent); }
+  #board .point-label { fill: var(--text); font-size: 0.8rem; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; white-space: normal; }
+  .controls input[type="radio"], .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="coxeter-tangent-circles" data-kind="demo">
+<main id="main">
+  <h1>Coxeter Tangent Circles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Three circles touch each other, and a fourth circle fits in the gap; another set of four circles touches at the very same six spots.<br>
+    <strong>How to play:</strong> Drag the dots A, B and C, or focus a dot and use the arrow keys. Pick the inner or outer circle and press the buttons to show or hide the extra circles and spots.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 480 320" role="group"
+         aria-label="Three circles with draggable centres A, B and C, a fourth circle tangent to all three, and a second family of four circles through the six touching points."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the three circle centres back where they started">Reset</button>
+    <label class="option" for="innerRadio"><input id="innerRadio" type="radio" name="family" checked aria-label="Draw the small circle in the gap"> Inner circle</label>
+    <label class="option" for="outerRadio"><input id="outerRadio" type="radio" name="family" aria-label="Draw the circle that surrounds the three circles"> Outer circle</label>
+    <label class="option" for="fillChk"><input id="fillChk" type="checkbox" aria-label="Colour the insides of the circles"> Fill</label>
+    <label class="option" for="secondChk"><input id="secondChk" type="checkbox" aria-label="Show or hide the second family of tangent circles"> Ortho family</label>
+    <label class="option" for="pointsChk"><input id="pointsChk" type="checkbox" aria-label="Show or hide the six touching points"> Tangencies</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag any centre and every circle changes size. Yet the six places where the circles touch keep their pattern, and another four circles can always be drawn through them. Why?</p>
+
+      <h2>Three circles that touch</h2>
+      <p>Let the three <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circles</a> have radii <code>ra</code>, <code>rb</code>, <code>rc</code> and centres A, B, C. Because they touch, the sides of the <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a> of centres are</p>
+      <blockquote><code>a = BC = rb + rc,&nbsp; b = CA = rc + ra,&nbsp; c = AB = ra + rb</code></blockquote>
+      <p>The page then writes <code>a = x + y</code>, <code>b = y + z</code>, <code>c = z + x</code> for the lengths from the corners to the touching points. Adding the first and third equations and subtracting the second gives <code>2x = a + c &minus; b</code>, and the other two unknowns follow in the same way. The coefficient matrix has determinant 2, so the answer is unique: with these side labels <code>x = rb</code>, <code>y = rc</code>, <code>z = ra</code> — exactly the three radii.</p>
+
+      <h2>Where the tangents meet</h2>
+      <p>The common <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> at each touching point is perpendicular to the line joining the two centres. The three tangents meet at one point with equal tangent lengths to all three circles: the radical centre. Since the lines of centres form the triangle above, that point is also its <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a>.</p>
+      <blockquote><code>d(O, A)&sup2; &minus; ra&sup2; = d(O, B)&sup2; &minus; rb&sup2; = d(O, C)&sup2; &minus; rc&sup2; = r&sup2;</code></blockquote>
+      <p>Here <code>r</code> is the radius of the <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> of the triangle of centres. The equation says the incircle passes through the three touching points and meets each original circle at right angles. The logic test checked that the radical centre really is the incenter, that the three powers are equal, and that the orthogonality equation holds for over a thousand configurations.</p>
+
+      <h2>Two quadruplets of four</h2>
+      <p>Philip Beecroft's theorem says that if four circles all touch each other, a second set of four can be drawn whose six touching points are the same. Here the fourth circle is either the small one in the gap or the enclosing one; the other four are the incircle plus one circle through each pair of touching points. The applet finds the fourth circle by solving two linear equations for its centre and one quadratic for its radius, the same equations behind <a class="wiki-term" data-wiki="Descartes%27_theorem" href="https://en.wikipedia.org/wiki/Descartes%27_theorem" target="_blank" rel="noopener">Descartes' theorem</a>. The test compares that calculation instruction by instruction with the Java bytecode, then checks all six pairs of the second family for a shared point and tangency, in both families.</p>
+      <p>The cut-the-knot page still embeds the Java program, so its rules and five controls are kept. Two harmless applet details stay: <code>GetCircle</code> averages its three distances from the circumcentre (they are equal when the points are exact), and <code>CommonPoint</code> ignores its third argument. The enclosing circle can touch an inner circle from the outside in some positions; the test accepts either kind of contact. Only the presentation changed: modern SVG, focusable dots and site colours instead of AWT panels.</p>
+
+      <p class="tip">Tick <strong>Ortho family</strong> and <strong>Tangencies</strong>, then switch between <strong>Inner circle</strong> and <strong>Outer circle</strong>. Each of the four new circles passes through three of the six dots, and neighbouring new circles touch at one dot.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CoxeterTangentCircles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="coxeter-tangent-circles-core.js"></script>
+<script src="coxeter-tangent-circles.js"></script>
+</body>
+</html>
