@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Four Griffiths &mdash; coolmaths</title>
+<meta name="description" content="Four triangles inside one circle each give a special dot. Do those dots always line up, and where do the four pedal circles meet?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/four-griffiths/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Four Griffiths">
+<meta property="og:description" content="Four triangles inside one circle each give a special dot. Do those dots always line up, and where do the four pedal circles meet?">
+<meta property="og:url" content="https://coolmaths.ai/four-griffiths/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .pedal-circle { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 7 5; }
+  #board .nine-circle { fill: none; stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 2 5; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 1.5; opacity: 0.8; }
+  #board .line-l { stroke: var(--accent); stroke-width: 2; }
+  #board .line-g { stroke: var(--bad); stroke-width: 2; }
+  #board .centre-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1.5; }
+  #board .griffiths-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .meeting-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="four-griffiths" data-kind="demo">
+<main id="main">
+  <h1>Four Griffiths</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a drawing, not a game: four special dots from the triangles inside a circle always fall on one straight line.<br>
+    <strong>How to play:</strong> Drag A, B, C, D or L, or focus a dot and use the arrow keys. Tick the boxes to show the names, the circles or the sides of the quadrilateral.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 550" role="group"
+         aria-label="Cyclic quadrilateral with four Griffiths points on one line, the line l through the circumcentre and the point L, and four pedal circles"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="circles" type="checkbox"> Circles</label>
+    <label><input id="lines" type="checkbox"> Sides</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Take four points on one circle, join them in any order, and draw a line through the circle's centre. Each of the four triangles made from three of the points gets its own special dot on that line. The surprise is that all four dots lie on one new line, and the circles drawn from any point of the first line all pass through one place.</p>
+
+      <h2>One dot for each triangle</h2>
+      <p>For a triangle, drop perpendiculars from a point on <code>l</code> to its three sides. The three feet lie on a circle called the <a class="wiki-term" data-wiki="Pedal_triangle" href="https://en.wikipedia.org/wiki/Pedal_triangle" target="_blank" rel="noopener">pedal circle</a>. Move the point along <code>l</code> and this circle changes, but it always passes through one fixed dot: the Griffiths point. The applet finds that dot as the meeting of the pedal circle with the triangle's <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">nine-point circle</a>, using two different points of <code>l</code> and keeping what the two answers share.</p>
+
+      <h2>The formula behind the dots</h2>
+      <p>Put the circle at the centre of the <a class="wiki-term" data-wiki="Complex_number" href="https://en.wikipedia.org/wiki/Complex_number" target="_blank" rel="noopener">complex plane</a>, make its radius 1, and turn the picture so <code>l</code> is the real axis. If the four points are <code>a1, a2, a3, a4</code>, then the dot for the triangle that leaves out <code>am</code> is</p>
+      <blockquote><code>w_m = (a_i + a_j + a_k − a_i a_j a_k) / 2</code></blockquote>
+      <p>Because each <code>a</code> has length 1, subtracting two of these and taking conjugates gives <code>(w1 − w2) / (w1′ − w2′) = a1 a2 a3 a4</code>. The same number appears whichever pair you choose, and a fixed ratio between differences means the four dots are <a class="wiki-term" data-wiki="Collinearity" href="https://en.wikipedia.org/wiki/Collinearity" target="_blank" rel="noopener">collinear</a>. The logic test checks this ratio and the formula on 150 configurations.</p>
+
+      <h2>Where the circles meet</h2>
+      <p>Now pick <em>any</em> point on <code>l</code> and draw its four pedal circles. All four pass through the same point, and for points on one circle that meeting place lies on the line of the four Griffiths dots. The four nine-point circles also meet in one point. The logic test confirms all three statements on the generated configurations; if the chosen point of <code>l</code> happens to lie on the circumcircle, the pedal feet become a straight <a class="wiki-term" data-wiki="Simson_line" href="https://en.wikipedia.org/wiki/Simson_line" target="_blank" rel="noopener">Simson line</a> and there is no pedal circle to draw.</p>
+
+      <h2>What the port changes</h2>
+      <p>The old applet keeps D on the circle except while you drag it, and its dot picking breaks close ties using the line from the previous repaint. Here the mathematically correct common dot is chosen instead when the two answers are within a pixel; this agrees with the formula in every tested case. The old Show names option was off on the page, so it is off here too. The bytecode transcription in the logic test agrees with this port to within half a screen pixel.</p>
+
+      <p class="tip">Try dragging L onto the circumcircle: the pedal circles flatten into Simson lines, and then move it back to see all four circles meet again.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FourGriffiths.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="four-griffiths-core.js"></script>
+<script src="four-griffiths.js"></script>
+</body>
+</html>
