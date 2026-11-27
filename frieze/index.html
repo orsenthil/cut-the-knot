@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Frieze &mdash; coolmaths</title>
+<meta name="description" content="A few numbers on a staggered strip and one small rule: can you work out how the whole frieze grows, and make the colours repeat?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/frieze/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Frieze">
+<meta property="og:description" content="A few numbers on a staggered strip and one small rule: can you work out how the whole frieze grows, and make the colours repeat?">
+<meta property="og:url" content="https://coolmaths.ai/frieze/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* Layout is all this page needs: the board scales from the viewBox and the
+     stage scrolls sideways when the lattice is large, so each dot stays big
+     enough to touch. Every colour below comes from the site's tokens. */
+  #stage {
+    width: 100%;
+    max-width: 52rem;
+    padding: 0.75rem;
+    overflow-x: auto;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    min-width: max(48rem, calc(var(--rows, 10) * 2.2rem + 3rem));
+    height: auto;
+    touch-action: none;
+  }
+  #board .lattice-line { stroke: var(--border-strong); stroke-width: 0.5; }
+  #board .dot-handle { stroke: var(--ink); stroke-width: 1.5; cursor: pointer; }
+  #board .dot-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 4; }
+  #board .just-changed { fill: none; stroke: var(--highlight); stroke-width: 5; pointer-events: none; }
+  #board .digit {
+    fill: var(--text);
+    font-family: var(--mono);
+    font-size: 0.62em;
+    text-anchor: middle;
+    pointer-events: none;
+  }
+  /* Ten palette slots, mixed only from the design tokens. Slot 0 is the
+     background, exactly as the applet drew it. */
+  #board .c0 { fill: var(--stage); }
+  #board .c1 { fill: var(--accent); }
+  #board .c2 { fill: var(--good); }
+  #board .c3 { fill: var(--bad); }
+  #board .c4 { fill: var(--ink); }
+  #board .c5 { fill: color-mix(in srgb, var(--accent) 55%, var(--text)); }
+  #board .c6 { fill: color-mix(in srgb, var(--good) 55%, var(--text)); }
+  #board .c7 { fill: color-mix(in srgb, var(--bad) 55%, var(--text)); }
+  #board .c8 { fill: color-mix(in srgb, var(--accent) 40%, var(--muted)); }
+  #board .c9 { fill: color-mix(in srgb, var(--good) 40%, var(--muted)); }
+
+  .options { display: flex; flex-wrap: wrap; gap: 0.6rem 1.2rem; justify-content: center; }
+  .option { display: inline-flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+  .option input[type="number"] { width: 3.5rem; font: inherit; padding: 0.2rem 0.35rem; }
+  .option button { min-width: 2.25rem; }
+  .modes label { display: inline-flex; align-items: center; gap: 0.25rem; }
+  #status { min-height: 1.6em; text-align: center; }
+</style>
+</head>
+<body data-game="frieze" data-kind="demo">
+<main id="main">
+  <h1>Frieze</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Fill a strip of numbered dots so that every little diamond follows the same rule; there is no winner and no loser.<br>
+    <strong>How to play:</strong> Click the right half of a dot to add one, or the left half to take one away. Press Compute to fill the rest and Undo to step back.
+  </div>
+
+  <div class="options" aria-label="Lattice options">
+    <span class="option">
+      <span>Rows</span>
+      <button type="button" data-rows-step="-1" aria-label="Use fewer rows">&minus;</button>
+      <input id="rowsInput" type="number" min="5" max="50" step="1" value="10" aria-label="Number of rows, from 5 to 50">
+      <button type="button" data-rows-step="1" aria-label="Use more rows">+</button>
+    </span>
+    <span class="option">
+      <span>Colours</span>
+      <button type="button" data-mod-step="-1" aria-label="Use fewer colours">&minus;</button>
+      <input id="moduloInput" type="number" min="2" max="10" step="1" value="2" aria-label="Number of colours, from 2 to 10">
+      <button type="button" data-mod-step="1" aria-label="Use more colours">+</button>
+    </span>
+    <span class="option modes" aria-label="Rule">
+      <button type="button" data-op="0" aria-pressed="true" aria-label="Use the adding rule; clears the lattice">Add +</button>
+      <button type="button" data-op="1" aria-pressed="false" aria-label="Use the multiplying rule; clears the lattice">Multiply &times;</button>
+      <label><input id="simpleBox" type="checkbox"> Simple</label>
+    </span>
+    <span class="option modes" aria-label="How dots are shown">
+      <label><input type="radio" name="show" value="numbers" checked> Numbers</label>
+      <label><input type="radio" name="show" value="circles"> Circles</label>
+    </span>
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 308 168" role="group"
+         aria-label="A staggered lattice of numbered dots. Tab to a dot, use Left or Right to change it, and Up or Down to move.">
+    </svg>
+  </div>
+
+  <div class="controls">
+    <button id="undoBtn" type="button" disabled aria-label="Undo the last dot change">Undo</button>
+    <button id="computeBtn" type="button" class="primary" aria-label="Fill in the pattern with the chosen rule">Compute</button>
+    <button id="newBtn" type="button" aria-label="Clear the lattice and start again">New Game</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The original cut-the-knot page still embeds this Java applet. Its arithmetic
+        <a class="wiki-term" data-wiki="Frieze_pattern" href="https://en.wikipedia.org/wiki/Frieze_pattern" target="_blank" rel="noopener">frieze pattern</a>
+        grows from a few chosen numbers: every four dots at the corners of a small diamond obey one rule.</p>
+
+      <h2>One rule for every diamond</h2>
+      <p>The dots sit on two staggered rows: an even row has one more dot than an odd row,
+        so each interior dot has two neighbours above and two below. The applet writes the
+        new value at the far corner of a diamond from the three values already there.
+        In the adding mode it uses <code>down = left + right - top + 1</code>; in the
+        multiplying mode it uses <code>down = (left &times; right + 1) / top</code>.
+        Ticking <em>Simple</em> leaves the <code>+ 1</code> out. Clicking a rule button,
+        even the one already selected, clears the lattice. The page's own wording invites
+        you to start on the left, but the applet lets you change any dot; this port keeps
+        that behaviour and computes outward from the fixed top and bottom rows.</p>
+
+      <h2>Checking the two formulas</h2>
+      <p>Writing the diamond corners as <code>a</code>, <code>b</code>, <code>c</code>,
+        <code>d</code>, the page claims <code>a + d = b + c + 1</code> for addition and
+        <code>ad = bc + 1</code> for multiplication, with the 1 dropped in the simpler
+        case. The logic test checks every computed diamond for rows 5 through 14 and
+        confirms both claims, including the staggered rows (where the neighbours are the
+        upper and lower right-hand dots). Each pass stops at the first blank dot in a row,
+        which is why a row with no starting number is left alone.</p>
+
+      <h2>Fractions, zeros and colours</h2>
+      <p>The multiplying formula rarely divides evenly. The applet drops the fractional
+        part of the answer &mdash; it <a class="wiki-term" data-wiki="Truncation" href="https://en.wikipedia.org/wiki/Truncation" target="_blank" rel="noopener">truncates toward zero</a>,
+        even for negative numbers &mdash; so <code>ad = bc + 1</code> holds exactly only
+        when the division comes out whole. A zero in the middle gives a zero child, which
+        quickly kills a multiplicative pattern, just as the page warns. The colours use
+        <a class="wiki-term" data-wiki="Modular_arithmetic" href="https://en.wikipedia.org/wiki/Modular_arithmetic" target="_blank" rel="noopener">remainders</a>
+        modulo 2 to 10: the maximum is 10, and changing it never changes a number, only
+        the colour used to show it.</p>
+
+      <h2>Why it is called a frieze</h2>
+      <p>A frieze pattern repeats along a line: its symmetries include a
+        <a class="wiki-term" data-wiki="Translation_(geometry)" href="https://en.wikipedia.org/wiki/Translation_(geometry)" target="_blank" rel="noopener">translation</a>
+        along that line. There are exactly seven
+        <a class="wiki-term" data-wiki="Frieze_group" href="https://en.wikipedia.org/wiki/Frieze_group" target="_blank" rel="noopener">frieze groups</a>,
+        the seven symmetry types listed on the original page. Conway linked the
+        multiplicative number patterns to
+        <a class="wiki-term" data-wiki="Triangulation_(geometry)" href="https://en.wikipedia.org/wiki/Triangulation_(geometry)" target="_blank" rel="noopener">triangulations</a>
+        of polygons. This small lattice repeats only as far as its edges allow, so it
+        shows the arithmetic idea rather than an infinite strip.</p>
+
+      <p class="tip">Try a few seeds with 10 colours, then switch to Circles to see the repeating stripes and diamonds.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/triangle/Frieze.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="frieze-core.js"></script>
+<script src="frieze.js"></script>
+</body>
+</html>
