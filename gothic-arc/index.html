@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gothic Arc &mdash; coolmaths</title>
+<meta name="description" content="A chain of circles fits between two curved arcs and a straight base. Can the radius of every circle be written as a rational fraction of the little segment OD?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/gothic-arc/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Gothic Arc">
+<meta property="og:description" content="A chain of circles fits between two curved arcs and a straight base. Can the radius of every circle be written as a rational fraction of the little segment OD?">
+<meta property="og:url" content="https://coolmaths.ai/gothic-arc/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .base-line { stroke: var(--muted); stroke-width: 2; }
+  #board .big-arc { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .small-arc { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .gothic-arc-outer { fill: none; stroke: var(--highlight); stroke-width: 3; }
+  #board .gothic-arc-inner { fill: none; stroke: var(--accent); stroke-width: 3; }
+  #board .chain-circle { fill: var(--accent); fill-opacity: 0.09; stroke: var(--accent); stroke-width: 2; }
+  #board .chain-circle.first { stroke: var(--good); stroke-width: 3; }
+  #board .chain-circle.second { stroke: var(--highlight); stroke-width: 3; }
+  #board .guide-line { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 3; }
+  #board .named-dot { fill: var(--ink); }
+  #board .point-label { fill: var(--text); font-size: 14px; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; }
+  .controls button { min-height: 2.5rem; }
+  .controls input[type="checkbox"], .controls input[type="radio"] { width: 1.1rem; height: 1.1rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="gothic-arc" data-kind="demo">
+<main id="main">
+  <h1>Gothic Arc</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> Circles sit in a row between two curved arcs and a straight base.<br>
+    <strong>How to play:</strong> Drag the two end dots to change the arcs, tick "names" to label the points, and choose Gothic arc or arbelos. Press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 -110 500 510" role="group"
+         aria-label="Gothic arc with a chain of tangent circles. Points A and B can be dragged or moved with the arrow keys."></svg>
+  </div>
+
+  <div class="controls">
+    <label class="option" for="namesChk"><input id="namesChk" type="checkbox" checked> Show names</label>
+    <label class="option" for="gothicRadio"><input id="gothicRadio" type="radio" name="mode" checked> Gothic arc</label>
+    <label class="option" for="arbelosRadio"><input id="arbelosRadio" type="radio" name="mode"> Arbelos</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Restore the original size and options">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The little circles look as if they were chosen one at a time by eye. In fact their sizes follow one simple rule, and the rule makes several right triangles with whole-number sides appear for free.</p>
+
+      <h2>The curve and the chain</h2>
+      <p>The Gothic arc <code>OBC</code> is made from two arcs of the same radius, one centred at <code>O</code> and one at <code>B</code>. Each circle in the picture touches the semicircle on <code>OB</code>, the Gothic arc, and the circle before it. The first two are called <code>K</code> and <code>P</code>; the applet builds seven circles in all. Its Apollonius calculation picks the tangent circle that stays inside the gap, and the test checks those tangencies for every drawn circle.</p>
+
+      <h2>The arbelos in disguise</h2>
+      <p>The same chain sits inside an <a class="wiki-term" data-wiki="Arbelos" href="https://en.wikipedia.org/wiki/Arbelos" target="_blank" rel="noopener">arbelos</a>, the shape bounded by three touching semicircles. Write <code>R</code> for the radius of the large semicircle and take the small radius as <code>r = 1</code>. The radius of the <code>n</code>-th circle is</p>
+      <blockquote><code>R<sub>n</sub> = Rr / (r<sup>2</sup> + r + n<sup>2</sup>) = R / (2 + n<sup>2</sup>)</code></blockquote>
+      <p>So <code>R<sub>1</sub> = R/3</code> and <code>R<sub>2</sub> = R/6</code>, and their sum is <code>R/2 = OD</code>. That is why <code>KP</code> is parallel to the base and <code>P</code> lies directly above <code>D</code>, the midpoint of the right semicircle. Dividing by <code>OD</code> gives <code>R<sub>n</sub>/OD = 2/(2+n<sup>2</sup>)</code>: a rational number for every <code>n</code>. The logic test checks this exactly for <code>n</code> up to 60.</p>
+
+      <h2>Right triangles for free</h2>
+      <p>Let <code>P<sub>n</sub></code> be the point directly below the <code>n</code>-th centre. Pappus' chain gives <code>O<sub>n</sub>P<sub>n</sub> = 2nR<sub>n</sub></code>, while the page's other two lengths are</p>
+      <blockquote><code>DP<sub>n</sub> = (n<sup>2</sup> &minus; 4)R / [2(2 + n<sup>2</sup>)]</code><br>
+        <code>DO<sub>n</sub> = (n<sup>2</sup> + 4)R / [2(2 + n<sup>2</sup>)]</code></blockquote>
+      <p>Multiply the three sides by <code>2(2+n<sup>2</sup>)/R</code> and they become <code>n<sup>2</sup>&minus;4</code>, <code>4n</code>, <code>n<sup>2</sup>+4</code>. Since <code>(n<sup>2</sup>&minus;4)<sup>2</sup> + (4n)<sup>2</sup> = (n<sup>2</sup>+4)<sup>2</sup></code>, every <code>DP<sub>n</sub>O<sub>n</sub></code> is a <a class="wiki-term" data-wiki="Pythagorean_triple" href="https://en.wikipedia.org/wiki/Pythagorean_triple" target="_blank" rel="noopener">Pythagorean triple</a>. The test verifies that integer identity for <code>n</code> up to 200. The page's three named cases all check out: <code>ODP</code> is 3-4-5, <code>n = 6</code> gives 24, 32, 40 over 76, and <code>OP<sub>3</sub>O<sub>3</sub></code> is 6, 8, 10.</p>
+
+      <h2>The one-pixel quirk</h2>
+      <p>The original applet puts the point <code>O</code> two pixels off centre and inflates each neighbour circle by one pixel before solving for the next one. Its drawn radii therefore drift slightly below the ideal fractions: in the default 500 by 400 picture they are 73.27 and 36.14, while <code>R/3 = 73.33</code> and <code>R/6 = 36.67</code>. The formulas above are exactly true of the ideal chain the page describes, not of those buffered pixels. This page keeps the applet's construction in its drawing and tests both pictures separately.</p>
+
+      <p class="tip">Try dragging <code>B</code> towards <code>A</code>: the whole chain shrinks, but each radius stays the same fraction of <code>OD</code>. Then switch to the arbelos view and look for the 3-4-5 triangles without the Gothic arcs.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/GothicArc.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="gothic-arc-core.js"></script>
+<script src="gothic-arc.js"></script>
+</body>
+</html>
