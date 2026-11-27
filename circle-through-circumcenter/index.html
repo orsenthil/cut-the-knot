@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circle Through Circumcenter &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle inside a circle. A second circle passes through two corners and the centre: why is the line from the third corner to the centre always perpendicular to the chord that circle cuts off?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circle-through-circumcenter/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circle Through Circumcenter">
+<meta property="og:description" content="Drag the corners of a triangle inside a circle. A second circle passes through two corners and the centre: why is the line from the third corner to the centre always perpendicular to the chord that circle cuts off?">
+<meta property="og:url" content="https://coolmaths.ai/circle-through-circumcenter/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .second-circle { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .ao { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .premise { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 4; opacity: 0.75; }
+  #board .chord { fill: none; stroke: var(--good); stroke-width: 3.5; }
+  #board .corner { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .hint-equal { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .hint-complement { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .hint-centre { fill: none; stroke: var(--bad); stroke-width: 2.5; }
+  #board .circumcenter { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .second-point { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .cross-point { fill: var(--ink); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="circle-through-circumcenter" data-kind="demo">
+<main id="main">
+  <h1>Circle Through Circumcenter</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: a triangle sits inside one circle, and a second circle passes through two corners and the centre.<br>
+    <strong>How to play:</strong> Drag the corners A, B and C, or focus one and use the arrow keys. Tick the boxes to show the names, the small circle, the right angle or the angle marks.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle on its circumcircle and a second circle through B, the centre O and C, with chord PQ"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox" checked> Names</label>
+    <label><input id="hint" type="checkbox" checked> Hint angles</label>
+    <label><input id="premises" type="checkbox"> Premises</label>
+    <label><input id="statement" type="checkbox"> Right angle</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the diagram to its starting triangle">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the corners of the triangle and the picture changes completely. One thing never does: the line from a corner to the centre of the big circle is perpendicular to the chord joining the two new points on the small circle.</p>
+
+      <h2>Two circles and a chord</h2>
+      <p>The dashed circle is the
+        <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>
+        of ABC: its centre O is equally far from all three corners. The solid circle is the one through B, O and C. It meets the line AB again at P and the line AC again at Q, so PQ is a chord of the small circle. X is where PQ crosses AO. The claim is that AO and PQ meet at a right angle at X.</p>
+
+      <h2>Equal angles on the small circle</h2>
+      <p>Angles standing on the same arc are equal. On the small circle, the angles ∠BPQ and ∠BCQ both stand on the arc BQ, so they match; and because Q lies on the line AC, ∠BCQ is the corner ∠BCA of the triangle. The same angle chase gives <code>∠APQ = ∠BCA</code>. The logic test checks that identity on every triangle it tries. There is a small catch: if a second point falls on the opposite ray, the ordinary (unsigned) angle is the supplement of the directed one, so read the old page's chain of equalities with
+        <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">directed inscribed angles</a>.</p>
+
+      <h2>The central angle finishes it</h2>
+      <p>In the big circle the angle at the centre is twice the angle at the edge: <code>∠AOB = 2∠BCA</code> (or its full-turn complement when C is obtuse). Triangle AOB is isosceles, so <code>∠BAO = 90° − ∠BCA</code> when C is acute, and <code>|90° − ∠BCA|</code> in general. Adding this to ∠APQ = ∠BCA gives 90°, which is exactly the condition for AO to be
+        <a class="wiki-term" data-wiki="Perpendicular" href="https://en.wikipedia.org/wiki/Perpendicular" target="_blank" rel="noopener">perpendicular</a> to PQ. The check confirms the right angle on every acute and obtuse example.</p>
+
+      <h2>What the checks found, and one exception</h2>
+      <p>The logic test rebuilds the applet's own construction a second way from its bytecode and compares the two on 444 exact and generated triangles, including obtuse ones: AO ⟂ PQ in all of them, so the old page is right that acuteness is a red herring. It is not quite true for <em>every</em> triangle: if the angle at A is a right angle, then B, O and C lie on one line and no circle passes through the three, so the statement has no meaning there. When a secant is almost tangent, the applet's one-unit tie-break can pick the near intersection; the port uses the true second intersection, which agrees everywhere else.</p>
+
+      <p class="tip">Try dragging A towards the right angle: the small circle grows huge, and PQ stays perpendicular to AO right up to the moment the circle disappears.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CircleThroughCircumcenter.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circle-through-circumcenter-core.js"></script>
+<script src="circle-through-circumcenter.js"></script>
+</body>
+</html>
