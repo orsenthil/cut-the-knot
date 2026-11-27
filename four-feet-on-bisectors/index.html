@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Four Feet On Bisectors &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and watch the four places where A meets the bisectors at B and C. Do they always land on one straight line?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/four-feet-on-bisectors/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Four Feet On Bisectors">
+<meta property="og:description" content="Drag the corners of a triangle and watch the four places where A meets the bisectors at B and C. Do they always land on one straight line?">
+<meta property="og:url" content="https://coolmaths.ai/four-feet-on-bisectors/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; }
+  #board .bisector-guide { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .bisector-emph { fill: none; stroke-width: 2.5; stroke-dasharray: 8 5; }
+  #board .bisector-b { stroke: var(--highlight); }
+  #board .bisector-c { stroke: var(--accent); }
+  #board .extension { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  #board .right-mark { fill: none; stroke: var(--highlight); stroke-width: 2; }
+  #board .hint-circle { fill: none; stroke: var(--highlight); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .hint-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 3 4; }
+  #board .statement-line { fill: none; stroke: var(--good); stroke-width: 3; stroke-linecap: round; }
+  #board .foot-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .center-dot { fill: var(--muted); }
+  #board .pt-label {
+    fill: var(--text); font-family: var(--font); font-size: 1.05rem;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .pt-label.small { font-size: 0.95rem; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls button { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="four-feet-on-bisectors" data-kind="demo">
+<main id="main">
+  <h1>Four Feet On Bisectors</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners of a triangle and watch four dots where one corner meets the halfway lines at the other two corners.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a dot and use the arrow keys. Press Show statement to see the straight line through the dots, or Check the claim when you are ready.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 450" role="group"
+         aria-label="Triangle ABC with the internal and external angle bisectors at B and C, and the four perpendicular feet M, N, P and Q from A"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset</button>
+    <button id="checkBtn" type="button" aria-label="Check that the four feet are collinear">Check the claim</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Hide the names of the points">Hide names</button>
+    <button id="statementBtn" type="button" aria-pressed="false" aria-label="Show the line through the four feet">Show statement</button>
+    <button id="premiseBtn" type="button" aria-pressed="false" aria-label="Show the bisectors, right angles and extended base from the proof">Show premise</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show the three circles and the line from A to the incenter">Show hint</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move any corner of the triangle and the four dots move with it — yet they keep lining up. Here is why that is not a coincidence.</p>
+
+      <h2>Four bisectors, four feet</h2>
+      <p>At <code>B</code> and <code>C</code> there are two <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisectors</a>: one inside the triangle and one outside it. They are perpendicular. <code>M</code> and <code>N</code> are the feet of the perpendiculars from <code>A</code> to the inside bisectors; <code>P</code> and <code>Q</code> are the feet on the outside ones. The original Java applet had four checkboxes — names, statement, premise and hint — with names switched on in the copy beside the explanation; the live cut-the-knot page now shows a GeoGebra version instead, so the Java behaviour was recovered from the <a href="https://web.archive.org/web/20070713042708id_/http://www.cut-the-knot.org/Curriculum/Geometry/FourFeetOnBisectors.shtml" target="_blank" rel="noopener">2007 archived page</a> and the applet bytecode.</p>
+
+      <h2>A rectangle at B</h2>
+      <p>Because the two bisectors at <code>B</code> are perpendicular, and <code>AM</code> and <code>AP</code> are perpendicular to them in turn, <code>AMBP</code> is a rectangle. Its diagonals give <code>&ang;AMP = &ang;ABP</code>. The outside bisector cuts the turn outside <code>B</code> in half, so <code>&ang;ABP = (180&deg; - B)/2 = (A + C)/2</code>. The logic test confirms both angles on every triangle it tries.</p>
+
+      <h2>The cyclic quadrilateral, and a slip on the page</h2>
+      <p>Let <code>I</code> be the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a>. The angles at <code>M</code> and <code>N</code> in <code>ANIM</code> are right angles, so <code>A</code>, <code>N</code>, <code>I</code>, <code>M</code> form a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>. That gives <code>&ang;AMN = &ang;AIN</code>. The article prints <code>&ang;AIN = A/2 + B/2</code>, but that is a slip: the true value is <code>A/2 + C/2 = 90&deg; - B/2</code>. The page's version only agrees when <code>B = C</code>; the logic test checks the true value on hundreds of triangles and pins the printed one as false in general.</p>
+
+      <h2>Why the four feet line up</h2>
+      <p>From the rectangle above, <code>&ang;AMN = &ang;AMP</code>, so <code>M</code>, <code>N</code> and <code>P</code> share a line; <code>Q</code> joins it by the same argument at <code>C</code>. Another way to see the same thing: <code>A</code> lies on the circle through <code>B</code>, <code>I</code> and the excenter opposite <code>C</code>, so <code>M</code>, <code>N</code> and <code>P</code> are feet on the <a class="wiki-term" data-wiki="Simson_line" href="https://en.wikipedia.org/wiki/Simson_line" target="_blank" rel="noopener">Simson line</a> of <code>A</code> for that triangle. The test checks this circle and the collinearity independently of the drawing code.</p>
+
+      <p class="tip">Try Show premise, then pull <code>A</code> far to one side and watch the common line tilt while all four right-angle marks stay right.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FourFeetOnBisectors.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="four-feet-on-bisectors-core.js"></script>
+<script src="four-feet-on-bisectors.js"></script>
+</body>
+</html>
