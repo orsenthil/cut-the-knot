@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ellipse By Van Schooten &mdash; coolmaths</title>
+<meta name="description" content="Two corners of a rigid triangle slide along the arms of an angle. What path does the third corner trace, and why is it an ellipse?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/ellipse-by-van-schooten/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Ellipse By Van Schooten">
+<meta property="og:description" content="Two corners of a rigid triangle slide along the arms of an angle. What path does the third corner trace, and why is it an ellipse?">
+<meta property="og:url" content="https://coolmaths.ai/ellipse-by-van-schooten/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.6rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .arm { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .circle-l { fill: none; stroke: var(--accent); stroke-width: 1.6; opacity: 0.85; }
+  #board .diameter { fill: none; stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 2 4; opacity: 0.7; }
+  #board .hint-pq { stroke: var(--good); stroke-width: 2; }
+  #board .hint-axis { stroke: var(--good); stroke-width: 1.4; stroke-dasharray: 4 4; opacity: 0.75; }
+  #board .trace-curve { fill: none; stroke: var(--accent); stroke-width: 2; opacity: 0.8; }
+  #board .triangle-edge { stroke: var(--ink); stroke-width: 2.4; stroke-linecap: round; }
+  #board .pt-label { fill: var(--text); font-size: 1.1rem; font-weight: 600; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle.origin-handle { fill: var(--good); }
+  #board .geom-handle.vertex-handle { fill: var(--ink); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; accent-color: var(--accent); }
+  .controls button { min-height: 2.5rem; min-width: 4rem; }
+</style>
+</head>
+<body data-game="ellipse-by-van-schooten" data-kind="demo">
+<main id="main">
+  <h1>Ellipse By Van Schooten</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#curves">Curves</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a drawing to explore: two corners of a triangle slide along the arms of an angle, and you watch the path of the third corner.<br>
+    <strong>How to play:</strong> Drag the blue dots, or focus one and use the arrow keys. Tick "Trace" to see the path, or "Show hint" to see the helper lines.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Two arms of an angle at O, with the triangle A B C, the circle through O, A and B, and six draggable points"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="nameBox" type="checkbox" aria-label="Show point names">Show names</label>
+    <label><input id="hintBox" type="checkbox" aria-label="Show the helper lines and half-axes">Show hint</label>
+    <label><input id="traceBox" type="checkbox" aria-label="Trace the path of point C">Trace</label>
+    <label><input id="rigidBox" type="checkbox" aria-label="Let A and B move independently and change the triangle">Define triangle</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Put the triangle back at its starting position">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The surprising part is that a triangle whose corners only slide along two straight arms makes a curved path. Here is the chain of reasons, and what the logic test found when it checked them over hundreds of positions.</p>
+
+      <h2>A circle with a fixed size</h2>
+      <p>A and B sit on the two arms through O, so <a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a> gives <code>AOB = 90&deg;</code>. The <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circle</a> L through O, A and B then has diameter AB, so its radius is <code>AB / 2</code>. With "Define triangle" off, AB keeps its length, and the test found the same radius at every position it tried. This is the invariant that makes the rest work.</p>
+
+      <h2>A rod sliding between two lines</h2>
+      <p>Let M be the centre of L. The line MC meets L at P and Q, so PQ is a diameter and <code>POQ = 90&deg;</code>: the test confirmed the dot product of OP and OQ is zero. Because the angles at A and B of the triangle stay fixed, P and Q keep to two fixed perpendicular lines through O. Point C is fixed on the rod PQ, exactly like the <a class="wiki-term" data-wiki="Trammel_of_Archimedes" href="https://en.wikipedia.org/wiki/Trammel_of_Archimedes" target="_blank" rel="noopener">trammel of Archimedes</a>. If <code>u</code> and <code>v</code> are C's coordinates along those two lines, then <code>(u/a)&sup2; + (v/b)&sup2; = 1</code>, so C traces an <a class="wiki-term" data-wiki="Ellipse" href="https://en.wikipedia.org/wiki/Ellipse" target="_blank" rel="noopener">ellipse</a>. The test checked this equation over 240 positions, allowing for P and Q swapping ends.</p>
+
+      <h2>Where the half-axes come from</h2>
+      <p>Since O is on L, <code>OM = R</code>, the circle's radius. P and Q are opposite ends of a diameter through M, so the distances from C to them are <code>R + MC</code> and <code>|R &minus; MC|</code>; these are the half-axes the page states, and the test confirmed both. The page also says that with AB fixed C runs around a circular arc when O moves; that describes a different viewpoint from this applet's, where O is the fixed vertex and M stays one radius from O. One deliberate departure: the Java applet drops every other point onto the cursor when O is dragged, which wrecks the picture; here dragging O carries the whole configuration along instead.</p>
+
+      <p class="tip">Tick Trace and Define triangle, then drag C to change the triangle's shape: the traced curve changes too. Untick Define triangle to put the fixed AB back and watch the ellipse return.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EllipseByVanSchooten.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="ellipse-by-van-schooten-core.js"></script>
+<script src="ellipse-by-van-schooten.js"></script>
+</body>
+</html>
