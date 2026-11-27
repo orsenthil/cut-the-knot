@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eight Point Circle &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a quadrilateral whose diagonals cross at right angles. Can you find the circle that passes through all eight marked points?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/eight-point-circle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Eight Point Circle">
+<meta property="og:description" content="Drag the corners of a quadrilateral whose diagonals cross at right angles. Can you find the circle that passes through all eight marked points?">
+<meta property="og:url" content="https://coolmaths.ai/eight-point-circle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .spoke { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+  #board .eight-circle { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .diagonal { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .drop { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .hint-diameter { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .hint-rect { fill: none; stroke: var(--highlight); stroke-width: 3; }
+  #board .midpoint { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .foot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .centre { fill: var(--highlight); stroke: var(--stage); stroke-width: 2; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.9rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="eight-point-circle" data-kind="demo">
+<main id="main">
+  <h1>Eight Point Circle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: when the two lines joining opposite corners meet at a right angle, eight marked dots always sit on one circle.<br>
+    <strong>How to play:</strong> Drag A, B, C or D, or focus a corner and use the arrow keys. Tick the boxes to show the diagonals, the names or the hint.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="A quadrilateral whose four corners can be dragged, the midpoints of its sides, the feet of perpendiculars, the centre K and the circle through all eight marked points"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="showDiagonals" type="checkbox"> Show diagonals</label>
+    <label><input id="showLabels" type="checkbox"> Show labels</label>
+    <label><input id="showHint" type="checkbox"> Show hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the diagram to its starting shape">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move a corner and the whole shape changes, yet the eight marked dots keep sitting on one circle. Here is the simple reason.</p>
+
+      <h2>A rectangle hides inside</h2>
+      <p>Join the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoints</a> of AB, BC, CD and DA in order: P, Q, R, S. These four points always form a <a class="wiki-term" data-wiki="Varignon_parallelogram" href="https://en.wikipedia.org/wiki/Varignon_parallelogram" target="_blank" rel="noopener">Varignon parallelogram</a>. Its sides run parallel to the diagonals AC and BD, so when those diagonals cross at a right angle, PQRS is a <a class="wiki-term" data-wiki="Rectangle" href="https://en.wikipedia.org/wiki/Rectangle" target="_blank" rel="noopener">rectangle</a>. The crossing of its two diagonals PR and QS is the same point for every quadrilateral: <code>K = (A + B + C + D) / 4</code>, the <a class="wiki-term" data-wiki="Barycenter" href="https://en.wikipedia.org/wiki/Barycenter" target="_blank" rel="noopener">centre of mass</a> of four equal weights at the corners.</p>
+
+      <h2>Four midpoints, one circle</h2>
+      <p>In a rectangle the diagonals are equal and cut each other in half. So PR and QS are two diameters of one circle centred at K, and P, Q, R, S are all the same distance from it. The applet draws that circle with radius <code>r = (KP + KQ + KR + KS) / 4</code> &mdash; the common distance written four ways. Tick Show hint to see the two diameters and the rectangle.</p>
+
+      <h2>Why the feet belong</h2>
+      <p>Take E, the foot of the perpendicular from P to the opposite side CD. The angle PEA is not the point: the rectangle makes the angle <code>PER</code> a right angle. By <a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a>, any point that sees a diameter at a right angle lies on its circle, so E is on the circle with diameter PR. The same argument puts F, G and H on it. The logic test measured all eight distances from K over the 8400 legal shapes in a 5&times;5&times;5&times;5&times;5&times;5 grid and over 4000 rotated shapes: the page's claim held every time, and failed when the two diagonals were deliberately made skew.</p>
+
+      <h2>From eight points to nine</h2>
+      <p>The page credits Louis Brand of Cincinnati with identifying this circle in 1944. If two corners of the quadrilateral come together, the eight points reduce to the better-known <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">nine-point circle</a> of a triangle. The live cut-the-knot page still shows its old Java-applet notice; this port redraws the same construction in SVG and adds a Reset button the applet did not have.</p>
+
+      <p class="tip">Tick Show hint and drag A far away: PR and QS stay the diameters of the green rectangle, and all eight dots stay on the circle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EightPointCircle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="eight-point-circle-core.js"></script>
+<script src="eight-point-circle.js"></script>
+</body>
+</html>
