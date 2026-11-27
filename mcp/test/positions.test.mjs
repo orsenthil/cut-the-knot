@@ -2233,6 +2233,8 @@ check("circular-poggendorf: the bar's pieces fit the circle by construction", re
 check("circumcenter-on-angle-bisector: O lies on AI and midpoints IE", read["circumcenter-on-angle-bisector"]?.reading.allHold === true);
 check("circum-quadri: the contact chords meet at the diagonal intersection", read["circum-quadri"]?.reading.meeting.holds === true);
 check("circum-simson: antipodal Simson lines and the nine-point circle check out", read["circum-simson"]?.check_claims.allHold === true);
+check("circumsogonal: each saved reflected line is the reflection of VP", read["circumsogonal"]?.reading.checks.eachLineIsTheReflectionOfVP === true);
+check("cleaver: the saved triangle's cleaver halves the perimeter", read["cleaver"]?.reading.checks.allHold === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);

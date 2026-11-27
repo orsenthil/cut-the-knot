@@ -627,6 +627,8 @@ const CORE_GLOBALS = {
   "circumcenter-on-angle-bisector/circumcenter-on-angle-bisector-core.js": ["CircumcenterOnAngleBisectorCore"],
   "circum-quadri/circum-quadri-core.js": ["CircumQuadriCore"],
   "circum-simson/circum-simson-core.js": ["CircumSimsonCore"],
+  "circumsogonal/circumsogonal-core.js": ["CircumsogonalCore"],
+  "cleaver/cleaver-core.js": ["CleaverCore"],
 };
 
 const games = [];

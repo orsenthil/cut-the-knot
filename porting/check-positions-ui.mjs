@@ -1090,6 +1090,8 @@ const GAMES = {
   "circumcenter-on-angle-bisector": (page) => dragFirstHandle(page),
   "circum-quadri": (page) => dragFirstHandle(page),
   "circum-simson": (page) => dragFirstHandle(page),
+  "circumsogonal": (page) => dragFirstHandle(page),
+  "cleaver": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },
