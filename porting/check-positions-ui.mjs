@@ -1255,6 +1255,16 @@ const GAMES = {
   "gergonne-and-soddy": (page) => dragFirstHandle(page),
   "gergonne-in-ellipse": (page) => dragFirstHandle(page),
   "gergonne-medial": (page) => dragFirstHandle(page),
+  "given-common-chord": (page) => dragFirstHandle(page),
+  "glad-construction": (page) => dragFirstHandle(page),
+  "glide-reflection": (page) => dragFirstHandle(page),
+  "gothic-arc": (page) => dragFirstHandle(page),
+  "grebe": (page) => dragFirstHandle(page),
+  "griffiths": (page) => dragFirstHandle(page),
+  "griffiths-collinearity": (page) => dragFirstHandle(page),
+  "half-area-of-quadrilateral": (page) => dragFirstHandle(page),
+  "half-area-of-quadrilateral-2": (page) => dragFirstHandle(page),
+  "half-plane-test": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

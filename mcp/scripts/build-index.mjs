@@ -779,6 +779,16 @@ const CORE_GLOBALS = {
   "gergonne-and-soddy/gergonne-and-soddy-core.js": ["GergonneAndSoddyCore"],
   "gergonne-in-ellipse/gergonne-in-ellipse-core.js": ["GergonneInEllipseCore"],
   "gergonne-medial/gergonne-medial-core.js": ["GergonneMedialCore"],
+  "given-common-chord/given-common-chord-core.js": ["GivenCommonChordCore"],
+  "glad-construction/glad-construction-core.js": ["GladConstructionCore"],
+  "glide-reflection/glide-reflection-core.js": ["GlideReflectionCore"],
+  "gothic-arc/gothic-arc-core.js": ["GothicArcCore"],
+  "grebe/grebe-core.js": ["GrebeCore"],
+  "griffiths/griffiths-core.js": ["GriffithsCore"],
+  "griffiths-collinearity/griffiths-collinearity-core.js": ["GriffithsCollinearityCore"],
+  "half-area-of-quadrilateral/half-area-of-quadrilateral-core.js": ["HalfAreaOfQuadrilateralCore"],
+  "half-area-of-quadrilateral-2/half-area-of-quadrilateral-2-core.js": ["HalfAreaOfQuadrilateral2Core"],
+  "half-plane-test/half-plane-test-core.js": ["HalfPlaneTestCore"],
 };
 
 const games = [];

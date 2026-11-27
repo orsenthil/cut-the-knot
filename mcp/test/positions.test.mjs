@@ -2385,6 +2385,16 @@ check("general-napoleon: equal-barycentric side pairs concur", read["general-nap
 check("gergonne-and-soddy: Soddy and Gergonne lines are perpendicular", read["gergonne-and-soddy"]?.valid === true && read["gergonne-and-soddy"].reading.angleBetweenLines === 90 && read["gergonne-and-soddy"].reading.checks.perpendicular === true);
 check("gergonne-in-ellipse: ellipse and Gergonne point round-trip from the page", read["gergonne-in-ellipse"]?.savedMatchesCore.ellipse === true && read["gergonne-in-ellipse"].savedMatchesCore.G === true && typeof read["gergonne-in-ellipse"].gergonnePoint.x === "number");
 check("gergonne-medial: midpoint perpendiculars concur at the medial incenter", read["gergonne-medial"]?.valid === true && read["gergonne-medial"].reading.allClaimsHold === true && typeof read["gergonne-medial"].commonPoint.x === "number");
+check("given-common-chord: the saved picture has two lines cutting equal chords", read["given-common-chord"]?.valid === true && read["given-common-chord"].solutionCount === 2 && Math.abs(read["given-common-chord"].chord1 - read["given-common-chord"].chord2) < 1e-6);
+check("glad-construction: 1/2 and 1/3 marks satisfy the cevian lemma", read["glad-construction"]?.reading.checks.lemma === true && read["glad-construction"].reading.checks.projection === true && read["glad-construction"].reading.checks.lastPart === true);
+check("glide-reflection: the saved chain has equal orders and no fixed point", read["glide-reflection"]?.ordersAgree === true && read["glide-reflection"].isometry === true && read["glide-reflection"].noFixedPoint === true && read["glide-reflection"].result === "done");
+check("gothic-arc: R1+R2 is OD and the drawn radii drift slightly below ideal", read["gothic-arc"]?.valid === true && read["gothic-arc"].derived.sumEqualsOD === true && read["gothic-arc"].derived.drawnMinusIdeal[0].difference < 0);
+check("grebe: outer squares are homothetic to ABC at the symmedian point", read.grebe?.reading.valid === true && read.grebe.reading.allHold === true && read.grebe.reading.checks.homothetic === true && read.grebe.reading.barycentric.maxDifference === 0);
+check("griffiths: the saved point is the fixed pedal-circle point", read.griffiths?.check_theorem.claimHolds === true && read.griffiths.check_theorem.griffithsPoint.x === read.griffiths.saved.common.x);
+check("griffiths-collinearity: three pedal circles have collinear centres and two common points", read["griffiths-collinearity"]?.reading.common.length === 2 && read["griffiths-collinearity"].reading.axis.through.length === 2 && read["griffiths-collinearity"].savedVsCore.commonGaps.every((g) => g === 0) === true);
+check("half-area-of-quadrilateral: the midpoint-parallel CE bisects the area", Object.values(read["half-area-of-quadrilateral"]?.claims ?? {}).every(Boolean) === true && read["half-area-of-quadrilateral"].savedMatchesCore === true);
+check("half-area-of-quadrilateral-2: a B-or-D parallel median bisects the quadrilateral", Object.values(read["half-area-of-quadrilateral-2"]?.claims ?? {}).every(Boolean) === true && read["half-area-of-quadrilateral-2"].claimsAgreeWithSaved === true);
+check("half-plane-test: the saved clipped half-plane region is convex", read["half-plane-test"]?.core.clippedIntersection.convex === true && read["half-plane-test"].regionConvex === true && read["half-plane-test"].halfPlanes === 1);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2798,6 +2808,30 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("gergonne-in-ellipse/drag_and_check: cevians still concur after a touch drag", dc.stillConcurrent === true && dc.gergonneMovedBy > 0);
   const mr = runGameLogic("gergonne-medial", "maxwell_reverse", {});
   check("gergonne-medial/maxwell_reverse: contact-point perpendiculars meet at I", mr.allClaimsHold === true && mr.reverse.lines.every((l) => l.perpendicularAtI === true) === true);
+}
+
+// The batch-31 tutor actions all run their real cores, not just their saved positions.
+{
+  const ls = runGameLogic("given-common-chord", "length_sweep", {});
+  check("given-common-chord/length_sweep: even cuts a, odd cuts a-1", ls.summary.evenCutA === true && ls.summary.oddCutAminusOne === true);
+  const lem = runGameLogic("glad-construction", "lemma", { n: 3 });
+  check("glad-construction/lemma: QC/AQ=n and the projection lands at 1/(n+1)", lem.lemmaHolds === true && lem.projectionHolds === true && lem.QCoverAQ === 3 && lem.footFraction === "1/4");
+  const chain = runGameLogic("glide-reflection", "chain", {});
+  check("glide-reflection/chain: each glide produces a transformed copy", chain.n === 1 && chain.afterEachGlide.length === 1 && chain.vectors.length === 1);
+  const tri = runGameLogic("gothic-arc", "pythagorean_triangle", {});
+  check("gothic-arc/Pythagorean triangle: 3-4-5 at n=1 and matching core lengths", tri.triple.dTriple.join() === "3,4,5" && tri.coreLengthsMatch === true && tri.namedCases.length >= 3);
+  const fr = runGameLogic("grebe", "friendship", {});
+  check("grebe/friendship: O-K and K-O homothety views both hold", fr.allHold === true && fr.checks.okLinesThroughK === true && fr.checks.koLinesThroughO === true);
+  const gt = runGameLogic("griffiths", "check_theorem", {});
+  check("griffiths/check_theorem: w stays fixed as Q slides and lies on the nine-point circle", gt.claimHolds === true && gt.ninePointIsPedalCircleOfO.holds === true && gt.slides.length > 1);
+  const co = runGameLogic("griffiths-collinearity", "check_coaxality", {});
+  check("griffiths-collinearity/coaxality: centres collinear and common points exist", co.verdicts.centresCollinear === true && co.verdicts.coaxal === true && co.verdicts.commonCount === 2);
+  const pairs = runGameLogic("half-area-of-quadrilateral", "equal_area_pairs", {});
+  check("half-area-of-quadrilateral/equal pairs: four area equalities give the bisection", Object.values(pairs.proofPairs).every(Boolean) === true && pairs.claims.bisects === true);
+  const shortcut = runGameLogic("half-area-of-quadrilateral-2", "parallel_shortcut", {});
+  check("half-area-of-quadrilateral-2/parallel_shortcut: near-parallel tolerance breaks the cut", shortcut.comparison.nearParallelShortcut === true && shortcut.comparison.nearParallelQuadrilateralBisected === false && shortcut.comparison.openingQuadrilateralBisected === true);
+  const kept = runGameLogic("half-plane-test", "kept_side", { p1: [0, 0], p2: [400, 300], p: [100, 100] });
+  check("half-plane-test/kept_side: orientation sign picks the kept half plane", kept.kept === true && kept.orientation === 1 && kept.orientationIfReversed === -1 && kept.keptByEveryLine === true);
 }
 
 // A game with no reader, and a position that makes no sense.
