@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contrast &mdash; coolmaths</title>
+<meta name="description" content="Two gray bars are painted exactly the same gray, yet they can look different. Change the background strip and see how much your eyes can be fooled.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/contrast/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Contrast">
+<meta property="og:description" content="Two gray bars are painted exactly the same gray, yet they can look different. Change the background strip and see how much your eyes can be fooled.">
+<meta property="og:url" content="https://coolmaths.ai/contrast/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+    border-radius: 0.5rem;
+  }
+  #board .frame { fill: none; stroke: var(--ink); stroke-width: 1; }
+  #board .bar { stroke: var(--stage); stroke-width: 1; }
+  #board .probe-line { stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .probe-label {
+    fill: var(--text);
+    font-size: 0.85rem;
+    pointer-events: none;
+  }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible {
+    outline: none;
+    stroke: var(--good);
+    stroke-width: 5;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.4rem 0 0;
+  }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+  }
+  .controls label {
+    display: grid;
+    grid-template-columns: auto minmax(4rem, 1fr) 2.5rem;
+    align-items: center;
+    gap: 0.35rem;
+    flex: 1 1 15rem;
+    min-width: 0;
+    min-height: 2.75rem;
+  }
+  .controls input[type="range"] {
+    width: 100%;
+    min-width: 0;
+    accent-color: var(--accent);
+  }
+  .controls output {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .controls button { min-height: 2.75rem; }
+</style>
+</head>
+<body data-game="contrast" data-kind="demo">
+<main id="main">
+  <h1>Contrast</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#fractions">Fractions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two gray bars sit on a strip that fades from dark to light, and the bars can look different even though they are painted the same gray.<br>
+    <strong>How to play:</strong> Slide the five controls to change the strip and the bars, and drag the probe dot to read the gray under it.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 300" role="group"
+         aria-label="A gray strip fading from dark left to light right, with two bars of one flat gray and a draggable probe dot"></svg>
+    <p class="hint">Keyboard: Tab to the probe dot, then use the arrow keys (Shift makes a bigger step). Each slider also has arrow keys.</p>
+  </div>
+
+  <div class="controls">
+    <label for="width"><span>Bar width</span><input id="width" type="range" min="0" max="110" step="1" value="80" aria-label="Bar width, percent of the board"><output id="widthOut" for="width">80</output></label>
+    <label for="height"><span>Bar height</span><input id="height" type="range" min="0" max="110" step="1" value="20" aria-label="Bar height, percent of the board"><output id="heightOut" for="height">20</output></label>
+    <label for="minColor"><span>Lower gray</span><input id="minColor" type="range" min="0" max="255" step="1" value="20" aria-label="Lower gray of the background, from 0 to 255"><output id="minColorOut" for="minColor">20</output></label>
+    <label for="maxColor"><span>Upper gray</span><input id="maxColor" type="range" min="0" max="255" step="1" value="235" aria-label="Upper gray of the background, from 0 to 255"><output id="maxColorOut" for="maxColor">235</output></label>
+    <label for="gap"><span>Gap</span><input id="gap" type="range" min="0" max="80" step="1" value="0" aria-label="Gap between the two bars, percent of the bar width"><output id="gapOut" for="gap">0</output></label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset all five controls to their opening values">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The strip and the bars are made of nothing but <a class="wiki-term" data-wiki="Grayscale" href="https://en.wikipedia.org/wiki/Grayscale" target="_blank" rel="noopener">grays</a>. No colour in the picture changes when you move the sliders, yet the same flat gray can look darker beside a light strip and lighter beside a dark one. That is the simultaneous contrast illusion.</p>
+
+      <h2>One gray, one or two bars</h2>
+      <p>The page says: "Whether consisting of one or two bars, the middle shape is painted uniformly throughout." The applet agrees. It paints both rectangles with the same entry of a scale of 256 steps, numbered 0 (black) to 255 (white). If the lower and upper sliders are <code>lo</code> and <code>hi</code>, the bar's gray number is <code>floor((lo + hi) / 2)</code>. At the opening settings, 20 and 235, that is gray 127 in both bars. The logic test checked the two rectangles for thousands of settings: their colour is always the same. What changes is only the gray around them.</p>
+
+      <h2>Building the background strip</h2>
+      <p>The strip is painted as one thin vertical line per column. Put the two colour sliders in increasing order, <code>lo ≤ hi</code>. Across a board <code>w</code> units wide, column <code>x</code> (from <code>1</code> to <code>w - 3</code>) gets gray</p>
+      <blockquote><code>round(lo + (x - 1) × (hi - lo) / (w - 4))</code></blockquote>
+      <p>So the first painted column is exactly <code>lo</code> and the last is exactly <code>hi</code>, whatever the width. Swapping the two sliders simply runs the ramp the other way. The page's claim that the illusion shows up "even for small ranges of the background gray" is true of the pixels too: the test checked all 255 ranges that are just one step wide, and each still paints both of its grays. A hard step from gray 120 to gray 121 is enough to change what the bars look like.</p>
+
+      <h2>Shape barely enters it</h2>
+      <p>Width, height and gap change where the bars sit, never what colour they are. The applet uses truncating division: <code>barWidth = floor(w × W / 100)</code>, <code>barHeight = floor(h × H / 100)</code>, <code>gap = floor(barWidth × Gap / 100)</code>. The gap is taken out of the middle and the rest is split into two pieces; both get that same one gray. The logic test held the bar's colour fixed while sweeping every width and height and many gaps: it stayed gray 127 throughout, which is the sense of the page's "almost independently of the relative shape of the bar(s)". At <code>W = H = 110</code> the single bar is larger than the board and covers it all, as the page says.</p>
+
+      <h2>What the eye adds</h2>
+      <p>The page also says a full-board bar can look gradient filled for a few seconds in a brightness <a class="wiki-term" data-wiki="Afterimage" href="https://en.wikipedia.org/wiki/Afterimage" target="_blank" rel="noopener">afterimage</a>, then fade on close inspection. That is a claim about seeing, not about pixels: this port keeps the bar's numbers flat and cannot time your eye. It is an <a class="wiki-term" data-wiki="Optical_illusion" href="https://en.wikipedia.org/wiki/Optical_illusion" target="_blank" rel="noopener">optical illusion</a>, not a trick in the drawing code. Use the probe dot to check a gray under the bar against the number reported beside it.</p>
+
+      <p class="tip">Try setting both gray sliders one step apart, then drag the probe from one end to the other and watch one bar appear to change while its stated gray stays put.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Contrast.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="contrast-core.js"></script>
+<script src="contrast.js"></script>
+</body>
+</html>
