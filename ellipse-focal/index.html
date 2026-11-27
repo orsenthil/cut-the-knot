@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ellipse Focal &mdash; coolmaths</title>
+<meta name="description" content="An ellipse grows inside a draggable box. Do the distances from a point on the curve to its two foci always add to the same number?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/ellipse-focal/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Ellipse Focal">
+<meta property="og:description" content="An ellipse grows inside a draggable box. Do the distances from a point on the curve to its two foci always add to the same number?">
+<meta property="og:url" content="https://coolmaths.ai/ellipse-focal/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .box { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .ellipse { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .ray { stroke-width: 4; stroke-linecap: round; }
+  #board .bar { stroke-width: 5; stroke-linecap: round; }
+  #board .ray-one, #board .bar-one { stroke: var(--bad); }
+  #board .ray-two, #board .bar-two { stroke: var(--accent); }
+  #board .focus-dot { fill: #f2c94c; stroke: var(--ink); stroke-width: 1.5; }
+  #board .bar-dot { fill: #f2c94c; stroke: var(--ink); stroke-width: 1.2; }
+  #board .small-label { fill: var(--text); font-size: 0.85rem; font-weight: 600; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .corner-handle { fill: var(--ink); }
+  #board .point-handle { fill: var(--bad); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5.5; }
+  .controls { align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+  #status { font-variant-numeric: tabular-nums; }
+  #math code { white-space: normal; }
+</style>
+</head>
+<body data-game="ellipse-focal" data-kind="demo">
+<main id="main">
+  <h1>Ellipse Focal</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#coordinates">Coordinates</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This shows an ellipse and its two foci, with a number that stays the same wherever you move on the curve.<br>
+    <strong>How to play:</strong> Drag the four corners of the dashed box to reshape the ellipse, or drag the point P. You can also focus a dot and use the arrow keys; press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="An ellipse inside a dashed rectangle, its two foci, a movable point P, and a two-piece bar showing the two focal distances"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the rectangle and the point P to their starting places">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>An <a class="wiki-term" data-wiki="Ellipse" href="https://en.wikipedia.org/wiki/Ellipse" target="_blank" rel="noopener">ellipse</a> can be drawn with two pins and a loop of string. The page for this applet says the curve is the set of points whose distances from the two pins add to the same number. The picture here lets you check that sentence yourself.</p>
+
+      <h2>The page's claim, checked</h2>
+      <p>The exact claim is <code>PF + PF' = const</code>: move the point P anywhere on the curve and the two distances to the foci still add up to one fixed length. The logic test checked 11,664 points on 324 differently shaped ellipses; the largest change in that sum was less than one ten-millionth of a unit. So the page's claim holds here, and the constant is twice the longer half of the dashed box.</p>
+      <p>This is a different test from the one on the neighbouring page <em>Focus and Directrix of Ellipse</em>. That page uses one focus and a line, and says the <em>ratio</em> of the two distances is a fixed number below 1: <code>dist(P,F) / dist(P,d) = const &lt; 1</code>. That number is the <a class="wiki-term" data-wiki="Eccentricity_(mathematics)" href="https://en.wikipedia.org/wiki/Eccentricity_(mathematics)" target="_blank" rel="noopener">eccentricity</a>. This applet draws no directrix and compares no ratio; it only adds two focal distances. Both descriptions pick out the same <a class="wiki-term" data-wiki="Conic_section" href="https://en.wikipedia.org/wiki/Conic_section" target="_blank" rel="noopener">conic</a>, but they are not the same statement.</p>
+
+      <h2>Where the foci sit</h2>
+      <p>Let the dashed box have half-widths <code>A</code> and <code>B</code>, measured from its middle. The longer one is the <a class="wiki-term" data-wiki="Semi-major_and_semi-minor_axes" href="https://en.wikipedia.org/wiki/Semi-major_and_semi-minor_axes" target="_blank" rel="noopener">semi-major axis</a> <code>a</code> and the shorter is <code>b</code>. Each focus is <code>c = sqrt(a&sup2; &minus; b&sup2;)</code> from the middle, along the long direction: side to side if the box is wider, up and down if it is taller. The test checks both directions, including boxes turned the other way round. When the box is a square, <code>c = 0</code>: the two foci merge at the centre and the ellipse is a <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>, with sum <code>2a</code>.</p>
+
+      <h2>Why the little bar matches the curve</h2>
+      <p>The applet measures <code>d1 = PF</code> and <code>d2 = PF'</code>, then lays a two-piece bar below (or beside) the picture. Its first piece has length <code>d1</code>, its second has length <code>d2</code>. That is why the red ray and the first bar piece match, and the blue ray and the second match: the whole bar is <code>d1 + d2</code>, the same fixed sum, whatever P does. The bar sits along the top when the rectangle is wider than it is tall and down the left edge otherwise, as in the original.</p>
+
+      <h2>What changed from the Java applet</h2>
+      <p>The Java canvas is now an SVG with focusable, arrow-key-movable dots; the green panel and grey buttons are gone, and a Reset button has been added (the original had no buttons). Small <code>F</code>, <code>F&prime;</code> and <code>P</code> labels are shown, though the applet's unused <code>ShowNames</code> flag left them out. Two quirks stay: a corner drag into the small middle square is refused, and P is snapped by feeding its scaled offsets to a signed-angle helper whose reference point sits 200 units to the right of the centre, so a drag can land somewhere other than the nearest point of the curve. The logic test compares that step with a second transcription of the bytecode rather than silently fixing it. There is no win or loss: the original page calls this an illustration.</p>
+
+      <p class="tip">Try making the dashed box a square: the two foci meet in the middle and the bar becomes two copies of the radius. Then stretch it sideways and watch the foci travel onto the long axis.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/EllipseFocal.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="ellipse-focal-core.js"></script>
+<script src="ellipse-focal.js"></script>
+</body>
+</html>
