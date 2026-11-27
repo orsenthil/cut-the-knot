@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circles in Circles Sangaku &mdash; coolmaths</title>
+<meta name="description" content="Four equal circles hug the diameter of a big circle. Two more circles turn out to have the same radius — and at one special place a third joins them. Can you find that place?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/circles-in-circles-sangaku/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Circles in Circles Sangaku">
+<meta property="og:description" content="Four equal circles hug the diameter of a big circle. Two more circles turn out to have the same radius — and at one special place a third joins them. Can you find that place?">
+<meta property="og:url" content="https://coolmaths.ai/circles-in-circles-sangaku/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .big-circle { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .baseline { stroke: var(--ink); stroke-width: 1.5; }
+  #board .circle-r1 { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .circle-r3 { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .circle-r5 { fill: none; stroke: var(--bad); stroke-width: 2.5; }
+  #board .circle-secondary { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  #board .fill-r1 { fill: var(--accent); fill-opacity: 0.15; stroke: none; }
+  #board .fill-r3 { fill: var(--good); fill-opacity: 0.15; stroke: none; }
+  #board .fill-r5 { fill: var(--bad); fill-opacity: 0.15; stroke: none; }
+  #board .guide { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 4; }
+  #board .dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.85rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="circles-in-circles-sangaku" data-kind="demo">
+<main id="main">
+  <h1>Circles in Circles Sangaku</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a drawing, not a game: four equal circles sit inside a big circle, and other circles fit in the spaces around them.<br>
+    <strong>How to play:</strong> Drag X along the middle line, or focus it and use the arrow keys. Tick the boxes to show names, extra circles or colours, and press the buttons to jump to the special places.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A big circle with four equal circles touching its horizontal diameter, three more circles of equal radius, and a draggable point X"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="secondary" type="checkbox"> Five-region circles</label>
+    <label><input id="fill" type="checkbox"> Fill colour</label>
+    <button id="leftBtn" type="button" aria-label="Move X one third of a radius to the left of O">X = −r/3</button>
+    <button id="rightBtn" type="button" aria-label="Move X one third of a radius to the right of O">X = r/3</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the diagram to its starting position">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move X and the circles change size, but two of them always end up the same size. At one particular place a third circle joins them. Here is why, and how to find that place.</p>
+
+      <h2>The four circles on the diameter</h2>
+      <p>Let the big <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> have radius <code>r</code> and centre O. Let <code>x = OX</code>, where X is the point where one small circle touches the diameter AB. A small circle of radius <code>r1</code> has its centre <code>r1</code> above the diameter and <code>r − r1</code> from O. The <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a> gives <code>(r − r1)² = x² + r1²</code>, so <code>r1 = (r² − x²) / 2r</code>. Mirror that circle below AB and across O and you have all four.</p>
+
+      <h2>The circle that touches all four</h2>
+      <p>A circle centred at O and <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> to all four has radius <code>r3</code>. Its centre and a small circle's centre are <code>r1 + r3</code> apart, so <code>(r1 + r3)² = x² + r1²</code>, or <code>r3² + 2r1r3 − x² = 0</code>. The positive root is <code>r3 = −r1 + √(r1² + x²) = x²/r</code>. The two other circles of this size, at the top and bottom of the big circle, are drawn too.</p>
+
+      <h2>The circle above the pair</h2>
+      <p>Now take the circle touching the upper pair and the big circle inside. If its radius is <code>r4</code>, another right triangle gives <code>(r − r1 − r4)² + x² = (r1 + r4)²</code>, which simplifies to <code>r² + x² = 2r(r1 + r4)</code>. Put in <code>r1</code> from above and you get <code>r4 = x²/r</code>. So <code>r3 = r4</code> for every position of X — the test checks this at 3,603 positions on three board sizes.</p>
+
+      <h2>The circle inside the lens</h2>
+      <p>When the two upper circles overlap, a little circle fits in the lens between them. Its radius is <code>r5 = r1 − x</code>: the two centres are <code>x</code> apart inside a circle of radius <code>r1</code>. The lens is <code>2r1 − 2x</code> wide. At <code>x = r/3</code>, <code>r1 = 4r/9</code>, so <code>r3 = r4 = r5 = r/9</code>. That is the 1837 <a class="wiki-term" data-wiki="Sangaku" href="https://en.wikipedia.org/wiki/Sangaku" target="_blank" rel="noopener">sangaku</a> from Aichi. The two buttons jump to both places that make it true.</p>
+
+      <h2>Five circles in the regions</h2>
+      <p>Turn on "Five-region circles" to see the drawing the article adds after the puzzle. The outer four of these circles always have radius <code>r1</code>, so together with the four original circles you get eight equal ones. When <code>x = r√(3/5)</code> the middle circle is also <code>r/5</code>, and all five are equal. The <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> each encloses is then <code>π(r/5)²</code>. These region circles come from the applet's own drawing code; unlike the sangaku circles, the article does not claim they are tangent to their neighbours. The old applet picked a random starting X between <code>r/4</code> and <code>r/2</code> and showed no labels unless its page asked for them; here X starts at <code>0.4r</code> and names are initially off.</p>
+
+      <p class="tip">Try pressing both r/3 buttons: the picture is a mirror image, but every radius is the same.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/CirclesInCirclesSangaku.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="circles-in-circles-sangaku-core.js"></script>
+<script src="circles-in-circles-sangaku.js"></script>
+</body>
+</html>
