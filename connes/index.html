@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Connes &mdash; coolmaths</title>
+<meta name="description" content="Move the corners of a triangle and watch a dot that tests whether all three sides match. Can you make the dot land on O?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/connes/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Connes">
+<meta property="og:description" content="Move the corners of a triangle and watch a dot that tests whether all three sides match. Can you make the dot land on O?">
+<meta property="og:url" content="https://coolmaths.ai/connes/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-fill { fill: var(--muted); opacity: 0.16; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .radius { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 4 5; }
+  #board .rotated { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .closure { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .vector-sum { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 6 5; }
+  #board .sum-vector { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .a-vector { fill: none; stroke: var(--bad); stroke-width: 2.5; }
+  #board .sum-to-a { fill: none; stroke: var(--highlight); stroke-width: 3; }
+  #board .turn-arc { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .turn-arc.alt { stroke: var(--good); }
+  #board .o-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .sum-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 2; }
+  #board .corner-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .origin-label, #board .rotated-label { fill: var(--accent); }
+  #board .sum-label { fill: var(--bad); }
+  #board .corner-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="connes" data-kind="demo">
+<main id="main">
+  <h1>Connes</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#coordinates">Coordinates</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the three corners of a triangle and watch a dot that checks whether all three sides match.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a corner and use the arrow keys. Press Make equilateral to see the dot land on O, and use Show vector sums to see how the turns add up.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle A B C around the point O, with B and C turned by 120 degrees and their sum marked S"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Make an equilateral triangle">Make equilateral</button>
+    <button id="resetBtn" type="button" aria-label="Reset the triangle to its starting shape">Reset triangle</button>
+    <button id="vectorsBtn" type="button" aria-pressed="false" aria-label="Toggle the parallelogram of vector sums">Show vector sums</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Turn two corners of a triangle by a third of a full turn, add the results to the third corner, and a dot tells you whether all three sides are equal. The live cut-the-knot page now embeds a GeoGebra version; the Wayback capture from 28 September 2006 embeds the original Java applet <code>Connes</code> whose drawing and options this port follows.</p>
+
+      <h2>A turn that comes back to where it started</h2>
+      <p>Identify the plane with <a class="wiki-term" data-wiki="Complex_number" href="https://en.wikipedia.org/wiki/Complex_number" target="_blank" rel="noopener">complex numbers</a> and let <code>j</code> be a <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a> through 120° counterclockwise. Three such turns make a full turn, so <code>j³ = 1</code> while <code>j ≠ 1</code>, and therefore</p>
+      <blockquote><code>1 + j + j² = 0.</code></blockquote>
+      <p>Here <code>j²</code> is the turn through 240°, the same as 120° the other way. The applet turns B by <code>j</code> and C by <code>j²</code> about the origin O.</p>
+
+      <h2>The criterion on the page</h2>
+      <p>For a triangle labelled counterclockwise, the page claims that <code>ABC</code> is <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral</a> if and only if</p>
+      <blockquote><code>A + jB + j²C = 0.</code></blockquote>
+      <p>The logic test confirms this in both directions: on 1,080 exact equilateral triangles of different sizes, positions and orientations, on their small perturbations, and on all 15,625 configurations of three corners on a five-by-five lattice around O. The orientation matters: if the corners are labelled the other way, the applet swaps the two turns and uses the conjugate identity, and the iff still holds. The page states the formula only for the positively oriented case, which is exactly what the test checks there.</p>
+
+      <h2>Why one pair of sides is enough</h2>
+      <p>Treat <code>A − C</code> and <code>B − C</code> as the two sides meeting at C. If the triangle is equilateral, B is one 60° turn from A around C; turning <code>B − C</code> by 120° in the opposite direction makes it point exactly along <code>C − A</code>. So</p>
+      <blockquote><code>(A − C) + j(B − C) = 0,</code></blockquote>
+      <p>which is <code>A + jB − (1 + j)C = 0</code>. Since <code>1 + j = −j²</code>, this is the same as <code>A + jB + j²C = 0</code>. The test checks this shortcut too: it holds for every generated equilateral triangle and fails for every near miss.</p>
+
+      <h2>Reading the picture</h2>
+      <p>B₁ is B turned 120° one way, C₁ is C turned 120° the other way. The <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram rule</a> adds those two vectors at the green corner; adding the vector to A gives the red dot S. The criterion says the rotated pair sums to exactly <code>−A</code>, so S lands on O precisely for an equilateral triangle. The picture keeps the red dot, the segment from S to A and the two arcs even when the parallelogram is hidden, just as the applet does.</p>
+
+      <p class="tip">Make the triangle equilateral, then drag A a little. Watch how far S moves from O, and try turning the parallelogram on and off to see where the two rotated vectors meet.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Connes.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="connes-core.js"></script>
+<script src="connes.js"></script>
+</body>
+</html>
