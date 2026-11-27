@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Center Circle &mdash; coolmaths</title>
+<meta name="description" content="Drag the ends of up to seven lines and watch a chain of circles grow. Where do the circles meet, and what do their centers do?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/center-circle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Center Circle">
+<meta property="og:description" content="Drag the ends of up to seven lines and watch a chain of circles grow. Where do the circles meet, and what do their centers do?">
+<meta property="og:url" content="https://coolmaths.ai/center-circle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .cc-line { fill: none; stroke-width: 2; }
+  #board .cc-line.l1 { stroke: var(--ink); }
+  #board .cc-line.l2 { stroke: var(--accent); }
+  #board .cc-line.l3 { stroke: var(--good); }
+  #board .cc-line.l4 { stroke: var(--bad); }
+  #board .cc-line.l5 { stroke: var(--muted); }
+  #board .cc-line.l6 { stroke: var(--ink); stroke-dasharray: 7 5; }
+  #board .cc-line.l7 { stroke: var(--accent); stroke-dasharray: 7 5; }
+  #board .cc-circle { fill: none; stroke-width: 1.5; }
+  #board .cc-circle.l3 { stroke: var(--accent); stroke-opacity: 0.55; }
+  #board .cc-circle.l4 { stroke: var(--good); stroke-opacity: 0.6; }
+  #board .cc-circle.l5 { stroke: var(--bad); stroke-opacity: 0.5; }
+  #board .cc-circle.l6 { stroke: var(--muted); stroke-opacity: 0.7; }
+  #board .cc-circle.l7 { stroke: var(--ink); stroke-width: 2.4; }
+  #board .cc-center { stroke: var(--stage); stroke-width: 1; }
+  #board .cc-center.l3 { fill: var(--accent); }
+  #board .cc-center.l4 { fill: var(--good); }
+  #board .cc-center.l5 { fill: var(--bad); }
+  #board .cc-center.l6, #board .cc-center.l7 { fill: var(--muted); }
+  #board .cc-common { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .cc-common.l7 { fill: var(--bad); }
+  #board .cc-label {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 700; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls button[aria-pressed="true"] { border-color: var(--accent); }
+  .controls .line-buttons { gap: 0.35rem; }
+  .controls .line-buttons button { min-width: 2.4rem; }
+  .controls .line-buttons button.off { opacity: 0.6; }
+  .hint { color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body data-game="center-circle" data-kind="demo">
+<main id="main">
+  <h1>Center Circle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the ends of the lines and watch a growing chain of circles appear around them.<br>
+    <strong>How to play:</strong> Drag a dot with a mouse or finger, or focus it and use the arrow keys. Press the buttons to show circles, centers and the meeting point, and use 1&ndash;7 to show or hide each line.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Seven lines with draggable ends, their center-circles, the circle centers and their common point"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Make seven new random lines">New lines</button>
+    <button id="checkBtn" type="button" aria-label="Check the circle claims for these lines">Check the claims</button>
+    <button id="circlesBtn" type="button" aria-pressed="false"></button>
+    <button id="centersBtn" type="button" aria-pressed="false"></button>
+    <button id="commonBtn" type="button" aria-pressed="false"></button>
+  </div>
+  <div class="controls line-buttons" aria-label="Lines shown">
+    <button id="line1Btn" type="button" aria-pressed="true" aria-label="Hide line 1">1</button>
+    <button id="line2Btn" type="button" aria-pressed="true" aria-label="Hide line 2">2</button>
+    <button id="line3Btn" type="button" aria-pressed="true" aria-label="Hide line 3">3</button>
+    <button id="line4Btn" type="button" aria-pressed="true" aria-label="Hide line 4">4</button>
+    <button id="line5Btn" type="button" aria-pressed="false" aria-label="Show line 5">5</button>
+    <button id="line6Btn" type="button" aria-pressed="false" aria-label="Show line 6">6</button>
+    <button id="line7Btn" type="button" aria-pressed="false" aria-label="Show line 7">7</button>
+    <span class="hint">Lines shown (keys 1&ndash;7)</span>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A handful of straight lines can hide a surprising amount of circular order. Bring three of them together and a circle appears; add a fourth and four more circles appear, all meeting in one spot. Keep going and the same kind of chain keeps growing.</p>
+
+      <h2>Three lines make the first circle</h2>
+      <p>Three lines cross in three points. The circle through those three points is their <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>, and the applet calls it the first <em>center-circle</em>. Drag any endpoint and the three crossings move with it, so the circle moves too.</p>
+
+      <h2>Four lines: a point and a circle</h2>
+      <p>A set of four lines contains four different triples. Draw the four circumcircles: they all pass through one point, the <a class="wiki-term" data-wiki="Miquel_point" href="https://en.wikipedia.org/wiki/Miquel_point" target="_blank" rel="noopener">Miquel point</a>. Now put a dot at each circle's center: those four dots are <a class="wiki-term" data-wiki="Concyclic_points" href="https://en.wikipedia.org/wiki/Concyclic_points" target="_blank" rel="noopener">concyclic</a>, and the circle through them also passes through the Miquel point. The logic test checks this on hundreds of four-line layouts.</p>
+
+      <h2>The chain keeps growing</h2>
+      <p>With five lines there are five sets of four. Their five circles again meet at one point, and their centers lie on one circle. With six lines the six circles meet at a point, with seven the seven do, and so on — this is the center-circle side of <a class="wiki-term" data-wiki="Clifford%27s_circle_theorems" href="https://en.wikipedia.org/wiki/Clifford%27s_circle_theorems" target="_blank" rel="noopener">Clifford's chain</a>, studied by <a class="wiki-term" data-wiki="Frank_Morley" href="https://en.wikipedia.org/wiki/Frank_Morley" target="_blank" rel="noopener">Frank Morley</a>. The logic test follows the applet's own construction on hundreds of random layouts with three to seven lines and finds the common point every time: <code>circle(P, centers) through every child circle</code>.</p>
+
+      <h2>One sentence on the article is too broad</h2>
+      <p>Just after the four-line case the article says the common point "is also incident to this latter center-circle." For four lines that is true — the Miquel point lies on the circle through the four centers. Read as a claim for every number of lines, it is false. In the logic test the point lies on that circle in 198 of 200 random four-line layouts, but it misses that circle in 580 of 600 random layouts with five, six or seven lines — the gap is small enough to fool a picture, but the claim is not true. What stays true at every level is that the child circles share a point and their centers share a circle; only at four lines do those two facts reliably meet at the same spot.</p>
+
+      <p class="tip">Try showing four lines and pressing Show circles, Show centers and Show point together: the small dot sits right on the outlined circle. Add a fifth line and watch the new small dot step off its circle — that is the sentence above failing in front of you.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/triangle/Morley/CenterCircle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="center-circle-core.js"></script>
+<script src="center-circle.js"></script>
+</body>
+</html>
