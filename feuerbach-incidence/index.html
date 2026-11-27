@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Feuerbach Incidence &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle. Where do the nine-point circle's touch points with the incircle and excircles line up?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/feuerbach-incidence/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Feuerbach Incidence">
+<meta property="og:description" content="Drag the corners of a triangle. Where do the nine-point circle's touch points with the incircle and excircles line up?">
+<meta property="og:url" content="https://coolmaths.ai/feuerbach-incidence/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .side { stroke: var(--ink); stroke-width: 2; stroke-opacity: 0.75; }
+  #board .nine-circle { stroke: var(--accent); stroke-width: 2.5; fill: none; }
+  #board .incircle { stroke: var(--good); stroke-width: 2.5; fill: none; }
+  #board .excircle { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 4; fill: none; }
+  #board .cevian { stroke: var(--highlight); stroke-width: 2; }
+  #board .feuerbach-line { stroke: var(--good); stroke-width: 3; }
+  #board .contact-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .fi-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .n-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .f-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1.5; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label { fill: var(--text); font-size: 13px; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  .controls button { min-height: 2.5rem; }
+  .controls label:has(input:disabled) { opacity: 0.5; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="feuerbach-incidence" data-kind="demo">
+<main id="main">
+  <h1>Feuerbach Incidence</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move a triangle and watch how its touching circles line up.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a corner and use the arrow keys. Tick the boxes to show names, circles and the two patterns.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="A triangle with draggable corners A, B and C. Optional circles touch its sides and pass through its side midpoints."></svg>
+  </div>
+
+  <div class="controls">
+    <label class="option" for="namesChk"><input id="namesChk" type="checkbox"> Show names</label>
+    <label class="option" for="circlesChk"><input id="circlesChk" type="checkbox"> Show circles</label>
+    <label class="option" for="linesChk"><input id="linesChk" type="checkbox" disabled> Show concurrence</label>
+    <label class="option" for="lineChk"><input id="lineChk" type="checkbox" disabled> Show collinearity</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the triangle back where it started">New triangle</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move one corner of the triangle. The circles change shape, but the special points they produce still fall into the same two patterns. That is the incidence in Feuerbach's theorem: points that look unrelated keep meeting or lining up.</p>
+
+      <h2>Four circles that touch</h2>
+      <p>The <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">nine-point circle</a> passes through the midpoints of the three sides. Feuerbach's theorem says it touches the <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> from the outside of the gap between them, and each <a class="wiki-term" data-wiki="Excircle" href="https://en.wikipedia.org/wiki/Excircle" target="_blank" rel="noopener">excircle</a> from the other side. With circumradius <code>R</code>, inradius <code>r</code> and exradius <code>ra</code>, the centre distances are <code>|NI| = R/2 &minus; r</code> and <code>|NIa| = R/2 + ra</code>. The marks Fa, Fb, Fc and Fi are those four touch points; N is the centre of the nine-point circle, not a touch point, despite the original page calling N "the Feuerbach point".</p>
+
+      <h2>The concurrence</h2>
+      <p>The lines <code>AFa</code>, <code>BFb</code> and <code>CFc</code> meet in one point F. This point is X(12) in Kimberling's <a class="wiki-term" data-wiki="Encyclopedia_of_Triangle_Centers" href="https://en.wikipedia.org/wiki/Encyclopedia_of_Triangle_Centers" target="_blank" rel="noopener">Encyclopedia of Triangle Centers</a>. In side lengths <code>a = BC</code>, <code>b = CA</code>, <code>c = AB</code>, its barycentric coordinates are <code>(b+c)&sup2;/(b+c&minus;a) : (c+a)&sup2;/(c+a&minus;b) : (a+b)&sup2;/(a+b&minus;c)</code>. The logic test compares the drawn point with that formula over 500 triangles: they agree to floating-point precision, and all three lines pass through it.</p>
+
+      <h2>The line through four points</h2>
+      <p>The page's second claim is that N, F, I and Fi lie on one line, called L(1, 5) after the centers X(1) and X(5). Here Fi is the true <a class="wiki-term" data-wiki="Feuerbach_point" href="https://en.wikipedia.org/wiki/Feuerbach_point" target="_blank" rel="noopener">Feuerbach point</a> X(11). F is the <a class="wiki-term" data-wiki="Harmonic_conjugate" href="https://en.wikipedia.org/wiki/Harmonic_conjugate" target="_blank" rel="noopener">harmonic conjugate</a> of Fi with respect to I and N, which forces all four points to be <a class="wiki-term" data-wiki="Collinearity" href="https://en.wikipedia.org/wiki/Collinearity" target="_blank" rel="noopener">collinear</a>. The original page says the four points are "concurrent"; for points that means collinear. Both incidences hold in all 500 tested triangles.</p>
+
+      <h2>How the applet builds them, and its neighbours</h2>
+      <p>The applet finds each centre from two angle bisectors, averages its three distances to the sides for a radius, and puts each touch point on the line of the two centres. This page follows that construction. The checkbox gating is the applet's too: concurrence and collinearity stay switched off until circles are on. A flat or equilateral triangle has no unique touch point, so this port leaves the drawing alone there. The sibling applets ask different questions: <em>Feuerbach</em> states the tangency, <em>FeuerbachProof</em> proves it by inversion, and <em>FeuerbachTreasure</em> counts the tangencies of four triangles sharing one nine-point circle. This applet is the incidence follow-up, and the live cut-the-knot page still embeds it.</p>
+
+      <p class="tip">Tick all three Show boxes, then drag A close to the side BC. Watch F slide along the line through N, I and Fi.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/FeuerbachIncidence.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="feuerbach-incidence-core.js"></script>
+<script src="feuerbach-incidence.js"></script>
+</body>
+</html>
