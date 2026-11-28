@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Line Circle And Fixed Points &mdash; coolmaths</title>
+<meta name="description" content="Move a point along a line while circles meet again and again. Does the line through the two meeting points always pass through the same spot?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/line-circle-and-fixed-points/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Line Circle And Fixed Points">
+<meta property="og:description" content="Move a point along a line while circles meet again and again. Does the line through the two meeting points always pass through the same spot?">
+<meta property="og:url" content="https://coolmaths.ai/line-circle-and-fixed-points/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .circle-o { fill: none; stroke: var(--ink); stroke-width: 2.2; }
+  #board .circle-x { fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-dasharray: 6 4; }
+  #board .circle-t { fill: none; stroke: var(--good); stroke-width: 1.6; stroke-dasharray: 4 4; }
+  #board .given-line { stroke: var(--muted); stroke-width: 2; }
+  #board .vr-line { stroke: var(--accent); stroke-width: 2.4; }
+  #board .sp-line { stroke: var(--good); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  #board .fixed-dot { fill: var(--highlight); }
+  #board .center-dot { fill: var(--muted); }
+  #board .r-dot { fill: var(--accent); }
+  #board .s-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .t-dot { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="line-circle-and-fixed-points" data-kind="demo">
+<main id="main">
+  <h1>Line Circle And Fixed Points</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move a point on a line and watch where a circle crosses another circle; see whether a straight line always goes through one unmoving spot. There is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag P, Q, V or O, or focus a point and use the arrow keys. Tick the boxes to show the fixed point, the extra circle and the names.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A circle with centre O, a line through Q and V, and the circle through P, Q and V. Drag P, Q, V or O, or focus a point and use the arrow keys."></svg>
+    <p class="hint-line">Drag a point, or focus it and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Names</label>
+    <label><input id="premiseBox" type="checkbox" data-label="the fixed point"> Fixed point</label>
+    <label><input id="statementBox" type="checkbox" data-label="the fixed point"> Statement</label>
+    <label><input id="hintBox" type="checkbox" data-label="the tangent circle"> Hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This picture comes from Problem 3 of the 2007 Irish Mathematical Olympiad. Move V along the line and the circle through P, Q and V moves too. Yet the line through the two crossing points keeps going through one unmoving spot. The logic test checked this on thousands of layouts; the spot stays put every time.</p>
+
+      <h2>Two ways to say the same thing</h2>
+      <p>The original problem lets R wander on the circle and defines V as the other meeting point of the circle through P, Q, R with the line. The applet swaps the two: V is the point that moves on the line, and R is where the circle through P, Q, V meets the given circle again. Each point fixes the other, so the two statements are the same puzzle.</p>
+
+      <h2>Where the unmoving spot is</h2>
+      <p>Push V far away along the line. The circle through P, Q, V flattens towards the straight line PQ, so R tends to the second point where PQ meets the given circle. Call it R∞. As V goes far away, the line VR becomes the line through R∞ parallel to QV. The fixed spot S is the other place that parallel meets the circle. Because QV is a straight line, S never changes when V moves. The test checked that the constructed S is this spot in every well-behaved case.</p>
+
+      <h2>Three circles through one point</h2>
+      <p>Pick one position of V and call it V′. The three circles through P — the given circle, the circle through P, Q, V and the circle through P, Q, V′ — all pass through the same point P. Such circles are called <a class="wiki-term" data-wiki="Concurrent_lines" href="https://en.wikipedia.org/wiki/Concurrent_lines" target="_blank" rel="noopener">concurrent</a>. The page uses a property of concurrent circles: choose V′ where the line SP meets QV, and the circle through P, Q, V′ just touches the given circle at P. Tick the Hint box to see that tangent circle, and the Statement box to see S and the line PS. The applet chooses V′ this way itself; the maths test confirms the tangency over the whole grid.</p>
+
+      <p class="tip">Tick Fixed point, then drag V back and forth. The line VR swings around S without ever leaving it. Move Q and the line with it: S stays on the circle and waits for you.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/LineCircleAndFixedPoints.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="line-circle-and-fixed-points-core.js"></script>
+<script src="line-circle-and-fixed-points.js"></script>
+</body>
+</html>
