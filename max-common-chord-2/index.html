@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Max Common Chord 2 &mdash; coolmaths</title>
+<meta name="description" content="Two circles meet at P and Q. Turn a line through P and watch the point S where the extra lines cross: does it always stay on the same circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/max-common-chord-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Max Common Chord 2">
+<meta property="og:description" content="Two circles meet at P and Q. Turn a line through P and watch the point S where the extra lines cross: does it always stay on the same circle?">
+<meta property="og:url" content="https://coolmaths.ai/max-common-chord-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 44rem;
+    padding: 0.5rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circle-e { fill: none; stroke: var(--ink); stroke-width: 2.2; }
+  #board .circle-f { fill: none; stroke: var(--accent); stroke-width: 2.2; }
+  #board .circle-o { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 8 6; }
+  #board .circle-abq { fill: none; stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 4 6; }
+  #board .chord { stroke: var(--ink); stroke-width: 2.5; }
+  #board .axis { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 5; }
+  #board .aux { stroke: var(--accent); stroke-width: 2; }
+  #board .hint-line { stroke: var(--muted); stroke-width: 2; }
+  #board .diameter { stroke: var(--good); stroke-width: 2.5; }
+  #board .angle-arc { fill: none; stroke: var(--highlight); stroke-width: 2.5; }
+  #board .angle-arc.one { stroke: var(--accent); }
+  #board .angle-arc.three { stroke: var(--good); }
+  #board .tick { stroke: var(--accent); stroke-width: 2.5; }
+  #board .special-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .center-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.85rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+  .controls fieldset { display: inline-flex; gap: 0.75rem; align-items: center; }
+</style>
+</head>
+<body data-game="max-common-chord-2" data-kind="demo">
+<main id="main">
+  <h1>Max Common Chord 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a drawing, not a game: when the line through P turns, the new dot S always stays on the same circle.<br>
+    <strong>How to play:</strong> Drag P, Q, A or B, or focus a dot and use the arrow keys. Choose circles or chord to change which dots you drag; tick the boxes for names and angle hints, and press Place diameter chord to see the longest line.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 460" role="group"
+         aria-label="Two circles crossing at P and Q, a chord A-B through P, the circle through the two centres and Q, and the crossing point S"></svg>
+  </div>
+
+  <div class="controls">
+    <fieldset>
+      <legend>Adjust</legend>
+      <label><input type="radio" name="adjust" value="circles" checked> circles</label>
+      <label><input type="radio" name="adjust" value="chord"> chord</label>
+    </fieldset>
+    <label><input id="show-names" type="checkbox"> Show names</label>
+    <label><input id="show-hint" type="checkbox"> Show hint</label>
+    <button id="optimalBtn" type="button" aria-label="Place A so AQ is a diameter, giving the longest chord">Place diameter chord</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the diagram to its starting position">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three circles and one line through P: as the line turns, the point where two extra lines cross never leaves the third circle. This is the second page in a family of applets about the same 1975 olympiad problem; its siblings use a tangent or a radical axis, while this one uses equal angles in isosceles triangles.</p>
+
+      <h2>The points the picture builds</h2>
+      <p>Two <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circles</a> meet at P and Q. A <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord</a> through P ends at A on the first circle and B on the second. Their centres are E and F. The <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> C(O) goes through E, F and Q; it meets the first circle again at L and the second again at M. Lines AL and BM cross at S. "Adjust circles" rebuilds a circle when you drag its end; "Adjust chord" slides the end around the circle that is already drawn. Either way the other end is moved so A, P and B stay on one line.</p>
+
+      <h2>What never changes</h2>
+      <p>The page claims that S lies on C(O), that L, S, M and Q are concyclic, that QP cuts the angle LQM in half, and that S is the centre of the circle through A, B and Q. The last one explains the rest: if S is that centre, then <code>SA = SB = SQ</code>, and the circle ABQ has its centre on C(O). The equalities come from <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angles</a>: for example <code>angle ABS = angle PBM = angle PQM</code> and <code>angle BAS = angle PAL = angle PQL</code>. The logic test checked all of them over thousands of configurations and found them true to about <code>1e-6</code> of the board size.</p>
+
+      <h2>The diameter chord</h2>
+      <p>For convenience the page moves A so that AQ is a <a class="wiki-term" data-wiki="Diameter" href="https://en.wikipedia.org/wiki/Diameter" target="_blank" rel="noopener">diameter</a> of the first circle. Then QS is a diameter of C(O) and BQ is a diameter of the second circle. Halves of those diameters give <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles triangles</a> EOQ and ASQ, so <code>AS = QS</code>; likewise <code>BS = QS</code>. Write the chord direction as a turn <code>t</code> away from the perpendicular to PQ. The length is <code>AB = 2&nbsp;|EF|&nbsp;cos(t)</code>, largest when <code>t = 0</code> — exactly the diameter chord. A small trap: the original olympiad asks for the largest <em>product</em> <code>AP×PB</code>, and for unequal circles that product peaks at a slightly different chord. The page only says "longest segment" here, and that part is true.</p>
+
+      <h2>What the checks found</h2>
+      <p>A second transcription of the applet's own circle and intersection routines was compared with the port over a grid of starting points, circle centres and directions plus random cases; every constructed point agreed to <code>1e-8</code>. The applet calls the diagram "Finished" when <code>|2·QE − QA| &lt; 0.01</code>; the port keeps that exact test. One harmless quirk is worth knowing: with P and Q vertically aligned, sliding A along the line through P perpendicular to PQ keeps the angle APQ a right angle, so the diagram stays Finished even though A moves.</p>
+
+      <p class="tip">Press Place diameter chord, tick Show names, then drag A up a little: watch the green circle through A, B and Q shrink while its centre S stays on the dashed circle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MaxCommonChord2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="max-common-chord-2-core.js"></script>
+<script src="max-common-chord-2.js"></script>
+</body>
+</html>
