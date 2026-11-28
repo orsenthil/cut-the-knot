@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hinged Pythagoras 2 &mdash; coolmaths</title>
+<meta name="description" content="Four right triangles swing on two hinges inside a square. Change their shape and their turn: why does the square always have the same area as two smaller squares?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hinged-pythagoras-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hinged Pythagoras 2">
+<meta property="og:description" content="Four right triangles swing on two hinges inside a square. Change their shape and their turn: why does the square always have the same area as two smaller squares?">
+<meta property="og:url" content="https://coolmaths.ai/hinged-pythagoras-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 46rem; margin: 0 auto; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board .outline { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .piece-left { fill: var(--accent); fill-opacity: 0.3; stroke: var(--ink); stroke-width: 1.4; }
+  #board .hole-left { fill: var(--stage); stroke: var(--ink); stroke-width: 2; }
+  #board .piece-right-fixed { fill: var(--accent); fill-opacity: 0.3; stroke: var(--ink); stroke-width: 1.4; }
+  #board .piece-right-swing { fill: var(--highlight); fill-opacity: 0.55; stroke: var(--ink); stroke-width: 1.4; }
+  #board .hole-right { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .hole-right-filled { fill: var(--accent); fill-opacity: 0.3; }
+  #board .cut { stroke: var(--accent); stroke-width: 2.2; }
+  #board .dash { stroke: var(--bad); stroke-width: 2.2; stroke-dasharray: 8 7; }
+  #board .hinge { fill: var(--good); stroke: var(--stage); stroke-width: 2.5; }
+  #board .caption { fill: var(--muted); font-size: 19px; text-anchor: middle; pointer-events: none; }
+  #board .geom-handle { stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .shape-handle { fill: var(--accent); }
+  #board .turn-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 6; }
+  .controls { width: 100%; max-width: 46rem; display: flex; flex-wrap: wrap; gap: 0.5rem 0.9rem; align-items: center; }
+  .slider-row { width: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .slider-row label { min-height: 2.75rem; display: inline-flex; align-items: center; gap: 0.4rem; }
+  .slider-row input[type="range"] { flex: 1 1 9rem; min-height: 2.75rem; accent-color: var(--accent); }
+  .slider-row output { min-width: 4ch; font-variant-numeric: tabular-nums; font-weight: 700; }
+  #readout { margin: 0.5rem 0 0; text-align: center; font-size: 0.95rem; color: var(--text); overflow-wrap: anywhere; }
+  #status { width: 100%; max-width: 46rem; min-height: 3em; }
+  .math-body code { font-family: var(--mono); }
+</style>
+</head>
+<body data-game="hinged-pythagoras-2" data-kind="demo">
+<main id="main">
+  <h1>Hinged Pythagoras 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore, not a game to win: four triangles swing on two hinges inside a square.<br>
+    <strong>How to play:</strong> Drag the gold points or use the two sliders to change the swing and the triangle shape. Press Turn to the end or Reset.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="40 -60 640 550" role="group"
+         aria-label="Two copies of a square with four triangles cut out. Drag the gold cut point to change the triangle shape, or the gold tip to turn the hinged triangles."></svg>
+    <p id="readout" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <button id="endBtn" type="button" class="primary" aria-label="Turn the hinged triangles to the end of their swing">Turn to the end</button>
+    <button id="resetBtn" type="button" aria-label="Put both sliders back to their starting values">Reset</button>
+    <div class="slider-row">
+      <label for="rotation">Rotation <output id="rotationOut" for="rotation">0&deg;</output></label>
+      <input id="rotation" type="range" min="0" max="275" step="1" value="0"
+        aria-label="Rotation: turn the two hinged triangles from 0 to 275 degrees">
+    </div>
+    <div class="slider-row">
+      <label for="beta">Triangle shape <output id="betaOut" for="beta">30&deg;</output></label>
+      <input id="beta" type="range" min="30" max="95" step="1" value="30"
+        aria-label="Triangle shape, the applet's ForSine slider, from 30 to 95 degrees">
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The applet shows a droodle — "What is it?" — with two copies of one square. On the left, four triangles are cut loose from a small square in the middle; on the right, two of those triangles swing about the orange hinges. The shape changes, but the pieces do not.</p>
+
+      <h2>Four triangles and a small square</h2>
+      <p>The "Triangle shape" slider sets an angle <code>B</code>. The cut-out is a <a class="wiki-term" data-wiki="Right_triangle" href="https://en.wikipedia.org/wiki/Right_triangle" target="_blank" rel="noopener">right triangle</a> with legs <code>a = c·cos B</code>, <code>b = c·sin B</code> and sloping side <code>c</code>, the side of the square. Each of the four congruent triangles has area <code>ab/2</code>, and the small square in the middle has side <code>|a−b|</code>.</p>
+
+      <h2>Why the turn cannot change the area</h2>
+      <p>Swinging a triangle about a hinge is a rigid turn: its side lengths and its <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> stay exactly the same. So the four triangles plus the small square always have the same total area. This is a <a class="wiki-term" data-wiki="Dissection_puzzle" href="https://en.wikipedia.org/wiki/Dissection_puzzle" target="_blank" rel="noopener">dissection</a>: cut a figure apart and move the pieces without stretching them. The logic test checks the actual cut pieces for every whole-degree shape from 30° to 90° and 600 fractional shapes: they always fill the square once.</p>
+
+      <h2>The claim on the linked page</h2>
+      <p>The applet's page points to Proof #10, which says: "The triangles in Proof #3 may be rearranged in yet another way that makes the Pythagorean identity obvious." Proof #3 computes <code>c² = (a−b)² + 2ab</code>; expanding gives <code>c² = a² + b²</code>, the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a>. This is the second hinged variant: Hinged Pythagoras uses a different dissection of two squares into one (Proof #9), and Hinged Pythagoras 3 turns two triangles through a quarter turn (Proof #2). One quirk is kept from the original: its shape slider runs to 95°, but past 90° the cuts leave the square, so the pieces no longer tile it — the algebra still holds, the picture does not. Past about 269° the applet also fills the middle square and draws the dashed guide line, which this port keeps.</p>
+
+      <p class="tip">Set the shape to 45°: the small square shrinks to a point, and all four triangles fill the square. Then turn the hinge slider right around.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HingedPythagoras2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="hinged-pythagoras-2-core.js"></script>
+<script src="hinged-pythagoras-2.js"></script>
+</body>
+</html>
