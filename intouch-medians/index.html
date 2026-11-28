@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Intouch Medians &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle: the perpendiculars from the middles of the touching triangle always meet at one point — and it sits at a fixed fraction of the way from the incenter. Can you see why?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/intouch-medians/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Intouch Medians">
+<meta property="og:description" content="Drag the corners of a triangle: the perpendiculars from the middles of the touching triangle always meet at one point — and it sits at a fixed fraction of the way from the incenter. Can you see why?">
+<meta property="og:url" content="https://coolmaths.ai/intouch-medians/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  .tri-fill { fill: var(--accent-soft); stroke: var(--ink); stroke-width: 2; }
+  .incircle { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 5 4; }
+  .touch-line { fill: none; stroke: var(--accent); stroke-width: 2.4; }
+  .perp-line { stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 6 5; }
+  .median-line { stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 5 4; }
+  .radius-line { stroke: var(--good); stroke-width: 1.6; }
+  .si-line { stroke: var(--bad); stroke-width: 2.4; }
+  .tick { stroke: var(--ink); stroke-width: 1.8; }
+  .touch-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.4; }
+  .mid-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.4; }
+  .foot-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1.2; }
+  .s-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1.6; }
+  .center-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1.4; }
+  .pt-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 12px;
+    pointer-events: none;
+  }
+  .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2.5;
+    cursor: grab;
+  }
+  .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem 1rem;
+  }
+  .control-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+  #status { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="intouch-medians" data-kind="demo">
+<main id="main">
+  <h1>Intouch Medians</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the corners of a triangle and watch three lines that always meet at one point.<br>
+    <strong>How to play:</strong> Drag A, B or C with a finger or mouse, or focus a corner and press the arrow keys. Tick names or hint to see the extra points and lines.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 260" role="group"
+         aria-label="Triangle ABC with its incircle, the intouch triangle A prime B prime C prime, its midpoints and three perpendiculars meeting at S"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label><input id="namesCheck" type="checkbox"> names</label>
+      <label><input id="hintCheck" type="checkbox"> hint</label>
+      <button id="resetBtn" type="button" class="primary" aria-label="Reset the triangle to its starting position">Reset triangle</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The circle tucked inside a triangle touches each side once. Join those three touch points and you get a smaller triangle. From the middle of each of its sides, a line is drawn straight across to the opposite side of the big triangle. The surprising part is that the three lines always pass through the same point, wherever you drag the corners. The original page attributes the statement to Savchev and Andreescu's <em>Mathematical Miniatures</em> (the printed page reference reads &ldquo;141&ndash;141&rdquo;).</p>
+
+      <h2>Where the small triangle comes from</h2>
+      <p>The three touch points of the <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> are A', B' and C'. Lines from one corner touching the same circle have equal lengths, so <code>AB' = AC'</code>, <code>BC' = BA'</code> and <code>CA' = CB'</code> (<a class="wiki-term" data-wiki="Tangent_lines_to_circles" href="https://en.wikipedia.org/wiki/Tangent_lines_to_circles" target="_blank" rel="noopener">tangents from one point</a>). The midpoints of the sides of A'B'C' are named Am, Bm and Cm; the hint shows the three medians of that small triangle, each cut into two equal pieces marked with the same number of ticks.</p>
+
+      <h2>A stretch of minus two</h2>
+      <p>A <a class="wiki-term" data-wiki="Centroid" href="https://en.wikipedia.org/wiki/Centroid" target="_blank" rel="noopener">centroid</a> divides every median in the ratio 1:2. Let G' be the centroid of A'B'C'. Then a <a class="wiki-term" data-wiki="Homothetic_transformation" href="https://en.wikipedia.org/wiki/Homothetic_transformation" target="_blank" rel="noopener">homothety</a> with center G' and coefficient &minus;2 carries Am to A', Bm to B' and Cm to C'. In coordinates, <code>A' = 3G' &minus; 2Am</code>, and the same two formulas hold for B and C. Tick names and hint on the page to see the six equal halves that make this visible.</p>
+
+      <h2>Three lines through the incenter</h2>
+      <p>A homothety sends every line to a parallel line. So the line through Am perpendicular to BC becomes the line through A' parallel to it, hence also perpendicular to BC. But A' is the foot of the perpendicular from the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> I to BC, so that image line is exactly IA'. The other two image lines are IB' and IC'. All three meet at I, and because the stretch can be undone, the original lines must meet at one point S too &mdash; the inverse image of I, namely <code>S = (3G' &minus; I) / 2</code>.</p>
+
+      <h2>Where S sits</h2>
+      <p>That formula says S, G' and I lie on one straight line and <code>2 &times; SG' = G'I</code>, exactly as the page claims. The logic test checks this on every non-flat triangle in a 6&times;6 grid of possible corners plus 400 random triangles: the three perpendiculars agree on one point to better than a thousandth of a drawing unit, and the ratio holds to the same accuracy. Nothing about the triangle's shape is needed &mdash; only that it is a triangle.</p>
+      <p class="tip">Try dragging C down until the triangle looks almost flat. Watch S move out along the line through G' and I: the equality still holds, but the drawing gets crowded.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/IntouchMedians.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="intouch-medians-core.js"></script>
+<script src="intouch-medians.js"></script>
+</body>
+</html>
