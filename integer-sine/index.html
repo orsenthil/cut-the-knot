@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Integer Sine &mdash; coolmaths</title>
+<meta name="description" content="Plot sine or tangent at the whole numbers and striped bands appear. Wrap the numbers around a circle and the very same values turn into a smooth wave - why?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/integer-sine/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Integer Sine">
+<meta property="og:description" content="Plot sine or tangent at the whole numbers and striped bands appear. Wrap the numbers around a circle and the very same values turn into a smooth wave - why?">
+<meta property="og:url" content="https://coolmaths.ai/integer-sine/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 42rem;
+    padding: 0.5rem;
+    overflow-x: auto;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .axis { stroke: var(--border); stroke-width: 1; }
+  #board .axis-faint { stroke: var(--border); stroke-width: 1; stroke-dasharray: 3 6; opacity: 0.6; }
+  #board .dots { fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linecap: round; }
+  #board .cursor-line { stroke: var(--highlight); stroke-width: 1.5; opacity: 0.8; }
+  #board .cursor-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .cursor-label { fill: var(--text); font-size: 0.9rem; font-weight: 700; pointer-events: none; }
+  #board .sample-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .sample-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .options { align-items: center; }
+  .options button, .scales button { min-height: 2.5rem; min-width: 2.5rem; }
+  .scales { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+  .options label { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .options input[type="checkbox"] { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+  .control-name { font-weight: 600; }
+</style>
+</head>
+<body data-game="integer-sine" data-kind="demo">
+<main id="main">
+  <h1>Integer Sine</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#number-theory">Number Theory</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch the dots for sine or tangent at whole numbers, and see the pattern change when the numbers wrap around a circle.<br>
+    <strong>How to play:</strong> Press sin or tan, tick "Modulo 2π", and choose how many numbers to draw. Drag the blue cursor, or focus it and use the arrow keys, to inspect one dot.
+  </div>
+
+  <div class="controls options" role="group" aria-label="Choose the function and the wrapping">
+    <button id="sinBtn" type="button" aria-pressed="true" aria-label="Plot sine of each whole number">sin</button>
+    <button id="tanBtn" type="button" aria-pressed="false" aria-label="Plot tangent of each whole number">tan</button>
+    <label><input id="modularBox" type="checkbox" checked aria-label="Wrap each number around a circle of circumference two pi">Modulo 2π</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset to the starting picture">Reset</button>
+  </div>
+
+  <div class="controls scales" role="group" aria-label="How many whole numbers to draw">
+    <span class="control-name">Numbers drawn</span>
+    <button type="button" data-scale="10" aria-label="Draw 10 whole numbers" aria-pressed="true">10</button>
+    <button type="button" data-scale="20" aria-label="Draw 20 whole numbers" aria-pressed="false">20</button>
+    <button type="button" data-scale="40" aria-label="Draw 40 whole numbers" aria-pressed="false">40</button>
+    <button type="button" data-scale="80" aria-label="Draw 80 whole numbers" aria-pressed="false">80</button>
+    <button type="button" data-scale="160" aria-label="Draw 160 whole numbers" aria-pressed="false">160</button>
+    <button type="button" data-scale="320" aria-label="Draw 320 whole numbers" aria-pressed="false">320</button>
+    <button type="button" data-scale="640" aria-label="Draw 640 whole numbers" aria-pressed="false">640</button>
+    <button type="button" data-scale="1280" aria-label="Draw 1280 whole numbers" aria-pressed="false">1280</button>
+    <button type="button" data-scale="2560" aria-label="Draw 2560 whole numbers" aria-pressed="false">2560</button>
+    <button type="button" data-scale="5120" aria-label="Draw 5120 whole numbers" aria-pressed="false">5120</button>
+    <button type="button" data-scale="10240" aria-label="Draw 10240 whole numbers" aria-pressed="false">10240</button>
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A dot plot of sine or tangent at whole numbers, with a draggable sample cursor"></svg>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The old cut-the-knot page still carries its Java applet notice, so the picture here is redrawn from the page's text and the applet's bytecode. The surprise is that two plots of exactly the same sine values can look completely different: one is a tidy curve, the other a set of striped bands.</p>
+
+      <h2>Wrap the numbers around a circle</h2>
+      <p>With the box ticked, each whole number <code>n</code> is replaced by the leftover <code>n mod 2π</code>: walk <code>n</code> steps of one unit around a circle whose circumference is <code>2π</code>, and see where you stop. A full turn is <code>2π ≈ 6.283185</code>, which is an <a class="wiki-term" data-wiki="Irrational_number" href="https://en.wikipedia.org/wiki/Irrational_number" target="_blank" rel="noopener">irrational number</a>, so no whole number of unit steps ever lands exactly where an earlier one landed. Better still, the leftover positions are <a class="wiki-term" data-wiki="Equidistributed_sequence" href="https://en.wikipedia.org/wiki/Equidistributed_sequence" target="_blank" rel="noopener">equidistributed</a>: the more numbers you plot, the more evenly they fill the circle. This is the page's claim that <code>{n mod 2π}</code> is dense on the <a class="wiki-term" data-wiki="Unit_circle" href="https://en.wikipedia.org/wiki/Unit_circle" target="_blank" rel="noopener">unit circle</a>.</p>
+
+      <h2>The same heights in a different order</h2>
+      <p>Adding or removing a whole number of turns never changes sine, so <code>sin(n mod 2π) = sin(n)</code>. Unticking the box keeps the numbers in their original order and spreads them evenly across the width; ticking it sorts the very same heights by their leftover position. The logic test checks that the rounded heights are identical at every one of the applet's eleven scales: only their left-to-right order changes, from a striped scatter into a clean wave.</p>
+
+      <h2>Why the stripes look almost periodic</h2>
+      <p>The striped picture is not truly periodic. A real period <code>p</code> would need <code>p = 2πk</code> for whole numbers <code>p</code> and <code>k</code>, which is impossible because <code>2π</code> is irrational. But rational approximations from <a class="wiki-term" data-wiki="Continued_fraction" href="https://en.wikipedia.org/wiki/Continued_fraction" target="_blank" rel="noopener">continued fractions</a> are very good: <code>44 ≈ 7·2π</code> misses by only <code>0.0177</code> radians, and <code>710 ≈ 113·2π</code> misses by <code>0.00006</code>. After 44 or 710 steps the next point nearly repeats the old height, so neighbouring arcs line up into the bands that Bogomolny asks about and that appear on the cover of Strang's calculus book.</p>
+
+      <h2>Tangent, and the little clips</h2>
+      <p>The <a class="wiki-term" data-wiki="Trigonometric_functions" href="https://en.wikipedia.org/wiki/Trigonometric_functions" target="_blank" rel="noopener">tangent</a> shoots up whenever a whole number is near an odd multiple of <code>π/2</code>. The applet keeps only the dots whose height lands on the canvas: in wrapped mode that means <code>|tan(r)| ≤ 1</code>, while in plain mode it first divides tangent by 4 and keeps <code>|tan(n)| &lt; 8</code>. Those cutoffs are the applet's own, and are why the tan picture shows only part of each branch. It also turns every computed height into a whole pixel by truncating toward zero, which is why the dots sit one pixel off an exact mathematical curve.</p>
+
+      <p class="tip">Try plain sin at 1280 and 10240 numbers to see Strang's stripes, then tick "Modulo 2π" and watch the same values fall into a single smooth wave.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/IntegerSine.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="integer-sine-core.js"></script>
+<script src="integer-sine.js"></script>
+</body>
+</html>
