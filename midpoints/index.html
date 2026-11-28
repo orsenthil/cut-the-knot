@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Midpoints &mdash; coolmaths</title>
+<meta name="description" content="Place a few dots and watch a chain bounce between them. Can you choose the dots so the chain comes back to where it started?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/midpoints/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Midpoints">
+<meta property="og:description" content="Place a few dots and watch a chain bounce between them. Can you choose the dots so the chain comes back to where it started?">
+<meta property="og:url" content="https://coolmaths.ai/midpoints/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+    border-radius: 8px;
+  }
+  #board .solution-poly { fill: var(--accent); fill-opacity: 0.16; stroke: none; }
+  #board .chain-seg { stroke: var(--ink); stroke-width: 1.8; fill: none; opacity: 0.75; }
+  #board .closing-seg { stroke: var(--muted); stroke-width: 1.8; stroke-dasharray: 6 5; fill: none; }
+  #board .closing-seg.closed { stroke: var(--good); stroke-width: 3; stroke-dasharray: none; }
+  #board .target-ring { stroke: var(--bad); stroke-width: 1.6; fill: none; }
+  #board .target-dot { fill: var(--bad); }
+  #board .mid-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1.2; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.9rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle {
+    fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab;
+  }
+  #board .cursor-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--highlight); stroke-width: 5; }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0 0; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="midpoints" data-kind="demo">
+<main id="main">
+  <h1>Midpoints</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Place dots and watch a chain bounce between them; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Click the board to place dots, or focus the cursor and press Enter. Choose "Drag mouse" and drag the cursor, or use the arrow keys, to try to make the chain end where it began.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 350" role="group"
+         aria-label="A row of placeable midpoints with a draggable cursor and the chain of lines reflected in each midpoint"></svg>
+    <p class="hint">Keyboard: Tab to the green cursor, use the arrow keys (Shift for a bigger step), then press Enter to place a dot. The red rings show where to move the cursor when the chain can close.</p>
+  </div>
+
+  <div class="controls">
+    <button id="placeBtn" type="button" aria-pressed="true" aria-label="Place points mode: click the board to add midpoints">Place points</button>
+    <button id="dragBtn" type="button" aria-pressed="false" aria-label="Drag mouse mode: move the cursor along the chain">Drag mouse</button>
+    <button id="addBtn" type="button" aria-label="Place a midpoint at the cursor position">Place midpoint at cursor</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Clear all midpoints and start again">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Put a few dots on the board. Starting from the cursor, the applet reflects that point in each dot in turn and draws the chain of segments. Sometimes the last point comes back to the first: then the dots are the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoints</a> of the sides of a polygon. Whether that can happen depends only on how many dots you placed.</p>
+
+      <h2>Reflecting in a dot</h2>
+      <p>A <a class="wiki-term" data-wiki="Point_reflection" href="https://en.wikipedia.org/wiki/Point_reflection" target="_blank" rel="noopener">reflection in a point</a> <code>O</code> sends <code>A</code> to <code>2O - A</code>: the dot is halfway between the two. The applet starts with <code>p1 = A</code>, then for each dot <code>O_i</code> computes <code>p_{i+1} = p1 + 2(O_i - p1)</code> and draws that segment. The red rings are centred at <code>(A + p_n)/2</code>, the middle of the first point and the last one. The logic test transcribes this loop a second time from the applet's bytecode and compares every segment, ring centre and closing test on more than 200,000 configurations; they agree exactly.</p>
+
+      <h2>An odd number: one vertex</h2>
+      <p>Write <code>S = O1 - O2 + O3 - ... + O_n</code>. With an odd number of dots the whole chain sends <code>A</code> to <code>2S - A</code>: that is one more reflection, this time in the fixed point <code>S</code>. So the red rings stay in one place as you drag, and the only starting vertex that closes the polygon is <code>A = S</code> itself — the centre of those rings is a vertex of the finished polygon. The page says that for odd <code>n</code> it is "probably possible" and that the problem "always has a unique solution"; the logic test confirms the strong version on all 15,625 triples of a small grid and on every odd size up to 25. It also checks that the closing vertex really satisfies <code>a_i + a_{i+1} = 2O_i</code> for each side.</p>
+
+      <h2>An even number: a shift</h2>
+      <p>With an even number of dots the chain sends <code>A</code> to <code>A + 2(O2 - O1 + O4 - O3 + ...)</code>, a <a class="wiki-term" data-wiki="Translation_(geometry)" href="https://en.wikipedia.org/wiki/Translation_(geometry)" target="_blank" rel="noopener">translation</a> that does not depend on <code>A</code>. If that shift is zero the chain closes from <em>every</em> start, so there are infinitely many polygons; otherwise none closes and the red rings travel with the cursor. That is the precise meaning of the page's "If n is even something goes wrong." For four dots the shift vanishes exactly when <code>O1 + O3 = O2 + O4</code>: the diagonals of <code>O1O2O3O4</code> share a midpoint, so the dots form a <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a> in that order. This is the converse of <a class="wiki-term" data-wiki="Varignon%27s_theorem" href="https://en.wikipedia.org/wiki/Varignon%27s_theorem" target="_blank" rel="noopener">Varignon's theorem</a>. The test checked all 1,679,616 ordered quadruples on a small grid: the page's "iff" holds, and a degenerate (collinear) parallelogram behaves the same way.</p>
+
+      <h2>What is faithful, and what changed</h2>
+      <p>The applet snapped both coordinates to a 2-unit grid and called the polygon closed when both differences were less than 3; on that grid the tolerance never admits a wrong answer, which the test verifies exhaustively. Its 100-dot array could overflow on a 101st click; this page simply stops adding dots. The three little floating "eye" decorations were left out, and aiming the cursor with the arrow keys in Place points mode is an accessibility addition, so a keyboard player can put a dot without a mouse. Nothing about the mathematics was changed.</p>
+
+      <p class="tip">Place three dots and drag the cursor: the red rings never move. Then press Reset, place four dots that make a parallelogram, and watch every starting point close the chain. Finally move one of the four dots off the parallelogram.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/midpoints.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="midpoints-core.js"></script>
+<script src="midpoints.js"></script>
+</body>
+</html>
