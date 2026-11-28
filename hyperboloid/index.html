@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hyperboloid &mdash; coolmaths</title>
+<meta name="description" content="Turn one ring of a cylinder and watch its straight bars bend into a one sheet hyperboloid. Where is the smallest circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hyperboloid/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hyperboloid">
+<meta property="og:description" content="Turn one ring of a cylinder and watch its straight bars bend into a one sheet hyperboloid. Where is the smallest circle?">
+<meta property="og:url" content="https://coolmaths.ai/hyperboloid/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 42rem; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .axis { fill: none; stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 5 7; }
+  #board .base-ring { fill: none; stroke: var(--ink); stroke-width: 2.2; }
+  #board .quad-fill { fill: var(--accent); fill-opacity: 0.16; stroke: none; }
+  #board .quad-frame { fill: none; stroke: var(--ink); stroke-opacity: 0.5; stroke-width: 1.2; stroke-linejoin: round; }
+  #board .generator { fill: none; stroke: var(--accent); stroke-width: 3.5; stroke-linecap: round; }
+  #board .shift-track { stroke: var(--muted); stroke-width: 2; }
+  #board .shift-tick { stroke: var(--muted); stroke-width: 1.4; }
+  #board .small-label { fill: var(--muted); font-family: var(--font); font-size: 0.85rem; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  .controls { align-items: center; gap: 0.4rem 0.9rem; flex-wrap: wrap; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; max-width: 100%; }
+  .controls input[type="range"] { width: min(11rem, 55vw); max-width: 100%; accent-color: var(--accent); }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+  .controls output { min-width: 6rem; font-variant-numeric: tabular-nums; }
+  #status:empty { display: none; }
+</style>
+</head>
+<body data-game="hyperboloid" data-kind="demo">
+<main id="main">
+  <h1>Hyperboloid</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#coordinates">Coordinates</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Straight bars join two round rings, and turning one ring bends them into a curved shape.<br>
+    <strong>How to play:</strong> Slide the controls, drag the dot on the track, or press a shape button. Tick Solid to see the surface between the bars.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 360" role="group"
+         aria-label="Two rings joined by straight generator bars; the top ring turns as Base Shift changes"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="shiftRange">Base Shift <input id="shiftRange" type="range" min="0" max="100" step="1" value="0" aria-label="Base rotation, from zero to one hundred generator steps"></label>
+    <output id="shiftOut" for="shiftRange">0 steps, 0.0&deg;</output>
+    <label for="linesRange">Generator lines <input id="linesRange" type="range" min="5" max="200" step="5" value="25" aria-label="Number of generator lines, from five to two hundred"></label>
+    <output id="linesOut" for="linesRange">25</output>
+  </div>
+
+  <div class="controls" aria-label="Shapes and drawing options">
+    <button type="button" data-preset="cylinder" aria-label="Return to the starting cylinder, with no base rotation">Cylinder</button>
+    <button type="button" data-preset="hyperboloid" aria-label="Turn the top base a quarter of the way to show a one sheet hyperboloid">Hyperboloid</button>
+    <button type="button" data-preset="waist" aria-label="Turn the top base half way round to make the narrowest waist">Narrow waist</button>
+    <label for="frameBox"><input id="frameBox" type="checkbox" checked disabled aria-label="Draw the generator lines; the applet keeps them on while Solid is off"> Generators</label>
+    <label for="solidBox"><input id="solidBox" type="checkbox" aria-label="Fill the panels between the generators as a transparent solid"> Solid</label>
+    <button id="newBtn" type="button" class="primary" data-preset="reset" aria-label="Reset the number of lines and the base rotation">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The applet starts as a plain <a class="wiki-term" data-wiki="Cylinder" href="https://en.wikipedia.org/wiki/Cylinder" target="_blank" rel="noopener">cylinder</a>, yet its bars never bend. Only the places where they touch the top ring move. Here is what that does, and what the original page means by its curved surface.</p>
+
+      <h2>What the page claims</h2>
+      <p>The original page says: <em>“At the outset, the applet below displays a cylinder, i.e., a prism. The edges joining the points on different bases are called generators. ... The result of the rotations is the 3D figure known as the one sheet hyperboloid. This same figure could be obtained by rotating a hyperbola around one of its axes of symmetry; just choose the one that does not intersect the hyperbola.”</em> The logic test checked all 40 allowed numbers of lines against all 101 base shifts (4,040 settings): the start is a cylinder, every bar joins the two bases, and every point of every bar lies on the surface described below.</p>
+
+      <h2>Two rings and their bars</h2>
+      <p>The applet puts <code>N</code> equally spaced points on each ring, of radius <code>R = 0.5</code>, at heights <code>&plusmn;L/2</code> with <code>L = 1.5</code>. Generator <code>i</code> runs from bottom point <code>i</code> to top point <code>i + M</code>, counting round the ring. So <code>M</code> is a number of steps, and the real turn is</p>
+      <blockquote><code>&phi; = 2&pi; (M mod N) / N</code></blockquote>
+      <p>With <code>M = 0</code> the bars stand straight: a cylinder. The Base Shift spinner goes to 100 even when <code>N</code> is as small as 5, so after a whole turn the picture starts again. The solid fill is always see-through in the applet, and turning Solid off switches Generators back on: both details are kept here.</p>
+
+      <h2>The narrowest circle</h2>
+      <p>Write <code>t</code> for the fraction of the way up a bar, so its height is <code>y = (2t &minus; 1)L/2</code>. Adding the two ring coordinates gives the distance from the axis:</p>
+      <blockquote><code>r&sup2; = R&sup2; [cos&sup2;(&phi;/2) + (2y/L)&sup2; sin&sup2;(&phi;/2)]</code></blockquote>
+      <p>The smallest circle is at the middle, <code>y = 0</code>, with radius <code>a = R |cos(&phi;/2)|</code>; at the two bases <code>r = R</code>. Every point of all 4,040 pictures was checked against this formula. Because straight lines sweep out the whole surface, it is a <a class="wiki-term" data-wiki="Ruled_surface" href="https://en.wikipedia.org/wiki/Ruled_surface" target="_blank" rel="noopener">ruled surface</a>: a <a class="wiki-term" data-wiki="Hyperboloid" href="https://en.wikipedia.org/wiki/Hyperboloid" target="_blank" rel="noopener">one sheet hyperboloid</a> for a part turn, and a cone when the turn is exactly half way round and the bars meet on the axis.</p>
+
+      <h2>The hyperbola that was spun</h2>
+      <p>Put <code>c = (L/2) |cot(&phi;/2)|</code>. The radius equation rearranges into</p>
+      <blockquote><code>r&sup2; / a&sup2; &minus; y&sup2; / c&sup2; = 1</code></blockquote>
+      <p>That is a <a class="wiki-term" data-wiki="Hyperbola" href="https://en.wikipedia.org/wiki/Hyperbola" target="_blank" rel="noopener">hyperbola</a> in a vertical plane, spun about the vertical <code>y</code> axis. The transverse axis runs sideways and meets the curve at <code>r = &plusmn;a</code>; the vertical axis is the other axis of symmetry and never meets it, exactly as the page says. When <code>N</code> is odd, no whole-number <code>M</code> gives exactly half a turn, so the closest setting leaves a tiny waist instead of a cone.</p>
+
+      <p class="tip">Press Hyperboloid, then drag the dot slowly to the right and watch the bright generator squeeze towards the middle before it opens out again.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Hyperboloid.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="hyperboloid-core.js"></script>
+<script src="hyperboloid.js"></script>
+</body>
+</html>
