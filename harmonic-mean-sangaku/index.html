@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harmonic Mean Sangaku &mdash; coolmaths</title>
+<meta name="description" content="Two ladders cross between upright walls: how high is the crossing, and why does sliding the walls leave that height unchanged?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/harmonic-mean-sangaku/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Harmonic Mean Sangaku">
+<meta property="og:description" content="Two ladders cross between upright walls: how high is the crossing, and why does sliding the walls leave that height unchanged?">
+<meta property="og:url" content="https://coolmaths.ai/harmonic-mean-sangaku/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .ground { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .wall { fill: none; stroke: var(--ink); stroke-width: 4; stroke-linecap: round; }
+  #board .ladder { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
+  #board .cross-bar { fill: none; stroke: var(--highlight); stroke-width: 4; stroke-dasharray: 6 4; }
+  #board .guide { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 6; }
+  #board .right-angle { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .cross-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 1.05rem;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="harmonic-mean-sangaku" data-kind="demo">
+<main id="main">
+  <h1>Harmonic Mean Sangaku</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#fractions">Fractions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two ladders lean between two walls; watch where they cross as you move the walls.<br>
+    <strong>How to play:</strong> Drag A, B, D or E with a mouse or finger, or focus a point and use the arrow keys. Press Check the identity to test what you see.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 480 300" role="group"
+         aria-label="Two upright walls with crossing ladders, their meeting point P and the foot C below it"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the walls and ladders to their starting positions">Reset</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point names">Hide names</button>
+    <button id="hintBtn" type="button" aria-pressed="true" aria-label="Toggle the horizontal guide lines">Hide guide lines</button>
+    <button id="checkBtn" type="button" aria-label="Check the crossing-height identity for this picture">Check the identity</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two ladders cross between upright walls. The surprising part is that the height of the crossing does not change when you slide the walls apart or together; it is decided only by the two wall heights. This page claims an exact recipe for that height, and the logic test checks it on thousands of pictures.</p>
+
+      <h2>A height that stays put</h2>
+      <p>Call the wall heights <code>AE</code> and <code>BD</code>, and the distance between the feet <code>AB</code>. Let the ladders meet at <code>P</code>, and call the point of the ground below <code>P</code> by the name <code>C</code>, so its height is <code>CP</code>. Moving the feet changes <code>AB</code> and moves <code>C</code> along the ground, but <code>CP</code> stays the same. The logic test compares <code>CP</code> at wall distances 5 and 500 for every pair of wall heights from 1 to 40 and finds the same number each time.</p>
+
+      <h2>Two pairs of matching triangles</h2>
+      <p>Write <code>AC = x</code> and <code>BC = y</code>. Because the walls are upright, triangle ABD and the smaller triangle ACP are <a class="wiki-term" data-wiki="Similarity_(geometry)" href="https://en.wikipedia.org/wiki/Similarity_(geometry)" target="_blank" rel="noopener">similar triangles</a>, so their sides are in the same ratio:</p>
+      <blockquote><code>(x + y) / x = BD / CP = 1 + y / x</code>, hence <code>y / x = (BD − CP) / CP</code>.</blockquote>
+      <p>The ladders BE and the small triangle CBP give the other pair: <code>x / y = (AE − CP) / CP</code>. Both proportions are checked for every even pair of wall heights up to 30 in the logic test.</p>
+
+      <h2>Multiply, then take reciprocals</h2>
+      <p>Multiplying the two proportions cancels <code>x / y</code> and leaves <code>(AE − CP)(BD − CP) = CP²</code>. Expanding and simplifying gives <code>AE·BD = CP·(AE + BD)</code>. Divide through by <code>AE·BD·CP</code> and the page's claim appears:</p>
+      <blockquote><code>1 / CP = 1 / AE + 1 / BD</code></blockquote>
+      <p>Since the <a class="wiki-term" data-wiki="Harmonic_mean" href="https://en.wikipedia.org/wiki/Harmonic_mean" target="_blank" rel="noopener">harmonic mean</a> of <code>AE</code> and <code>BD</code> is <code>2·AE·BD / (AE + BD)</code>, this says <code>CP = H(AE, BD) / 2</code>. The test verifies both forms for 6,400 positive configurations, and also for walls of negative (directed) height.</p>
+
+      <h2>How this differs from Harmonic Mean</h2>
+      <p>The applet HarmonicMean is a bug race about average speed; its page lists many places the harmonic mean turns up, including the 1877 sangaku, where it states <code>CP = ½·H(a, b)</code>. HarmonicMeanSangaku is the dedicated diagram for that sangaku: you drag the four points A, B, D and E, and the applet can show the point names and horizontal guide lines. Its page writes the same fact as a reciprocal identity and stresses that the crossing height does not depend on the wall spacing. The two statements agree; neither contradicts the other. The original skips the calculation when the wall feet are less than one unit apart and gets no crossing when the ladders are parallel — the port keeps both behaviours.</p>
+
+      <p class="tip">Try making one wall much taller than the other, then slide the feet far apart: the crossing stays at the same height above the ground.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HarmonicMeanSangaku.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="harmonic-mean-sangaku-core.js"></script>
+<script src="harmonic-mean-sangaku.js"></script>
+</body>
+</html>
