@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Happy 8 &mdash; coolmaths</title>
+<meta name="description" content="Eight counters sit on two overlapping circles. Can you turn the circles to bring them all home, and can you tell which shuffles two turns alone can never fix?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/happy-8/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Happy 8">
+<meta property="og:description" content="Eight counters sit on two overlapping circles. Can you turn the circles to bring them all home, and can you tell which shuffles two turns alone can never fix?">
+<meta property="og:url" content="https://coolmaths.ai/happy-8/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .h8-circle { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .h8-counter { fill: var(--stage); stroke: var(--ink); stroke-width: 2; }
+  #board .h8-counter.home-seat { stroke: var(--good); }
+  #board .h8-number {
+    fill: var(--text); font-size: 1rem; font-weight: 650;
+    text-anchor: middle; pointer-events: none;
+  }
+  #board .h8-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: pointer; }
+  #board .h8-handle:hover { stroke: var(--highlight); stroke-width: 5; }
+  #board .h8-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .h8-handle.finished-turn { stroke: var(--highlight); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls button { min-height: 2.5rem; min-width: 2.75rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+  #cyclesBox { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+  #countLabel { min-width: 7rem; }
+</style>
+</head>
+<body data-game="happy-8" data-kind="demo">
+<main id="main">
+  <h1>happy 8</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#permutations">Permutations</a><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#graph-theory">Graph Theory</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Counters sit on two overlapping circles, and you bring them all back to their starting places.<br>
+    <strong>How to play:</strong> Press a small dot beside a counter to turn its circle one place. Use the buttons to shuffle, swap two counters, change how many there are, or start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 220" role="group"
+         aria-label="Counters on two overlapping circles with six small turn controls"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="lessBtn" type="button" aria-label="Remove two counters">&minus;</button>
+    <span id="countLabel">8 counters</span>
+    <button id="moreBtn" type="button" aria-label="Add two counters">+</button>
+    <button id="shuffleBtn" type="button" class="primary" aria-label="Shuffle the counters">Shuffle</button>
+    <button id="cheatBtn" type="button" aria-label="Swap the counters in places one and two">Cheat</button>
+    <button id="resetBtn" type="button" aria-label="Put every counter back in its starting place">Reset</button>
+    <label><input id="cyclesBox" type="checkbox" aria-label="Show the cycles of the current arrangement"> Cycles</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Scrambling the counters looks chaotic, but every press does the same small job: it moves each counter one seat along a circle. Where a counter can go, and where it can never go, is decided by the way those moves combine.</p>
+
+      <h2>Every press is a cycle</h2>
+      <p>If each circle carries <code>p + 2</code> counters, there are <code>n = 2(p + 1)</code> counters altogether and <code>M = p + 2</code> seats on each circle. Number the seats around the left circle <code>0, 1, &hellip;, M &minus; 1</code>. The two crossing seats are <code>0</code> and <code>M &minus; 1</code>; the right circle runs <code>0, M &minus; 1, M, &hellip;, n &minus; 1</code>. A left turn sends each counter to the next seat in the first list, a right turn to the next seat in the second, and a whole-set turn to the next seat in <code>0, 1, &hellip;, n &minus; 1</code>. Each press is therefore one <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">permutation</a> of the seats, and any shuffle is a product of these three basic cycles and their reverses.</p>
+
+      <h2>What the page claims &mdash; and one place it fails</h2>
+      <blockquote>Let n+2 be the number of counters on each of the two puzzle cycles; the total is 2(n+1). If n is odd then every even permutation can be obtained using r and l. With w as well, every starting configuration becomes solvable. If n is even, the puzzle is solvable from any start even with only r and l.</blockquote>
+      <p>That is almost right. Exhaustive group calculations for every size the applet allows (4 to 14 counters) confirm the odd cases: at 4, 8 and 12 counters, <code>&lt;r, l&gt;</code> is exactly the <a class="wiki-term" data-wiki="Alternating_group" href="https://en.wikipedia.org/wiki/Alternating_group" target="_blank" rel="noopener">alternating group</a> (half of all arrangements), and adding <code>w</code> gives all of them. For 10 and 14 counters <code>&lt;r, l&gt;</code> already gives all of them. The even case at <strong>six</strong> counters is the exception: there <code>&lt;r, l&gt;</code> has just 120 arrangements, not 720, so six counters admit starts that r and l alone cannot solve. Adding <code>w</code> restores all 720. The split is driven by <a class="wiki-term" data-wiki="Parity_of_a_permutation" href="https://en.wikipedia.org/wiki/Parity_of_a_permutation" target="_blank" rel="noopener">parity</a>: at 4, 8 and 12 counters both basic cycles are even, so they can never produce an odd arrangement.</p>
+
+      <h2>Reading the Cycles box</h2>
+      <p>The old applet printed the cycles of the <em>current</em> arrangement, including one-seat cycles, with no spaces: a swap of counters 3 and 4 at eight counters appears as <code>(1)(2)(34)(5)(6)(7)(8)</code>. To put things right you need the reverse cycle, so the display describes the scramble rather than the moves that undo it; the page's phrase &ldquo;a permutation needed to solve&rdquo; is a little loose. The six control counters at eight counters really are <code>1, 8, 7, 3, 4, 5</code>, exactly as the page says: the upper three turn clockwise, the lower three counterclockwise.</p>
+
+      <h2>From graph puzzles to this one</h2>
+      <p>R. Wilson gave a complete theory of slider puzzles on <a class="wiki-term" data-wiki="Graph_theory" href="https://en.wikipedia.org/wiki/Graph_theory" target="_blank" rel="noopener">graphs</a>, but the Happy 8 layout is not covered by it; the page combines Wilson's lemmas instead. The original hit test at four counters has two controls on the same seat, so two of the six turns cannot be clicked there. This page draws them on separate rings so all six remain available; the rules themselves are unchanged.</p>
+
+      <p class="tip">Try Cheat at eight counters: two counters swap, an odd change that l and r alone can never fix. Press the upper middle dot once (a whole-set turn), then see whether l and r can finish the job.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/happy8.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="happy-8-core.js"></script>
+<script src="happy-8.js"></script>
+</body>
+</html>
