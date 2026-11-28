@@ -1265,6 +1265,19 @@ const GAMES = {
   "half-area-of-quadrilateral": (page) => dragFirstHandle(page),
   "half-area-of-quadrilateral-2": (page) => dragFirstHandle(page),
   "half-plane-test": (page) => dragFirstHandle(page),
+  "half-turn": (page) => dragFirstHandle(page),
+  "hanner": (page) => dragFirstHandle(page),
+  "happy-8": async (page) => {
+    await page.locator("#board .h8-handle").first().focus();
+    await page.keyboard.press("Enter");
+  },
+  "harmonic-mean": (page) => dragFirstHandle(page),
+  "harmonic-mean-sangaku": (page) => dragFirstHandle(page),
+  "harmonic-ratio": (page) => dragFirstHandle(page),
+  "hart-circle": (page) => dragFirstHandle(page),
+  "hart-inversor": (page) => dragFirstHandle(page),
+  "haruki": (page) => dragFirstHandle(page),
+  "hatzipolakis-triangle": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

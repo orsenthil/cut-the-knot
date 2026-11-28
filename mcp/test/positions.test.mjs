@@ -2395,6 +2395,16 @@ check("griffiths-collinearity: three pedal circles have collinear centres and tw
 check("half-area-of-quadrilateral: the midpoint-parallel CE bisects the area", Object.values(read["half-area-of-quadrilateral"]?.claims ?? {}).every(Boolean) === true && read["half-area-of-quadrilateral"].savedMatchesCore === true);
 check("half-area-of-quadrilateral-2: a B-or-D parallel median bisects the quadrilateral", Object.values(read["half-area-of-quadrilateral-2"]?.claims ?? {}).every(Boolean) === true && read["half-area-of-quadrilateral-2"].claimsAgreeWithSaved === true);
 check("half-plane-test: the saved clipped half-plane region is convex", read["half-plane-test"]?.core.clippedIntersection.convex === true && read["half-plane-test"].regionConvex === true && read["half-plane-test"].halfPlanes === 1);
+check("half-turn: three half turns give a fixed-point half turn, not equal chords", read["half-turn"]?.reading.kind === "half-turn" && read["half-turn"].reading.pageClaimHolds === false && typeof read["half-turn"].reading.fixedPoint.x === "number");
+check("hanner: five sliding pieces tile both the leg squares and the hypotenuse square", read.hanner?.pieceCount === 5 && read.hanner.pureTranslations === true && read.hanner.sourceTiling.tiles === true && read.hanner.destinationTiling.tiles === true && read.hanner.identity.holds === true);
+check("happy-8: the eight-counter saved board has even parity", read["happy-8"]?.parityWord === "even" && read["happy-8"].home === false && read["happy-8"].countersOnEachCircle === 5);
+check("harmonic-mean: the saved relay's mean is the harmonic mean below AM", read["harmonic-mean"]?.reading.meanDifferenceAMminusHM > 0 && typeof read["harmonic-mean"].reading.harmonicMean === "number" && read["harmonic-mean"].speeds.length === 10);
+check("harmonic-mean-sangaku: CP is half the harmonic mean of the wall heights", read["harmonic-mean-sangaku"]?.reading.formula.holds === true && read["harmonic-mean-sangaku"].reading.reciprocal.holds === true && read["harmonic-mean-sangaku"].reading.AE === 84);
+check("harmonic-ratio: constructed D matches u/(2u-1) with cross ratio -1", Object.values(read["harmonic-ratio"]?.reading.claims ?? {}).every(Boolean) === true && read["harmonic-ratio"].reading.positionOfD.formulaVsConstructedGap === 0);
+check("hart-circle: the Hart circle touches all four incircles exactly", read["hart-circle"]?.allFourExactTangent === true && typeof read["hart-circle"].hart.radius === "number" && read["hart-circle"].variant === 0);
+check("hart-inversor: the saved linkage satisfies the power and product identities", read["hart-inversor"]?.opTimesOq === read["hart-inversor"].product && read["hart-inversor"].acTimesBd > read["hart-inversor"].opTimesOq && Object.values(read["hart-inversor"].savedVsCore).every((g) => g === 0) === true);
+check("haruki: BE=AF=AQ·RB/QR in the saved figure", Math.abs(read.haruki?.BE - read.haruki.AF) < 1e-6 && Math.abs(read.haruki.BE - read.haruki.ratio) < 1e-6 && read.haruki.savedLengthsMatch === true);
+check("hatzipolakis-triangle: all midpoint and incircle collinearities hold", read["hatzipolakis-triangle"]?.drawingPossible === true && Object.values(read["hatzipolakis-triangle"].reading.claims).every(Boolean) === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2832,6 +2842,30 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("half-area-of-quadrilateral-2/parallel_shortcut: near-parallel tolerance breaks the cut", shortcut.comparison.nearParallelShortcut === true && shortcut.comparison.nearParallelQuadrilateralBisected === false && shortcut.comparison.openingQuadrilateralBisected === true);
   const kept = runGameLogic("half-plane-test", "kept_side", { p1: [0, 0], p2: [400, 300], p: [100, 100] });
   check("half-plane-test/kept_side: orientation sign picks the kept half plane", kept.kept === true && kept.orientation === 1 && kept.orientationIfReversed === -1 && kept.keptByEveryLine === true);
+}
+
+// The batch-32 tutor actions all run their real cores, not just their saved positions.
+{
+  const comp = runGameLogic("half-turn", "composition", { n: 3 });
+  check("half-turn/composition: odd n is a half turn, even n a translation", comp.kind === "half-turn" && comp.pageClaimHolds === false && comp.involution === true && comp.imageMatchesChain === true);
+  const hn = runGameLogic("hanner", "dissection", { A: { x: 100, y: 100 }, B: { x: 300, y: 100 }, angleA: Math.PI / 6 });
+  check("hanner/dissection: five translations tile both squares", hn.identity.holds === true && hn.pureTranslations === true && hn.sourceTiling.tiles === true && hn.destinationTiling.tiles === true);
+  const groups = runGameLogic("happy-8", "group_orders", {});
+  check("happy-8/group_orders: n=6 refutes the page's even-n claim", groups.rows.find((r) => r.n === 6).pageClaimHolds === false && groups.rows.find((r) => r.n === 6).reachableWithLR === 120 && groups.rows.every((r) => r.lrwIsAll === true) === true);
+  const mi = runGameLogic("harmonic-mean", "mean_inequality", { min: 1, max: 6, count: 2 });
+  check("harmonic-mean/mean_inequality: AM >= HM with equality only for equal speeds", mi.checks.harmonicNeverAboveArithmetic === true && mi.checks.equalityExactlyWhenSpeedsMatch === true);
+  const rec = runGameLogic("harmonic-mean-sangaku", "reciprocal_identity", { ae: 84, bd: 42 });
+  check("harmonic-mean-sangaku/reciprocal_identity: 1/CP = 1/AE + 1/BD", rec.reciprocal.holds === true && rec.division.acOverCB === rec.division.aeOverBD && rec.checkedByCore === true);
+  const cr = runGameLogic("harmonic-ratio", "construction_ratio", {});
+  check("harmonic-ratio/construction_ratio: D=u/(2u-1) and all cross ratios -1", Object.values(cr.claims).every(Boolean) === true && cr.positionOfD.formulaVsConstructedGap === 0);
+  const tol = runGameLogic("hart-circle", "tangency_tolerance", {});
+  check("hart-circle/tangency_tolerance: applet 2px test accepts a 1px miss", tol.exactTangent === false && tol.appletTangentWithin2px === true && tol.exactGap === 1);
+  const cl = runGameLogic("hart-inversor", "circle_to_line", {});
+  check("hart-inversor/circle_to_line: Q stays on the inverse line with fixed product", cl.eligibleSamples > 0 && cl.maxQDeviationFromLine < 1e-8 && cl.productRange.min === cl.productRange.max);
+  const len = runGameLogic("haruki", "lengths", { sweep: 16 });
+  check("haruki/lengths: BE=AF=AQ·RB/QR independent of P", len.equalLengths === true && len.matchesProductFormula === true && len.sweep.independentOfP === true);
+  const claims = runGameLogic("hatzipolakis-triangle", "check_claims", {});
+  check("hatzipolakis-triangle/check_claims: all page collinearities hold", claims.allPageClaimsHold === true && claims.failedClaims.length === 0);
 }
 
 // A game with no reader, and a position that makes no sense.

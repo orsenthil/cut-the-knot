@@ -789,6 +789,16 @@ const CORE_GLOBALS = {
   "half-area-of-quadrilateral/half-area-of-quadrilateral-core.js": ["HalfAreaOfQuadrilateralCore"],
   "half-area-of-quadrilateral-2/half-area-of-quadrilateral-2-core.js": ["HalfAreaOfQuadrilateral2Core"],
   "half-plane-test/half-plane-test-core.js": ["HalfPlaneTestCore"],
+  "half-turn/half-turn-core.js": ["HalfTurnCore"],
+  "hanner/hanner-core.js": ["HannerCore"],
+  "happy-8/happy-8-core.js": ["Happy8Core"],
+  "harmonic-mean/harmonic-mean-core.js": ["HarmonicMeanCore"],
+  "harmonic-mean-sangaku/harmonic-mean-sangaku-core.js": ["HarmonicMeanSangakuCore"],
+  "harmonic-ratio/harmonic-ratio-core.js": ["HarmonicRatioCore"],
+  "hart-circle/hart-circle-core.js": ["HartCircleCore"],
+  "hart-inversor/hart-inversor-core.js": ["HartInversorCore"],
+  "haruki/haruki-core.js": ["HarukiCore"],
+  "hatzipolakis-triangle/hatzipolakis-triangle-core.js": ["HatzipolakisTriangleCore"],
 };
 
 const games = [];
