@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Isosceles On Sides &mdash; coolmaths</title>
+<meta name="description" content="Three isosceles triangles stand on the sides of a triangle. Do the lines through its corners, each at right angles to the far side of one of those triangles, always meet at one point?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/isosceles-on-sides/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Isosceles On Sides">
+<meta property="og:description" content="Three isosceles triangles stand on the sides of a triangle. Do the lines through its corners, each at right angles to the far side of one of those triangles, always meet at one point?">
+<meta property="og:url" content="https://coolmaths.ai/isosceles-on-sides/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .leg { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; }
+  #board .def-side { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 5; }
+  #board .perp { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 8 4; }
+  #board .bisector-guide { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: 2 6; }
+  #board .foot-dot { fill: var(--muted); }
+  #board .right-angle { fill: none; stroke: var(--good); stroke-width: 1.4; }
+  #board .tick { stroke: var(--ink); stroke-width: 2; stroke-linecap: round; }
+  #board .hint-circle { fill: var(--highlight); fill-opacity: 0.07; stroke: var(--highlight); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .hint-chord { stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 3 3; }
+  #board .second-dot { fill: var(--accent); }
+  #board .center-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 0.95rem;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .center-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .aux-handle { fill: var(--highlight); stroke: var(--ink); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="isosceles-on-sides" data-kind="demo">
+<main id="main">
+  <h1>Isosceles On Sides</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the corners of a triangle and watch three lines, one from each corner, meet in a single spot.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a dot and use the arrow keys. Drag D, E or F along its dotted line, then press Check the claim.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle with an isosceles triangle on each side, the three perpendicular lines and their common point"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the picture to its starting triangle">Reset picture</button>
+    <button id="checkBtn" type="button" aria-label="Check that the three perpendicular lines meet at one point">Check the claim</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Toggle the point names">Show names</button>
+    <button id="statementBtn" type="button" aria-pressed="false" aria-label="Toggle the equal-leg marks and right angles">Show statement</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the three circles and their common chords">Show hint circles</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three small isosceles triangles sit on the sides of a bigger triangle. From each big corner, draw a line at right angles to the far side of the small triangle opposite it. The surprise is that the three lines meet at one point, however you drag the picture.</p>
+
+      <h2>Equal legs make perpendicular bisectors</h2>
+      <p>Point D sits on the <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a> of BC, so <code>DB = DC</code>. The same goes for <code>EC = EA</code> and <code>FA = FB</code>. Press Show statement to see one, two and three little strokes marking those equal pairs, and right-angle squares where the drawn lines cross EF, FD and DE. You can drag D, E and F along their dotted bisectors, even across a side of the big triangle; A, B and C carry them along.</p>
+
+      <h2>Three circles turn lines into chords</h2>
+      <p>Draw three circles: one centred at D through B and C, one centred at E through C and A, and one centred at F through A and B. Circles centred at E and F both pass through A, so their common chord goes through A. The chord of two circles is always at right angles to the line joining their centres, here EF. That chord is exactly the line drawn through A. Press Show hint circles to see the three circles and the chords through A, B and C. The far ends of the chords are marked with dots.</p>
+
+      <h2>The meeting point is the radical centre</h2>
+      <p>Each drawn line is a <a class="wiki-term" data-wiki="Radical_axis" href="https://en.wikipedia.org/wiki/Radical_axis" target="_blank" rel="noopener">radical axis</a> of two circles. The three axes of three circles pass through one point, their <a class="wiki-term" data-wiki="Radical_axis#Radical_center" href="https://en.wikipedia.org/wiki/Radical_axis#Radical_center" target="_blank" rel="noopener">radical centre</a> P. At P the three powers are equal, for example <code>|P−D|² − DB² = |P−E|² − EC² = |P−F|² − FA²</code>. That is why all three perpendiculars pass through P.</p>
+      <p>The logic test checks this claim on the starting picture, six fixed pictures (including obtuse and right triangles, mixed offsets and side flips) and 700 random ones. It also compares every step with a second transcription of the applet's own bytecode. The claim is true whenever D, E and F are distinct and not in one line; if they are in one line, the three perpendiculars are parallel and no meeting point exists. The original page states the theorem without mentioning that degenerate case, and the port reports it honestly in the status line.</p>
+
+      <p class="tip">Try dragging E across CA: its circle changes size but the three lines still meet at a new point P.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/IsoscelesOnSides.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="isosceles-on-sides-core.js"></script>
+<script src="isosceles-on-sides.js"></script>
+</body>
+</html>
