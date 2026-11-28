@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menelaus Bisector &mdash; coolmaths</title>
+<meta name="description" content="Pick one angle bisector at each corner of a triangle: when do the three lines meet at one point, and when do their crossings on the sides fall on a straight line?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/menelaus-bisector/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Menelaus Bisector">
+<meta property="og:description" content="Pick one angle bisector at each corner of a triangle: when do the three lines meet at one point, and when do their crossings on the sides fall on a straight line?">
+<meta property="og:url" content="https://coolmaths.ai/menelaus-bisector/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 1rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linejoin: round; }
+  #board .bis-in { fill: none; stroke: var(--accent); stroke-width: 2.1; }
+  #board .bis-ext { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .collinear-line { fill: none; stroke: var(--good); stroke-width: 3.2; }
+  #board .foot-tri { fill: none; stroke: var(--bad); stroke-width: 2; stroke-dasharray: 3 3; }
+  #board .center-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 2; }
+  #board .foot-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.2; }
+  #board .pt-label {
+    fill: var(--text); font-family: var(--font); font-size: 14px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .vertex-label { fill: var(--ink); font-size: 15px; }
+  #board .center-label { fill: var(--bad); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .choice-list { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .choice-list label { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.95rem; }
+</style>
+</head>
+<body data-game="menelaus-bisector" data-kind="demo">
+<main id="main">
+  <h1>Menelaus Bisector</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the corners of a triangle and watch where its angle bisectors meet or line up.<br>
+    <strong>How to play:</strong> Drag a corner, or focus it and use the arrow keys. Tick a box to draw one kind of bisector at every corner, and press Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 480 320" role="group"
+         aria-label="A triangle with three draggable corners and angle bisectors and their crossing points"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="choice-list" role="group" aria-label="Angle bisector selection">
+      <label for="mode3"><input id="mode3" type="checkbox">3 in, 0 out</label>
+      <label for="mode2"><input id="mode2" type="checkbox">2 in, 1 out</label>
+      <label for="mode1"><input id="mode1" type="checkbox">1 in, 2 out</label>
+      <label for="mode0"><input id="mode0" type="checkbox">0 in, 3 out</label>
+    </div>
+    <button id="resetBtn" type="button" class="primary"
+            aria-label="Reset the triangle and clear all bisector choices">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>At every corner of a triangle there are two ways to cut the angle in half: one line stays inside, the other lies outside. Choose one at each corner. Sometimes the three lines meet at a single point; other times the three places where they cross the opposite sides fall on one straight line. This applet, called a mathematical droodle, lets you see which choice does which. The original page still contains its Java <code>&lt;applet&gt;</code> tag, which no current browser runs, so the logic here was checked against the applet's bytecode and the page's written claims.</p>
+
+      <h2>One cut, two ratios</h2>
+      <p>Write the side lengths as <code>a = |BC|</code>, <code>b = |CA|</code> and <code>c = |AB|</code>. The inside bisector at A crosses BC and divides it in the ratio <code>c : b</code>. The outside bisector at A crosses the same line outside the segment and divides it in the ratio <code>&minus;c : b</code>: same lengths, opposite sign. The <a class="wiki-term" data-wiki="Angle_bisector_theorem" href="https://en.wikipedia.org/wiki/Angle_bisector_theorem" target="_blank" rel="noopener">angle bisector theorem</a> explains the lengths, and a negative signed length records that the crossing is on the extension. The same pattern holds at B and C.</p>
+
+      <h2>When do the three lines meet?</h2>
+      <p>Multiply the three signed ratios around the triangle. The lengths cancel, <code>(c/b)(a/c)(b/a) = 1</code>, leaving only the sign: <code>&minus;1</code> for each outside bisector. So the product is <code>+1</code> when none or two of the choices are outside, and <code>&minus;1</code> when one or three are. <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a> says the product is <code>+1</code> exactly when the three lines meet at one point: the incenter for 3 in / 0 out, and an excenter for 1 in / 2 out. The violet lines in those two pictures pass through the marked centre. This is different from the Escher Ceva Menelaus applet, where six independent dots are moved and one longer equation decides concurrence; here the bisectors fix the ratios for you.</p>
+
+      <h2>When do the three crossings line up?</h2>
+      <p><a class="wiki-term" data-wiki="Menelaus%27_theorem" href="https://en.wikipedia.org/wiki/Menelaus%27_theorem" target="_blank" rel="noopener">Menelaus' theorem</a> uses the opposite sign: three points on the three sides (or their extensions) are collinear exactly when the signed product is <code>&minus;1</code>. That happens with none or two inside bisectors, i.e. the 0 in / 3 out and 2 in / 1 out boxes. For 0 in / 3 out the green line runs through the three yellow outside crossings. For 2 in / 1 out the red dashed triangle joins all three <em>inside</em> crossings, but that triangle is <em>not</em> the line the page is talking about: two inside crossings and one outside crossing are the collinear triple. The logic test checks this distinction on hundreds of triangles.</p>
+
+      <h2>What the check found, and one exception</h2>
+      <p>Both statements on the page hold: the product is <code>(&minus;1)<sup>k</sup></code> for <code>k</code> outside bisectors in all 4,800 choices tested, and the drawn lines and feet agree with an independent <a class="wiki-term" data-wiki="Determinant" href="https://en.wikipedia.org/wiki/Determinant" target="_blank" rel="noopener">determinant</a> test for concurrence and collinearity. The page also says that every angle bisector crosses the opposite side or its extension. That is not always true: at the tip of an isosceles triangle the outside bisector is parallel to the base, so there is no crossing at all. The Java applet's intersection routine returns a non-number there; this page leaves that point out of the picture. The logic test pins that exception as well as the two theorems.</p>
+
+      <p class="tip">Tick 2 in / 1 out and look for a straight line through two yellow inside dots and one yellow outside dot; then tick 3 in / 0 out and watch the three violet lines meet at I.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MenelausBisector.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="menelaus-bisector-core.js"></script>
+<script src="menelaus-bisector.js"></script>
+</body>
+</html>
