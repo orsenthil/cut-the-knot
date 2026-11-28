@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kurschak Tile &mdash; coolmaths</title>
+<meta name="description" content="A twelve-pointed star tiles a dodecagon inside a circle: can its triangles be moved to cover three quarters of the circumscribed square?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/kurschak-tile/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Kurschak Tile">
+<meta property="og:description" content="A twelve-pointed star tiles a dodecagon inside a circle: can its triangles be moved to cover three quarters of the circumscribed square?">
+<meta property="og:url" content="https://coolmaths.ai/kurschak-tile/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The tiles keep the applet's own red and blue; everything else uses
+     the site's colour tokens. The board scales through its viewBox. */
+  :root { --piece-thin: #e0705f; --piece-regular: #7087d8; }
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .piece {
+    fill-opacity: 0.84;
+    stroke: var(--ink);
+    stroke-width: 1.1;
+    stroke-linejoin: round;
+  }
+  #board .piece-thin { fill: var(--piece-thin); }
+  #board .piece-regular { fill: var(--piece-regular); }
+  #board .square-side { stroke: var(--ink); stroke-width: 2.2; fill: none; }
+  #board .dodecagon-side { stroke: var(--ink); stroke-width: 1.4; fill: none; opacity: 0.8; }
+  #board .corner-ray { stroke: var(--ink); stroke-width: 1.2; opacity: 0.55; }
+  #board .hint-line {
+    stroke: var(--accent);
+    stroke-width: 1.5;
+    stroke-dasharray: 5 4;
+    opacity: 0.6;
+  }
+  #board .hint-spoke { stroke: var(--good); stroke-dasharray: none; opacity: 0.75; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 17px;
+    font-weight: 700;
+    text-anchor: middle;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 4px;
+    stroke-linejoin: round;
+  }
+  #board .step-track { stroke: var(--border-strong); stroke-width: 3; stroke-linecap: round; }
+  #board .step-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 3;
+    cursor: grab;
+  }
+  #board .step-handle:focus { outline: none; }
+  #board .step-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  .hint-line-note {
+    margin: 0.4rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label, .controls output {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+  .controls input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--accent);
+  }
+</style>
+</head>
+<body data-game="kurschak-tile" data-kind="demo">
+<main id="main">
+  <h1>Kurschak Tile</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This picture has a star inside a square, and there is nothing to win: its triangles can be moved to cover three quarters of the square.<br>
+    <strong>How to play:</strong> Press Move them to watch nine triangles slide into three corners. Tick names or hint for labels and guide lines, press Reset to start over, or drag the step handle and use arrow keys to look at one step at a time.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 480" role="group"
+         aria-label="A twelve-pointed star of red and blue triangles inside a square, with a draggable step handle for the rearrangement"></svg>
+    <p class="hint-line-note">Red triangles are thin, blue triangles have three equal sides. The step handle at the bottom runs from 0 to 30.</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" aria-label="Show the letters A to O on the picture"> Show names</label>
+    <label><input id="hintBox" type="checkbox" aria-label="Show the guide lines inside the star"> Show hint</label>
+    <button id="moveBtn" type="button" class="primary" aria-label="Move nine triangles into three corners of the square">Move them</button>
+    <button id="resetBtn" type="button" aria-label="Put all the triangles back in the star">Reset</button>
+    <label for="stepValue">Step: <output id="stepValue" for="board">0 / 30</output></label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A twelve-pointed star looks nothing like a neat area answer, yet its triangles can be moved to fill three quarters of the square around it. That is the whole trick behind Kürschak's theorem.</p>
+
+      <h2>The claim, exactly</h2>
+      <p>The page says: <em>the area of a regular <a class="wiki-term" data-wiki="Dodecagon" href="https://en.wikipedia.org/wiki/Dodecagon" target="_blank" rel="noopener">dodecagon</a> inscribed in a unit circle is 3</em>. The logic test checked that claim from the drawn coordinates, not by quoting it: cutting a circle of radius 1 into twelve equal wedges gives <code>12 &times; (1/2) &times; sin(30&deg;) = 6 &times; 1/2 = 3</code>. The square around that circle has side 2 and area 4, so the dodecagon is <code>3/4</code> of it. The test also checked the scaling law <code>3R&sup2;</code> for radii from 0.01 to 250.</p>
+
+      <h2>Why the same pieces fit twice</h2>
+      <p>The dodecagon is cut into 24 thin isosceles triangles with angles <code>15&deg;, 15&deg;, 150&deg;</code> and 12 <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangles</a>. Both families share the side <code>R/(2 cos 15&deg;)</code>: the identity <code>2 sin 15&deg; = 1/(2 cos 15&deg;)</code> makes a dodecagon edge exactly as long. So two thin triangles meeting at their long bases make a rhombus whose other sides match the blue triangles. Tick <em>Show hint</em> to see how the pieces pair up around the centre.</p>
+
+      <h2>Three quarters of the square</h2>
+      <p>Outside the dodecagon, each corner of the square takes two thin triangles and one equilateral one: 8 thin and 4 regular triangles in all. Their total <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> is <code>R&sup2;</code>, leaving <code>4R&sup2; - R&sup2; = 3R&sup2;</code> for the dodecagon. The test checked that all 36 pieces are the advertised shapes, that the 12 outside triangles cover exactly the difference, and that the nine pieces moved by the applet land on three complete corners; the fourth corner is left outlined so you can see the pattern.</p>
+
+      <h2>A very old bound on pi</h2>
+      <p>With <code>R = 1</code> the circle's area is <code>&pi;</code> and the inside shape has area 3, so the page finishes with <code>&pi; &gt; 3</code>. That is true: an inscribed shape is smaller than its circle. The original applet animates the move in 30 steps and offers only Show names, Show hint, Reset and Move them; the step handle here is an addition so you can inspect every frame. The original leaves one moving thin triangle 15&deg; off its stored corner while it travels, then draws it at the stored position when it arrives; the port keeps that stored final position.</p>
+
+      <p class="tip">Try ticking Show names and pressing Move them: the letters A to O show how the square's corners and the star's tips line up, and the last step leaves one corner empty for you to fill in your head.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/KurschakTile.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="kurschak-tile-core.js"></script>
+<script src="kurschak-tile.js"></script>
+</body>
+</html>
