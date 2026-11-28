@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Disappearing Lines &mdash; coolmaths</title>
+<meta name="description" content="Slide the upper triangle up and right one notch and one of its lines vanishes. Where did the line go?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/lines/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Disappearing Lines">
+<meta property="og:description" content="Slide the upper triangle up and right one notch and one of its lines vanishes. Where did the line go?">
+<meta property="og:url" content="https://coolmaths.ai/lines/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .triangle { fill: none; stroke: var(--ink); stroke-width: 1.6; }
+  #board .triangle.moving { stroke: var(--accent); }
+  #board .stroke { stroke: var(--ink); stroke-width: 1.6; }
+  #board .eye-white { fill: var(--stage); stroke: var(--ink); stroke-width: 1; }
+  #board .eye-white.open { fill: var(--good); }
+  #board .eye-iris { fill: var(--accent); stroke: none; }
+  #board .eye-iris.open { fill: var(--stage); }
+  #board .eye-pupil { fill: var(--ink); }
+  #board .eye-lid { fill: none; stroke: var(--ink); stroke-width: 1; }
+  #board .eye-outline { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+  #board .handle-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .grip { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .grip:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .nudge { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.4rem; margin-top: 0.5rem; }
+  .nudge button { min-width: 3rem; min-height: 2.5rem; }
+  .nudge .slide { min-width: 8rem; }
+  #count { color: var(--muted); font-size: 0.9rem; text-align: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+  #nInput { min-height: 2.5rem; font: inherit; color: var(--text); background: var(--stage); border: 1px solid var(--border); border-radius: 0.4rem; }
+</style>
+</head>
+<body data-game="lines" data-kind="demo">
+<main id="main">
+  <h1>Disappearing Lines</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#invariants">Invariants</a><a class="tag" href="../index.html#geometry">Geometry</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two triangles share a row of upright lines; slide the top one and watch one line disappear without any being erased.<br>
+    <strong>How to play:</strong> Drag the dot on the top triangle, or focus it and use the arrow keys. You can also press the arrow buttons or "Show the trick" to slide it up and right one notch.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 350" role="group"
+         aria-label="A stationary lower triangle and a movable upper triangle, each filled with upright lines, with three pairs of eyes above them"></svg>
+    <div class="nudge" aria-label="Move the upper triangle one notch">
+      <button type="button" id="leftBtn" aria-label="Move the upper triangle one notch left">&#9664;</button>
+      <button type="button" id="rightBtn" aria-label="Move the upper triangle one notch right">&#9654;</button>
+      <button type="button" id="upBtn" aria-label="Move the upper triangle one notch up">&#9650;</button>
+      <button type="button" id="downBtn" aria-label="Move the upper triangle one notch down">&#9660;</button>
+      <button type="button" id="slideBtn" class="slide" aria-label="Slide the upper triangle up and right one notch to show the trick">Show the trick</button>
+    </div>
+    <div id="count"></div>
+  </div>
+
+  <div class="controls">
+    <label for="nInput">Lines</label>
+    <select id="nInput" aria-label="Number of lines, from 5 to 25"></select>
+    <button type="button" id="resetBtn" class="primary" aria-label="Put the upper triangle back at the start">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>
+        Martin Gardner told this trick in <em>Aha! Gotcha</em>, and Bogomolny made it move. Count the upright lines in the
+        first picture, then slide the top triangle up and to the right by exactly one notch: the same strokes now make
+        one line fewer. Nothing was rubbed out. This is a lesson in
+        <a class="wiki-term" data-wiki="Conservation_law" href="https://en.wikipedia.org/wiki/Conservation_law" target="_blank" rel="noopener">conservation</a>:
+        watch what happens to the lengths, not just to the shapes your eyes count.
+      </p>
+
+      <h2>Build the two triangles</h2>
+      <p>
+        Let the notch size be <code>s</code>. The lower triangle has a vertical stroke at <code>x = r.x + i&middot;s</code> for
+        <code>i = 1, &hellip;, N</code>, of length <code>(i&minus;1)&middot;s</code>: it starts <code>s</code> above the bottom
+        edge and ends on the rising diagonal. The upper triangle is the same shape turned upside down and moved to the
+        corner <code>(r.x + s, r.y &minus; s)</code>. The applet chooses <code>s = 2 &middot; floor((ceil(W/(2N+1) + 0.5))/2)</code>
+        from a 400-pixel-wide canvas: <code>s = 20</code> for 10 lines, <code>36</code> for 5 and <code>8</code> for 25. The
+        numbers of lines the selector offers are exactly 5 through 25, the applet's limits.
+      </p>
+
+      <h2>One line becomes two halves</h2>
+      <p>
+        At the start, each upper stroke shares its <code>x</code> with a lower stroke and continues it upward, making
+        <code>N</code> long lines of length <code>N&middot;s</code>. After the slide, the upper strokes sit one notch to the
+        right of the lower ones. The first upper and the first lower stroke now have length zero — they have become a
+        single point at opposite corners — and the <code>N&minus;1</code> remaining strokes pair into
+        <code>N&minus;1</code> lines of the same length <code>N&middot;s</code>. Two triangles' worth of <code>2N</code>
+        strokes are still drawn; your eyes just group them differently.
+      </p>
+
+      <h2>The length never changes</h2>
+      <p>
+        Each half has strokes of lengths <code>0, s, 2s, &hellip;, (N&minus;1)s</code>, so together they always total
+        <code>2 &times; (0 + 1 + &hellip; + (N&minus;1))s = N(N&minus;1)s</code> pixels. At the start they pair into
+        <code>N</code> lines of length <code>N&middot;s</code>, giving <code>N(N&minus;1)s</code>; after the slide they make
+        <code>N&minus;1</code> lines of the same length, and the two vanished strokes had length zero, so the total is the
+        same. The page's claim that "the total length of the newly obtained lines is the same as the total length of the
+        original ones" holds: the checks confirm it for every notch size and every snapped position, not only the two
+        pictures on the page. Only the sideways notch changes the count; the upward slide is what makes the applet's
+        three pairs of eyes open, its own reward for finding the exact corner described on the page.
+      </p>
+      <p class="tip">
+        Try 5 lines and then 25: the fewer the lines, the longer the notch and the easier it is to follow a single stroke
+        as it moves. Count the lines before and after the slide, then measure the long ones.
+      </p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/lines.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="lines-core.js"></script>
+<script src="lines.js"></script>
+</body>
+</html>
