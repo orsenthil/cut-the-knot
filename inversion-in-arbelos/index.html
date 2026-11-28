@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inversion In Arbelos &mdash; coolmaths</title>
+<meta name="description" content="A chain of circles sits in the gap between two touching circles. Move the inversion point and the parallel lines: how is each circle's height related to its radius?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/inversion-in-arbelos/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Inversion In Arbelos">
+<meta property="og:description" content="A chain of circles sits in the gap between two touching circles. Move the inversion point and the parallel lines: how is each circle's height related to its radius?">
+<meta property="og:url" content="https://coolmaths.ai/inversion-in-arbelos/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.6rem; }
+  #board {
+    display: block; width: 100%; max-width: 100%; height: auto;
+    touch-action: none; border-radius: 0.5rem;
+  }
+  #board .arbelos-outer { fill: var(--accent); fill-opacity: 0.13; }
+  #board .arbelos-inner { fill: var(--stage); }
+  #board .outline { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .outline-inner { fill: none; stroke: var(--muted); stroke-width: 2.5; }
+  #board .axis { stroke: var(--ink); stroke-width: 1.5; }
+  #board .inv-circle {
+    fill: none; stroke: var(--muted); stroke-width: 1.5;
+    stroke-dasharray: 4 5;
+  }
+  #board .strip-line {
+    stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5;
+  }
+  #board .strip-circle {
+    fill: none; stroke: var(--muted); stroke-width: 1.2;
+    stroke-dasharray: 3 4;
+  }
+  #board .strip-edge { stroke: var(--muted); stroke-width: 1; opacity: 0.55; }
+  #board .chain-even {
+    fill: var(--accent); fill-opacity: 0.30; stroke: var(--accent); stroke-width: 2;
+  }
+  #board .chain-odd {
+    fill: var(--good); fill-opacity: 0.24; stroke: var(--good); stroke-width: 2;
+  }
+  #board .centre-line {
+    stroke: var(--highlight); stroke-width: 1.4; stroke-dasharray: 4 3;
+  }
+  #board .tangent-line { stroke: var(--bad); stroke-width: 1.6; }
+  #board .geom-handle {
+    fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab;
+  }
+  #board .geom-handle:hover { fill: var(--highlight); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--ink); font-size: 13px; font-weight: 600; pointer-events: none;
+  }
+  .controls {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem;
+  }
+  .controls button { min-height: 2.5rem; }
+  .controls .option {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    font-size: 0.95rem; min-width: 0; white-space: normal;
+  }
+  .controls input[type="number"] {
+    width: 4rem; min-width: 4rem; min-height: 2.5rem; accent-color: var(--accent);
+  }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="inversion-in-arbelos" data-kind="demo">
+<main id="main">
+  <h1>Inversion In Arbelos</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This picture shows a chain of circles tucked into the gap between two circles that touch.<br>
+    <strong>How to play:</strong> Drag the dots O, R, A and B, or focus a dot and press the arrow keys. Choose how many circles to show, then tick the box to see the guide lines.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 300" role="group"
+         aria-label="Two touching circles, a chain of circles in the gap between them, the equal circles and parallel lines they invert to, and four draggable points O, R, A and B on the axis"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Put O, R, A and B back at their starting places">Reset</button>
+    <button id="lessBtn" type="button" aria-label="Show one fewer circle">&minus;</button>
+    <label class="option" for="nInput">Circles
+      <input id="nInput" type="number" min="1" max="50" step="1" value="1"
+             aria-label="Number of circles to show, from 1 to 50">
+    </label>
+    <button id="moreBtn" type="button" aria-label="Show one more circle">+</button>
+    <label class="option" for="hintChk">
+      <input id="hintChk" type="checkbox" disabled aria-label="Show centre lines and common tangents">
+      Center lines and tangents
+    </label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the points and the chain changes shape. Yet for every circle, however big the gap is, its height above the line is twice its number times its radius. Why should that stay true?</p>
+
+      <h2>Turning the picture inside out</h2>
+      <p>The two circles touch at O. An <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">inversion</a> centred at O sends them to two straight, parallel lines. The applet puts those lines at A and B. A circle of the chain is <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> to both circles, so its image is tangent to both lines: the images are equal circles, one diameter apart. Circle 0 has its image sitting on the line; circle n has its image n diameters above it.</p>
+
+      <h2>The height of every circle</h2>
+      <p>Equal circles stacked one diameter apart have height <code>h' = 2n R'</code>. Each original circle and its image are scaled copies from the same centre O, so the ratio of height to radius is the same in both pictures. Hence</p>
+      <blockquote><code>h<sub>n</sub> = 2n R<sub>n</sub></code></blockquote>
+      <p>This is the <a class="wiki-term" data-wiki="Pappus_chain" href="https://en.wikipedia.org/wiki/Pappus_chain" target="_blank" rel="noopener">Pappus chain theorem</a>. The logic test checks it for circles 0 to 49 at dozens of settings of O, R, A and B, and again at 300 random drags; it also checks that each circle is really tangent to both given circles and to its neighbours.</p>
+
+      <h2>Radii, and the ratio k</h2>
+      <p>Let the smaller of the two given circles have radius <code>R<sub>L</sub></code>, the larger <code>R</code>, and put <code>k = R<sub>R</sub>/R<sub>L</sub></code> where <code>R<sub>R</sub> = R &minus; R<sub>L</sub></code>. The article gives <code>R<sub>L</sub> = R/(1+k)</code> and <code>R<sub>R</sub> = Rk/(1+k)</code>, and for the chain</p>
+      <blockquote><code>R<sub>n</sub> = Rk/(k&sup2;n&sup2; + k + 1)&nbsp;&nbsp;and&nbsp;&nbsp;AP<sub>n</sub> = R(k+2)/(k&sup2;n&sup2; + k + 1)</code></blockquote>
+      <p>With <code>t = 1/k</code> the first formula becomes <code>R<sub>n</sub> = Rt/(t&sup2; + t + n&sup2;)</code>. All four formulas are checked over the whole 1–50 range in every test configuration. The applet's own <code>GetCircle</code> builds the equal circles of radius <code>(B&minus;A)/2</code> spaced <code>B&minus;A</code> apart and inverts them; the second transcription in the test agrees with the core at every circle of every configuration.</p>
+
+      <h2>About the original</h2>
+      <p>The Java applet used a number spinner from 1 to 50 and a checkbox called "Center lines and common tangents", disabled when only one circle was shown; this page keeps both, with a modern number field and buttons. We follow the article's chain: circle 0 has its diameter on the axis, circle 1 is the next one, and so on. The dashed circles and lines here are the inverted picture the proof uses, not another game to win.</p>
+
+      <p class="tip">Set the circles to about 5, tick the guide lines, then drag A toward B. Watch the heights change while <code>h<sub>n</sub>/R<sub>n</sub></code> stays equal to <code>2n</code>.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/InversionInArbelos.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="inversion-in-arbelos-core.js"></script>
+<script src="inversion-in-arbelos.js"></script>
+</body>
+</html>
