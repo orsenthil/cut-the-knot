@@ -1278,6 +1278,16 @@ const GAMES = {
   "hart-inversor": (page) => dragFirstHandle(page),
   "haruki": (page) => dragFirstHandle(page),
   "hatzipolakis-triangle": (page) => dragFirstHandle(page),
+  "heaver": (page) => dragFirstHandle(page),
+  "hering-illusion": (page) => dragFirstHandle(page),
+  "hermann": (page) => dragFirstHandle(page),
+  "herons-formula": (page) => dragFirstHandle(page),
+  "hiai-019": (page) => dragFirstHandle(page),
+  "hinged-dissection-of-vase": (page) => dragFirstHandle(page),
+  "hinged-napoleon": (page) => dragFirstHandle(page),
+  "hinged-ptolemy": (page) => dragFirstHandle(page),
+  "hinged-pythagoras": (page) => dragFirstHandle(page),
+  "hinged-pythagoras-2": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

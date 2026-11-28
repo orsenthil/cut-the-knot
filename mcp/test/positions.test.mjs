@@ -2405,6 +2405,16 @@ check("hart-circle: the Hart circle touches all four incircles exactly", read["h
 check("hart-inversor: the saved linkage satisfies the power and product identities", read["hart-inversor"]?.opTimesOq === read["hart-inversor"].product && read["hart-inversor"].acTimesBd > read["hart-inversor"].opTimesOq && Object.values(read["hart-inversor"].savedVsCore).every((g) => g === 0) === true);
 check("haruki: BE=AF=AQ·RB/QR in the saved figure", Math.abs(read.haruki?.BE - read.haruki.AF) < 1e-6 && Math.abs(read.haruki.BE - read.haruki.ratio) < 1e-6 && read.haruki.savedLengthsMatch === true);
 check("hatzipolakis-triangle: all midpoint and incircle collinearities hold", read["hatzipolakis-triangle"]?.drawingPossible === true && Object.values(read["hatzipolakis-triangle"].reading.claims).every(Boolean) === true);
+check("heaver: the turning shape keeps its radii while the visible span swells", read.heaver?.core.rotationKeepsEveryRadius === true && typeof read.heaver.core.visibleHeightPx === "number");
+check("hering-illusion: every drawn ray and band is straight", read["hering-illusion"]?.everySegmentStraight === true && read["hering-illusion"].straightBands === true && read["hering-illusion"].rayCount === 26);
+check("hermann: open crossings hold no grey blob", read.hermann?.greyBlobPainted === false && read.hermann.openCrossings === 9 && read.hermann.crossingCount === 9);
+check("herons-formula: area formula, S=rs and cotangent identity all hold", read["herons-formula"]?.reading.allPageClaimsHold === true && read["herons-formula"].drawingPossible === true);
+check("hiai-019: the three equilateral circles chain closes on D", read["hiai-019"]?.rebuiltFromSavedGeometry === true && read["hiai-019"].reading.closure < 1e-8 && typeof read["hiai-019"].fermat === "object");
+check("hinged-dissection-of-vase: the saved hinge agrees with init and reaches the square", read["hinged-dissection-of-vase"]?.savedVsInit.agrees === true && read["hinged-dissection-of-vase"].result === "done");
+check("hinged-napoleon: centre triangle equilateral and hinge claims agree with the page", read["hinged-napoleon"]?.claims.napoleonEquilateral === true && read["hinged-napoleon"].claims.angleSums360 === true && Object.values(read["hinged-napoleon"].claimAgreement).every(Boolean) === true);
+check("hinged-ptolemy: AC·BP+AB·CP equals AP·BC in the saved circle", Math.abs(read["hinged-ptolemy"]?.reading.ptolemy.gap) < 1e-8 && typeof read["hinged-ptolemy"].reading.hinge === "object");
+check("hinged-pythagoras: c²=(a+b)²-2ab at every angle", read["hinged-pythagoras"]?.holds === true && read["hinged-pythagoras"].a2 + read["hinged-pythagoras"].b2 === read["hinged-pythagoras"].c2);
+check("hinged-pythagoras-2: (a-b)²+2ab tiles the c² square", read["hinged-pythagoras-2"]?.reading.algebra.holds === true && read["hinged-pythagoras-2"].reading.tiling.tilesSquare === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2866,6 +2876,30 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("haruki/lengths: BE=AF=AQ·RB/QR independent of P", len.equalLengths === true && len.matchesProductFormula === true && len.sweep.independentOfP === true);
   const claims = runGameLogic("hatzipolakis-triangle", "check_claims", {});
   check("hatzipolakis-triangle/check_claims: all page collinearities hold", claims.allPageClaimsHold === true && claims.failedClaims.length === 0);
+}
+
+// The batch-33 tutor actions all run their real cores, not just their saved positions.
+{
+  const span = runGameLogic("heaver", "visible_span", {});
+  check("heaver/visible_span: radii fixed while the visible height doubles and repeats", span.repeatsEverySteps === 50 && span.largestVisibleHeightPx > span.smallestVisibleHeightPx && span.atSteps.length > 0);
+  const geo = runGameLogic("hering-illusion", "geometry_report", {});
+  check("hering-illusion/geometry_report: every segment is straight by the pixel facts", geo.pixelFacts.everySegmentStraight === true && geo.pixelFacts.centerIsCanvasMiddle === true && typeof geo.perception === "string");
+  const gaze = runGameLogic("hermann", "gaze_at_crossing", { n: 4, part: 50, shape: "rect", gaze: { x: 59.5, y: 99.5 } });
+  check("hermann/gaze_at_crossing: looking at a gap changes no pixels", gaze.lookedAt >= 0 && gaze.drawingIdenticalWithGazeMoved === true && gaze.blobVanishesOnlyPerceptually === true);
+  const prod = runGameLogic("herons-formula", "product_identity", {});
+  check("herons-formula/product_identity: S=rs, xyz=r²s and the cotangent identity", prod.allPageClaimsHold === true && prod.failedClaims.length === 0);
+  const chain = runGameLogic("hiai-019", "circle_chain", {});
+  check("hiai-019/circle_chain: D-E-F closes and is equilateral", chain.closesBackAtD === true && chain.def.equilateral === true && chain.onCircleError < 1e-8);
+  const vase = runGameLogic("hinged-dissection-of-vase", "vase_to_square", {});
+  check("hinged-dissection-of-vase/vase_to_square: hinged pieces give a 4R² square", vase.areas.vaseEqualsSquare === true && typeof vase.square.side === "number");
+  const nap = runGameLogic("hinged-napoleon", "napoleon_centres", {});
+  check("hinged-napoleon/napoleon_centres: centre triangle equilateral with zero spread", nap.centreTriangle.equilateral === true && nap.centreTriangle.sideSpread === 0 && nap.claims.napoleonEquilateral === true);
+  const pto = runGameLogic("hinged-ptolemy", "ptolemy_identity", {});
+  check("hinged-ptolemy/ptolemy_identity: opposite-side products sum to the diagonal product", Math.abs(pto.ptolemy.gap) < 1e-8 && pto.ptolemy.holds === true);
+  const sw = runGameLogic("hinged-pythagoras", "angle_sweep", { side: 200, a: 149 });
+  check("hinged-pythagoras/angle_sweep: identity holds at all 96 angles, squares only at 90", sw.identityHoldsAtEveryAngle === true && sw.anglesChecked === 96 && sw.legSquaresFormedAt.join() === "90");
+  const p10 = runGameLogic("hinged-pythagoras-2", "proof10", {});
+  check("hinged-pythagoras-2/proof10: (a-b)²+2ab tiles c²", p10.algebra.holds === true && p10.tiling.tilesSquare === true);
 }
 
 // A game with no reader, and a position that makes no sense.

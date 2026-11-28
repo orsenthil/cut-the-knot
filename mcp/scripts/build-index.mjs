@@ -799,6 +799,16 @@ const CORE_GLOBALS = {
   "hart-inversor/hart-inversor-core.js": ["HartInversorCore"],
   "haruki/haruki-core.js": ["HarukiCore"],
   "hatzipolakis-triangle/hatzipolakis-triangle-core.js": ["HatzipolakisTriangleCore"],
+  "heaver/heaver-core.js": ["HeaverCore"],
+  "hering-illusion/hering-illusion-core.js": ["HeringIllusionCore"],
+  "hermann/hermann-core.js": ["HermannCore"],
+  "herons-formula/herons-formula-core.js": ["HeronsFormulaCore"],
+  "hiai-019/hiai-019-core.js": ["Hiai019Core"],
+  "hinged-dissection-of-vase/hinged-dissection-of-vase-core.js": ["HingedDissectionOfVaseCore"],
+  "hinged-napoleon/hinged-napoleon-core.js": ["HingedNapoleonCore"],
+  "hinged-ptolemy/hinged-ptolemy-core.js": ["HingedPtolemyCore"],
+  "hinged-pythagoras/hinged-pythagoras-core.js": ["HingedPythagorasCore"],
+  "hinged-pythagoras-2/hinged-pythagoras-2-core.js": ["HingedPythagoras2Core"],
 };
 
 const games = [];
