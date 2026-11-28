@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JLAyme &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and the point D on its base: why does the chord of the tangent circle always pass through the incenter?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/jl-ayme/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="JLAyme">
+<meta property="og:description" content="Drag the corners of a triangle and the point D on its base: why does the chord of the tangent circle always pass through the incenter?">
+<meta property="og:url" content="https://coolmaths.ai/jl-ayme/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri { fill: var(--accent); fill-opacity: 0.06; stroke: none; }
+  #board .cut { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .circle-p { fill: var(--accent); fill-opacity: 0.12; stroke: var(--accent); stroke-width: 2.5; }
+  #board .incircle { fill: none; stroke: var(--good); stroke-width: 1.5; }
+  #board .ef { stroke: var(--ink); stroke-width: 2; }
+  #board .mn { stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 5 3; }
+  #board .radii-line { stroke: var(--muted); stroke-width: 1.2; }
+  #board .bisector { stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .bm { stroke: var(--muted); stroke-width: 1.2; }
+  #board .aux-circle.a { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-opacity: 0.7; }
+  #board .aux-circle.b { fill: none; stroke: var(--good); stroke-width: 1.5; stroke-opacity: 0.7; }
+  #board .aux-circle.c { fill: none; stroke: var(--bad); stroke-width: 1.5; stroke-opacity: 0.7; }
+  #board .aux-circle.d { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-opacity: 0.8; }
+  #board .center-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1; }
+  #board .incenter-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-j { fill: var(--bad); stroke: var(--stage); stroke-width: 1; }
+  #board .contact-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1; }
+  #board .tangent-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1; }
+  #board .arc-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 5; }
+  #board .point-label { fill: var(--text); font-size: 0.72rem; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.6rem; }
+</style>
+</head>
+<body data-game="jl-ayme" data-kind="demo">
+<main id="main">
+  <h1>JLAyme</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A circle touches a triangle's base, the line from the top corner to a point on the base, and the circle around the triangle; its two touch points line up with the triangle's centre.<br>
+    <strong>How to play:</strong> Drag the dots A, B, C and D, or focus a dot and use the arrow keys. Tick the boxes to reveal the steps of the proof one at a time.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 340" role="group"
+         aria-label="Triangle ABC with D on BC. A circle touches AD at F, BC at E and the circumcircle at K; the chord EF meets the incenter I."></svg>
+  </div>
+
+  <div class="controls">
+    <label class="option" for="statementChk"><input id="statementChk" type="checkbox"> Show statement</label>
+    <label class="option" for="namesChk"><input id="namesChk" type="checkbox" checked> Show names</label>
+    <label class="option" for="step1Chk"><input id="step1Chk" type="checkbox"> Step 1</label>
+    <label class="option" for="step2Chk"><input id="step2Chk" type="checkbox"> Step 2</label>
+    <label class="option" for="step3Chk"><input id="step3Chk" type="checkbox"> Step 3</label>
+    <label class="option" for="step4Chk"><input id="step4Chk" type="checkbox"> Step 4</label>
+    <button id="allBtn" type="button" aria-label="Turn on all four steps of the proof">All steps</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the triangle and the point D back where they started">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the four dots and the little circle changes shape. Yet the line joining its two touch points keeps going through one and the same point of the triangle. This is Y. Sawayama's Lemma, the key to Thébault's problem.</p>
+
+      <h2>One circle, three touches</h2>
+      <p>Draw triangle <code>ABC</code> and its <a class="wiki-term" data-wiki="Circumscribed_circle" href="https://en.wikipedia.org/wiki/Circumscribed_circle" target="_blank" rel="noopener">circumcircle</a>. Through <code>A</code> draw a line meeting the base <code>BC</code> at <code>D</code>. The blue circle has its centre <code>P</code> on the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> at <code>D</code>, so it touches <code>AD</code> at <code>F</code> and <code>CD</code> at <code>E</code> at the same distance. It also touches the circumcircle at <code>K</code>. The page's claim is that the chord <code>EF</code> passes through the <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incenter</a> <code>I</code> of <code>ABC</code>. The logic test checks this for 261 configurations, and it held to floating-point precision.</p>
+
+      <h2>The first two steps</h2>
+      <p>Let <code>M</code> and <code>N</code> be the other places where the lines <code>KE</code> and <code>KF</code> meet the circumcircle. Because the two circles are <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothetic</a> at <code>K</code>, the chords <code>MN</code> and <code>EF</code> are parallel. The point <code>M</code> is the midpoint of the arc <code>BC</code> away from <code>K</code>, so <code>AM</code> bisects the angle at <code>A</code> and contains <code>I</code>. If <code>J = AM ∩ EF</code>, then <code>A</code>, <code>F</code>, <code>J</code> and <code>K</code> lie on one circle. Tick <strong>Step 1</strong> and <strong>Step 2</strong> to see these lines and circles.</p>
+
+      <h2>Why J is the incenter</h2>
+      <p><a class="wiki-term" data-wiki="Miquel%27s_theorem" href="https://en.wikipedia.org/wiki/Miquel%27s_theorem" target="_blank" rel="noopener">Miquel's Pivot Theorem</a> applied to triangle <code>AFJ</code> says that the circle through <code>E</code>, <code>J</code> and <code>K</code> touches <code>AJ</code> at <code>J</code>. Now take the circle centred at <code>M</code> with radius <code>MB</code>: it passes through <code>I</code> and is <a class="wiki-term" data-wiki="Orthogonal_circles" href="https://en.wikipedia.org/wiki/Orthogonal_circles" target="_blank" rel="noopener">orthogonal</a> to the blue circle. Since <code>∠BKE = ∠MAC = ∠MBE</code>, the circle through <code>B</code>, <code>K</code> and <code>E</code> touches <code>BM</code> at <code>B</code>. It follows that <code>MB = MJ</code>, and as also <code>MB = MI</code>, we get <code>J = I</code>. The status line says each of these in words as you tick <strong>Step 3</strong> and <strong>Step 4</strong>.</p>
+
+      <h2>What the test found</h2>
+      <p>The page you can visit today puts a GeoGebra model in place of Bogomolny's Java applet, but its statement of the lemma is the same. This port follows the Java construction: a quadratic gives the blue circle's centre, then two line–circle intersections give <code>M</code> and <code>N</code>. Three harmless quirks stay: the original computes one distance it never uses, chooses between two circle hits by a one-pixel test, and averages three distances when one would do. No claim on the page failed the test; the count of 261 includes the applet's own opening picture.</p>
+
+      <p class="tip">Try ticking <strong>All steps</strong> and then drag <code>D</code> slowly along <code>BC</code>: watch the chord <code>EF</code> keep passing through the green incenter dot while every circle moves.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/JLAyme.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="jl-ayme-core.js"></script>
+<script src="jl-ayme.js"></script>
+</body>
+</html>
