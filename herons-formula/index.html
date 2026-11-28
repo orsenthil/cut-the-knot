@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Heron's Formula &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and watch the circle inside it measure the space it covers. Do two very different area calculations always agree?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/herons-formula/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Heron's Formula">
+<meta property="og:description" content="Drag the corners of a triangle and watch the circle inside it measure the space it covers. Do two very different area calculations always agree?">
+<meta property="og:url" content="https://coolmaths.ai/herons-formula/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The three piece colours are the applet's own (255,63,191), (91,191,91)
+     and (191,191,91); everything else uses the site's tokens. */
+  #stage { width: 100%; max-width: 34rem; margin: 0 auto; padding: 0.5rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board {
+    --piece-a: #ff3fbf;
+    --piece-b: #5bbf5b;
+    --piece-c: #bfbf5b;
+  }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .incircle { fill: none; stroke: var(--good); stroke-width: 2.2; }
+  #board .radius-line { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 3; }
+  #board .touch-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .wedge, #board .strip, #board .right-piece { stroke-width: 1; stroke-opacity: 0.7; fill-opacity: 0.26; }
+  #board .wedge-a, #board .strip-a, #board .right-piece.wedge-a { fill: var(--piece-a); stroke: var(--piece-a); }
+  #board .wedge-b, #board .strip-b, #board .right-piece.wedge-b { fill: var(--piece-b); stroke: var(--piece-b); }
+  #board .wedge-c, #board .strip-c, #board .right-piece.wedge-c { fill: var(--piece-c); stroke: var(--piece-c); }
+  #board .strip-edge, #board .right-edge { fill: none; stroke: var(--ink); stroke-width: 1.8; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 18px;
+    font-weight: 650; pointer-events: none;
+  }
+  #board .centre-label { fill: var(--good); }
+  #board .part-label { fill: var(--accent); font-size: 16px; }
+  #board .product-label { fill: var(--muted); font-size: 12px; font-weight: 550; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  #status { overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="herons-formula" data-kind="demo">
+<main id="main">
+  <h1>Heron's Formula</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners of a triangle and watch how the circle inside it can measure the space it covers; there is nothing to win.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a corner and use the arrow keys. Press Show names for the labels and Check the formula to see the two areas agree.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 450" role="group"
+         aria-label="A draggable triangle with its incircle and touch points. Below it the six small triangles are rearranged into a strip, and on the right the products x y z and r squared times x plus y are shown."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset triangle</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show or hide the point and product names">Show names</button>
+    <button id="checkBtn" type="button" aria-label="Check that both area calculations agree for this triangle">Check the formula</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Moving one corner changes the size and shape of the triangle, yet two very different ways of working out its space inside always give the same answer. The applet shows why: a circle tucked into the corners cuts the triangle into pieces that can be laid out as a rectangle.</p>
+
+      <h2>Heron's formula</h2>
+      <p>Write the side lengths as <code>a</code>, <code>b</code>, <code>c</code> and half the perimeter as <code>s = (a + b + c)/2</code>. <a class="wiki-term" data-wiki="Heron%27s_formula" href="https://en.wikipedia.org/wiki/Heron%27s_formula" target="_blank" rel="noopener">Heron's formula</a> says the <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> is</p>
+      <blockquote><code>S² = s(s - a)(s - b)(s - c)</code></blockquote>
+      <p>The circle touches each side at a point. The two pieces of a side meeting at a corner have equal lengths from that corner: call them <code>x = s - a</code>, <code>y = s - b</code>, <code>z = s - c</code>. Then <code>s = x + y + z</code> and the formula becomes <code>S² = sxyz</code>. The logic test checked this at thousands of triangles, including flat and very thin ones, comparing it with the area measured straight from the three corner positions.</p>
+
+      <h2>Six pieces make a rectangle</h2>
+      <p>The <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> meets the sides at right angles, so each of the six small triangles has height <code>r</code>, the <a class="wiki-term" data-wiki="Inradius" href="https://en.wikipedia.org/wiki/Inradius" target="_blank" rel="noopener">inradius</a>. At the bottom of the picture they are laid side by side into a rectangle <code>r</code> high and <code>x + y + z = s</code> wide. Its area is <code>rs</code>, but it is also the whole triangle, so <code>S = rs</code>. Turn on Show names to see the three widths.</p>
+
+      <h2>The product identity</h2>
+      <p>Let <code>I</code> be the centre of the circle and <code>w = AI</code>. Splitting the angles at the corners in half gives <code>cot α = x/r</code>, <code>cot β = y/r</code>, <code>cot γ = z/r</code> with <code>α + β + γ = 90°</code>. The right-hand diagram shows the identity</p>
+      <blockquote><code>xyz = r²(x + y + z) = r²s</code></blockquote>
+      <p>which is the same as the trigonometric rule <code>cot α + cot β + cot γ = cot α cot β cot γ</code>. Together with <code>S = rs</code> it gives <code>sxyz = r²s² = S²</code>, finishing the proof. The logic test checked both identities and the angle rule for every triangle it tried.</p>
+
+      <h2>From a four-sided shape to a triangle</h2>
+      <p>The page also notes that Heron's formula is a special case of <a class="wiki-term" data-wiki="Brahmagupta%27s_formula" href="https://en.wikipedia.org/wiki/Brahmagupta%27s_formula" target="_blank" rel="noopener">Brahmagupta's formula</a> for a four-sided shape drawn inside a circle: let one side shrink to nothing and the two corners at its ends merge into one. The logic test checked that Brahmagupta's area really approaches Heron's as the fourth side tends to zero. The applet keeps the touch-point construction and the "Show names" checkbox; its old green panel and checkbox have been replaced by this page's controls.</p>
+
+      <p class="tip">Try making a long, thin triangle, then press Check the formula. The strip at the bottom gets very narrow, but its area still matches the number from Heron's formula.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HeronsFormula.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="herons-formula-core.js"></script>
+<script src="herons-formula.js"></script>
+</body>
+</html>
