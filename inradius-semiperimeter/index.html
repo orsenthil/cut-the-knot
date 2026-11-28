@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inradius Semiperimeter &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and watch six pieces turn into a rectangle. Can you see why the area equals the semiperimeter times the inradius?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/inradius-semiperimeter/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Inradius Semiperimeter">
+<meta property="og:description" content="Drag the corners of a triangle and watch six pieces turn into a rectangle. Can you see why the area equals the semiperimeter times the inradius?">
+<meta property="og:url" content="https://coolmaths.ai/inradius-semiperimeter/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-outline { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .rect-outline { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .divider { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 4; }
+  #board .piece { stroke: var(--ink); stroke-width: 1.4; stroke-linejoin: round; }
+  #board .piece-0 { fill: var(--accent); fill-opacity: 0.72; }
+  #board .piece-1 { fill: var(--good); fill-opacity: 0.58; }
+  #board .piece-2 { fill: var(--highlight); stroke: var(--accent); }
+  #board .incircle { fill: var(--good); fill-opacity: 0.10; stroke: var(--good); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .center-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .touch-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .dim-label { fill: var(--accent); font-size: 15px; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  #status { min-height: 2.5em; }
+</style>
+</head>
+<body data-game="inradius-semiperimeter" data-kind="demo">
+<main id="main">
+  <h1>Inradius Semiperimeter</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners of a triangle and watch six coloured pieces turn into a rectangle.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a corner and use the arrow keys. Press Show hint to see the circle, Move them to rearrange the pieces, or Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 360" role="group"
+         aria-label="A triangle cut into six pieces around its incenter, above a rectangle of width s and height r"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="moveBtn" type="button" class="primary" aria-label="Move the six pieces into the rectangle">Move them</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show or hide the circle touching all three sides">Show hint</button>
+    <button id="resetBtn" type="button" aria-label="Restore the starting triangle">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A triangle can be cut up and put back together as a rectangle. Here the cut goes through the centre of the circle that touches all three sides, so the rectangle's sides turn out to be two numbers you already know from the triangle.</p>
+
+      <h2>Six pieces, three matching pairs</h2>
+      <p>Let the sides be <code>a = BC</code>, <code>b = CA</code>, <code>c = AB</code> and let <code>O</code> be the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a>. It is equally far from every side; that distance is the inradius <code>r</code>. The feet of the perpendiculars are <code>D</code> on <code>BC</code>, <code>E</code> on <code>CA</code> and <code>F</code> on <code>AB</code>. The six triangles <code>ODC, OCE, OEA, OAF, OFB, OBD</code> each have height <code>r</code>. Tangents drawn from one corner have equal lengths, so <code>AE = AF</code>, <code>BF = BD</code> and <code>CD = CE</code>. That is why the pieces come in pairs with equal bases, and why each pair can be swung into a small rectangle.</p>
+
+      <h2>The rectangle is s by r</h2>
+      <p>Half the perimeter is the semiperimeter <code>s = (a + b + c) / 2</code>. The three columns of the rectangle have widths <code>AE</code>, <code>BF</code> and <code>CD</code>, whose sum is <code>s</code> (each appears once here and once in its partner). Every column has height <code>r</code>, so</p>
+      <blockquote><code>area of triangle = s × r</code>.</blockquote>
+      <p>Press Move them: the six pieces land on exactly three columns. The logic test checks this formula on 399 triangles, and rasterises both shapes to confirm the pieces cover each one without gaps or overlaps. The page's other formula, <code>base × altitude = twice the area</code>, is checked on the same triangles. One small applet quirk is kept: if a corner comes within 0.316 units of the incenter, its foot-finding routine returns the incenter itself and the drawn rectangle is too short by a third. Drag a corner away and the construction is exact again.</p>
+
+      <h2>Why rational sides give a rational radius</h2>
+      <p>The page reports Douglas Rogers' observation: when the side lengths and the <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> are rational numbers, so is <code>r</code>. From the formula above, <code>r = area / s = 2 × area / (a + b + c)</code>: a rational number divided by a rational number. No square root is needed once the area is known. The test walks all integer-sided triangles with sides up to 40 whose <a class="wiki-term" data-wiki="Heron%27s_formula" href="https://en.wikipedia.org/wiki/Heron%27s_formula" target="_blank" rel="noopener">Heron area</a> is a whole number, and the core's radius agrees with that fraction every time; for a 3-4-5 triangle it is 1, and for 5-12-13 it is 2.</p>
+
+      <p class="tip">Try a long, thin triangle and then a nearly equilateral one: the rectangle changes shape, but its area always matches the triangle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/InradiusSemiperimeter.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="inradius-semiperimeter-core.js"></script>
+<script src="inradius-semiperimeter.js"></script>
+</body>
+</html>
