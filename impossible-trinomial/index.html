@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Impossible Trinomial &mdash; coolmaths</title>
+<meta name="description" content="One flat drawing looks like two square prongs at the left and three round tubes at the right. Can sliding a cover over the lines change what you see?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/impossible-trinomial/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Impossible Trinomial">
+<meta property="og:description" content="One flat drawing looks like two square prongs at the left and three round tubes at the right. Can sliding a cover over the lines change what you see?">
+<meta property="og:url" content="https://coolmaths.ai/impossible-trinomial/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 42rem;
+    padding: 0.75rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: var(--stage);
+    touch-action: manipulation;
+  }
+  #board .fork-line {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+  }
+  #board .fork-oval {
+    fill: var(--stage);
+    stroke: var(--ink);
+    stroke-width: 2.2;
+  }
+  #board .cover-fill { fill: var(--stage); }
+  #board .cover-edge {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.6;
+    stroke-dasharray: 6 5;
+  }
+  .caption {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .controls .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.4rem;
+  }
+  .controls label { color: var(--muted); }
+  .controls output {
+    min-width: 2.5rem;
+    color: var(--text);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .controls input[type="range"] {
+    flex: 1 1 8rem;
+    min-width: 4rem;
+    accent-color: var(--accent);
+  }
+  .controls button { min-width: 2.75rem; min-height: 2.5rem; }
+  .controls button.primary { min-width: 5rem; }
+</style>
+</head>
+<body data-game="impossible-trinomial" data-kind="demo">
+<main id="main">
+  <h1>Impossible Trinomial</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore, not a game to win: one fork looks like two flat prongs at the left and three round tubes at the right.<br>
+    <strong>How to play:</strong> Move the sliders to slide a cover over the drawing and see what the lines look like. Press Reset to see the whole fork again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 300" role="group"
+         aria-label="A line drawing of a fork: two flat prongs at the left become three round tube ends at the right, with a movable cover band"></svg>
+    <p class="caption">Left: two flat prongs. Right: three round ends. Both readings come from the same lines.</p>
+  </div>
+
+  <div class="controls">
+    <div class="slider-row">
+      <label for="wRange">Cover width</label>
+      <output id="wValue" for="wRange" aria-hidden="true">1</output>
+    </div>
+    <div class="slider-row">
+      <button id="wLess" type="button" aria-label="Make the cover one step narrower">&minus;</button>
+      <input type="range" id="wRange" min="1" max="60" step="1" value="1" aria-label="Cover width, from 1 to 60 percent of the picture">
+      <button id="wMore" type="button" aria-label="Make the cover one step wider">+</button>
+    </div>
+    <div class="slider-row">
+      <label for="dRange">Cover position</label>
+      <output id="dValue" for="dRange" aria-hidden="true">1</output>
+    </div>
+    <div class="slider-row">
+      <button id="dLess" type="button" aria-label="Slide the cover one step left">&minus;</button>
+      <input type="range" id="dRange" min="1" max="110" step="1" value="1" aria-label="Cover position, from 1 to 110">
+      <button id="dMore" type="button" aria-label="Slide the cover one step right">+</button>
+    </div>
+    <div class="slider-row">
+      <button id="resetBtn" type="button" class="primary" aria-label="Reset both sliders to 1 and show the whole fork">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The cut-the-knot page says that the fork, on the left, appears to extend two rectangular prongs that, on the right, metamorphose into three cylinders. Nothing changes in the drawing to make that happen: only the way your eye joins the lines changes.</p>
+
+      <h2>One drawing, two readings</h2>
+      <p>Count what is really there. The applet draws <code>6</code> long horizontal lines and <code>3</code> oval ends, one on every other line. At the left, a short slant closes the lowest pair of lines into one prong, and three slants close the next lines into a second, diamond-shaped prong. So the page's claim holds in the drawing: two prong ends at the left, three round ends at the right. This is an <a class="wiki-term" data-wiki="Impossible_object" href="https://en.wikipedia.org/wiki/Impossible_object" target="_blank" rel="noopener">impossible object</a> &mdash; a flat <a class="wiki-term" data-wiki="Optical_illusion" href="https://en.wikipedia.org/wiki/Optical_illusion" target="_blank" rel="noopener">optical illusion</a>, not a solid thing you could build.</p>
+
+      <h2>How the lines are placed</h2>
+      <p>The old applet measures its canvas as <code>w</code> across and <code>h</code> down, then sets <code>t = h / 7</code>, <code>X = t / 2</code>, <code>Y = t / &radic;3</code> and <code>Z = 7w / 15</code>, rounding the divisions to whole numbers. The three ovals sit <code>2Y</code> apart on lines <code>1</code>, <code>3</code> and <code>5</code>. The logic test checks all <code>9,801</code> canvas sizes in the applet's range against a second transcription of those instructions, and they agree.</p>
+
+      <h2>The cover changes the reading, not the picture</h2>
+      <p>The two sliders paint a background-coloured band of width <code>W%</code> starting <code>D%</code> of the remaining width from the left edge. Sliding it can hide the middle of the fork, or all but a sliver. Yet the six lines and three ovals underneath never move: that is the <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a> the test checks for all <code>60 &times; 110</code> slider settings. Your brain wants to see <a class="wiki-term" data-wiki="Perspective_(visual)" href="https://en.wikipedia.org/wiki/Perspective_(visual)" target="_blank" rel="noopener">perspective</a> and a real three-dimensional object; the drawing quietly refuses to be one.</p>
+
+      <p class="tip">Try cover width 60 and position 30, then slide the position to 110. The fork looks completely different, but every line is still exactly where it was.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/ImpossibleTrinomial.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="impossible-trinomial-core.js"></script>
+<script src="impossible-trinomial.js"></script>
+</body>
+</html>
