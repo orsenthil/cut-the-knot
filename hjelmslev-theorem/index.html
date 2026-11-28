@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hjelmslev Theorem &mdash; coolmaths</title>
+<meta name="description" content="Drag the ends of two bars and watch the dots that join matching points. Will the dots always lie on one straight line, whatever the bars and whatever the mix?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hjelmslev-theorem/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hjelmslev Theorem">
+<meta property="og:description" content="Drag the ends of two bars and watch the dots that join matching points. Will the dots always lie on one straight line, whatever the bars and whatever the mix?">
+<meta property="og:url" content="https://coolmaths.ai/hjelmslev-theorem/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 1rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .pair-line { fill: none; stroke: var(--muted); stroke-width: 1; opacity: 0.7; }
+  #board .locus-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 7 5; opacity: 0.85; }
+  #board .coincide-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .mark-dot { fill: var(--highlight); stroke: var(--accent); stroke-width: 1.5; }
+  #board .bar-hit { fill: none; stroke: transparent; stroke-width: 18; pointer-events: stroke; cursor: grab; }
+  #board .bar { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 17px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .glabel.alt { fill: var(--accent); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls .mix { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; }
+  .controls input[type="range"] { width: min(9rem, 100%); accent-color: var(--accent); }
+</style>
+</head>
+<body data-game="hjelmslev-theorem" data-kind="demo">
+<main id="main">
+  <h1>Hjelmslev Theorem</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the ends of the two black bars and watch the little dots that join matching points along them.<br>
+    <strong>How to play:</strong> Drag a dot or a whole bar, or focus an end and use the arrow keys. Move the mix slider, try the two switches, then press Check the claim.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 400" role="group"
+         aria-label="Two black segments with pale lines joining matching points and eleven dots lying on a single line"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the two segments to their starting positions">Reset</button>
+    <label class="mix" for="rSlider">Mix <output id="rOut" for="rSlider">0.50</output></label>
+    <input id="rSlider" type="range" min="0" max="1.01" step="0.01" value="0.5"
+           aria-label="Mix r, from 0 to 1.01">
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the end-point names">Hide names</button>
+    <button id="equalBtn" type="button" aria-pressed="false" aria-label="Toggle keeping the two segments the same length">Keep segments equal</button>
+    <button id="fixBtn" type="button" aria-pressed="false" aria-label="Toggle fixing the length of the segment being dragged">Fix lengths</button>
+    <button id="checkBtn" type="button" aria-label="Check how the eleven dots are arranged">Check the claim</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the bars any way you like and the dots keep falling into a neat pattern. The surprise is how little the bars need to have in common for it to happen.</p>
+
+      <h2>The picture, then and now</h2>
+      <p>The original applet drew two black segments, a pale line between each pair of matching points, and a yellow dot at one fixed mix of each pair. With the mix at <code>0.50</code> those dots are ordinary <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoints</a>. The <em>Keep segments equal</em> and <em>Fix lengths</em> switches reproduce the applet's two checkboxes; this page adds a dashed guide through the dots and a Check button so you can read the result in words.</p>
+      <p>The live cut-the-knot page now carries a JavaScript illustration and no longer embeds the Java applet. A <a href="https://web.archive.org/web/20101230171634/http://www.cut-the-knot.org/Curriculum/Geometry/HjelmslevTheorem.shtml" target="_blank" rel="noopener">30 December 2010 capture</a> does embed <code>CODE="HjelmslevTheorem"</code> twice, once with <code>ShowNames=0</code> and once with <code>ShowNames=1</code>; the rules and options here come from that archive.</p>
+
+      <h2>The exact claim</h2>
+      <p>The page states that if two segments are related by an <a class="wiki-term" data-wiki="Isometry" href="https://en.wikipedia.org/wiki/Isometry" target="_blank" rel="noopener">isometry</a>, then the midpoints of corresponding points are either all different and <a class="wiki-term" data-wiki="Collinearity" href="https://en.wikipedia.org/wiki/Collinearity" target="_blank" rel="noopener">collinear</a> or all coincide. It adds that the matching need only be <a class="wiki-term" data-wiki="Affine_transformation" href="https://en.wikipedia.org/wiki/Affine_transformation" target="_blank" rel="noopener">affine</a>, and that any fixed mix works, not just halfway. That is <a class="wiki-term" data-wiki="Hjelmslev%27s_theorem" href="https://en.wikipedia.org/wiki/Hjelmslev%27s_theorem" target="_blank" rel="noopener">Hjelmslev's theorem</a> and its generalisation.</p>
+      <blockquote><code>M_i = r P₁ᵢ + (1 − r) P₂ᵢ</code>, with <code>r</code> fixed and <code>i = 0…10</code>.</blockquote>
+      <p>The logic test measured all eleven dots at every one of the applet's 102 slider notches (0 to 1.01 in steps of 0.01) on forty shapes, plus thousands of other shapes with unequal, unrelated segments. The claim held in every one: the dots were collinear, or all on one spot. Nothing on the page needed correcting.</p>
+
+      <h2>Why one straight line is enough</h2>
+      <p>A point at fraction <code>u = i/10</code> on a segment <code>AB</code> is <code>A + (B − A)u</code>. Put the two such points into the mix:</p>
+      <blockquote><code>M(u) = r[A₁ + (B₁ − A₁)u] + (1 − r)[A₂ + (B₂ − A₂)u]</code><br>
+        <code>= A_r + (B_r − A_r)u</code></blockquote>
+      <p>where <code>A_r = rA₁ + (1 − r)A₂</code> and <code>B_r = rB₁ + (1 − r)B₂</code>. This is the parametric form of the segment from <code>A_r</code> to <code>B_r</code>, so the dots cannot wander off its line. If <code>A_r</code> and <code>B_r</code> happen to be the same point, every dot is that point instead. Lengths and angles never enter the calculation, which is why an isometry is more than enough.</p>
+
+      <h2>The applet's two switches</h2>
+      <p><em>Keep segments equal</em> copies the applet's CheckAndUpdate: after you drag one end, the other segment's free end moves along its line until both segments have the same length. <em>Fix lengths</em> copies FixOnCircle: the end you drag stays on a circle around its partner, so that segment's length cannot change while you drag. In the Java applet that circle was removed when you let go; here the switch keeps the rule for pointer and arrow-key moves alike. The applet's number box allowed <code>r = 1.01</code> although the page only discusses <code>0 ≤ r ≤ 1</code>; that extra notch is kept and the claim still holds there.</p>
+
+      <p class="tip">Try dragging A₂ onto B₁ and B₂ onto A₁ with the mix at 0.50: the two ends A_r and B_r merge, and all eleven dots collapse onto one spot.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HjelmslevTheorem.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="hjelmslev-theorem-core.js"></script>
+<script src="hjelmslev-theorem.js"></script>
+</body>
+</html>
