@@ -869,6 +869,16 @@ const CORE_GLOBALS = {
   "lines/lines-core.js": ["LinesCore"],
   "line-through-grid/line-through-grid-core.js": ["LineThroughGridCore"],
   "locus-circle/locus-circle-core.js": ["LocusCircleCore"],
+  "lucky7/lucky7-core.js": ["Lucky7Core"],
+  "maclaurin-conics/maclaurin-conics-core.js": ["MaclaurinConicsCore"],
+  "maimed-cake/maimed-cake-core.js": ["MaimedCakeCore"],
+  "make-move/make-move-core.js": ["MakeMoveCore"],
+  "malfatti/malfatti-core.js": ["MalfattiCore"],
+  "malfatti-zoom/malfatti-zoom-core.js": ["MalfattiZoomCore"],
+  "many-circles/many-circles-core.js": ["ManyCirclesCore"],
+  "markowsky-2/markowsky-2-core.js": ["Markowsky2Core"],
+  "markowsky-parabola/markowsky-parabola-core.js": ["MarkowskyParabolaCore"],
+  "math-pro/math-pro-core.js": ["MathProCore"],
 };
 
 const games = [];

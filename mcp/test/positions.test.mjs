@@ -2475,6 +2475,16 @@ check("line-circle-and-fixed-points: VR goes through the fixed point S", read["l
 check("lines: the saved offset conserves total drawn length", read["lines"]?.totalDrawnLength === 1800 && read["lines"].eyesOpen === false && read["lines"].opensEyesAt.dx === 20 && read["lines"].opensEyesAt.dy === -20);
 check("line-through-grid: the saved diagonal crosses 17 squares", read["line-through-grid"]?.matchesSaved === true && read["line-through-grid"].crossed === 17 && read["line-through-grid"].gcd === 1 && read["line-through-grid"].enumeratedCells === 17);
 check("locus-circle: the saved ratio matches the Apollonius circle", read["locus-circle"]?.locusKind === "Apollonian circle" && read["locus-circle"].measuredAtP.agrees === true && read["locus-circle"].familyDirection.smallRHugsA === true);
+check("lucky7: the saved seven-counter board sits in the reachable component", read["lucky7"]?.cycleViewDiffers === true && read["lucky7"].inversionParity === "even" && read["lucky7"].reachableByTurning === true);
+check("maclaurin-conics: the saved apex agrees with the two-line construction", read["maclaurin-conics"]?.apexAgrees === true && read["maclaurin-conics"].collinearUVW === false && typeof read["maclaurin-conics"].crossingLM.x === "number");
+check("maimed-cake: the saved cut leaves two equal areas", read["maimed-cake"]?.areas[0] === read["maimed-cake"].areas[1] && Object.values(read["maimed-cake"].savedMatchesCore).every(Boolean) === true && read["maimed-cake"].reading.printedSplit.equal === false);
+check("make-move: the spelled board has even inversion parity", read["make-move"]?.spellsMessage === true && read["make-move"].parityClass === 0 && read["make-move"].legalMoves === 6);
+check("malfatti: the saved three circles touch each other and two sides", read["malfatti"]?.savedMatchesCore === true && read["malfatti"].reading.checks.allHold === true && read["malfatti"].circles.length === 3);
+check("malfatti-zoom: the saved Hart construction matches the core", read["malfatti-zoom"]?.savedMatchesCore === true && read["malfatti-zoom"].valid === true && read["malfatti-zoom"].reading.residuals.circlePair < 1e-8);
+check("many-circles: the saved walk closes", read["many-circles"]?.closes === true && read["many-circles"].closureGap < 1e-8 && read["many-circles"].rewalkDrift < 1e-8);
+check("markowsky-2: the saved tangent claims hold exactly and in the drawing", read["markowsky-2"]?.reading.drawnOK === true && read["markowsky-2"].reading.exactOK === true);
+check("markowsky-parabola: exact angles equal despite whole-pixel rounding", read["markowsky-parabola"]?.reading.exactCurve.anglesEqual === true && read["markowsky-parabola"].reading.exactCurve.slopesAreOpposites === true && read["markowsky-parabola"].reading.inStatedDomain === true);
+check("math-pro: the near and mixed cevian triplets concur", read["math-pro"]?.claims.nearConcur === true && read["math-pro"].claims.mixedConcur === true && read["math-pro"].claims.allFarFails === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -3105,6 +3115,30 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("line-through-grid/crossed_squares: M+N-gcd matches enumeration", cells.formula === 16 && cells.enumerated === 16 && cells.agrees === true && cells.coprimeShortcut === 16);
   const locus = runGameLogic("locus-circle", "apollonius_locus", {});
   check("locus-circle/apollonius_locus: MN diameter and closed form agree", locus.matchesClosedForm === true && locus.agreesAtEverySample === true && locus.familyDirection.smallRHugsA === true);
+}
+
+// The batch-40 tutor actions also run their real cores, not just saved positions.
+{
+  const lucky = runGameLogic("lucky7", "parity_components", {});
+  check("lucky7/parity_components: 7 reaches all 5040, 5 reaches half", lucky.sizes.find((b) => b.n === 7).reachableFromHome === 5040 && lucky.sizes.find((b) => b.n === 5).reachableFromHome === 60);
+  const mac = runGameLogic("maclaurin-conics", "maclaurin_locus", {});
+  check("maclaurin-conics/maclaurin_locus: traced apexes fit a conic", mac.classification.passes === true && mac.apexAgrees === true && mac.classification.count === mac.traced);
+  const cake = runGameLogic("maimed-cake", "equal_cut", {});
+  check("maimed-cake/equal_cut: triangle and parallel cuts both halve the cake", cake.triangleCut.equalHalves === true && cake.parallelCut.equalHalves === true && cake.parallelCut.parallelToBZ === true && cake.parallelCut.BPequalsZQ === true);
+  const move = runGameLogic("make-move", "parity_classes", {});
+  check("make-move/parity_classes: duplicate O keeps parity odd after Reset", move.boards[0].spellsMessage === true && move.boards[1].inversions === 7 && move.boards[2].parityClass === 1 && move.boards[2].spellsMessage === true);
+  const steiner = runGameLogic("malfatti", "steiner_circles", {});
+  check("malfatti/steiner_circles: all tangency and Pitot checks hold", steiner.checks.allHold === true && steiner.areas.fraction > 0 && steiner.areas.fraction < 1);
+  const zoom = runGameLogic("malfatti-zoom", "malfatti_circles", {});
+  check("malfatti-zoom/malfatti_circles: Hart's circles tangent in both E configurations", zoom.reading.residuals.circlePair < 1e-8 && zoom.reading.configurations.splitCount === 2 && zoom.view.fixedCentre.x === 180);
+  const circles = runGameLogic("many-circles", "closed_walk", { n: 5, angle: 0.7 });
+  check("many-circles/closed_walk: the walk returns to its first corner", circles.closes === true && circles.closureGap < 1e-8 && circles.rewalkDrift < 1e-8);
+  const tangent = runGameLogic("markowsky-2", "tangent_claim", {});
+  check("markowsky-2/tangent_claim: six claims exact and within pixel rounding", tangent.allHoldExactly === true && tangent.allWithinPixelRounding === true && tangent.drawnOK === true && tangent.exactOK === true);
+  const angles = runGameLogic("markowsky-parabola", "equal_angles", {});
+  check("markowsky-parabola/equal_angles: exact angles match, drawn ones round", angles.exactCurve.anglesEqual === true && angles.exactCurve.slopesAreOpposites === true && angles.drawnAngles.equalAtWholePixels === false);
+  const pro = runGameLogic("math-pro", "concurrence", {});
+  check("math-pro/concurrence: near and mixed triplets meet, all-far misses", pro.claims.nearConcur === true && pro.claims.mixedConcur === true && pro.claims.allFarFails === true);
 }
 
 // A game with no reader, and a position that makes no sense.

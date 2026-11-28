@@ -1363,6 +1363,19 @@ const GAMES = {
   },
   "line-through-grid": (page) => dragFirstHandle(page),
   "locus-circle": (page) => dragFirstHandle(page),
+  "lucky7": (page) => dragFirstHandle(page),
+  "maclaurin-conics": (page) => dragFirstHandle(page),
+  "maimed-cake": (page) => dragFirstHandle(page),
+  "make-move": async (page) => {
+    await page.locator("#board .cursor-handle").first().focus();
+    await page.keyboard.press("ArrowRight");
+  },
+  "malfatti": (page) => dragFirstHandle(page),
+  "malfatti-zoom": (page) => dragFirstHandle(page),
+  "many-circles": (page) => dragFirstHandle(page),
+  "markowsky-2": (page) => dragFirstHandle(page),
+  "markowsky-parabola": (page) => dragFirstHandle(page),
+  "math-pro": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },
