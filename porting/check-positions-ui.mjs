@@ -1298,6 +1298,19 @@ const GAMES = {
   "huygens-pyth": (page) => dragFirstHandle(page),
   "hyperboloid": (page) => dragFirstHandle(page),
   "illusion": (page) => dragFirstHandle(page),
+  "impossible-trinomial": async (page) => {
+    await page.locator("#dRange").focus();
+    await page.keyboard.press("ArrowRight");
+  },
+  "in-and-circumcenter": (page) => dragFirstHandle(page),
+  "in-and-circumcenter-b": (page) => dragFirstHandle(page),
+  "in-and-circumcenter-c": (page) => dragFirstHandle(page),
+  "in-and-circumcenter-d": (page) => dragFirstHandle(page),
+  "incircle-and-midpoints": (page) => dragFirstHandle(page),
+  "incircle-in-segment": (page) => dragFirstHandle(page),
+  "incircle-in-segment-1": (page) => dragFirstHandle(page),
+  "incircles-circumcircles": (page) => dragFirstHandle(page),
+  "incircles-in-quadri": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

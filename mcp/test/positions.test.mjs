@@ -2425,6 +2425,16 @@ check("huberts-dissection: four equal sides equal AB and the pieces fill the rho
 check("huygens-pyth: the two strips give AC²+BC²=AB²", read["huygens-pyth"]?.reading.pythagorean.holds === true && typeof read["huygens-pyth"].reading.strips === "object");
 check("hyperboloid: waist equals the generator midpoint radius", read.hyperboloid?.valid === true && read.hyperboloid.waistMatchesGenerator === true && read.hyperboloid.allSamplePointsMatchSurface === true);
 check("illusion: the hidden continuations stay collinear", read.illusion?.allTransversalsParallel === true && read.illusion.hiddenPiecesCollinear === true && read.illusion.perceivedStrength === null);
+check("impossible-trinomial: six rails, two prongs and three cylinders under the cover", read["impossible-trinomial"]?.valid === true && read["impossible-trinomial"].railCount === 6 && read["impossible-trinomial"].prongCount === 2 && read["impossible-trinomial"].ovalCount === 3);
+check("in-and-circumcenter: DE equals 2·IO·sin C and is perpendicular to IO", read["in-and-circumcenter"]?.formula.holds === true && read["in-and-circumcenter"].deVsIo.perpendicular === true && read["in-and-circumcenter"].claims.all === true);
+check("in-and-circumcenter-b: copied-side construction obeys the same ratio", read["in-and-circumcenter-b"]?.reading.checks.ratioFormula === true && read["in-and-circumcenter-b"].reading.checks.perpendicular === true && read["in-and-circumcenter-b"].reading.checks.mIsMidpoint === true);
+check("in-and-circumcenter-c: excentral Euler relation and corrected Menelaus ratios", read["in-and-circumcenter-c"]?.reading.allHold === true && read["in-and-circumcenter-c"].reading.excentral_radius_is_twice_R === true && read["in-and-circumcenter-c"].reading.BK_over_KC_is_c_over_b === true);
+check("in-and-circumcenter-d: triangle CDE congruent to ONM", read["in-and-circumcenter-d"]?.congruent === true && read["in-and-circumcenter-d"].cde.CD === read["in-and-circumcenter-d"].onm.ON && read["in-and-circumcenter-d"].cde.angleAtC === read["in-and-circumcenter-d"].onm.angleAtO);
+check("incircle-and-midpoints: DE reaches the two side midpoints", read["incircle-and-midpoints"]?.allClaimsHold === true && read["incircle-and-midpoints"].largestMidpointError < 1e-8 && typeof read["incircle-and-midpoints"].F.x === "number");
+check("incircle-in-segment: A, B and the arc midpoint are collinear", read["incircle-in-segment"]?.savedReadable === true && Object.values(read["incircle-in-segment"].reading.checks).every(Boolean) === true && read["incircle-in-segment"].reading.measurements.rho > 0);
+check("incircle-in-segment-1: the radical axis passes through M", read["incircle-in-segment-1"]?.core.radicalAxis.Mresidual < 1e-8 && read["incircle-in-segment-1"].core.intersections.count === 2 && read["incircle-in-segment-1"].savedVsCore !== undefined);
+check("incircles-circumcircles: three centres on the big circle and one small circle", read["incircles-circumcircles"]?.reading.claims.all === true && read["incircles-circumcircles"].reading.claims.centersOnCircumcircle === true && read["incircles-circumcircles"].reading.claims.concentric === true);
+check("incircles-in-quadri: Pitot gap positive so neither pair touches", read["incircles-in-quadri"]?.savedMatchesCore === true && read["incircles-in-quadri"].pitotGap > 0 && read["incircles-in-quadri"].touched.both === false);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2934,6 +2944,30 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("hyperboloid/preset_sweep: cylinder, hyperboloid and half-turn cone", presets.cylinderAtNoTurn === true && presets.fullTurnReturnsToCylinder === true && presets.coneAtHalfTurn === true);
   const geo = runGameLogic("illusion", "geometry_report", {});
   check("illusion/geometry_report: hidden continuations are straight, strength unmeasurable", geo.pixelFacts.everyTransversalStraight === true && geo.pixelFacts.hiddenPiecesCollinear === true && geo.perception.measurableFromPixels === false);
+}
+
+// The batch-35 tutor actions all run their real cores, not just their saved positions.
+{
+  const fork = runGameLogic("impossible-trinomial", "fork_report", {});
+  check("impossible-trinomial/fork_report: six rails, two prongs, three ovals", fork.railCount === 6 && fork.prongs.count === 2 && fork.ovalCount === 3);
+  const io = runGameLogic("in-and-circumcenter", "io_de", {});
+  check("in-and-circumcenter/io_de: DE equals 2·IO·sin C and is perpendicular", io.formula.holds === true && io.deVsIo.perpendicular === true && io.claims.all === true);
+  const bc = runGameLogic("in-and-circumcenter-b", "construction", {});
+  check("in-and-circumcenter-b/construction: ratio, bisectors and midpoint checks", bc.reading.checks.perpendicular === true && bc.reading.checks.ratioFormula === true && bc.reading.checks.mIsMidpoint === true && bc.reading.checks.bfEqualsEf === true);
+  const cc = runGameLogic("in-and-circumcenter-c", "diagram", {});
+  check("in-and-circumcenter-c/diagram: excentral radius 2R and reciprocal Menelaus", cc.excentral.Rprime_over_R === 2 && cc.menelaus.correctedReciprocals.product === 1 && cc.excentral.Rprime_over_R === 2);
+  const dc = runGameLogic("in-and-circumcenter-d", "compare_triangles", {});
+  check("in-and-circumcenter-d/compare_triangles: CDE congruent ONM", dc.checks.congruent === true && dc.checks.onMinusCD === 0 && dc.checks.omMinusCE === 0 && dc.checks.angleDiffDeg === 0);
+  const mid = runGameLogic("incircle-and-midpoints", "midpoint_construction", {});
+  check("incircle-and-midpoints/midpoint_construction: DE hits both side midpoints", mid.allClaimsHold === true && mid.largestMidpointError < 1e-8);
+  const seg = runGameLogic("incircle-in-segment", "inscribed_circle", {});
+  check("incircle-in-segment/inscribed_circle: A-B-M and the homothety all check out", Object.values(seg.checks).every(Boolean) === true);
+  const rad = runGameLogic("incircle-in-segment-1", "radical_axis", {});
+  check("incircle-in-segment-1/radical_axis: equal powers at M on the radical axis", rad.checks.powersEqual === true && rad.checks.productEqualsMtSquared === true && rad.checks.UVthroughM === true && rad.checks.pageClaim === true);
+  const three = runGameLogic("incircles-circumcircles", "three_centers", {});
+  check("incircles-circumcircles/three_centers: centres on the circle and one small circle", three.claims.all === true && three.claims.centersOnCircumcircle === true && three.centerOfCenters.sameCircleResidual < 1e-8);
+  const quad = runGameLogic("incircles-in-quadri", "pitot_and_touch", {});
+  check("incircles-in-quadri/pitot_and_touch: both pairs touch iff Pitot gap vanishes", quad.touch.equivalent === true && quad.pitot.equal === false && quad.touch.both === false);
 }
 
 // A game with no reader, and a position that makes no sense.

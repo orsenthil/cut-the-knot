@@ -819,6 +819,16 @@ const CORE_GLOBALS = {
   "huygens-pyth/huygens-pyth-core.js": ["HuygensPythCore"],
   "hyperboloid/hyperboloid-core.js": ["HyperboloidCore"],
   "illusion/illusion-core.js": ["IllusionCore"],
+  "impossible-trinomial/impossible-trinomial-core.js": ["ImpossibleTrinomialCore"],
+  "in-and-circumcenter/in-and-circumcenter-core.js": ["InAndCircumcenterCore"],
+  "in-and-circumcenter-b/in-and-circumcenter-b-core.js": ["InAndCircumcenterBCore"],
+  "in-and-circumcenter-c/in-and-circumcenter-c-core.js": ["InAndCircumcenterCCore"],
+  "in-and-circumcenter-d/in-and-circumcenter-d-core.js": ["InAndCircumcenterDCore"],
+  "incircle-and-midpoints/incircle-and-midpoints-core.js": ["IncircleAndMidpointsCore"],
+  "incircle-in-segment/incircle-in-segment-core.js": ["IncircleInSegmentCore"],
+  "incircle-in-segment-1/incircle-in-segment-1-core.js": ["IncircleInSegment1Core"],
+  "incircles-circumcircles/incircles-circumcircles-core.js": ["IncirclesCircumcirclesCore"],
+  "incircles-in-quadri/incircles-in-quadri-core.js": ["IncirclesInQuadriCore"],
 };
 
 const games = [];
