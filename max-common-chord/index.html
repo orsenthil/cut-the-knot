@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Max Common Chord &mdash; coolmaths</title>
+<meta name="description" content="Two circles cross at P and Q. Can you slide a bar through P until the piece between the circles is as long as possible?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/max-common-chord/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Max Common Chord">
+<meta property="og:description" content="Two circles cross at P and Q. Can you slide a bar through P until the piece between the circles is as long as possible?">
+<meta property="og:url" content="https://coolmaths.ai/max-common-chord/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .ring { fill: none; stroke-width: 2.5; }
+  #board .ring-E { stroke: var(--accent); }
+  #board .ring-F { stroke: var(--good); }
+  #board .ring-ABQ { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 10 7; }
+  #board .radical-axis { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 3 8; }
+  #board .chord-AB { stroke: var(--ink); stroke-width: 4; }
+  #board .tangent-chord { stroke: var(--accent); stroke-width: 3; stroke-dasharray: 12 6; }
+  #board .tangent-line { stroke: var(--muted); stroke-width: 1.5; }
+  #board .right-angle { fill: none; stroke: var(--good); stroke-width: 1.5; }
+  #board .mark { stroke: var(--stage); stroke-width: 2; }
+  #board .mark-R { fill: var(--highlight); stroke: var(--ink); stroke-width: 2; }
+  #board .mark-At, #board .mark-Bt { fill: var(--good); }
+  #board .mark-Pe, #board .mark-Pf { fill: var(--highlight); stroke: var(--good); }
+  #board .point-label { fill: var(--text); font-size: 0.9rem; font-weight: 600; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 6; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="max-common-chord" data-kind="demo">
+<main id="main">
+  <h1>Max Common Chord</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Explore two crossing circles and a bar through P that ends on both circles.<br>
+    <strong>How to play:</strong> Drag P or Q to change the circles, or A and B to move the bar. Choose Adjust circles or Adjust chord to decide what dragging A and B does; focus a dot and use arrow keys too.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 460" role="group"
+         aria-label="Two crossing circles with centres E and F, a chord A-P-B, the circumcircle ABQ, the point R on line PQ, and tangents from R."></svg>
+  </div>
+
+  <div class="controls" role="group" aria-label="What dragging A and B changes">
+    <button id="circlesBtn" type="button" aria-pressed="false" aria-label="Drag A or B to change the circles">Adjust circles</button>
+    <button id="chordBtn" type="button" class="primary" aria-pressed="true" aria-label="Drag A or B along the existing circles to change the chord">Adjust chord</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show or hide the point names">Names</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show or hide the tangent lines and right angles">Hint</button>
+    <button id="newBtn" type="button" aria-label="Reset the diagram to its starting position">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the bar through P and watch the number in the status line. Two lengths change, but their product is tied to a point R on the line through P and Q. The picture is a <a class="wiki-term" data-wiki="Mathematical_droodle" href="https://en.wikipedia.org/wiki/Mathematical_droodle" target="_blank" rel="noopener">droodle</a> with a maximum hiding inside it: there is nothing to win.</p>
+
+      <h2>One product, two ways</h2>
+      <p>A, B and Q lie on one circle. Its chords AB and QR cross at P, so the <a class="wiki-term" data-wiki="Intersecting_chords_theorem" href="https://en.wikipedia.org/wiki/Intersecting_chords_theorem" target="_blank" rel="noopener">intersecting chords theorem</a> gives <code>AP × PB = PQ × PR</code>. As P and Q are held fixed while the bar moves, AP × PB grows exactly when PR grows. The logic test checks this equality on thousands of bars, not just the one on screen.</p>
+
+      <h2>Equal tangents on the axis</h2>
+      <p>The line PQ is the <a class="wiki-term" data-wiki="Radical_axis" href="https://en.wikipedia.org/wiki/Radical_axis" target="_blank" rel="noopener">radical axis</a> of the two circles: every point X on it has the same <a class="wiki-term" data-wiki="Power_of_a_point" href="https://en.wikipedia.org/wiki/Power_of_a_point" target="_blank" rel="noopener">power</a> in both circles, so its two <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangents</a> At and Bt have equal lengths. Triangle AtXBt is isosceles, and the base angles that meet the circles again are equal. The test verifies equal tangent lengths and perpendicular radii for hundreds of positions of X.</p>
+
+      <h2>Where the maximum sits</h2>
+      <p>R is the one point of PQ for which the line AtBt goes through P. At that moment PR, and therefore AP × PB, is as large as it can be for the two circles. The test sweeps every bar direction for several pairs of circles: the line-up happens once, and the product there is the maximum. When points nearly coincide the applet keeps its last drawn frame; this port simply blanks the parts that cannot be computed. Hubert Shutrick found further properties and a synthetic solution, but the construction here is Bogomolny's applet.</p>
+
+      <p class="tip">Try Adjust chord and drag A until the status says the chord is longest, then press Hint to see the equal tangents and the right angles at At and Bt.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MaxCommonChord.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="max-common-chord-core.js"></script>
+<script src="max-common-chord.js"></script>
+</body>
+</html>
