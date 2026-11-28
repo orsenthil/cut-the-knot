@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Huygens Pyth &mdash; coolmaths</title>
+<meta name="description" content="Two squares stand on the two shorter sides of a right triangle. Can you see how Huygens cut the square on the longest side into two strips that match them exactly?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/huygens-pyth/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Huygens Pyth">
+<meta property="og:description" content="Two squares stand on the two shorter sides of a right triangle. Can you see how Huygens cut the square on the longest side into two strips that match them exactly?">
+<meta property="og:url" content="https://coolmaths.ai/huygens-pyth/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 42rem; margin: 0 auto; padding: 0.5rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board .square { fill: var(--accent); fill-opacity: 0.07; stroke: var(--muted); stroke-width: 2; stroke-linejoin: round; }
+  #board .square-ab { stroke: var(--ink); stroke-width: 2.5; }
+  #board .triangle { fill: var(--stage); fill-opacity: 0.8; stroke: var(--ink); stroke-width: 2.2; stroke-linejoin: round; }
+  #board .strip { fill: var(--accent); fill-opacity: 0.06; stroke: var(--accent); stroke-opacity: 0.45; stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .proof-line { stroke: var(--accent); stroke-width: 2; stroke-linecap: round; }
+  #board .hint { stroke: none; pointer-events: none; }
+  #board .hint-pink { fill: var(--accent); fill-opacity: 0.3; }
+  #board .hint-yellow { fill: var(--highlight); fill-opacity: 0.55; }
+  #board .dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .right-mark { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .point-label { fill: var(--text); font-size: 18px; font-weight: 650; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .right-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 5; }
+  #readout {
+    margin: 0.4rem 0 0; text-align: center; font-size: 0.95rem;
+    font-variant-numeric: tabular-nums; overflow-wrap: anywhere; color: var(--text);
+  }
+  .switches { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; }
+  .switches label { display: inline-flex; align-items: center; gap: 0.35rem; }
+</style>
+</head>
+<body data-game="huygens-pyth" data-kind="demo">
+<main id="main">
+  <h1>Huygens Pyth</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This picture shows why the square on the longest side of a right-angled triangle is exactly the same size as the two other squares together. There is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the three round points to change the shape, or focus one and use the arrow keys. Tick names or hint to see more, and press Reset to go back to the start.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 450" role="group"
+         aria-label="A right triangle with a square on each side and two strips across the square on the longest side. Drag points A, B and C to change the triangle."></svg>
+    <p id="readout" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <div class="switches">
+      <label for="namesCheck"><input id="namesCheck" type="checkbox" aria-label="Show the names of the points"> Show names</label>
+      <label for="hintCheck"><input id="hintCheck" type="checkbox" aria-label="Show the hint triangles"> Show hint</label>
+    </div>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the triangle and both checkboxes back at the start">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Christiaan Huygens published this proof in 1657. It takes the three squares on a right triangle and cuts the largest one into two strips. Each strip has half the area of one of the smaller squares, so the two together are exactly the large square.</p>
+
+      <h2>A right triangle and its squares</h2>
+      <p>Point <code>C</code> always stays at a right angle: moving <code>C</code> slides it round the circle through <code>A</code> and <code>B</code>, and moving <code>A</code> or <code>B</code> rebuilds <code>C</code> at the same angle. Write <code>a = BC</code>, <code>b = AC</code> and <code>c = AB</code>. The <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a> says <code>a² + b² = c²</code>. The readout above checks it on every shape you make; the logic test checked it on a grid and on 600 random triangles.</p>
+
+      <h2>Halves that match</h2>
+      <p>The proof extends <code>GA</code> to <code>P</code> with <code>AP = AG = AC</code>, and <code>BD</code> to <code>N</code> with <code>BN = BD = BC</code>. Triangle <code>ABP</code> has half the area of the square on <code>AC</code>, and triangle <code>ANB</code> has half the area of the square on <code>BC</code>. Triangle <code>APS</code> has the same three sides as <code>ABC</code>, which gives <code>PS = BC = BN</code>; triangle <code>KPS</code> then has the same sides as <code>ANB</code>, so it too is half the square on <code>BC</code>. Tick <em>hint</em> to see those halves shaded. Two lines on the original page have slips: it says <code>AP = AD = AC</code>, but <code>D</code> sits on the other square and <code>AD</code> is not <code>AC</code> &mdash; the letter should be <code>G</code>. It also writes <code>∠KPS</code> where the equal angle is <code>∠KSP</code>.</p>
+
+      <h2>Two strips fill the big square</h2>
+      <p><a class="wiki-term" data-wiki="Euclid's_Elements" href="https://en.wikipedia.org/wiki/Euclid%27s_Elements" target="_blank" rel="noopener">Euclid I.41</a> says a parallelogram and a triangle on the same base and between the same parallels have areas in the ratio two to one. So strip <code>ABML</code> is twice triangle <code>ABP</code>, and strip <code>KMLS</code> is twice triangle <code>KPS</code>. Their areas are <code>AC²</code> and <code>BC²</code>, and together they fill the square on <code>AB</code>. The page calls the strips rectangles; once you turn <code>AB</code> they are slanted parallelograms, which is exactly what Euclid's rule covers. The <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> argument still works.</p>
+
+      <p class="tip">Tick <em>names</em> to find <code>G</code> and <code>D</code>, then drag <code>C</code> so that <code>P</code> or <code>N</code> lands near a corner of the drawing.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/HuygensPyth.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="huygens-pyth-core.js"></script>
+<script src="huygens-pyth.js"></script>
+</body>
+</html>
