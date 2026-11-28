@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HIAI019 &mdash; coolmaths</title>
+<meta name="description" content="Three equilateral triangles sit on the sides of a triangle, each with its own circumcircle. Start at D on one circle and follow the chain around the other two: will you land back where you began?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hiai-019/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="HIAI019">
+<meta property="og:description" content="Three equilateral triangles sit on the sides of a triangle, each with its own circumcircle. Start at D on one circle and follow the chain around the other two: will you land back where you began?">
+<meta property="og:url" content="https://coolmaths.ai/hiai-019/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .nap-circle { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; }
+  #board .base-tri { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+  #board .nap-tri { fill: var(--accent); fill-opacity: 0.08; stroke: var(--accent); stroke-width: 1.2; stroke-opacity: 0.55; }
+  #board .chain-line { stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round; }
+  #board .nap-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .angle-mark { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .result-mark { stroke: var(--good); stroke-width: 3; }
+  #board .pt-label { fill: var(--text); font-size: 1rem; font-weight: 600; pointer-events: none; }
+  #board .geom-handle { stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .vertex-handle { fill: var(--ink); }
+  #board .point-handle { fill: var(--accent); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls button { min-height: 2.6rem; min-width: 2.6rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .controls input[type="checkbox"] { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+  #status { overflow-wrap: anywhere; line-height: 1.5; }
+</style>
+</head>
+<body data-game="hiai-019" data-kind="demo">
+<main id="main">
+  <h1>HIAI019</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#geometry">Geometry</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Three equilateral triangles sit on the sides of a triangle, and a point travels from circle to circle around them.<br>
+    <strong>How to play:</strong> Drag a corner dot or a dot on a circle, or focus a dot and use the arrow keys. Tick the boxes to show the 60&deg; marks, or press Reset for a fresh picture.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="A triangle with an equilateral triangle and a circumcircle on each side, and a chain of three points D, E and F running around the circles"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" aria-label="Show the names of the points">names</label>
+    <label><input id="premisesBox" type="checkbox" aria-label="Show the 60 degree marks on the equilateral triangles">premises</label>
+    <label><input id="statementBox" type="checkbox" aria-label="Show the 60 degree marks at D, E and F">statement</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the triangle and the circle chain">Reset</button>
+  </div>
+
+  <div class="controls" aria-label="Move a chain point along its circle with a button">
+    <button type="button" data-point="0" data-turn="-0.12" aria-label="Move D backwards along its circle">&minus; D</button>
+    <button type="button" data-point="0" data-turn="0.12" aria-label="Move D forwards along its circle">D +</button>
+    <button type="button" data-point="1" data-turn="-0.12" aria-label="Move E backwards along its circle">&minus; E</button>
+    <button type="button" data-point="1" data-turn="0.12" aria-label="Move E forwards along its circle">E +</button>
+    <button type="button" data-point="2" data-turn="-0.12" aria-label="Move F backwards along its circle">&minus; F</button>
+    <button type="button" data-point="2" data-turn="0.12" aria-label="Move F forwards along its circle">F +</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The picture looks like a tangle of circles, but a point started on one of them makes a complete lap and lands exactly where it began. The lap also draws a new <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangle</a>. This is a problem of Hirotaka Ebisui, reported on the original cut-the-knot page. That page today shows a GeoGebra figure instead of the Java applet; the applet was checked in a 2012 <a href="https://web.archive.org/web/20120118014838/https://www.cut-the-knot.org/Curriculum/Geometry/HIAI019.shtml" target="_blank" rel="noopener">Wayback capture</a>, which embeds <code>code="HIAI019"</code> with <code>ShowNames=1</code>.</p>
+
+      <h2>Three sides, three equilateral triangles</h2>
+      <p>On each side of triangle ABC we put an equilateral triangle: ABC&#8242;, BCA&#8242; and CAB&#8242;. Each has a <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>. These are Napoleon triangles: by <a class="wiki-term" data-wiki="Napoleon%27s_theorem" href="https://en.wikipedia.org/wiki/Napoleon%27s_theorem" target="_blank" rel="noopener">Napoleon's theorem</a> their centres form an equilateral triangle, and the three circumcircles all pass through one common point. For an acute triangle that meeting point is a <a class="wiki-term" data-wiki="Fermat_point" href="https://en.wikipedia.org/wiki/Fermat_point" target="_blank" rel="noopener">Fermat point</a>: the checks find its three viewing angles are either <code>120&#176;, 120&#176;, 120&#176;</code> or <code>60&#176;, 60&#176;, 120&#176;</code>, depending on which of the two Fermat points the construction reaches.</p>
+
+      <h2>A lap around the circles</h2>
+      <p>Start at D on the circle over AB. Join D to B (the vertex shared by the first two circles) and extend the line to its other crossing with the next circle: call it E. Join E to C and extend to F on the third circle; join F to A and extend back to the first circle. The <a class="wiki-term" data-wiki="Porism" href="https://en.wikipedia.org/wiki/Poncelet%27s_porism" target="_blank" rel="noopener">porism</a> says the last point is D again. The check follows this lap for thousands of triangles and starting angles: the largest return error was under <code>0.0001</code> board units on a 400-by-250 board.</p>
+
+      <h2>Why DEF is equilateral</h2>
+      <p>The angle at the extra vertex C&#8242; is <code>60&#176;</code> because ABC&#8242; is equilateral. Angles ADB and AC&#8242;B stand on the same chord AB of the same circle, so by the <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angle theorem</a> they are equal or add to <code>180&#176;</code>: D sees AB under <code>60&#176;</code> or <code>120&#176;</code>. The same holds at E and F, and the chain's three sides then meet at <code>60&#176;</code> each. The checks confirm both the 60-or-120 claim at the chain points and the three 60&#176; angles of DEF; the measured sides agree to better than <code>0.0001</code> units.</p>
+
+      <h2>One quirk in the old code</h2>
+      <p>The applet's circle-line cut refuses a line whose horizontal and vertical steps are both at most one pixel, and its catch simply leaves the point unmoved. In that rare, nearly horizontal case the chain is not completed, so the theorem is checked only on pictures with clean cuts. The other harmless quirk is kept: Reset picks a random starting angle but the first lap immediately replaces it. Keyboard buttons for moving D, E and F are an accessibility addition; the rules and geometry are the applet's.</p>
+
+      <p class="tip">Try this: press Reset a few times, then tick <em>statement</em> to see the 60&#176; marks at D, E and F. Move D a long way round its circle and watch the marks stay at 60&#176;.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HIAI019.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="hiai-019-core.js"></script>
+<script src="hiai-019.js"></script>
+</body>
+</html>
