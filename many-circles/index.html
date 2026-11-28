@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Many Circles &mdash; coolmaths</title>
+<meta name="description" content="Several circles pass through one point. Draw a polygon with one corner on each circle: will the last line really return to the first corner?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/many-circles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Many Circles">
+<meta property="og:description" content="Several circles pass through one point. Draw a polygon with one corner on each circle: will the last line really return to the first corner?">
+<meta property="og:url" content="https://coolmaths.ai/many-circles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+    overflow-x: auto;
+  }
+  #board { display: block; width: 100%; min-width: 20rem; height: auto; touch-action: none; }
+  #board .mc-circle { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .mc-polygon { fill: var(--accent); fill-opacity: 0.10; stroke: var(--accent); stroke-width: 2.5; }
+  #board .mc-guide { stroke: var(--highlight); stroke-width: 1.4; stroke-dasharray: 5 5; }
+  #board .mc-cross { fill: var(--good); stroke: var(--stage); stroke-width: 1.2; }
+  #board .mc-origin { fill: var(--ink); stroke: var(--stage); stroke-width: 1.2; }
+  #board .mc-label { fill: var(--text); font: 600 0.85rem var(--font); pointer-events: none; }
+  #board .center-handle { fill: var(--stage); stroke: var(--accent); stroke-width: 3; cursor: grab; }
+  #board .vertex-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="many-circles" data-kind="demo">
+<main id="main">
+  <h1>Many Circles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a drawing, not a game: several circles meet at one point, and a polygon has one corner on each circle.<br>
+    <strong>How to play:</strong> Drag a circle's centre or a corner of the polygon, or focus a point and use the arrow keys. Use the box for how many circles to show, and press Reset for a new starting corner.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Circles through one point with a polygon whose sides pass through the circles' crossings"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="count">Circles (3 to 10): <input id="count" type="number" min="3" max="10" step="1" value="3" inputmode="numeric"></label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Start anywhere on the rightmost circle and draw a line through the place where it meets the next circle. Keep going from circle to circle. Something surprising happens when you come back to the first circle: you land exactly where you began.</p>
+
+      <h2>One point, many circles</h2>
+      <p>Every <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> in the picture passes through the same point O. Two neighbouring circles cross once at O and once more at a coloured dot. Number the circles from the rightmost one, and call the dot between circles 1 and 2 P₁, between 2 and 3 P₂, and so on. Each side of the polygon is drawn straight through its own dot, from one circle to the next. The page's first claim is exactly this: the sides pass through the circles' intersections.</p>
+
+      <h2>Why the walk comes home</h2>
+      <p>The page's main claim is that the final and the initial points always coincide. It is true. An <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angle</a> depends only on the arc it sees, not on where on the circle its corner sits. So when you move the first corner, the angles at the next corners stay fixed; the last line must still meet the first circle at that same corner. The logic test followed the whole construction for every setting from 3 to 10 circles, at hundreds of starting points, and the gap was under a millionth of a unit. One honest caution: the Java applet picks "the other crossing" with a one-unit shortcut. When a corner starts within one unit of a crossing, that shortcut can jump or stop. With the correct choice of the farther crossing the walk always closes; the test shows a jump of 0.23 units in one such case.</p>
+
+      <h2>When the polygon is regular</h2>
+      <p>The page adds a second claim: with equal radii and centres evenly spaced on a circle, the polygon is always <a class="wiki-term" data-wiki="Regular_polygon" href="https://en.wikipedia.org/wiki/Regular_polygon" target="_blank" rel="noopener">regular</a>, whatever first point you choose. That is true too. The test built the exact arrangement for 3 through 10 circles and 72 starting points each: all sides of each polygon were equal to within a millionth of a unit. The old applet rounds its starting centres to whole pixels, so its radii are only nearly equal and its sides can differ by a few units; the claim belongs to the exact geometry, not to those rounded pixels.</p>
+
+      <h2>Where this picture came from</h2>
+      <p>The cut-the-knot page cited below now shows a GeoGebra sketch dated 1 October 2015, not the Java applet. This port follows the applet's bytecode instead: the common point is the middle of the board, each starting circle has radius 24% of the shorter side, centres sit at equal angles, and the spinner allows 3 to 10 circles. The one change is that a dragged centre stays on the board and at least 12 units from O, so no circle collapses. Drag a hollow centre to change a circle, or a filled corner to choose a different walk.</p>
+
+      <p class="tip">Try setting 10 circles, then drag one centre far from O: the polygon bends, but the walk still returns to its start.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/proofs/ManyCircles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="many-circles-core.js"></script>
+<script src="many-circles.js"></script>
+</body>
+</html>
