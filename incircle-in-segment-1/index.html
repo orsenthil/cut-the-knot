@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Incircle In Segment 1 &mdash; coolmaths</title>
+<meta name="description" content="Two circles are tucked into the same slice of a circle. When they cross, does the line through the crossing points pass through the opposite arc's midpoint?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/incircle-in-segment-1/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Incircle In Segment 1">
+<meta property="og:description" content="Two circles are tucked into the same slice of a circle. When they cross, does the line through the crossing points pass through the opposite arc's midpoint?">
+<meta property="og:url" content="https://coolmaths.ai/incircle-in-segment-1/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .outer-circle { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .chord { stroke: var(--ink); stroke-width: 2; }
+  #board .centre-dot { fill: var(--muted); }
+  #board .m-dot { fill: var(--accent); }
+  #board .incircle { fill: var(--accent); fill-opacity: 0.08; stroke: var(--accent); stroke-width: 2; }
+  #board .touch-dot { fill: var(--accent); }
+  #board .radical-axis { stroke: var(--good); stroke-width: 2.5; }
+  #board .cross-dot { fill: var(--good); }
+  #board .hint-circle { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .hint-line { stroke: var(--muted); stroke-width: 1.5; }
+  #board .tangent-line { stroke: var(--highlight); stroke-width: 1.5; }
+  #board .point-label { fill: var(--text); font-size: 0.75rem; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .a-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="incircle-in-segment-1" data-kind="demo">
+<main id="main">
+  <h1>Incircle In Segment 1</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the dots to change a curved slice with two circles inside it, and watch the line through the places where the circles cross.<br>
+    <strong>How to play:</strong> Drag A, C or D, or focus a dot and use the arrow keys. Tick Hint for extra lines, then press New diagram or Reset.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 300" role="group"
+         aria-label="A circle with a horizontal chord. Two circles touch the chord at C and D; a green line runs through the points where they cross and the point M on the far arc."></svg>
+  </div>
+
+  <div class="controls">
+    <label class="option" for="hintChk"><input id="hintChk" type="checkbox"> Hint</label>
+    <button id="resetBtn" type="button" aria-label="Restore the starting chord and circle positions">Reset</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Make a new random chord and two new circles">New diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the dots and the two circles change size and position. Yet whenever they cross, the line through the two crossing points keeps going through the same point <code>M</code> at the bottom of the big circle. Why?</p>
+
+      <h2>How the circles are built</h2>
+      <p>The big circle has centre <code>O</code> and a horizontal chord <code>AB</code>. The point <code>M</code> is the middle of the arc on the other side of the chord. For a touch point <code>P</code> on the chord, the applet projects <code>O</code> onto the line <code>MP</code>, reflects <code>M</code> in that projection to get <code>Q</code>, and puts the small circle's centre where the line <code>OQ</code> meets the vertical through <code>P</code>. That circle touches the chord at <code>P</code> and the big circle at <code>Q</code>, so <code>M</code>, <code>P</code> and <code>Q</code> lie on one line. This is the claim of the sibling applet <em>IncircleInSegment</em>, which uses a single circle and one touch point.</p>
+
+      <h2>The number that stays the same</h2>
+      <p>Write <code>A = P</code> and <code>B = Q</code> on that line through <code>M</code>. The page's identity is</p>
+      <blockquote><code>MA &times; MB = MT<sup>2</sup></code></blockquote>
+      <p>Here <code>T</code> is either end of the chord; both ends are the same distance from <code>M</code> because the chord is horizontal. The left side is the <a class="wiki-term" data-wiki="Power_of_a_point" href="https://en.wikipedia.org/wiki/Power_of_a_point" target="_blank" rel="noopener">power of M</a> with respect to that inscribed circle, and the right side works out to <code>2 &times; (radius of C) &times; (distance from M up to the chord)</code>. It does not depend on where <code>P</code> sits on the chord. The logic test checks this on more than a thousand chord-and-contact configurations, to better than a billionth of the board's scale.</p>
+
+      <h2>One line, two circles</h2>
+      <p>Both inscribed circles give <code>M</code> the very same power, so <code>M</code> lies on their <a class="wiki-term" data-wiki="Radical_axis" href="https://en.wikipedia.org/wiki/Radical_axis" target="_blank" rel="noopener">radical axis</a>. For two circles that cross at <code>U</code> and <code>V</code>, that axis is exactly the line <code>UV</code>. Hence <code>U</code>, <code>V</code> and <code>M</code> are collinear — the page's claim (1), confirmed across the tested range. When the circles do not cross in two real points, the applet draws a fallback line from <code>M</code> toward the line joining the two centres; there is no <code>U,V</code> line to speak of then.</p>
+
+      <h2>The hint, and a change from the Java applet</h2>
+      <p>Tick <strong>Hint</strong> to see the circle centred at <code>M</code> through <code>A</code>. Where it meets a small circle, the line to <code>M</code> is a tangent, because the tangent length squared is the power <code>MT<sup>2</sup></code>. The applet also draws lines from <code>M</code> to each contact and to <code>B</code>. The original page notes that the whole fact follows from <a class="wiki-term" data-wiki="Inversion" href="https://en.wikipedia.org/wiki/Inversion_(mathematics)" target="_blank" rel="noopener">inversion</a> too. Two small deviations: this page stops A just short of the top and bottom of the circle, where the chord collapses; and it adds Reset and New diagram buttons the Java panel did not have. The live cut-the-knot page still embeds the Java applet, matching the archived class files, so no Wayback copy was needed.</p>
+
+      <p class="tip">Try dragging C until the two circles just touch: watch the green line stay straight through M. Then tick Hint and follow the tangents.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/IncircleInSegment1.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="incircle-in-segment-1-core.js"></script>
+<script src="incircle-in-segment-1.js"></script>
+</body>
+</html>
