@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mc Worter &mdash; coolmaths</title>
+<meta name="description" content="Two squares share a corner of a triangle. Watch the fourth corner of a parallelogram: do the squares' far corners and that point always make an isosceles right triangle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/mcworter/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Mc Worter">
+<meta property="og:description" content="Two squares share a corner of a triangle. Watch the fourth corner of a parallelogram: do the squares' far corners and that point always make an isosceles right triangle?">
+<meta property="og:url" content="https://coolmaths.ai/mcworter/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .flank-square {
+    fill: var(--accent); fill-opacity: 0.10;
+    stroke: var(--ink); stroke-width: 1.4; stroke-linejoin: round;
+  }
+  #board .flank-square.alt { fill: var(--highlight); fill-opacity: 0.13; }
+  #board .triangle-edge { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  #board .para-edge { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .para-edge.alt { fill: none; stroke: var(--highlight); stroke-width: 2.4; }
+  #board .treasure-line { fill: none; stroke: var(--bad); stroke-width: 2.4; }
+  #board .proof-line { fill: none; stroke: var(--good); stroke-width: 1.9; }
+  #board .d-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .mid-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 2; }
+  #board .hint-right { fill: none; stroke: var(--text); stroke-width: 1.8; }
+  #board .hint-arc { fill: none; stroke: var(--accent); stroke-width: 1.6; }
+  #board .hint-tick { fill: none; stroke: var(--text); stroke-width: 1.6; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 14px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .d-label { fill: var(--good); }
+  #board .mid-label { fill: var(--bad); }
+  #board .flank-label { fill: var(--muted); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="mcworter" data-kind="demo">
+<main id="main">
+  <h1>Mc Worter</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two squares grow on two sides of a triangle; watch the point D and the triangle it makes with the squares' far corners.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a point and use the arrow keys. Press the buttons to show names, rotation lines and hint marks.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 40 400 280" role="group"
+         aria-label="Two squares on the sides of triangle ABC, the point D completing parallelogram ADBC, and the segment between the squares' far corners"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the three points to their starting positions">Reset</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Toggle the point names">Show names</button>
+    <button id="linesBtn" type="button" aria-pressed="false" aria-label="Toggle the midpoint and rotation lines">Show rotation</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Toggle the equal-side ticks, angle arcs and right-angle mark">Show hint</button>
+    <button id="checkBtn" type="button" aria-label="Check that the triangle at D is isosceles with a right angle">Check the claims</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Build two squares that share the corner C of a triangle. Complete the <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a> ADBC. Something unexpected happens at its fourth corner D: the two far corners of the squares and D make an isosceles right triangle, however you move C. The live cut-the-knot page has replaced its old Java applet with a GeoGebra picture; the archived page from 2010 still embeds <code>CODE="McWorter"</code> and states the claim below.</p>
+
+      <h2>The two squares</h2>
+      <p>On side <code>CA</code> the square has far corners <code>B_a</code> and <code>B_c</code>; on side <code>CB</code> it has <code>A_b</code> and <code>A_c</code>. The applet's <code>FormSquare</code> makes them with a quarter <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a>: <code>A_b = B + R(C − B)</code> and <code>B_a = A + R⁻¹(C − A)</code>, where <code>R</code> is a quarter turn and <code>R⁻¹</code> the opposite one. The red segment joins <code>A_b</code> and <code>B_a</code>, and <code>M</code> is its midpoint.</p>
+
+      <h2>Why M never moves</h2>
+      <p>Write the points as <a class="wiki-term" data-wiki="Complex_number" href="https://en.wikipedia.org/wiki/Complex_number" target="_blank" rel="noopener">complex numbers</a> <code>a</code>, <code>b</code>, <code>g</code> and let <code>i² = −1</code>. Then <code>A_b = b + (g − b)i</code>, <code>B_a = a − (g − a)i</code>, and</p>
+      <blockquote><code>M = (A_b + B_a)/2 = (a + b)/2 + (a − b)i/2.</code></blockquote>
+      <p>Every <code>g</code> cancels: this is Bottema's theorem. The logic test checks this closed form against the applet's own rotate-and-average calculation on 2,730 triples of point positions and 600 random ones.</p>
+
+      <h2>The parallelogram ADBC</h2>
+      <p>The applet sets <code>D = A + B − C</code>, the fourth corner of the parallelogram with corners <code>A</code>, <code>D</code>, <code>B</code>, <code>C</code>. That means <code>AD = CB</code> and <code>BD = CA</code>. The hint marks the matching sides: <code>AC = AB_a = BD</code> and <code>BC = BA_b = AD</code>. So triangles <code>AB_aD</code> and <code>BDA_b</code> have all three sides equal in pairs — they are congruent, and in particular <code>DA_b = DB_a</code>. That is the isosceles part of McWorter's observation.</p>
+
+      <h2>The right angle at D</h2>
+      <p>Let <code>u = A − C</code> and <code>v = B − C</code>. The two legs at D are <code>v − R(u)</code> and <code>u + R(v)</code>. A quarter turn is skew, so <code>dot(v, R(u)) = −dot(u, R(v))</code>: the dot product of the legs is zero and their lengths are equal. Hence <code>∠B_aDA_b = 90°</code> — the exact claim on the article's page — and the test confirms it at every non-collapsed case in the grid and random samples. If the two far corners both land on D, the triangle shrinks to a point and there is no angle to speak of.</p>
+      <p>This is <em>not</em> the sibling applet McWorter2's claim. That one replaces the squares with similar parallelograms (<code>K = (slider + 20)/20</code>, angle from a second slider) and still finds <code>M</code> independent of <code>C</code>; it makes no right-angle claim at D, and the right angle at D generally fails for slanted parallelograms.</p>
+
+      <p class="tip">Try dragging C onto the line AB, then far away on the other side. Turn on the hint to watch the matching ticks and the square corner at D survive every move.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/McWorter.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="mcworter-core.js"></script>
+<script src="mcworter.js"></script>
+</body>
+</html>
