@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menelaus Proof &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and its three side dots: will they always stay on one straight line? Switch between the applet's three proof pictures to see why.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/menelaus-proof/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Menelaus Proof">
+<meta property="og:description" content="Drag the corners of a triangle and its three side dots: will they always stay on one straight line? Switch between the applet's three proof pictures to see why.">
+<meta property="og:url" content="https://coolmaths.ai/menelaus-proof/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .spoke { fill: none; stroke: var(--muted); stroke-width: 1.5; opacity: 0.8; }
+  #board .transversal { fill: none; stroke: var(--accent); stroke-width: 3; }
+  #board .side-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .aux-line { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .aux-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .right-angle { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 18px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .side-label { fill: var(--accent); }
+  #board .aux-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls button[aria-pressed="true"].selected { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body data-game="menelaus-proof" data-kind="demo">
+<main id="main">
+  <h1>Menelaus Proof</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the dots on a triangle's sides and watch the three side dots stay on one straight line.<br>
+    <strong>How to play:</strong> Drag a dot with a mouse or finger, or focus one and use the arrow keys. Try Plain, Proof #1, Proof #2 and Proof #3, show the names, or start a fresh triangle.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 380" role="group"
+         aria-label="Triangle ABC with points F on AB, D on BC and E on CA lying on one straight line, and a chosen proof construction"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Restore the starting triangle">New diagram</button>
+    <button id="plainBtn" type="button" aria-pressed="true" class="selected" aria-label="Show the plain diagram without a proof construction">Plain</button>
+    <button id="proof1Btn" type="button" aria-pressed="false" aria-label="Show proof 1: a parallel through A">Proof #1</button>
+    <button id="proof2Btn" type="button" aria-pressed="false" aria-label="Show proof 2: perpendiculars from the vertices">Proof #2</button>
+    <button id="proof3Btn" type="button" aria-pressed="false" aria-label="Show proof 3: the perpendicular through K">Proof #3</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Toggle the point names">Show names</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three dots, one on each side of a triangle, hardly look as if they must line up. Yet once they do, a simple product of three length ratios locks in place — and it stays locked however you pull the corners around. This applet draws the two proofs on the page plus a third picture of the same idea.</p>
+
+      <h2>One line across three sides</h2>
+      <p>Take F on AB, D on BC and E on CA. They may sit on the sides themselves or on the lines beyond them; a straight line cannot cut through all three sides inside the triangle, so at least one dot lies outside. The <a class="wiki-term" data-wiki="Menelaus%27s_theorem" href="https://en.wikipedia.org/wiki/Menelaus%27s_theorem" target="_blank" rel="noopener">Menelaus theorem</a> says the three dots are on one straight line exactly when</p>
+      <blockquote><code>AF/BF · BD/CD · CE/AE = 1</code></blockquote>
+      <p>With signed lengths the same statement reads <code>AF/FB · BD/DC · CE/EA = −1</code>, because reversing a segment changes its sign. The logic test checks both forms on the starting diagram, on fixed triangles and on hundreds of random ones: both hold every time, and moving any dot off the line breaks them. Its converse holds too — if the product is 1, the third dot must be where the line through the other two crosses the side.</p>
+
+      <h2>Proof 1: one parallel line</h2>
+      <p>Press <em>Proof #1</em>. Through A a line is drawn parallel to DE, and it meets line BC at P. The two pairs of <a class="wiki-term" data-wiki="Similar_triangle" href="https://en.wikipedia.org/wiki/Similar_triangle" target="_blank" rel="noopener">similar triangles</a> ABP and BDF, and ACP and CDE, give <code>AF/BF = PD/BD</code> and <code>AE/CE = PD/CD</code>. Dividing one by the other cancels PD and leaves the product equal to 1.</p>
+
+      <h2>Proof 2: three perpendiculars</h2>
+      <p>Press <em>Proof #2</em>. Drop a <a class="wiki-term" data-wiki="Perpendicular" href="https://en.wikipedia.org/wiki/Perpendicular" target="_blank" rel="noopener">perpendicular</a> from each corner onto the transversal, landing at Ha, Hb and Hc. Similar right triangles give <code>AF/BF = AHa/BHb</code>, <code>BD/CD = BHb/CHc</code> and <code>CE/AE = CHc/AHa</code>. Multiply them: the three heights cancel, leaving 1. The applet's third picture, <em>Proof #3</em>, takes a point K on the transversal, draws the perpendicular there, and shows the same heights as projections Ka, Kb and Kc.</p>
+
+      <h2>Why dragging cannot break it</h2>
+      <p>Each corner is free, but each side dot is glued to its own line. After a corner moves, the applet puts the dot on the far side back onto the new line and rebuilds the third dot as a line crossing, so the three dots are collinear again. Every reachable position has product 1 — that is the invariant the picture demonstrates. The sibling applets ask you to make a condition happen; this one begins with it already true and shows why. It is a demo: there is no winning or losing move. Compare <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a>, where the same product 1 means three cevians meet at a point rather than three dots lining up.</p>
+
+      <p class="tip">Try dragging F far past A, then press Proof #1 and watch P run along line BC while the product stays at 1. Press 1 to 4 on the keyboard to switch views.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MenelausProof.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="menelaus-proof-core.js"></script>
+<script src="menelaus-proof.js"></script>
+</body>
+</html>
