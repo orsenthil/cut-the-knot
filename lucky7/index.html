@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lucky 7 &mdash; coolmaths</title>
+<meta name="description" content="Can you slide seven numbered counters around two overlapping rings until they are back in order? Every turn spins a ring, and only six places can be turned.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/lucky7/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Lucky 7">
+<meta property="og:description" content="Can you slide seven numbered counters around two overlapping rings until they are back in order? Every turn spins a ring, and only six places can be turned.">
+<meta property="og:url" content="https://coolmaths.ai/lucky7/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 1rem; }
+  #board { display: block; width: 100%; height: auto; margin: 0 auto; touch-action: none; }
+  #board .ring { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .counter { fill: var(--accent); stroke: var(--ink); stroke-width: 2; }
+  #board .empty { fill: var(--stage); stroke: var(--ink); stroke-width: 2; stroke-dasharray: 3 3; }
+  #board .counter-text {
+    fill: var(--text); font: 600 15px/1 system-ui, sans-serif;
+    text-anchor: middle; dominant-baseline: central; pointer-events: none;
+  }
+  #board .hit { fill: transparent; stroke: transparent; cursor: pointer; }
+  #board .hit:focus-visible { outline: none; stroke: var(--good); stroke-width: 4; }
+  #board.solved .empty { stroke: var(--good); }
+  .move-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 0.75rem; }
+  .move-buttons button, .size { min-height: 2.75rem; }
+  .size { display: inline-flex; align-items: center; gap: 0.5rem; }
+  .size output { min-width: 2ch; text-align: center; font-variant-numeric: tabular-nums; }
+  .controls { flex-wrap: wrap; }
+  #status { overflow-wrap: anywhere; }
+</style>
+</head>
+<body data-game="lucky7" data-kind="demo">
+<main id="main">
+  <h1>Lucky 7</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#permutations">Permutations</a><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#graph-theory">Graph Theory</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Slide the counters around two overlapping rings until they sit at home in order, from 1 upwards.<br>
+    <strong>How to play:</strong> Click a counter, its button, or a focusable ring point to turn it. Use Shuffle to scramble the counters and Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="Numbered counters on two overlapping rings. Six counter positions are focusable; press Enter, Space or an arrow key to turn them."></svg>
+    <div id="moveButtons" class="move-buttons" aria-label="Ring turns"></div>
+  </div>
+
+  <div class="controls">
+    <button type="button" id="shuffleBtn" class="primary" aria-label="Shuffle the counters">Shuffle</button>
+    <button type="button" id="cheatBtn" aria-label="Swap the first two counters">Cheat</button>
+    <div class="size" role="group" aria-label="Number of counters">
+      <button type="button" id="lessBtn" aria-label="Fewer counters">&minus;</button>
+      <output id="count" aria-label="Number of counters">7</output>
+      <button type="button" id="moreBtn" aria-label="More counters">+</button>
+    </div>
+    <label><input type="checkbox" id="cyclesBox"> Cycles</label>
+    <button type="button" id="resetBtn" aria-label="Return the counters home">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two rings and six small turns are enough to reorder seven counters in any way at all. But change the size of the rings and something surprising happens: some arrangements become impossible to reach.</p>
+
+      <h2>Six turns that move counters</h2>
+      <p>The empty top place never moves. The upper and lower left counters spin the left set of places, the upper and lower right ones spin the right set, and the two crossings turn <em>every</em> counter at once. Following the applet, call the left turn <code>a</code>, the right turn <code>b</code> and the turn of everything <code>c</code>. Each is a <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">permutation</a>: it moves each counter to a new place without changing any counter. Every move has an opposite move, so you can always undo a turn.</p>
+
+      <h2>A swap hiding in a long word</h2>
+      <p>Extra turns can do something no single turn can: swap just two counters. The page uses the words</p>
+      <blockquote><code>n = aab<sup>-1</sup>aab<sup>-1</sup>aabaab = (1)(2 4)(3)(5)(6 7)</code><br>
+        <code>m = (aab)<sup>5</sup> = (1 3)(2)(4)(5)(6)(7)</code></blockquote>
+      <p>Turning everything by one place changes <code>m</code> into <code>(2 4)</code>, so <code>ncmc<sup>-1</sup></code> is just <code>(6 7)</code>. Moving that pair around by powers of <code>c</code> swaps any neighbouring pair, and moving a chosen pair into those two places and back swaps any pair at all. Since a <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">transposition</a> can put each counter in its own place, seven counters can always be solved. A search of all <code>7! = 5040</code> arrangements confirms the claim. The Cycles box uses the applet's own convention: it prints the <a class="wiki-term" data-wiki="Cycle_(mathematics)" href="https://en.wikipedia.org/wiki/Cycle_(mathematics)" target="_blank" rel="noopener">cycles</a> of the counters while treating the highest counter as the empty place.</p>
+
+      <h2>When size changes the answer</h2>
+      <p>Let each ring hold <code>n + 2</code> places including the empty one, for <code>2(n + 1)</code> places in all; here <code>n = 3</code>. When <code>n</code> is even the shared places split the rings into a <a class="wiki-term" data-wiki="Bipartite_graph" href="https://en.wikipedia.org/wiki/Bipartite_graph" target="_blank" rel="noopener">bipartite graph</a>, so every turn preserves <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a> and only half the arrangements are reachable. With 5 counters that is 60 of 120; with 9 counters 181440 of 362880. When <code>n</code> is odd, as with 7 counters, an odd turn is available and all arrangements are reachable. The Cheat button swaps just two counters, so at an even size it creates an arrangement that no amount of turning can fix.</p>
+
+      <p class="tip">Try Cheat at 7 counters and then undo it; now try Cheat at 5 counters and see whether you can put counter 1 back.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/lucky7.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="lucky7-core.js"></script>
+<script src="lucky7.js"></script>
+</body>
+</html>
