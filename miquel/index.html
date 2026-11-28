@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Miquel &mdash; coolmaths</title>
+<meta name="description" content="Put a point on each side of a triangle, then slide them around. Will the three circles always share a point, and what happens when the three points line up?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/miquel/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Miquel">
+<meta property="og:description" content="Put a point on each side of a triangle, then slide them around. Will the three circles always share a point, and what happens when the three points line up?">
+<meta property="og:url" content="https://coolmaths.ai/miquel/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .side-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .side { stroke: var(--ink); stroke-width: 2; }
+  #board .miquel-circle { fill: none; stroke: var(--accent); stroke-width: 1.8; opacity: 0.8; }
+  #board .circum { fill: none; stroke: var(--bad); stroke-width: 2.5; }
+  #board .simson { stroke: var(--good); stroke-width: 2.5; }
+  #board .miquel-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="miquel" data-kind="demo">
+<main id="main">
+  <h1>Miquel</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: three circles drawn through a triangle's corners always meet at one point.<br>
+    <strong>How to play:</strong> Drag the corners A, B and C, or slide the three marked points along the sides. Press “Line up the points” to see what happens when the three marked points lie on one straight line.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 480 300" role="group"
+         aria-label="Triangle with a point on each side, three circles through the corners, and their shared Miquel point"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="lineUpBtn" type="button" aria-label="Slide the three marked points onto one straight line">Line up the points</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the diagram to a new random triangle">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag a corner or a marked point and the three circles change shape, but they keep one point in common. Put the three marked points on one straight line and something else joins them there.</p>
+
+      <h2>One point for three circles</h2>
+      <p>Let the triangle be A, B, C and put X on the side BC, Y on CA and Z on AB. The circle through A, Y and Z, the one through B, X and Z, and the one through C, X and Y all pass through a second shared point P. This is the
+        <a class="wiki-term" data-wiki="Miquel%27s_theorem" href="https://en.wikipedia.org/wiki/Miquel%27s_theorem" target="_blank" rel="noopener">pivot theorem</a>,
+        the simplest form of Miquel's theorem. The marked points may sit beyond a corner, on the extension of a side: the circles still meet.</p>
+
+      <h2>When the three points line up</h2>
+      <p>Now make X, Y and Z lie on one line, a fourth line crossing the triangle. The
+        <a class="wiki-term" data-wiki="Complete_quadrilateral" href="https://en.wikipedia.org/wiki/Complete_quadrilateral" target="_blank" rel="noopener">complete quadrilateral</a>
+        they form has four triangles, and the four circles through each triangle all pass through the same P. In particular, the
+        <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>
+        of ABC (red here) passes through P. The orange straight line is the marked line; the old page calls it a
+        <a class="wiki-term" data-wiki="Simson_line" href="https://en.wikipedia.org/wiki/Simson_line" target="_blank" rel="noopener">simson line</a>
+        of P with respect to the triangles.</p>
+
+      <h2>How the old page proves it</h2>
+      <p>Take two of the four triangles, say 123 and 124. Their circles meet at P. The feet of the perpendiculars from P to the sides of triangle 123 lie on one simson line, and so do the feet for triangle 124. These two lines share two feet, so they are the same line. That forces the feet for the other two triangles onto it too, which puts P on their circles. Four circles, one point.</p>
+
+      <h2>What the checks found and what changed</h2>
+      <p>The logic test tries hundreds of triangles, with side points both on the sides and on their extensions. The pivot claim and the four-circle claim both hold to about a millionth; sliding one marked point off the line makes the circumcircle leave P. The live cut-the-knot page still gives the words but no longer embeds the Java applet; its 28 September 2006
+        <a href="https://web.archive.org/web/20060928041723/http://www.cut-the-knot.org/Curriculum/Geometry/Miquel.shtml" target="_blank" rel="noopener">Wayback copy</a>
+        shows <code>&lt;applet code="Miquel" width="480" height="300"&gt;</code>, and that is the applet ported here. This is not the sibling applet MiquelTheoremForCircles, which starts with two triples of points and proves an extra circle-concurrency claim using inversion; this one starts with a triangle and a point on each side line. The two buttons are new: the original had only mouse dragging and a hint printed on the canvas. Draggable dots also stop a little short of the SVG edge so they stay visible and easy to press on a phone.</p>
+
+      <p class="tip">Try dragging a marked point past a corner onto the extension of its side: the three circles still meet at P.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Miquel.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="miquel-core.js"></script>
+<script src="miquel.js"></script>
+</body>
+</html>
