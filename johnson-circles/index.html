@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Johnson Circles &mdash; coolmaths</title>
+<meta name="description" content="Three equal circles share one point. Move their centres and see whether the circle through their other three crossings stays the same size.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/johnson-circles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Johnson Circles">
+<meta property="og:description" content="Three equal circles share one point. Move their centres and see whether the circle through their other three crossings stays the same size.">
+<meta property="og:url" content="https://coolmaths.ai/johnson-circles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  .guide-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 6; }
+  .circle-a, .circle-b, .circle-c { fill: none; stroke: var(--ink); stroke-width: 2; opacity: 0.8; }
+  .circle-a { stroke: var(--accent); }
+  .circle-b { stroke: var(--good); }
+  .circle-c { stroke: var(--bad); }
+  .circle-fourth { fill: none; stroke: var(--good); stroke-width: 2.6; }
+  .circle-anti { fill: none; stroke: var(--bad); stroke-width: 2; stroke-dasharray: 7 5; }
+  .tri-abc { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2.2; }
+  .tri-anti { fill: none; stroke: var(--bad); stroke-width: 2.4; }
+  .tri-centres { fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-dasharray: 5 5; }
+  .altitude { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 4; }
+  .centre-altitude { stroke: var(--muted); stroke-width: 1.5; }
+  .homothety-line { stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  .euler-line { stroke: var(--ink); stroke-width: 1.6; stroke-dasharray: 2 5; }
+  .spoke { stroke: var(--highlight); stroke-width: 2; }
+  .o-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1; }
+  .q-dot, .n-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1; }
+  .abc-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1; }
+  .anti-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1; }
+  .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 0.78rem;
+    pointer-events: none;
+  }
+  .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2.5;
+    cursor: grab;
+  }
+  .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+  .controls input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--accent);
+  }
+  .controls button { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="johnson-circles" data-kind="demo">
+<main id="main">
+  <h1>Johnson Circles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Three equal circles all pass through the same dot; look at the circle through their other three crossings.<br>
+    <strong>How to play:</strong> Drag the three coloured centres around the dotted ring, or focus a centre and press the arrow keys. Tick the boxes to show names, lines and larger triangles.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 300" role="group"
+         aria-label="Three equal circles through O, with draggable centres Oa, Ob and Oc and the circle through A, B and C"></svg>
+  </div>
+
+  <div class="controls">
+    <span class="show-label">Show</span>
+    <label><input id="names" type="checkbox"> names</label>
+    <label><input id="homothety" type="checkbox"> homothety</label>
+    <label><input id="anticomplementary" type="checkbox"> anticomplementary</label>
+    <label><input id="altitudes" type="checkbox"> altitudes</label>
+    <label><input id="hint" type="checkbox"> hint</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Make a new Johnson circles diagram">New diagram</button>
+    <button id="resetBtn" type="button" aria-label="Put the three centres back at their starting places">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circles</a> with the same radius can all pass through one point. The surprise is that the circle through their three <em>other</em> crossings is exactly the same size. Drag the centres: nothing here is a race or a score, just a picture that keeps its promise.</p>
+
+      <h2>Where the other crossings are</h2>
+      <p>Let the shared point be <code>O</code> and write the three centres as vectors <code>a</code>, <code>b</code>, <code>c</code> from <code>O</code>. The applet keeps each centre on a circle of radius <code>r</code> about <code>O</code>, so <code>|a| = |b| = |c| = r</code> and each of the three circles has radius <code>r</code>. The circles centred at <code>b</code> and <code>c</code> meet at <code>O</code> and at <code>b + c</code>: from that point to <code>b</code> is <code>|c| = r</code>, and to <code>c</code> is <code>|b| = r</code>. So <code>A = b + c</code>, and likewise <code>B = c + a</code>, <code>C = a + b</code>. These are ordinary vector sums, not a special case.</p>
+
+      <h2>The fourth circle and the orthocentric system</h2>
+      <p>From <code>Q = a + b + c</code> the distance to <code>A</code> is <code>|b + c - (a + b + c)| = |a| = r</code>, and the same holds for <code>B</code> and <code>C</code>. That is the main theorem: the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of <code>ABC</code> has the same radius as the original three. Also <code>OA</code> is perpendicular to <code>BC</code>, because <code>(b + c) · (b - c) = |b|² - |c|² = 0</code>; so <code>O</code> is the orthocenter of <code>ABC</code> and the four points form an <a class="wiki-term" data-wiki="Orthocentric_system" href="https://en.wikipedia.org/wiki/Orthocentric_system" target="_blank" rel="noopener">orthocentric system</a>. Each original centre is the circumcenter of the triangle made from <code>O</code> and the other two of <code>A</code>, <code>B</code>, <code>C</code>, which is why all four small circumcircles have radius <code>r</code> as well.</p>
+
+      <h2>Rhombi and two homotheties</h2>
+      <p>The points <code>A, Ob, O, Oc</code> form a rhombus: its sides are the equal vectors <code>c</code> and <code>b</code>. The other two rhombi work the same way, which makes <code>AB</code> parallel and equal to <code>OaOb</code> (and independent of where <code>Oc</code> sits). Since <code>Q - a = b + c = A</code>, a <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothety</a> with factor <code>-1</code> about the midpoint <code>N</code> of <code>OQ</code> maps <code>OaObOc</code> onto <code>ABC</code>; <code>N</code> is also the <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">nine-point center</a> of <code>OaObOc</code>. The <a class="wiki-term" data-wiki="Anticomplementary_triangle" href="https://en.wikipedia.org/wiki/Anticomplementary_triangle" target="_blank" rel="noopener">anticomplementary triangle</a> has vertices <code>A' = 2a</code>, <code>B' = 2b</code>, <code>C' = 2c</code>: a factor-2 homothety about <code>O</code>. Its circumcircle has radius <code>2r</code> and touches each original circle at the primed point.</p>
+
+      <h2>What was checked, and one change</h2>
+      <p>The logic test checks the theorem and every property above on a 12&times;12&times;12 grid, the opening layout and 400 random centres (2129 layouts in all), comparing every non-degenerate one with a second transcription of the applet's own <code>GeoSDoub.Intersect</code>, <code>GetCircle</code>, <code>Prorate</code> and <code>Barycenter</code> methods. The article's largest-perimeter claim also holds: a line through <code>C</code> meets the two circles again at points whose separation is <code>2|(b - a) · u| ≤ 2|b - a|</code>, so no triangle with sides through <code>A</code>, <code>B</code>, <code>C</code> can beat <code>A'B'C'</code>, and equality happens when each side is parallel to a line of centres. The published page still states the theorem, but its live version now embeds a GeoGebra figure, not the Java applet; a <a href="https://web.archive.org/web/20101217080123/http://www.cut-the-knot.org/Curriculum/Geometry/JohnsonCircles.shtml" target="_blank" rel="noopener">2010 archive</a> shows the original <code>APPLET CODE="JohnsonCircles"</code>. The applet's own "about" box says "Shapes of Constant Width", a leftover from another applet with no effect on the drawing; only its real behaviour is ported here.</p>
+
+      <p class="tip">Tick "anticomplementary" and then drag one centre: the dashed outer circle always has twice the radius, and the three sides of the large triangle stay parallel to the lines between the centres.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/JohnsonCircles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="johnson-circles-core.js"></script>
+<script src="johnson-circles.js"></script>
+</body>
+</html>
