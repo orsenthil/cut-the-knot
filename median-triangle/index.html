@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Median Triangle &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and watch the blue triangle built from its three medians. Why does it always take exactly three quarters of the area?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/median-triangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Median Triangle">
+<meta property="og:description" content="Drag the corners of a triangle and watch the blue triangle built from its three medians. Why does it always take exactly three quarters of the area?">
+<meta property="og:url" content="https://coolmaths.ai/median-triangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  h1 { overflow-wrap: anywhere; }
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  .tri-abc { fill: var(--accent-soft); stroke: var(--ink); stroke-width: 2; }
+  .pink-corner { fill: var(--accent-soft); stroke: none; }
+  .pink-middle { fill: var(--accent-soft); stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 4; }
+  .median-tri { fill: var(--highlight); stroke: var(--good); stroke-width: 2.5; }
+  .median-line { stroke: var(--bad); stroke-width: 1.7; }
+  .para-line { stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 5 4; opacity: 0.75; }
+  .hint-line { stroke-width: 3.5; opacity: 0.75; stroke-dasharray: 6 4; }
+  .hint-1 { stroke: var(--good); }
+  .hint-2 { stroke: var(--accent); }
+  .hint-3 { stroke: var(--bad); }
+  .mid-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1; }
+  .outer-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1; }
+  .pt-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+    pointer-events: none;
+  }
+  .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2.5;
+    cursor: grab;
+  }
+  .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+  .controls input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--accent);
+  }
+  .controls button { min-height: 2.5rem; }
+  /* A long applet name inside <code> must still wrap at twice the text size. */
+  .math-body code { overflow-wrap: anywhere; }
+</style>
+</head>
+<body data-game="median-triangle" data-kind="demo">
+<main id="main">
+  <h1>Median Triangle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the three corners of a triangle and watch the blue triangle built from its three medians.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a dot and press the arrow keys. Tick the boxes to name the points or to light up the half-sides.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 480 340" role="group"
+         aria-label="Triangle ABC with its medians, the midpoints of its sides and the blue median triangle"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesCheck" type="checkbox"> Show names</label>
+    <label><input id="hintCheck" type="checkbox"> hint</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Make a new starting triangle">New triangle</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A <a class="wiki-term" data-wiki="Median_(geometry)" href="https://en.wikipedia.org/wiki/Median_(geometry)" target="_blank" rel="noopener">median</a> joins a corner of a triangle to the middle of the opposite side. The three medians do not form a triangle where they are drawn, but lay their lengths end to end and they do. The blue triangle is made that way. Drag any corner: its share of the whole triangle never moves.</p>
+
+      <h2>What the old applet draws</h2>
+      <p>The dots <code>M_a</code>, <code>M_b</code>, <code>M_c</code> sit at the middles of <code>BC</code>, <code>CA</code>, <code>AB</code>. The red lines <code>AM_a</code>, <code>BM_b</code>, <code>CM_c</code> are the medians. The three pink corner pieces and the pink triangle <code>E M_a F</code> are four copies of the <a class="wiki-term" data-wiki="Medial_triangle" href="https://en.wikipedia.org/wiki/Medial_triangle" target="_blank" rel="noopener">medial triangle</a>, each with a quarter of the area. The blue triangle <code>B M_b E</code> has sides <code>m_b</code>, <code>m_a</code>, <code>m_c</code>: exactly the three medians. Tick "hint" to see that each midpoint divides its side into two equal halves.</p>
+
+      <h2>The small triangle in the article</h2>
+      <p>Let <code>G</code> be the <a class="wiki-term" data-wiki="Centroid" href="https://en.wikipedia.org/wiki/Centroid" target="_blank" rel="noopener">centroid</a>, where the medians meet. It lies two thirds of the way from a vertex to the opposite midpoint. Reflect <code>G</code> in <code>M_a</code> to get the article's point <code>D</code>. Then <code>BG = 2m_b/3</code>, <code>GD = 2m_a/3</code> and <code>BD = 2m_c/3</code>: the sides of triangle <code>BDG</code> are two thirds of the medians. The medians cut <code>ABC</code> into six triangles of equal area, so <code>BGM_a</code> has <code>1/6</code> of it. Since <code>M_a</code> is the midpoint of <code>GD</code>, triangle <code>BDG</code> has twice that area: <code>2/6 = 1/3</code> of <code>ABC</code>.</p>
+
+      <h2>Scale by three halves</h2>
+      <p>The blue triangle has the same shape as <code>BDG</code>, with every side <code>3/2</code> times as long. Areas scale by the square of the side ratio:</p>
+      <blockquote><code>area(median triangle) = (3/2)<sup>2</sup> &times; (1/3) &times; area(ABC) = (3/4) &times; area(ABC).</code></blockquote>
+      <p>One small difference between sources: the Java applet's own <code>D</code> is the reflection of <code>A</code> in <code>M_a</code>, the fourth corner of a parallelogram, while the article's <code>D</code> above is the reflection of <code>G</code>. Both appear in the two pictures; only the article's <code>BDG</code> has the two-thirds sides.</p>
+
+      <h2>What was checked</h2>
+      <p>The logic test tries eight hand-picked shapes and 600 random triangles. In all of them the blue area is <code>3/4</code> of <code>ABC</code>, <code>BDG</code> has two-third median sides and <code>1/3</code> of the area, and <a class="wiki-term" data-wiki="Heron%27s_formula" href="https://en.wikipedia.org/wiki/Heron%27s_formula" target="_blank" rel="noopener">Heron's formula</a> on the three medians gives the same blue area. Every constructed point is also compared with a second transcription of the applet's <code>Compute()</code> and <code>init()</code> bytecode. The source page still states the claim, but the live <a href="https://www.cut-the-knot.org/Curriculum/Geometry/MedianTriangle.shtml" target="_blank" rel="noopener">cut-the-knot page</a> now shows a GeoGebra picture instead of the Java applet; a 2014 Wayback capture of that same address embeds <code>APPLET CODE="MedianTriangle"</code> with the "Show names" and "hint" checkboxes.</p>
+
+      <p class="tip">Drag <code>C</code> almost onto the line <code>AB</code>. The triangle flattens and both areas shrink together, but the blue triangle still takes exactly three quarters.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MedianTriangle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="median-triangle-core.js"></script>
+<script src="median-triangle.js"></script>
+</body>
+</html>
