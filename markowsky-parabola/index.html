@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Markowsky Parabola &mdash; coolmaths</title>
+<meta name="description" content="Two dots sit on a parabola. Move them: why do the two angles at D always match?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/markowsky-parabola/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Markowsky Parabola">
+<meta property="og:description" content="Two dots sit on a parabola. Move them: why do the two angles at D always match?">
+<meta property="og:url" content="https://coolmaths.ai/markowsky-parabola/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .parabola-curve { fill: none; stroke: var(--ink); stroke-width: 2.4; }
+  #board .axis-line { stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 6 5; }
+  #board .directrix { stroke: var(--bad); opacity: 0.7; stroke-width: 1.4; stroke-dasharray: 4 6; }
+  #board .construct-line { stroke: var(--ink); stroke-width: 2; stroke-linecap: round; }
+  #board .cd-line { stroke: var(--accent); stroke-width: 3.2; stroke-linecap: round; }
+  #board .angle-mark { fill: none; stroke: var(--bad); stroke-width: 3; }
+  #board .angle-text {
+    fill: var(--bad); font-size: 0.95rem; font-weight: 600; pointer-events: none;
+  }
+  #board .hint-line { stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .tangent-line { stroke: var(--good); stroke-width: 2; }
+  #board .aux-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1.4; }
+  #board .pt-label {
+    fill: var(--text); font-size: 1rem; font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle {
+    fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab;
+  }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+  }
+  .slider-pair {
+    flex: 1 1 11rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+  }
+  .slider-pair input[type="range"] {
+    flex: 1 1 5rem;
+    min-width: 5rem;
+    accent-color: var(--accent);
+  }
+  .control-row label.check {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+  .control-row input[type="checkbox"] {
+    width: 1.15rem;
+    height: 1.15rem;
+    accent-color: var(--accent);
+  }
+</style>
+</head>
+<body data-game="markowsky-parabola" data-kind="demo">
+<main id="main">
+  <h1>Markowsky Parabola</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move two dots on a curve and watch two angles at D that always match.<br>
+    <strong>How to play:</strong> Drag A or B along the curve, or use the sliders. Tick the boxes to show names, angle numbers or extra lines; press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 560 500" role="group"
+         aria-label="A parabola with its vertical axis, points A and B on the right branch, and the lines that build the point D"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label class="slider-pair" for="aSlider"><span>A</span><input id="aSlider" type="range" min="-250" max="260" step="1" value="80" aria-label="Distance of A from the axis, from minus 250 to 260"></label>
+      <label class="slider-pair" for="bSlider"><span>B</span><input id="bSlider" type="range" min="-250" max="260" step="1" value="180" aria-label="Distance of B from the axis, from minus 250 to 260"></label>
+    </div>
+    <div class="control-row">
+      <label class="check"><input id="namesCheck" type="checkbox" aria-label="Show the names of the points"> Show names</label>
+      <label class="check"><input id="statementCheck" type="checkbox" aria-label="Show the two angle measurements"> Show statement</label>
+      <label class="check"><input id="hintCheck" type="checkbox" aria-label="Show the tangent lines and the extra points"> Extra</label>
+      <button id="resetBtn" type="button" class="primary" aria-label="Reset both points and keep the ticked boxes">Reset</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two dots on a curve, one line through the vertex and a short horizontal segment: the two turns at D match every time. Move the dots and watch the readings.</p>
+
+      <h2>Put the curve in coordinates</h2>
+      <p>Let the vertex O be <code>(0, 0)</code> and the axis vertical. A <a class="wiki-term" data-wiki="Parabola" href="https://en.wikipedia.org/wiki/Parabola" target="_blank" rel="noopener">parabola</a> here is <code>y = x&sup2;/(4a)</code>, with the applet's <code>a = 40</code>. Write the offsets of A and B from the axis as <code>p</code> and <code>q</code>. The line OB has <a class="wiki-term" data-wiki="Slope" href="https://en.wikipedia.org/wiki/Slope" target="_blank" rel="noopener">slope</a> <code>q/(4a)</code>, so where it crosses the vertical through A it has height <code>pq/(4a)</code>. That crossing is C, and D sits on the axis at the same height, so DC is horizontal.</p>
+
+      <h2>Why the two angles match</h2>
+      <p>From D, the steps to A and B are <code>(p, p(p&minus;q)/(4a))</code> and <code>(q, q(q&minus;p)/(4a))</code>. Their slopes are <code>(p&minus;q)/(4a)</code> and <code>(q&minus;p)/(4a)</code>: the same size with opposite signs. A horizontal ray therefore sees them at equal turns, which is the page's claim <code>&ang;ADC = &ang;BDC</code>. In other words, DC is the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> of <code>&ang;ADB</code>. The logic test checked all 33,670 pairs <code>0 &lt; p &lt; q &le; 260</code> on the exact curve: the largest difference was about <code>3 &times; 10<sup>&minus;12</sup></code> degrees, which is rounding in the arithmetic, not a real gap.</p>
+
+      <h2>What the extra lines are for</h2>
+      <p>At offset <code>t</code> the <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> has slope <code>t/(2a)</code>. The tangents at A and B meet at <code>M = ((p+q)/2, pq/(4a))</code>; the line OA meets the vertical through B at <code>K = (q, pq/(4a))</code>. So D, C, K and M are all level. This is the applet's "extra" hint. It is a different question from Markowsky2 ("Three Points on a Parabola"), which uses three dots and asks where the three pairwise tangent intersections lie.</p>
+
+      <h2>Screen pixels and the stated domain</h2>
+      <p>The applet rounds every curve height to a whole pixel (<code>(t&sup2;/4)/a</code> with integer division). The test found that the two drawn readings can differ by up to about <code>4.2&deg;</code> for very close dots (<code>p = 12, q = 18</code>), but by under <code>0.1&deg;</code> at the starting offsets. The theorem is about the exact curve. The page's description line says "ADO and BDE"; its body and the applet's angle marks say ADC and BDC, so this page follows those. The equality also needs both dots to the right of the axis, with A nearer O, as the page states.</p>
+
+      <p class="tip">Tick "Show statement", keep A still and slide B: the two numbers move together. Then tick "Extra" and find M on the horizontal line through D.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MarkowskyParabola.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="markowsky-parabola-core.js"></script>
+<script src="markowsky-parabola.js"></script>
+</body>
+</html>
