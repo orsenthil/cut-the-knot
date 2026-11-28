@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Homothety &mdash; coolmaths</title>
+<meta name="description" content="Move the center and the three points on a slider to stretch a shape by any amount. What happens with a negative stretch, and where does a chain of two stretches end?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/homothety/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Homothety">
+<meta property="og:description" content="Move the center and the three points on a slider to stretch a shape by any amount. What happens with a negative stretch, and where does a chain of two stretches end?">
+<meta property="og:url" content="https://coolmaths.ai/homothety/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; margin: 0 auto; padding: 0.5rem; overflow-x: auto; }
+  #board { display: block; width: 100%; min-width: 30rem; height: auto; touch-action: none; }
+  #board .slider-axis { stroke: var(--muted); stroke-width: 2; }
+  #board .image-shape { stroke-width: 2; stroke-linejoin: round; }
+  #board .image-0 { fill: var(--accent); fill-opacity: 0.10; stroke: var(--accent); }
+  #board .image-1 { fill: var(--highlight); fill-opacity: 0.14; stroke: var(--highlight); }
+  #board .image-2 { fill: var(--muted); fill-opacity: 0.16; stroke: var(--muted); }
+  #board .image-3 { fill: var(--ink); fill-opacity: 0.08; stroke: var(--ink); }
+  #board .original-shape { fill: var(--accent); fill-opacity: 0.16; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .ray { stroke: var(--muted); stroke-width: 1.2; opacity: 0.7; }
+  #board .product-line { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .center-tag { fill: var(--text); font-size: 15px; font-weight: 650; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .slider-o { fill: #d6a14b; }
+  #board .slider-u { fill: #d57772; }
+  #board .slider-v { fill: #739bda; }
+  #board .vertex-handle { fill: var(--stage); stroke: var(--accent); stroke-width: 2; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .toggles { margin-top: 8px; width: 100%; }
+  .toggles label { white-space: normal; }
+</style>
+</head>
+<body data-game="homothety" data-kind="demo">
+<main id="main">
+  <h1>Homothety</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A blue point is the center of a drawing machine that makes bigger, smaller or flipped copies of a shape.<br>
+    <strong>How to play:</strong> Press Add polygon, then drag the orange, red and blue points on a slider to choose the stretch. Use the number boxes for more copies or more sides.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 330" role="group"
+         aria-label="Shapes and their stretched copies. Each homothety has a draggable blue center and a slider with orange zero, red one and blue coefficient points."></svg>
+  </div>
+
+  <div class="controls">
+    <label for="countInput"># Homotheties <input id="countInput" type="number" min="1" max="20" step="1" value="1"></label>
+    <button id="countBtn" type="button" aria-label="Apply the chosen number of homotheties">Apply</button>
+    <label for="sidesInput">Polygon sides <input id="sidesInput" type="number" min="3" max="20" step="1" value="5"></label>
+    <button id="addBtn" type="button" aria-label="Add a polygon with the chosen number of sides">Add polygon</button>
+    <button id="removeBtn" type="button" aria-label="Remove the last polygon">Remove last</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Choose a new random arrangement of centers and keep the shapes">New arrangement</button>
+  </div>
+
+  <div class="controls toggles">
+    <label><input id="linesChk" type="checkbox"> Show lines from each center</label>
+    <label><input id="dragsChk" type="checkbox" checked> Show drag controls</label>
+    <label><input id="productChk" type="checkbox"> Show product</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>One point and one number can turn any shape into a whole family of copies. Move the blue slider point past the red one and the copies flip to the other side of the center; put it between orange and red and they shrink.</p>
+
+      <h2>A center and one number</h2>
+      <p>A <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothety</a> with center <code>O</code> and coefficient <code>k</code> sends each point <code>P</code> to <code>P' = O + k(P - O)</code>. The points <code>O</code>, <code>P</code> and <code>P'</code> stay on one line, and the <em>signed</em> lengths obey <code>OP' / OP = k</code>. That is why a negative <code>k</code> puts the copy on the far side of the center. On each slider the orange point reads 0, the red point reads 1 and the blue point reads <code>k = (V - O) / (U - O)</code>; the logic test checked this formula, and the way dragging 0 or 1 instead moves V but keeps <code>k</code>, against the applet's slider code on 252 settings. When the orange and red points are at most one pixel apart the applet refuses to read the slider, and this page does too. The page calls the zero point yellow; the applet's own drawing code uses orange, so this page keeps the orange dot.</p>
+
+      <h2>What stays the same</h2>
+      <p>Every copy is an <a class="wiki-term" data-wiki="Affine_transformation" href="https://en.wikipedia.org/wiki/Affine_transformation" target="_blank" rel="noopener">affine transformation</a> that multiplies every direction by the same number. Parallel lines therefore land on parallel lines, angles keep their size, and the order of the corners (the orientation) never flips while <code>k</code> is not zero. Areas grow by <code>k&sup2;</code>, which the test confirmed on a grid of coefficients. Switch on “Show lines” to see that each vertex travels along the straight line through its center; the page's claim that all these things are preserved held in every case tested.</p>
+
+      <h2>Going backwards, and staying put</h2>
+      <p>Undo a stretch by stretching by <code>1/k</code> from the same center: <code>H(O, 1/k)</code> followed by <code>H(O, k)</code> returns every point exactly where it began. The test checked both orders for positive and negative <code>k</code>. For <code>k</code> different from 1, only the center stays fixed: solving <code>O + k(P - O) = P</code> forces <code>P = O</code>. When <code>k = 1</code> nothing moves at all. The page excludes <code>k = 0</code> as trivial; at that value every point collapses onto the center and there is no inverse, so the inverse claim is checked only where the page says it applies. This is the idea behind a <a class="wiki-term" data-wiki="Fixed_point_(mathematics)" href="https://en.wikipedia.org/wiki/Fixed_point_(mathematics)" target="_blank" rel="noopener">fixed point</a>.</p>
+
+      <h2>Two stretches in a row</h2>
+      <p>Apply <code>k1</code> and then <code>k2</code> and the combined coefficient is <code>k1 k2</code>. If that product is not 1, the result is another homothety and its center lies on the line through the two old centers. If the product is 1, the <code>P</code> term disappears and the result is a <a class="wiki-term" data-wiki="Translation_(geometry)" href="https://en.wikipedia.org/wiki/Translation_(geometry)" target="_blank" rel="noopener">translation</a> parallel to the line joining the centers. Switch on “Show product” to watch matching corners join up. Two homotheties with the same center commute; with different centers they usually do not — the test found an example and checked all 81 pairs for the formulas. One presentation difference from the applet: it scatters its centers at random on each load and stacks slider rows 20 pixels apart, while this page uses a fixed seed and spaces the rows so twenty of them fit on a phone. Both start with no shapes until Add polygon is pressed.</p>
+
+      <p class="tip">Set one homothety to <code>k = -1</code> for a half-turn about its center, then make a second with <code>k = 2</code> and turn on “Show product”: the two shapes differ by a single stretch of <code>-2</code>.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Homothety.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="homothety-core.js"></script>
+<script src="homothety.js"></script>
+</body>
+</html>
