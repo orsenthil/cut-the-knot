@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hermann &mdash; coolmaths</title>
+<meta name="description" content="Grey blobs seem to sit between rows of dark shapes that are not really painted there. Change the grid, the shape and the colours: when does the illusion appear?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hermann/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hermann">
+<meta property="og:description" content="Grey blobs seem to sit between rows of dark shapes that are not really painted there. Change the grid, the shape and the colours: when does the illusion appear?">
+<meta property="og:url" content="https://coolmaths.ai/hermann/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 24rem;
+    padding: 0.75rem;
+    margin-inline: auto;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .canvas-bg { fill: var(--stage); stroke: var(--ink); stroke-width: 1.5; }
+  #board.flipped .canvas-bg { fill: var(--ink); stroke: var(--stage); }
+  #board .figure { fill: var(--ink); }
+  #board.flipped .figure { fill: var(--stage); }
+  #board .blob-halo { fill: var(--muted); opacity: 0.5; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board.flipped .geom-handle { stroke: var(--ink); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { white-space: normal; min-height: 2.5rem; }
+  .controls input[type="range"] { width: 8rem; max-width: 100%; min-height: 2.5rem; accent-color: var(--accent); }
+  .controls output { min-width: 2.5rem; font-variant-numeric: tabular-nums; }
+  .controls button { min-height: 2.5rem; min-width: 4rem; }
+</style>
+</head>
+<body data-game="hermann" data-kind="demo">
+<main id="main">
+  <h1>Hermann</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Grey blobs seem to sit between rows of dark shapes, but nobody painted them there.<br>
+    <strong>How to play:</strong> Slide the controls to change how many shapes you see and how big they are. Pick Rectangles or Circles, switch the colours, and move the dot with your mouse or arrow keys to look straight at a gap and watch its faint halo vanish.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 440" role="group"
+         aria-label="A grid of dark figures with a draggable gaze dot; the faint halo at a gap vanishes when you look at it"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="nInput">Figures across</label>
+    <input id="nInput" type="range" min="2" max="12" step="1" value="4" aria-label="Number of figures across, from 2 to 12">
+    <output id="nOut" for="nInput">4</output>
+    <label for="partInput">Figure size</label>
+    <input id="partInput" type="range" min="0" max="105" step="1" value="50" aria-label="Figure size as a percentage, from 0 to 105">
+    <output id="partOut" for="partInput">50%</output>
+  </div>
+
+  <div class="controls" role="group" aria-label="Figure shape and colours">
+    <button id="rectBtn" type="button" aria-pressed="true" aria-label="Draw rectangles">Rectangles</button>
+    <button id="ovalBtn" type="button" aria-pressed="false" aria-label="Draw circles">Circles</button>
+    <button id="switchBtn" type="button" aria-pressed="false" aria-label="Switch the figure and background colours">Switch colors</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the grid to its starting settings">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>There are no grey spots in this picture. The old applet paints only a grid of dark shapes; the soft blobs you see between them are made by your eyes.</p>
+
+      <h2>A grid of figures</h2>
+      <p>The applet draws <code>N × N</code> figures in a square <a class="wiki-term" data-wiki="Matrix_(mathematics)" href="https://en.wikipedia.org/wiki/Matrix_(mathematics)" target="_blank" rel="noopener">matrix</a>, with <code>N</code> from 2 to 12. The size of each figure is <code>round((min(width, height) − 20) × Part / 100 / N)</code>, where <em>Part</em> is the second slider (0 to 105). The space between neighbouring figure corners is rounded to a whole pixel too. Nothing in that formula mentions a blob.</p>
+
+      <h2>How many gaps?</h2>
+      <p>Between the figures there are <code>(N − 1) × (N − 1)</code> crossings of free background: nine when the applet starts with <code>N = 4</code>. The test checks every slider setting and confirms that all nine crossings stay open at Part = 50 on the applet's 360 × 440 canvas. At Part = 70 or more the figures touch or overlap and every crossing is covered. <a class="wiki-term" data-wiki="Rounding" href="https://en.wikipedia.org/wiki/Rounding" target="_blank" rel="noopener">Rounding</a> matters at the edges: on a short 400 × 300 canvas with 12 figures across, Part = 50 already closes the crossings.</p>
+
+      <h2>Why the blob goes away</h2>
+      <p>The page says a blob vanishes when you look straight at it, and this is an <a class="wiki-term" data-wiki="Optical_illusion" href="https://en.wikipedia.org/wiki/Optical_illusion" target="_blank" rel="noopener">optical illusion</a> of <a class="wiki-term" data-wiki="Peripheral_vision" href="https://en.wikipedia.org/wiki/Peripheral_vision" target="_blank" rel="noopener">peripheral vision</a>, not a change in the pixels. The gaze dot here lets you aim at a crossing: a faint halo marks the blob your eye supplies while you look off to one side, and it vanishes when you look straight at it. The grid itself never changes. The dot and halo are new; the Java applet had only two sliders, Rectangles/Circles, and Switch colors. The page calls the background white, while the applet's own default is light grey; this port uses the site's panel colour in both themes.</p>
+
+      <p class="tip">Try Part = 50 with 4 figures across, look away from a gap and then move the dot onto it. Then set Part = 75: the corridors close and there is nowhere for a blob to appear.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Hermann.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="hermann-core.js"></script>
+<script src="hermann.js"></script>
+</body>
+</html>
