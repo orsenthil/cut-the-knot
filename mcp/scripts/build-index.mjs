@@ -849,6 +849,16 @@ const CORE_GLOBALS = {
   "isogonal-tangents/isogonal-tangents-core.js": ["IsogonalTangentsCore"],
   "isoperimetric/isoperimetric-core.js": ["IsoperimetricCore"],
   "isosceles-on-sides/isosceles-on-sides-core.js": ["IsoscelesOnSidesCore"],
+  "isosceles-triangle-in-circle/isosceles-triangle-in-circle-core.js": ["IsoscelesTriangleInCircleCore"],
+  "isosceles-triangles-in-cyclic-quadrilateral/isosceles-triangles-in-cyclic-quadrilateral-core.js": ["IsoscelesTrianglesInCyclicQuadrilateralCore"],
+  "iso-simpson/iso-simpson-core.js": ["IsoSimpsonCore"],
+  "jkeech/jkeech-core.js": ["JkeechCore"],
+  "jl-ayme/jl-ayme-core.js": ["JlAymeCore"],
+  "johnson-circles/johnson-circles-core.js": ["JohnsonCirclesCore"],
+  "judd-illusion/judd-illusion-core.js": ["JuddIllusionCore"],
+  "kurschak-tile/kurschak-tile-core.js": ["KurschakTileCore"],
+  "lahire/lahire-core.js": ["LahireCore"],
+  "lahire-on-ellipse/lahire-on-ellipse-core.js": ["LahireOnEllipseCore"],
 };
 
 const games = [];

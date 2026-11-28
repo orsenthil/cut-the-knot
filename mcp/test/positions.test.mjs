@@ -2455,6 +2455,16 @@ check("invert: the linkage product stays equal to OB²-AB²", read["invert"]?.ch
 check("isogonal-tangents: the saved second tangents concur", read["isogonal-tangents"]?.concurrent === true && read["isogonal-tangents"].spread < read["isogonal-tangents"].reading.tolerance && Math.abs(read["isogonal-tangents"].agreesWithSaved.P) < 1e-8);
 check("isoperimetric: the saved arc families have equal length", read["isoperimetric"]?.lengthsEqual === true && read["isoperimetric"].diametersSum === read["isoperimetric"].board.AB && read["isoperimetric"].semicircles.diametersAddToAB === true);
 check("isosceles-on-sides: the saved perpendiculars meet at one point", read["isosceles-on-sides"]?.savedVsCore.allMatch === true && read["isosceles-on-sides"].coreReading.claims.all === true && read["isosceles-on-sides"].coreReading.commonPoint !== null);
+check("isosceles-triangle-in-circle: the saved triangle satisfies the dot-product identity", read["isosceles-triangle-in-circle"]?.reading.dotProducts.identityHolds === true && read["isosceles-triangle-in-circle"].reading.dotProducts.identityResidual < read["isosceles-triangle-in-circle"].reading.dotProducts.identityTolerance);
+check("isosceles-triangles-in-cyclic-quadrilateral: MN parallel AB with crossing chords", read["isosceles-triangles-in-cyclic-quadrilateral"]?.claims.mnParallelAb === true && read["isosceles-triangles-in-cyclic-quadrilateral"].claims.crossing === true && read["isosceles-triangles-in-cyclic-quadrilateral"].measures.parallelError < 1e-8);
+check("iso-simpson: P on the circumcircle gives the Simson line", read["iso-simpson"]?.onCircumcircle === true && read["iso-simpson"].simsonLine.through.x !== undefined && read["iso-simpson"].feetQ === null);
+check("jkeech: CF=CH and the inscribed square fits on AB", read["jkeech"]?.checks.allFourSidesEqual === true && read["jkeech"].checks.formulaHolds === true && read["jkeech"].checks.Z_onSegmentAB === true);
+check("jl-ayme: the Sawayama chord EF passes through the incenter", read["jl-ayme"]?.valid === true && read["jl-ayme"].checks.chordEFThroughIncenter === true && read["jl-ayme"].checks.JIsIncenter === true);
+check("johnson-circles: the four circles are equal and O is the orthocentre", read["johnson-circles"]?.savedReadable === true && read["johnson-circles"].reading.allCirclesEqual === true && read["johnson-circles"].reading.orthocentric === true);
+check("judd-illusion: the saved mark bisects the bar exactly", read["judd-illusion"]?.halves.equal === true && read["judd-illusion"].halves.difference === 0 && read["judd-illusion"].mark.kind === "rectangle");
+check("kurschak-tile: the dissection fills 3/4 of the square", read["kurschak-tile"]?.geometry.threeQuarters === true && read["kurschak-tile"].pieces.thin === 24 && read["kurschak-tile"].pieces.equilateral === 12);
+check("lahire: the saved inverses multiply to the circle power", read["lahire"]?.reading.inverses.oaTimesOd === read["lahire"].reading.circle.power && read["lahire"].reading.inverses.obTimesOc === read["lahire"].reading.circle.power);
+check("lahire-on-ellipse: the saved contact points match the recomputed chords", read["lahire-on-ellipse"]?.valid === true && read["lahire-on-ellipse"].savedMatchesCore.C === true && read["lahire-on-ellipse"].tests.equivalenceHolds === true && read["lahire-on-ellipse"].tests.contactPointsOnEllipse === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -3037,6 +3047,30 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("isoperimetric/families: all three families and all 45 cases equal", iso.lengths.equal === true && iso.sweep.failures === 0 && iso.diametersSum === iso.endpoints.AB && iso.arcs.diametersAddToAB === true);
   const sides = runGameLogic("isosceles-on-sides", "radical_center", {});
   check("isosceles-on-sides/radical_center: equal powers at the common point", sides.claims.all === true && sides.powers.D === sides.powers.E && sides.powers.E === sides.powers.F && sides.commonPoint !== null);
+}
+
+// The batch-38 tutor actions also run their real cores, not just saved positions.
+{
+  const tri = runGameLogic("isosceles-triangle-in-circle", "dot_product_identity", {});
+  check("isosceles-triangle-in-circle/dot_product_identity: perpendicular iff equal legs", tri.dotProducts.identityHolds === true && tri.checks.equivalent === true && tri.checks.all === true);
+  const quad = runGameLogic("isosceles-triangles-in-cyclic-quadrilateral", "inspect_construction", {});
+  check("isosceles-triangles-in-cyclic-quadrilateral/inspect_construction: equal lengths and MN parallel AB", quad.equalLengths.holds === true && quad.parallel.holds === true && quad.crossing.holds === true && quad.similarTriangles.proportionHolds === true);
+  const simson = runGameLogic("iso-simpson", "simson_line", {});
+  check("iso-simpson/simson_line: the three feet are collinear", simson.onCircumcircle === true && simson.collinear === true && simson.relativeArea < 1e-8);
+  const keech = runGameLogic("jkeech", "inscribed_square", {});
+  check("jkeech/inscribed_square: CF = CH = ac·bc/(ac+bc) with Z on AB", keech.checks.allFourSidesEqual === true && keech.checks.formulaHolds === true && keech.checks.Z_onSegmentAB === true);
+  const ayme = runGameLogic("jl-ayme", "sawayama_figure", {});
+  check("jl-ayme/sawayama_figure: EF through I and J = I", Object.values(ayme.checks).every(Boolean) === true);
+  const johnson = runGameLogic("johnson-circles", "fourth_circle", {});
+  check("johnson-circles/fourth_circle: a fourth equal circle and orthocentric centres", johnson.geometry.valid === true && johnson.geometry.allFourEqual === true && johnson.geometry.orthocentric === true);
+  const judd = runGameLogic("judd-illusion", "geometry_report", {});
+  check("judd-illusion/geometry_report: even widths split evenly, odd widths truncate", judd.halves.equal === true && judd.oddWidthQuirk.difference === 1);
+  const tile = runGameLogic("kurschak-tile", "area_and_ratio", {});
+  check("kurschak-tile/area_and_ratio: dodecagon area 3 and 3/4 of the square", tile.star.dodecagonArea === 3 && tile.ratio === 0.75 && tile.threeQuarters === true);
+  const polar = runGameLogic("lahire", "polar_reciprocity", {});
+  check("lahire/polar_reciprocity: inverse products equal the circle power", polar.checks.productsEqualPower === true && polar.inverses.oaTimesOd === polar.circle.power && polar.inverses.obTimesOc === polar.circle.power);
+  const ellipse = runGameLogic("lahire-on-ellipse", "la_hire", {});
+  check("lahire-on-ellipse/la_hire: polar implication holds with contacts on the ellipse", ellipse.tests.equivalenceHolds === true && ellipse.tests.implicationHolds === true && ellipse.tests.contactPointsOnEllipse === true);
 }
 
 // A game with no reader, and a position that makes no sense.

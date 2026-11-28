@@ -1334,6 +1334,19 @@ const GAMES = {
   "isogonal-tangents": (page) => dragFirstHandle(page),
   "isoperimetric": (page) => dragFirstHandle(page),
   "isosceles-on-sides": (page) => dragFirstHandle(page),
+  "isosceles-triangle-in-circle": (page) => dragFirstHandle(page),
+  "isosceles-triangles-in-cyclic-quadrilateral": (page) => dragFirstHandle(page),
+  "iso-simpson": (page) => dragFirstHandle(page),
+  "jkeech": (page) => dragFirstHandle(page),
+  "jl-ayme": (page) => dragFirstHandle(page),
+  "johnson-circles": (page) => dragFirstHandle(page),
+  "judd-illusion": (page) => dragFirstHandle(page),
+  "kurschak-tile": async (page) => {
+    await page.locator("#board .step-handle").first().focus();
+    await page.keyboard.press("ArrowRight");
+  },
+  "lahire": (page) => dragFirstHandle(page),
+  "lahire-on-ellipse": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },
