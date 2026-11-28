@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hanner &mdash; coolmaths</title>
+<meta name="description" content="Five coloured pieces fill the squares on the two short sides of a right triangle. Can you slide them, without turning a single one, from the square on the longest side?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hanner/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hanner">
+<meta property="og:description" content="Five coloured pieces fill the squares on the two short sides of a right triangle. Can you slide them, without turning a single one, from the square on the longest side?">
+<meta property="og:url" content="https://coolmaths.ai/hanner/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .square-outline { fill: none; stroke: var(--muted); stroke-width: 2; stroke-linejoin: round; }
+  #board .triangle { fill: var(--accent); fill-opacity: 0.18; stroke: var(--ink); stroke-width: 2; cursor: pointer; }
+  #board .hint-line { stroke: var(--good); stroke-width: 2.5; stroke-dasharray: 8 6; }
+  #board .glide-circle { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 7; opacity: 0.7; }
+  #board .piece { stroke: var(--ink); stroke-width: 1.6; stroke-linejoin: round; fill-opacity: 0.85; }
+  #board .piece.ghost { fill-opacity: 0.45; stroke-dasharray: 4 3; }
+  #board .piece-0 { fill: #e0b354; }
+  #board .piece-1 { fill: #d76b73; }
+  #board .piece-2 { fill: #43a58e; }
+  #board .piece-3 { fill: #9a8b56; }
+  #board .piece-4 { fill: #a88ac4; }
+  #board .point-label {
+    fill: var(--text); font: 600 19px var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="hanner" data-kind="demo">
+<main id="main">
+  <h1>Hanner</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a jigsaw of squares on a triangle: five pieces from the biggest square fit exactly into the two smaller ones.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a point and use the arrow keys. Tick Hint to see the slide line; press Free C to move it anywhere, Reset diagram to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 520 460" role="group"
+         aria-label="A right triangle with a square on each side and five coloured pieces that slide between the squares"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="hint" type="checkbox"> Show hint</label>
+    <button id="freeBtn" type="button">Free C</button>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The page calls this <em>Olof Hanner's Jigsaw Puzzle</em>: Hubert Shutrick reported it as a variant of K. O. Friedrichs' tessellation, and Frederickson (p. 34) calls it an "uncentered Perigal's dissection". The drawing below keeps the old construction; the check script tests the page's claim rather than taking it on trust.</p>
+
+      <h2>Three squares on a right triangle</h2>
+      <p>A, B and C form a <a class="wiki-term" data-wiki="Right_triangle" href="https://en.wikipedia.org/wiki/Right_triangle" target="_blank" rel="noopener">right triangle</a> with its right angle at C. A square hangs outside each side. Write the short sides <code>a</code> and <code>b</code>, and the longest side <code>c</code>. The claim behind the puzzle is the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a>: <code>a² + b² = c²</code>, so the two smaller squares have exactly the area of the biggest one.</p>
+
+      <h2>Five pieces, sliding only</h2>
+      <p>The solid colours show five pieces in the squares on the legs; the dashed copies are the same five pieces moved into the square on AB. Every move is a translation: no piece turns over or rotates. That is what makes this a <a class="wiki-term" data-wiki="Dissection_(geometry)" href="https://en.wikipedia.org/wiki/Dissection_(geometry)" target="_blank" rel="noopener">dissection</a> proof — the pieces fit before and after, so the areas must agree. The logic test checks congruence, non-overlap and complete coverage for right triangles from 5° to 85°, in both leg orders, and at three sizes.</p>
+
+      <h2>Why C stays on a circle</h2>
+      <p>When you grab C the old applet puts it on the triangle's <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a>. Moving a point along a circle keeps the angle subtended by the fixed chord AB, so the right angle at C survives the drag. With Hint on, the dashed line from C runs to the point on the far side of the AB square; that is the applet's own guide. Dragging A or B rebuilds C at a right angle again. Clicking the triangle or pressing Free C releases the circle, and then the five pieces stop fitting until you drag A or B.</p>
+
+      <h2>What the old applet kept</h2>
+      <p>The bytecode chooses one of two collections according to which leg is longer. Its third method, for legs within half a pixel of equal length, is empty: at that moment the old canvas simply kept whatever pieces it had drawn before. This port has no previous drawing, so it shows no pieces in that narrow band. It also swaps the labels A and B after a drag that sends C below AB, exactly as the old code did. Nothing here can be won or lost; exploring the drawing is all there is.</p>
+
+      <p class="tip">Tick Hint, drag C around until it sits on the dashed guide line, then press Free C and nudge C by hand to see the pieces miss their squares.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/Hanner.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="hanner-core.js"></script>
+<script src="hanner.js"></script>
+</body>
+</html>
