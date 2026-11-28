@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Huberts Dissection &mdash; coolmaths</title>
+<meta name="description" content="Drag a triangle and swing its three pieces around: when do they close up into a rhombus whose four sides match AB?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/huberts-dissection/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Huberts Dissection">
+<meta property="og:description" content="Drag a triangle and swing its three pieces around: when do they close up into a rhombus whose four sides match AB?">
+<meta property="og:url" content="https://coolmaths.ai/huberts-dissection/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.75rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .piece-a { fill: var(--accent); opacity: 0.24; }
+  #board .piece-b { fill: var(--good); opacity: 0.22; }
+  #board .piece-fixed { fill: var(--highlight); }
+  #board .cut { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .median { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 8 5; }
+  #board .side { stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; fill: none; }
+  #board .moving-edge { stroke: var(--ink); stroke-width: 1.8; stroke-linejoin: round; fill: none; }
+  #board .rhombus { stroke: var(--accent); stroke-width: 4; stroke-linejoin: round; fill: none; }
+  #board .hint { stroke: var(--good); stroke-width: 1.5; stroke-dasharray: 4 5; fill: none; }
+  #board .construction-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .point-label {
+    fill: var(--text);
+    font: 600 15px var(--font);
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+    cursor: pointer;
+  }
+  #angleRow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.7rem;
+    min-height: 2.75rem;
+  }
+  #angle {
+    flex: 1 1 8rem;
+    min-width: 6rem;
+    accent-color: var(--accent);
+  }
+  #angleOut {
+    min-width: 3rem;
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+</head>
+<body data-game="huberts-dissection" data-kind="demo">
+<main id="main">
+  <h1>Huberts Dissection</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: a triangle is cut into three pieces that turn into a rhombus. There is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a corner and press the arrow keys. Move the slider to turn the pieces, and tick names or hint to see more.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 480 320" role="group"
+         aria-label="Triangle ABC with its median, the point N on AB and two pieces that turn into a rhombus. Drag corners A, B or C, or focus one and use the arrow keys."></svg>
+    <p class="hint-line">Drag a corner, or focus it and press the arrow keys (Shift for bigger steps). The slider turns the two pieces.</p>
+  </div>
+
+  <div class="controls">
+    <div id="angleRow">
+      <label for="angle">Turn</label>
+      <input id="angle" type="range" min="0" max="185" step="1" value="60" aria-label="Turning angle in degrees">
+      <output id="angleOut" for="angle" aria-label="Current turning angle">60&deg;</output>
+    </div>
+    <label><input id="namesBox" type="checkbox"> names</label>
+    <label><input id="hintBox" type="checkbox"> hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A triangle is cut into three pieces and the pieces swing around two points. At the end the outline has four equal sides: a <a class="wiki-term" data-wiki="Rhombus" href="https://en.wikipedia.org/wiki/Rhombus" target="_blank" rel="noopener">rhombus</a>. The applet lets you drag the triangle, so you can find out when the trick works and when it does not.</p>
+
+      <h2>Where the two cuts go</h2>
+      <p>Let M be the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> of BC and Bm the midpoint of AC. The point N is where AB meets the circle centred at M with radius AB, so <code>MN = AB</code>. The cuts are MN and BmM. For N to lie on the segment AB, A must be outside that circle (<code>AM &gt; AB</code>) while B is inside it (<code>BM &lt; AB</code>). When there is no such N, the applet draws a dashed <a class="wiki-term" data-wiki="Median_(geometry)" href="https://en.wikipedia.org/wiki/Median_(geometry)" target="_blank" rel="noopener">median</a> AM and no pieces.</p>
+
+      <h2>Two sides from a midline</h2>
+      <p>Bm and M are midpoints of two sides of ABC, so BmM is parallel to AB and half as long: <code>BmM = AB / 2</code>. A half-turn about Bm sends M to M', and a half-turn about M sends N to N''. Since each half-turn moves a point by twice the distance to its centre, <code>MM' = 2 &times; BmM = AB</code> and <code>N'N'' = 2 &times; BmM = AB</code>. Notice that the length of N'N'' does not even depend on where N sits on AB.</p>
+
+      <h2>Two sides from the cut</h2>
+      <p>A <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a> keeps every distance. Rotating N about M gives N'', so <code>N''M = NM = AB</code>. Rotating both M and N about Bm gives M' and N', so <code>M'N' = MN = AB</code>. At a 180&deg; turn the four sides N'N'', N''M, MM' and M'N' therefore all equal AB, and the pieces tile that rhombus exactly. At other slider positions the outline is only part way through the turn.</p>
+
+      <h2>What the hypotheses really say</h2>
+      <p>The page quotes the olympiad problem with only <code>AM &gt; AB</code>, then adds <code>BM &lt; AB</code> when it describes the cut. That extra line matters: it does not follow from the olympiad hypothesis. Take a tall, thin acute triangle with angles near 89&deg;, 89&deg; and 2&deg;: AM is much longer than AB, but BM is longer too, and its area is bigger than AB&sup2;, so no rhombus of side AB could hold its pieces. Conversely, <code>BM &lt; AB</code> alone can leave both A and B inside the circle. The logic test checked the rhombus claim on over 200 configurations where the cut exists (all four sides equal AB, to within 1e-9) and confirmed both failed implications; the applet shows the dashed median when the cut is impossible.</p>
+
+      <p class="tip">Try dragging C until the dashed median appears, then move it back and put the slider at 180&deg;: the four sides of the rhombus reappear and stay equal to AB.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HubertsDissection.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="huberts-dissection-core.js"></script>
+<script src="huberts-dissection.js"></script>
+</body>
+</html>
