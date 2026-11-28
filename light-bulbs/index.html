@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Light Bulbs &mdash; coolmaths</title>
+<meta name="description" content="Bulbs blink around a ring as an unseen visitor flips one and hops to the next. Can you predict the pattern after a run, and how long the prisoners in the linked puzzle should wait?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/light-bulbs/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Light Bulbs">
+<meta property="og:description" content="Bulbs blink around a ring as an unseen visitor flips one and hops to the next. Can you predict the pattern after a run, and how long the prisoners in the linked puzzle should wait?">
+<meta property="og:url" content="https://coolmaths.ai/light-bulbs/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    margin: 0 auto;
+    padding: 0.75rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+    margin: 0 auto;
+  }
+  #board .ring { fill: none; stroke: var(--muted); stroke-width: 1; }
+  #board .bulb { stroke: var(--ink); stroke-width: 1.5; }
+  #board .bulb.on { fill: var(--accent); }
+  #board .bulb.off { fill: var(--stage); }
+  #board .bulb-index { fill: var(--text); font-size: 0.6rem; text-anchor: middle; pointer-events: none; }
+  #board .arrow-current { stroke: var(--good); stroke-width: 3; }
+  #board .arrow-look { stroke: var(--accent); stroke-width: 3; }
+  #board .head-current { fill: var(--good); }
+  #board .head-look { fill: var(--accent); }
+  #board .geom-handle { stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .current-handle { fill: var(--good); }
+  #board .look-handle { fill: var(--accent); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--highlight); stroke-width: 5; }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .controls label { display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.9rem; }
+  .controls input[type="number"] { width: 5rem; }
+  .controls .checkline { flex-direction: row; align-items: center; gap: 0.4rem; }
+  .legend { text-align: center; font-size: 0.9rem; }
+  .legend .dot { display: inline-block; width: 0.65rem; height: 0.65rem; border-radius: 50%; vertical-align: middle; }
+  .legend .here { background: var(--good); }
+  .legend .ahead { background: var(--accent); }
+  #stage.busy #board { opacity: 0.9; }
+  code { white-space: normal; }
+</style>
+</head>
+<body data-game="light-bulbs" data-kind="demo">
+<main id="main">
+  <h1>Light Bulbs</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#probability">Probability</a><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Lit bulbs blink around a ring as an unseen visitor flips one bulb and hops to the next.<br>
+    <strong>How to play:</strong> Press Perform to watch the steps. Drag the green and blue markers, or use their arrow keys, to choose where the visitor stands and which bulb it flips; change the numbers and press Reset for a new ring.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A ring of light bulbs with a green marker for the current bulb and a blue marker for the bulb about to be flipped"></svg>
+    <p class="legend"><span class="dot here"></span> visitor's bulb &nbsp; <span class="dot ahead"></span> bulb it flips</p>
+  </div>
+
+  <div class="controls">
+    <label for="bulbsIn">Bulbs <input id="bulbsIn" type="number" min="2" max="100" step="1" value="15" aria-label="Number of bulbs, from 2 to 100"></label>
+    <label for="lookIn">Look ahead <input id="lookIn" type="number" min="1" max="1000" step="1" value="1" aria-label="How many bulbs ahead the visitor flips, from 1 to 1000"></label>
+    <label for="skipIn">Skip <input id="skipIn" type="number" min="0" max="50" step="1" value="0" aria-label="Bulbs skipped between visits, from 0 to 50"></label>
+    <label for="stepsIn">Steps <input id="stepsIn" type="number" min="1" max="30000" step="1" value="15" aria-label="Steps to perform, from 1 to 30000"></label>
+    <label class="checkline" for="fastBox"><input id="fastBox" type="checkbox"> Fast</label>
+    <button id="resetBtn" type="button">Reset</button>
+    <button id="performBtn" type="button" class="primary">Perform</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The applet is a tiny machine on a ring of bulbs. The linked cut-the-knot page is the famous story about 100 prisoners and one light bulb; its numbers are worth checking, and one of them does not survive the check.</p>
+
+      <h2>One step of the machine</h2>
+      <p>All bulbs start lit. If the bulb under the green arrow is lit, the visitor flips the bulb under the blue arrow, which is <code>d</code> places ahead. Then the green arrow jumps <code>k + 1</code> places, where <code>k</code> is the Skip box. Every place is read <a class="wiki-term" data-wiki="Modular_arithmetic" href="https://en.wikipedia.org/wiki/Modular_arithmetic" target="_blank" rel="noopener">modulo</a> the number of bulbs, so the last bulb is followed by the first. The applet's own "Look ahead" and "Skip" boxes set <code>d</code> and <code>k</code>; changing either one resets the bulbs.</p>
+
+      <h2>Why the pattern must repeat</h2>
+      <p>Position and lit/dark states are all the machine knows. With <code>n</code> bulbs there are at most <code>n · 2^n</code> different states, so the sequence of pictures must eventually come back to a picture it has shown before: it is a <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">permutation</a> of that finite set. With Look ahead 1 and Skip 0 you can watch the simplest case: for an even number of bulbs the lit and dark bulbs settle into an alternating <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a> pattern for a while, before the flips travel around the ring. The logic test follows every state for up to five bulbs and checks that each orbit closes.</p>
+
+      <h2>The prisoners' expected wait</h2>
+      <p>The article says that a leader named Alice counts the first visits of the other prisoners and prints <code>E(T) = n² − n/(n−1) − a</code> with <code>a = Σ 1/c²</code> from <code>c = 2</code> to <code>n</code>, then claims <code>9935.5</code> days (26.2 years) for <code>n = 100</code>. The formula actually gives about <code>9998.35</code> days, roughly 27.4 years. The printed number comes out only if that sum is multiplied by <code>n</code>, and 9935.5 days is about 27.2 years, not 26.2. So the formula and the number in the article disagree; the test keeps both values and shows the mismatch. The closed form is the sum of a geometric-<a class="wiki-term" data-wiki="Expected_value" href="https://en.wikipedia.org/wiki/Expected_value" target="_blank" rel="noopener">value</a> calculation, which the article derives with Bayes' rule.</p>
+
+      <h2>How sure, and how soon?</h2>
+      <p>The article's other claim is a recursion: <code>P(c,d) = P(c−1,d−1)(1−(c−1)/n) + P(c,d−1)(c/n)</code>, starting with <code>P(1,1) = 1</code>. Carrying it out for 100 prisoners confirms the four printed landmarks: the chance of success reaches 0.999 on day 1146, 0.9999 on day 1375, 0.99999 on day 1604 and 0.999999 on day 1833, and not on the day before each of them. This is a <a class="wiki-term" data-wiki="Probability" href="https://en.wikipedia.org/wiki/Probability" target="_blank" rel="noopener">probability</a> of finishing, not an expectation, which is why the days are so much shorter than 9935.5.</p>
+
+      <p>The live cut-the-knot page is an article and embeds no Java applet; a Wayback check of its 2007 capture shows the same. The simulation here follows the LightBulbs bytecode, and the applet's own "Shapes of Constant Width" info string is a leftover from a sibling applet.</p>
+
+      <p class="tip">Try Look ahead 1, Skip 0 with six bulbs, then change Skip to 1: how does the pattern of lit bulbs change, and can you find a setting that never flips a second bulb?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Probability/LightBulbs.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="light-bulbs-core.js"></script>
+<script src="light-bulbs.js"></script>
+</body>
+</html>
