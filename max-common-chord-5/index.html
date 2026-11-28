@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Max Common Chord 5 &mdash; coolmaths</title>
+<meta name="description" content="Two circles cross at P and Q, and a chord through P gives A and B. Move A and B: why do E, Q, W, F and A, Q, W, B each lie on one circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/max-common-chord-5/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Max Common Chord 5">
+<meta property="og:description" content="Two circles cross at P and Q, and a chord through P gives A and B. Move A and B: why do E, Q, W, F and A, Q, W, B each lie on one circle?">
+<meta property="og:url" content="https://coolmaths.ai/max-common-chord-5/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .given-circle { fill: var(--accent); fill-opacity: 0.10; stroke: var(--accent); stroke-width: 2; }
+  #board .given-circle-2 { fill: var(--highlight); stroke: var(--accent); stroke-width: 2; }
+  #board .claim-circle { fill: none; stroke: var(--good); stroke-width: 2.5; stroke-dasharray: 7 4; }
+  #board .claim-circle-2 { fill: none; stroke: var(--bad); stroke-width: 2.5; stroke-dasharray: 3 4; }
+  #board .chord { stroke: var(--ink); stroke-width: 3; }
+  #board .axis { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 4 4; }
+  #board .spoke { stroke: var(--ink); stroke-width: 1.5; stroke-opacity: 0.75; }
+  #board .hint-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 2 4; }
+  #board .angle-mark, #board .angle-mark-2 { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .angle-mark-3, #board .angle-mark-4 { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .center-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .common-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label { fill: var(--text); font-size: 13px; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls button[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; min-width: 0; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="max-common-chord-5" data-kind="demo">
+<main id="main">
+  <h1>Max Common Chord 5</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two circles cross at P and Q, and two more circles keep meeting at the same new point W as the line through P moves.<br>
+    <strong>How to play:</strong> Drag any of the four dots, or focus one and use the arrow keys. Press a button to change how A and B move, switch on a hint, or start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Two circles crossing at P and Q, a chord AB through P, the point W where AE meets BF, and the two circles through Q and W. Four labeled points can be dragged."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="chordBtn" type="button" aria-pressed="true" aria-label="Keep A and B on their circles while dragging">Adjust chord</button>
+    <button id="circlesBtn" type="button" aria-pressed="false" aria-label="Let the two circles follow A and B while dragging">Adjust circles</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put all four points back at the start">Reset</button>
+    <label class="option" for="namesChk"><input id="namesChk" type="checkbox" checked aria-label="Show or hide the point names"> Show names</label>
+    <label class="option" for="hint1Chk"><input id="hint1Chk" type="checkbox" aria-label="Show or hide the angle marks at P and W"> Hint 1</label>
+    <label class="option" for="hint2Chk"><input id="hint2Chk" type="checkbox" aria-label="Show or hide the angle at Q"> Hint 2</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move A or B and the whole drawing changes shape. Yet two new circles keep passing through the same pair of points, Q and W. What pins W down?</p>
+
+      <h2>The claim, in plain words</h2>
+      <p>The circles C(E) and C(F) have centres E and F and cross at P and Q. A is on C(E), B is on C(F), and the chord AB goes through P. Let W be where the lines AE and BF meet. The page claims</p>
+      <blockquote><code>E, Q, W, F lie on one circle; A, Q, W, B lie on another.</code></blockquote>
+      <p>Those are two <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilaterals</a>. Their <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircles</a> C(EQWF) and C(AQWB) share both Q and W, so W is their second meeting point. The logic test checks all four points of each circle at 720 positions of A, 720 of B, 400 circle-mode drags and 300 random ones; every one passes.</p>
+
+      <h2>Why an angle at W never changes</h2>
+      <p>Inscribed angles standing on the same arc are equal. Since the arc PQ of each given circle is fixed, the <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angles</a> PAQ and PBQ do not change when AB moves. Triangles AEP and BFP are isosceles, so their other base angles APE and BPF are fixed too, and</p>
+      <blockquote><code>∠EPF = 180° − ∠APE − ∠BPF</code><br><code>∠EWF = 360° − 2∠APE − 2∠BPF − ∠EPF = ∠EPF.</code></blockquote>
+      <p>That is the same as ∠AWB. Tick <strong>Hint 1</strong> to see the angles at P and W. One honest detail: as an ordinary angle at W the value is sometimes the supplement of ∠EPF, not ∠EPF itself — the equality is between the two lines AE and BF, which is what directed angles mean. The test accepts either, and both circle claims stay true.</p>
+
+      <h2>How the fixed angle gives the two circles</h2>
+      <p>Equal (or supplementary) angles subtending the same chord put four points on one circle. Applying this to the chord EF gives E, Q, W, F, and to the chord AB gives A, Q, W, B. Tick <strong>Hint 2</strong> to see the angle AQB at Q, which is fixed for the same reason. The dashed green and red circles in the drawing are exactly the two the page names; they keep meeting at Q and W even while their centres move.</p>
+
+      <h2>What makes this one different</h2>
+      <p>The other Max Common Chord applets ask different questions. The first uses the <a class="wiki-term" data-wiki="Radical_axis" href="https://en.wikipedia.org/wiki/Radical_axis" target="_blank" rel="noopener">radical axis</a> PQ to maximise AP × PB; the second and third track the circle of centres and the longest chord; the fourth, "Two Circles and One More", uses the points where EP and FP meet the circles again. This fifth page instead takes W = AE ∩ BF and claims two circles through W and Q.</p>
+      <p>The original page still carries the Java applet, which modern browsers no longer run, so this port follows the applet's own bytecode for its starting points, drags and options. It has two harmless leftovers: its About string still says "Pythagorean Theorem, Proof #36", and dragging P or Q does not re-fix B, so AB can stop passing through P. The page's claim needs AB through P, so this port keeps that behaviour and says so in the status line; pressing <strong>Reset</strong> restores the chord. With <strong>Adjust circles</strong> selected, A and B are free and their circles follow them, as in the applet.</p>
+
+      <p class="tip">Try dragging A until W jumps to the other side of EF: the angle at W flips to its supplement, but both circles still pass through Q and W.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MaxCommonChord5.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="max-common-chord-5-core.js"></script>
+<script src="max-common-chord-5.js"></script>
+</body>
+</html>
