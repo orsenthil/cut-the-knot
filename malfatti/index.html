@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Malfatti &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and watch Steiner's construction build the three Malfatti circles. Do they really pack the most material?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/malfatti/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Malfatti">
+<meta property="og:description" content="Drag the corners of a triangle and watch Steiner's construction build the three Malfatti circles. Do they really pack the most material?">
+<meta property="og:url" content="https://coolmaths.ai/malfatti/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .triangle { fill: var(--accent); fill-opacity: 0.05; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .bisector { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 4; }
+  #board .aux-circle { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .second-tangent { stroke: var(--good); stroke-width: 2.5; }
+  #board .malfatti-circle { fill: var(--accent); fill-opacity: 0.08; stroke: var(--accent); stroke-width: 2.5; }
+  #board .tangent-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .aux-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .center-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.95rem; cursor: pointer; }
+  .controls input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .controls button { min-height: 2.5rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="malfatti" data-kind="demo">
+<main id="main">
+  <h1>Malfatti</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: three circles are fitted into a triangle so that each one touches the other two and two sides.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a corner and use the arrow keys. Tick the boxes to show the construction lines and press Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 360" role="group"
+         aria-label="A triangle with three Malfatti circles. The optional layers show angle bisectors, the smaller incircles, and their second common tangents."></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox"> Show names</label>
+    <label><input id="bisectors" type="checkbox"> Angle bisectors</label>
+    <label><input id="incircles" type="checkbox"> Incircles</label>
+    <label><input id="secondTangents" type="checkbox"> Second tangents</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>In 1803 Malfatti asked for three circular columns of the greatest possible volume to be cut from a triangular block of marble. He assumed the three circles must touch one another and each touch two sides of the triangle. Steiner later found a way to draw that triad with straight lines and circles; move a corner here and the construction follows it.</p>
+
+      <h2>Steiner's recipe</h2>
+      <p>Find the point <code>I</code> where the three <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisectors</a> meet. Draw the <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircles</a> of the three triangles <code>IAB</code>, <code>IBC</code> and <code>ICA</code>; the bisectors are common internal tangents of each pair. For each pair take the <em>other</em> common internal <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a>. The three new lines meet at one point <code>L</code>. They cut out the quadrilaterals <code>APLT</code>, <code>BMLP</code> and <code>CTLM</code>, and the incircles of those quadrilaterals are the three Malfatti circles.</p>
+
+      <h2>What the construction actually gives</h2>
+      <p>The page says the quadrilaterals are inscriptible, meaning that each one has a circle touching all four sides. For a <a class="wiki-term" data-wiki="Tangential_quadrilateral" href="https://en.wikipedia.org/wiki/Tangential_quadrilateral" target="_blank" rel="noopener">tangential quadrilateral</a> the two sums of opposite sides are equal (Pitot's theorem):</p>
+      <blockquote><code>AP + LT = PL + TA</code></blockquote>
+      <p>The logic test checks the whole recipe on 166 triangles, and also compares every point with a second transcription of the applet's own methods. The circles touch each other and two sides each, the three tangents concur, and the Pitot sums agree to within the applet's pixel-scale rounding. For an <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangle</a> of side <code>s</code> the three radii come out exactly <code>s(&radic;3 &minus; 1)/4</code>, which the test confirms.</p>
+
+      <h2>A quirk of the old picture</h2>
+      <p>The article says the second tangents cross the sides at the points <code>M</code>, <code>P</code>, <code>T</code>. The Java applet instead puts those labels on the touch points of the three small incircles with the triangle's sides, and its second tangents run close to the angle bisectors, not through those touch points. This port follows the applet's labels and geometry; the wording on the old page is loose. Longer triangles also make the applet's tangent choice fall back to a whole-pixel approximation, so the tangencies are checked to drawing tolerance rather than to machine precision.</p>
+
+      <h2>Not the best packing</h2>
+      <p>The page's strongest claim is that Malfatti's circles do <em>not</em> solve the original marble problem. For a side-<code>s</code> equilateral triangle their total area is <code>3&pi;s&sup2;(2 &minus; &radic;3)/8</code>. Put the big incircle of radius <code>s&radic;3/6</code> in the middle and two circles of a third of that radius into two corners instead: their total area is <code>11&pi;s&sup2;/108</code>, about 1.36% more. Lob and Richmond gave this counterexample in 1929; Goldberg later argued, and Zalgaller and Los proved, that the Malfatti circles are never optimal. The test verifies the equilateral comparison exactly and surveys many other triangles; the universal "never" is a theorem from the cited work, not something a finite test can prove.</p>
+
+      <p class="tip">Tick "Incircles" and "Second tangents" and drag one corner towards a right angle: watch the orange tangent slide and the blue tangency points move while the three Malfatti circles stay touching.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Malfatti.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="malfatti-core.js"></script>
+<script src="malfatti.js"></script>
+</body>
+</html>
