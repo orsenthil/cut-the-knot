@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Half Turn &mdash; coolmaths</title>
+<meta name="description" content="Flip an arrow around a row of points: after an even number of flips it only slides, but after an odd number it turns halfway around. Can you see where it will land next?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/half-turn/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Half Turn">
+<meta property="og:description" content="Flip an arrow around a row of points: after an even number of flips it only slides, but after an odd number it turns halfway around. Can you see where it will land next?">
+<meta property="og:url" content="https://coolmaths.ai/half-turn/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The red arrow and blue copies have their own palette, as in the applet;
+     every guide line and label uses a token from assets/site.css. */
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .trail {
+    stroke: var(--muted);
+    stroke-width: 1.5;
+    stroke-dasharray: 6 5;
+  }
+  #board .statement-line {
+    stroke: var(--ink);
+    stroke-width: 2.4;
+    stroke-dasharray: 9 6;
+  }
+  #board .arrow-line { stroke-width: 2.2; stroke-linecap: round; }
+  #board .arrow-line.original { stroke: var(--arrow-red); stroke-width: 3; }
+  #board .arrow-line.copy { stroke: var(--image-blue); }
+  #board .arrow-head { fill: var(--image-blue); }
+  #board .arrow-head.original { fill: var(--arrow-red); }
+  #board .copy-dot { fill: var(--image-blue); }
+  #board .copy-dot.original { fill: var(--arrow-red); }
+  #board .center-dot {
+    fill: var(--center-blue);
+    stroke: var(--stage);
+    stroke-width: 1.5;
+  }
+  #board .endpoint-handle {
+    fill: var(--arrow-red);
+    stroke: var(--stage);
+    stroke-width: 2.5;
+    cursor: grab;
+  }
+  #board .center-handle {
+    fill: var(--center-blue);
+    stroke: var(--stage);
+    stroke-width: 2.5;
+    cursor: grab;
+  }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible {
+    outline: none;
+    stroke: var(--highlight);
+    stroke-width: 6;
+  }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  :root {
+    --arrow-red: #d4635c;
+    --image-blue: #7fb3e8;
+    --center-blue: #5b8ac9;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label { white-space: normal; }
+  .controls select { max-width: 100%; min-height: 2.4rem; }
+  .controls button { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="half-turn" data-kind="demo">
+<main id="main">
+  <h1>Half Turn</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Flip a little arrow around dots and watch where it lands; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the arrow ends or the blue dots, or focus one and press the arrow keys. Change the number of flips and tick the boxes to see names and guide lines.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 460 360" role="group"
+         aria-label="A red arrow, its blue copies after successive half turns, and the blue centers. Drag A, B or a center, or focus one and use the arrow keys."></svg>
+    <p class="hint-line">Drag A, B or a blue center, or focus one and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label for="nSel">Number of half turns
+      <select id="nSel" aria-label="Number of half turns, from 1 to 10"></select>
+    </label>
+    <label><input id="namesBox" type="checkbox"> Show names</label>
+    <label><input id="statementBox" type="checkbox"> Show statement</label>
+    <button id="centersBtn" type="button" aria-label="Give the centers new positions">New centers</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the arrow and centers to their opening positions">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The old Java applet flipped a red arrow in a row of points. The surprise is that after an even number of flips the arrow is only slid sideways, while after an odd number it is turned halfway around one particular point.</p>
+
+      <h2>One flip about a point</h2>
+      <p>A <a class="wiki-term" data-wiki="Point_reflection" href="https://en.wikipedia.org/wiki/Point_reflection" target="_blank" rel="noopener">reflection in a point</a> sends P to P′ so that O is the midpoint of PP′: <code>S<sub>O</sub>(P) = 2O − P</code>. Only O stays fixed, and doing the same flip twice gives <code>S<sub>O</sub><sup>2</sup> = I</code>. It is an <a class="wiki-term" data-wiki="Isometry" href="https://en.wikipedia.org/wiki/Isometry" target="_blank" rel="noopener">isometry</a>: distances and angles do not change, the orientation of a shape does not turn over, parallel lines stay parallel, and every line through O is carried back to itself.</p>
+
+      <h2>Flip, flip, flip</h2>
+      <p>Reflecting in O<sub>1</sub>, then O<sub>2</sub>, and so on up to O<sub>n</sub> gives one map: <code>p ↦ (−1)<sup>n</sup>p + t</code>, where <code>t = 2(O<sub>n</sub> − O<sub>n−1</sub> + … ± O<sub>1</sub>)</code>. For even n the sign is +1, so it is a <a class="wiki-term" data-wiki="Translation_(geometry)" href="https://en.wikipedia.org/wiki/Translation_(geometry)" target="_blank" rel="noopener">translation</a> by t. For odd n the sign is −1, so it is another half turn, this time about the point <code>c = t/2 = O<sub>n</sub> − O<sub>n−1</sub> + … + O<sub>1</sub></code>, which is a <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a> through 180°. The logic test compared this with a second transcription of the applet's own <code>Compute()</code> on 200 configurations (20 seeds × 10 spinner values) and found no difference.</p>
+
+      <h2>What the page gets wrong</h2>
+      <p>The old page says: “For any n, AA<sub>n</sub> = BB<sub>n</sub>, AA<sub>n</sub> || BB<sub>n</sub>.” That is true only for even <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">n</a>, when AA<sub>n</sub> and BB<sub>n</sub> are both the translation vector t. For odd n, <code>A<sub>n</sub> = 2c − A</code> and <code>B<sub>n</sub> = 2c − B</code>, so the two segments are chords through c but usually have different lengths and directions. One worked case from the test: A=(230,120), B=(260,160), O<sub>1</sub>=(200,150), O<sub>2</sub>=(280,200), O<sub>3</sub>=(240,140). Then c=(160,90), A<sub>3</sub>=(90,60), B<sub>3</sub>=(60,20): AA<sub>3</sub>=(−140,−60) and BB<sub>3</sub>=(−200,−140) are neither equal nor parallel. The page's next sentence is right: both lines pass through c. Its formula <code>S<sub>O</sub>S<sub>Q</sub> = −S<sub>Q</sub>S<sub>O</sub></code> means the two orders give opposite translations by <code>2(O−Q)</code> and <code>2(Q−O)</code>; the order matters unless O = Q.</p>
+
+      <h2>What the applet offers</h2>
+      <p>The spinner runs from 1 to 10 and starts at 3, not just “three or four” as the written page says; Show names and Show statement start unchecked. Those ranges and the red arrow with blue copies are kept here. Two deliberate presentation changes: the Java applet drops its centers at random, while this page uses a fixed seed (7) so a picture can be reproduced (press New centers for another set), and the handles stop at the board edge. The live cut-the-knot page has replaced the Java applet with a GeoGebra model; a 2010 capture of the same address on the Wayback Machine still shows the original <code>&lt;applet code="HalfTurn"&gt;</code>.</p>
+
+      <p class="tip">Try 2 flips and drag one center: the whole final arrow slides by twice the drag. Then try 3 flips and tick Show statement: both long dashed lines meet at the same point.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HalfTurn.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="half-turn-core.js"></script>
+<script src="half-turn.js"></script>
+</body>
+</html>
