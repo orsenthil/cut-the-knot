@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Parallel Lines in a Cyclic Quadrilateral &mdash; coolmaths</title>
+<meta name="description" content="Drag four points on a circle. Place M on AC with AM = AD and N on BD with BN = BC. Is MN always parallel to AB?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/isosceles-triangles-in-cyclic-quadrilateral/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Parallel Lines in a Cyclic Quadrilateral">
+<meta property="og:description" content="Drag four points on a circle. Place M on AC with AM = AD and N on BD with BN = BC. Is MN always parallel to AB?">
+<meta property="og:url" content="https://coolmaths.ai/isosceles-triangles-in-cyclic-quadrilateral/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circle { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .chord { fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .statement-line { fill: none; stroke: var(--muted); stroke-width: 2.5; }
+  #board .hint-line { fill: none; stroke: var(--highlight); stroke-width: 2; }
+  #board .angle-arc { fill: none; stroke: var(--highlight); stroke-width: 2.5; }
+  #board .angle-arc.vertical { stroke: var(--accent); }
+  #board .tick { stroke: var(--accent); stroke-width: 2.5; }
+  #board .special-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .g-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.9rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="isosceles-triangles-in-cyclic-quadrilateral" data-kind="demo">
+<main id="main">
+  <h1>Parallel Lines in a Cyclic Quadrilateral</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: when two lines cross inside the circle, the line joining the two new dots runs alongside AB.<br>
+    <strong>How to play:</strong> Drag the dots A, B, C and D around the circle, or focus a dot and use the arrow keys. Tick the boxes to show the equal lengths, the two lines, the angle hints and the names.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Four draggable points on a circle, the chords AC and BD meeting at G, and the points M and N"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="show-premise" type="checkbox"> Show premise</label>
+    <label><input id="show-statement" type="checkbox"> Show statement</label>
+    <label><input id="show-hint" type="checkbox"> Show hint</label>
+    <label><input id="show-names" type="checkbox"> Show names</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Four dots on a circle, two lines crossing, and two new dots planted at just the right distances. Something surprising happens: the line through the new dots keeps the same direction as the line through the first two. Here is why, and where the surprise stops working.</p>
+
+      <h2>What the picture builds</h2>
+      <p>Points A, B, C and D lie on a <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>. The two <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chords</a> AC and BD meet at G. M sits on AC with <code>AM = AD</code>; N sits on BD with <code>BN = BC</code>. The page asks us to prove that, provided M and N are different points, <code>MN || AB</code>. The applet computes exactly these points: M is found by walking a distance AD from A toward C, and N by walking a distance BC from B toward D.</p>
+
+      <h2>Two similar triangles</h2>
+      <p>The <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angles</a> CAD and CBD both subtend the same arc CD, so they are equal. Since G lies on AC and BD, this says <code>angle GAD = angle CBG</code>. The angles at G are vertical, so <code>angle AGD = angle BGC</code>. Triangles AGD and BGC are therefore <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similar_triangles" target="_blank" rel="noopener">similar</a>, which gives the proportion <code>AG / AD = BG / BC</code>. Tick "Show hint" to see the four equal angles the proof uses.</p>
+
+      <h2>One stretch, twice</h2>
+      <p>Because <code>AM = AD</code> and <code>BN = BC</code>, the proportion becomes <code>AG / AM = BG / BN</code>. In other words, M is the image of A and N is the image of B under the same stretch about G. Writing <code>k = AD / AG = BC / BG</code>, the vectors satisfy <code>M &minus; G = (k &minus; 1)(A &minus; G)</code> and <code>N &minus; G = (k &minus; 1)(B &minus; G)</code>. Subtracting gives <code>M &minus; N = (k &minus; 1)(B &minus; A)</code>: the two directions are the same, so <code>MN || AB</code>. When <code>k = 1</code> the dots M and N both fall on G, and there is no line MN to speak of — that is why the page says "provided M and N are distinct".</p>
+
+      <h2>What the checks found</h2>
+      <p>The logic test compares the core with a second transcription of the applet's own method on all 331,776 quadruples of 24 positions around the circle plus 3,000 random ones, and checks the page's equalities on every crossing case: AM = AD, BN = BC, angle CAD = angle CBD, AG / AD = BG / BC, and MN parallel to AB all hold to about <code>1e-9</code> of the circle's radius. One remark on the page is wrong, though: it says the requirement that the chords cross is redundant. It is not. With the dots in the circular order A, C, B, D (for instance A at 30&deg;, B at 210&deg;, C at 150&deg;, D at 300&deg;), G lies on opposite sides of A and B along their chords, the similar-triangle step fails, and MN is not parallel to AB; the test measures a cross product about <code>2.83</code> times the radius squared. The port keeps the page's actual problem and the applet's construction, and reports this counterexample in the status line.</p>
+
+      <p class="tip">Tick "Show premise" and slowly drag C past the point where the chords stop crossing: the tick marks stay equal, but the two grey lines stop matching.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/IsoscelesTrianglesInCyclicQuadrilateral.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="isosceles-triangles-in-cyclic-quadrilateral-core.js"></script>
+<script src="isosceles-triangles-in-cyclic-quadrilateral.js"></script>
+</body>
+</html>
