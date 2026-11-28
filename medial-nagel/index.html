@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Medial Nagel &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle: why do three lines drawn from the midpoints of its medial triangle always meet at the same point?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/medial-nagel/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Medial Nagel">
+<meta property="og:description" content="Drag the corners of a triangle: why do three lines drawn from the midpoints of its medial triangle always meet at the same point?">
+<meta property="og:url" content="https://coolmaths.ai/medial-nagel/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .medial { fill: none; stroke: var(--muted); stroke-width: 2.2; stroke-dasharray: 7 5; }
+  #board .corner-circle {
+    fill: var(--accent); fill-opacity: 0.06; stroke: var(--accent);
+    stroke-opacity: 0.75; stroke-width: 1.6;
+  }
+  #board .medial-circle {
+    fill: var(--good); fill-opacity: 0.07; stroke: var(--good);
+    stroke-width: 1.7; stroke-dasharray: 5 4;
+  }
+  #board .excircle { fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-dasharray: 3 5; }
+  #board .ex-line { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 3 5; }
+  #board .cevian { fill: none; stroke: var(--bad); stroke-width: 2.6; }
+  #board .gergonne-line { fill: none; stroke: var(--good); stroke-width: 1.6; stroke-dasharray: 7 5; }
+  #board .hint-tick { fill: none; stroke: var(--bad); stroke-width: 2; }
+  #board .mid-dot { fill: var(--muted); }
+  #board .contact-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1.4; }
+  #board .incircle-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.2; }
+  #board .nagel-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.8; }
+  #board .gergonne-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.4; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 0.95rem;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .glabel.small { font-size: 0.8rem; }
+  #board .mid-label { fill: var(--muted); }
+  #board .contact-label { fill: var(--bad); }
+  #board .incircle-label { fill: var(--good); }
+  #board .nagel-label { fill: var(--highlight); stroke: var(--ink); stroke-width: 0.4px; paint-order: stroke; }
+  #board .gergonne-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="medial-nagel" data-kind="demo">
+<main id="main">
+  <h1>Medial Nagel</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move a triangle's corners and watch three lines keep meeting at one spot.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a corner and use the arrow keys. Press Show hint for matching tick marks, and Check the claim to test your triangle.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 450" role="group"
+         aria-label="A triangle with its medial triangle, three small incircles and three lines meeting at one point"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset triangle</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Hide the point names">Hide names</button>
+    <button id="incircleBtn" type="button" aria-pressed="true" aria-label="Hide the medial incircle and its contact points">Hide incircle</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show the equal-length tick marks">Show hint</button>
+    <button id="extraBtn" type="button" aria-pressed="false" aria-label="Show the excircles of the medial triangle">Show excircles</button>
+    <button id="checkBtn" type="button" aria-label="Check that the three lines meet at the Nagel point">Check the claim</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The original page states: <em>&ldquo;Let EDF be the medial triangle of ABC. The incircles of triangles AEF, BDF, and CDE are tangent to EF, FD, and DE at P, Q, R, respectively. Prove that DP, EQ, FR are concurrent. Furthermore, the point of concurrency is the Nagel point of DEF.&rdquo;</em> Drag the corners: the three red lines always cross at the same yellow dot M.</p>
+
+      <h2>Three copies of one triangle</h2>
+      <p>Join the middles of the sides of ABC to make its <a class="wiki-term" data-wiki="Medial_triangle" href="https://en.wikipedia.org/wiki/Medial_triangle" target="_blank" rel="noopener">medial triangle</a> DEF. The corner triangles AEF, BDF and CDE are half-size translates of ABC and of each other. Each has an <a class="wiki-term" data-wiki="Incircle_and_excircles" href="https://en.wikipedia.org/wiki/Incircle_and_excircles" target="_blank" rel="noopener">incircle</a> that touches the inner side at P, Q or R. The logic test recomputes those touch points from side lengths and finds the same P, Q, R in every one of more than six thousand triangles.</p>
+
+      <h2>Equal lengths make the lines meet</h2>
+      <p>Two tangents drawn from one point to the same circle have equal lengths, so the overlapping corner triangles give <code>ER = FQ</code>, <code>DR = FP</code> and <code>DQ = EP</code>. Multiplying the three ratios <code>(EP/PF) &middot; (FQ/QD) &middot; (DR/RE) = 1</code> and applying <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a> proves that DP, EQ and FR pass through one point. Press Show hint to see the equal pairs marked with one, two and three strokes.</p>
+
+      <h2>A point that splits perimeters</h2>
+      <p>Write <code>s = (EF + FD + DE) / 2</code>. The touch points satisfy <code>EF + ER = DF + DR = s</code>, and the same is true around the other two sides. A point on a side with this property is where an excircle of DEF touches that side, so P, Q and R are exactly the excircle touch points, and their cevians meet at the <a class="wiki-term" data-wiki="Nagel_point" href="https://en.wikipedia.org/wiki/Nagel_point" target="_blank" rel="noopener">Nagel point</a> of DEF. Show excircles draws those three circles; the logic test checks all three perimeter equations and the excircle contacts over the whole sample, with no counterexample.</p>
+
+      <h2>The two other centres</h2>
+      <p>The incircle of DEF touches the same sides at P&prime;, Q&prime; and R&prime;. Each is the mirror image of P, Q or R in the midpoint of its side: for instance P and P&prime; are equally far from the ends of EF. So the cevians through them meet at the <a class="wiki-term" data-wiki="Gergonne_point" href="https://en.wikipedia.org/wiki/Gergonne_point" target="_blank" rel="noopener">Gergonne point</a> G, the <a class="wiki-term" data-wiki="Isotomic_conjugate" href="https://en.wikipedia.org/wiki/Isotomic_conjugate" target="_blank" rel="noopener">isotomic conjugate</a> of the Nagel point M. Finally, ABC is the <a class="wiki-term" data-wiki="Anticomplementary_triangle" href="https://en.wikipedia.org/wiki/Anticomplementary_triangle" target="_blank" rel="noopener">anticomplementary triangle</a> of DEF, so M is also the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> of ABC. The original page shows three copies of the applet with different checkboxes; this one keeps all four switches and starts with names and the incircle showing. There is no win or loss: Press Check the claim to finish exploring.</p>
+
+      <p class="tip">Press Show hint, then pull A close to B. The one-, two- and three-stroke marks still match, until the triangle is too thin to draw its incircles.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MedialNagel.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="medial-nagel-core.js"></script>
+<script src="medial-nagel.js"></script>
+</body>
+</html>
