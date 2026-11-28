@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lenses In Triangle &mdash; coolmaths</title>
+<meta name="description" content="Roll a circle as wide as an equilateral triangle is tall and watch the lens it cuts from the two sides. Does the arc ever change its size?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/lenses-in-triangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Lenses In Triangle">
+<meta property="og:description" content="Roll a circle as wide as an equilateral triangle is tall and watch the lens it cuts from the two sides. Does the arc ever change its size?">
+<meta property="og:url" content="https://coolmaths.ai/lenses-in-triangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.5rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .triangle { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .rolling-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .base-line { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 4; }
+  #board .chord { stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: 6 4; }
+  #board .lens-lower { fill: var(--accent); fill-opacity: 0.18; stroke: var(--accent); stroke-width: 2.5; }
+  #board .lens-upper { fill: var(--accent); fill-opacity: 0.08; stroke: var(--accent); stroke-width: 2; }
+  #board .hint-line { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 6 5; }
+  #board .centre-dot { fill: var(--ink); }
+  #board .pt-label { fill: var(--text); font-size: 1rem; font-weight: 600; pointer-events: none; }
+  #board .arc-label { fill: var(--accent); font-size: 1.1rem; font-weight: 700; text-anchor: middle; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+  #distInput { width: 5rem; max-width: 100%; min-height: 2.5rem; font: inherit; color: var(--text); background: var(--stage); border: 1px solid var(--border); border-radius: 0.4rem; }
+  #hintBox, #namesBox { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+</style>
+</head>
+<body data-game="lenses-in-triangle" data-kind="demo">
+<main id="main">
+  <h1>Lenses In Triangle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Roll a big circle along the base of a triangle and watch the lens it makes inside.<br>
+    <strong>How to play:</strong> Drag the dot on the base, or focus it and use the left and right arrow keys. You can also use the slider, the &minus; and + buttons, and the two checkboxes.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 300" role="group"
+         aria-label="An equilateral triangle with a large rolling circle, a lens-shaped arc inside, and a draggable point on the base"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="minusBtn" type="button" aria-label="Roll the circle five percent to the left">&minus;</button>
+    <label for="distInput">Roll</label>
+    <input id="distInput" type="range" min="-50" max="55" step="1" value="0" aria-label="Roll the circle from minus 50 to 55 percent of the side">
+    <button id="plusBtn" type="button" aria-label="Roll the circle five percent to the right">+</button>
+    <label><input id="hintBox" type="checkbox" aria-label="Show the hint lines through the reflected triangle">Hint</label>
+    <label><input id="namesBox" type="checkbox" aria-label="Show the point names">Names</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the circle to the middle of the base">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A circle as wide as the triangle is tall rolls along the bottom side. It always cuts the two sloping sides, and the small arc between those cuts keeps exactly the same size. The page asks us to prove that, and to check that the lens made from the arc stays in the triangle.</p>
+
+      <h2>The arc never changes</h2>
+      <p>Put the top corner at <code>(0, 0)</code>, let the side be <code>s</code>, and put the circle's centre at <code>(x, 0)</code>. Its radius is the triangle's height, <code>h = &radic;3 s / 2</code>. Solving for where the circle meets the two sides gives points whose dot product from the centre does not depend on <code>x</code>. The angle at the centre is therefore always <code>60&deg;</code>, whatever the value of <code>x</code>. The test checks all 101 whole steps from <code>&minus;50</code> to <code>50</code> and finds no exception.</p>
+
+      <h2>Why sixty degrees</h2>
+      <p>Reflect <code>C</code> in <code>A</code> to get <code>B'</code> and reflect <code>B</code> in <code>A</code> to get <code>C'</code>. The <a class="wiki-term" data-wiki="Line_(geometry)" href="https://en.wikipedia.org/wiki/Line_(geometry)" target="_blank" rel="noopener">line</a> through <code>A</code> parallel to <code>BC</code> cuts the circle into equal halves. The two arcs inside the old and the reflected triangle are the same size. The angle <code>BAC</code> made by the lines <code>BC'</code> and <code>B'C</code> is an <a class="wiki-term" data-wiki="Intersecting_chords_theorem" href="https://en.wikipedia.org/wiki/Intersecting_chords_theorem" target="_blank" rel="noopener">intersecting-chords angle</a>: it is half the sum of those two equal arcs, so each arc is just <code>60&deg;</code>. Tick <em>Hint</em> to see the reflected triangle.</p>
+
+      <h2>Where the lens sits</h2>
+      <p>The chord <code>DE</code> leans by at most <code>30&deg;</code> when the circle is at either end of its roll, and by less than that in between. The reflected arc then cannot cross the sloping sides, so the lens stays inside. That is true while the circle rolls between the two ends that pass through <code>B</code> or <code>C</code>. The old Java scrollbar went five steps further, to <code>55</code>: there the claim fails and the lens crosses <code>AC</code>. This port keeps the whole range and says so in the status line. Such a shape, which can turn while touching all sides, is a simple cousin of <a class="wiki-term" data-wiki="Constant_width" href="https://en.wikipedia.org/wiki/Constant_width" target="_blank" rel="noopener">constant width</a>.</p>
+
+      <p class="tip">Slide the roll to an end, tick Names, and watch D land exactly on B (or E on C). Then step past 50 and see the lens break out.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/LensesInTriangle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="lenses-in-triangle-core.js"></script>
+<script src="lenses-in-triangle.js"></script>
+</body>
+</html>
