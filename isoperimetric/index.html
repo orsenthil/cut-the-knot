@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Isoperimetric &mdash; coolmaths</title>
+<meta name="description" content="A red curve and a row of smaller blue copies span the same two points. In each of the three families, which curve is longer?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/isoperimetric/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Isoperimetric">
+<meta property="og:description" content="A red curve and a row of smaller blue copies span the same two points. In each of the three families, which curve is longer?">
+<meta property="og:url" content="https://coolmaths.ai/isoperimetric/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The curves keep their own red and blue palette; everything else is a
+     site token. The board scales with the viewBox, so it fits a phone. */
+  :root { --iso-red: #c94b3f; --iso-blue: #2f74c0; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --iso-red: #f07568; --iso-blue: #86b4f5; }
+  }
+  :root[data-theme="dark"] { --iso-red: #f07568; --iso-blue: #86b4f5; }
+
+  #stage { width: 100%; max-width: 36rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .baseline { stroke: var(--muted); stroke-width: 2; }
+  #board .end-dot { fill: var(--muted); }
+  #board .guide-parallel { stroke: var(--muted); stroke-width: 1.2; stroke-opacity: 0.35; stroke-dasharray: 5 4; }
+  #board .curve-red { fill: none; stroke: var(--iso-red); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  #board .curve-blue { fill: none; stroke: var(--iso-blue); stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
+  #board .geom-handle { fill: var(--stage); stroke: var(--accent); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:hover { stroke: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .apex-handle { fill: var(--accent); }
+  .controls { flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; max-width: 100%; }
+  .controls .mode-group { display: inline-flex; flex-wrap: wrap; gap: 0.35rem; max-width: 100%; }
+  .controls input[type="number"] { width: 4rem; font-size: 1rem; padding: 0.35rem; }
+  .controls input[type="checkbox"], .controls input[type="radio"] { width: 1.15rem; height: 1.15rem; }
+  .controls button { min-height: 2.5rem; }
+  .controls input:disabled + span, .controls label:has(input:disabled) { opacity: 0.5; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="isoperimetric" data-kind="demo">
+<main id="main">
+  <h1>Isoperimetric</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the hollow dots to reshape the red curve, then see whether the smaller blue copies are longer, shorter, or the same length.<br>
+    <strong>How to play:</strong> Choose Arcs, Lines or Free hand. Drag a dot (or focus it and use the arrow keys); the buttons change how many dots there are and flip the copies.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 400" role="group"
+         aria-label="A red curve between A and B with blue copies in the gaps. Hollow dots can be dragged or moved with the arrow keys."></svg>
+  </div>
+
+  <div class="controls">
+    <span class="mode-group" role="group" aria-label="Curve family">
+      <label class="option"><input type="radio" name="mode" value="arcs" checked> Arcs</label>
+      <label class="option"><input type="radio" name="mode" value="lines"> Lines</label>
+      <label class="option"><input type="radio" name="mode" value="spline"> Free hand</label>
+    </span>
+    <label class="option" for="nInput">Break points
+      <input id="nInput" type="number" min="1" max="15" step="1" value="3"
+             aria-label="Number of break points, from 1 to 15">
+    </label>
+    <button id="minusBtn" type="button" aria-label="Use one fewer break point">&minus;</button>
+    <button id="plusBtn" type="button" aria-label="Use one more break point">+</button>
+    <label class="option" for="alternateChk"><input id="alternateChk" type="checkbox"> X-alternate</label>
+    <label class="option" for="reflectChk"><input id="reflectChk" type="checkbox" disabled> Y-alternate</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset to the starting diagram">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The applet shows three families of curves between the same two points. In each one the red curve is single and the blue curves are copies that fit into the gaps along the same baseline. The question on the original page is simply: in each family, which is longer?</p>
+
+      <h2>The claim on the page</h2>
+      <p>The page calls the shapes <a class="wiki-term" data-wiki="Isoperimetric_inequality" href="https://en.wikipedia.org/wiki/Isoperimetric_inequality" target="_blank" rel="noopener">isoperimetric</a>: the red and blue boundaries have equal length. Its explanation gives the semicircle case and says of the other two families that an independent proof from two sets of parallel lines is obvious. The logic test below checks all three, not just the first.</p>
+
+      <h2>Semicircles</h2>
+      <p>A circle of <a class="wiki-term" data-wiki="Diameter" href="https://en.wikipedia.org/wiki/Diameter" target="_blank" rel="noopener">diameter</a> <code>D</code> has circumference <code>P = &pi;D</code>, so a semicircle has <a class="wiki-term" data-wiki="Arc_(geometry)" href="https://en.wikipedia.org/wiki/Arc_(geometry)" target="_blank" rel="noopener">arc</a> length <code>&frac12;&pi;D</code>. If the small semicircles have diameters <code>D1, D2, ...</code> that abut along the big diameter, then <code>D1 + D2 + ... = D</code> and</p>
+      <blockquote><code>&frac12;&pi;D1 + &frac12;&pi;D2 + ... = &frac12;&pi;(D1 + D2 + ...) = &frac12;&pi;D</code></blockquote>
+      <p>So the lengths are equal no matter where the break points sit. That is the exact claim in the explanation: a semicircle and a row of abutting semicircles on its diameter are isoperimetric. The <code>X-alternate</code> checkbox turns every other small arc upside down without changing its length.</p>
+
+      <h2>Broken lines</h2>
+      <p>Here the red curve is <code>A &rarr; M &rarr; B</code>. Over a gap <code>[p,q]</code> of width <code>&Delta;x</code>, drawing through <code>p</code> a parallel to <code>AM</code> and through <code>q</code> a parallel to <code>BM</code> makes a little broken line that is a scaled <a class="wiki-term" data-wiki="Similarity_(geometry)" href="https://en.wikipedia.org/wiki/Similarity_(geometry)" target="_blank" rel="noopener">similar</a> copy of the big one, with scale <code>&Delta;x / AB</code>. Adding all the gaps gives <code>AB</code> again, hence the same total <a class="wiki-term" data-wiki="Perimeter" href="https://en.wikipedia.org/wiki/Perimeter" target="_blank" rel="noopener">perimeter</code>. <code>X-alternate</code> mirrors every other little V below the line; a mirror changes its position, not its length.</p>
+
+      <h2>Freehand curves</h2>
+      <p>The red curve is a <a class="wiki-term" data-wiki="Spline_(mathematics)" href="https://en.wikipedia.org/wiki/Spline_(mathematics)" target="_blank" rel="noopener">cubic spline</a> through 21 points. Each blue copy is the same curve under a uniform similarity: both coordinates are scaled by <code>AB / &Delta;x</code> and placed inside its gap. Length scales by that same factor, so the pieces again add up to exactly the red length. <code>Y-alternate</code> turns every other copy over, which also keeps its length.</p>
+
+      <h2>What the test confirms</h2>
+      <p>The check script transcribes the applet's own <code>PointMover.Reset</code>, arc parameters, <code>GetParallelTo</code> / <code>Intersect</code> construction and <code>CubicSpline.Value</code> a second time, then compares them for every break-point count from 1 to 15 over hundreds of shapes. All three families keep the red and blue lengths equal, confirming the page's claim. Two small interface choices differ from the old applet: a break-point drag is clamped between its neighbours instead of snapping when it gets too close, and the freehand handles move vertically only (as the applet's <code>VPoint</code> does). Neither changes the curve being drawn.</p>
+
+      <p class="tip">Try <strong>Free hand</strong>, turn on <strong>Y-alternate</strong>, and drag the lowest middle dot: the blue copies fold and stretch, yet their total length still matches the red curve.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Isoperimetric.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="isoperimetric-core.js"></script>
+<script src="isoperimetric.js"></script>
+</body>
+</html>
