@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Incircles In Quadri &mdash; coolmaths</title>
+<meta name="description" content="Drag the four corners of a quadrilateral. Do the two circles on one diagonal touch exactly when the two on the other diagonal do?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/incircles-in-quadri/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Incircles In Quadri">
+<meta property="og:description" content="Drag the four corners of a quadrilateral. Do the two circles on one diagonal touch exactly when the two on the other diagonal do?">
+<meta property="og:url" content="https://coolmaths.ai/incircles-in-quadri/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales through its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .diagonal { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .incircle { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .center-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .foot-dot { fill: var(--stage); stroke: var(--accent); stroke-width: 2; }
+  #board .foot-dot.touching { fill: var(--good); stroke: var(--good); }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .pair-label {
+    fill: var(--muted); font: 0.8rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="incircles-in-quadri" data-kind="demo">
+<main id="main">
+  <h1>Incircles In Quadri</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: a four-sided shape holds four circles, one inside each triangle made by a diagonal.<br>
+    <strong>How to play:</strong> Drag the corners A, B, C and D, or focus a corner and use the arrow keys. Press AC or BD to swap which two circles you see.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 460 400" role="group"
+         aria-label="A quadrilateral with draggable corners A, B, C and D, one diagonal, and the two incircles on that diagonal"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="acBtn" type="button" aria-pressed="true" aria-label="Show the circles in triangles ABC and ADC, which touch the diagonal AC">Pair on AC</button>
+    <button id="bdBtn" type="button" aria-pressed="false" aria-label="Show the circles in triangles BCD and BAD, which touch the diagonal BD">Pair on BD</button>
+    <button id="tangentialBtn" type="button" aria-label="Move the corners so all four sides just fit around one circle">Make sides add up</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the four corners back where they started">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move a corner and the circles grow or shrink. Yet if the two circles on one diagonal meet, the two on the other diagonal meet too. Here is why. The old article still explains this, but its live page shows a GeoGebra picture instead of the Java applet: a <a href="https://web.archive.org/web/20070713211504id_/http://www.cut-the-knot.org/Curriculum/Geometry/IncirclesInQuadri.shtml" target="_blank" rel="noopener">2007 Internet Archive snapshot</a> of the same URL embeds <code>&lt;APPLET CODE="IncirclesInQuadri"&gt;</code>, so the article and the applet do belong together.</p>
+
+      <h2>Four triangles, four circles</h2>
+      <p>The diagonal AC cuts the quadrilateral into triangles ABC and ADC. The diagonal BD cuts it into BCD and BAD. Each triangle has an <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a>, drawn in the colour of the selected pair. Two circles on the same diagonal can meet only at the diagonal itself: their centres sit on opposite sides of it, on a line through their two tangent feet.</p>
+
+      <h2>The gap between the feet</h2>
+      <p>From a corner, the two <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> segments to a circle are equal. So in triangle ABC the circle touches AC at a distance <code>(AB + AC &minus; BC)/2</code> from A, and in ADC it touches AC at <code>(AD + AC &minus; CD)/2</code> from A. Subtracting gives the gap between the two feet on AC:</p>
+      <blockquote><code>gap = |AB + CD &minus; BC &minus; AD| / 2</code></blockquote>
+      <p>The two feet on BD have exactly the same gap. The logic test checks this formula on thousands of shapes and finds it matches the circle construction to about <code>1e-9</code> times the size of the drawing.</p>
+
+      <h2>One condition, two pairs</h2>
+      <p>Since both gaps are the same number, the two circles on AC meet exactly when the two on BD meet: their feet must coincide, which means <code>AB + CD = BC + AD</code>. That equality is <a class="wiki-term" data-wiki="Pitot_theorem" href="https://en.wikipedia.org/wiki/Pitot_theorem" target="_blank" rel="noopener">Pitot's theorem</a>: it characterises a <a class="wiki-term" data-wiki="Tangential_quadrilateral" href="https://en.wikipedia.org/wiki/Tangential_quadrilateral" target="_blank" rel="noopener">quadrilateral that can be drawn around a circle</a>. The claim on the old page is confirmed. One small quirk is kept from the applet: it reports a touch when the feet are strictly less than 3 drawing units apart, so a shape whose sides almost add up can still light up both pairs.</p>
+
+      <h2>A triangle hiding in the shape</h2>
+      <p>Let the incircle of <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a> ABC touch BC at X. Pull D towards X and the quadrilateral becomes the triangle twice over: the circles of ABX and ACX are the last two from the AC pair. The same gap formula gives zero, so those two circles touch on AX. The logic test checks this on thousands of random triangles and finds it true in every one.</p>
+
+      <p class="tip">Press <strong>Make sides add up</strong> and watch both pairs touch; then drag any corner a little and see both pairs let go together.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/IncirclesInQuadri.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="incircles-in-quadri-core.js"></script>
+<script src="incircles-in-quadri.js"></script>
+</body>
+</html>
