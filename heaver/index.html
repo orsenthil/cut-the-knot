@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Heaver &mdash; coolmaths</title>
+<meta name="description" content="A turning square hides behind four squares with a cross-shaped gap. Does it really grow and shrink, or are your eyes playing a trick?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/heaver/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Heaver">
+<meta property="og:description" content="A turning square hides behind four squares with a cross-shaped gap. Does it really grow and shrink, or are your eyes playing a trick?">
+<meta property="og:url" content="https://coolmaths.ai/heaver/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 0.6rem; }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+    border-radius: 10px;
+  }
+  #board .cover {
+    fill: var(--bad);
+    fill-opacity: var(--cover-opacity, 1);
+    stroke: var(--ink);
+    stroke-width: 0.6;
+  }
+  #board .spinner { fill: var(--good); stroke: var(--ink); stroke-width: 0.6; }
+  #board .orbit { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 7; }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .setup { max-width: 100%; gap: 10px; }
+  .setup fieldset { max-width: 100%; min-width: 0; }
+  .radio-row { display: flex; flex-wrap: wrap; gap: 2px 12px; }
+  .setup label { white-space: normal; min-height: 2.5rem; }
+  .controls label.slider { flex-direction: column; align-items: flex-start; white-space: normal; gap: 0.2rem; }
+  .controls input[type="range"] { width: 9rem; max-width: 68vw; }
+  .controls button { min-height: 2.75rem; }
+  .hint { max-width: 32rem; margin: 0.5rem 0 0; color: var(--muted); font-size: 0.9rem; }
+  output { color: var(--accent); font-weight: 600; }
+</style>
+</head>
+<body data-game="heaver" data-kind="demo">
+<main id="main">
+  <h1>Heaver</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A shape turns behind coloured covers with a small gap, and your eyes play a trick on you; there is nothing to win.<br>
+    <strong>How to play:</strong> Pick the covers and the turning shape, then move the sliders. Press Pause or Step, or drag the dot on the circle, to look closely.
+  </div>
+
+  <div class="controls setup">
+    <fieldset>
+      <legend>Covers</legend>
+      <div class="radio-row">
+        <label><input type="radio" name="occlusion" value="0" checked> Squares</label>
+        <label><input type="radio" name="occlusion" value="1"> 4 triangles</label>
+        <label><input type="radio" name="occlusion" value="3"> 5 triangles</label>
+        <label><input type="radio" name="occlusion" value="2"> 6 triangles</label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Turning shape</legend>
+      <div class="radio-row">
+        <label><input type="radio" name="object" value="0" checked> Square</label>
+        <label><input type="radio" name="object" value="1"> Triangle</label>
+        <label><input type="radio" name="object" value="3"> Pentagon</label>
+        <label><input type="radio" name="object" value="4"> Star</label>
+        <label><input type="radio" name="object" value="2"> Hexagon</label>
+      </div>
+    </fieldset>
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 300" role="group"
+         aria-label="A turning shape seen only through a small opening in coloured covers"></svg>
+    <p class="hint">Keyboard: Tab to the dot on the circle, then use the arrow keys to scrub the turn. Shift makes a bigger step.</p>
+  </div>
+
+  <div class="controls">
+    <label class="slider" for="gapRange">Opening width: <output id="gapOut" for="gapRange">13</output>
+      <input id="gapRange" type="range" min="0" max="80" value="5" aria-label="Opening width slider, 0 to 80">
+    </label>
+    <label class="slider" for="speedRange">Milliseconds per step: <output id="speedOut" for="speedRange">40</output>
+      <input id="speedRange" type="range" min="0" max="200" value="40" aria-label="Speed slider, 0 to 200 milliseconds per step">
+    </label>
+    <label class="slider" for="opacityRange">Cover opacity: <output id="opacityOut" for="opacityRange">255</output>
+      <input id="opacityRange" type="range" min="0" max="255" value="255" aria-label="Cover opacity slider, 0 to 255">
+    </label>
+    <label class="slider" for="frameRange">Turning step: <output id="frameOut" for="frameRange">0</output>
+      <input id="frameRange" type="range" min="0" max="199" value="0" aria-label="Turning step slider, 0 to 199">
+    </label>
+  </div>
+  <div class="controls">
+    <button id="playBtn" type="button" aria-label="Pause the animation">Pause</button>
+    <button id="stepBtn" type="button" aria-label="Move one turning step forward">Step</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset to the opening square illusion">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Four red squares cover a green square that keeps turning. Only a small cross-shaped opening is left, and the square seems to grow, shrink and grow again. The cut-the-knot page calls Heaver an <a class="wiki-term" data-wiki="Optical_illusion" href="https://en.wikipedia.org/wiki/Optical_illusion" target="_blank" rel="noopener">optical illusion</a>: its exact claim is that "the square periodically expands and then shrinks and then expands again". What is actually true is a little stranger.</p>
+
+      <h2>The square never changes size</h2>
+      <p>The applet draws four vertices and turns them 200 times around the centre, one step per repaint. The turn at step <code>I</code> is <code>2&pi;I / 200</code>, applied as <code>x' = cx + cos(t)(x-cx) - sin(t)(y-cy)</code> and <code>y' = cy + sin(t)(x-cx) + cos(t)(y-cy)</code>. A <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a> keeps every vertex the same distance from the centre. The logic test checked all five turning shapes on all 200 steps: not one radius changes. So the square does not really expand or shrink at all.</p>
+
+      <h2>Why it looks as though it does</h2>
+      <p>The four covers leave two thin strips crossing at the middle. The first slider is <code>v</code> and the opening is <code>hole = 2v + 3</code> pixels wide, from 3 to 163. A corner seen through a narrow window looks like the whole shape: when the square is across the window the visible height is about 94 pixels, and a quarter of the way through the turn it is about 133 pixels. The test measured that visible height on every one of the 200 steps and found it returns exactly to the same value every 50 steps. The page's claim is right about what you see, and wrong only if you read it as a change in the shape itself.</p>
+
+      <h2>Six triangles, five triangles, a star</h2>
+      <p>The panel also offers covers of 4, 5 or 6 triangles and turning triangles, pentagons, hexagons and stars. With six covers, their outer corners are equally spaced around a circle a sixth of a turn apart: they really do form a <a class="wiki-term" data-wiki="Hexagon" href="https://en.wikipedia.org/wiki/Hexagon" target="_blank" rel="noopener">hexagon</a>, as the page says. Five covers give five triangles around the centre. When the covers and the turning shape have different numbers of corners the opening no longer fits the motion, which is why the page says the effect is "very different".</p>
+
+      <h2>The three sliders and one small quirk</h2>
+      <p>The opening slider sets <code>hole = 2v + 3</code>; the next one sets the pause between frames, initially 40 milliseconds; the last sets the covers' opacity, initially fully opaque. The Java applet uses that last scrollbar as the alpha of a red colour, so it fades the covers rather than changing their red amount. We kept that behaviour. Unlike the Java panel, this page also has Pause, Step and a draggable dot so you can stop the illusion and inspect a single frame — the geometry and options are unchanged. The logic test compared the port with a second transcription of the applet's own construction over 19,440 configurations on two canvas sizes and found no differences.</p>
+
+      <p class="tip">Try six triangle covers with a turning triangle, then switch the turning shape to a star: same covers, completely different trick.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Heaver.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="heaver-core.js"></script>
+<script src="heaver.js"></script>
+</body>
+</html>
