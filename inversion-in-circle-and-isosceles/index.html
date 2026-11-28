@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inversion in a Circle and an Isosceles Triangle &mdash; coolmaths</title>
+<meta name="description" content="A small circle is tucked into the gap between two touching circles and a sloping line. Can you see why its centre sits directly above the point B?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/inversion-in-circle-and-isosceles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Inversion in a Circle and an Isosceles Triangle">
+<meta property="og:description" content="A small circle is tucked into the gap between two touching circles and a sloping line. Can you see why its centre sits directly above the point B?">
+<meta property="og:url" content="https://coolmaths.ai/inversion-in-circle-and-isosceles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .s-circle { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .g-circle { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .w-circle { fill: var(--accent); fill-opacity: 0.18; stroke: var(--good); stroke-width: 2.5; }
+  #board .diameter { stroke: var(--ink); stroke-width: 2; }
+  #board .side { stroke: var(--ink); stroke-width: 2; }
+  #board .perpendicular { stroke: var(--good); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .inv-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .image-circle { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .image-side { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 3; }
+  #board .image-line { stroke: var(--accent); stroke-width: 2; }
+  #board .point-o, #board .point-p, #board .point-e, #board .point-q { fill: var(--ink); }
+  #board .point-q { fill: var(--good); }
+  #board .image-point { fill: var(--accent); stroke: var(--stage); stroke-width: 1; }
+  #board .angle { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .right-angle { fill: none; stroke: var(--good); stroke-width: 1.8; }
+  #board .proof-line { stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 4 3; }
+  #board .point-label { fill: var(--text); font-size: 12px; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 5; }
+  .controls, .step-controls { flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+  .controls button, .step-controls button { min-height: 2.5rem; }
+  .step-controls { margin-top: 0.4rem; }
+  .step-controls button[aria-pressed="true"], .controls button[aria-pressed="true"] {
+    border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  .control-label { font-size: 0.9rem; color: var(--muted); }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="inversion-in-circle-and-isosceles" data-kind="demo">
+<main id="main">
+  <h1>Inversion In Circle And Isosceles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A small circle is tucked between a big circle, a smaller circle and a sloping line; this picture shows why its centre sits straight above the point B.<br>
+    <strong>How to play:</strong> Drag the blue dot B along the line, or focus it and use the arrow keys. Press the toggles and the Steps to follow the proof.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="Circle S with diameter AC, circle G with diameter AB, an isosceles triangle BCE, and a small circle W tangent to S, G and BE. Point B can be dragged along AC; a dashed line runs from B through the centre Q of W."></svg>
+  </div>
+
+  <div class="controls" role="group" aria-label="What to show">
+    <button id="resetBtn" type="button" class="primary" aria-label="Put B back at its starting place">Reset</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show or hide the point names">Names</button>
+    <button id="premiseBtn" type="button" aria-pressed="false" aria-label="Show or hide the equal angles of the starting triangle">Premise</button>
+    <button id="statementBtn" type="button" aria-pressed="false" aria-label="Show or hide the right angle from B to the centre Q">Statement</button>
+    <button id="inversionBtn" type="button" aria-pressed="false" aria-label="Show or hide the inverted picture">Inversion</button>
+  </div>
+  <div class="step-controls" role="group" aria-label="Proof steps">
+    <span class="control-label">Steps</span>
+    <button id="step0Btn" type="button" aria-pressed="true" aria-label="Show the original picture without proof marks">0</button>
+    <button id="step1Btn" type="button" aria-pressed="false" aria-label="Step 1: the inverted triangle is isosceles">1</button>
+    <button id="step2Btn" type="button" aria-pressed="false" aria-label="Step 2: the inverted circle and its tangent">2</button>
+    <button id="step3Btn" type="button" aria-pressed="false" aria-label="Step 3: the isosceles triangle A prime U E prime">3</button>
+    <button id="step4Btn" type="button" aria-pressed="false" aria-label="Step 4: the centre V of the inverted small circle">4</button>
+    <button id="step5Btn" type="button" aria-pressed="false" aria-label="Step 5: the Pythagorean calculation">5</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move B along the diameter and the little circle changes size and position. Its centre Q still stays on the upright through B. That is the whole Sangaku puzzle, and one change of viewpoint explains it.</p>
+
+      <h2>The exact claim</h2>
+      <p>Circle <code>S</code> has diameter <code>AC</code>, <code>B</code> lies on <code>AC</code>, and circle <code>G</code> has diameter <code>AB</code>. The perpendicular bisector of <code>BC</code> meets <code>S</code> at <code>E</code>, so <code>BE = CE</code> and the <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">triangle</a> <code>BCE</code> is isosceles. Circle <code>W</code> is drawn in the curved gap between <code>S</code>, <code>G</code> and the side <code>BE</code>. The claim is: <code>QB</code> is perpendicular to <code>AC</code>, where <code>Q</code> is the centre of <code>W</code>. The logic test checks it at 1001 draggable positions: the horizontal offset <code>Q.x - B.x</code> is zero, and the distances from <code>Q</code> to <code>S</code>, <code>G</code> and <code>BE</code> all equal the radius of <code>W</code>.</p>
+
+      <h2>Turning the picture inside out</h2>
+      <p>Now invert in a circle centred at <code>B</code> with radius <code>R/1.5</code>, where <code>R</code> is the radius of <code>S</code>. A point <code>P</code> goes to <code>P'</code> on the same ray with <code>BP &times; BP' = (R/1.5)&sup2;</code>. Circles through <code>B</code> become lines and circles not through <code>B</code> become circles, so <code>S</code> becomes the circle <code>S'</code> on <code>A'C'</code> as diameter, <code>G</code> becomes the straight line <code>G'</code> touching <code>S'</code> at <code>A'</code>, and <code>W</code> becomes a small circle <code>W'</code>. This is ordinary <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">circle inversion</a>, and it keeps the angles of the picture.</p>
+
+      <h2>Why the inverted circle fits</h2>
+      <p>Let <code>u = OB/R</code>. Solving the two tangencies directly gives the radius of <code>W</code> as <code>r = R(1-u&sup2;)/(3+u)</code>, and the height of <code>Q</code> above <code>AC</code> as <code>&radic;(r(r+AB))</code>. These are exactly the square-root formulas used by the applet: <code>t = AB/(2R)</code>, <code>height = 2R &middot; (t/(1+t)) &middot; &radic;(2(1-t))</code>. In the inverted picture, <code>A'UE'</code> is isosceles and <code>V</code>, the centre of <code>W'</code>, gives <code>BV = BU</code>. With <code>L</code> the centre of <code>S'</code>, two right angles and the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a> give</p>
+      <blockquote><code>LV&sup2; = LB&sup2; + BV&sup2; = (R'&minus;A'B)&sup2; + BU&sup2; = (R' + r')&sup2;</code></blockquote>
+      <p>So <code>W'</code> touches <code>S'</code>: since inversion keeps tangency, <code>W</code> touches <code>S</code> as required. The test verifies each equality in that chain, not just the last one.</p>
+
+      <h2>About the original</h2>
+      <p>The Java applet offered four checkboxes (names, premise, statement, inversion) and radio buttons for Steps 0 to 5; the same options are here as buttons, with Step 0 selected at the start. It lets you drag only <code>B</code>, which is what this port does. The sibling applet behind the page's <em>other solution</em> proves the same claim using inversion with a negative power and Feuerbach's theorem; it lets you drag <code>A</code>, <code>B</code> and <code>C</code>, draws extra points <code>F, K, L, M, N</code> and has Steps 0 to 4 instead. Both applets place the same circle <code>W</code>, so this port follows the first applet and the first proof. The original page credits the solution to N. Bowler; the puzzle is Alexander Bogomolny's.</p>
+
+      <p class="tip">Press <strong>Statement</strong> to see the right angle at B, then press <strong>Inversion</strong> and walk through Steps 1 to 5 to watch the proof appear.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/InversionInCircleAndIsosceles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="inversion-in-circle-and-isosceles-core.js"></script>
+<script src="inversion-in-circle-and-isosceles.js"></script>
+</body>
+</html>
