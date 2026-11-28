@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Midpoints In Isosceles Triangle &mdash; coolmaths</title>
+<meta name="description" content="Drag the apex of an isosceles triangle: do the line from A to a midpoint and the line from C to a foot of a perpendicular always meet at a right angle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/midpoints-in-isosceles-triangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Midpoints In Isosceles Triangle">
+<meta property="og:description" content="Drag the apex of an isosceles triangle: do the line from A to a midpoint and the line from C to a foot of a perpendicular always meet at a right angle?">
+<meta property="og:url" content="https://coolmaths.ai/midpoints-in-isosceles-triangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .base-ext { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .guide { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 5; }
+  #board .guide.faint { stroke-dasharray: 2 6; }
+  #board .inner-line { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+  #board .claim-line { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
+  #board .right-mark { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .right-mark.small { stroke-width: 1.8; }
+  #board .aux-dot { fill: var(--muted); }
+  #board .claim-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 18px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .glabel.dim { fill: var(--muted); }
+  #board .glabel.claim { fill: var(--accent); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="midpoints-in-isosceles-triangle" data-kind="demo">
+<main id="main">
+  <h1>Midpoints In Isosceles Triangle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag a triangle with two equal sides and watch two lines inside it always cross at a right angle.<br>
+    <strong>How to play:</strong> Drag A up or down, or drag B or C to change the base; you can also focus a point and use the arrow keys. Press the buttons to show names, the extra lines and the right-angle mark.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="An isosceles triangle with its midpoint, two feet of perpendiculars, two midpoints and the crossing of the lines AD and CH"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset triangle</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Show or hide the point names">Names</button>
+    <button id="extraBtn" type="button" aria-pressed="true" aria-label="Show or hide the extra construction lines">Extra</button>
+    <button id="statementBtn" type="button" aria-pressed="false" aria-label="Show or hide the right-angle mark at K">Statement</button>
+    <button id="checkBtn" type="button" aria-label="Check whether AD and CH are perpendicular here">Check the claim</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the apex of this triangle anywhere you like: the two coloured lines still cross at a right angle. This droodle comes from an old problem book. The original page still offers its Java applet, which modern browsers no longer run; here the same construction is drawn in SVG, and the picture gives away the proof.</p>
+
+      <h2>Keep two sides equal</h2>
+      <p>The applet pins A over the middle of the base and keeps B and C as mirror images across that vertical line, so <code>AB = AC</code>. That makes the triangle <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles</a>. M is the midpoint of BC. Drop a perpendicular from C to AB, meeting it at L. Because a projection preserves midpoints, the foot H of the perpendicular from M to AB is the midpoint of B and L. So H is the midpoint of BL — the first hidden fact.</p>
+
+      <h2>Two triangles a quarter turn apart</h2>
+      <p>Now compare the right triangles <code>BLC</code> and <code>MHA</code>. They are <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similar_triangles" target="_blank" rel="noopener">similar</a>, and one is turned a quarter turn from the other, a <a class="wiki-term" data-wiki="Spiral_similarity" href="https://en.wikipedia.org/wiki/Spiral_similarity" target="_blank" rel="noopener">spiral similarity</a> with a <code>90°</code> rotation. Each pair of corresponding sides is <a class="wiki-term" data-wiki="Perpendicular" href="https://en.wikipedia.org/wiki/Perpendicular" target="_blank" rel="noopener">perpendicular</a>: <code>CL ⟂ AH</code>, <code>BL ⟂ MH</code> and <code>BC ⟂ AM</code>.</p>
+      <blockquote><code>BL / MH = LC / HA = BC / AM</code> — same shape, turned and scaled.</blockquote>
+      <p>The old page lists <code>CH ⟂ AM</code> as the third pair. That line is a slip: CH is not a side of triangle BLC, and the check finds it is not perpendicular to AM in any non-flat case. The true pair is <code>BC ⟂ AM</code>. The main claim is unaffected.</p>
+
+      <h2>The two medians</h2>
+      <p>Since H is the midpoint of BL, the line CH is a <a class="wiki-term" data-wiki="Median_(geometry)" href="https://en.wikipedia.org/wiki/Median_(geometry)" target="_blank" rel="noopener">median</a> of triangle BLC from C. Since D is the midpoint of MH, the line AD is the matching median of triangle MHA from A. Corresponding parts of triangles a quarter turn apart are themselves a quarter turn apart, so</p>
+      <blockquote><code>AD ⟂ CH</code></blockquote>
+      <p>K is their crossing. Turn on <em>Statement</em> to see the right-angle mark the original applet draws there.</p>
+
+      <h2>What the check really tests</h2>
+      <p>The logic test transcribes the applet's own <code>Compute</code> method a second time — midpoint, nearest point on a line, and line intersection, including the applet's numerical cut-offs — and compares every constructed point on 20,160 triangle shapes. On every non-flat one it finds <code>AD ⟂ CH</code>, the right angle at K, the midpoint facts and the equal side ratios. Flat and collapsed shapes are reported as unusable rather than given a false result.</p>
+
+      <p class="tip">Try turning on Extra and Statement, then drag A almost onto the base: K races far away, but the angle at K stays right until the triangle collapses.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MidpointsInIsoscelesTriangle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="midpoints-in-isosceles-triangle-core.js"></script>
+<script src="midpoints-in-isosceles-triangle.js"></script>
+</body>
+</html>
