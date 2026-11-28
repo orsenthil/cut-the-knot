@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hatzipolakis Triangle &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and watch three lines where the marked dots always line up. Can you find all three?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hatzipolakis-triangle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hatzipolakis Triangle">
+<meta property="og:description" content="Drag the corners of a triangle and watch three lines where the marked dots always line up. Can you find all three?">
+<meta property="og:url" content="https://coolmaths.ai/hatzipolakis-triangle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .incircle { fill: var(--accent); fill-opacity: 0.06; stroke: var(--accent); stroke-width: 2; }
+  #board .contact-line { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 6; }
+  #board .drop-line { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+  #board .bisector { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 3 5; }
+  #board .claim-line { fill: none; stroke: var(--good); stroke-width: 3; stroke-dasharray: 8 5; }
+  #board .hint-edge { fill: none; stroke: var(--highlight); stroke-width: 4; stroke-linecap: round; }
+  #board .hint-edge.extra { stroke: var(--accent); stroke-width: 3; }
+  #board .right-mark { fill: none; stroke: var(--ink); stroke-width: 1.7; }
+  #board .tick-mark { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; }
+  #board .tick-mark.two { stroke: var(--accent); }
+  #board .aux-dot { fill: var(--muted); }
+  #board .contact-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .foot-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .mid-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  #board .pt-label {
+    fill: var(--text); font-family: var(--font); font-size: 1.05rem;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .pt-label.small { font-size: 0.95rem; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls button { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="hatzipolakis-triangle" data-kind="demo">
+<main id="main">
+  <h1>Hatzipolakis Triangle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the corners of a triangle and discover three lines where the marked dots always line up.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus one and use the arrow keys. Press Check the claims to show and confirm the lines; the other buttons show extra marks.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Triangle ABC with its incircle, the touch points X, Y and Z, the midpoints E and F, and the feet M and N of perpendiculars from A"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset</button>
+    <button id="checkBtn" type="button" aria-label="Check the three straight-line claims for this triangle">Check the claims</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Hide the names of the points">Hide names</button>
+    <button id="premiseBtn" type="button" aria-pressed="false" aria-label="Show the right angles and the equal half-side marks">Show premises</button>
+    <button id="claimBtn" type="button" aria-pressed="false" aria-label="Show the three lines claimed by the theorem">Show claim</button>
+    <button id="hintBtn" type="button" aria-pressed="false" aria-label="Show the segments used in the proof">Show hint</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drop perpendiculars from one corner of a triangle onto the two angle bisectors from the other corners. Their feet join the side midpoints in one straight line, and each foot also sits on a line through two places where the incircle touches the sides. Drag the corners and the three lines survive every change of shape.</p>
+
+      <h2>The first line: a right triangle's centre</h2>
+      <p>Let <code>M</code> be the foot from <code>A</code> to the bisector at <code>B</code>. The triangle <code>ABM</code> is a <a class="wiki-term" data-wiki="Right_triangle" href="https://en.wikipedia.org/wiki/Right_triangle" target="_blank" rel="noopener">right triangle</a>, so its <a class="wiki-term" data-wiki="Circumcenter" href="https://en.wikipedia.org/wiki/Circumcenter" target="_blank" rel="noopener">circumcenter</a> is the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> <code>F</code> of the hypotenuse <code>AB</code>. Hence <code>FM = AF = BF = AB/2</code>. Isosceles triangle <code>BFM</code> gives <code>angle AFM = angle ABC</code>, so <code>FM</code> runs parallel to <code>BC</code>. A line through the midpoint <code>F</code> parallel to <code>BC</code> is the midline, and it passes through the other midpoint <code>E</code>. Thus <code>M</code> lies on <code>EF</code>; the same argument at <code>C</code> puts <code>N</code> there too.</p>
+
+      <h2>Equal tangent lengths locate the other lines</h2>
+      <p>The <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> centred at the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> <code>I</code> touches <code>BC</code> at <code>X</code>, <code>CA</code> at <code>Y</code> and <code>AB</code> at <code>Z</code>. <a class="wiki-term" data-wiki="Tangent_lines_to_circles" href="https://en.wikipedia.org/wiki/Tangent_lines_to_circles" target="_blank" rel="noopener">Tangents</a> from one vertex have equal lengths: <code>AY = AZ</code>, <code>BX = BZ</code>, <code>CX = CY</code>. Together with <code>EM = FM - EF = AB/2 - BC/2</code> this gives <code>EM = EY</code>, and the equal angles at <code>E</code> force <code>X</code>, <code>Y</code>, <code>M</code> onto one line. The mirror argument gives <code>FN = FZ</code> and the line <code>X</code>, <code>Z</code>, <code>N</code>.</p>
+
+      <h2>What the page's subtraction really says</h2>
+      <p>The chain on the original page writes <code>EM = (AB - BC)/2 = EY</code>. That is a signed difference: if <code>AB</code> is shorter than <code>BC</code> it is negative, while a length cannot be. The true length statement is <code>EM = EY = |AB - BC|/2</code>, and the logic test confirms it on thousands of triangles. In the same vein the page's step <code>angle XCE = angle CEM</code> is an equality of angles between <em>lines</em>: as angles between rays the two can be supplementary, yet <code>X</code>, <code>Y</code>, <code>M</code> stay straight. Cabart's shorter proof reflects <code>A</code> in the bisector at <code>B</code> onto <code>BC</code>; <code>M</code> is the midpoint of that segment, and <a class="wiki-term" data-wiki="Menelaus%27_theorem" href="https://en.wikipedia.org/wiki/Menelaus%27_theorem" target="_blank" rel="noopener">Menelaus' theorem</a> finishes the job. He calls that reflected point <code>D</code>, although the page already used <code>D</code> for the midpoint of <code>BC</code> — a harmless clash of letters.</p>
+
+      <h2>How far the check goes</h2>
+      <p>The logic test transcribes the applet a second way: its incenter is found by rotating two sides through half their angles and intersecting the bisectors, its touch points by the applet's projection formula, and its inradius by averaging the three distances from <code>I</code>. Those points agree with the port over hundreds of configurations. Both numbered claims and every step above were checked on thousands of randomly chosen triangles with sides of at least 2 units, the applet's own cut-off. No counterexample appeared; the only corrections were the absolute value and the reading of the angles as line angles.</p>
+
+      <p class="tip">Try dragging B past C so AB becomes shorter than BC: the three lines stay straight even though the page's subtraction turns negative.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HatzipolakisTriangle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="hatzipolakis-triangle-core.js"></script>
+<script src="hatzipolakis-triangle.js"></script>
+</body>
+</html>
