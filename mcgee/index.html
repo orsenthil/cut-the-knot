@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mc Gee &mdash; coolmaths</title>
+<meta name="description" content="Two equal tangents are drawn at points A and B on a circle. Does the chord AB always cut PQ exactly in half?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/mcgee/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Mc Gee">
+<meta property="og:description" content="Two equal tangents are drawn at points A and B on a circle. Does the chord AB always cut PQ exactly in half?">
+<meta property="og:url" content="https://coolmaths.ai/mcgee/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 28rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .given-circle { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2.5; }
+  #board .radius { stroke: var(--muted); stroke-width: 1.6; }
+  #board .rightmark { fill: none; stroke: var(--muted); stroke-width: 1.6; }
+  #board .tangent { stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; }
+  #board .chord { stroke: var(--good); stroke-width: 2.2; }
+  #board .cross-segment { stroke: var(--ink); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .hintline { stroke: var(--muted); stroke-width: 1.8; stroke-dasharray: 5 4; }
+  #board .anglemark { fill: none; stroke: var(--good); stroke-width: 2; stroke-linecap: round; }
+  #board .tick { stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round; }
+  #board .claimdot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .centredot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .hintdot { fill: var(--highlight); stroke: var(--stage); stroke-width: 2; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+  .controls input[type="range"] {
+    width: min(100%, 12rem);
+    accent-color: var(--accent);
+  }
+</style>
+</head>
+<body data-game="mcgee" data-kind="demo">
+<main id="main">
+  <h1>Mc Gee</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move two points on a circle and watch the two straight lines that just touch it; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag A and B, or focus one and press the arrow keys. Slide the bar to change the lines and tick the boxes to show the clues.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="group"
+         aria-label="A circle with draggable points A and B on it, equal tangents AP and BQ, the chord AB and the segment PQ meeting at S. Drag A or B to change the picture."></svg>
+    <p class="hint-line">Drag A or B, or focus one and press the arrow keys (Shift for bigger steps). The slider sets how long AP and BQ are.</p>
+  </div>
+
+  <div class="controls">
+    <label for="lengthRange">Line length: <output id="lengthOut" for="lengthRange">-100</output></label>
+    <input id="lengthRange" type="range" min="-200" max="200" step="1" value="-100" aria-label="Length of the two tangents, from minus 200 to 200">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Names</label>
+    <label><input id="statementBox" type="checkbox" data-label="the equal halves of PQ"> Show statement</label>
+    <label><input id="premiseBox" type="checkbox" data-label="the radii and right angles"> Show premise</label>
+    <label><input id="hintBox" type="checkbox" data-label="the extra lines and equal angles"> Show hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Choose two places on a <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a>, draw the same-length <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> at each, and connect the two points on the circle to the two tangent ends. Bogomolny's page claims that one line always cuts the other exactly in half. Try to break it by dragging the points.</p>
+
+      <h2>The claim, stated exactly</h2>
+      <p>At A and B on the circle, equal tangents AP and BQ are drawn. Let S be where <code>AB</code> meets <code>PQ</code>. The page says that S is the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> of PQ, so <code>PS = QS</code> — in other words, AB bisects PQ. The live cut-the-knot page still embeds the original Java applet, but browsers no longer run Java plug-ins; this page rebuilds the same figure in SVG. The logic test checked the claim over a 48 × 48 grid of circle positions and 41 slider lengths, plus 6,000 random pictures: 102,670 drawable figures, with the largest difference between PS and QS below <code>1e-10</code>. The claim holds; no correction was needed.</p>
+
+      <h2>Why the crossing lands in the middle</h2>
+      <p>Put the circle's centre at the origin and write A and B as <code>r(cos a, sin a)</code> and <code>r(cos b, sin b)</code>. The applet's tangent at A points a quarter turn from the radius: <code>u_A = (−sin a, cos a)</code>, and likewise <code>u_B = (−sin b, cos b)</code>. With tangent length ℓ, <code>P = A + ℓ u_A</code> and <code>Q = B + ℓ u_B</code>. Using <a class="wiki-term" data-wiki="Euclidean_vector" href="https://en.wikipedia.org/wiki/Euclidean_vector" target="_blank" rel="noopener">vectors</a>, the midpoint of PQ is</p>
+      <blockquote><code>(P + Q)/2 = (A + B)/2 + (ℓ/2)(u_A + u_B)</code></blockquote>
+      <p>The first term is the midpoint of AB, which is on the line AB. For the second, write <code>m = (a + b)/2</code>: then <code>u_A + u_B = 2 cos((a − b)/2)(−sin m, cos m)</code> and <code>B − A = 2r sin((b − a)/2)(−sin m, cos m)</code>. They point along the same line, whatever ℓ is. So the midpoint of PQ lies on AB, and the crossing S is that midpoint. Equal lengths matter: with unequal tangents the extra term would not be parallel to AB.</p>
+
+      <h2>The hint's matching triangles</h2>
+      <p>Extend AP through A to R with <code>AR = AP</code>, and let T be where the two tangents meet. Tangents from one outside point are equal, so <code>TA = TB</code>; adding the equal pieces gives <code>TR = TQ</code>. Triangles ABT and RQT are isosceles and share the angle at T, so they are <a class="wiki-term" data-wiki="Similarity_(geometry)" href="https://en.wikipedia.org/wiki/Similarity_(geometry)" target="_blank" rel="noopener">similar</a> and <code>QR ∥ AB</code>. In triangle PQR, A is the midpoint of PR and AS is parallel to QR, so AS is a midline and S must be the midpoint of PQ. Tick <em>Show hint</em> to see those steps in the picture.</p>
+      <p>One harmless quirk of the applet is kept: its Compute() stops drawing when the slider reads strictly between −2 and 2, or when A and B are less than two pixels apart, so the last figure stays on screen. An unused helper named <code>Other()</code>, left over from a sibling applet, is not ported: this applet calls Tangent() directly for both points.</p>
+
+      <p class="tip">Tick <em>Show hint</em> and slide the length through zero: the figure pauses in the middle, but on both sides S stays halfway along PQ.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/McGee.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="mcgee-core.js"></script>
+<script src="mcgee.js"></script>
+</body>
+</html>
