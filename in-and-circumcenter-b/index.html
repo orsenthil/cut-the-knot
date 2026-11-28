@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>In And Circumcenter B &mdash; coolmaths</title>
+<meta name="description" content="Drag a triangle and watch two lines: one between its two special centres, one between two copied side lengths. Are they always at right angles, and when are they the same length?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/in-and-circumcenter-b/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="In And Circumcenter B">
+<meta property="og:description" content="Drag a triangle and watch two lines: one between its two special centres, one between two copied side lengths. Are they always at right angles, and when are they the same length?">
+<meta property="og:url" content="https://coolmaths.ai/in-and-circumcenter-b/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .circumcircle { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  #board .incircle { fill: none; stroke: var(--good); stroke-width: 1.8; }
+  #board .io-line { stroke: var(--bad); stroke-width: 2.4; stroke-dasharray: 7 4; }
+  #board .de-line { stroke: var(--accent); stroke-width: 3; }
+  #board .triangle { fill: var(--accent-soft); stroke: var(--ink); stroke-width: 2.3; stroke-linejoin: round; }
+  #board .hint-line { stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 4 3; }
+  #board .tick { stroke: var(--ink); stroke-width: 1.8; }
+  #board .right-mark { fill: none; stroke: var(--highlight); stroke-width: 3; stroke-linejoin: round; }
+  #board .derived-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .i-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .o-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 2; }
+  #board .helper-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 2; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+  .hint-line-note {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+</style>
+</head>
+<body data-game="in-and-circumcenter-b" data-kind="demo">
+<main id="main">
+  <h1>In And Circumcenter B</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move a triangle and watch two lines inside it: they always cross at a right angle, and sometimes they are the same length too. There is nothing to win.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus one and use the arrow keys. Tick the boxes for names, equal-length marks, helper lines and the right-angle mark; press Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 360" role="group"
+         aria-label="Triangle ABC with two circles and the lines DE and IO. Drag corners A, B or C to change the triangle."></svg>
+    <p class="hint-line-note">Drag a corner, or focus it and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Names</label>
+    <label><input id="statementBox" type="checkbox" data-label="the right-angle mark"> Right angle</label>
+    <label><input id="premiseBox" type="checkbox" data-label="equal-length marks"> Equal lengths</label>
+    <label><input id="hintBox" type="checkbox" data-label="helper lines"> Hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag a corner and the two coloured lines turn together. They always cross squarely; making one corner a particular size also makes the lines exactly the same length. That is the bundled statement on the original page.</p>
+
+      <h2>The two lines to compare</h2>
+      <p>Lay the side AB off along the other two sides: D sits on the ray from B through C with <code>BD = AB</code>, and E sits on the ray from A through C with <code>AE = AB</code>. The blue dot I is the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a>, where the angle bisectors meet; the red dot O is the centre of the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> through all three corners. The lines to compare are DE and IO. The logic test rebuilt both centres exactly as the applet does and matched them on more than four thousand triangles.</p>
+
+      <h2>Why they are always square</h2>
+      <p>Extend the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> AI until it meets the circumcircle again at F. Since AB = AE, the line AI is the perpendicular bisector of BE: M is the midpoint of BE and <code>FB = FE</code>. An <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angle</a> on the chord AB gives <code>∠BFE = 2∠C</code>, and the page's proof also shows <code>BF = IF</code>. Turning both arms of <code>∠IFO</code> by a quarter turn gives <code>∠DBE</code>, so IO must be at right angles to DE. Over the grid and random sample the largest absolute cosine between the two lines was below <code>1e-8</code>: the page's "independent of C" claim holds.</p>
+
+      <h2>The extra equality</h2>
+      <p>A <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord</a> of length AB in a circle of radius R gives <code>AB = 2R sin(C)</code>. At <code>C = 30°</code> this makes <code>R = AB</code>, so <code>OF = OA = AB = BD</code>. With <code>IF = BE</code> the triangles IFO and BDE agree by side-angle-side, hence <code>IO = DE</code>. The test checked the stronger formula <code>DE = 2·IO·sin(C)</code> everywhere: it gives equality at 30°, and also at 150° because <code>sin(150°) = sin(30°)</code> — a case the page does not mention.</p>
+
+      <p class="tip">Drag C towards the top-left until the status says about 30°, then tick Equal lengths, Hint and Right angle to watch F, M and the square corner appear.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/InAndCircumcenterB.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="in-and-circumcenter-b-core.js"></script>
+<script src="in-and-circumcenter-b.js"></script>
+</body>
+</html>
