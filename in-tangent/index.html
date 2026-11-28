@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>In Tangent &mdash; coolmaths</title>
+<meta name="description" content="Two incircles sit in the triangles made by a point X on the base of a triangle. Does their other common tangent always pass through the big triangle's touch point?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/in-tangent/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="In Tangent">
+<meta property="og:description" content="Two incircles sit in the triangles made by a point X on the base of a triangle. Does their other common tangent always pass through the big triangle's touch point?">
+<meta property="og:url" content="https://coolmaths.ai/in-tangent/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .side { stroke: var(--ink); stroke-width: 2; stroke-opacity: 0.75; }
+  #board .base { stroke-width: 3; }
+  #board .axis { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .incircle { fill: var(--accent); fill-opacity: 0.08; stroke: var(--accent); stroke-width: 2.5; }
+  #board .inc-c { stroke: var(--highlight); }
+  #board .diameter-circle { fill: var(--good); fill-opacity: 0.05; stroke: var(--good); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .center-dot { fill: var(--ink); }
+  #board .center-dot.big { fill: var(--good); }
+  #board .tangent { stroke: var(--highlight); stroke-width: 3; }
+  #board .contact-dot { fill: var(--accent); }
+  #board .t-ring { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .s-dot { fill: var(--good); }
+  #board .geom-handle { fill: var(--stage); stroke: var(--accent); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label { fill: var(--text); font-size: 14px; pointer-events: none; }
+  #board .x-label { fill: var(--accent); }
+  #board .t-label { fill: var(--good); }
+  #board .eye { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .eye-pupil { fill: var(--muted); }
+  #board .eye.on { stroke: var(--good); stroke-width: 3; }
+  #board .eye-pupil.on { fill: var(--good); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  .controls button { min-height: 2.5rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="in-tangent" data-kind="demo">
+<main id="main">
+  <h1>In Tangent</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> Two circles sit inside the triangles made by a point X on the bottom side.<br>
+    <strong>How to play:</strong> Drag A, B, C or X, or focus a dot and use the arrow keys. Tick "Show circle" to see the big circle.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Triangle ABC with point X on side BC. Two incircles, their second common tangent and the touch point T are drawn."></svg>
+  </div>
+
+  <div class="controls">
+    <label class="option" for="circleChk"><input id="circleChk" type="checkbox"> Show circle</label>
+    <button id="toTBtn" type="button" aria-label="Move X to the touch point T">Put X at T</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Draw a new triangle">New diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move X along the bottom side and watch the bright line. Its crossing with the base does not move: it lands on the same dot every time. That is the theorem on the original page, and the logic test checks it on hundreds of triangles rather than just this one.</p>
+
+      <h2>Two incircles and two tangents</h2>
+      <p>Let <code>I<sub>B</sub></code> and <code>I<sub>C</sub></code> be the centres of the <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircles</a> of triangles <code>ABX</code> and <code>ACX</code>. The line <code>AX</code> touches both circles, so it is one common <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a>. Reflect <code>A</code> and <code>X</code> in the line <code>I<sub>B</sub>I<sub>C</sub></code>: each circle is its own mirror image, so the reflected line is the <em>other</em> internal common tangent. The applet draws exactly that line, and the green dot is where it crosses <code>BC</code>.</p>
+
+      <h2>The crossing is always T</h2>
+      <p>Let <code>T</code> be where the incircle of the whole triangle <code>ABC</code> touches <code>BC</code>. With <code>s = (AB + BC + CA)/2</code> the <a class="wiki-term" data-wiki="Semiperimeter" href="https://en.wikipedia.org/wiki/Semiperimeter" target="_blank" rel="noopener">semiperimeter</a>, its distance from <code>B</code> is <code>BT = s &minus; CA</code>. The page claims the bright line passes through this fixed point, whatever X does. It also claims <code>TX = T<sub>B</sub>T<sub>C</sub></code>, the gap between the two contact points on <code>AX</code>: if <code>BX = x</code> and <code>XC = y</code>, both sides equal <code>(x &minus; y &minus; AB + CA)/2</code>. The test checks this at every configuration. Equal tangent lengths from <code>S</code> and <code>X</code> then force <code>SB' = XC'</code> and <code>S = T</code>.</p>
+
+      <h2>The circle through X and T</h2>
+      <p>The dashed circle has diameter <code>I<sub>B</sub>I<sub>C</sub></code>, so its centre is their midpoint and its radius is half their distance. At X the two <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisectors</a> split angles <code>BXA</code> and <code>CXA</code>, which add to a straight angle; they are perpendicular. The same is true at T for the two tangents. By <a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a>, both X and T lie on that circle. The numerical check confirms both distances to its centre equal its radius.</p>
+
+      <h2>The eyes, and one old quirk</h2>
+      <p>The three little eyes light up only when X is within one unit of T — that is the applet's own <code>Finished</code> test, a hint, not a win. The theorem is true for every other X too; the "Put X at T" button is a modern shortcut to the lit-up picture. The applet's code also holds an unused switch for drawing excircles, but no control reaches it: this port keeps only the incircles, as the page does. The logic test compares the core with a second transcription of the applet's own incenter, reflection and line-intersection methods over hundreds of triangles, and finds <code>|S &minus; T|</code> below the test's <code>10<sup>&minus;4</sup></code> user-unit tolerance (in practice around <code>10<sup>&minus;12</sup></code>).</p>
+
+      <p class="tip">Try <strong>Put X at T</strong>, then tick <strong>Show circle</strong>: the green circle runs through both the highlighted dot and the X handle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/InTangent.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="in-tangent-core.js"></script>
+<script src="in-tangent.js"></script>
+</body>
+</html>
