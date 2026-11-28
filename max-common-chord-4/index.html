@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Max Common Chord 4 &mdash; coolmaths</title>
+<meta name="description" content="Two circles meet at P and Q. Extend the lines through their centres: what hidden circle passes through E, F, L, M and Q, and what happens to the angles at Q?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/max-common-chord-4/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Max Common Chord 4">
+<meta property="og:description" content="Two circles meet at P and Q. Extend the lines through their centres: what hidden circle passes through E, F, L, M and Q, and what happens to the angles at Q?">
+<meta property="og:url" content="https://coolmaths.ai/max-common-chord-4/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 42rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circle-main { fill: none; stroke: var(--muted); stroke-width: 1.6; }
+  #board .circle-extra { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 7 6; }
+  #board .guide-line { stroke: var(--ink); stroke-width: 1.2; opacity: 0.55; }
+  #board .statement-line { stroke: var(--good); stroke-width: 2; }
+  #board .arc-q { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .hint-line { stroke: var(--highlight); stroke-width: 3; stroke-dasharray: 6 5; }
+  #board .arc-hint { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .tick { stroke: var(--ink); stroke-width: 2.5; }
+  #board .derived-dot { fill: #e8b61c; stroke: var(--stage); stroke-width: 1; }
+  #board .pt-label { fill: var(--text); font-size: 15px; font-weight: 600; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; }
+  .controls input[type="checkbox"] { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+</style>
+</head>
+<body data-game="max-common-chord-4" data-kind="demo">
+<main id="main">
+  <h1>Max Common Chord 4</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the dots to see a hidden circle that passes through five points.<br>
+    <strong>How to play:</strong> Drag P, Q, A or B, or focus one and use the arrow keys. Tick the boxes to show the statements, the hint or the names.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="-40 -110 480 440" role="group"
+         aria-label="Two circles meeting at P and Q, with constructed points L, M, G, H and four draggable points P, Q, A and B"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="statement1Box" type="checkbox" aria-label="Show the circle through E, Q and F">statement 1</label>
+    <label><input id="statement2Box" type="checkbox" aria-label="Show the angle at Q and the lines to L and M">statement 2</label>
+    <label><input id="hintBox" type="checkbox" aria-label="Show the equal radii and base angles">hint</label>
+    <label><input id="namesBox" type="checkbox" aria-label="Show the names of the points">names</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Put the four points back where they started">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two circles meet at P and Q. Extend the lines from P through the two centres, and five of the labelled points turn out to sit on one more circle. Here is why, and where the claim needs care.</p>
+
+      <h2>Two circles, four more points</h2>
+      <p>The centres are E and F. The line EP meets the first circle again at G and the second at M; the line FP meets the first circle again at L and the second at H. The applet constructs L and M as the other crossings of the circles C(E), C(F) and the circle through E, Q and F; this puts M on line EP and L on line FP, just as the page says. G and H are the antipodes of P: each is twice a radius away from P along the line to its centre.</p>
+
+      <h2>Equal apex angles</h2>
+      <p>Both <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles triangles</a> ELP and FMP have two equal sides, because E and F are centres. Their base angles at P are the two angles made by the crossing lines EP and FP, so those base angles are equal. Equal base angles force equal apex angles: <code>∠LEP = ∠MFP</code>. In the starting picture both are about <code>51.4&deg;</code>. The status line recomputes them after every drag.</p>
+
+      <h2>One circle through five points</h2>
+      <p>Since L, E, P are collinear, <code>∠LEP</code> is the same angle as <code>∠LEM</code>; likewise <code>∠MFP = ∠LFM</code>. So E, F, L and M form a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>. The page goes on to show that Q belongs to that same circle. This part holds for every non-degenerate position the logic test tried: the five points stayed on one circle to within a ten-thousandth of a unit.</p>
+
+      <h2>Half the angle at Q</h2>
+      <p>An <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angle</a> is half the central angle over the same chord, so <code>∠LQP = &frac12;∠LEP</code> and <code>∠MQP = &frac12;∠MFP</code> when Q lies on the large arc. The page states those equalities without that condition, and also claims <code>∠LQP = ∠MQP</code> and <code>∠LQM = ∠LEM</code>. The sweep found that this is true in the arrangement the page draws but not after every drag: when Q moves onto the small arc LP, <code>∠LQP</code> becomes <code>180&deg; &minus; &frac12;∠LEP</code> and is the supplement of <code>∠MQP</code>. The concyclicity and the equal apex angles never failed; the unqualified angle equalities did. Unlike the sibling applets, which seek the longest chord, a bisector or the tangency condition, this one is about those equal angles and the common circle.</p>
+
+      <p class="tip">Try this: tick statement 1 and statement 2, then drag Q slowly past the line LP and watch the status line switch from half the apex angle to its supplement.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MaxCommonChord4.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="max-common-chord-4-core.js"></script>
+<script src="max-common-chord-4.js"></script>
+</body>
+</html>
