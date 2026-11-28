@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lebesgue Curve &mdash; coolmaths</title>
+<meta name="description" content="Can a single line fill a square and still be smooth almost everywhere? Step through the Lebesgue curve and see its polygonal approximations grow.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/lebesgue-curve/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Lebesgue Curve">
+<meta property="og:description" content="Can a single line fill a square and still be smooth almost everywhere? Step through the Lebesgue curve and see its polygonal approximations grow.">
+<meta property="og:url" content="https://coolmaths.ai/lebesgue-curve/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 30rem; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 22rem; margin: 0 auto; height: auto; touch-action: none; }
+  #board .frame { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .mesh { stroke: var(--muted); stroke-width: 0.75; }
+  #board .curve {
+    fill: none; stroke: var(--accent); stroke-width: 2.5;
+    stroke-linejoin: round; stroke-linecap: round;
+  }
+  #board .curve.fine { stroke-width: 0.4; }
+  #board .end-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .end-dot.end { fill: var(--bad); }
+  #board .cursor-cell { fill: var(--highlight); fill-opacity: 0.55; stroke: var(--accent); stroke-width: 1.5; pointer-events: none; }
+  #board .cursor-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .cursor-handle:active { cursor: grabbing; }
+  #board .cursor-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 4; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; }
+  input:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+</style>
+</head>
+<body data-game="lebesgue-curve" data-kind="demo">
+<main id="main">
+  <h1>Lebesgue Curve</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#sequences">Sequences</a><a class="tag" href="../index.html#algorithms">Algorithms</a><a class="tag" href="../index.html#geometry">Geometry</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch a single line visit the middle of every small square in a grid.<br>
+    <strong>How to play:</strong> Press Next order or click the picture to make the grid finer and watch the line grow. You can also move the cursor with the arrow keys.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 320 320" role="group"
+         aria-label="A space-filling curve drawn through the centres of the squares of a grid"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="nextBtn" type="button" class="primary" aria-label="Advance to order 2">Next order</button>
+    <button id="boardBtn" type="button" aria-label="Advance the Lebesgue curve to the next order">Refine from the board</button>
+    <label><input type="radio" name="mode" value="lebesgue" checked> Lebesgue</label>
+    <label><input type="radio" name="mode" value="moore"> Moore</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Hilbert's and Peano's curves turn at every step, so one might guess that all space-filling curves are nowhere smooth. Lebesgue's curve is a surprise: although it fills the square, it is differentiable almost everywhere. The applet shows its polygonal stages; the surprising fact lives in the limiting curve.</p>
+
+      <h2>Four copies, top-down and left-right</h2>
+      <p>At each stage the curve visits the centres of the subsquares in the order <code>top-down, left-right</code>: down the first column, then the next, and so on. The next stage shrinks that path into each quadrant and joins the four copies in the same order. The logic test reconstructs the applet's own strings and checks, for orders 1 to 7, that every centre of the <code>2ⁿ × 2ⁿ</code> grid is visited exactly once, by <code>4ⁿ</code> centres joined by <code>4ⁿ − 1</code> steps.</p>
+
+      <h2>Interlacing Cantor digits</h2>
+      <p>Write a point of the <a class="wiki-term" data-wiki="Cantor_set" href="https://en.wikipedia.org/wiki/Cantor_set" target="_blank" rel="noopener">Cantor set</a> as <code>c = 0.(2t₁)(2t₂)(2t₃)…</code> with binary digits <code>tⱼ</code>. Interlacing alternate digits gives <code>f(c) = (0.t₁t₃…, 0.t₂t₄…)</code>, a point of the unit square. The test checks the reverse direction on every dyadic grid up to <code>32 × 32</code>: any pair of binary coordinates can be interlaced back into a Cantor point, so the map is <a class="wiki-term" data-wiki="Surjective_function" href="https://en.wikipedia.org/wiki/Surjective_function" target="_blank" rel="noopener">onto</a>.</p>
+
+      <h2>Smooth almost everywhere</h2>
+      <p>The removed middle thirds have total length <code>1 − (2/3)ᵏ</code>, tending to 1, so the Cantor set has <a class="wiki-term" data-wiki="Lebesgue_measure" href="https://en.wikipedia.org/wiki/Lebesgue_measure" target="_blank" rel="noopener">measure zero</a>. Lebesgue extends <code>f</code> linearly across each removed interval <code>(a,b)</code> by <code>f(t) = (f(b)(t−a) + f(a)(b−t))/(b−a)</code>. On that interval the curve is a straight segment, hence differentiable; the test checks this interpolation on every removed interval down to level 4. Differentiability on a set of measure 1 is the page's claim, and it holds.</p>
+
+      <h2>What the applet's buttons do</h2>
+      <p>Clicking the drawing runs <code>Reset()</code>: one click doubles the side of the grid, and after the eighth order it wraps back to the first (for the original 540-pixel applet). The applet's Lebesgue/Moore and Curve/Maze checkboxes have empty listeners and do not change the drawing; this port keeps them as labels only. The page's reference is H. Sagan, <cite>Space-Filling Curves</cite>, Springer-Verlag, 1994.</p>
+
+      <p class="tip">Step through all eight orders: at the last one the display starts again, just as the applet does.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/LebesgueCurve.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="lebesgue-curve-core.js"></script>
+<script src="lebesgue-curve.js"></script>
+</body>
+</html>
