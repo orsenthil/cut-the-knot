@@ -879,6 +879,16 @@ const CORE_GLOBALS = {
   "markowsky-2/markowsky-2-core.js": ["Markowsky2Core"],
   "markowsky-parabola/markowsky-parabola-core.js": ["MarkowskyParabolaCore"],
   "math-pro/math-pro-core.js": ["MathProCore"],
+  "max-common-chord/max-common-chord-core.js": ["MaxCommonChordCore"],
+  "max-common-chord-2/max-common-chord-2-core.js": ["MaxCommonChord2Core"],
+  "max-common-chord-3/max-common-chord-3-core.js": ["MaxCommonChord3Core"],
+  "max-common-chord-4/max-common-chord-4-core.js": ["MaxCommonChord4Core"],
+  "max-common-chord-5/max-common-chord-5-core.js": ["MaxCommonChord5Core"],
+  "max-common-chord-6/max-common-chord-6-core.js": ["MaxCommonChord6Core"],
+  "maxwell/maxwell-core.js": ["MaxwellCore"],
+  "mcgee/mcgee-core.js": ["McgeeCore"],
+  "mcworter/mcworter-core.js": ["McworterCore"],
+  "mcworter-2/mcworter-2-core.js": ["Mcworter2Core"],
 };
 
 const games = [];

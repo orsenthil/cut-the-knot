@@ -2485,6 +2485,16 @@ check("many-circles: the saved walk closes", read["many-circles"]?.closes === tr
 check("markowsky-2: the saved tangent claims hold exactly and in the drawing", read["markowsky-2"]?.reading.drawnOK === true && read["markowsky-2"].reading.exactOK === true);
 check("markowsky-parabola: exact angles equal despite whole-pixel rounding", read["markowsky-parabola"]?.reading.exactCurve.anglesEqual === true && read["markowsky-parabola"].reading.exactCurve.slopesAreOpposites === true && read["markowsky-parabola"].reading.inStatedDomain === true);
 check("math-pro: the near and mixed cevian triplets concur", read["math-pro"]?.claims.nearConcur === true && read["math-pro"].claims.mixedConcur === true && read["math-pro"].claims.allFarFails === true);
+check("max-common-chord: saved product and radical-axis reading round-trip", read["max-common-chord"]?.valid === true && read["max-common-chord"].product === read["max-common-chord"].saved.product && read["max-common-chord"].pqpr === read["max-common-chord"].saved.pqpr);
+check("max-common-chord-2: saved Shutrick figure round-trips", read["max-common-chord-2"]?.savedMatchesCore === true && read["max-common-chord-2"].fieldsCompared === 10);
+check("max-common-chord-3: best chord is the arc midpoint and tangent point", read["max-common-chord-3"]?.core.claims.bestIsMaximum === true && read["max-common-chord-3"].core.claims.bestIsArcMidpoint === true && read["max-common-chord-3"].core.claims.bestIsTangent === true);
+check("max-common-chord-4: saved five-point construction has equal apex angles", read["max-common-chord-4"]?.valid === true && read["max-common-chord-4"].core.complete === true && read["max-common-chord-4"].core.apexAngles.equal === true && read["max-common-chord-4"].core.atQ.matchesClaim === true);
+check("max-common-chord-5: saved W has equal EPF and EWF angles", read["max-common-chord-5"]?.throughP === true && read["max-common-chord-5"].angleEPF === read["max-common-chord-5"].angleEWF);
+check("max-common-chord-6: saved product round-trips through the core", read["max-common-chord-6"]?.valid === true && read["max-common-chord-6"].core.valid === true && read["max-common-chord-6"].savedVsCore.product.equal === true);
+check("maxwell: saved cevians concur and the orthologic equations vanish", read["maxwell"]?.reading.concurrence.concurrent === true && read["maxwell"].reading.orthologic.bothVanish === true && read["maxwell"].reading.perimeter.match === true);
+check("mcgee: equal tangents make S the midpoint of PQ", read["mcgee"]?.reading.valid === true && read["mcgee"].reading.drawable === true && read["mcgee"].reading.claims.AP_equals_BQ === true && read["mcgee"].reading.claims.S_is_midpoint_of_PQ === true);
+check("mcworter: the right angle at D holds in the saved figure", read["mcworter"]?.reading.claims.allHold === true && read["mcworter"].reading.angleB_aDA_bDegrees === 90);
+check("mcworter-2: Bottema's midpoint matches the closed form", read["mcworter-2"]?.reading.claims.midpointIndependent === true && read["mcworter-2"].reading.points.M.x === read["mcworter-2"].reading.closedFormMidpoint.x && read["mcworter-2"].reading.points.M.y === read["mcworter-2"].reading.closedFormMidpoint.y);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -3139,6 +3149,30 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("markowsky-parabola/equal_angles: exact angles match, drawn ones round", angles.exactCurve.anglesEqual === true && angles.exactCurve.slopesAreOpposites === true && angles.drawnAngles.equalAtWholePixels === false);
   const pro = runGameLogic("math-pro", "concurrence", {});
   check("math-pro/concurrence: near and mixed triplets meet, all-far misses", pro.claims.nearConcur === true && pro.claims.mixedConcur === true && pro.claims.allFarFails === true);
+}
+
+// The batch-41 tutor actions also run their real cores, not just saved positions.
+{
+  const power = runGameLogic("max-common-chord", "chord_power", {});
+  check("max-common-chord/chord_power: AP×PB equals PQ×PR with equal tangents", power.chord.product === power.radicalAxis.PQtimesPR && power.equalTangents.lengthsEqual === true);
+  const shutrick = runGameLogic("max-common-chord-2", "shutrick_invariants", {});
+  check("max-common-chord-2/shutrick_invariants: S on C(O), circumcentre and cyclic LSMQ", shutrick.claims.sOnO === true && shutrick.claims.sIsCenter === true && shutrick.claims.lsmqCyclic === true && shutrick.claims.bisector === true);
+  const best = runGameLogic("max-common-chord-3", "best_chord", {});
+  check("max-common-chord-3/best_chord: QR=2QN and the hidden quiz word is twice", best.checks.qrIsTwiceQn === true && best.checks.maximum === true && best.hiddenQuiz.answer === "twice");
+  const five = runGameLogic("max-common-chord-4", "five_point_circle", {});
+  check("max-common-chord-4/five_point_circle: equal apex angles and the equal-angle case", five.apexAngles.equal === true && five.atQ.matchesClaim === true && five.atQ.halfAngleCase === true);
+  const pair = runGameLogic("max-common-chord-5", "concyclic_pair", {});
+  check("max-common-chord-5/concyclic_pair: Q and W lie on both claimed circles", pair.bothCirclesShareQandW.claimHolds === true && pair.angles.equal === true);
+  const touch = runGameLogic("max-common-chord-6", "final_touch", {});
+  check("max-common-chord-6/final_touch: W on both circles and RW a diameter", touch.optimum.finalTouch.SOnCO === true && touch.optimum.finalTouch.WOnCO === true && touch.optimum.finalTouch.WOnCS === true && touch.optimum.finalTouch.RDiameterOfCS === true && touch.optimum.finalTouch.equalAngles.equal === true);
+  const theorem = runGameLogic("maxwell", "theorem", {});
+  check("maxwell/theorem: concurrence and orthologic symmetry", theorem.theoremHolds === true && theorem.concurrence.concurrent === true && theorem.orthologic.bothVanish === true);
+  const bisect = runGameLogic("mcgee", "equal_tangents_bisect", {});
+  check("mcgee/equal_tangents_bisect: AB bisects PQ with equal tangents", Object.values(bisect.claims).every(Boolean) === true);
+  const right = runGameLogic("mcworter", "right_triangle_at_d", { A: [154, 208.333333], B: [250, 208.333333], C: [225, 123.365396] });
+  check("mcworter/right_triangle_at_d: B_a D A_b is a right isosceles triangle", right.angleB_aDA_bDegrees === 90 && right.claims.allHold === true);
+  const midpoint = runGameLogic("mcworter-2", "bottema_midpoint", {});
+  check("mcworter-2/bottema_midpoint: the midpoint stays fixed at b(1+c)/2", midpoint.reading.midpointGap === 0 && Object.values(midpoint.reading.claims).every(Boolean) === true);
 }
 
 // A game with no reader, and a position that makes no sense.

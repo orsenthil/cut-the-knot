@@ -1376,6 +1376,16 @@ const GAMES = {
   "markowsky-2": (page) => dragFirstHandle(page),
   "markowsky-parabola": (page) => dragFirstHandle(page),
   "math-pro": (page) => dragFirstHandle(page),
+  "max-common-chord": (page) => dragFirstHandle(page),
+  "max-common-chord-2": (page) => dragFirstHandle(page),
+  "max-common-chord-3": (page) => dragFirstHandle(page),
+  "max-common-chord-4": (page) => dragFirstHandle(page),
+  "max-common-chord-5": (page) => dragFirstHandle(page),
+  "max-common-chord-6": (page) => dragFirstHandle(page),
+  "maxwell": (page) => dragFirstHandle(page),
+  "mcgee": (page) => dragFirstHandle(page),
+  "mcworter": (page) => dragFirstHandle(page),
+  "mcworter-2": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },
