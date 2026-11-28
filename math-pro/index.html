@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The MathPro Logo &mdash; coolmaths</title>
+<meta name="description" content="Move the corners of a triangle and a point P, then watch the lines through the circle's touch points. Will they always meet in one place?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/math-pro/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="The MathPro Logo">
+<meta property="og:description" content="Move the corners of a triangle and a point P, then watch the lines through the circle's touch points. Will they always meet in one place?">
+<meta property="og:url" content="https://coolmaths.ai/math-pro/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .incircle { fill: var(--good); fill-opacity: 0.07; stroke: var(--good); stroke-width: 1.8; }
+  #board .spoke { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 4 4; }
+  #board .cevian { stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round; }
+  #board .far-line { stroke: var(--highlight); stroke-width: 1.8; stroke-dasharray: 6 4; }
+  #board .touch-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .cross-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .far-dot { fill: var(--stage); stroke: var(--highlight); stroke-width: 2; }
+  #board .q-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 2; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .plabel { fill: var(--accent); }
+  #board .small-label { fill: var(--good); }
+  #board .cross-label { fill: var(--accent); }
+  #board .far-label { fill: var(--highlight); }
+  #board .q-label { fill: var(--bad); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="math-pro" data-kind="demo">
+<main id="main">
+  <h1>The MathPro Logo</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the corners of a triangle and a point P, and watch three lines drawn from the dots where a circle touches the sides.<br>
+    <strong>How to play:</strong> Drag A, B, C or P with a mouse or finger, or focus a point and use the arrow keys. Press Check the lines to see what stayed true.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle with an incircle, a point P, three crossings X, Y, Z and the meeting point Q"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the triangle and point to their starting places">Reset</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the names of the points">Hide names</button>
+    <button id="farBtn" type="button" aria-pressed="false" aria-label="Toggle the far crossings on the three lines">Show far points</button>
+    <button id="checkBtn" type="button" aria-label="Check whether the three lines meet in one point">Check the lines</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Something unlikely-looking happens here: wherever you put P, three lines drawn from three different sides of a triangle agree on a single meeting point. The applet was meant to suggest that fact, not to prove it. Its original page is still online, but the Java applet has been replaced by a GeoGebra panel; the <a href="https://web.archive.org/web/20060928065038/http://www.cut-the-knot.org/Curriculum/Geometry/MathPro.shtml" target="_blank" rel="noopener">2006 Internet Archive capture</a> shows the original <code>applet code="MathPro"</code> that the rules and calculations here follow.</p>
+
+      <h2>The exact claim</h2>
+      <p>Let the <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> of ABC touch BC, CA and AB at D, E and F. Join P to A, B and C. Each line meets the circle twice; call the meeting points nearer to the vertices X on AP, Y on BP and Z on CP. The page claims that <code>DX</code>, <code>EY</code> and <code>FZ</code> are concurrent. Their meeting point is called Rabinowitz's point; the page notes that it generalises the <a class="wiki-term" data-wiki="Gergonne_point" href="https://en.wikipedia.org/wiki/Gergonne_point" target="_blank" rel="noopener">Gergonne point</a>. The logic test confirms the concurrence on thousands of non-degenerate pictures (and the page's own crossing rule is transcribed a second way to check each X, Y and Z).</p>
+
+      <h2>The other crossings</h2>
+      <p>Each of AP, BP and CP also has a far crossing with the circle; call those X′, Y′ and Z′. The page says that replacing exactly two of the three choices with far points keeps the concurrence: <code>DX, EY′, FZ′</code>, <code>DX′, EY, FZ′</code> and <code>DX′, EY′, FZ</code> all meet in a point, and the test confirms each one. It also says that <code>DX′, EY′, FZ′</code> is not concurrent, which holds for a generic P. There is a quirk the page leaves out: if P sits at a touch point, a line is tangent there, near and far crossings coincide, and even the three far lines do meet at that touch point. The test checks that exception explicitly rather than calling the page wrong.</p>
+
+      <h2>Why one point is enough</h2>
+      <p>Nathan Bowler's proof on the page uses a <a class="wiki-term" data-wiki="Projective_transformation" href="https://en.wikipedia.org/wiki/Projective_transformation" target="_blank" rel="noopener">projective transformation</a> that fixes the incircle and sends P to the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a>. Such a transformation keeps tangency and concurrence, so it is enough to prove the claim with P at the incenter. Then X, Y and Z are the midpoints of the arcs opposite D, E and F, and DX, EY, FZ are the <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisectors</a> of the <a class="wiki-term" data-wiki="Contact_triangle" href="https://en.wikipedia.org/wiki/Contact_triangle" target="_blank" rel="noopener">contact triangle</a> DEF. Those three bisectors meet at its incenter. The same argument turns the internal bisectors into external ones to explain the three mixed triplets, and three external bisectors of a triangle do not all meet.</p>
+
+      <h2>The applet's small choices</h2>
+      <p>The applet takes D, E and F as the feet of perpendiculars from the incenter to the three side lines, and uses the average of the three distances to them as the circle's radius. That average equals the radius up to rounding, and the logic test follows it exactly. A line can also miss the circle altogether; then the applet draws the three spokes from the corners to P and no cevians, which is what this page does too. The page's remark that the result is "trivial" when P lies on the incircle assumes the crossing at P is chosen on all three lines; the applet's nearest-to-the-vertex rule cannot actually pick P at all three corners at once, and the test records that.</p>
+
+      <p class="tip">Try putting P at the incenter: Q jumps to the incenter of the small triangle made by the three touch points. Then turn on Show far points and drag P onto a touch point to see the exception with your own eyes.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MathPro.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="math-pro-core.js"></script>
+<script src="math-pro.js"></script>
+</body>
+</html>
