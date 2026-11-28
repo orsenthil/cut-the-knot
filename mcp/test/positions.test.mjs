@@ -2415,6 +2415,16 @@ check("hinged-napoleon: centre triangle equilateral and hinge claims agree with 
 check("hinged-ptolemy: AC·BP+AB·CP equals AP·BC in the saved circle", Math.abs(read["hinged-ptolemy"]?.reading.ptolemy.gap) < 1e-8 && typeof read["hinged-ptolemy"].reading.hinge === "object");
 check("hinged-pythagoras: c²=(a+b)²-2ab at every angle", read["hinged-pythagoras"]?.holds === true && read["hinged-pythagoras"].a2 + read["hinged-pythagoras"].b2 === read["hinged-pythagoras"].c2);
 check("hinged-pythagoras-2: (a-b)²+2ab tiles the c² square", read["hinged-pythagoras-2"]?.reading.algebra.holds === true && read["hinged-pythagoras-2"].reading.tiling.tilesSquare === true);
+check("hinged-pythagoras-3: Proof #2 identity holds even before the square closes", read["hinged-pythagoras-3"]?.reading.identity.holds === true && read["hinged-pythagoras-3"].reading.quarterTurn.formed === false);
+check("hinged-tessellation-1: four equal rhombus sides and equilateral triangles", read["hinged-tessellation-1"]?.measures.sideSpread < 1e-8 && read["hinged-tessellation-1"].measures.triangleSpread < 1e-8 && typeof read["hinged-tessellation-1"].measures.atB === "number");
+check("hinged-tessellation-2: (4,3,3,4,3) vertex figure sums to 360 degrees", read["hinged-tessellation-2"]?.reading.vertexFigure.polygons.join() === "4,3,3,4,3" && read["hinged-tessellation-2"].reading.vertexFigure.sumDeg === 360 && read["hinged-tessellation-2"].reading.squares.length === 4);
+check("hippocrates: saved drag has not matched EH to 2·AC", read.hippocrates?.reading.match.EH_equals_2AC === false && read.hippocrates.reading.match.K_on_H === false);
+check("hjelmslev-theorem: affine midpoints are collinear, not coincident", read["hjelmslev-theorem"]?.collinear === true && read["hjelmslev-theorem"].coincide === false && read["hjelmslev-theorem"].maxDeviationFromLine === 0);
+check("homothety: the saved single stretch has OP'/OP = k", read.homothety?.stretch.ratio === read.homothety.stretch.k && read.homothety.stretch.collinear === true && read.homothety.coefficients[0] === 1.5);
+check("huberts-dissection: four equal sides equal AB and the pieces fill the rhombus", read["huberts-dissection"]?.fourSidesEqualAb === true && read["huberts-dissection"].piecesFillRhombus === true && read["huberts-dissection"].savedGoodMatchesCore === true);
+check("huygens-pyth: the two strips give AC²+BC²=AB²", read["huygens-pyth"]?.reading.pythagorean.holds === true && typeof read["huygens-pyth"].reading.strips === "object");
+check("hyperboloid: waist equals the generator midpoint radius", read.hyperboloid?.valid === true && read.hyperboloid.waistMatchesGenerator === true && read.hyperboloid.allSamplePointsMatchSurface === true);
+check("illusion: the hidden continuations stay collinear", read.illusion?.allTransversalsParallel === true && read.illusion.hiddenPiecesCollinear === true && read.illusion.perceivedStrength === null);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2900,6 +2910,30 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("hinged-pythagoras/angle_sweep: identity holds at all 96 angles, squares only at 90", sw.identityHoldsAtEveryAngle === true && sw.anglesChecked === 96 && sw.legSquaresFormedAt.join() === "90");
   const p10 = runGameLogic("hinged-pythagoras-2", "proof10", {});
   check("hinged-pythagoras-2/proof10: (a-b)²+2ab tiles c²", p10.algebra.holds === true && p10.tiling.tilesSquare === true);
+}
+
+// The batch-34 tutor actions all run their real cores, not just their saved positions.
+{
+  const sw = runGameLogic("hinged-pythagoras-3", "angle_sweep", { a: 51 });
+  check("hinged-pythagoras-3/angle_sweep: c² fixed at all 91 angles, square only at 90", sw.identityHoldsAtEveryAngle === true && sw.anglesChecked === 91 && sw.tiltedSquareAt.join() === "90");
+  const vf = runGameLogic("hinged-tessellation-1", "vertex_figure", { layers: 4, mode: 0 });
+  check("hinged-tessellation-1/vertex_figure: (4,3,3,4,3) morphs to six triangles", vf.vertexFigure.sumDegrees === 360 && vf.vertexFigure.squareAtStart === true && vf.triangularDerivative.symbols.join() === "3,3,3,3,3,3");
+  const vf2 = runGameLogic("hinged-tessellation-2", "vertex_figure", { apex: 60 });
+  check("hinged-tessellation-2/vertex_figure: five polygons fill the turn with four squares", vf2.vertexFigure.sumDeg === 360 && vf2.squares.length === 4 && vf2.trianglesAtA.length === 3);
+  const tri = runGameLogic("hippocrates", "trisection", { case: "acute" });
+  check("hippocrates/trisection: acute trisects, mirror does not", tri.given.lengths.HK === 0 && tri.mirrored.lengths.HK !== 0);
+  const hjel = runGameLogic("hjelmslev-theorem", "verify_claim", { r: 0.5, n: 10 });
+  check("hjelmslev-theorem/verify_claim: collinear marks on A_r B_r", hjel.collinear === true && hjel.coincide === false && hjel.onSegmentArBr === true && hjel.maxAffineError === 0);
+  const comp = runGameLogic("homothety", "composition", { transforms: [{ center: { x: 100, y: 150 }, k: -1 }, { center: { x: 250, y: 150 }, k: 2 }], P: { x: 170, y: 120 } });
+  check("homothety/composition: product k=-2 and reverse order differs", comp.product === -2 && comp.composition.k === -2 && comp.composition.centerOnLineOfOldCenters === true && comp.commute === false);
+  const rh = runGameLogic("huberts-dissection", "rhombus", {});
+  check("huberts-dissection/rhombus: four sides equal AB and pieces fill it", rh.sidesEqualAb === true && Object.values(rh.claims).every(Boolean) === true);
+  const sweep = runGameLogic("huygens-pyth", "angle_sweep", {});
+  check("huygens-pyth/angle_sweep: strips and halves hold at every angle", sweep.pythHoldsAtEveryAngle === true && sweep.stripsFillAtEveryAngle === true && sweep.halvesMatchAtEveryAngle === true);
+  const presets = runGameLogic("hyperboloid", "preset_sweep", { lines: 20 });
+  check("hyperboloid/preset_sweep: cylinder, hyperboloid and half-turn cone", presets.cylinderAtNoTurn === true && presets.fullTurnReturnsToCylinder === true && presets.coneAtHalfTurn === true);
+  const geo = runGameLogic("illusion", "geometry_report", {});
+  check("illusion/geometry_report: hidden continuations are straight, strength unmeasurable", geo.pixelFacts.everyTransversalStraight === true && geo.pixelFacts.hiddenPiecesCollinear === true && geo.perception.measurableFromPixels === false);
 }
 
 // A game with no reader, and a position that makes no sense.

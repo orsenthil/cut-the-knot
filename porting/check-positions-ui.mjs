@@ -1288,6 +1288,16 @@ const GAMES = {
   "hinged-ptolemy": (page) => dragFirstHandle(page),
   "hinged-pythagoras": (page) => dragFirstHandle(page),
   "hinged-pythagoras-2": (page) => dragFirstHandle(page),
+  "hinged-pythagoras-3": (page) => dragFirstHandle(page),
+  "hinged-tessellation-1": (page) => dragFirstHandle(page),
+  "hinged-tessellation-2": (page) => dragFirstHandle(page),
+  "hippocrates": (page) => dragFirstHandle(page),
+  "hjelmslev-theorem": (page) => dragFirstHandle(page),
+  "homothety": (page) => dragFirstHandle(page),
+  "huberts-dissection": (page) => dragFirstHandle(page),
+  "huygens-pyth": (page) => dragFirstHandle(page),
+  "hyperboloid": (page) => dragFirstHandle(page),
+  "illusion": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

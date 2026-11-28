@@ -809,6 +809,16 @@ const CORE_GLOBALS = {
   "hinged-ptolemy/hinged-ptolemy-core.js": ["HingedPtolemyCore"],
   "hinged-pythagoras/hinged-pythagoras-core.js": ["HingedPythagorasCore"],
   "hinged-pythagoras-2/hinged-pythagoras-2-core.js": ["HingedPythagoras2Core"],
+  "hinged-pythagoras-3/hinged-pythagoras-3-core.js": ["HingedPythagoras3Core"],
+  "hinged-tessellation-1/hinged-tessellation-1-core.js": ["HingedTessellation1Core"],
+  "hinged-tessellation-2/hinged-tessellation-2-core.js": ["HingedTessellation2Core"],
+  "hippocrates/hippocrates-core.js": ["HippocratesCore"],
+  "hjelmslev-theorem/hjelmslev-theorem-core.js": ["HjelmslevTheoremCore"],
+  "homothety/homothety-core.js": ["HomothetyCore"],
+  "huberts-dissection/huberts-dissection-core.js": ["HubertsDissectionCore"],
+  "huygens-pyth/huygens-pyth-core.js": ["HuygensPythCore"],
+  "hyperboloid/hyperboloid-core.js": ["HyperboloidCore"],
+  "illusion/illusion-core.js": ["IllusionCore"],
 };
 
 const games = [];
