@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Isogonal Tangents &mdash; coolmaths</title>
+<meta name="description" content="Three rays from one point carry three circles, each touching two rays. When you draw each pair's other touching line, will the three new lines still meet in one place?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/isogonal-tangents/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Isogonal Tangents">
+<meta property="og:description" content="Three rays from one point carry three circles, each touching two rays. When you draw each pair's other touching line, will the three new lines still meet in one place?">
+<meta property="og:url" content="https://coolmaths.ai/isogonal-tangents/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .ray { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .circle { fill: var(--accent); fill-opacity: 0.06; stroke: var(--ink); stroke-width: 2; }
+  #board .second-tangent { fill: none; stroke: var(--accent); stroke-width: 3; }
+  #board .cross-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .meet-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 20px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .origin-handle { fill: var(--highlight); }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="isogonal-tangents" data-kind="demo">
+<main id="main">
+  <h1>Isogonal Tangents</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Three circles sit in the gaps between three rays from one point, and each ray just touches two circles.<br>
+    <strong>How to play:</strong> Drag a coloured point to swing a ray, or focus it and use the arrow keys. Press Show names to label the points and watch where the three new lines meet.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 500" role="group"
+         aria-label="Three rays from O, three circles touching them, and three second tangents meeting at X. O, U, V and W are draggable"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the diagram to its starting rays">Reset diagram</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Show or hide the names of the points">Hide names</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Each ray touches two circles, so it is already one touching line for each pair. Every pair has another one. The surprise is that these three other lines still meet at one point however the rays are swung.</p>
+
+      <h2>One line, two circles</h2>
+      <p>A line that just touches a circle is a <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a>. Our ray runs between the two centres of its pair, so it is an <em>internal</em> tangent. Reflect that ray across the line joining the two centres: each circle keeps its shape under that reflection, so the image is the pair's other internal tangent. The applet draws this one, farther from O, and labels its crossings with the rays A, B and C.</p>
+
+      <h2>The meeting point</h2>
+      <p>Take the three second tangents two at a time. Their three crossings are <a class="wiki-term" data-wiki="Concurrent_lines" href="https://en.wikipedia.org/wiki/Concurrent_lines" target="_blank" rel="noopener">concurrent</a>: all three are the same point X, and the applet reports their average to soften drawing errors. This is part of Mannheim's theorem: if one internal tangent from each pair of three circles meets in a point, then the other three internal tangents meet in a point too.</p>
+
+      <h2>Checked, not just claimed</h2>
+      <p>The logic test compares every constructed point with a second transcription of the applet's bytecode, and checks the page's claims on 360 shapes: each ray touches both circles, each second line is the mirror image of the ray, and the three second lines meet to within <code>10<sup>&minus;6</sup></code> of the board size. Tangent or nearly tangent circles are reported as unstable instead: when two circles merge at a point the two lines fall together and the crossing is hard to read.</p>
+
+      <h2>A line in the printed proof</h2>
+      <p>The page quotes Steiner's theorem for the four-sided figures AOBX and AODX. Its second identity is printed as <code>AO + DX = DO + DX</code>, which simply cancels to <code>AO = DO</code>. The step the proof needs is <code>AO + AX = DO + DX</code>; with that correction the transitivity argument gives <code>BO + BX = DO + DX</code> and the proof goes through. The live page now says it needs Sun's Java VM, so this port follows the applet's bytecode for the construction and the page for the claim.</p>
+
+      <p class="tip">Try swinging a ray until two circles almost touch. Watch the three green crossings pull together, then drift apart again as you pull the ray back.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/IsogonalTangents.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="isogonal-tangents-core.js"></script>
+<script src="isogonal-tangents.js"></script>
+</body>
+</html>
