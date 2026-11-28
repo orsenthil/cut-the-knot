@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maimed Cake &mdash; coolmaths</title>
+<meta name="description" content="A toddler has nibbled a rectangular corner off the cake. Can one straight cut share what is left equally between two twins? Drag the corners to see how.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/maimed-cake/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Maimed Cake">
+<meta property="og:description" content="A toddler has nibbled a rectangular corner off the cake. Can one straight cut share what is left equally between two twins? Drag the corners to see how.">
+<meta property="og:url" content="https://coolmaths.ai/maimed-cake/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .piece-one { fill: var(--accent); opacity: 0.38; }
+  #board .piece-two { fill: var(--good); opacity: 0.22; }
+  #board .nibbled { fill: var(--bad); opacity: 0.16; stroke: var(--bad); stroke-width: 1; stroke-dasharray: 4 3; }
+  #board .frame { fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .lshape { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .cut { stroke: var(--accent); stroke-width: 4; stroke-linecap: round; }
+  #board .guide { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .approx { stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .aux-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.9rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="maimed-cake" data-kind="demo">
+<main id="main">
+  <h1>Maimed Cake</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: a bite has been taken from one corner of the cake, and one straight cut shares what is left equally.<br>
+    <strong>How to play:</strong> Drag the dots A, B, C and Z, or focus a dot and press the arrow keys. Use the boxes to change the cut and to show the guide lines and point names.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A rectangle with one corner removed, four draggable corner dots, and a straight cut dividing the remaining cake into two equal pieces"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="para" type="checkbox" checked> Parallel cut PQ</label>
+    <label><input id="hint" type="checkbox" checked> Guide lines</label>
+    <label><input id="names" type="checkbox" checked> Point names</label>
+    <button id="newBtn" type="button" class="primary">New cake</button>
+    <button id="resetBtn" type="button">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A small rectangle has been cut from one corner of a big rectangle. Surprisingly, one straight line can always give two people exactly the same <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> of what remains. Drag the inner point Z and watch the coloured pieces stay equal.</p>
+
+      <h2>Start with the diagonal</h2>
+      <p>Let the cake be the <a class="wiki-term" data-wiki="Rectangle" href="https://en.wikipedia.org/wiki/Rectangle" target="_blank" rel="noopener">rectangle</a> ABCD and let the missing piece be UZRD, with its sides parallel to the cake's. If Z lay on the diagonal BD, the cut BZ would already halve the cake: a diagonal splits a rectangle into two equal <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangles</a>, and the small corner is shared out the same way. Extend BZ until it meets the far edge at M — the right edge CD when Z is below the diagonal, the top edge AD when it is above. The dotted yellow line is this first attempt.</p>
+
+      <h2>Add half a leftover rectangle</h2>
+      <p>Through M draw the line parallel to the side the cut met. It reaches K on the opposite side and L next to Z. The leftover strip is AKLU (or KLRC in the other case). Choose Q so that <code>ZQ = LU</code>. The <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a> idea behind Euclid I.43 gives <code>Area(BZQ) = Area(AKLU) / 2</code>: the triangle has the same base and height as the strip. Adding that triangle to the smaller side makes <code>Area(piece 1) = Area(piece 2)</code>. The logic test confirms this for 3,144 configurations of the rectangle, Z and both cut modes, and also confirms the diagonal special case at 57 positions. The article's intermediate claim that BZ splits "KBCMZL" evenly is <em>not</em> literally right: M can lie above R, inside the removed corner. Below the diagonal, BZ splits the real cake part KBCRZL evenly into KBZL and BCRZ; the test checks the printed version and reports the difference.</p>
+
+      <h2>A second, parallel cut</h2>
+      <p>Slide the whole first cut by half the small vector: take <code>BP = ZQ = LU / 2</code> (or <code>RP = ZQ = RL / 2</code> above the diagonal). Then PQ is parallel to BZ, and it still halves the cake — the coloured areas in the status line stay equal. Uncheck “Parallel cut PQ” to see the triangle cut BQ instead.</p>
+
+      <p class="tip">Try this: drag Z from below the diagonal to above it. The dotted line switches from the right side to the top, but the two coloured pieces stay the same size.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MaimedCake.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="maimed-cake-core.js"></script>
+<script src="maimed-cake.js"></script>
+</body>
+</html>
