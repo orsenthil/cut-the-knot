@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menelaus From Ceva &mdash; coolmaths</title>
+<meta name="description" content="Move the dots on a triangle: when does one straight line cross all three sides, and why is that the same as Ceva's theorem?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/menelaus-from-ceva/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Menelaus From Ceva">
+<meta property="og:description" content="Move the dots on a triangle: when does one straight line cross all three sides, and why is that the same as Ceva's theorem?">
+<meta property="og:url" content="https://coolmaths.ai/menelaus-from-ceva/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 36rem; padding: 1rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linejoin: round; }
+  #board .guide { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .transversal { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
+  #board .proof-line { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 6 4; }
+  #board .pt-label {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .vertex-label { fill: var(--ink); }
+  #board .side-label { fill: var(--accent); }
+  #board .proof-label { fill: var(--good); }
+  #board .geom-handle { cursor: grab; }
+  #board .corner-handle { fill: var(--stage); stroke: var(--ink); stroke-width: 3; }
+  #board .side-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; }
+</style>
+</head>
+<body data-game="menelaus-from-ceva" data-kind="demo">
+<main id="main">
+  <h1>Menelaus From Ceva</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move dots on a triangle and watch one straight line cross all three sides; there is nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag a dot with a mouse or finger, or focus it and use the arrow keys. Tick “Show add-ons” for the extra lines, and press Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="-60 -10 470 310" role="group"
+         aria-label="A triangle ABC with three draggable dots F, D and E on its side lines and one line crossing all three"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="addOns">
+      <input id="addOns" type="checkbox" aria-label="Show the extra Ceva lines and the crossings X, Y and Z">
+      Show add-ons
+    </label>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle and its three side dots">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two famous triangle facts look quite different: one is about three lines through a single point, the other about three dots on a single line. This picture shows why each one follows from the other.</p>
+
+      <h2>Three cevians, one point</h2>
+      <p>In <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a>, the lines AD, BE and CF go from the corners to the opposite sides. They meet at one point exactly when</p>
+      <blockquote><code>AF/FB &times; BD/DC &times; CE/EA = 1</code></blockquote>
+      <p>Here each quotient compares two pieces of the same side. The segments are <em>directed</em>: travelling along a side in one chosen direction, a piece against that direction counts as negative.</p>
+
+      <h2>Three dots, one line</h2>
+      <p>In <a class="wiki-term" data-wiki="Menelaus%27_theorem" href="https://en.wikipedia.org/wiki/Menelaus%27_theorem" target="_blank" rel="noopener">Menelaus' theorem</a>, F on AB, D on BC and E on AC are collinear exactly when</p>
+      <blockquote><code>AF/BF &times; BD/CD &times; CE/AE = 1</code></blockquote>
+      <p>Only the order of the letters changed: <code>FB</code> became <code>BF</code>, and so on. Reversing all three segments flips the sign three times, which is why the sign check at the end matters. The logic test checks this both ways over a grid of side fractions: the product is 1 precisely when the three dots are on one straight line.</p>
+
+      <h2>Six applications of Ceva</h2>
+      <p>Let X be where BE meets AD, Y where AD meets CF, and Z where BE meets CF. Tick “Show add-ons” to see them. Applying Ceva in the triangles ABE, ACD, BCF, BDE, ADF and CEF gives six equations whose left sides multiply together. After cancelling, what is left is</p>
+      <blockquote><code>(AF/BF &times; BD/CD &times; CE/AE)<sup>2</sup> = 1</code></blockquote>
+      <p>The check script transcribes those six identities straight from the page and confirms each equals 1 in hundreds of configurations, and that their product is the square above.</p>
+
+      <h2>Choosing the positive square root</h2>
+      <p>A straight line crossing a triangle's sides cannot cut all three between their endpoints: it misses either one side or all three, meeting their extensions instead. Counting the signs of the three quotients then leaves an even number of negative terms, so the product in the square equation is positive, not negative. Hence Menelaus' product is <code>+1</code>. That is Ceva implying Menelaus, the converse of the proof already given on the original page.</p>
+      <p>One quirk of the Java applet is kept: dragging a side dot rebuilds the next dot in the cycle E &rarr; D &rarr; F &rarr; E, and dragging a corner only refreshes one dot before rebuilding another. The positions therefore follow the applet's own update order, not a fresh construction from scratch.</p>
+
+      <p class="tip">Try dragging E past the corner A: watch the status line stay at 1 even though the dot has left the side of the triangle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MenelausFromCeva.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="menelaus-from-ceva-core.js"></script>
+<script src="menelaus-from-ceva.js"></script>
+</body>
+</html>
