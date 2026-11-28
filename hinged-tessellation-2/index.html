@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hinged Tessellation 2 &mdash; coolmaths</title>
+<meta name="description" content="The squares stay square while the triangles stretch: drag the hinges of this semi-regular tiling and see when four squares meet at every corner.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hinged-tessellation-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hinged Tessellation 2">
+<meta property="og:description" content="The squares stay square while the triangles stretch: drag the hinges of this semi-regular tiling and see when four squares meet at every corner.">
+<meta property="og:url" content="https://coolmaths.ai/hinged-tessellation-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 40rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .tri {
+    stroke: none;
+    stroke-linejoin: round;
+  }
+  #board .tri-c0 { fill: var(--accent); fill-opacity: 0.28; }
+  #board .tri-c1 { fill: var(--good); fill-opacity: 0.28; }
+  #board .tri-c2 { fill: var(--highlight); fill-opacity: 0.34; }
+  #board .tri-c3 { fill: var(--muted); fill-opacity: 0.34; }
+  #board .tri-c4 { fill: var(--accent); fill-opacity: 0.14; }
+  #board .tri-c5 { fill: var(--good); fill-opacity: 0.14; }
+  #board .tri-c6 { fill: var(--highlight); fill-opacity: 0.20; }
+  #board .tri-c7 { fill: var(--muted); fill-opacity: 0.20; }
+  #board .tri-c8 { fill: var(--accent); fill-opacity: 0.42; }
+  #board .tri-c9 { fill: var(--good); fill-opacity: 0.42; }
+  #board .motif-edge {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1.1;
+    stroke-linejoin: round;
+  }
+  #board .hinge-edge { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .hinge-diagonal { fill: none; stroke: var(--muted); stroke-width: 1.3; stroke-dasharray: 7 6; }
+  #board .d-dot { fill: var(--muted); }
+  #board .corner-mark { fill: none; stroke: var(--good); stroke-width: 1.8; }
+  #board .angle-arc { fill: none; stroke: var(--highlight); stroke-width: 2; }
+  #board .point-label {
+    fill: var(--text); font-family: var(--font); font-size: 22px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+
+  .controls { flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .controls > * { min-width: 0; max-width: 100%; }
+  .controls label { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; max-width: 100%; }
+  .controls input[type="range"] { width: min(9rem, 42vw); max-width: 100%; }
+  .controls fieldset {
+    display: inline-flex; gap: 0.6rem; border: 0; margin: 0; padding: 0;
+    flex-wrap: wrap; min-width: 0; max-width: 100%;
+  }
+  .controls legend { padding: 0; float: left; width: 100%; }
+  #layersOut { min-width: 1.5rem; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="hinged-tessellation-2" data-kind="demo">
+<main id="main">
+  <h1>Hinged Tessellation 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Squares and triangles are joined like hinges to make a repeating pattern.<br>
+    <strong>How to play:</strong> Drag the dots A, B and C, or focus a dot and use the arrow keys. Try the two preset buttons and the Layers and Colour choices to see how the pattern changes.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="120 -20 400 500" role="group"
+         aria-label="Squares and triangles hinged on three draggable points A, B and C, with copies of the pattern above and below"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="layersInput">Layers <input id="layersInput" type="range" min="0" max="15" step="1" value="4" aria-label="How many repeating bands to draw, from zero to fifteen"><output id="layersOut" for="layersInput">4</output></label>
+    <fieldset>
+      <legend>Colour</legend>
+      <label for="oneColor"><input id="oneColor" type="radio" name="shade" checked aria-label="Draw every triangle in one colour"> One colour</label>
+      <label for="twoColors"><input id="twoColors" type="radio" name="shade" aria-label="Alternate two colours between motifs"> Two colours</label>
+      <label for="colorLayers"><input id="colorLayers" type="radio" name="shade" aria-label="Colour successive bands differently"> Colour bands</label>
+    </fieldset>
+    <label for="lockHinges"><input id="lockHinges" type="checkbox" checked aria-label="Keep A and C at the same distance from B"> Lock hinges</label>
+    <button id="regularBtn" type="button" aria-label="Open the hinge to sixty degrees, the semi-regular pattern">Regular 60°</button>
+    <button id="squareBtn" type="button" aria-label="Open the hinge to ninety degrees, the square pattern">Squares 90°</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the pattern to its starting shape">Reset pattern</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The page shows a <a class="wiki-term" data-wiki="Tessellation" href="https://en.wikipedia.org/wiki/Tessellation" target="_blank" rel="noopener">tessellation</a> that can bend without breaking: the pieces stay whole, but their arrangement changes. Two sibling applets make different choices about which pieces stay rigid.</p>
+
+      <h2>Five pieces at one corner</h2>
+      <p>The page calls the starting pattern (4, 3, 3, 4, 3) because five regular polygons meet at every corner: a <a class="wiki-term" data-wiki="Square" href="https://en.wikipedia.org/wiki/Square" target="_blank" rel="noopener">square</a>, then two triangles, then a square and one more triangle. A square corner contributes 90° and an equilateral triangle corner 60°, so</p>
+      <blockquote><code>90° + 60° + 60° + 90° + 60° = 360°</code>.</blockquote>
+      <p>That is exactly a full turn, which is why the pieces fit with no gap around the point A. The logic test checks these five angles at the starting hinge.</p>
+
+      <h2>What the hinges keep fixed</h2>
+      <p>Drag A, B or C. The fourth corner D is placed so that ABCD is a <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a>: <code>D = A + C &minus; B</code>. Every side is then turned through a quarter turn to build the squares around it; a quarter turn keeps equal sides and right angles, so the squares really are squares at every position. This is applet B: it frees the <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangles</a> and keeps the squares. Applet A makes the opposite choice, freeing the squares into rhombi while keeping the triangles equilateral.</p>
+
+      <h2>Why the pieces always still fit</h2>
+      <p>With Lock hinges on, A and C stay on circles centred at B, so <code>BA = BC</code>. Write β for the angle at A of the triangle ABC. The matching triangle ACD also has angle β at A, and the third triangle at A has angle <code>180° &minus; 2β</code>. The two square corners add another 180°, so the five angles at A are always</p>
+      <blockquote><code>90° + β + β + 90° + (180° &minus; 2β) = 360°</code>.</blockquote>
+      <p>The logic test checks all 175 whole-degree hinges from 3° to 177°: the five angles fill a turn every time, and the triangles are equilateral only at β = 60°. With Lock hinges off, BA and BC may differ and the triangles become <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">scalene</a> — the page's further relaxation to parallelograms — yet the five angles still add to 360°.</p>
+
+      <h2>The square derivative</h2>
+      <p>Press Squares 90°. Now the apex at B is a right angle, so β = 45°: ABC and ACD are right isosceles and together make a square, while the third triangle is right isosceles too and pairs with its neighbour. Four squares meet at each corner: the page's derivative of the (4, 4, 4, 4) tessellation. The logic test confirms this and also checks that choosing 60° restores the semi-regular start. Two harmless quirks of the original are kept in the core but never drawn: an unused signed angle computed by the motif routine, and a second layer-growing routine that the applet never calls.</p>
+
+      <p class="tip">Lock the hinges, press Squares 90°, then drag B a little: the pattern stays gap-free even though no triangle is equilateral any more.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HingedTessellation2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="hinged-tessellation-2-core.js"></script>
+<script src="hinged-tessellation-2.js"></script>
+</body>
+</html>
