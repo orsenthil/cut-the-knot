@@ -859,6 +859,16 @@ const CORE_GLOBALS = {
   "kurschak-tile/kurschak-tile-core.js": ["KurschakTileCore"],
   "lahire/lahire-core.js": ["LahireCore"],
   "lahire-on-ellipse/lahire-on-ellipse-core.js": ["LahireOnEllipseCore"],
+  "lebesgue-curve/lebesgue-curve-core.js": ["LebesgueCurveCore"],
+  "lemma/lemma-core.js": ["LemmaCore"],
+  "lemoine-gen/lemoine-gen-core.js": ["LemoineGenCore"],
+  "lenses-in-triangle/lenses-in-triangle-core.js": ["LensesInTriangleCore"],
+  "light-bulbs/light-bulbs-core.js": ["LightBulbsCore"],
+  "light-house/light-house-core.js": ["LightHouseCore"],
+  "line-circle-and-fixed-points/line-circle-and-fixed-points-core.js": ["LineCircleAndFixedPointsCore"],
+  "lines/lines-core.js": ["LinesCore"],
+  "line-through-grid/line-through-grid-core.js": ["LineThroughGridCore"],
+  "locus-circle/locus-circle-core.js": ["LocusCircleCore"],
 };
 
 const games = [];

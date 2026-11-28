@@ -2465,6 +2465,16 @@ check("judd-illusion: the saved mark bisects the bar exactly", read["judd-illusi
 check("kurschak-tile: the dissection fills 3/4 of the square", read["kurschak-tile"]?.geometry.threeQuarters === true && read["kurschak-tile"].pieces.thin === 24 && read["kurschak-tile"].pieces.equilateral === 12);
 check("lahire: the saved inverses multiply to the circle power", read["lahire"]?.reading.inverses.oaTimesOd === read["lahire"].reading.circle.power && read["lahire"].reading.inverses.obTimesOc === read["lahire"].reading.circle.power);
 check("lahire-on-ellipse: the saved contact points match the recomputed chords", read["lahire-on-ellipse"]?.valid === true && read["lahire-on-ellipse"].savedMatchesCore.C === true && read["lahire-on-ellipse"].tests.equivalenceHolds === true && read["lahire-on-ellipse"].tests.contactPointsOnEllipse === true);
+check("lebesgue-curve: the saved approximation visits every subsquare centre", read["lebesgue-curve"]?.reading.everyCentreVisitedOnce === true && read["lebesgue-curve"].savedCellsPerSideMatchesCore === true && read["lebesgue-curve"].savedPointsMatchesCore === true);
+check("lemma: the saved salinon equals the circle on CF", read["lemma"]?.savedMatchesCore === true && read["lemma"].areasEqual === true && read["lemma"].euclidII10Holds === true);
+check("lemoine-gen: the saved centre is the isotomic complement", read["lemoine-gen"]?.centre.centre.formulaHolds === true && read["lemoine-gen"].stateIsIllustration === true && read["lemoine-gen"].M.x === read["lemoine-gen"].centre.M.at.x);
+check("lenses-in-triangle: the saved arc is 60 degrees with the lens inside", read["lenses-in-triangle"]?.arcDegrees === 60 && read["lenses-in-triangle"].lensInside === true && read["lenses-in-triangle"].withinRollingLimit === true);
+check("light-bulbs: the saved ring flips one bulb on the next step", read["light-bulbs"]?.lit === 15 && read["light-bulbs"].dark === 0 && read["light-bulbs"].nextFlippedBulb === 2 && read["light-bulbs"].afterOneMoreStep.lit === 14);
+check("light-house: three beams make a regular polygon despite the applet bug", read["light-house"]?.reading.isRegularNgon === true && read["light-house"].reading.exteriorAnglesMatch === true && read["light-house"].reading.appletDistinctVertices === 2);
+check("line-circle-and-fixed-points: VR goes through the fixed point S", read["line-circle-and-fixed-points"]?.result === "done" && read["line-circle-and-fixed-points"].vrThroughFixedPoint === true && read["line-circle-and-fixed-points"].tangentAtP === true);
+check("lines: the saved offset conserves total drawn length", read["lines"]?.totalDrawnLength === 1800 && read["lines"].eyesOpen === false && read["lines"].opensEyesAt.dx === 20 && read["lines"].opensEyesAt.dy === -20);
+check("line-through-grid: the saved diagonal crosses 17 squares", read["line-through-grid"]?.matchesSaved === true && read["line-through-grid"].crossed === 17 && read["line-through-grid"].gcd === 1 && read["line-through-grid"].enumeratedCells === 17);
+check("locus-circle: the saved ratio matches the Apollonius circle", read["locus-circle"]?.locusKind === "Apollonian circle" && read["locus-circle"].measuredAtP.agrees === true && read["locus-circle"].familyDirection.smallRHugsA === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -3071,6 +3081,30 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("lahire/polar_reciprocity: inverse products equal the circle power", polar.checks.productsEqualPower === true && polar.inverses.oaTimesOd === polar.circle.power && polar.inverses.obTimesOc === polar.circle.power);
   const ellipse = runGameLogic("lahire-on-ellipse", "la_hire", {});
   check("lahire-on-ellipse/la_hire: polar implication holds with contacts on the ellipse", ellipse.tests.equivalenceHolds === true && ellipse.tests.implicationHolds === true && ellipse.tests.contactPointsOnEllipse === true);
+}
+
+// The batch-39 tutor actions also run their real cores, not just saved positions.
+{
+  const curve = runGameLogic("lebesgue-curve", "approximation", {});
+  check("lebesgue-curve/approximation: order-2 trace visits all 16 centres", curve.everyCentreVisitedOnce === true && curve.pointCount === 16 && curve.distinctCells === 16);
+  const sal = runGameLogic("lemma", "salinon_and_euclid", {});
+  check("lemma/salinon_and_euclid: equal areas and Euclid II.10", sal.areasEqual === true && sal.euclidII10.holds === true);
+  const walks = runGameLogic("lemoine-gen", "walks", {});
+  check("lemoine-gen/walks: both walks close after three steps", walks.red.closesAfterThree === true && walks.blue.closesAfterThree === true && walks.centreIsEitherWalkLimit === false);
+  const lens = runGameLogic("lenses-in-triangle", "roll_lens", { dist: 20 });
+  check("lenses-in-triangle/roll_lens: a 60-degree arc inside the triangle", lens.arcDegrees === 60 && lens.lensInside === true && lens.withinRollingLimit === true);
+  const bulbs = runGameLogic("light-bulbs", "step", {});
+  check("light-bulbs/step: lit visitor flips the look-ahead bulb then jumps", bulbs.oneStep.bulbWasFlipped === true && bulbs.oneStep.pointerJump === 1 && bulbs.final.lit === 14);
+  const house = runGameLogic("light-house", "regular_ngon", {});
+  check("light-house/regular_ngon: N beams give a regular N-gon", house.isRegularNgon === true && house.sidesEqual === true && house.appletIsRegularNgon === false);
+  const fixed = runGameLogic("line-circle-and-fixed-points", "fixed_point", {});
+  check("line-circle-and-fixed-points/fixed_point: all VR lines meet at S", fixed.allPassThroughFixedPoint === true && fixed.largestDeviation < fixed.tolerance && fixed.spreadOfS === 0);
+  const slide = runGameLogic("lines", "slide", {});
+  check("lines/slide: one line less with length conserved and eyes open", slide.atRest.visibleLines === 10 && slide.slidOneNotchUpAndRight.visibleLines === 9 && slide.slidOneNotchUpAndRight.eyesOpen === true && slide.atRest.totalDrawnLength === slide.slidOneNotchUpAndRight.totalDrawnLength);
+  const cells = runGameLogic("line-through-grid", "crossed_squares", { M: 6, N: 11 });
+  check("line-through-grid/crossed_squares: M+N-gcd matches enumeration", cells.formula === 16 && cells.enumerated === 16 && cells.agrees === true && cells.coprimeShortcut === 16);
+  const locus = runGameLogic("locus-circle", "apollonius_locus", {});
+  check("locus-circle/apollonius_locus: MN diameter and closed form agree", locus.matchesClosedForm === true && locus.agreesAtEverySample === true && locus.familyDirection.smallRHugsA === true);
 }
 
 // A game with no reader, and a position that makes no sense.

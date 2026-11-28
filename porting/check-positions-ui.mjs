@@ -1347,6 +1347,22 @@ const GAMES = {
   },
   "lahire": (page) => dragFirstHandle(page),
   "lahire-on-ellipse": (page) => dragFirstHandle(page),
+  "lebesgue-curve": async (page) => {
+    await page.locator("#board .cursor-handle").first().focus();
+    await page.keyboard.press("ArrowRight");
+  },
+  "lemma": (page) => dragFirstHandle(page),
+  "lemoine-gen": (page) => dragFirstHandle(page),
+  "lenses-in-triangle": (page) => dragFirstHandle(page),
+  "light-bulbs": (page) => dragFirstHandle(page),
+  "light-house": (page) => dragFirstHandle(page),
+  "line-circle-and-fixed-points": (page) => dragFirstHandle(page),
+  "lines": async (page) => {
+    await page.locator("#board .grip").first().focus();
+    await page.keyboard.press("ArrowRight");
+  },
+  "line-through-grid": (page) => dragFirstHandle(page),
+  "locus-circle": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },
