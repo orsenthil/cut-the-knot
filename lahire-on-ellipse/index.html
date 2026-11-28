@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La Hire On Ellipse &mdash; coolmaths</title>
+<meta name="description" content="Two points outside an oval each send two lines that just touch it. When one point lies on the first chord of touching points, must the other lie on the second?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/lahire-on-ellipse/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="La Hire On Ellipse">
+<meta property="og:description" content="Two points outside an oval each send two lines that just touch it. When one point lies on the first chord of touching points, must the other lie on the second?">
+<meta property="og:url" content="https://coolmaths.ai/lahire-on-ellipse/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 1rem;
+    overflow-x: auto;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .ellipse { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .rect-guide { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  #board .tangent { stroke: var(--muted); stroke-width: 1.3; }
+  #board .chord { fill: none; stroke-width: 3; stroke-linecap: round; }
+  #board .chord-a { stroke: var(--accent); }
+  #board .chord-b { stroke: var(--good); }
+  #board .contact-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .rect-handle { fill: var(--highlight); stroke: var(--ink); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="lahire-on-ellipse" data-kind="demo">
+<main id="main">
+  <h1>La Hire On Ellipse</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore: two dots outside an oval each send two lines that only brush the oval.<br>
+    <strong>How to play:</strong> Drag A, B or a corner of the faint box, or focus a point and use the arrow keys. Press Put B on CD to see where the other line ends up.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 450" role="group"
+         aria-label="An ellipse with four corner handles, two draggable outside points A and B, and the chords joining their touching points"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" aria-label="Reset the ellipse and both points to their starting places">Reset</button>
+    <button id="placeBtn" type="button" class="primary" aria-label="Put point B on the chord CD to test La Hire's theorem">Put B on CD</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Hide the names of the six points">Hide names</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the points around and the two chords keep a surprising link: put one point on the first chord and the other point lands on the second. Nothing about the oval's size or tilt seems to break it.</p>
+
+      <h2>Two lines that only just touch</h2>
+      <p>From a point outside the <a class="wiki-term" data-wiki="Ellipse" href="https://en.wikipedia.org/wiki/Ellipse" target="_blank" rel="noopener">ellipse</a> there are exactly two <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangents</a>. They touch at <code>C</code> and <code>D</code>, and the chord through those touching points is called the <a class="wiki-term" data-wiki="Pole_and_polar" href="https://en.wikipedia.org/wiki/Pole_and_polar" target="_blank" rel="noopener">polar</a> of <code>A</code>. If the oval has centre <code>(cx, cy)</code> and half-widths <code>a, b</code>, that chord obeys <code>(x−cx)(xA−cx)/a² + (y−cy)(yA−cy)/b² = 1</code>. The applet finds it by stretching the oval into a circle, taking tangents there, and stretching back; the test checks all four touching points against both formulas.</p>
+
+      <h2>The claim on the page</h2>
+      <p>The cut-the-knot page says: if <code>B</code> lies on <code>CD</code>, then <code>A</code> lies on <code>EF</code>. That is true exactly, not just nearly. In the formula above, swapping the roles of <code>A</code> and the variable point leaves the left side unchanged, so the two distances to the chords vanish together. The logic test confirmed the claim and its converse on 400 ovals and point pairs. The applet itself is less exact: its little eyes light only when the distance from <code>A</code> to the drawn chord <code>EF</code> is under one pixel, so that is what the status line reports too.</p>
+
+      <h2>How this differs from the circle applet</h2>
+      <p>The sister page <em>La Hire's Theorem</em> uses a circle and builds each polar by inversion — a point-and-line construction with perpendiculars — checking a 1.5-pixel gap. Here the polar is the chord joining the two tangent contacts, computed by the ellipse's own tangent routine, and the gap is 1 pixel. Both express the same <a class="wiki-term" data-wiki="Correlation_(projective_geometry)" href="https://en.wikipedia.org/wiki/Correlation_(projective_geometry)" target="_blank" rel="noopener">reciprocity</a>. This page adds a Put B on CD button (the applet only lets you drag by hand), keeps dragged corners from collapsing the oval, and simply stops drawing when a point moves inside, where no tangents exist.</p>
+
+      <h2>Every non-degenerate conic</h2>
+      <p>The page adds that the theorem works for all non-degenerate <a class="wiki-term" data-wiki="Conic_section" href="https://en.wikipedia.org/wiki/Conic_section" target="_blank" rel="noopener">conics</a>. That claim holds too: a conic has a symmetric equation in three homogeneous coordinates, and its polar relation is a symmetric product. If one point satisfies the polar equation of the other, the reverse follows at once — for ovals, hyperbolas and parabolas alike. An <a class="wiki-term" data-wiki="Affine_transformation" href="https://en.wikipedia.org/wiki/Affine_transformation" target="_blank" rel="noopener">affine map</a> that tilts or stretches an oval keeps this relation, which is why the four corner handles cannot break it.</p>
+
+      <p class="tip">Try this: press Put B on CD, then drag a corner of the faint box. As the oval changes shape, both chords move with it and A stays on EF.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/LaHireOnEllipse.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="lahire-on-ellipse-core.js"></script>
+<script src="lahire-on-ellipse.js"></script>
+</body>
+</html>
