@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Joseph Keech in Bride's Chair &mdash; coolmaths</title>
+<meta name="description" content="Change a right triangle and watch the squares on its legs carve out a smaller square that fits exactly. Is there a circle hiding its angles too?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/jkeech/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Joseph Keech in Bride's Chair">
+<meta property="og:description" content="Change a right triangle and watch the squares on its legs carve out a smaller square that fits exactly. Is there a circle hiding its angles too?">
+<meta property="og:url" content="https://coolmaths.ai/jkeech/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 0.5rem; overflow-x: auto; }
+  #board { display: block; width: 100%; min-width: 18rem; height: auto; touch-action: none; }
+  #board .square-fill { fill: var(--accent-soft); stroke: none; }
+  #board .triangle-fill { fill: var(--board-a); stroke: none; }
+  #board .inner-fill { fill: var(--highlight); stroke: none; }
+  #board .keech-circle { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 6 5; }
+  #board .outline { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+  #board .tick { stroke: var(--good); stroke-width: 2.5; stroke-linecap: round; }
+  #board .statement-line { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .extra-line { stroke: var(--good); stroke-width: 2; stroke-dasharray: 5 5; }
+  #board .angle-arc { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .pt-label { fill: var(--text); font-size: 1.05rem; font-weight: 600; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.5rem; flex-wrap: wrap; }
+  .controls input[type="checkbox"] { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+  .controls button { min-height: 2.5rem; min-width: 4rem; }
+  #status { min-height: 3.5em; width: 100%; max-width: 32rem; }
+  .math-body code { font-family: var(--mono); }
+</style>
+</head>
+<body data-game="jkeech" data-kind="demo">
+<main id="main">
+  <h1>Joseph Keech in Bride's Chair</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Change a right triangle and watch two squares on its legs carve out a smaller square that always fits.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a point and use the arrow keys. Tick the boxes to show names, the two crossing lines, or the circle and its angles.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 450 400" role="group"
+         aria-label="A right triangle ABC with squares on its two legs and a smaller square HCFZ inside; A, B and C can be dragged"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" aria-label="Show the names of the points"> Show names</label>
+    <label><input id="statementBox" type="checkbox" aria-label="Show the lines AL and BE and the equal-side marks"> Show statement</label>
+    <label><input id="extraBox" type="checkbox" aria-label="Show the circle, the lines from G and the 45 degree angles"> Show extra</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the triangle and switch all three Show options off">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>In 1783 Joseph Keech wrote to a magazine about an old picture: a right triangle with a square built on each leg. Two lines drawn from the sharp corners cut off equal pieces, and those pieces turn out to be the sides of a square tucked inside the triangle.</p>
+
+      <h2>Why the two cuts are equal</h2>
+      <p>Let the legs have lengths <code>a = AC</code> and <code>b = BC</code>. The far corners of the squares are one quarter turn from C, so <code>AK = BD</code>. The triangle <code>AKL</code> has the same shape as <code>ACF</code>, and <code>BDE</code> has the same shape as <code>BCH</code>: two pairs of <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similar_triangles" target="_blank" rel="noopener">similar triangles</a>. Their sides give <code>AK/AC = KL/CF</code> and <code>BD/BC = DE/CH</code>. The first three terms match, so <code>CF = CH</code>. The logic test checks this for every triangle in a grid, not just the opening picture.</p>
+
+      <h2>The square that fits inside</h2>
+      <p>Draw <code>FZ</code> parallel to <code>AC</code> until it meets the hypotenuse <code>AB</code> at <code>Z</code>. By the same shape argument, <code>CF = FZ</code>, so <code>HCFZ</code> is a <a class="wiki-term" data-wiki="Square" href="https://en.wikipedia.org/wiki/Square" target="_blank" rel="noopener">square</a> with all four sides equal. Its side is</p>
+      <blockquote><code>s = a &times; b / (a + b)</code></blockquote>
+      <p>Turn on "Show statement" to see the two crossing lines and the little marks on the four equal sides. The port keeps the applet's rule that dragging A or B rebuilds the right triangle at C, and that dragging C slides it around its circle; the invariant therefore holds throughout a drag.</p>
+
+      <h2>Keech's circle and four half-right angles</h2>
+      <p>Keech added a second claim: draw the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circle</a> around <code>HCFZ</code>. It meets <code>AB</code> once more at <code>G</code>, and the four angles <code>FGB</code>, <code>FGC</code>, <code>HGC</code>, <code>HGA</code> are each half a right angle. Here <code>G</code> is the foot of the altitude from C, and the little arcs at G show all four angles. The logic test measured them on every non-degenerate case in the grid: all four are 45&deg; to within a millionth of a degree, so the 1783 claim holds. It also found that the circle used by the applet really passes through H, C, F and Z. A translation or rotation of the whole picture changes nothing, because every claim is about a shape, not where it sits on screen.</p>
+
+      <p class="tip">Try this: tick "Show extra", drag C a long way round its circle, and watch the four arcs stay at 45&deg; while the inner square changes size.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/JKeech.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="jkeech-core.js"></script>
+<script src="jkeech.js"></script>
+</body>
+</html>
