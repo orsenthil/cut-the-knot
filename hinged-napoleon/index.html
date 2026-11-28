@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hinged Napoleon &mdash; coolmaths</title>
+<meta name="description" content="Drag a triangle's corners and turn the hinged pieces: at 120° do the two moving corners land on the same one, and does Napoleon's centre triangle stay equilateral?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hinged-napoleon/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hinged Napoleon">
+<meta property="og:description" content="Drag a triangle's corners and turn the hinged pieces: at 120° do the two moving corners land on the same one, and does Napoleon's centre triangle stay equilateral?">
+<meta property="og:url" content="https://coolmaths.ai/hinged-napoleon/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+    overflow-x: auto;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    min-width: 26rem;
+    height: auto;
+    touch-action: none;
+  }
+  #board .piece { fill: var(--accent); fill-opacity: 0.16; stroke: var(--accent); stroke-opacity: 0.55; stroke-width: 1.5; }
+  #board .piece-moving { fill: var(--good); fill-opacity: 0.18; stroke: var(--good); stroke-opacity: 0.7; stroke-width: 2; }
+  #board .abc { fill: none; stroke: var(--ink); stroke-width: 2.6; }
+  #board .spoke { stroke: var(--muted); stroke-width: 1.6; }
+  #board .centre-line { stroke: var(--accent); stroke-width: 1.6; stroke-opacity: 0.8; }
+  #board .napoleon { fill: none; stroke: var(--good); stroke-width: 3.4; }
+  #board .apex-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .centre-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .pivot-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 2; }
+  #board .star-dot { fill: var(--highlight); stroke: var(--good); stroke-width: 2.5; }
+  #board .point-label { fill: var(--text); font: 600 1.05rem var(--font); pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  .controls { gap: 0.6rem 1rem; align-items: center; }
+  .slider {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.15rem 0.5rem;
+    min-width: min(100%, 14rem);
+    flex: 1 1 14rem;
+  }
+  .slider input { width: 100%; min-width: 0; }
+  .slider output { font-variant-numeric: tabular-nums; }
+  .swivels { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+</style>
+</head>
+<body data-game="hinged-napoleon" data-kind="demo">
+<main id="main">
+  <h1>Hinged Napoleon</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: three equal-sided triangles sit on the sides of a triangle, and their centres make another equal-sided one.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus a corner and use the arrow keys. Slide Turn to spin the hinged pieces, choose which pair swivels, and tick Show names.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 460" role="group"
+         aria-label="A triangle with an equilateral triangle on each side, the three centre points joined into Napoleon's triangle, and two hinged pieces that turn as the slider moves"></svg>
+  </div>
+
+  <div class="controls">
+    <label class="slider" for="turn">Turn the hinges
+      <input id="turn" type="range" min="0" max="120" step="1" value="0" aria-label="Turn the hinged pieces, from 0 to 120 degrees">
+      <output id="turnOut" for="turn">0°</output>
+    </label>
+    <div class="swivels" role="group" aria-label="Choose which pair of corners swivels">
+      <button id="swivelBC" type="button" aria-pressed="true" aria-label="Swivel at B and C: turn the pieces hinged at B prime and C prime">B, C</button>
+      <button id="swivelAC" type="button" aria-pressed="false" aria-label="Swivel at A and C: turn the pieces hinged at A prime and C prime">A, C</button>
+      <button id="swivelAB" type="button" aria-pressed="false" aria-label="Swivel at A and B: turn the pieces hinged at A prime and B prime">A, B</button>
+    </div>
+    <label for="names"><input id="names" type="checkbox"> Show names</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the triangle, the turn and the swivel choice">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move a corner of the big triangle and the small construction changes with it, yet the three centre dots still make an equal-sided triangle. The original cut-the-knot page still embeds its Java applet; this page redraws the same hinges with SVG. The page credits the proof it shows to Alex Anderson, who also published it in the journal Kvant.</p>
+
+      <h2>Napoleon's triangle</h2>
+      <p>On each side of <code>ABC</code> stand an <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangle</a>. Mark the centre of each one: <code>Ac</code> on <code>BC</code>, <code>Bc</code> on <code>CA</code> and <code>Cc</code> on <code>AB</code>. <a class="wiki-term" data-wiki="Napoleon%27s_theorem" href="https://en.wikipedia.org/wiki/Napoleon%27s_theorem" target="_blank" rel="noopener">Napoleon's theorem</a> says these three centres always form an equilateral triangle, whether the three triangles point outwards or all inwards. The logic test checks both choices over more than a hundred triangles, including flat and very wide ones: the three sides of <code>AcBcCc</code> agree to within a drawing-scale tolerance of <code>10<sup>-7</sup></code>.</p>
+
+      <h2>What the hinges do</h2>
+      <p>The applet's scrollbar is built with a maximum of 125 and a visible part of 5, so it can actually show the whole numbers <code>0…120</code>. Its three radio boxes pick which pair turns: <strong>B, C</strong> (the starting choice) turns the pieces hinged at <code>Bc</code> and <code>Cc</code>; <strong>A, C</strong> and <strong>A, B</strong> turn the other pairs. Each turn is an ordinary <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a> about a centre dot. The logic test transcribes the applet's own <code>Compute()</code> a second time and compares every point of all five translucent pieces for all <code>121 × 3</code> settings on dozens of triangles; they agree.</p>
+      <p>With no corner wider than 120°, the page's angle sums hold: <code>∠A'BC' = ∠ABC + 60°</code>, <code>∠A'CB' = ∠ACB + 60°</code> and <code>∠B'AC' = ∠BAC + 60°</code>. Setting the turn to 120° makes <code>B</code> and <code>C</code> land on <code>A</code> (or <code>A</code> and <code>C</code> on <code>B</code>, or <code>A</code> and <code>B</code> on <code>C</code>), because the relevant small triangles are <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles</a> with a 120° apex. Then the three angles add to <code>180° + 3 × 60° = 360°</code>, so the hinged sides close into one segment <code>AA*</code>.</p>
+
+      <h2>Why the middle triangle is equal-sided</h2>
+      <p>When the pieces close, <code>AcBcCc</code> is cut into three triangles <a class="wiki-term" data-wiki="Congruence_(geometry)" href="https://en.wikipedia.org/wiki/Congruence_(geometry)" target="_blank" rel="noopener">congruent</a> to <code>ABcCc</code>, <code>AcBCc</code> and <code>AcBcC</code>. The logic test adds their areas and compares with the area of <code>AcBcCc</code> for every triangle with no angle over 120°: the difference is at most a rounding error. Side-side-side then makes the assembled triangle match <code>AcBcCc</code>; the three angles at its corners are each 60°, so it is equiangular and therefore equilateral.</p>
+      <p>There is another way to see the same point. Reflect <code>A</code> in the line <code>BcCc</code>, <code>B</code> in <code>AcCc</code> and <code>C</code> in <code>AcBc</code>: the three images coincide, and the common point sees the corners at <code>120°</code> each. It lies on the three <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircles</a> of the outer equilateral triangles, which is the <a class="wiki-term" data-wiki="Fermat_point" href="https://en.wikipedia.org/wiki/Fermat_point" target="_blank" rel="noopener">Fermat point</a> of <code>ABC</code>. The test checks the coincident images and the three 120° angles on every such triangle.</p>
+
+      <h2>The page's proviso</h2>
+      <p>The page says its proof assumes no angle of <code>ABC</code> exceeds 120° and must be changed otherwise. That warning is correct. Dragging <code>C</code> close to <code>AB</code> can make an angle of about 172°: the centre triangle is still equilateral and the hinges still close, but the three hinge angles now add to about 255°, not 360°, and the reflected point sees angles of 120°, 60° and 60°, so it is no longer the Fermat point. The page's dissection argument only covers triangles with all angles below 120°; Napoleon's theorem itself covers every triangle. This port keeps the applet's rules and ranges; the AWT scrollbar, checkboxes and serif labels became a slider, buttons and site-coloured SVG, and a Reset button was added for convenience.</p>
+
+      <p class="tip">Try B, C at 120° and watch the two green corners meet on A; then drag one corner until its angle passes 120° and read what the status says.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HingedNapoleon.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="hinged-napoleon-core.js"></script>
+<script src="hinged-napoleon.js"></script>
+</body>
+</html>
