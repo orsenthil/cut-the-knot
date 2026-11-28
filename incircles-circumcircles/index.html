@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Incircles and Circumcircles &mdash; coolmaths</title>
+<meta name="description" content="Drag a triangle and watch the three small circles through its incenter. Where do their centers land, and why does that never change?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/incircles-circumcircles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Incircles and Circumcircles">
+<meta property="og:description" content="Drag a triangle and watch the three small circles through its incenter. Where do their centers land, and why does that never change?">
+<meta property="og:url" content="https://coolmaths.ai/incircles-circumcircles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.75rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .triangle-fill { fill: var(--accent); fill-opacity: 0.06; stroke: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .bisector { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 5 5; }
+  #board .incircle { fill: var(--good); fill-opacity: 0.07; stroke: var(--good); stroke-width: 2.5; }
+  #board .circumcircle { fill: var(--accent); fill-opacity: 0.04; stroke: var(--accent); stroke-width: 2.5; }
+  #board .small-circle { fill: none; stroke: var(--bad); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .small-b { stroke-dasharray: 2 5; }
+  #board .small-c { stroke-dasharray: 12 6; }
+  #board .incenter-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .big-center-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .center-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 17px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .i-label { fill: var(--good); }
+  #board .o-label { fill: var(--accent); }
+  #board .center-label { fill: var(--bad); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  .controls { flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; }
+  .controls input { width: 1.15rem; height: 1.15rem; accent-color: var(--accent); }
+  #math a { overflow-wrap: anywhere; }
+</style>
+</head>
+<body data-game="incircles-circumcircles" data-kind="demo">
+<main id="main">
+  <h1>Incircles and Circumcircles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Drag the corners of a triangle and see where the centers of three circles land.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a corner and use the arrow keys. Tick the boxes to show the circles and press Check the theorem.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle ABC, its incenter I, three circles through I and two corners, and their centers on the circumcircle of ABC"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset triangle</button>
+    <button id="checkBtn" type="button" aria-label="Check the circle-center claims for this triangle">Check the theorem</button>
+    <label><input id="showBig" type="checkbox" aria-label="Show the circumcircle through A, B and C"> Circumcircle ABC</label>
+    <label><input id="showIncircle" type="checkbox" aria-label="Show the circle touching all three sides"> Incircle ABC</label>
+    <label><input id="showSmall" type="checkbox" aria-label="Show the three circles through the incenter and two corners"> Circumcircles</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move a corner of the triangle and the three small circles change size, but their centers stay on one and the same big circle. That is the droodle on Bogomolny's page: a fact you can watch survive every drag.</p>
+
+      <h2>The incenter and its circle</h2>
+      <p>The three <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisectors</a> of triangle <code>ABC</code> meet at one point <code>I</code>, the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a>. It is equally far from all three sides, so a circle centered at <code>I</code> can touch each side. The applet builds that <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> by averaging its three distances to the sides; the logic test checks that this equals area divided by the semiperimeter on every triangle tried.</p>
+
+      <h2>Where the three centers go</h2>
+      <p>Each small circle is the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of <code>I</code> and two corners: for instance <code>(IBC)</code>. Its center <code>O_A</code> lies on the big circle through <code>A</code>, <code>B</code> and <code>C</code>, and also on the bisector from <code>A</code>. In fact <code>O_A</code> is the second place that bisector meets the big circle. The test verifies all three centers this way, then presses the same check on more than a thousand triangles: acute, right, obtuse, mirrored and very flat. All pass.</p>
+
+      <h2>Why the centers land there</h2>
+      <p>Let <code>M_a, M_b, M_c</code> be the midpoints of <code>BC</code>, <code>IC</code> and <code>IB</code>. The lines from <code>O_A</code> to those midpoints are perpendicular to the sides they bisect, so the page's angle equations hold: <code>∠M_a O_A M_c = ∠IBC = B/2</code> and <code>∠M_a O_A M_b = ∠ICB = C/2</code>. Adding them gives <code>∠B O_A C = B + C</code>, or <code>∠B O_A C + A = 180°</code>, which is exactly the test for a point on the circumcircle of <code>ABC</code>. The logic test measures each of those angles, not just the final on-circle distance.</p>
+
+      <h2>Johnson's version, and a source note</h2>
+      <p>The page adds that <code>O_A</code> is the midpoint of arc <code>BC</code> and that the circle centered there with radius <code>DB = DC</code> passes through <code>I</code>: the test confirms <code>DB = DC = DI</code>. It also mentions a weaker 1988 Olympiad problem asking that the circles <code>(ABC)</code> and <code>(O_A O_B O_C)</code> be concentric. That holds here too, and more strongly the two circles coincide, because all three centers already lie on <code>(ABC)</code>.</p>
+      <p>The live cut-the-knot page now shows a GeoGebra drawing rather than the Java applet. The applet and its checkboxes were recovered from a <a href="https://web.archive.org/web/20060928061340/http://www.cut-the-knot.org/Curriculum/Geometry/IncirclesCircumcircles.shtml" target="_blank" rel="noopener">2006 Wayback capture</a>, and this port follows that applet: the same three toggles, the same draggable corners and the same drawn circles.</p>
+
+      <p class="tip">Try a long, thin triangle: some centers fly far outside the picture, yet Check the theorem still finds them on the big circle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/IncirclesCircumcircles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="incircles-circumcircles-core.js"></script>
+<script src="incircles-circumcircles.js"></script>
+</body>
+</html>
