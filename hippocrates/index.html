@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hippocrates &mdash; coolmaths</title>
+<meta name="description" content="Slide point E until the two marked dots meet. Can you make the angle at A split into three equal parts?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hippocrates/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hippocrates">
+<meta property="og:description" content="Slide point E until the two marked dots meet. Can you make the angle at A split into three equal parts?">
+<meta property="og:url" content="https://coolmaths.ai/hippocrates/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .hippo-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 6; }
+  #board .hippo-line { stroke: var(--ink); stroke-width: 1.5; }
+  #board .hippo-line.main-line { stroke: var(--accent); stroke-width: 2.2; }
+  #board .hippo-line.extra { stroke-dasharray: 4 4; }
+  #board .hippo-tick { stroke: var(--ink); stroke-width: 2; }
+  #board .hippo-right { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .hippo-arc { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .small-arc { stroke: var(--good); }
+  #board .hint-arc { stroke: var(--highlight); }
+  #board .hippo-dot { fill: var(--ink); }
+  #board .hippo-dot.special { fill: var(--bad); }
+  #board .hippo-dot.special.matched { fill: var(--good); }
+  #board .hippo-label { fill: var(--text); font-size: 0.95rem; font-weight: 600; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.5rem; }
+  .controls input[type="checkbox"] { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+  .controls label:has(input:disabled) { opacity: 0.6; }
+</style>
+</head>
+<body data-game="hippocrates" data-kind="demo">
+<main id="main">
+  <h1>Hippocrates</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This picture shows an old way to cut an angle into three equal parts; the goal is to make the two marked dots meet.<br>
+    <strong>How to play:</strong> Drag A, C or E, or focus one and use the arrow keys. Tick "Show names" and, once the dots meet, "Hint" to see why the split works.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A, B, C and E with a circle centred at E; drag A, C or E to bring point K onto point H"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" aria-label="Show the names of the points">Show names</label>
+    <label><input id="hintBox" type="checkbox" disabled aria-label="Show the hint lines and angle marks once the dots meet">Hint</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset all four points to their starting places">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>An old <a class="wiki-term" data-wiki="Angle_trisection" href="https://en.wikipedia.org/wiki/Angle_trisection" target="_blank" rel="noopener">trisection</a> method uses a marked circle instead of just a ruler and compass. The trick is to choose E so that the length EH is twice the length AC; then the small angle at A is exactly one third of the big one. This page describes that construction; there is no score and nothing to lose.</p>
+
+      <h2>Build the picture</h2>
+      <p>Drop a line from C straight down to AB; its foot is D. The line through A parallel to CD meets the line through C parallel to AB at F, so ADCF is a rectangle and CE runs parallel to AB. The dashed <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> is centred at E and has radius <code>2&middot;AC</code>. Point K lies on the line EA at that radius from E, and G is the midpoint of E and K. H is where AE crosses CD. The picture is finished when K and H are less than one drawing unit apart &mdash; the exact test used by the Java applet.</p>
+
+      <h2>Why one third?</h2>
+      <p>Let the big angle at A be <code>&theta;</code> and the small one <code>&phi;</code>. Because CE is parallel to AB, the angle at E is also <code>&phi;</code>. When K reaches H the length EH is <code>2&middot;AC</code>, so in the <a class="wiki-term" data-wiki="Right_triangle" href="https://en.wikipedia.org/wiki/Right_triangle" target="_blank" rel="noopener">right triangle</a> CEH the midpoint G of the hypotenuse is <code>AC</code> from C, E and H. That makes triangle CGE isosceles with base angles <code>&phi;</code>, so the outside angle at G is <code>2&phi;</code>; triangle ACG is isosceles too, giving <code>&theta; = &phi; + 2&phi;</code>. Tick Hint at a match to see the marks.</p>
+
+      <h2>What the page says, and what is true</h2>
+      <p>The old page states plainly: when <code>EH = 2&middot;AC</code>, <code>&ang;BAE = &ang;BAC / 3</code>. The logic test confirms this for every acute angle it tries (angles under <code>90&deg;</code>), to machine precision. It is not true without that restriction: with C to the left of A the angle BAC is obtuse and the same construction gives about <code>116.6&deg;</code> and <code>98.9&deg;</code>, a ratio near <code>1.18</code>, not 3. The current page also says to put G on H, but the code compares K with H; at a match G is still half of EH away from H. The 2006 version of the page called the midpoint G, which agrees with the code. The Java applet is gone from the live page (it now embeds a GeoGebra construction); the original embedded <code>Hippocrates.class</code> is confirmed in the 2006 Internet Archive capture. This is a <a class="wiki-term" data-wiki="Neusis_construction" href="https://en.wikipedia.org/wiki/Neusis_construction" target="_blank" rel="noopener">neusis construction</a>, not a ruler-and-compass one.</p>
+
+      <p class="tip">Try dragging C upward, then use the left and right arrow keys on E (hold Shift for bigger steps) to bring the two coloured dots together again.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Hippocrates.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="hippocrates-core.js"></script>
+<script src="hippocrates.js"></script>
+</body>
+</html>
