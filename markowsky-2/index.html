@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Three Points on a Parabola &mdash; coolmaths</title>
+<meta name="description" content="Three points sit on a parabola. Where do the tangents meet, and why do the lines through P, Q and R line up with them?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/markowsky-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Three Points on a Parabola">
+<meta property="og:description" content="Three points sit on a parabola. Where do the tangents meet, and why do the lines through P, Q and R line up with them?">
+<meta property="og:url" content="https://coolmaths.ai/markowsky-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .axis-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 6; }
+  #board .directrix { stroke: var(--bad); stroke-width: 1.5; stroke-dasharray: 8 5; }
+  #board .parabola { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .chord { stroke: var(--text); stroke-width: 1.5; opacity: 0.7; }
+  #board .vertical { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 5; }
+  #board .claim-line { stroke: var(--accent); stroke-width: 2.5; }
+  #board .tangent-line { stroke: var(--highlight); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  #board .abc-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1.5; }
+  #board .foot-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1; }
+  #board .claim-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .tangent-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  #board .vertex-dot, #board .focus-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1; }
+  #board .point-label { fill: var(--text); font-size: 0.85rem; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  .slider-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0.25rem 0; }
+  .slider-row label { min-width: 6rem; }
+  .slider-row input { flex: 1 1 8rem; min-width: 0; }
+  .slider-row output { min-width: 3rem; text-align: right; font-variant-numeric: tabular-nums; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="markowsky-2" data-kind="demo">
+<main id="main">
+  <h1>Three Points on a Parabola</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move three dots on a curved line and watch how the straight lines through them meet.<br>
+    <strong>How to play:</strong> Drag A, B and C along the curve, or use the sliders. Press Names or Tangents to show more of the picture, and Reset to put the dots back.
+  </div>
+
+  <div class="slider-row">
+    <label for="tA">Point A</label>
+    <input id="tA" type="range" min="-250" max="260" step="1" value="80" aria-label="Move point A along the parabola, from minus 250 to 260">
+    <output id="vA" for="tA">80</output>
+  </div>
+  <div class="slider-row">
+    <label for="tB">Point B</label>
+    <input id="tB" type="range" min="-250" max="260" step="1" value="180" aria-label="Move point B along the parabola, from minus 250 to 260">
+    <output id="vB" for="tB">180</output>
+  </div>
+  <div class="slider-row">
+    <label for="tC">Point C</label>
+    <input id="tC" type="range" min="-250" max="260" step="1" value="10" aria-label="Move point C along the parabola, from minus 250 to 260">
+    <output id="vC" for="tC">10</output>
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 560 500" role="group"
+         aria-label="A parabola with three draggable points A, B and C, the lines P Q, P R, Q R, and the tangents at the three points"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the three points to their starting places">Reset</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show or hide the names A, B, C, A prime, B prime, C prime, P, Q and R">Names</button>
+    <button id="tangentsBtn" type="button" aria-pressed="false" aria-label="Show or hide the tangents and the points M A, M B and M C">Tangents</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three dots on one curve make a whole web of straight lines. Move them around: some lines stay side by side, and some crossing points sit exactly on other lines. That is the surprise here; there is no score to win.</p>
+
+      <h2>The claim on the page</h2>
+      <p>Put A, B, C on a <a class="wiki-term" data-wiki="Parabola" href="https://en.wikipedia.org/wiki/Parabola" target="_blank" rel="noopener">parabola</a> with a vertical axis. Draw AA', BB', CC' parallel to that axis, and let P = AB ∩ CC', Q = AC ∩ BB', R = BC ∩ AA'. Let tangents at B and C meet at M_A, those at C and A at M_B, and those at A and B at M_C. The page asks us to prove that <code>M_A</code> lies on PQ, <code>M_B</code> on PR and <code>M_C</code> on QR, and also that PQ, PR, QR are parallel to the <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangents</a> at A, B, C. This is a different claim from the neighbouring applet Greg Markowsky's Problem for Parabola: that one asks for an angle equality, <code>ADC = BDC</code>, for just two points and a point on the axis.</p>
+
+      <h2>Where P, Q and R land</h2>
+      <p>Write each point by its distance <code>t</code> from the axis, so its height is <code>&minus;t&sup2;/(4a)</code> below the vertex. The chord joining parameters <code>u</code> and <code>v</code> has <a class="wiki-term" data-wiki="Slope" href="https://en.wikipedia.org/wiki/Slope" target="_blank" rel="noopener">slope</a> <code>&minus;(u+v)/(4a)</code>. Meeting that chord with the vertical through parameter <code>w</code> gives height <code>(uv &minus; uw &minus; vw)/(4a)</code>. So P uses <code>u=A, v=B, w=C</code>, Q uses <code>C, A, B</code> and R uses <code>B, C, A</code>. Subtracting the heights of P and Q gives <code>2A(C&minus;B)/(4a)</code> over a horizontal step of <code>B&minus;C</code>: the slope of PQ is <code>&minus;A/(2a)</code>, exactly the tangent slope at A. The same calculation works for PR at B and QR at C.</p>
+
+      <h2>Where the tangent pairs meet</h2>
+      <p>The tangent at parameter <code>t</code> has height <code>&minus;tx/(2a) + t&sup2;/(4a)</code> at horizontal position <code>x</code>. Setting the tangents at <code>v</code> and <code>w</code> equal gives <code>x = (v+w)/2</code> and height <code>&minus;vw/(4a)</code>. Put that x into the line PQ: the height comes out <code>&minus;BC/(4a)</code>, which is exactly M_A. Likewise M_B lies on PR and M_C on QR. The three claims are therefore one calculation: they are true for every choice of three distinct parameters. The logic test checks all of this over tens of thousands of triples, with the largest error under <code>1e&minus;9</code> in exact arithmetic.</p>
+
+      <h2>What the applet rounds</h2>
+      <p>The old Java applet stored point heights as integers: <code>Parabola(t) = t&sup2;/4/a</code> with two whole-number divisions, then <code>height &minus; 40 &minus; Parabola(t) &minus; 40</code>. It also stops redrawing when two slider values are equal, and its intersection routine calls a determinant below one "parallel" and leaves that point at NaN. This port keeps those behaviours, so the <a class="wiki-term" data-wiki="Collinearity" href="https://en.wikipedia.org/wiki/Collinearity" target="_blank" rel="noopener">collinearity</a> you see is only as good as the pixel rounding: across a step-10 grid of the whole slider range, 87% of settings put the three M points within 2 board units of their lines, while the worst case is about 16 units, and a slope differs by at most 0.13. A second, independent transcription of the bytecode agrees point by point. The live cut-the-knot page now shows only a Java warning; a <a href="https://web.archive.org/web/20120511060413/http://www.cut-the-knot.org/Curriculum/Geometry/Markowsky2.shtml" target="_blank" rel="noopener">2012 Wayback snapshot</a> embeds the applet the text describes.</p>
+
+      <p class="tip">Try A = 0, B = 80, C = &minus;80, press Tangents and Names, then slide B towards A. Watch M_A run along PQ until the two sliders meet and the picture freezes.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Markowsky2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="markowsky-2-core.js"></script>
+<script src="markowsky-2.js"></script>
+</body>
+</html>
