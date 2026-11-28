@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hinged Tessellation 1 &mdash; coolmaths</title>
+<meta name="description" content="Bend the squares of a semi-regular tessellation into rhombi: when does the pattern become six equilateral triangles at every corner?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hinged-tessellation-1/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hinged Tessellation 1">
+<meta property="og:description" content="Bend the squares of a semi-regular tessellation into rhombi: when does the pattern become six equilateral triangles at every corner?">
+<meta property="og:url" content="https://coolmaths.ai/hinged-tessellation-1/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 46rem;
+    padding: 0.5rem;
+    overflow-x: auto;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    min-width: 20rem;
+    height: auto;
+    touch-action: none;
+  }
+  #board .tile-a, #board .tile-b, #board .band { stroke: none; fill-opacity: 0.13; }
+  #board .tile-a { fill: var(--accent); }
+  #board .tile-b { fill: var(--good); }
+  #board .band-0, #board .band-5 { fill: var(--accent); }
+  #board .band-1, #board .band-6 { fill: var(--good); }
+  #board .band-2, #board .band-7 { fill: var(--bad); fill-opacity: 0.13; }
+  #board .band-3, #board .band-8 { fill: var(--highlight); fill-opacity: 0.45; }
+  #board .band-4, #board .band-9 { fill: var(--muted); fill-opacity: 0.16; }
+  #board .edge { fill: none; stroke: var(--ink); stroke-width: 1.05; stroke-opacity: 0.5; }
+  #board .guide-circle, #board .guide-line {
+    fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 5 8; stroke-opacity: 0.8;
+  }
+  #board .point-label { fill: var(--text); font: 600 1.1rem var(--font); pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  .controls { gap: 0.6rem 1rem; align-items: center; }
+  .slider {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.15rem 0.5rem;
+    min-width: min(100%, 14rem);
+    flex: 1 1 14rem;
+  }
+  .slider input { width: 100%; min-width: 0; }
+  .slider output { font-variant-numeric: tabular-nums; }
+  .modes { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+</style>
+</head>
+<body data-game="hinged-tessellation-1" data-kind="demo">
+<main id="main">
+  <h1>Hinged Tessellation 1</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: squares and triangles fit together, and you can bend the squares into diamonds.<br>
+    <strong>How to play:</strong> Drag A, B or C, or focus one and use the arrow keys. Change the rings and colours, then press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 460" role="group"
+         aria-label="A repeating pattern of triangles and diamond-shaped squares with three draggable corners A, B and C"></svg>
+  </div>
+
+  <div class="controls">
+    <label class="slider" for="layers">Rings around the middle
+      <input id="layers" type="range" min="0" max="15" step="1" value="4" aria-label="Number of rings around the middle, from 0 to 15">
+      <output id="layersOut" for="layers">4</output>
+    </label>
+    <div class="modes" role="group" aria-label="Choose how the pieces are coloured">
+      <button id="modeOne" type="button" aria-pressed="true" aria-label="One colour for all the pieces">One colour</button>
+      <button id="modeTwo" type="button" aria-pressed="false" aria-label="Two alternating colours for the pieces">Two colours</button>
+      <button id="modeBands" type="button" aria-pressed="false" aria-label="Colour each ring with its own band of colours">Colour bands</button>
+    </div>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the corners, rings and colours to the start">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This is a hinged version of a <a class="wiki-term" data-wiki="Semi-regular_tessellation" href="https://en.wikipedia.org/wiki/Semi-regular_tessellation" target="_blank" rel="noopener">semi-regular tessellation</a>. The middle square is free to flex into a diamond shape, but the triangles stay the same. Watch what happens to the corners when the diamond reaches 60 degrees. The live cut-the-knot page still embeds the original Java applet, so every rule, range and drawing step below comes from that applet's bytecode.</p>
+
+      <h2>Five shapes at every corner</h2>
+      <p>The starting pattern is written <code>(4, 3, 3, 4, 3)</code>: walking around any corner you meet a square, two <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral triangles</a>, another square, and one more equilateral triangle. The numbers are the counts of sides, and their angles fill the whole turn: <code>90 + 60 + 60 + 90 + 60 = 360 degrees</code>. That is what makes the pattern <em>semi-regular</em>: more than one kind of regular shape, but the same order at every corner. The logic test checks the four angles of the starting square and this sum exactly.</p>
+
+      <h2>Something has to give</h2>
+      <p>The page says there are two ways to put this pattern on hinges, because you cannot keep the squares and the triangles rigid at the same time. This first applet lets the squares go. A and C slide on the circle around B, while B slides on the line that cuts AC in half at <a class="wiki-term" data-wiki="Right_angle" href="https://en.wikipedia.org/wiki/Right_angle" target="_blank" rel="noopener">right angles</a>. Those restraints force <code>AB = BC</code>, and the fourth corner is <code>D = C + A − B</code>, so all four sides of the square stay equal: it becomes a <a class="wiki-term" data-wiki="Rhombus" href="https://en.wikipedia.org/wiki/Rhombus" target="_blank" rel="noopener">rhombus</a>. The other five points of each piece are found by <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotations</a> of 60 degrees and by the signed angle at C. The test follows A through every degree of the circle: the five triangles stay equilateral to within <code>10<sup>−7</sup></code> of the drawing scale while the square's angles range from nearly 0 to nearly 180 degrees. Version B makes the opposite choice: it keeps the squares and frees the triangles, morphing toward a pattern of four squares at a corner.</p>
+
+      <h2>Sixty degrees gives six triangles</h2>
+      <p>When the angle at B reaches 60 degrees, the short diagonal AC is exactly as long as a side, so the rhombus splits into two equilateral triangles. Six triangles of 60 degrees then meet at each corner: <code>6 × 60 = 360 degrees</code>, the <code>(3, 3, 3, 3, 3, 3)</code> pattern the page calls a derivative of the triangular tessellation. The same happens at 120 degrees using the other diagonal BD. The logic test checks both directions of the 60-degree drag: it measures the two halves, then walks the actual sectors around pattern corners and confirms six gaps of 60 degrees, not merely the arithmetic.</p>
+
+      <h2>What the controls do</h2>
+      <p>The page sets <code>startLayer=4</code>, and the applet's spinner runs from 0 to 15, so this drawing shows a centre piece plus four rings in each direction. Each copy is shifted by <code>A − H</code> along a row and by <code>L − C</code> between rows. The three radio buttons choose one colour, two alternating colours, or ten repeating colour bands. The logic test transcribes <code>Stranger.Draw</code>, <code>Draw</code> and <code>ShowOneLayer</code> a second time from the bytecode and compares every point, triangle, colour index and line over 36 positions of A, all three modes and layer counts 0 to 4, then over every spinner value through 15 and 24 positions of B. The dashed guide circle and line, the Reset button and the <kbd>r</kbd> shortcut are presentation aids; the applet had no such guides, and it had no win or loss.</p>
+
+      <p class="tip">Drag A until the status reports 60 degrees and watch the diamonds become two triangles each; then set Colour bands and slide the rings to 15.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HingedTessellation1.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="hinged-tessellation-1-core.js"></script>
+<script src="hinged-tessellation-1.js"></script>
+</body>
+</html>
