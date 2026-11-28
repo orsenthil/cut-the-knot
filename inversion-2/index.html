@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inversion 2 &mdash; coolmaths</title>
+<meta name="description" content="Move the centre O, the point R on the circle and a point A: where does the second point A' go, and why does every circle through A and the ends of a diameter pass through it?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/inversion-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Inversion 2">
+<meta property="og:description" content="Move the centre O, the point R on the circle and a point A: where does the second point A' go, and why does every circle through A and the ends of a diameter pass through it?">
+<meta property="og:url" content="https://coolmaths.ai/inversion-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.75rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .circle-t {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 2;
+  }
+  #board .diameter {
+    stroke: var(--muted);
+    stroke-width: 1.5;
+    stroke-dasharray: 5 4;
+  }
+  #board .radial {
+    stroke: var(--accent);
+    stroke-width: 1.5;
+    opacity: 0.8;
+  }
+  #board .circle-w {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 3;
+  }
+  #board .image-dot {
+    fill: var(--good);
+    stroke: var(--stage);
+    stroke-width: 2;
+  }
+  #board .point-label {
+    fill: var(--text);
+    font: 600 0.9rem var(--font);
+    pointer-events: none;
+  }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible {
+    outline: none;
+    stroke: var(--good);
+    stroke-width: 5;
+  }
+  .controls .option-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .controls label {
+    cursor: pointer;
+  }
+</style>
+</head>
+<body data-game="inversion-2" data-kind="demo">
+<main id="main">
+  <h1>Inversion 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: move the dots and watch where the second special point stays.<br>
+    <strong>How to play:</strong> Drag O, R, C or A, or focus one and use the arrow keys. Tick Names for labels and press Reset picture to begin again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Circle t with centre O, its diameter through C, the circle through C, the opposite point and A, and the second point A prime"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="option-row">
+      <label><input id="names" type="checkbox"> Names</label>
+      <button id="resetBtn" type="button" class="primary">Reset picture</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag C around the circle and the bold circle swings with it — yet the green point A' never falls off it. Drag A as well and a second point appears to take its place. Why is that point always there?</p>
+
+      <h2>One circle, one diameter</h2>
+      <p>The black <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> t has centre O and passes through R; C is kept on it. Let C2 be the point opposite C, so that CC2 is a <a class="wiki-term" data-wiki="Diameter" href="https://en.wikipedia.org/wiki/Diameter" target="_blank" rel="noopener">diameter</a> of t and O is its midpoint. The bold circle is the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of C, C2 and A. The logic test checks all 14,592 non-collinear pictures on a grid of centres, radii and angles: the point A' computed below lies on every one of those circles.</p>
+
+      <h2>Two chords through O</h2>
+      <p>Because C and C2 lie on both circles, O is inside the bold circle. Its distance to C and to C2 is the radius of t, so by the <a class="wiki-term" data-wiki="Intersecting_chords_theorem" href="https://en.wikipedia.org/wiki/Intersecting_chords_theorem" target="_blank" rel="noopener">intersecting chords theorem</a> the chord through O in the direction of A must cut off a second piece A' with <code>OA × OA' = -OR²</code> when the lengths are signed from O. The unsigned lengths give <code>OA × OA' = OR²</code>, which is why the article first writes that form and then corrects it: O lies between A and A'. The test checks the signed product, that O separates the two points, and that the diameter of the bold circle through O is perpendicular to CC2 — all confirmed over 1,000+ generated pictures.</p>
+
+      <h2>Inversion with a negative power</h2>
+      <p>So <code>A' = O - OR² · (A - O) / |A - O|²</code>. This is ordinary <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">inversion</a> in t followed by a <a class="wiki-term" data-wiki="Point_reflection" href="https://en.wikipedia.org/wiki/Point_reflection" target="_blank" rel="noopener">reflection in O</a>: a negative <a class="wiki-term" data-wiki="Power_of_a_point" href="https://en.wikipedia.org/wiki/Power_of_a_point" target="_blank" rel="noopener">power</a> rather than a positive one. The applet's own formula uses <code>|OC|²</code> instead of <code>|OR|²</code>; that is the same number because C stays on t. We pin the two starting angles instead of choosing them at random so a picture can be saved and replayed; the colors and controls are new, the geometry is not. The live <a href="https://www.cut-the-knot.org/Curriculum/Geometry/Inversion2.shtml" target="_blank" rel="noopener">cut-the-knot page</a> still embeds this applet.</p>
+
+      <p class="tip">Drag A almost onto O: A' shoots far away, but the bold circle still passes through both.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Inversion2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="inversion-2-core.js"></script>
+<script src="inversion-2.js"></script>
+</body>
+</html>
