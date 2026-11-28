@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inscribed Square &mdash; coolmaths</title>
+<meta name="description" content="Grow a square from a point on a triangle's base until its free corner touches the third side. How big is the square that fits, and is there another one?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/inscribed-square/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Inscribed Square">
+<meta property="og:description" content="Grow a square from a point on a triangle's base until its free corner touches the third side. How big is the square that fits, and is there another one?">
+<meta property="og:url" content="https://coolmaths.ai/inscribed-square/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 38rem; padding: 0.5rem; overflow-x: auto; }
+  #board { display: block; width: 100%; min-width: 19rem; height: auto; touch-action: none; }
+  #board .base-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .guide-line { stroke: var(--muted); stroke-width: 1.8; stroke-dasharray: 7 6; fill: none; }
+  #board .tri-side { stroke: var(--ink); stroke-width: 2.5; fill: none; stroke-linejoin: round; }
+  #board .trial-side { stroke: var(--accent); stroke-width: 3; fill: none; stroke-linecap: round; }
+  #board .target-square { stroke: var(--good); stroke-width: 2; stroke-dasharray: 5 5; fill: var(--accent-soft); }
+  #board .pt-label { fill: var(--text); font-size: 1.05rem; font-weight: 600; pointer-events: none; }
+  #board .eye { fill: none; stroke: var(--good); stroke-width: 2.5; stroke-linecap: round; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+  #pRange { width: 9rem; max-width: 100%; accent-color: var(--accent); min-height: 2rem; }
+  #namesBox { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+</style>
+</head>
+<body data-game="inscribed-square" data-kind="demo">
+<main id="main">
+  <h1>Inscribed Square</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the triangle and the point P to make a square whose four corners all sit on the sides of the triangle.<br>
+    <strong>How to play:</strong> Drag A, B, C or P, or focus a point and use the arrow keys. Slide P along the base, then press "Show solution" to see where it belongs.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 450" role="group"
+         aria-label="Triangle ABC with point P on the base and a trial square drawn from P"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="pRange">P along the base (%)</label>
+    <input id="pRange" type="range" min="-20" max="120" step="0.1" value="20"
+           aria-label="Place point P along the base, from minus 20 to 120 percent">
+    <label><input id="namesBox" type="checkbox" checked aria-label="Show the point names A, B, C and P">Names</label>
+    <button id="solveBtn" type="button" aria-label="Move P to the place that inscribes the square">Show solution</button>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle and point P">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The old applet lets you grow a square inside a triangle and watch one corner hang free. A small change in where you start makes every square in the family change size together &mdash; and at just one place the free corner touches the third side.</p>
+
+      <h2>A square with one corner free</h2>
+      <p>Start with <code>P</code> on the base <code>AB</code>. The applet draws the perpendicular at <code>P</code> until it meets the line <code>AC</code> at <code>p</code>, and takes <code>d = |Pp|</code> as the side of a <a class="wiki-term" data-wiki="Square" href="https://en.wikipedia.org/wiki/Square" target="_blank" rel="noopener">square</a>. Its base runs from <code>P</code> to <code>q</code> along <code>AB</code>, its top edge ends at <code>r</code>, and <code>p</code> is on <code>AC</code>. Three corners touch the triangle; <code>r</code> is the dangling one. The logic test checks thousands of positions: the four sides stay equal and meet at right angles, and <code>p</code> stays on <code>AC</code>.</p>
+
+      <h2>Where the free corner belongs</h2>
+      <p>The page tells you to draw a line from <code>A</code> through the free corner <code>r</code>. Where that line meets <code>BC</code> is the corner of the square that really fits. This port draws that ray and the whole target square as a dashed green guide; the Java applet only drew the ray. If the base has length <code>a</code> and the <a class="wiki-term" data-wiki="Triangle" href="https://en.wikipedia.org/wiki/Triangle" target="_blank" rel="noopener">triangle</a>'s height above it is <code>h</code>, the fitted square has side</p>
+      <blockquote><code>s = a &times; h / (a + h)</code></blockquote>
+      <p>The test confirmed this over a grid of triangles, including ones whose top corner is off to the side or below the base. The number does not depend on how far along <code>AB</code> the top corner sits. The applet's three little eyes open when <code>r</code> comes within one pixel of <code>BC</code>; the test checks that exact one-pixel boundary.</p>
+
+      <h2>Scaling, not central symmetry</h2>
+      <p>The original page says these squares come from one another by "central symmetry with center at A". That wording is a slip: a <a class="wiki-term" data-wiki="Point_reflection" href="https://en.wikipedia.org/wiki/Point_reflection" target="_blank" rel="noopener">central symmetry</a> keeps lengths, while squares started at two different points <code>P</code> have different sides. The true relation is a <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothety</a> centered at <code>A</code>: scaling by <code>d2 / d1</code> sends the first trial square to the second, and the same scaling sends it to the fitted square. The logic test checks both statements and confirms the page's wording is wrong.</p>
+
+      <h2>One solution or two?</h2>
+      <p>The page adds that homothety gives an entirely different solution and that "in general the problem has two solutions". That is right for the three sidelines treated as whole lines: solving the two line equations gives two positive sizes, <code>a&times;h/(a+h)</code> and <code>a&times;h/|a&minus;h|</code>. When <code>a = h</code> the second size is infinite, so only one square remains. Often the second square uses the extensions of the sides rather than the segments. The test counts the solutions over a grid and confirms both cases. The live cut-the-knot page now shows a GeoGebra construction; an archived 2006 capture is the one that still embeds this Java applet under the same address.</p>
+
+      <p class="tip">Try dragging <code>C</code> until the triangle is very tall, then press "Show solution" and compare the green square with the purple one.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/InscribedSquare.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="inscribed-square-core.js"></script>
+<script src="inscribed-square.js"></script>
+</body>
+</html>
