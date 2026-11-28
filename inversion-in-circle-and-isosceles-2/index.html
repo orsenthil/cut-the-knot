@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inversion In Circle And Isosceles 2 &mdash; coolmaths</title>
+<meta name="description" content="A small circle is trapped between two tangent circles and a slanted line. Move the three points: will its centre always sit directly above B?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/inversion-in-circle-and-isosceles-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Inversion In Circle And Isosceles 2">
+<meta property="og:description" content="A small circle is trapped between two tangent circles and a slanted line. Move the three points: will its centre always sit directly above B?">
+<meta property="og:url" content="https://coolmaths.ai/inversion-in-circle-and-isosceles-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  .circle-big { fill: none; stroke: var(--ink); stroke-width: 2; }
+  .circle-mid { fill: none; stroke: var(--muted); stroke-width: 2; }
+  .circle-q { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2.5; }
+  .circle-inversion { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 6 5; }
+  .circle-b { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  .circle-qp { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  .base-line { stroke: var(--ink); stroke-width: 1.8; }
+  .guide-line { stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  .proof-line { stroke: var(--accent); stroke-width: 2.2; }
+  .angle-arc { fill: none; stroke: var(--highlight); stroke-width: 2; }
+  .right-angle { fill: none; stroke: var(--good); stroke-width: 2; }
+  .plain-dot { fill: var(--ink); }
+  .accent-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  .pt-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    pointer-events: none;
+  }
+  .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2.5;
+    cursor: grab;
+  }
+  .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.9rem;
+  }
+  .control-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+  .step-row button {
+    min-width: 2.4rem;
+    min-height: 2.4rem;
+  }
+  .step-row button.selected {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+</style>
+</head>
+<body data-game="inversion-in-circle-and-isosceles-2" data-kind="demo">
+<main id="main">
+  <h1>Inversion In Circle And Isosceles 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move three points on a line and watch the circle squeezed between two others.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus one and press the arrow keys. Tick the boxes and press a Step button to uncover the proof.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 340" role="group"
+         aria-label="A, B and C on one line with two tangent circles, the circle Q, and the proof's inverted circle"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label><input id="namesCheck" type="checkbox"> Show names</label>
+      <label><input id="premiseCheck" type="checkbox"> Show premise</label>
+      <label><input id="statementCheck" type="checkbox"> Show statement</label>
+      <button id="resetBtn" type="button" class="primary" aria-label="Put A, B and C back where they started">Reset diagram</button>
+    </div>
+    <div class="control-row step-row" role="group" aria-label="Steps of the proof">
+      <button type="button" data-step="0" aria-label="Step 0: show the starting circles">0</button>
+      <button type="button" data-step="1" aria-label="Step 1: show the rhombus and incenter">1</button>
+      <button type="button" data-step="2" aria-label="Step 2: show the perpendicular and inversion circle">2</button>
+      <button type="button" data-step="3" aria-label="Step 3: show the excenters">3</button>
+      <button type="button" data-step="4" aria-label="Step 4: show the inverted circle Q prime">4</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The small orange circle is tucked between a big circle, a smaller circle and a slanted line. Move the three points and its centre always stays directly above B. Here is why, with no lengths to work out &mdash; the page calls this solution remarkable for having no calculations at all. (The program still computes where to draw the circle; the <em>proof</em> is the calculation-free part.) The live cut-the-knot page still carries the whole proof but has its Java applet tag commented out; a <a href="https://web.archive.org/web/20100201000000id_/http://www.cut-the-knot.org/Curriculum/Geometry/InversionInCircleAndIsosceles2.shtml" target="_blank" rel="noopener">2010 Wayback capture</a> shows the working <code>InversionInCircleAndIsosceles2</code> applet this port follows.</p>
+
+      <h2>A rhombus and an incenter</h2>
+      <p>The big circle has <code>AC</code> as its diameter and the smaller one has <code>AB</code>. The line through the middle of <code>BC</code>, straight up and down, cuts the big circle at <code>E</code> and <code>F</code>. That makes <code>BECF</code> a <a class="wiki-term" data-wiki="Rhombus" href="https://en.wikipedia.org/wiki/Rhombus" target="_blank" rel="noopener">rhombus</a>, and so <code>BE = EC</code>. Press Step 1: <code>EB</code> and <code>FB</code> meet the circle again at <code>K</code> and <code>L</code>, and the line <code>FE</code> cuts the angle at <code>F</code> in half. From that, <code>EL = EC = EB</code>, so B is the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> of triangle <code>CKL</code>.</p>
+
+      <h2>Where the orange circle sits</h2>
+      <p>Step 2 draws the upright line through B. It cuts the big circle at <code>M</code> and <code>N</code>, so the circle centred at B through <code>M</code> meets the big circle at opposite ends of a diameter. Write <code>t = AB/AC</code>. The orange circle has radius <code>AC · t(1−t)/(1+t)</code> and its centre is <code>AC · t/(1+t) · √(2(1−t))</code> above B. Those are the applet's own formulas; they make the circle touch the big circle, the smaller circle and the line <code>BE</code>. Its centre has exactly B's x-coordinate, so <code>BQ</code> is perpendicular to <code>AC</code> &mdash; the claim the page asks us to prove.</p>
+
+      <h2>Inversion with a negative power</h2>
+      <p>Now invert in a circle centred at B with <em>negative</em> power <code>−BM² = −BA·BC</code> (the <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">inversion</a> page calls this inversion with a negative power). The big circle comes back to itself, the line <code>EBK</code> comes back to itself, and A and C swap places. The circle with diameter <code>AB</code> goes to the upright line through C, which is an <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">external angle bisector</a> of triangle <code>CKL</code>.</p>
+
+      <h2>Feuerbach finishes it</h2>
+      <p>Steps 3 and 4 name the excenters <code>I_k</code> and <code>I_l</code>. The inverse of the orange circle is a circle touching <code>I_kI_l</code>, touching <code>BE</code>, and (by <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">Feuerbach's theorem</a>) touching the nine-point circle of triangle <code>BI_kI_l</code> &mdash; which is the big circle. So it is the excircle at B, centred on the external bisector of the angle at B. That bisector is upright, while <code>BC</code> lies along the baseline; hence <code>BQQ'</code> is perpendicular to <code>AC</code>.</p>
+      <p>The logic test checks all of these equalities for 300 configurations of A, B and C, and matches every constructed point against a second transcription of the applet's own bytecode: the largest error is below one millionth of a drawing unit. The sibling applet <em>Tangent Circles and an Isosceles Triangle</em> proves the same claim with ordinary positive-power inversion and a Pythagorean sum; this one uses negative power and Feuerbach, and has five Step screens rather than six.</p>
+
+      <p class="tip">Turn on the names, press Step 4, and drag B: watch Q and Q' slide along the same upright line while the big circle stays put. What happens as B approaches A?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/InversionInCircleAndIsosceles2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="inversion-in-circle-and-isosceles-2-core.js"></script>
+<script src="inversion-in-circle-and-isosceles-2.js"></script>
+</body>
+</html>
