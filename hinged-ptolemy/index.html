@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hinged Ptolemy &mdash; coolmaths</title>
+<meta name="description" content="Four points sit on one circle. Swing a triangle around one of them and see why AC times BP plus AB times CP always equals AP times BC.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hinged-ptolemy/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hinged Ptolemy">
+<meta property="og:description" content="Four points sit on one circle. Swing a triangle around one of them and see why AC times BP plus AB times CP always equals AP times BC.">
+<meta property="og:url" content="https://coolmaths.ai/hinged-ptolemy/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 1rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circ { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 5; }
+  #board .edge { stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; }
+  #board .quad { stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; }
+  #board .swing { stroke: var(--accent); stroke-width: 2.8; stroke-linecap: round; }
+  #board .spoke { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 5 4; }
+  #board .extend { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 5; }
+  #board .fixed-dot { fill: var(--ink); }
+  #board .turn-dot { fill: var(--accent); }
+  #board .meet-dot { fill: var(--good); }
+  #board .pt-label, #board .angle-label {
+    fill: var(--text); font-size: 1rem; font-weight: 600; pointer-events: none;
+  }
+  #board .turn-label { fill: var(--accent); }
+  #board .angle-label { fill: var(--accent); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+  #rotation { flex: 1 1 9rem; min-width: 6rem; max-width: 100%; accent-color: var(--accent); }
+  #rotationOut { min-width: 3rem; font-variant-numeric: tabular-nums; }
+  #names { width: 1.2rem; height: 1.2rem; accent-color: var(--accent); }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+</style>
+</head>
+<body data-game="hinged-ptolemy" data-kind="demo">
+<main id="main">
+  <h1>Hinged Ptolemy</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Four dots sit on a circle and a triangle swings around one of them to show that two sums of lengths are always equal.<br>
+    <strong>How to play:</strong> Drag dots A, B, C or P, or focus one and use the arrow keys. Move Rotation to turn the triangle, tick Show names, or press Reset.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 320" role="group"
+         aria-label="Four points A, B, P and C on a circle, with a triangle hinged at A"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="rotation">Rotation <input id="rotation" type="range" min="0" max="105" step="1" value="0" aria-label="Turn triangle ACP from 0 to 105 percent of the angle CAB"></label>
+    <output id="rotationOut" for="rotation">0%</output>
+    <label><input id="names" type="checkbox" aria-label="Show the names of the points"> Show names</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the four points and the rotation">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Ptolemy's theorem looks like a sum of products, but this picture turns it into two ordinary triangles. Drag the dots and move the slider: the two numbers under the picture stay the same.</p>
+
+      <h2>Four points on one circle</h2>
+      <p>Go round the circle in the order A, B, P, C. The two lines <code>AC</code> and <code>BP</code> cross as diagonals of a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>. <a class="wiki-term" data-wiki="Ptolemy%27s_theorem" href="https://en.wikipedia.org/wiki/Ptolemy%27s_theorem" target="_blank" rel="noopener">Ptolemy's theorem</a> claims</p>
+      <blockquote><code>AC·BP + AB·CP = AP·BC.</code></blockquote>
+      <p>The test checks this for thousands of groups of four points in the right order around the circle, with all four dots on the same circle. It holds up to rounding; reorder the dots and the matching of sides changes, so the order matters.</p>
+
+      <h2>The hinge at A</h2>
+      <p>The slider turns triangle ACP about A through the angle from <code>AC</code> to <code>AB</code>. A <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a> keeps every length, so <code>AC' = AC</code> and <code>C'P' = CP</code>. At a full turn C' lies on the ray AB. Because ABPC is cyclic, the angle at C is the supplement of the angle <code>ABP</code>; after the turn the angle <code>AC'P'</code> equals that same supplement, so <code>C'P' ∥ BP</code>.</p>
+
+      <h2>Two pairs of similar triangles</h2>
+      <p>Let P'' be where the line <code>AP'</code> meets <code>BP</code>. Triangles <code>ABP''</code> and <code>AC'P'</code> are similar, giving</p>
+      <blockquote><code>BP'' = AB·C'P'/AC' = AB·CP/AC.</code></blockquote>
+      <p>Triangles <code>ABC</code> and <code>AP''P</code> are similar too, so <code>PP'' = BC·AP/AC</code>. Since P'' sits on the segment from B to P at a full turn, <code>PP'' = BP + BP''</code>. Multiply by <code>AC</code> and Ptolemy's identity falls out. The logic test checks both length formulas and the sum over many positions of the four dots.</p>
+
+      <h2>What the slider really does</h2>
+      <p>The old scrollbar ran from 0 to 105 and was divided by 100. Below 100 only part of the turn has happened, so <code>C'P'</code> is <em>not</em> parallel to <code>BP</code>; at 100 the proof lines up; past 100 the hinge swings beyond B. The page also says P' lands on the extension of BP when ABC is an <a class="wiki-term" data-wiki="Equilateral_triangle" href="https://en.wikipedia.org/wiki/Equilateral_triangle" target="_blank" rel="noopener">equilateral</a> or <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles</a> triangle. The test finds that this is true precisely when <code>AB = AC</code> — the two sides meeting at the hinge — and false for an isosceles triangle whose equal sides meet at B or at C.</p>
+
+      <p class="tip">Set Rotation to 100, tick Show names, then drag P: the yellow points move but <code>C'P'</code> stays parallel to <code>BP</code> and the two numbers in the status line stay equal.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HingedPtolemy.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="hinged-ptolemy-core.js"></script>
+<script src="hinged-ptolemy.js"></script>
+</body>
+</html>
