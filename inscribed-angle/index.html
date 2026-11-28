@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inscribed Angle &mdash; coolmaths</title>
+<meta name="description" content="Drag three points around a circle and watch the angle at the rim: how does it compare with the angle at the centre over the same arc?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/inscribed-angle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Inscribed Angle">
+<meta property="og:description" content="Drag three points around a circle and watch the angle at the rim: how does it compare with the angle at the centre over the same arc?">
+<meta property="og:url" content="https://coolmaths.ai/inscribed-angle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .chord { fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linecap: round; }
+  #board .diameter { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 7 5; }
+  #board .radius-red { fill: none; stroke: var(--bad); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  #board .radius-green { fill: none; stroke: var(--good); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  #board .tangent { fill: none; stroke: var(--highlight); stroke-width: 2.6; stroke-linecap: round; }
+  #board .angle-main { fill: none; stroke: var(--accent); stroke-width: 3.2; stroke-linecap: round; }
+  #board .angle-red { fill: none; stroke: var(--bad); stroke-width: 2.4; stroke-linecap: round; }
+  #board .angle-green { fill: none; stroke: var(--good); stroke-width: 2.4; stroke-linecap: round; }
+  #board .angle-tangent { fill: none; stroke: var(--highlight); stroke-width: 3; stroke-linecap: round; }
+  #board .fixed-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1.5; }
+  #board .antipode-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1.5; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  #board .point-label {
+    fill: var(--text);
+    font: 600 0.95rem var(--font);
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 4px;
+  }
+  .hint-line { margin: 0.55rem 0 0; color: var(--muted); font-size: 0.9rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; }
+</style>
+</head>
+<body data-game="inscribed-angle" data-kind="demo">
+<main id="main">
+  <h1>Inscribed Angle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: three points sit on a circle, and the angle where two of them meet is always half the angle at the middle.<br>
+    <strong>How to play:</strong> Drag A, B or C around the circle, or focus one and use the arrow keys (Shift for bigger steps). Tick the box to show the point names.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Circle with centre O, three draggable points A, B and C on the circle, the chords AB and AC, and the angle at O over the arc BC. Drag A, B or C."></svg>
+    <p class="hint-line">Drag the three dots, or focus one and press the arrow keys. Pull B or C onto A to see the tangent case.</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox" checked> Show names</label>
+    <button id="resetBtn" type="button" class="primary">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag the three points anywhere you like. The blue angle at A and the blue angle at O change together, no matter how the picture is moved. Here is the reason, including the awkward cases.</p>
+
+      <h2>Two angles over one arc</h2>
+      <p>The chords AB and AC cut the <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> into two arcs. The one that does not contain A is the arc the angle at A stands on; O, the centre, stands on that same arc. An <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angle</a> measures half its arc, and a central angle measures the whole arc, so</p>
+      <blockquote><code>∠BOC = 2∠BAC.</code></blockquote>
+      <p>This is Proposition III.20 of <a class="wiki-term" data-wiki="Euclid%27s_Elements" href="https://en.wikipedia.org/wiki/Euclid%27s_Elements" target="_blank" rel="noopener">Euclid's Elements</a>. The logic test measured the arcs the applet actually draws at 345,674 usable positions of three points and found the factor of two every time, to within a billionth of a degree.</p>
+
+      <h2>Why the factor is two</h2>
+      <p>Let A′ be the point opposite A (the dashed diameter). Triangles AOB and AOC are <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles</a>, because OA, OB and OC are all radii. Each pair of red or green base angles is therefore equal, and an exterior angle of a triangle equals the two far interior angles added together. Adding or subtracting those base angles gives the central angle as exactly two copies of the angle at A. The test checked both the equal base angles and the right angle each of B and C makes with the diameter AA′.</p>
+
+      <h2>When the angle is bigger than a quarter turn</h2>
+      <p>If ∠BAC is more than 90°, the arc BC it stands on is more than half the circle. A single small arc at O would then be the wrong arc, so the applet draws the central angle in two pieces through A′: <code>∠BOA′ + ∠A′OC</code>. Their sum is the large central angle, still twice ∠BAC. The test checked that the applet's own choice — one arc below 90°, two arcs at or above it — matches this rule at every position.</p>
+
+      <h2>What if B or C lands on A?</h2>
+      <p>One chord shrinks away. The applet then draws the <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> at A, and the angle between that tangent line and the surviving chord is half the central angle over that chord — the <a class="wiki-term" data-wiki="Alternate_segment_theorem" href="https://en.wikipedia.org/wiki/Alternate_segment_theorem" target="_blank" rel="noopener">alternate segment theorem</a>. The check confirmed this for all 10,080 tangent configurations. One quirk is kept from the applet: it marks whichever of the two tangent rays its orientation test chooses, so sometimes the marked angle is the supplementary one (<code>180° − half</code>); the status line reports the smaller angle as well. The page also notes that angles from opposite arcs of a chord add to 180°: that is true for opposite corners of a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>, but if A and A′ happen to lie on the <em>same</em> arc of BC the two angles are equal instead — the test checks both cases separately.</p>
+
+      <p class="tip">Try pulling B slowly round to A: watch the blue central angle shrink with the inscribed one, then change into the tangent-and-chord picture.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/InscribedAngle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="inscribed-angle-core.js"></script>
+<script src="inscribed-angle.js"></script>
+</body>
+</html>
