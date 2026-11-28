@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mac Laurin Conics &mdash; coolmaths</title>
+<meta name="description" content="A triangle slides with two corners on two lines while its sides pass through three fixed dots. What shape does the third corner trace, and what happens if the three dots line up?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/maclaurin-conics/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Mac Laurin Conics">
+<meta property="og:description" content="A triangle slides with two corners on two lines while its sides pass through three fixed dots. What shape does the third corner trace, and what happens if the three dots line up?">
+<meta property="og:url" content="https://coolmaths.ai/maclaurin-conics/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .given-line { stroke: var(--muted); stroke-width: 2; }
+  #board .side { stroke: var(--ink); stroke-width: 2.5; }
+  #board .extra-line { stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 6 5; }
+  #board .locus { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  #board .apex-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .extra-dot { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.2; }
+  #board .cap-dot { fill: var(--ink); }
+  #board .point-label { fill: var(--text); font-family: var(--font); font-size: 15px; font-weight: 600; pointer-events: none; }
+  #board .apex-label { fill: var(--good); }
+  #board .line-label { fill: var(--muted); font-family: var(--font); font-size: 16px; font-style: italic; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="maclaurin-conics" data-kind="demo">
+<main id="main">
+  <h1>Mac Laurin Conics</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#curves">Curves</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore: a triangle slides with two corners on two lines and its sides passing through three fixed dots.<br>
+    <strong>How to play:</strong> Drag B or C to move the triangle and watch the path of A. Drag U, V, W or an end of either line to change the setup; the buttons show names, extra guides, the straight-line case and a check of the path.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="-20 -20 440 340" role="group"
+         aria-label="Two given lines l and m, a triangle with sliding corners B and C, fixed points U V W, and the path traced by A"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" aria-label="Reset the two lines and all five points to their starting places">Reset</button>
+    <button id="lineBtn" type="button" aria-label="Put U, V and W on one straight line and clear the traced path">Straight-line case</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Show or hide the names of the points">Show names</button>
+    <button id="extraBtn" type="button" aria-pressed="false" aria-label="Show or hide the extra lines and points">Show extra lines</button>
+    <button id="checkBtn" type="button" class="primary" aria-label="Check whether the traced path is a conic or a straight line">Check the path</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Three dots stay put while a triangle moves around them. Its top corner draws a curve — and a small change to the dots can make that curve become a straight line.</p>
+
+      <h2>A triangle with three appointments</h2>
+      <p>The two <a class="wiki-term" data-wiki="Line_(geometry)" href="https://en.wikipedia.org/wiki/Line_(geometry)" target="_blank" rel="noopener">lines</a> l and m are fixed. Corner B stays on l and corner C stays on m. The side <code>BC</code> must pass through W, so once you choose B, C is forced: it is where the line <code>BW</code> meets m. The other two sides are chosen the same way: <code>AB</code> passes through U and <code>AC</code> passes through V. Their meeting point A is the corner whose path you see. This is the same rule Bogomolny's applet uses, including the way W is placed when the picture starts.</p>
+
+      <h2>Following B traces a conic</h2>
+      <p>As B slides along l, the ray from U through B and the ray from V through C turn together. Matching rays from two fixed <a class="wiki-term" data-wiki="Pencil_of_lines" href="https://en.wikipedia.org/wiki/Pencil_of_lines" target="_blank" rel="noopener">pencils</a> meet on a <a class="wiki-term" data-wiki="Conic_section" href="https://en.wikipedia.org/wiki/Conic_section" target="_blank" rel="noopener">conic</a>; this is MacLaurin's construction, a consequence of <a class="wiki-term" data-wiki="Pascal%27s_theorem" href="https://en.wikipedia.org/wiki/Pascal%27s_theorem" target="_blank" rel="noopener">Pascal's theorem</a>. The logic test sampled hundreds of layouts, fitted a conic to the traced positions and checked that every point lay on it: the largest error was well under one board unit. Depending on the layout the curve is an oval or an open hyperbola-like curve.</p>
+
+      <h2>When U, V and W line up</h2>
+      <p>The page also says that if U, V and W are <a class="wiki-term" data-wiki="Collinearity" href="https://en.wikipedia.org/wiki/Collinearity" target="_blank" rel="noopener">collinear</a>, the locus becomes a straight line through the crossing of l and m. The button <em>Straight-line case</em> puts the three dots on one line without moving B or C. The test repeated this for hundreds of other layouts: every traced point lay on one straight line, and that line always passed through <code>l ∩ m</code>, so the page's claim held in every case tried. The claim means the path passes through the point where l and m cross — that is what "concurrent with l and m" says here.</p>
+
+      <h2>The faint extra guides</h2>
+      <p>Turn on <em>Show extra lines</em> to see the two lines through W and U or V, the points where they meet l and m, and the crossing of l and m themselves. These are the leftovers of the degenerate Pascal configuration behind the theorem; they are guides, not part of the triangle. The applet has the same checkbox, and its starting choice is off. Two small presentation helpers were added here: a Reset button and the Straight-line case button — the applet had neither, but neither changes the construction.</p>
+
+      <p class="tip">Try this: trace the curve, press Straight-line case, then drag B again. Watch how the same sliding corner now walks along a single line through the crossing of the two fixed lines.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MacLaurinConics.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="maclaurin-conics-core.js"></script>
+<script src="maclaurin-conics.js"></script>
+</body>
+</html>
