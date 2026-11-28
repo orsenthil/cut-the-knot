@@ -1324,6 +1324,16 @@ const GAMES = {
     await page.locator("#board .sample-handle").first().focus();
     await page.keyboard.press("ArrowRight");
   },
+  "intouch-medians": (page) => dragFirstHandle(page),
+  "inversion-2": (page) => dragFirstHandle(page),
+  "inversion-demo": (page) => dragFirstHandle(page),
+  "inversion-in-arbelos": (page) => dragFirstHandle(page),
+  "inversion-in-circle-and-isosceles": (page) => dragFirstHandle(page),
+  "inversion-in-circle-and-isosceles-2": (page) => dragFirstHandle(page),
+  "invert": (page) => dragFirstHandle(page),
+  "isogonal-tangents": (page) => dragFirstHandle(page),
+  "isoperimetric": (page) => dragFirstHandle(page),
+  "isosceles-on-sides": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

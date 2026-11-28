@@ -839,6 +839,16 @@ const CORE_GLOBALS = {
   "inscriptible-quadri/inscriptible-quadri-core.js": ["InscriptibleQuadriCore"],
   "in-tangent/in-tangent-core.js": ["InTangentCore"],
   "integer-sine/integer-sine-core.js": ["IntegerSineCore"],
+  "intouch-medians/intouch-medians-core.js": ["IntouchMediansCore"],
+  "inversion-2/inversion-2-core.js": ["Inversion2Core"],
+  "inversion-demo/inversion-demo-core.js": ["InversionDemoCore"],
+  "inversion-in-arbelos/inversion-in-arbelos-core.js": ["InversionInArbelosCore"],
+  "inversion-in-circle-and-isosceles/inversion-in-circle-and-isosceles-core.js": ["InversionInCircleAndIsoscelesCore"],
+  "inversion-in-circle-and-isosceles-2/inversion-in-circle-and-isosceles-2-core.js": ["InversionInCircleAndIsosceles2Core"],
+  "invert/invert-core.js": ["InvertCore"],
+  "isogonal-tangents/isogonal-tangents-core.js": ["IsogonalTangentsCore"],
+  "isoperimetric/isoperimetric-core.js": ["IsoperimetricCore"],
+  "isosceles-on-sides/isosceles-on-sides-core.js": ["IsoscelesOnSidesCore"],
 };
 
 const games = [];

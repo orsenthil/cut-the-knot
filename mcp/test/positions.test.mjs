@@ -2445,6 +2445,16 @@ check("inscribed-square-2: the Vecten homothety reproduces the inscribed square"
 check("inscriptible-quadri: the four dots lie on one circle with equal tangents", read["inscriptible-quadri"]?.valid === true && read["inscriptible-quadri"].dotsOnCircle === true && read["inscriptible-quadri"].reading.inscribed === true && Math.abs(read["inscriptible-quadri"].reading.residuals.pitot) < read["inscriptible-quadri"].reading.tolerance);
 check("in-tangent: the second tangent crosses BC at the incircle contact", read["in-tangent"]?.reading.allClaimsHold === true && read["in-tangent"].reading.secondTangent.passesThroughT === true && Math.abs(read["in-tangent"].reading.secondTangent.ST) < 1e-8);
 check("integer-sine: the ten wrapped dots and the saved cursor agree", read["integer-sine"]?.dotsComputed === 10 && read["integer-sine"].dotsShown === 10 && read["integer-sine"].cursor.x === 63);
+check("intouch-medians: perpendiculars concur at (3G'-I)/2", read["intouch-medians"]?.reading.allClaimsHold === true && read["intouch-medians"].reading.concurrence.concurrent === true && read["intouch-medians"].reading.errors.ratio < 1e-8);
+check("inversion-2: signed product OA·OA' equals -OR²", read["inversion-2"]?.signedProductIsMinusOrSquared === true && read["inversion-2"].powerOfOInW === read["inversion-2"].signedProduct && read["inversion-2"].OSeparatesAFromAprime === true);
+check("inversion-demo: the empty inversion circle and its 100-unit tolerance", read["inversion-demo"]?.tolerance === 100 && read["inversion-demo"].imageCounts.circles === 0 && read["inversion-demo"].inversionCircle.radius > 0);
+check("inversion-in-arbelos: saved chain satisfies all Pappus and tangency claims", read["inversion-in-arbelos"]?.derived.allPappusHeights === true && read["inversion-in-arbelos"].derived.allTouchBothBoundaries === true && read["inversion-in-arbelos"].derived.allNeighboursTouch === true && read["inversion-in-arbelos"].derived.circles === 1);
+check("inversion-in-circle-and-isosceles: the saved Sangaku figure matches the core", read["inversion-in-circle-and-isosceles"]?.matchesCore.offset === true && read["inversion-in-circle-and-isosceles"].offset === 0 && Object.values(read["inversion-in-circle-and-isosceles"].reading.claims).every(Boolean) === true);
+check("inversion-in-circle-and-isosceles-2: negative power swaps A and C with BQ perpendicular", read["inversion-in-circle-and-isosceles-2"]?.reading.BQQprimePerpendicularAC === true && read["inversion-in-circle-and-isosceles-2"].reading.swapAandC.swapError === 0 && read["inversion-in-circle-and-isosceles-2"].reading.power < 0);
+check("invert: the linkage product stays equal to OB²-AB²", read["invert"]?.checks.productEqualsPower === true && read["invert"].checks.cOnInverseLine === true && read["invert"].product.oaTimesOc === read["invert"].product.obSquaredMinusAbSquared);
+check("isogonal-tangents: the saved second tangents concur", read["isogonal-tangents"]?.concurrent === true && read["isogonal-tangents"].spread < read["isogonal-tangents"].reading.tolerance && Math.abs(read["isogonal-tangents"].agreesWithSaved.P) < 1e-8);
+check("isoperimetric: the saved arc families have equal length", read["isoperimetric"]?.lengthsEqual === true && read["isoperimetric"].diametersSum === read["isoperimetric"].board.AB && read["isoperimetric"].semicircles.diametersAddToAB === true);
+check("isosceles-on-sides: the saved perpendiculars meet at one point", read["isosceles-on-sides"]?.savedVsCore.allMatch === true && read["isosceles-on-sides"].coreReading.claims.all === true && read["isosceles-on-sides"].coreReading.commonPoint !== null);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -3003,6 +3013,30 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   const sine = runGameLogic("integer-sine", "plot", {});
   const near = runGameLogic("integer-sine", "near_period", {});
   check("integer-sine/plot + near_period: dots drawn and 44 is only a near-period", sine.dotsComputed === 10 && sine.dotsShown === 10 && near.nearestMultipleOfTwoPi === 7 && near.exactPeriod === false);
+}
+
+// The batch-37 tutor actions also run their real cores, not just saved positions.
+{
+  const im = runGameLogic("intouch-medians", "concurrency_s", {});
+  check("intouch-medians/concurrency_s: S, G' and I satisfy the 2:1 ratio", im.concurrence.concurrent === true && im.concurrence.ratioResidual < 1e-8 && im.allClaimsHold === true);
+  const inv2 = runGameLogic("inversion-2", "negative_power", {});
+  check("inversion-2/negative_power: negative sign matches the drawn A'", inv2.signedProductIsMinusOrSquared === true && inv2.powerIsMinusOrSquared === true && inv2.coreRuleMatchesDrawnPoint === true);
+  const invD = runGameLogic("inversion-demo", "invert_circle", { circle: { center: [300, 150], radius: 60 } });
+  check("inversion-demo/invert_circle: a circle off O inverts to a circle", invD.image.kind === "circle" && invD.image.radius > 0 && invD.d > invD.power);
+  const chain = runGameLogic("inversion-in-arbelos", "pappus_chain", {});
+  check("inversion-in-arbelos/pappus_chain: h_n = 2nR_n and tangencies", chain.allPappusHeights === true && chain.allRadiiMatchFormula === true && chain.allTouchBothBoundaries === true && chain.allNeighboursTouch === true);
+  const sang = runGameLogic("inversion-in-circle-and-isosceles", "sangaku_claim", {});
+  check("inversion-in-circle-and-isosceles/sangaku_claim: QB perpendicular AC and three tangencies", sang.claims.QB_perpendicular_AC === true && sang.claims.W_touches_S === true && sang.claims.W_touches_G === true && sang.claims.W_touches_BE === true);
+  const neg = runGameLogic("inversion-in-circle-and-isosceles-2", "negative_power_inversion", {});
+  check("inversion-in-circle-and-isosceles-2/negative_power_inversion: A<->C swap and QB perpendicular", neg.perpendicular.QxMinusBx === 0 && neg.inversion.inversesOfAAndC.swapError === 0 && neg.orangeCircle.allCoreChecksPass === true);
+  const link = runGameLogic("invert", "linkage_invariants", {});
+  check("invert/linkage_invariants: Peaucellier product is constant", link.invariant.relativeError < 1e-8 && link.checks.productEqualsPower === true && link.checks.cOnInverseLine === true && link.checks.circlePassesThroughO === true);
+  const tang = runGameLogic("isogonal-tangents", "second_tangents_concur", {});
+  check("isogonal-tangents/second_tangents_concur: three mirrors meet at one point", tang.concurrent === true && tang.mirrored === true && tang.raysTouchBothCircles === true && tang.spread < tang.tolerance);
+  const iso = runGameLogic("isoperimetric", "families", {});
+  check("isoperimetric/families: all three families and all 45 cases equal", iso.lengths.equal === true && iso.sweep.failures === 0 && iso.diametersSum === iso.endpoints.AB && iso.arcs.diametersAddToAB === true);
+  const sides = runGameLogic("isosceles-on-sides", "radical_center", {});
+  check("isosceles-on-sides/radical_center: equal powers at the common point", sides.claims.all === true && sides.powers.D === sides.powers.E && sides.powers.E === sides.powers.F && sides.commonPoint !== null);
 }
 
 // A game with no reader, and a position that makes no sense.
