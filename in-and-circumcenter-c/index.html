@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>In And Circumcenter C &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle and watch the segment joining two equal-length marks stay at right angles to the line between the incenter and circumcenter. When angle C is 30°, are the two segments equal too?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/in-and-circumcenter-c/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="In And Circumcenter C">
+<meta property="og:description" content="Drag the corners of a triangle and watch the segment joining two equal-length marks stay at right angles to the line between the incenter and circumcenter. When angle C is 30°, are the two segments equal too?">
+<meta property="og:url" content="https://coolmaths.ai/in-and-circumcenter-c/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 1rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    touch-action: none;
+  }
+  #board .tri-fill { fill: var(--accent); opacity: 0.10; }
+  #board .ex-fill { fill: var(--highlight); opacity: 0.09; }
+  #board .circle-in { fill: none; stroke: var(--good); stroke-width: 1.4; opacity: 0.85; }
+  #board .circle-outer { fill: none; stroke: var(--muted); stroke-width: 1.4; }
+  #board .circle-ex { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 5 5; }
+  #board .circle-cyc { fill: none; stroke: var(--highlight); stroke-width: 1.5; }
+  #board .external-bisector { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 6; }
+  #board .center-line { stroke: var(--good); stroke-width: 2; stroke-dasharray: 7 4; }
+  #board .kl-line { stroke: var(--accent); stroke-width: 2.4; }
+  #board .de-line { stroke: var(--good); stroke-width: 3.2; stroke-linecap: round; }
+  #board .triangle-edge { stroke: var(--ink); stroke-width: 2.4; stroke-linecap: round; }
+  #board .ex-edge { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 3 5; opacity: 0.85; }
+  #board .dot-center { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .dot-ex { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .dot-bisect { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .dot-end { fill: var(--ink); stroke: var(--stage); stroke-width: 1.5; }
+  #board .pt-label { fill: var(--text); font-size: 0.85rem; font-weight: 600; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="in-and-circumcenter-c" data-kind="demo">
+<main id="main">
+  <h1>In And Circumcenter C</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move a triangle's corners and watch two little lines: one joins two equal-length marks, the other joins two special centres.<br>
+    <strong>How to play:</strong> Drag the dots A, B and C, or focus one and use the arrow keys. Tick the boxes for names, circles or the centres, and press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 400" role="group"
+         aria-label="Triangle ABC with the points D and E on two sides, the line DE, the external bisector feet K, L, M, and the line between the incenter I and circumcenter O. Drag A, B or C."></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" aria-label="Show point names"> Names</label>
+    <label><input id="circleABox" type="checkbox" aria-label="Show the circle through B, C and excenter Ib"> Circle A</label>
+    <label><input id="circleBBox" type="checkbox" aria-label="Show the circle through C, A and excenter Ic"> Circle B</label>
+    <label><input id="circleCBox" type="checkbox" aria-label="Show the circle through A, B and excenter Ia"> Circle C</label>
+    <label><input id="centerBox" type="checkbox" aria-label="Show the incircle, the two circumcircles and the line joining their centers"> Center line</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the triangle to its starting position">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The question fixes angle C at 30° and asks for two things at once: the little segment DE should be equal to IO and at right angles to it. Drag the corners and the surprising part appears: the right angle never goes away, while the equality comes and goes with angle C.</p>
+
+      <h2>Where D and E sit</h2>
+      <p>Write <code>a = BC</code>, <code>b = CA</code> and <code>c = AB</code>. The applet starts at B and lays a length <code>c</code> along BC to make D; it starts at A and lays the same length <code>c</code> along AC to make E. Hence <code>BD = AE = AB</code>, <code>CD = a − c</code> and <code>CE = b − c</code>, so</p>
+      <blockquote><code>CD/CE = (a − c)/(b − c) = (c − a)/(c − b).</code></blockquote>
+      <p>The <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> I is the meeting point of the angle bisectors, and O is the centre of the <a class="wiki-term" data-wiki="Circumscribed_circle" href="https://en.wikipedia.org/wiki/Circumscribed_circle" target="_blank" rel="noopener">circumcircle</a> of ABC. The line under the board compares the lengths of DE and IO on every picture.</p>
+
+      <h2>The right angle does not need 30°</h2>
+      <p>Measure the angle at C and the two lengths for any triangle. The relation is</p>
+      <blockquote><code>DE = 2 · IO · sin(C)</code></blockquote>
+      <p>and the two lines are always perpendicular. That is why the page stresses that the right angle is independent of the 30° premise: at <code>C = 30°</code>, <code>2 sin(C) = 1</code>, so DE and IO are equal as well. The logic test checks both statements on more than a thousand triangles, including hundreds with an exact 30° angle.</p>
+
+      <h2>One line through K, L and M</h2>
+      <p>Let K, L, M be where the <a class="wiki-term" data-wiki="External_angle_bisector" href="https://en.wikipedia.org/wiki/External_angle_bisector" target="_blank" rel="noopener">external bisectors</a> at A, B, C meet the opposite sides. <a class="wiki-term" data-wiki="Menelaus%27_theorem" href="https://en.wikipedia.org/wiki/Menelaus%27_theorem" target="_blank" rel="noopener">Menelaus' theorem</a> puts them on one line, and <code>CK = ab/(c − b)</code>, <code>CL = ab/(c − a)</code> give <code>CK/CL = CD/CE</code>, so the small triangle CDE is centrally similar to CKL. Therefore DE is parallel to KLM. One correction to the article: it prints the three ratios as <code>b/c</code>, <code>c/a</code>, <code>a/b</code>; with ordinary lengths they are their reciprocals, <code>c/b</code>, <code>a/c</code>, <code>b/a</code>. Their product is still 1, so the conclusion is unchanged. Its signed formulas for CK and CL carry the opposite sign to the measured length; the test uses their absolute values.</p>
+
+      <h2>A radical axis carries the right angle</h2>
+      <p>The three <a class="wiki-term" data-wiki="Incircle_and_excircles_of_a_triangle" href="https://en.wikipedia.org/wiki/Incircle_and_excircles_of_a_triangle" target="_blank" rel="noopener">excenters</a> Ia, Ib, Ic form a triangle whose orthocenter is I. Its circumcenter O′ is the reflection of I in O, so O is its nine-point centre and IO is its <a class="wiki-term" data-wiki="Euler_line" href="https://en.wikipedia.org/wiki/Euler_line" target="_blank" rel="noopener">Euler line</a>. Four points at a time lie on a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>, for instance B, C, Ib, Ic. By <a class="wiki-term" data-wiki="Power_of_a_point" href="https://en.wikipedia.org/wiki/Power_of_a_point" target="_blank" rel="noopener">power of a point</a>, K has the same power in the circumcircle of ABC, the circumcircle of the excentral triangle and that cyclic circle. So K, L and M lie on the <a class="wiki-term" data-wiki="Radical_axis" href="https://en.wikipedia.org/wiki/Radical_axis" target="_blank" rel="noopener">radical axis</a> of the first two circles: it is perpendicular to IO, and DE inherits that right angle through being parallel to KLM.</p>
+
+      <h2>What the original applet shows</h2>
+      <p>The <a href="https://www.cut-the-knot.org/Curriculum/Geometry/InAndCircumcenterC.shtml" target="_blank" rel="noopener">cut-the-knot article</a> now uses a GeoGebra picture, but a <a href="https://web.archive.org/web/20070714024437/http://www.cut-the-knot.org/Curriculum/Geometry/InAndCircumcenterC.shtml" target="_blank" rel="noopener">2007 archive</a> of that same address embeds <code>CODE="InAndCircumcenterC"</code> at 450 × 450 with names hidden. Its five switches and its two-pixel guards are kept here. Unlike the sibling applets — one draws the incircle feet, another proves the result with a point F on the circumcircle — this one adds the excenters and the radical-axis proof. Its own logic test compares the drawing with a second transcription of the Java construction on every well-defined triangle in a seeded spread.</p>
+
+      <p class="tip">Tick <em>Center line</em>, then drag C until the status reads 30°: DE and IO match in length while staying at right angles. Tick <em>Circle A</em> to see the cyclic quadrilateral behind K.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/InAndCircumcenterC.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="in-and-circumcenter-c-core.js"></script>
+<script src="in-and-circumcenter-c.js"></script>
+</body>
+</html>
