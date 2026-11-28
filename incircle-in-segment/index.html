@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Incircle In Segment &mdash; coolmaths</title>
+<meta name="description" content="A small circle is tucked between a chord and a big circle. Move its touching point: will the two touching points and the bottom of the big circle always line up?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/incircle-in-segment/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Incircle In Segment">
+<meta property="og:description" content="A small circle is tucked between a chord and a big circle. Move its touching point: will the two touching points and the bottom of the big circle always line up?">
+<meta property="og:url" content="https://coolmaths.ai/incircle-in-segment/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .big-circle { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .chord { stroke: var(--accent); stroke-width: 2.5; }
+  #board .incircle { fill: var(--accent); fill-opacity: 0.16; stroke: var(--accent); stroke-width: 2.5; }
+  #board .joining-line { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .guide { fill: none; stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; }
+  #board .guide-centre { stroke: var(--accent); }
+  #board .guide-radius { stroke: var(--ink); }
+  #board .guide-proof { stroke: var(--good); }
+  #board .dot { stroke: var(--stage); stroke-width: 1; }
+  #board .dot-muted { fill: var(--muted); }
+  #board .dot-touch { fill: var(--accent); }
+  #board .dot-m { fill: var(--good); }
+  #board .point-label {
+    fill: var(--text); font: 600 0.85rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="incircle-in-segment" data-kind="demo">
+<main id="main">
+  <h1>Incircle In Segment</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: a small circle sits in a big circle, touching a straight chord and the big circle.<br>
+    <strong>How to play:</strong> Drag point A, or focus it and use the arrow keys, to move the chord. Tick the box for the proof lines and press Reset to start over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 300" role="group"
+         aria-label="A circle with a horizontal chord, a smaller circle touching the chord at A and the big circle at B, and a line through A, B and the bottom point M"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="hint" type="checkbox"> Show proof lines</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the drawing">Reset drawing</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the touching point A and the little circle changes size and position. Yet the line through its two touching points always passes through the same bottom point of the big circle. That point is the midpoint of the arc on the other side of the chord.</p>
+
+      <h2>One line through three points</h2>
+      <p>The claim on the original page is exact: a <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord</a> <code>ST</code> cuts a <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> with centre <code>O</code>. A circle inside the <a class="wiki-term" data-wiki="Circular_segment" href="https://en.wikipedia.org/wiki/Circular_segment" target="_blank" rel="noopener">circular segment</a> touches the chord at <code>A</code> and the outer circle at <code>B</code>. If <code>M</code> is the midpoint of the arc cut off by <code>ST</code> that does not contain <code>B</code>, then <code>A</code>, <code>B</code> and <code>M</code> lie on one line. The logic test checked this, and the tangency and arc-midpoint facts, at every one of 500-plus positions of <code>A</code>; the largest departure was less than a billionth of a board unit.</p>
+
+      <h2>Why the chord stays flat</h2>
+      <p>The applet keeps <code>M</code> at the bottom of the circle. An <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">inversion</a> centred at <code>M</code> that swaps <code>A</code> with <code>B</code> turns the outer circle into the chord: a line parallel to the tangent at <code>M</code>, hence horizontal. If <code>h = M.y - A.y</code> and <code>q = MA&sup2;</code>, the ray <code>MA</code> meets the circle again at <code>B</code>, scaled by <code>2R h / q</code>. The small circle then has radius <code>rho = R(1 - q/(2Rh))</code>, centre <code>rho</code> above <code>A</code>, and it is tangent to both circles. It is largest, with radius <code>R/2</code>, when <code>A</code> is the centre.</p>
+
+      <h2>Two short proofs</h2>
+      <p>Let <code>O'</code> be the small centre. The triangle <code>AO'B</code> is isosceles because <code>O'A = O'B = rho</code>. Extend <code>AB</code> past <code>A</code> to meet the line <code>OM</code> at <code>N</code>: triangles <code>AO'B</code> and <code>NOB</code> share the angle at <code>B</code>, and <code>ON</code> is parallel to <code>O'A</code>, so <code>NOB</code> is isosceles too and <code>OB = ON = R</code>. That forces <code>N = M</code>. Or, in the language of <a class="wiki-term" data-wiki="Homothetic" href="https://en.wikipedia.org/wiki/Homothetic" target="_blank" rel="noopener">homothety</a>, the two circles are homothetic with centre <code>B</code>; the lowest point of the small circle maps to the lowest point of the big one, which is <code>M</code>. Corresponding points of a homothety line up with its centre.</p>
+
+      <h2>From the old applet</h2>
+      <p>This is the single-circle theorem. Its sibling <em>Incircle In Segment 1</em> draws two circles in the same segment and claims that their common chord, the radical axis, passes through <code>M</code>, using <code>MA &times; MB = MT&sup2;</code>. Here the Java applet draws the inscribed circle by inversion, paints the inverted circle and the extended chord, and offers a Hint checkbox. The Java page has that checkbox twice because of a copied panel; this page shows it once. <code>A</code> starts at a fixed spot instead of a random one and is kept inside the disc, where the inscribed circle really exists; <code>M</code> stays fixed at the bottom as it does on this page. Colours and the SVG replace the applet's magenta, blue and dark green.</p>
+
+      <p class="tip">Try putting A exactly at the centre: the chord through it is a diameter, and the small circle reaches half the big radius.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/IncircleInSegment.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="incircle-in-segment-core.js"></script>
+<script src="incircle-in-segment.js"></script>
+</body>
+</html>
