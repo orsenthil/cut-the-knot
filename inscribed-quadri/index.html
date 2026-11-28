@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inscribed Quadri &mdash; coolmaths</title>
+<meta name="description" content="Drag four corners round a circle and watch the centres of the four triangles inside. Do their own centres really lie on one straight line, in the same proportions every time?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/inscribed-quadri/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Inscribed Quadri">
+<meta property="og:description" content="Drag four corners round a circle and watch the centres of the four triangles inside. Do their own centres really lie on one straight line, in the same proportions every time?">
+<meta property="og:url" content="https://coolmaths.ai/inscribed-quadri/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+    margin: 0 auto;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circum { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 6; }
+  #board .quad { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .euler { fill: none; stroke: var(--good); stroke-width: 1.5; opacity: 0.7; }
+  #board .homo-H { stroke: var(--bad); stroke-width: 1.25; opacity: 0.5; }
+  #board .homo-N { stroke: var(--accent); stroke-width: 1.25; opacity: 0.5; }
+  #board .homo-G { stroke: var(--good); stroke-width: 1.25; opacity: 0.5; }
+  #board .family-H { fill: none; stroke: var(--bad); stroke-width: 2; }
+  #board .family-N { fill: none; stroke: var(--accent); stroke-width: 2; }
+  #board .family-G { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .maltitude { stroke: var(--highlight); stroke-width: 2; opacity: 0.85; }
+  #board .simson { stroke: var(--text); stroke-width: 2.5; stroke-dasharray: 7 5; }
+  #board .nine-circle { fill: none; stroke: var(--accent); stroke-width: 1.75; opacity: 0.75; }
+  #board .centre-line { stroke: var(--highlight); stroke-width: 2; }
+  #board .dot-orth { fill: var(--bad); stroke: var(--stage); stroke-width: 1.5; }
+  #board .dot-nine { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .dot-centroid { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .dot-o { fill: var(--muted); stroke: var(--stage); stroke-width: 1.5; }
+  #board .dot-h { fill: var(--highlight); stroke: var(--ink); stroke-width: 1.5; }
+  #board .dot-n { fill: var(--accent); stroke: var(--ink); stroke-width: 1.5; }
+  #board .dot-g { fill: var(--good); stroke: var(--ink); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="inscribed-quadri" data-kind="demo">
+<main id="main">
+  <h1>Inscribed Quadri</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a drawing, not a game: four special dots from a loop of four corners always sit on one straight line.<br>
+    <strong>How to play:</strong> Drag A, B, C or D round the ring, or focus a corner and use the arrow keys. Tick the boxes to show the dots, lines and circles, and press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Four draggable corners on a circle, with their four triangles' centre points, Euler lines, nine-point circles, Simson lines and maltitudes"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="optOrthocenters" type="checkbox"> Orthocenters</label>
+    <label><input id="optNinePoints" type="checkbox"> Nine points centers</label>
+    <label><input id="optCentroids" type="checkbox"> Centroids</label>
+    <label><input id="optEulerLines" type="checkbox"> Euler lines</label>
+    <label><input id="optHomothety" type="checkbox"> Homotheties</label>
+    <label><input id="optQuadrilaterals" type="checkbox"> Quadrilaterals</label>
+    <label><input id="optNinePointCircles" type="checkbox"> Nine point circles</label>
+    <label><input id="optMaltitudes" type="checkbox"> Maltitudes</label>
+    <label><input id="optSimsons" type="checkbox"> Simsons</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Four corners on a circle make four triangles. Each triangle has its own centre points, yet the four copies of each centre keep the same shape and their own centres fall neatly on one line. The boxes show the pieces one layer at a time.</p>
+
+      <h2>One triangle, four centres</h2>
+      <p>In any triangle the <a class="wiki-term" data-wiki="Orthocenter" href="https://en.wikipedia.org/wiki/Orthocenter" target="_blank" rel="noopener">orthocenter</a> H, the <a class="wiki-term" data-wiki="Nine-point_center" href="https://en.wikipedia.org/wiki/Nine-point_center" target="_blank" rel="noopener">nine-point center</a> N, the <a class="wiki-term" data-wiki="Centroid" href="https://en.wikipedia.org/wiki/Centroid" target="_blank" rel="noopener">centroid</a> G and the <a class="wiki-term" data-wiki="Circumcenter" href="https://en.wikipedia.org/wiki/Circumcenter" target="_blank" rel="noopener">circumcenter</a> O lie on the <a class="wiki-term" data-wiki="Euler_line" href="https://en.wikipedia.org/wiki/Euler_line" target="_blank" rel="noopener">Euler line</a> in that order. N is halfway from H to O and G is two thirds of the way: <code>HN:NO = 1:1</code> and <code>HG:GO = 2:1</code>. With the Euler lines box ticked you can see all four lines pass through the common O.</p>
+
+      <h2>Four triangles on one circle</h2>
+      <p>For a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a> ABCD the four triangles BCD, CDA, DAB and ABC share a circumcircle, so all four circumcentres are the same O. Write H<sub>A</sub>, N<sub>A</sub>, G<sub>A</sub> for the centres of BCD and so on. Tick Quadrilaterals and Homotheties: the three new quadrilaterals match ABCD, scaled by <code>-1</code> for the H copy, <code>-1/2</code> for the N copy and <code>-1/3</code> for the G copy. Compared with each other about O, the H copy is three times the G copy and the N copy is <code>3/2</code> times it. These are <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homotheties</a>.</p>
+
+      <h2>The remarkable line</h2>
+      <p>Each scaled copy has its own centre, H, N and G. The page's exact claim is that H, N, G and O are collinear and that <code>HN:NO = 1:2</code> and <code>HG:GO = 1:1</code> — different from the ratios inside one triangle. Put O at the origin and write the four corners as unit complex numbers <code>a, b, c, d</code>. The centre of the copy made with <code>P(t) = t·(b+c+d)</code> is <code>Q(t) = t(a+b+c+d)/(1+t)</code>, so <code>H = Q(1) = s/2</code>, <code>N = Q(1/2) = s/3</code> and <code>G = Q(1/3) = s/4</code>, where <code>s = a+b+c+d</code>. These three points and O lie at <code>1/2, 1/3, 1/4</code> of s, which gives the claimed ratios. The logic test checks them, and all the other claims above, on two thousand generated shapes.</p>
+
+      <h2>One point, many lines</h2>
+      <p>From <code>N<sub>A</sub> = (b+c+d)/2</code> we get <code>|H - N<sub>A</sub>| = |a|/2 = R/2</code>: H is the circumcentre of the four nine-point centres, and all four nine-point circles pass through H. The <a class="wiki-term" data-wiki="Simson_line" href="https://en.wikipedia.org/wiki/Simson_line" target="_blank" rel="noopener">Simson lines</a> of the four corners also pass through H, as do the four maltitudes (perpendiculars from a side's midpoint to the opposite side) and the perpendicular from a diagonal's midpoint to the other diagonal — which is why H is called the <a class="wiki-term" data-wiki="Anticenter" href="https://en.wikipedia.org/wiki/Anticenter" target="_blank" rel="noopener">anticenter</a>. The test checks all four families of lines independently of the drawing code.</p>
+
+      <p class="tip">Tick Quadrilaterals and Homotheties, then drag one corner: the three copy shapes keep their sizes relative to ABCD while the line through H, N, G and O barely tilts.</p>
+      <p>The manifest's address for this applet pointed to a different cut-the-knot page about diagonal ratios; the applet itself is embedded on the "Remarkable Line in Cyclic Quadrilateral" page linked below. The applet's own info string still calls it "Pairs of incricles in a quadrilateral", a copied label with no counterpart in its code. Its nine checkbox names, starting angles, circle size and near-parallel safeguards are kept as they are; the modern look and the SVG handles are new.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/InscribedQuadri.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="inscribed-quadri-core.js"></script>
+<script src="inscribed-quadri.js"></script>
+</body>
+</html>
