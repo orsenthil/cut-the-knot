@@ -829,6 +829,16 @@ const CORE_GLOBALS = {
   "incircle-in-segment-1/incircle-in-segment-1-core.js": ["IncircleInSegment1Core"],
   "incircles-circumcircles/incircles-circumcircles-core.js": ["IncirclesCircumcirclesCore"],
   "incircles-in-quadri/incircles-in-quadri-core.js": ["IncirclesInQuadriCore"],
+  "in-ex-circum/in-ex-circum-core.js": ["InExCircumCore"],
+  "inradius-semiperimeter/inradius-semiperimeter-core.js": ["InradiusSemiperimeterCore"],
+  "inscribed-angle/inscribed-angle-core.js": ["InscribedAngleCore"],
+  "inscribed-angles/inscribed-angles-core.js": ["InscribedAnglesCore"],
+  "inscribed-quadri/inscribed-quadri-core.js": ["InscribedQuadriCore"],
+  "inscribed-square/inscribed-square-core.js": ["InscribedSquareCore"],
+  "inscribed-square-2/inscribed-square-2-core.js": ["InscribedSquare2Core"],
+  "inscriptible-quadri/inscriptible-quadri-core.js": ["InscriptibleQuadriCore"],
+  "in-tangent/in-tangent-core.js": ["InTangentCore"],
+  "integer-sine/integer-sine-core.js": ["IntegerSineCore"],
 };
 
 const games = [];

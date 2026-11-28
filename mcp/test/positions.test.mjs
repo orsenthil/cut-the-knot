@@ -2435,6 +2435,16 @@ check("incircle-in-segment: A, B and the arc midpoint are collinear", read["inci
 check("incircle-in-segment-1: the radical axis passes through M", read["incircle-in-segment-1"]?.core.radicalAxis.Mresidual < 1e-8 && read["incircle-in-segment-1"].core.intersections.count === 2 && read["incircle-in-segment-1"].savedVsCore !== undefined);
 check("incircles-circumcircles: three centres on the big circle and one small circle", read["incircles-circumcircles"]?.reading.claims.all === true && read["incircles-circumcircles"].reading.claims.centersOnCircumcircle === true && read["incircles-circumcircles"].reading.claims.concentric === true);
 check("incircles-in-quadri: Pitot gap positive so neither pair touches", read["incircles-in-quadri"]?.savedMatchesCore === true && read["incircles-in-quadri"].pitotGap > 0 && read["incircles-in-quadri"].touched.both === false);
+check("in-ex-circum: incenter-excenter midpoints lie on the circumcircle", read["in-ex-circum"]?.valid === true && Object.values(read["in-ex-circum"].claims).every(Boolean) === true && read["in-ex-circum"].halfwayPoints.all === true);
+check("inradius-semiperimeter: the six pieces fill the s by r rectangle", read["inradius-semiperimeter"]?.reading.areaEqualsSr === true && read["inradius-semiperimeter"].reading.rectangleArea === read["inradius-semiperimeter"].reading.triangleArea && read["inradius-semiperimeter"].reading.pieceCount === 6);
+check("inscribed-angle: central angle twice the inscribed angle", read["inscribed-angle"]?.reading.centralIsTwiceInscribed === true && Math.abs(read["inscribed-angle"].reading.factor - 2) < 1e-9 && read["inscribed-angle"].reading.cyclic.relation === "supplementary");
+check("inscribed-angles: B on the other arc is read as on the opposite side", read["inscribed-angles"]?.coreReading.onCircle === true && read["inscribed-angles"].savedVsCore.circleCenterDistance === 0 && read["inscribed-angles"].coreReading.euclid.arc === "other" && read["inscribed-angles"].coreReading.sameSideOfChordCD === false && read["inscribed-angles"].coreReading.equalTest === false);
+check("inscribed-quadri: the H/N/G collinearity and concurrence claims hold", read["inscribed-quadri"]?.claims.cyclic === true && Object.values(read["inscribed-quadri"].claims).every(Boolean) === true);
+check("inscribed-square: the fitted square side matches the formula", read["inscribed-square"]?.triangle.fittedSideFormula === read["inscribed-square"].triangle.fittedSideCore && read["inscribed-square"].solution.eyesOpen === true && read["inscribed-square"].trial.eyesOpen === false);
+check("inscribed-square-2: the Vecten homothety reproduces the inscribed square", read["inscribed-square-2"]?.checks.valid === true && read["inscribed-square-2"].predictedSide === read["inscribed-square-2"].measuredSide && read["inscribed-square-2"].checks.homothetyError < 1e-8);
+check("inscriptible-quadri: the four dots lie on one circle with equal tangents", read["inscriptible-quadri"]?.valid === true && read["inscriptible-quadri"].dotsOnCircle === true && read["inscriptible-quadri"].reading.inscribed === true && Math.abs(read["inscriptible-quadri"].reading.residuals.pitot) < read["inscriptible-quadri"].reading.tolerance);
+check("in-tangent: the second tangent crosses BC at the incircle contact", read["in-tangent"]?.reading.allClaimsHold === true && read["in-tangent"].reading.secondTangent.passesThroughT === true && Math.abs(read["in-tangent"].reading.secondTangent.ST) < 1e-8);
+check("integer-sine: the ten wrapped dots and the saved cursor agree", read["integer-sine"]?.dotsComputed === 10 && read["integer-sine"].dotsShown === 10 && read["integer-sine"].cursor.x === 63);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -2968,6 +2978,31 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("incircles-circumcircles/three_centers: centres on the circle and one small circle", three.claims.all === true && three.claims.centersOnCircumcircle === true && three.centerOfCenters.sameCircleResidual < 1e-8);
   const quad = runGameLogic("incircles-in-quadri", "pitot_and_touch", {});
   check("incircles-in-quadri/pitot_and_touch: both pairs touch iff Pitot gap vanishes", quad.touch.equivalent === true && quad.pitot.equal === false && quad.touch.both === false);
+}
+
+// The batch-36 tutor actions also run their real cores, not just saved positions.
+{
+  const ex = runGameLogic("in-ex-circum", "midpoints_on_circumcircle", {});
+  check("in-ex-circum/midpoints_on_circumcircle: halfway points are arc midpoints", ex.cl.onCircle === true && ex.cl.arcMidpoint === true && ex.cl.ninePoint === true);
+  const diss = runGameLogic("inradius-semiperimeter", "dissection", { A: [0, 0], B: [4, 0], C: [0, 3] });
+  check("inradius-semiperimeter/dissection: 3-4-5 triangle gives area 6 = 6 x 1", diss.areaEqualsSr === true && diss.semiperimeter === 6 && diss.inradius === 1 && diss.pieceCount === 6);
+  const insA = runGameLogic("inscribed-angle", "inscribed_and_central", {});
+  check("inscribed-angle/inscribed_and_central: 45 degrees and 90 degrees", insA.centralIsTwiceInscribed === true && insA.factor === 2 && insA.inscribedDeg === 45);
+  const insAngles = runGameLogic("inscribed-angles", "arc_angles", {});
+  check("inscribed-angles/arc_angles: same arc equal, other arc supplementary", insAngles.sameArc.euclid.anglesEqual === true && insAngles.otherArc.euclid.anglesSupplementary === true && insAngles.offCircle.staleEqual === true);
+  const quad = runGameLogic("inscribed-quadri", "euler_lines_and_ratios", {});
+  check("inscribed-quadri/euler_lines_and_ratios: HN:NO = 1:2, HG:GO = 1:1", quad.centreLine.holds === true && quad.centreLine.ratios.HNoverNO === 0.5 && quad.centreLine.ratios.HGoverGO === 1 && quad.verdict.allSingleTriangleRatios === true);
+  const sq = runGameLogic("inscribed-square", "homothety", {});
+  check("inscribed-square/homothety: scaling, not central symmetry", sq.homothety.allCornersMap === true && sq.centralSymmetry.equalsFitted === false && sq.fitted.eyesOpen === true);
+  const sq2 = runGameLogic("inscribed-square-2", "inscribed_square", {});
+  check("inscribed-square-2/inscribed_square: side Lh/(L+h) and the Vecten checks", sq2.sideError < 1e-8 && Object.values(sq2.checks).every((v) => v === true || (typeof v === "number" && v < 1e-8)) === true && sq2.inscribedSquareInsideTriangle === true);
+  const iq = runGameLogic("inscriptible-quadri", "equal_tangents_and_pitot", {});
+  check("inscriptible-quadri/equal_tangents_and_pitot: Pitot and equal tangents", iq.inscribed === true && iq.equalTangents.max < iq.tolerance && Math.abs(iq.residuals.pitot) < iq.tolerance);
+  const tan = runGameLogic("in-tangent", "tangent_through_t", {});
+  check("in-tangent/tangent_through_t: tangent meets BC at T", tan.secondTangent.passesThroughT === true && Math.abs(tan.secondTangent.ST) < 1e-8 && tan.allClaimsHold === true);
+  const sine = runGameLogic("integer-sine", "plot", {});
+  const near = runGameLogic("integer-sine", "near_period", {});
+  check("integer-sine/plot + near_period: dots drawn and 44 is only a near-period", sine.dotsComputed === 10 && sine.dotsShown === 10 && near.nearestMultipleOfTwoPi === 7 && near.exactPeriod === false);
 }
 
 // A game with no reader, and a position that makes no sense.

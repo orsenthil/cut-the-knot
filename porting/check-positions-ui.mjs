@@ -1311,6 +1311,19 @@ const GAMES = {
   "incircle-in-segment-1": (page) => dragFirstHandle(page),
   "incircles-circumcircles": (page) => dragFirstHandle(page),
   "incircles-in-quadri": (page) => dragFirstHandle(page),
+  "in-ex-circum": (page) => dragFirstHandle(page),
+  "inradius-semiperimeter": (page) => dragFirstHandle(page),
+  "inscribed-angle": (page) => dragFirstHandle(page),
+  "inscribed-angles": (page) => dragFirstHandle(page),
+  "inscribed-quadri": (page) => dragFirstHandle(page),
+  "inscribed-square": (page) => dragFirstHandle(page),
+  "inscribed-square-2": (page) => dragFirstHandle(page),
+  "inscriptible-quadri": (page) => dragFirstHandle(page),
+  "in-tangent": (page) => dragFirstHandle(page),
+  "integer-sine": async (page) => {
+    await page.locator("#board .sample-handle").first().focus();
+    await page.keyboard.press("ArrowRight");
+  },
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },
