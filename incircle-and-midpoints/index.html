@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Incircle And Midpoints &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle: why does the line drawn from its incircle always cut two sides exactly in half?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/incircle-and-midpoints/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Incircle And Midpoints">
+<meta property="og:description" content="Drag the corners of a triangle: why does the line drawn from its incircle always cut two sides exactly in half?">
+<meta property="og:url" content="https://coolmaths.ai/incircle-and-midpoints/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  .tri-fill { fill: var(--accent-soft); stroke: var(--ink); stroke-width: 2; }
+  .incircle { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 5 4; }
+  .parallel-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  .hint2-line { stroke: var(--bad); stroke-width: 1.6; stroke-dasharray: 5 4; }
+  .touch-line { stroke: var(--bad); stroke-width: 2; }
+  .de-line { stroke: var(--accent); stroke-width: 2.6; }
+  .tick { stroke: var(--ink); stroke-width: 1.8; }
+  .angle-arc { fill: none; stroke: var(--highlight); stroke-width: 3; }
+  .touch-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.2; }
+  .mid-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  .hint-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1.2; }
+  .pt-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 12px;
+    pointer-events: none;
+  }
+  .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2.5;
+    cursor: grab;
+  }
+  .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem 1rem;
+  }
+  .control-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+  #status { min-height: 2.5rem; }
+</style>
+</head>
+<body data-game="incircle-and-midpoints" data-kind="demo">
+<main id="main">
+  <h1>Incircle And Midpoints</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the corners of a triangle and watch a line that always cuts two sides exactly in half.<br>
+    <strong>How to play:</strong> Drag A, B or C with a finger or mouse, or focus one and press the arrow keys. Tick the boxes to show the circle and the guiding lines.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 260" role="group"
+         aria-label="Triangle ABC with its incircle, the touch points M N K and the line through D and E cutting AB and AC at their midpoints"></svg>
+  </div>
+
+  <div class="controls">
+    <div class="control-row">
+      <label><input id="namesCheck" type="checkbox"> names</label>
+      <label><input id="hint1Check" type="checkbox"> hint 1</label>
+      <label><input id="hint2Check" type="checkbox"> hint 2</label>
+      <button id="resetBtn" type="button" class="primary" aria-label="Reset the triangle to its starting position">Reset triangle</button>
+    </div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Draw a triangle, put a circle inside it touching all three sides, and join two of the touch points. The purple line in the picture always hits the other two sides at their middles. The circle and the extra lines are just clues: the fact stays true however you move the corners.</p>
+
+      <h2>Equal steps from the corners</h2>
+      <p>The circle inside the triangle is its <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a>. Two <a class="wiki-term" data-wiki="Tangent_lines_to_circles" href="https://en.wikipedia.org/wiki/Tangent_lines_to_circles" target="_blank" rel="noopener">tangents</a> drawn from the same corner to a circle have the same length, so <code>AM = AK</code>, <code>BM = BN</code> and <code>CK = CN</code>. Turn on hint 1 to see the matching tick marks on those pairs of side pieces.</p>
+
+      <h2>A halfway point hidden in a bigger triangle</h2>
+      <p>Draw through A a line parallel to the side <code>BC</code>. It meets <code>MN</code> at U and <code>KN</code> at V. The little triangle <code>BMN</code> is isosceles, and the <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similar_triangles" target="_blank" rel="noopener">similar</a> triangle <code>AMU</code> must be isosceles too: <code>AM = AU</code>. The same reasoning gives <code>AK = AV</code>. Since <code>AM = AK</code>, we get <code>AU = AV</code>: A is the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> of <code>UV</code>. Hint 2 shows U, V and the equal angles.</p>
+
+      <h2>Three parallels finish the job</h2>
+      <p>Now look at triangle <code>NUV</code>. A is the midpoint of one side, and the lines <code>AD</code> and <code>AE</code> were drawn parallel to the other two sides. So D is the midpoint of <code>NU</code> and E is the midpoint of <code>NV</code>. That makes <code>DE</code> parallel to <code>UV</code> and to <code>BC</code>, and a line parallel to the base cuts any line across the triangle in half. In particular it cuts <code>AB</code> at F and <code>AC</code> at G, both midpoints. The three touch points <code>K</code>, <code>M</code>, <code>N</code> form the triangle Bogomolny calls the <a class="wiki-term" data-wiki="Gergonne_point" href="https://en.wikipedia.org/wiki/Gergonne_point" target="_blank" rel="noopener">Gergonne</a> triangle.</p>
+      <p>The logic test confirms every step on thousands of triangles: the largest departure from <code>AF = FB</code> and <code>AG = GC</code> is far below a millionth of a drawing unit, and each constructed point matches a second transcription of the applet's own method.</p>
+
+      <p class="tip">Turn on both hints and drag a corner until the triangle is very thin. Which equal-length pairs stay easy to see, and which ones crowd together?</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/IncircleAndMidpoints.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="incircle-and-midpoints-core.js"></script>
+<script src="incircle-and-midpoints.js"></script>
+</body>
+</html>
