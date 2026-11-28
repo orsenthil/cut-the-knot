@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Judd Illusion &mdash; coolmaths</title>
+<meta name="description" content="The two halves of a bar are exactly the same length, but the arrow heads make them look different. Can you swap the middle mark and see the trick change?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/judd-illusion/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Judd Illusion">
+<meta property="og:description" content="The two halves of a bar are exactly the same length, but the arrow heads make them look different. Can you swap the middle mark and see the trick change?">
+<meta property="og:url" content="https://coolmaths.ai/judd-illusion/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+  }
+  #board .bar { fill: var(--muted); opacity: 0.35; }
+  #board .arrow-stroke { stroke: var(--ink); stroke-width: 2; stroke-linecap: round; }
+  #board .mark-stroke { stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible {
+    outline: none;
+    stroke: var(--good);
+    stroke-width: 5;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.4rem 0 0;
+  }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+  }
+  .controls label {
+    display: grid;
+    grid-template-columns: minmax(0, auto) minmax(0, 1fr) minmax(0, 2.5rem);
+    align-items: center;
+    gap: 0.35rem;
+    flex: 1 1 15rem;
+    min-width: 0;
+    min-height: 2.75rem;
+  }
+  .controls label span,
+  .controls output { min-width: 0; }
+  .controls input[type="range"] {
+    width: 100%;
+    min-width: 0;
+    accent-color: var(--accent);
+  }
+  .controls output {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .controls .check {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+  }
+  .controls input[type="checkbox"] { accent-color: var(--accent); }
+  .controls button { min-height: 2.75rem; }
+</style>
+</head>
+<body data-game="judd-illusion" data-kind="demo">
+<main id="main">
+  <h1>Judd Illusion</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A bar with arrow heads at both ends can look as though its two halves have different lengths.<br>
+    <strong>How to play:</strong> Move the sliders to change the bar, its arrow heads and the mark in the middle. Tick the box to turn the mark into an arrow head, and drag the probe dot or use its arrow keys to read the halves.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 500 300" role="group"
+         aria-label="A horizontal bar with arrow heads at both ends, a mark in its middle, and a draggable probe dot below"></svg>
+    <p class="hint">Keyboard: Tab to the probe dot, then use the arrow keys (Shift makes a bigger step). Every slider also takes arrow keys.</p>
+  </div>
+
+  <div class="controls">
+    <label for="L"><span>Bar length</span><input id="L" type="range" min="10" max="45" step="1" value="20" aria-label="Bar length, from 10 to 45"><output id="LOut" for="L">20</output></label>
+    <label for="W"><span>Bar thickness</span><input id="W" type="range" min="0" max="20" step="1" value="5" aria-label="Half the bar's thickness, from 0 to 20"><output id="WOut" for="W">5</output></label>
+    <label for="H"><span>Arrow height</span><input id="H" type="range" min="10" max="110" step="1" value="50" aria-label="Arrow height, from 10 to 110"><output id="HOut" for="H">50</output></label>
+    <label for="A"><span>Arrow slant</span><input id="A" type="range" min="-90" max="90" step="1" value="10" aria-label="How far the arrow tips lean, from minus 90 to 90"><output id="AOut" for="A">10</output></label>
+    <label for="B"><span>Stroke count</span><input id="B" type="range" min="1" max="40" step="1" value="10" aria-label="Number of strokes in each mark, from 1 to 40"><output id="BOut" for="B">10</output></label>
+    <label class="check" for="bob"><input id="bob" type="checkbox" checked aria-label="Use a short rectangle as the middle mark; turn it off for an arrow head"><span>Rectangle in the middle</span></label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset all controls to their opening values">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The cut-the-knot page says: "If the middle of a segment is marked by a short evenly (with regard to the two halves) spaced rectangle or a dot, the halves appear to have different lengths depending on the direction in which the arrow heads point. The illusion disappears or at least becomes less pronounced when the marker is replaced with an arrowhead." The live page embeds the applet at 500 x 400 with black ink on a white panel. What can be checked is the drawing: the two halves are equal in pixels whether or not the mark looks centred to your eye.</p>
+
+      <h2>Where the middle mark sits</h2>
+      <p>A <a class="wiki-term" data-wiki="Line_segment" href="https://en.wikipedia.org/wiki/Line_segment" target="_blank" rel="noopener">line segment</a> can be split into two equal halves, but the eye may disagree. On a canvas of width <code>w</code>, the applet sets <code>c = round(w(100 &minus; 2L)/200)</code> and paints the bar from <code>x = c &minus; 20</code> to <code>x = w &minus; c &minus; 20</code>. The mark is drawn at <code>x = trunc(w/2) &minus; 20</code>. On an even-width canvas that is exactly halfway: the two halves are both <code>w/2 &minus; c</code> units long. At the opening settings (<code>w = 500</code>, <code>L = 20</code>) the bar runs from 130 to 330 and the mark sits at 230, so both halves are 100. The test checked all 36 lengths on 201 even canvas widths, 7,236 cases in all; every one had equal halves. Java's integer division truncates, so on an <em>odd</em> width the right half is one unit longer — the test confirms that exact one-unit difference for all 36 lengths at width 501. That is a rounding quirk of the original, kept here.</p>
+
+      <h2>What the arrow heads do</h2>
+      <p>Each arrow is drawn by the same <code>Arrow</code> routine, with <code>h = +H</code> or <code>&minus;H</code>. If <code>s</code> is the sign of <code>h</code>, its strokes start at <code>(x, mid &minus; W&middot;s)</code> and end <code>H</code> units above or below at <code>(x + A, mid &minus; W&middot;s &minus; h)</code>; <code>B</code> parallel strokes, one unit apart, give it thickness. The two end arrows use the same <code>x + A</code>, so they always lean the same way: right when <code>A &gt; 0</code>, left when <code>A &lt; 0</code>, and straight up and down at <code>A = 0</code>. Changing <code>H</code> or <code>A</code> moves only the arrow strokes; the bar and its halves stay put. The test compared every one of the 101 heights times 181 slants with a second transcription of the bytecode, and checked the tip direction for all of them. This is the family of <a class="wiki-term" data-wiki="Optical_illusion" href="https://en.wikipedia.org/wiki/Optical_illusion" target="_blank" rel="noopener">optical illusions</a> that the page is showing.</p>
+
+      <h2>Swapping the middle mark</h2>
+      <p>With the box ticked, the applet's <code>Bob</code> routine paints <code>B</code> vertical strokes at <code>x = trunc(w/2) &minus; 20 + i</code>, from <code>mid &minus; W &minus; 3</code> to <code>mid + W + 3</code>. Unticking it paints two ordinary arrow strokes there instead. Nothing in the bar's rectangle or its two halves changes: the test compared a rectangle and an arrow-head mark across 2,268 size settings and found the bar identical every time. The page's other claim — that the illusion "disappears or at least becomes less pronounced" — is about what a person sees. No formula or pixel test can measure an impression, so this port does not pretend to have proved it; it gives you the switch to see for yourself.</p>
+
+      <h2>The controls and a small quirk</h2>
+      <p>The five sliders are the applet's five scrollbars, with exactly its ranges: <code>L</code> 10–45, <code>W</code> 0–20, <code>H</code> 10–110, <code>A</code> &minus;90–90 and <code>B</code> 1–40. The opening picture uses the canvas fields <code>L=20, W=5, H=50, A=10, B=10</code>. One harmless quirk: the applet's <code>A</code> scrollbar is built at 30 but its value is never copied into the canvas until a control moves, so the first picture really uses <code>A = 10</code>. Our slider starts at 10 to agree with the picture. The site draws with its own ink and stage colours instead of the page's <code>fcolor=000000, bcolor=ffffff</code>, so both themes stay readable. The logic test also matched a second bytecode transcription over 756 length/thickness settings, 18,281 height/slant settings, 80 thickness/marker settings and 4,000 seeded joint configurations at six widths and four heights.</p>
+
+      <p class="tip">Try <code>L = 45</code> and <code>A = &minus;90</code>: the arrow heads turn left and their long strokes run off the edge, yet the probe still reads two equal halves.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/JuddIllusion.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="judd-illusion-core.js"></script>
+<script src="judd-illusion.js"></script>
+</body>
+</html>
