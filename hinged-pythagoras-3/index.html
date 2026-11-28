@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hinged Pythagoras 3 &mdash; coolmaths</title>
+<meta name="description" content="Two squares sit side by side. Turn the two hinged triangles a quarter turn: why does their new outline have the same area as a tilted square on the hypotenuse?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hinged-pythagoras-3/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hinged Pythagoras 3">
+<meta property="og:description" content="Two squares sit side by side. Turn the two hinged triangles a quarter turn: why does their new outline have the same area as a tilted square on the hypotenuse?">
+<meta property="og:url" content="https://coolmaths.ai/hinged-pythagoras-3/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 46rem; margin: 0 auto; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board .stair { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; }
+  #board .piece { stroke: var(--ink); stroke-width: 1.4; stroke-linejoin: round; }
+  #board .piece-left { fill: var(--accent); fill-opacity: 0.25; }
+  #board .piece-right { fill: var(--highlight); }
+  #board .guide { stroke: var(--accent); stroke-width: 2.4; stroke-dasharray: 7 6; }
+  #board .cut { stroke: var(--ink); stroke-width: 2.6; }
+  #board .csquare { fill: none; stroke: var(--good); stroke-width: 3.4; }
+  #board .hinge { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .drag-ring { fill: none; stroke: var(--bad); stroke-width: 2.4; }
+  #board .area-label { fill: var(--text); font-size: 19px; font-weight: 700; text-anchor: middle; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .m-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 6; }
+  #readout {
+    margin: 0.5rem 0 0; text-align: center; font-size: 0.95rem;
+    font-variant-numeric: tabular-nums; overflow-wrap: anywhere; color: var(--text);
+  }
+  .turn-row {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.7rem;
+    width: 100%; max-width: 46rem; margin: 0.5rem auto 0;
+  }
+  .turn-row label { font-size: 0.95rem; }
+  .turn-row input[type="range"] { flex: 1 1 10rem; min-width: 8rem; accent-color: var(--accent); }
+  #turnOut { min-width: 3.4rem; text-align: right; font-variant-numeric: tabular-nums; }
+  #status { width: 100%; max-width: 46rem; min-height: 3em; }
+</style>
+</head>
+<body data-game="hinged-pythagoras-3" data-kind="demo">
+<main id="main">
+  <h1>Hinged Pythagoras 3</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore, not a game to win: two squares and two swinging triangles can be turned into a tilted square.<br>
+    <strong>How to play:</strong> Drag the round point along the bottom of the left shape, or focus it and use the arrow keys. Move the turn slider, then press Turn to 90° or Reset.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 460" role="group"
+         aria-label="Two staircases, each made of a square of side a beside a square of side b. Two triangles are marked in each. The right-hand pair turns about two hinges; at 90 degrees the outline becomes a tilted square of side c. Drag the green point M along the bottom of the left staircase to change a and b."></svg>
+    <p id="readout" aria-live="polite"></p>
+  </div>
+
+  <div class="controls turn-row">
+    <label for="turnRange">Turn the hinged triangles</label>
+    <input id="turnRange" type="range" min="0" max="95" step="1" value="0"
+           aria-label="Rotation of the hinged triangles, from 0 to 95 degrees; the Java scrollbar stops at 90 degrees">
+    <output id="turnOut" for="turnRange">0°</output>
+  </div>
+
+  <div class="controls">
+    <button id="turnBtn" type="button" class="primary" aria-label="Turn the hinged triangles to 90 degrees">Turn to 90°</button>
+    <button id="resetBtn" type="button" aria-label="Reset the hinge and the turn to their starting values">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The applet is a droodle: "What is it?" It draws two copies of a staircase made from a small square of side a and a larger one of side b. Two <a class="wiki-term" data-wiki="Right_triangle" href="https://en.wikipedia.org/wiki/Right_triangle" target="_blank" rel="noopener">right triangles</a> are marked in each copy. Turn the right-hand pair a quarter turn and the outline becomes a tilted square. The pieces never stretch, so whatever the eye sees, their total space cannot change.</p>
+
+      <h2>Two squares side by side</h2>
+      <p>Point M sits on the bottom of the left staircase. The two lengths are <code>a = M.x − L0.x</code> and <code>b = L1.x − M.x</code>, so the whole bottom edge is <code>a + b</code>. The staircase is just a square of side b next to a square of side a: its <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> is <code>a² + b²</code>. The marked triangles have legs a and b and sloping side <code>c = √(a² + b²)</code>; their area is <code>ab/2</code> each. The dashed line is the cut between the two squares.</p>
+
+      <h2>What the quarter turn does</h2>
+      <p>One triangle swings about the top corner of the b-square, the other about the top corner of the a-square, in opposite directions. A swing is a rigid move, so each triangle keeps its three sides and its area — an <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a>. The two fixed lines from the hinges to the moving point also have length c. At exactly <code>90°</code> the two free corners meet, and those four length-c lines enclose a square of side c and area <code>c²</code>. Since the same four pieces fill the two smaller squares before the turn, <code>c² = a² + b²</code>, the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a>. This is a <a class="wiki-term" data-wiki="Dissection_puzzle" href="https://en.wikipedia.org/wiki/Dissection_puzzle" target="_blank" rel="noopener">hinged dissection</a>. The logic test checked the square and the tiling for all 201 whole-pixel hinge positions at 90°, every angle from 0° to 90°, and every drawn point against a second reading of the applet's bytecode.</p>
+
+      <h2>The original page and its siblings</h2>
+      <p>The applet's own page, <a href="https://www.cut-the-knot.org/Curriculum/Geometry/HingedPythagoras3.shtml" target="_blank" rel="noopener">Pythagorean Theorem By Hinged Dissection I: What is it?</a>, still embeds <code>APPLET CODE="HingedPythagoras3" WIDTH=640 HEIGHT=460</code> and points to <a href="https://www.cut-the-knot.org/pythagoras/index.shtml#2" target="_blank" rel="noopener">Proof #2</a>. That proof says: start with squares of sides a and b side by side, draw two triangles with sides a, b, c, then rotate them 90° about their top vertices, one clockwise and one counterclockwise; "the resulting shape is a square with the side c and area c²." The test confirms that claim for every hinge position. It is a different dissection from Hinged Pythagoras (Proof #9: two equal squares cut into four triangles) and Hinged Pythagoras 2 (Proof #10: four triangles inside one square). The applet's info string says "Proof #36", which is another dissection by J. E. Böttcher; this port follows the page's Proof #2. Two harmless quirks are kept: the scrollbar is declared 0–95 but its thumb of 5 makes Java stop the value at 90, and at 90° the applet computes a maximum of two corners that it never uses.</p>
+
+      <p class="tip">Drag M close to one end: one triangle becomes very thin. Press Turn to 90° — the tilted square still has area a² + b².</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HingedPythagoras3.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="hinged-pythagoras-3-core.js"></script>
+<script src="hinged-pythagoras-3.js"></script>
+</body>
+</html>
