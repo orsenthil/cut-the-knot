@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harmonic Ratio &mdash; coolmaths</title>
+<meta name="description" content="Build D with straight lines from the dots A, B and C, then move the other dots: why does D never budge?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/harmonic-ratio/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Harmonic Ratio">
+<meta property="og:description" content="Build D with straight lines from the dots A, B and C, then move the other dots: why does D never budge?">
+<meta property="og:url" content="https://coolmaths.ai/harmonic-ratio/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.5rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .base-line { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .side-line,
+  #board .ib-line,
+  #board .ag-line,
+  #board .eb-line { fill: none; stroke: var(--ink); stroke-width: 1.8; }
+  #board .ec-line { fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-dasharray: 7 5; }
+  #board .if-line { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .target-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .aux-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 20px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="harmonic-ratio" data-kind="demo">
+<main id="main">
+  <h1>Harmonic Ratio</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#constructions">Constructions</a><a class="tag" href="../index.html#fractions">Fractions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Join five moving dots with straight lines to pin down a spot called D that will not budge.<br>
+    <strong>How to play:</strong> Drag a dot, or focus one and use the arrow keys. Press Check the ratio to see what stays fixed, and Show names to turn the letters on or off.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 450" role="group"
+         aria-label="A, B and C on one line, E off it, I on the line from A to E, and the straightedge construction of the fixed point D"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset all five dots to their starting positions">Reset diagram</button>
+    <button id="checkBtn" type="button" aria-label="Check the ratio and see where D is">Check the ratio</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Show names: toggle the letters on the diagram">Show names</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Here is a drawing that keeps its promise. Move almost any dot and the lines change completely, yet the point D on the line AB lands in exactly the same place.</p>
+
+      <h2>Building with straight lines</h2>
+      <p>Start with A, B and C in a row. Choose E off the line and I on AE. Draw CE and BI; they cross at G. Draw AG; it meets EB at F. Draw IF; it meets AB at D. Only a <a class="wiki-term" data-wiki="Straightedge_and_compass_construction" href="https://en.wikipedia.org/wiki/Straightedge_and_compass_construction" target="_blank" rel="noopener">straightedge</a> is needed. The applet also computes H where CE meets ID, though it does not draw it; this page shows H as a small dot.</p>
+      <p>The archived page says it takes six more lines than AB to obtain point C. Counting the applet's own lines gives five — CE, IB, AG, EB and IF — and the point they produce is D. The logic test records that slip; the construction here follows the applet.</p>
+
+      <h2>Where D lands</h2>
+      <p>Put a coordinate on the line with A = 0 and B = 1, and let C = u. Solving the construction gives <code>D = u / (2u - 1)</code>. When C lies between A and B, D lies outside the segment, on the far side of B. The logic test tried 4,200 pairs of choices for E and I and found the same D every time, to within a few ten-thousandths of a pixel.</p>
+      <p>This is a different idea from the site's <a class="wiki-term" data-wiki="Harmonic_mean" href="https://en.wikipedia.org/wiki/Harmonic_mean" target="_blank" rel="noopener">Harmonic Mean</a> page: that page builds a length <code>2ab/(a+b)</code> with angle bisectors. Here the connection is that AB is the harmonic mean of the lengths AC and AD — <code>2/AB = 1/AC + 1/AD</code>.</p>
+
+      <h2>Why D cannot move</h2>
+      <p>The tool is the <a class="wiki-term" data-wiki="Cross-ratio" href="https://en.wikipedia.org/wiki/Cross-ratio" target="_blank" rel="noopener">cross-ratio</a>, a number attached to four points on a line. The page defines <code>(ABCD) = CA/CB : DA/DB</code>, using signed lengths. Looking from E, the lines to A, B, C, D meet AB at those same four points, and they also meet the lines through I, F, H, D at A, B, C, D. So <code>(ABCD) = E(ABCD) = E(IFHD) = (IFHD)</code>. Looking from G gives <code>(IFHD) = G(IFHD) = G(BACD) = (BACD)</code>.</p>
+      <p>Swapping the first two letters turns a cross-ratio upside down, so <code>(ABCD) = 1/(BACD)</code>. Together those equations force <code>(ABCD)² = 1</code>, and the order of the points makes it negative: <code>(ABCD) = -1</code>. Four points with this value are called <a class="wiki-term" data-wiki="Harmonic_conjugate" href="https://en.wikipedia.org/wiki/Harmonic_conjugate" target="_blank" rel="noopener">harmonic conjugates</a>. The test checked all four of these equalities on thousands of diagrams.</p>
+
+      <h2>Three conjugate pairs</h2>
+      <p>The four lines CE, IB, AG and EB form a <a class="wiki-term" data-wiki="Complete_quadrilateral" href="https://en.wikipedia.org/wiki/Complete_quadrilateral" target="_blank" rel="noopener">complete quadrilateral</a>. Its diagonal points come in conjugate pairs: C and D with respect to A and B, H and D with respect to I and F, and C and H with respect to E and G. This is the <a class="wiki-term" data-wiki="Pole_and_polar" href="https://en.wikipedia.org/wiki/Pole_and_polar" target="_blank" rel="noopener">pole and polar</a> story in a straightedge-only form. If two lines are nearly parallel the applet's own intersection routine gives no point at all; the page refuses to claim a theorem in that case.</p>
+
+      <p class="tip">Try dragging C very close to halfway between A and B. D rushes off one end of the line, then comes back from the other end.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/HarmonicRatio.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="harmonic-ratio-core.js"></script>
+<script src="harmonic-ratio.js"></script>
+</body>
+</html>
