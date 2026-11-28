@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inversion Demo &mdash; coolmaths</title>
+<meta name="description" content="Drag the circles and watch each one turn into its own picture inside a circle. What shape does a circle become when it passes through the centre?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/inversion-demo/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Inversion Demo">
+<meta property="og:description" content="Drag the circles and watch each one turn into its own picture inside a circle. What shape does a circle become when it passes through the centre?">
+<meta property="og:url" content="https://coolmaths.ai/inversion-demo/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 38rem;
+    padding: 0.5rem;
+    overflow-x: auto;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    min-width: 20rem;
+    height: auto;
+    touch-action: none;
+  }
+  #board .radius-line { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .inv-circle { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .target-ring { fill: none; stroke-width: 3; }
+  #board .circle-hit { fill: none; stroke: transparent; stroke-width: 18; pointer-events: stroke; cursor: move; }
+  #board .image-circle { fill: none; stroke-width: 3; stroke-dasharray: 9 6; }
+  #board .image-line { stroke-width: 3; stroke-dasharray: 9 6; }
+  #board .palette-0 { stroke: #cc5555; }
+  #board .palette-1 { stroke: #4ba24b; }
+  #board .palette-2 { stroke: #7079c8; }
+  #board .palette-3 { stroke: #cc5555; }
+  #board .palette-4 { stroke: #3fa23f; }
+  #board .palette-5 { stroke: #5a78d8; }
+  #board .palette-6 { stroke: #d45a5a; }
+  #board .palette-7 { stroke: #b47e7e; }
+  #board .palette-8 { stroke: #b45ab4; }
+  #board .palette-9 { stroke: #b28c2a; }
+  #board .pt-label {
+    fill: var(--text);
+    font-size: 1rem;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 0.8rem;
+  }
+</style>
+</head>
+<body data-game="inversion-demo" data-kind="demo">
+<main id="main">
+  <h1>Inversion Demo</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> No one wins here: the picture shows what each coloured circle turns into inside the big circle.<br>
+    <strong>How to play:</strong> Drag O or A to change the big circle, drag a coloured circle or its two dots to change that circle, and press "Add circle" or "Remove last circle". You can also press Tab and use the arrow keys on any dot.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 450" role="group"
+         aria-label="A circle of inversion, coloured circles and their dashed inverted images"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="addBtn" type="button" class="primary" aria-label="Add a new coloured circle and its image">Add circle</button>
+    <button id="removeBtn" type="button" aria-label="Remove the last coloured circle">Remove last circle</button>
+    <button id="resetBtn" type="button" aria-label="Put the picture back as it was at the start">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The big circle is the "mirror". Its centre is O and A sits on its rim. Every other circle has its own photograph in this mirror, drawn dashed. Drag a circle and its photograph moves in a way that seems strange at first, but nothing about it is random.</p>
+
+      <h2>Each point hops along a line through O</h2>
+      <p>In <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">inversion</a> in a circle of radius R, a point X and its image X&prime; lie on the same ray from O with <code>OX &times; OX&prime; = R&sup2;</code>. Near points go far and far points come near; O itself has no image. The logic test checked this product and the distance rule <code>P&prime;Q&prime; = R&sup2; PQ / (OP &times; OQ)</code> on 500 pairs of points.</p>
+
+      <h2>A circle becomes a circle &mdash; or a line</h2>
+      <p>Write d for the distance from O to a circle's centre and r for that circle's radius. Its image is a circle with centre on the same ray, scaled by <code>k = R&sup2; / (d&sup2; &minus; r&sup2;)</code>, and radius <code>|k| r</code>. When the circle goes through O, <code>d&sup2; = r&sup2;</code> and the formula breaks down: the image is a straight line. Both claims on the page were checked on hundreds of circles, including sample points that must land on the image. The old applet switches to the line drawing a little early, whenever <code>|d&sup2; &minus; r&sup2;| &le; 100</code> in its 600 by 450 drawing; that is a drawing tolerance, kept here so the picture matches the applet.</p>
+
+      <h2>Circles at right angles do not change</h2>
+      <p>A circle whose <a class="wiki-term" data-wiki="Orthogonality" href="https://en.wikipedia.org/wiki/Orthogonality" target="_blank" rel="noopener">tangents</a> meet the big circle at right angles satisfies <code>d&sup2; = R&sup2; + r&sup2;</code>. Then <code>k = 1</code>, so its image is exactly itself. The page calls these circles invariant, and the logic test confirmed it for 400 such circles. Because angles keep their size, inversion is a <a class="wiki-term" data-wiki="Conformal_map" href="https://en.wikipedia.org/wiki/Conformal_map" target="_blank" rel="noopener">conformal</a> map: invert twice and you are back where you started.</p>
+
+      <h2>What changed from the old page</h2>
+      <p>The original page is "Inversion Tool". A <a href="https://web.archive.org/web/20060429223730/http://www.cut-the-knot.org/Curriculum/Geometry/InversionDemo.shtml" target="_blank" rel="noopener">2006 capture</a> shows the Java applet named InversionDemo embedded there; today the same <a href="https://www.cut-the-knot.org/Curriculum/Geometry/InversionDemo.shtml" target="_blank" rel="noopener">cut-the-knot page</a> runs a GeoGebra remake with the same wording. This port follows the Java code: the same starting points, the same random circle sizes and colours, and the same image formula. The colours and drag limits were adjusted for dark mode and for fingers on a phone; the mathematics was not.</p>
+
+      <p class="tip">Press Add circle twice, then drag a coloured circle until its centre passes through O: watch its dashed image straighten into a line. Drag it back and the line curls up into a circle again.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/InversionDemo.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="inversion-demo-core.js"></script>
+<script src="inversion-demo.js"></script>
+</body>
+</html>
