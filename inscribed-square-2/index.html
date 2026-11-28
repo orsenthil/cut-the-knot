@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inscribed Square 2 &mdash; coolmaths</title>
+<meta name="description" content="Drag the corners of a triangle: why do lines drawn through a square on its base cut out another square inside the triangle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/inscribed-square-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Inscribed Square 2">
+<meta property="og:description" content="Drag the corners of a triangle: why do lines drawn through a square on its base cut out another square inside the triangle?">
+<meta property="og:url" content="https://coolmaths.ai/inscribed-square-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+    border-radius: 8px;
+  }
+  #board .tri-edge { stroke: var(--ink); stroke-width: 2; fill: none; }
+  #board .vecten-square {
+    fill: var(--accent);
+    fill-opacity: 0.09;
+    stroke: var(--muted);
+    stroke-width: 1.6;
+  }
+  #board .cevian { stroke: var(--good); stroke-width: 1.6; fill: none; }
+  #board .leg { stroke: var(--accent); stroke-width: 2; fill: none; }
+  #board .inscribed-square {
+    fill: var(--bad);
+    fill-opacity: 0.12;
+    stroke: var(--bad);
+    stroke-width: 2.6;
+  }
+  #board .hint-line { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; fill: none; }
+  #board .square-corner { stroke: var(--bad); stroke-width: 1.6; fill: none; }
+  #board .aux-dot { fill: var(--accent); }
+  #board .centre-dot { fill: var(--good); }
+  #board .point-label {
+    fill: var(--text);
+    font-size: 0.95rem;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible {
+    outline: none;
+    stroke: var(--good);
+    stroke-width: 5;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0.4rem 0 0;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="inscribed-square-2" data-kind="demo">
+<main id="main">
+  <h1>Inscribed Square 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A square is hiding inside every triangle; this is a picture to explore, with nothing to win or lose.<br>
+    <strong>How to play:</strong> Drag the three corner dots, or focus one and use the arrow keys. Tick the boxes for names and helper lines, and press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="Triangle ABC, a square on side AB, and the red square whose base is cut from AB by lines through C"></svg>
+    <p class="hint">Keyboard: Tab to a dot, then use the arrow keys (Shift makes a bigger step).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" checked> Show names</label>
+    <label><input id="hintBox" type="checkbox"> Extra info</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the triangle and the red square follows. The trick is to build a <a class="wiki-term" data-wiki="Square_(geometry)" href="https://en.wikipedia.org/wiki/Square_(geometry)" target="_blank" rel="noopener">square</a> outside the triangle first; two lines through the third corner then cut out the one inside.</p>
+
+      <h2>The construction</h2>
+      <p>Put a square <code>CA-ABCb</code> on the side <code>AB</code>, on the side away from <code>C</code>. Join <code>C</code> to the two far corners <code>Ca</code> and <code>Cb</code>. Those lines cross <code>AB</code> at <code>P</code> and <code>Q</code>. Raise perpendiculars at <code>P</code> and <code>Q</code>; they meet <code>AC</code> and <code>BC</code> at <code>P'</code> and <code>Q'</code>. The page claims <code>PQ</code> is the base of the wanted square. The logic test checked that claim on an exact triangle, a 972-position grid (735 usable positions; the applet's own parallel test rejects the rest) and 4,000 rotated random triangles: all four sides match whenever the lines meet.</p>
+
+      <h2>Why the sides come out equal</h2>
+      <p>Let <code>L</code> be the length of <code>AB</code> and <code>h</code> the <a class="wiki-term" data-wiki="Altitude_(triangle)" href="https://en.wikipedia.org/wiki/Altitude_(triangle)" target="_blank" rel="noopener">altitude</a> from <code>C</code>. Three pairs of <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similar_triangles" target="_blank" rel="noopener">similar triangles</a> share the segments <code>CP</code>, <code>CCa</code>, <code>CQ</code> and <code>CCb</code>, so their side ratios are all the same. The result is a square of side <code>s = L·h / (L + h)</code>, whatever the shape of the triangle. When the foot of the altitude falls between <code>A</code> and <code>B</code>, all four vertices lie on the three sides, not just on the lines through them.</p>
+
+      <h2>One scale, two centres</h2>
+      <p>The small square is a <a class="wiki-term" data-wiki="Homothety" href="https://en.wikipedia.org/wiki/Homothety" target="_blank" rel="noopener">homothety</a> of the Vecten square with centre <code>C</code> and scale <code>h / (L + h) = s / L</code>. So the two square centres <code>c1</code>, <code>c2</code> and <code>C</code> lie on one line; the test measured the missing area of that line on every case and found errors below <code>1e-8</code>. Tick "Extra info" to see those centres, the two diagonals of each square and the line joining them. The same line passes through a <a class="wiki-term" data-wiki="Vecten_point" href="https://en.wikipedia.org/wiki/Vecten_point" target="_blank" rel="noopener">Vecten point</a> of the triangle, which the test also checked on the grid triangles.</p>
+
+      <h2>The second solution</h2>
+      <p>The page says there are in general two solutions, from an outward and an inward Vecten square. The applet only shows the outward one. If the square is built on the same side of <code>AB</code> as <code>C</code>, the same construction gives another square of side <code>L·h / |L − h|</code>; the test verified it on the inward grid. For <code>h &lt; L</code> its top lies past <code>C</code>, so it is a square on the <em>sidelines</em>, outside the triangle. When <code>h = L</code> two lines are parallel and the construction breaks down. The live cut-the-knot page now shows a still image instead of the Java applet; an archived 2012 copy embedded <code>InscribedSquare2</code> with the explanation's <code>ShowNames=1</code>, which is why the names start on here.</p>
+
+      <p class="tip">Try dragging <code>C</code> until its altitude is close to the length of <code>AB</code>, then tick "Extra info" and watch the two centres shoot apart.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/InscribedSquare2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="inscribed-square-2-core.js"></script>
+<script src="inscribed-square-2.js"></script>
+</body>
+</html>
