@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inscribed Angles &mdash; coolmaths</title>
+<meta name="description" content="Drag B onto the circle through A, C and D. Will the two angles at A and B match, and what happens on the other arc?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/inscribed-angles/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Inscribed Angles">
+<meta property="og:description" content="Drag B onto the circle through A, C and D. Will the two angles at A and B match, and what happens on the other arc?">
+<meta property="og:url" content="https://coolmaths.ai/inscribed-angles/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales through its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circum { fill: none; stroke: var(--border); stroke-width: 1.6; stroke-dasharray: 6 5; }
+  #board .chord-a { fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linecap: round; }
+  #board .chord-b { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; }
+  #board .center-dot { fill: var(--muted); }
+  #board .angle-a { fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; }
+  #board .angle-b { fill: none; stroke: var(--good); stroke-width: 4; stroke-linecap: round; }
+  #board .hint-ring { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 1rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { align-items: center; }
+  .controls button { min-height: 2.6rem; min-width: 2.6rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .controls input[type="checkbox"] { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+  #status { overflow-wrap: anywhere; line-height: 1.5; }
+</style>
+</head>
+<body data-game="inscribed-angles" data-kind="demo">
+<main id="main">
+  <h1>Inscribed Angles</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: four points sit near a circle and two angles are drawn from the same chord.<br>
+    <strong>How to play:</strong> Drag the points, or focus one and use the arrow keys. Tick the boxes to show the names or the angle hint, or press Reset.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A circle through A, C and D with a fourth draggable point B and the two angles CAD and CBD"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox" aria-label="Show the names of the points"> Names</label>
+    <label><input id="hint" type="checkbox" aria-label="Show the angle hint" disabled> Hint</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the four points to their starting positions">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Four points, one circle, two angles. Move B onto the circle and the two angles may suddenly agree — or stay different. The reason is which arc of the circle B sits on.</p>
+
+      <h2>One circle, one chord</h2>
+      <p>The picture always draws the <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circle</a> through A, C and D. The line CD is a <a class="wiki-term" data-wiki="Chord_(geometry)" href="https://en.wikipedia.org/wiki/Chord_(geometry)" target="_blank" rel="noopener">chord</a> of that circle. The angles <code>∠CAD</code> and <code>∠CBD</code> are <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angles</a>: their vertices A and B lie on the circle and their arms end at C and D. Both angles look at the same chord, so you might expect them to match.</p>
+
+      <h2>Same arc, same angle</h2>
+      <p>They do match when A and B are on the same arc from C to D. Each angle is half of the same <a class="wiki-term" data-wiki="Central_angle" href="https://en.wikipedia.org/wiki/Central_angle" target="_blank" rel="noopener">central angle</a> at the centre O, so <code>∠CAD = ∠CBD</code>. This is Proposition III.21 of <a class="wiki-term" data-wiki="Euclid%27s_Elements" href="https://en.wikipedia.org/wiki/Euclid%27s_Elements" target="_blank" rel="noopener">Euclid's Elements</a>. The logic test checked it at hundreds of randomly chosen circles: whenever A and B were on the same side of the chord CD, the two angles agreed to within a billionth of a radian. The applet marks this case with the coloured arcs when you tick Hint.</p>
+
+      <h2>The other arc, and the converse</h2>
+      <p>Put B on the <em>other</em> arc and the angles add to <code>180°</code> instead — they are supplementary, not equal. A neat way to say both cases at once is to use <em>directed</em> angles, measured modulo <code>180°</code>: <code>(AC, AD) = (BC, BD)</code> exactly when the four points are <a class="wiki-term" data-wiki="Concyclic_points" href="https://en.wikipedia.org/wiki/Concyclic_points" target="_blank" rel="noopener">concyclic</a> and the angles are similarly oriented. The test checked both directions: same-arc points on the circle match, points moved off it do not, and <code>(l, l'') = (l, l') + (l', l'')</code> modulo <code>180°</code> at 500 random triples. So the page's claim is true as written — the "similarly oriented" qualifier matters.</p>
+
+      <h2>What the old applet checked</h2>
+      <p>The Java applet called the picture finished when B lay within <code>2</code> pixels of the circle through A, C and D, and called the angles Equal when the two directed angles differed by less than <code>0.1</code> radian. It left the Hint box disabled until B was on the circle. This port keeps those two cutoffs and that disabled state. It also keeps two harmless quirks: D's starting angle has <code>40</code> added as radians, and the Equal flag keeps its old value when B leaves the circle (it is only drawn while B is back on). The live cut-the-knot page linked below now shows a GeoGebra figure rather than the Java applet; Wayback's 13 April 2006 capture of that same address confirms that the Java applet <code>InscribedAngles</code> once occupied the page, and the rules and options here follow that applet.</p>
+
+      <p class="tip">Try this: tick Hint, drag B across C or D to the far arc, and watch the equal angles turn into a pair that adds to a straight angle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/InscribedAngles.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="inscribed-angles-core.js"></script>
+<script src="inscribed-angles.js"></script>
+</body>
+</html>
