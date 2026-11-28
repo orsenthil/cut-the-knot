@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harmonic Mean &mdash; coolmaths</title>
+<meta name="description" content="A relay team changes speed every leg while a pair of twins runs at one steady speed. What speed lets the twins finish at exactly the same time?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/harmonic-mean/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Harmonic Mean">
+<meta property="og:description" content="A relay team changes speed every leg while a pair of twins runs at one steady speed. What speed lets the twins finish at exactly the same time?">
+<meta property="og:url" content="https://coolmaths.ai/harmonic-mean/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; overflow: hidden; touch-action: none; }
+  #board .guide { stroke: var(--border); stroke-width: 1; stroke-dasharray: 3 5; }
+  #board .axis { stroke: var(--ink); stroke-width: 1.5; }
+  #board .axis-label, #board .bar-label, #board .graph-label, #board .team-label {
+    fill: var(--text); font-family: var(--font); pointer-events: none;
+  }
+  #board .axis-label { font-size: 0.85rem; fill: var(--muted); }
+  #board .bar-label { font-size: 0.8rem; }
+  #board .graph-label { font-size: 0.9rem; fill: var(--accent); }
+  #board .team-label { font-size: 0.85rem; }
+  #board .speed-bar { stroke: var(--ink); stroke-width: 1; stroke-opacity: 0.5; }
+  #board .selected-bar { fill: none; stroke: var(--good); stroke-width: 2.5; pointer-events: none; }
+  #board .relay-line { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .twin-line { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: 7 5; }
+  #board .bug-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 2; }
+  #board .twin-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .speed-handle { fill: var(--highlight); stroke: var(--ink); stroke-width: 2; cursor: ns-resize; }
+  #board .speed-handle:active { cursor: grabbing; }
+  #board .speed-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  /* The sliders keep the applet's own blue-to-red speed palette. */
+  #board .speed-s1 { fill: #2746b8; }
+  #board .speed-s2 { fill: #3358c5; }
+  #board .speed-s3 { fill: #4471cb; }
+  #board .speed-s4 { fill: #6189c7; }
+  #board .speed-s5 { fill: #88a7b9; }
+  #board .speed-s6 { fill: #abaa95; }
+  #board .speed-s7 { fill: #c4936a; }
+  #board .speed-s8 { fill: #c97a4c; }
+  #board .speed-s9 { fill: #c45c38; }
+  #board .speed-s10 { fill: #bc2f2f; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls button, .controls input { min-height: 2.5rem; font-size: 1rem; }
+  .controls input { width: 4rem; padding: 0.2rem 0.35rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .controls button:disabled, .controls input:disabled { opacity: 0.55; }
+</style>
+</head>
+<body data-game="harmonic-mean" data-kind="demo">
+<main id="main">
+  <h1>Harmonic Mean</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#fractions">Fractions</a><a class="tag" href="../index.html#arithmetic">Arithmetic</a><a class="tag" href="../index.html#physics">Physics</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Watch a relay race: every runner covers the same distance, but each one may run at a different speed.<br>
+    <strong>How to play:</strong> Drag the highlighted bar or use the up and down arrow keys to change that leg's speed. Choose a number of legs, switch the bar view, then press Race!
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 280" role="group"
+         aria-label="Speed bars for each leg above a distance-versus-time graph, with a highlighted handle for changing the selected leg's speed"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="raceBtn" type="button" class="primary" aria-label="Start the race">Race!</button>
+    <button id="slowerBtn" type="button" aria-label="Make the selected leg one mile per hour slower">&minus; Slower</button>
+    <button id="fasterBtn" type="button" aria-label="Make the selected leg one mile per hour faster">+ Faster</button>
+    <button id="prevBtn" type="button" aria-label="Select the previous leg">Previous leg</button>
+    <button id="nextBtn" type="button" aria-label="Select the next leg">Next leg</button>
+    <button id="vsTimeBtn" type="button" aria-pressed="true" aria-label="Show bar widths proportional to the time taken by each leg">T vs V</button>
+    <button id="vsDistBtn" type="button" aria-pressed="false" aria-label="Show equal bar widths, one for each equal-distance leg">Dist vs V</button>
+    <label for="legsInput">Legs
+      <button id="legsDown" type="button" aria-label="Remove one leg">&minus;</button>
+      <input id="legsInput" type="number" min="2" max="40" step="1" value="10" aria-label="Number of legs in the race, from 2 to 40">
+      <button id="legsUp" type="button" aria-label="Add one leg">+</button>
+    </label>
+    <button id="newBtn" type="button" aria-label="Give every leg a new random speed">Reset speeds</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two trips can have the same start, the same finish and the same two speeds, yet different average speeds. The difference is whether you spend the same <em>time</em> at each speed or cover the same <em>distance</em> at each speed. This applet is the equal-distance case.</p>
+
+      <h2>One hour each, or half the road each?</h2>
+      <p>In the first problem on the page a driver goes 20 mph for one hour and 30 mph for the next hour. The distances are 20 and 30 miles, so the <a class="wiki-term" data-wiki="Arithmetic_mean" href="https://en.wikipedia.org/wiki/Arithmetic_mean" target="_blank" rel="noopener">arithmetic mean</a> gives the answer: <code>(20 + 30)/2 = 25</code> mph. In the second problem the first half of the road is driven at 20 mph and the second half at 30 mph. If each half is <code>d</code> miles, the time is <code>d/20 + d/30</code> hours and the whole trip is <code>2d</code> miles. Its <a class="wiki-term" data-wiki="Average" href="https://en.wikipedia.org/wiki/Average" target="_blank" rel="noopener">average speed</a> is <code>2d/(d/20 + d/30) = 2/(1/20 + 1/30) = 24</code> mph, not 25.</p>
+
+      <h2>Equal distances make the reciprocals add</h2>
+      <p>With <code>N</code> legs of the same length, each leg takes <code>1/v</code> units of time at speed <code>v</code>. Total time is <code>1/v<sub>1</sub> + ... + 1/v<sub>N</sub></code> and total distance is <code>N</code>, so the steady speed that covers the whole course in the same time is</p>
+      <blockquote><code>S = N / (1/v<sub>1</sub> + 1/v<sub>2</sub> + ... + 1/v<sub>N</sub>)</code></blockquote>
+      <p>That is exactly the <a class="wiki-term" data-wiki="Harmonic_mean" href="https://en.wikipedia.org/wiki/Harmonic_mean" target="_blank" rel="noopener">harmonic mean</a> of the leg speeds; for two speeds it is <code>H(a,b) = 2ab/(a+b)</code>. The test compares the applet's own <code>Evaluate()</code> arithmetic with this formula for every leg count from 2 to 40, checks all 100 pairs and all 1,000 triples of whole-number speeds from 1 to 10, and confirms the page's claim that the arithmetic mean is never smaller than the harmonic mean, with equality only when all the speeds are equal.</p>
+
+      <h2>Why the twins finish with the relay team</h2>
+      <p>The chart at the bottom plots distance against time. The relay team's broken line rises steeply on a fast leg and gently on a slow one; the twins' straight line has slope <code>S</code>. At the end of leg <code>k</code> the relay has covered <code>k</code> miles after <code>t<sub>k</sub> = 1/v<sub>1</sub> + ... + 1/v<sub>k</sub></code> hours, while the twins are at <code>S·t<sub>k</sub></code>. Either team may be ahead in between. At the common finish <code>t<sub>N</sub> = N/S</code>, the twins are at <code>S·t<sub>N</sub> = N</code>, so they tie without ever changing speed. The upper bars use the same times: in <strong>T vs V</strong> a slow leg is wider because it takes longer, and in <strong>Dist vs V</strong> every leg is equally wide because every leg is equally long.</p>
+
+      <h2>A different page from the sangaku applets</h2>
+      <p>The address in the applet archive points to Bogomolny's geometry article, which lists lengths equal to the harmonic mean in a semicircle, a trapezoid, an inscribed square and an 1877 sangaku (<code>CP = H(a,b)/2</code>). The applet itself is embedded on <em>Averages, Arithmetic and Harmonic Means</em>, where the claim is the equal-distance speed result above. Those geometric lengths belong to the separate HarmonicMeanSangaku and HarmonicRatio applets (the latter constructs <code>AE = H(b,c)</code> with an angle bisector); this port follows the applet and its own page. The race animation is continuous here rather than the original one-pixel step every 100 milliseconds, and the page's 1-to-10 speed sliders and 2-to-40 leg range are unchanged.</p>
+
+      <p class="tip">Try 20 mph and 30 mph in two legs, then press Race! and watch which team leads at the first leg and which team is level at the finish.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/arithmetic/HarmonicMean.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="harmonic-mean-core.js"></script>
+<script src="harmonic-mean.js"></script>
+</body>
+</html>
