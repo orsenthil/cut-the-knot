@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Max Common Chord 3 &mdash; coolmaths</title>
+<meta name="description" content="Two circles cross at P and Q. Slide the chord through P to make AP times PB as large as you can — where must the centre of circle ABQ sit?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/max-common-chord-3/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Max Common Chord 3">
+<meta property="og:description" content="Two circles cross at P and Q. Slide the chord through P to make AP times PB as large as you can — where must the centre of circle ABQ sit?">
+<meta property="og:url" content="https://coolmaths.ai/max-common-chord-3/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+    overflow-x: auto;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    min-width: 19rem;
+    height: auto;
+    touch-action: none;
+  }
+  #board .given-circle { fill: none; stroke: var(--ink); stroke-width: 2.2; opacity: 0.85; }
+  #board .circle-f { stroke: var(--muted); }
+  #board .aux-circle { fill: none; stroke: var(--accent); stroke-width: 2.4; }
+  #board .ab-circle { fill: none; stroke: var(--good); stroke-width: 2; stroke-dasharray: 8 5; opacity: 0.8; }
+  #board .axis-line { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 7 5; }
+  #board .chord { stroke: var(--ink); stroke-width: 4; stroke-linecap: round; }
+  #board .chord.finished { stroke: var(--good); stroke-width: 5; }
+  #board .perp-line { stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: 5 4; }
+  #board .radius-line { stroke: var(--accent); stroke-width: 2; opacity: 0.7; }
+  #board .radius-line.alt { stroke: var(--good); opacity: 0.6; }
+  #board .equal-arc { fill: none; stroke: var(--accent); stroke-width: 3; }
+  #board .equal-arc.alt { stroke: var(--good); }
+  #board .right-mark { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .centre-dot { fill: var(--muted); stroke: var(--stage); stroke-width: 1.5; }
+  #board .key-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .guide-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 1.5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 19px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .glabel.small { font-size: 16px; fill: var(--muted); }
+  #board .glabel.key { font-size: 20px; fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2.5; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 6; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="max-common-chord-3" data-kind="demo">
+<main id="main">
+  <h1>Max Common Chord 3</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Explore two overlapping circles and try to make the crossbar A&ndash;B as long as this construction allows.<br>
+    <strong>How to play:</strong> Drag P, Q, A or B with a mouse or finger, or focus a point and use the arrow keys. Choose Adjust circles or Adjust chord, then try Show best chord.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 288" role="group"
+         aria-label="Two overlapping circles, a chord through their intersection P, and the auxiliary circle through their centres and Q"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="circlesBtn" type="button" aria-pressed="false" aria-label="Choose to change a circle when A or B is dragged">Adjust circles</button>
+    <button id="chordBtn" type="button" aria-pressed="true" aria-label="Choose to slide A and B along the existing circles">Adjust chord</button>
+    <button id="namesBtn" type="button" aria-pressed="false" aria-label="Toggle the names of the construction points">Show names</button>
+    <button id="bestBtn" type="button" class="primary" aria-label="Construct the chord with the largest product AP times PB">Show best chord</button>
+    <button id="newBtn" type="button" aria-label="Reset the picture to its starting points">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>This picture comes from a 1975 olympiad problem. Two circles cross at P and Q; a line through P meets them again at A and B. Which line makes the piece AP &times; PB the longest? Hubert Shutrick found that a moving point S on one auxiliary circle answers the question all at once.</p>
+
+      <h2>Turn the product into one distance</h2>
+      <p>Here the circles are called <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">C(E)</a> and C(F), with centres E and F. Draw the circle through A, B and Q: it crosses the line PQ again at R. The chords AB and QR cross at P, so the <a class="wiki-term" data-wiki="Intersecting_chords_theorem" href="https://en.wikipedia.org/wiki/Intersecting_chords_theorem" target="_blank" rel="noopener">intersecting chords theorem</a> says</p>
+      <blockquote><code>AP &times; PB = PQ &times; PR</code></blockquote>
+      <p>P and Q are fixed once the two circles are given, so making the product biggest is the same as moving R as far from P as possible.</p>
+
+      <h2>Why QR is twice QN</h2>
+      <p>Let S be the centre of the circle through A, B and Q. The two points Q and R are both one radius from S, so triangle SQR is <a class="wiki-term" data-wiki="Isosceles_triangle" href="https://en.wikipedia.org/wiki/Isosceles_triangle" target="_blank" rel="noopener">isosceles</a>. The foot N of the perpendicular from S to PQ is the middle of its base QR, giving</p>
+      <blockquote><code>QR = 2 &times; QN</code></blockquote>
+      <p>The live page hides the correct word inside a little quiz: its source shows the choices “twice, twice, thrice, four times”. The construction and the logic test agree that the answer is <em>twice</em>. The test checks this on thousands of chords, not just one.</p>
+
+      <h2>Where S must sit</h2>
+      <p>As the chord turns, S travels on the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> C(O) of E, Q and F. Let U be the other point where line PQ meets C(O), and T the point opposite Q on that circle, so QT is a diameter. The page says the maximum happens when SN is <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> to C(O), which happens when S bisects the arc from T to U. The applet's own completion test is the same idea in angles: <code>|angle(UQS) &minus; angle(SQT)| &lt; 0.01</code>. The test confirms that at this S the two angles are equal and QN, hence QR and AP &times; PB, is greatest.</p>
+      <p>That maximum statement assumes the diagram's order: P lies between Q and U. If you swap the names of P and Q, U moves to the other side and the arc midpoint can give the <em>smallest</em> product instead — the core keeps the applet's arithmetic either way.</p>
+
+      <h2>What the buttons do</h2>
+      <p>With <em>Adjust chord</em> selected, A and B are kept on the two circles and the other end is pulled back onto its circle so the chord still passes through P. With <em>Adjust circles</em>, dragging A or B redraws that circle instead. <em>Show best chord</em> is a modern shortcut: the original applet had only the two radio buttons and the names checkbox, and you had to find S by dragging.</p>
+
+      <p class="tip">Try dragging Q until P sits between Q and U, then press Show best chord and compare the two equal arcs at Q.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MaxCommonChord3.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="max-common-chord-3-core.js"></script>
+<script src="max-common-chord-3.js"></script>
+</body>
+</html>
