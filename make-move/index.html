@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Make Move &mdash; coolmaths</title>
+<meta name="description" content="The letters spell MAKE YOUR MOVE, KID! Press Reset and the last two counters trade places. Can you slide them back into the message?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/make-move/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Make Move">
+<meta property="og:description" content="The letters spell MAKE YOUR MOVE, KID! Press Reset and the last two counters trade places. Can you slide them back into the message?">
+<meta property="og:url" content="https://coolmaths.ai/make-move/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 27rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tile { fill: var(--board-a); stroke: var(--border-strong); stroke-width: 1.5; }
+  #board .tile-letter {
+    fill: var(--ink); font-size: 1.5rem; font-weight: 700;
+    text-anchor: middle; dominant-baseline: central; pointer-events: none;
+  }
+  #board .tile-selected .tile { stroke: var(--accent); stroke-width: 3; }
+  #board .tile-just-moved .tile { fill: var(--highlight); }
+  #board .gap { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  #board .gap-dot { fill: var(--muted); }
+  #board .cursor-handle { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; cursor: pointer; }
+  #board .cursor-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; justify-content: center; }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+</style>
+</head>
+<body data-game="make-move" data-kind="demo">
+<main id="main">
+  <h1>Make Move</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#parity">Parity</a><a class="tag" href="../index.html#permutations">Permutations</a><a class="tag" href="../index.html#invariants">Invariants</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Slide the letter tiles in a four-by-four square until they spell MAKE YOUR MOVE, KID! again.<br>
+    <strong>How to play:</strong> Click a tile in the same row or column as the empty square, or move the cursor with the arrow keys and press Enter. Press Reset to swap the last two letters and start the challenge.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 360" role="group"
+         aria-label="Four by four board of letter tiles with one empty square and a focusable square cursor"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="slideBtn" type="button" aria-label="Slide the chosen square toward the empty square">Slide chosen square</button>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the board and swap the last two counters">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Reset does not mix up the letters: it trades just two of them. Yet the message can be put back. The secret is that the board has two identical O counters, and the two M counters are a trap.</p>
+
+      <h2>Reading the board</h2>
+      <p>The sixteen squares hold the letters of the old <a class="wiki-term" data-wiki="Fifteen_puzzle" href="https://en.wikipedia.org/wiki/Fifteen_puzzle" target="_blank" rel="noopener">Fifteen puzzle</a>, with numbers replaced by letters. Read down the four columns: MAKE, YOUR, MOVE, and KID!, with the empty square at the bottom right. Press a square in the gap's row or column and every tile between them slides one place; the gap ends up where you pressed. Reset first restores the message, then swaps the last two counters, <code>R</code> and <code>E,</code>, in the second and third columns.</p>
+
+      <h2>Counting inversions</h2>
+      <p>Cut the board into columns and lay them one after another, the order in which the letters are printed. Whenever a larger number comes before a smaller one, that pair is an inversion. The ordered board has <code>0</code> inversions. After Reset it has <code>7</code> (odd). Put the two O counters in the other order and the spelled board also has <code>7</code> inversions. Put the two M counters in the other order and it has <code>15</code>. The logic test counts every pair, not just these four boards.</p>
+
+      <h2>The invariant</h2>
+      <p>On a board four squares wide, a counter that moves across a column boundary jumps over three counters, an odd number, so the inversion count flips; the gap's column changes too. Adding the column number of the gap fixes this: <code>inversions + gap column</code> keeps the same <a class="wiki-term" data-wiki="Parity_(mathematics)" href="https://en.wikipedia.org/wiki/Parity_(mathematics)" target="_blank" rel="noopener">parity</a> after every slide, an <a class="wiki-term" data-wiki="Invariant_(mathematics)" href="https://en.wikipedia.org/wiki/Invariant_(mathematics)" target="_blank" rel="noopener">invariant</a> of the puzzle. The ordered board gives <code>0 + 4 = 4</code> (even), and the Reset board gives <code>7 + 4 = 11</code> (odd), so slides alone cannot reach the ordered board. On the three-by-three version, where each jump crosses two counters, the test walks all <code>181440</code> reachable boards and confirms that the count alone divides the boards in two.</p>
+
+      <h2>Why two O's are enough</h2>
+      <p>The two O counters carry different numbers, <code>6</code> and <code>10</code>, but look the same. Trading them changes the inversion count by <code>7</code>, not by <code>1</code> as the old page loosely says — but an odd change is all that matters, so the spelled board with the O's traded lands in the same class as the Reset board: <code>7 + 4 = 11</code>. That is the page's real claim, and it holds: the logic test finds a 16-slide way back. Trading the two M's also gives an odd count, <code>15</code>, but the finished test here still refuses it: the letter pattern looks right while the <a class="wiki-term" data-wiki="Permutation" href="https://en.wikipedia.org/wiki/Permutation" target="_blank" rel="noopener">permutation</a> of counters is not. The old applet's own finished test went further and could never be true at all: its bytecode demanded counter <code>10</code> in two different squares and never asked for the U (<code>7</code>). This port uses the test the page describes, accepting either order of the O's.</p>
+
+      <p class="tip">Press Reset, then use only squares in the gap's row or column. Watch the status line name the letters that slid and where the gap went.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/MakeMove.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="make-move-core.js"></script>
+<script src="make-move.js"></script>
+</body>
+</html>
