@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Line Through Grid &mdash; coolmaths</title>
+<meta name="description" content="Draw a rectangle on squared paper and a line from one corner to the opposite corner. How many little squares does the line cross, and why does the answer sometimes drop?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/line-through-grid/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Line Through Grid">
+<meta property="og:description" content="Draw a rectangle on squared paper and a line from one corner to the opposite corner. How many little squares does the line cross, and why does the answer sometimes drop?">
+<meta property="og:url" content="https://coolmaths.ai/line-through-grid/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .crossed-cell { fill: var(--accent); fill-opacity: 0.3; stroke: none; }
+  #board .grid-line { stroke: var(--muted); stroke-width: 0.6; opacity: 0.6; }
+  #board .grid-frame { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+  #board .diagonal { stroke: var(--bad); stroke-width: 2.5; }
+  #board .corner { fill: var(--bad); }
+  #board .size-label { fill: var(--text); font-size: 0.85rem; text-anchor: middle; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .m-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.3rem; min-height: 2.5rem; }
+  .controls input[type="number"] { width: 4rem; max-width: 100%; }
+  #presets { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.6rem 0; }
+  #presets button { min-height: 2.5rem; padding: 0.3rem 0.6rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="line-through-grid" data-kind="demo">
+<main id="main">
+  <h1>Line Through Grid</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#number-theory">Number Theory</a><a class="tag" href="../index.html#counting">Counting</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> A rectangle sits on a square grid with a line from one corner to the opposite corner, and the squares the line passes through are shaded; there is nothing to win.<br>
+    <strong>How to play:</strong> Change the two numbers or drag the green and blue dots to resize the rectangle, and watch how many squares become shaded. The buttons show the small rectangles from the story.
+  </div>
+
+  <div class="controls">
+    <label for="mInput">Rows (M) <input id="mInput" type="number" min="1" max="50" step="1" value="6" aria-label="Number of rows, from 1 to 50"></label>
+    <label for="nInput">Columns (N) <input id="nInput" type="number" min="1" max="50" step="1" value="11" aria-label="Number of columns, from 1 to 50"></label>
+    <button id="newBtn" type="button" class="primary" aria-label="Go back to the starting 6 by 11 rectangle">Reset</button>
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="A rectangle drawn on a square grid with a diagonal from the top-left to the bottom-right corner. Every grid square crossed by the diagonal is shaded."></svg>
+  </div>
+
+  <div id="presets" aria-label="Example rectangles"></div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Count the shaded squares in a few small rectangles and a pattern appears — but some rectangles have fewer than their neighbours. The reason is that the diagonal sometimes passes exactly through a corner where grid lines meet.</p>
+
+      <h2>One new square per line crossed</h2>
+      <p>Start in the top-left square: that is one. Each time the diagonal leaves a square it crosses an internal grid line, and that moves it into exactly one new square. In an <code>M × N</code> rectangle there are <code>M − 1</code> internal horizontal lines and <code>N − 1</code> internal vertical lines, all crossed once. So, as long as no two are crossed at the same moment,</p>
+      <blockquote><code>S = 1 + (M − 1) + (N − 1) = M + N − 1.</code></blockquote>
+      <p>This is the page's first formula. The logic test checked it for every pair of sizes up to 50, and it holds exactly when the diagonal misses the interior grid points — that is, when <code>M</code> and <code>N</code> share no factor, so their <a class="wiki-term" data-wiki="Greatest_common_divisor" href="https://en.wikipedia.org/wiki/Greatest_common_divisor" target="_blank" rel="noopener">greatest common divisor</a> is 1.</p>
+
+      <h2>When the diagonal hits a corner</h2>
+      <p>If <code>g = gcd(M, N)</code> is greater than 1, the diagonal goes through <code>g − 1</code> interior <a class="wiki-term" data-wiki="Lattice_point_(mathematics)" href="https://en.wikipedia.org/wiki/Lattice_point_(mathematics)" target="_blank" rel="noopener">grid points</a>, equally spaced along the way. At each one it crosses a vertical and a horizontal line together, so it enters just one new square instead of two: one count is lost per point. The page's general formula is therefore</p>
+      <blockquote><code>S = (M + N − 1) − (g − 1) = M + N − gcd(M, N).</code></blockquote>
+      <p>Brute-force cell counting confirmed this for all 2,500 rectangles with <code>M, N</code> from 1 to 50, including the exceptional cases <code>2 × 4</code>, <code>3 × 6</code> and <code>4 × 6</code>. The page also remarks that the first formula is the more general one when grid lines are not evenly spaced; the second needs equal spacing to talk about <code>gcd</code>.</p>
+
+      <h2>What the old applet actually paints</h2>
+      <p>The Java applet decides whether to shade a cell by testing a tiny shrunken segment against the diagonal and by rejecting a cell when a corner lies within <code>0.1</code> pixels of the line. At the applet's usual canvas size (about <code>500 × 450</code>) its grid cells are several pixels wide, and this matches the formula above. On a canvas smaller than a couple of pixels per cell, the guard can split a crossed cell, so the painted count can differ by one or two. This port keeps the exact formula for the shaded cells and uses the applet's own guard only in the checked transcription, not in the picture.</p>
+
+      <p class="tip">Try <strong>2 × 4</strong> and then <strong>2 × 5</strong>: one extra column adds two squares, but one extra row that lands on a grid point adds only one.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/LineThroughGrid.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="line-through-grid-core.js"></script>
+<script src="line-through-grid.js"></script>
+</body>
+</html>
