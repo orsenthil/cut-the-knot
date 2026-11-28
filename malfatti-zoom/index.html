@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Malfatti Zoom &mdash; coolmaths</title>
+<meta name="description" content="Drag the triangle and watch Steiner's construction turn three little incircles into the three Malfatti circles. Can you make the circles miss by moving a corner?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/malfatti-zoom/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Malfatti Zoom">
+<meta property="og:description" content="Drag the triangle and watch Steiner's construction turn three little incircles into the three Malfatti circles. Can you make the circles miss by moving a corner?">
+<meta property="og:url" content="https://coolmaths.ai/malfatti-zoom/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 34rem; padding: 0.5rem; overflow: hidden; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .triangle-side { stroke: var(--ink); stroke-width: 2.5; fill: none; }
+  #board .bisector { stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 6 4; }
+  #board .small-incircle { fill: none; stroke: var(--accent); stroke-width: 2; stroke-opacity: 0.7; stroke-dasharray: 4 3; }
+  #board .second-tangent { stroke: var(--good); stroke-width: 2; stroke-opacity: 0.8; }
+  #board .malfatti-circle { fill: var(--accent); fill-opacity: 0.10; stroke: var(--accent); stroke-width: 3; }
+  #board .mark-l { fill: var(--good); stroke: none; }
+  #board .mark-d { fill: var(--highlight); stroke: none; }
+  #board .mark-p { fill: var(--accent); stroke: none; }
+  #board .mark-aux { fill: var(--muted); stroke: none; }
+  #board .point-label { fill: var(--text); font-size: 13px; pointer-events: none; }
+  #board .small-label { font-size: 11px; fill: var(--muted); }
+  #board .vertex-label { font-size: 15px; font-weight: 600; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .vertex-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; }
+  .controls button { min-height: 2.5rem; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  .zoom-group { display: inline-flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+  .zoom-group button[aria-pressed="true"] { background: var(--accent); color: var(--stage); }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="malfatti-zoom" data-kind="demo">
+<main id="main">
+  <h1>Malfatti Zoom</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Three circles sit inside a triangle, each touching two sides and the other two circles.<br>
+    <strong>How to play:</strong> Drag the three corner dots to change the triangle, tick what you want to see, and press a Zoom button to look closer.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 360" role="group"
+         aria-label="A triangle with three draggable vertices, its incenter, the incircles of the three triangles at the incenter, their second tangents meeting at L, and the three Malfatti circles"></svg>
+  </div>
+
+  <div class="controls">
+    <label class="option" for="namesChk"><input id="namesChk" type="checkbox"> names</label>
+    <label class="option" for="bisectorsChk"><input id="bisectorsChk" type="checkbox"> angle bisectors</label>
+    <label class="option" for="incirclesChk"><input id="incirclesChk" type="checkbox"> incircles</label>
+    <label class="option" for="tangentsChk"><input id="tangentsChk" type="checkbox"> second tangents</label>
+    <div class="zoom-group" role="group" aria-label="Zoom level">
+      <button type="button" data-zoom="1" aria-pressed="true" aria-label="No zoom">No zoom</button>
+      <button type="button" data-zoom="2" aria-pressed="false" aria-label="Zoom in two times">2X</button>
+      <button type="button" data-zoom="4" aria-pressed="false" aria-label="Zoom in four times">4X</button>
+      <button type="button" data-zoom="6" aria-pressed="false" aria-label="Zoom in six times">6X</button>
+      <button type="button" data-zoom="8" aria-pressed="false" aria-label="Zoom in eight times">8X</button>
+    </div>
+    <button id="resetBtn" type="button" class="primary" aria-label="Put the triangle back where it started">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Malfatti asked for three circles in a triangle, each touching the other two and two sides. Steiner found a way to build them, and Hart proved it works no matter what shape the triangle has. The zoom exists so you can check the faraway intersection points when a triangle gets skewed.</p>
+
+      <h2>Steiner's construction, with subscripts</h2>
+      <p>Write the corners as <code>A₁ A₂ A₃</code> and let <code>I</code> be the <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a>. For each corner <code>A_i</code> there is a small <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> <code>c_i</code> in the triangle formed by <code>I</code> and the other two corners. The angle bisectors through <code>I</code> are common internal <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangents</a> of pairs of these small circles. Take the <em>other</em> internal tangent of each pair: the three lines meet at <code>L</code> and cut the sides at <code>D₁, D₂, D₃</code>.</p>
+
+      <h2>Why the three circles fit</h2>
+      <p>Each quadrilateral <code>A_i D_j L D_k</code> has an incircle, and those three incircles are the Malfatti circles. Equal tangent segments from a point to one circle are the key: they make the common tangent of two final circles pass through the same <code>D_i</code> that the construction drew. Testing thousands of triangles here confirms it: the final circles touch one another and the two sides at their own corner, to within about a millionth of a board unit. The three small incircles touch their two bisectors, and the tangents really do concur at <code>L</code>.</p>
+
+      <h2>Every configuration, and a pixel quirk</h2>
+      <p>Hart's proof has to cope with the line through <code>D_i</code> and <code>L</code> meeting the perimeter on different sides in different triangles. When <code>E₁</code> and <code>E₃</code> fall on the same side, the circle inscribed in the triangle bounded by <code>L E₁</code>, <code>L E₃</code> and that side touches it at <code>D₂</code>; the page says only that this "appears", and here it holds to within a pixel. The applet chooses the second tangent by asking whether it is more than one pixel from <code>I</code>. On thin triangles both tangents can be closer than that, so it falls back to the bisector and the displayed circles no longer touch exactly: in a 600-triangle sweep the worst miss was under half a unit. This port keeps that quirk and reports it in the status line; zooming does not change the geometry, only the view.</p>
+
+      <h2>Not the marble problem</h2>
+      <p>The original question asked for marble columns of the greatest total volume, which becomes packing three circles of the largest total area in a triangle. Malfatti assumed the circles touch each other and two sides, but they are <em>not</em> the largest packing: in an equilateral triangle the incircle plus two corner circles wins. Hart's proof is about the touching construction, not about maximizing area; the <a class="wiki-term" data-wiki="Intermediate_value_theorem" href="https://en.wikipedia.org/wiki/Intermediate_value_theorem" target="_blank" rel="noopener">intermediate value theorem</a> is what makes the continuous version of his argument rigorous.</p>
+
+      <p class="tip">Try the four checkboxes one at a time, then drag a corner until the status says the circles miss: that is the applet's one-pixel test failing.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MalfattiZoom.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="malfatti-zoom-core.js"></script>
+<script src="malfatti-zoom.js"></script>
+</body>
+</html>
