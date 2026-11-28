@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hart Circle &mdash; coolmaths</title>
+<meta name="description" content="Three circles make eight curved triangles. Pick one as the base: can you find the circle that touches the four little circles inscribed in it and its neighbours?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hart-circle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hart Circle">
+<meta property="og:description" content="Three circles make eight curved triangles. Pick one as the base: can you find the circle that touches the four little circles inscribed in it and its neighbours?">
+<meta property="og:url" content="https://coolmaths.ai/hart-circle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .given-circle { fill: none; stroke: var(--muted); stroke-width: 2.5; pointer-events: none; }
+  #board .given-2 { stroke-dasharray: 9 5; }
+  #board .given-3 { stroke-width: 3.5; }
+  #board .given-hit { fill: none; stroke: transparent; stroke-width: 14; pointer-events: stroke; cursor: grab; }
+  #board .radius { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 4; pointer-events: none; }
+  #board .base-circle { fill: none; stroke: var(--good); stroke-width: 3; pointer-events: none; }
+  #board .extra-circle { fill: none; stroke: var(--bad); stroke-width: 2.5; pointer-events: none; }
+  #board .hart-circle { fill: none; stroke: var(--accent); stroke-width: 3.5; pointer-events: none; }
+  #board .tangency-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin: 0.5rem 0 0; font-size: 0.9rem; }
+  .legend span { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .legend i { display: inline-block; width: 1.4rem; height: 0; border-top: 3px solid var(--muted); }
+  .legend .key-base { border-color: var(--good); }
+  .legend .key-extra { border-color: var(--bad); }
+  .legend .key-hart { border-color: var(--accent); border-top-width: 4px; }
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; }
+  .controls label { cursor: pointer; }
+  .controls select { max-width: 100%; font: inherit; }
+  .controls input:disabled + span { opacity: 0.55; }
+</style>
+</head>
+<body data-game="hart-circle" data-kind="demo">
+<main id="main">
+  <h1>Hart Circle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: three circles carve out eight curved triangles, and another circle can touch four of the little circles drawn inside them.<br>
+    <strong>How to play:</strong> Drag a circle, its centre dot or its edge dot; pick a triangle from the drop-down and tick the boxes to see the other circles. Press Reset to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Three grey circles, a green incircle, three red incircles and the blue Hart circle tangent to all four"></svg>
+    <p class="legend" aria-label="Colour key">
+      <span><i></i> given circles</span>
+      <span><i class="key-base"></i> base incircle</span>
+      <span><i class="key-extra"></i> associated incircles</span>
+      <span><i class="key-hart"></i> Hart circle</span>
+    </p>
+  </div>
+
+  <div class="controls">
+    <label for="variant">Base triangle
+      <select id="variant" aria-label="Base triangle">
+        <option value="+++" selected>+++</option>
+        <option value="++-">++-</option>
+        <option value="+-+">+-+</option>
+        <option value="-++">-++</option>
+        <option value="+--">+--</option>
+        <option value="-+-">-+-</option>
+        <option value="--+">--+</option>
+        <option value="---">---</option>
+      </select>
+    </label>
+    <label for="addOns"><input id="addOns" type="checkbox"> Show additional circles</label>
+    <label for="tangency"><input id="tangency" type="checkbox" disabled> Show tangency points</label>
+    <button id="resetBtn" type="button" class="primary">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the grey circles and watch the coloured ones chase them. Every circle you see is forced by the three grey ones: the green one sits in the curved triangle you chose, the red ones sit in its neighbours, and the blue one just fits between all four.</p>
+
+      <h2>Eight curved triangles</h2>
+      <p>Three mutually crossing <a class="wiki-term" data-wiki="Circle" href="https://en.wikipedia.org/wiki/Circle" target="_blank" rel="noopener">circles</a> can cut the plane into eight regions, one of them reaching off to infinity. Write the two crossing points of circles <code>c<sub>i</sub></code> and <code>c<sub>j</sub></code> as <code>A<sub>k</sub></code> and <code>A′<sub>k</sub></code>, where <code>i + j + k = 6</code>. Because the indices are the distinct numbers 1, 2 and 3, that condition has just one answer: circles <code>c<sub>1</sub></code> and <code>c<sub>3</sub></code> meet at <code>A<sub>2</sub></code> and <code>A′<sub>2</sub></code>. The eight sign choices in the drop-down name the eight regions; the logic test samples the board and confirms that all eight really occur.</p>
+
+      <h2>Straight sides become curved</h2>
+      <p>Start with a triangle whose three sides are lines. Under <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">inversion</a>, a line through the centre becomes another line and every other line becomes a circle through the centre. Inversion keeps angles the same, so a line touching a circle still touches its image. That is how <a class="wiki-term" data-wiki="Feuerbach%27s_theorem" href="https://en.wikipedia.org/wiki/Feuerbach%27s_theorem" target="_blank" rel="noopener">Feuerbach's theorem</a> turns into a statement about curved triangles: the <a class="wiki-term" data-wiki="Incircle" href="https://en.wikipedia.org/wiki/Incircle" target="_blank" rel="noopener">incircle</a> and the excircles of a straight triangle become circles touching the three new ones, and the <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">nine-point circle</a> becomes the Hart circle.</p>
+
+      <h2>One circle for four neighbours</h2>
+      <p>Pick a base triangle such as <code>A<sub>1</sub>A<sub>2</sub>A<sub>3</sub></code>. The triangles <code>A′<sub>1</sub>A<sub>2</sub>A<sub>3</sub></code>, <code>A<sub>1</sub>A′<sub>2</sub>A<sub>3</sub></code> and <code>A<sub>1</sub>A<sub>2</sub>A′<sub>3</sub></code> each share an arc and two corners with it. The page claims that for every choice of base there is a circle touching the four incircles; this is Hart's theorem, and the Hart circle plays the part of the nine-point circle here. The applet finds each of those circles by solving the <a class="wiki-term" data-wiki="Problem_of_Apollonius" href="https://en.wikipedia.org/wiki/Problem_of_Apollonius" target="_blank" rel="noopener">problem of Apollonius</a>: there are two <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> solutions, and it keeps the one that also touches the green incircle. The logic test checks all 8 base choices: at the starting position every tangency is exact to six decimal places.</p>
+
+      <h2>What the old applet really tests</h2>
+      <p>Its tangency test accepts a point within 2 pixels of a circle, so a nearly straight-line arrangement can pass with a small gap: the logic test builds a pair that passes that test while missing exact tangency by one pixel, and checks the generated eight-region arrangements at full precision. The theorem is exact; the drawing's tolerance is not. The applet also computes a "signature" for the two solutions and never uses it — a harmless leftover. Hart Circle is not <a class="wiki-term" data-wiki="Hart%27s_inversor" href="https://en.wikipedia.org/wiki/Hart%27s_inversor" target="_blank" rel="noopener">Hart's inversor</a>: that is a four-bar linkage which turns circular motion into straight-line motion, while this is a circle theorem about curved triangles.</p>
+
+      <p class="tip">Tick “Show additional circles”, then drag one grey circle right up to another: the blue circle stretches, but it keeps touching the four coloured ones.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HartCircle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="hart-circle-core.js"></script>
+<script src="hart-circle.js"></script>
+</body>
+</html>
