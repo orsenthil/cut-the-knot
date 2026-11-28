@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lemoine Gen &mdash; coolmaths</title>
+<meta name="description" content="Drag a triangle and its free point, then watch two walks trace points on the side lines: one follows lines through the point parallel to the cevians, the other drops perpendiculars. Where do the two walks settle, and what is the centre the applet marks?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/lemoine-gen/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Lemoine Gen">
+<meta property="og:description" content="Drag a triangle and its free point, then watch two walks trace points on the side lines: one follows lines through the point parallel to the cevians, the other drops perpendiculars. Where do the two walks settle, and what is the centre the applet marks?">
+<meta property="og:url" content="https://coolmaths.ai/lemoine-gen/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 32rem; padding: 0.5rem; overflow-x: auto; }
+  #board { display: block; width: 100%; min-width: 17rem; height: auto; touch-action: none; }
+  #board .side { stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .cevian { stroke: var(--highlight); stroke-width: 1.5; stroke-dasharray: 4 5; }
+  #board .walk-guide { stroke: var(--muted); stroke-width: 1; }
+  #board .walk-red { fill: none; stroke: #d1495b; stroke-width: 2; stroke-linecap: round; }
+  #board .walk-blue { fill: none; stroke: #3b6fd4; stroke-width: 2; stroke-linecap: round; }
+  #board .walk-link { stroke: var(--border); stroke-width: 1; stroke-dasharray: 3 4; }
+  #board .center-dot { fill: var(--good); }
+  #board .reflected { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 4; }
+  #board .pt-name { fill: var(--text); font-size: 1.1rem; font-weight: 650; pointer-events: none; }
+  #board .center-name { fill: var(--good); font-size: 1rem; font-weight: 650; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; }
+  .controls button { min-height: 2.5rem; min-width: 3rem; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .controls input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+</style>
+</head>
+<body data-game="lemoine-gen" data-kind="demo">
+<main id="main">
+  <h1>Lemoine Gen</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a drawing to explore, not a game to win: watch two paths keep landing on the sides of a triangle.<br>
+    <strong>How to play:</strong> Drag A, B, C or M with a mouse or finger, or focus one and use the arrow keys. Tick the boxes to show the paths and their centre, and press Step or Animate to draw more steps.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 480 360" role="group"
+         aria-label="Triangle ABC with a movable point M and two coloured walks along its side lines"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle and the point M">New diagram</button>
+    <button id="stepBtn" type="button" aria-label="Draw one more step of the two walks">Step</button>
+    <button id="runBtn" type="button" aria-pressed="false" aria-label="Animate or stop the two walks">Animate</button>
+    <label><input id="redBox" type="checkbox" aria-label="Show the red walk"> Red</label>
+    <label><input id="connectionsBox" type="checkbox" aria-label="Show links between matching red and blue points"> Connections</label>
+    <label><input id="centerBox" type="checkbox" aria-label="Show the computed centre"> Center</label>
+    <label><input id="blueBox" type="checkbox" aria-label="Show the blue walk"> Blue</label>
+    <label><input id="ceviansBox" type="checkbox" aria-label="Show the cevians through M"> Cevians</label>
+    <label><input id="reflectionBox" type="checkbox" aria-label="Show the reflection of the triangle in the centre"> Reflection</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The live <a href="https://www.cut-the-knot.org/triangle/Lemoine/LemoineGen.shtml" target="_blank" rel="noopener">cut-the-knot page</a> gives only the title “Generalization of Lemoine iterations” and the Java applet; a <a href="https://web.archive.org/web/20201231071246/https://www.cut-the-knot.org/triangle/Lemoine/LemoineGen.shtml" target="_blank" rel="noopener">2020 archive</a> has the same applet and no further text. The exact claim ported here is therefore the one the code carries: two walks from a free point M keep landing on the side lines, and the marked centre is computed from M's position in a fixed way. The logic test checks both on 600 seeded triangles and compares every construction with a second transcription of the bytecode.</p>
+
+      <h2>Two walks around the triangle</h2>
+      <p>Start from any point P. The red step for side <code>BC</code> draws the line through P parallel to <code>AM</code> and meets it with <code>BC</code>. The next red step uses <code>BM</code> and <code>CA</code>, then <code>CM</code> and <code>AB</code>, and repeats. The blue step instead drops a perpendicular from P to a side and then uses the same side as the red step: the order is <code>BC, CA, AB</code> for red and <code>BC, AB, CA</code> for blue, exactly as the applet's index switch does. Each step is an <a class="wiki-term" data-wiki="Affine_transformation" href="https://en.wikipedia.org/wiki/Affine_transformation" target="_blank" rel="noopener">affine map</a> of the plane, so after three steps each walk induces a map of one side line to itself. The test follows both walks for many steps and confirms that each one settles into a repeating three-point <a class="wiki-term" data-wiki="Fixed_point_(mathematics)" href="https://en.wikipedia.org/wiki/Fixed_point_(mathematics)" target="_blank" rel="noopener">cycle</a>, with one point on each side line.</p>
+
+      <h2>The centre the applet marks</h2>
+      <p>Write M in <a class="wiki-term" data-wiki="Barycentric_coordinates_(mathematics)" href="https://en.wikipedia.org/wiki/Barycentric_coordinate_system" target="_blank" rel="noopener">barycentric coordinates</a> <code>M = (x : y : z)</code> with respect to <code>ABC</code>. The applet's <code>ComputeCenter</code> forms <code>(1/x : 1/y : 1/z)</code> and then returns <code>(1/y + 1/z : 1/z + 1/x : 1/x + 1/y)</code>. In other words it first takes the <a class="wiki-term" data-wiki="Isotomic_conjugate" href="https://en.wikipedia.org/wiki/Isotomic_conjugate" target="_blank" rel="noopener">isotomic conjugate</a> of M and then the complement of that point: halve the sum of its three coordinates to place the <a class="wiki-term" data-wiki="Centroid" href="https://en.wikipedia.org/wiki/Centroid" target="_blank" rel="noopener">centroid</a>-based midpoint. The logic test compares this with a separate transcription of the bytecode on 600 triangles. Drag M: the green dot follows this formula, not the last point of either walk.</p>
+
+      <h2>Back to ordinary Lemoine iterations</h2>
+      <p>When M is the <a class="wiki-term" data-wiki="Symmedian_point" href="https://en.wikipedia.org/wiki/Symmedian_point" target="_blank" rel="noopener">symmedian point</a> <code>K = (a&sup2; : b&sup2; : c&sup2;)</code>, the red walk is the classical Lemoine construction with lines parallel to the symmedians. The marked centre becomes <code>(1/b&sup2; + 1/c&sup2; : 1/c&sup2; + 1/a&sup2; : 1/a&sup2; + 1/b&sup2;)</code>. The test checks this identity and checks that the two walks still settle on the sides, so the generalisation agrees with the familiar case at its special point. The page itself states no minimum count or inequality, so none is asserted here.</p>
+
+      <p class="tip">Try ticking Connections and then dragging M across a side: watch how the centre moves as M leaves the triangle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/triangle/Lemoine/LemoineGen.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="lemoine-gen-core.js"></script>
+<script src="lemoine-gen.js"></script>
+</body>
+</html>
