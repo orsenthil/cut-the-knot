@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Illusion &mdash; coolmaths</title>
+<meta name="description" content="Straight slanted lines run behind upright stripes, and the pieces seem to break apart. Move the lines and stripes: are the pieces really bent?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/illusion/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Illusion">
+<meta property="og:description" content="Straight slanted lines run behind upright stripes, and the pieces seem to break apart. Move the lines and stripes: are the pieces really bent?">
+<meta property="og:url" content="https://coolmaths.ai/illusion/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .transversal {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1.2;
+  }
+  #board .guide {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2.2;
+    stroke-dasharray: 7 5;
+  }
+  #board .bar {
+    fill: var(--stage);
+    stroke: var(--ink);
+    stroke-width: 1;
+  }
+  #board .bar-open {
+    fill: var(--accent);
+    fill-opacity: 0.1;
+    stroke: var(--accent);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+  }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .gap-handle { fill: var(--highlight); }
+  .hint { color: var(--muted); font-size: 0.9rem; margin: 0.5rem 0 0; }
+  .options { flex-wrap: wrap; gap: 0.4rem 1rem; }
+  .opt { display: inline-flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+  .opt label { font-size: 0.9rem; }
+  .opt output { color: var(--muted); font-variant-numeric: tabular-nums; min-width: 2ch; }
+  .opt input[type="range"] { width: 7rem; max-width: 100%; }
+</style>
+</head>
+<body data-game="illusion" data-kind="demo">
+<main id="main">
+  <h1>Illusion</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a><a class="tag" href="../index.html#coordinates">Coordinates</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Slanted lines run behind upright stripes and seem to break into pieces, but they are really straight. There is nothing to win.<br>
+    <strong>How to play:</strong> Drag the two dots or move the four sliders to change the lines and stripes. Press "Lift the bars" to see what is hidden, or focus a dot and use the arrow keys.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Slanted straight lines crossing upright stripes, with two draggable points for the slant and the gap between lines"></svg>
+    <p class="hint">Drag the dots, or focus one and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls options" aria-label="Picture settings">
+    <div class="opt"><label for="distRange">Line gap <output id="distOut" for="distRange">20</output></label><input id="distRange" type="range" min="5" max="50" step="1" value="20" aria-label="Gap between slanted lines, 5 to 50"></div>
+    <div class="opt"><label for="angleRange">Slant <output id="angleOut" for="angleRange">60</output>&deg;</label><input id="angleRange" type="range" min="15" max="90" step="1" value="60" aria-label="Slant of the lines in degrees, 15 to 90"></div>
+    <div class="opt"><label for="spaceRange">Stripe gap <output id="spaceOut" for="spaceRange">50</output></label><input id="spaceRange" type="range" min="20" max="100" step="1" value="50" aria-label="Gap between upright stripes, 20 to 100"></div>
+    <div class="opt"><label for="widthRange">Stripe width <output id="widthOut" for="widthRange">30</output></label><input id="widthRange" type="range" min="5" max="90" step="1" value="30" aria-label="Width of an upright stripe, 5 to 90"></div>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset all four settings to the original picture">Reset</button>
+    <button id="revealBtn" type="button" aria-pressed="false" aria-label="Lift the stripes to show the hidden lines">Lift the bars</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Press "Lift the bars" and the slanted lines carry on through the stripes. The picture never bent: the stripes only cover the middle. This is the same trick as the better-known straight-line version of the <a class="wiki-term" data-wiki="Poggendorff_illusion" href="https://en.wikipedia.org/wiki/Poggendorff_illusion" target="_blank" rel="noopener">Poggendorff illusion</a>.</p>
+
+      <h2>The claim, word for word</h2>
+      <p>Bogomolny's page says: <q>Parallel lines appear to break the transversals off. The closer the inclination of the lines in the two families, the more pronounced is the effect.</q> That is the claim kept here. The stripes and slanted lines are <a class="wiki-term" data-wiki="Parallel_(geometry)" href="https://en.wikipedia.org/wiki/Parallel_(geometry)" target="_blank" rel="noopener">parallel</a> families, and the parts hidden behind a stripe lie on the very same line as the parts you can see. The words <em>appear</em> and <em>more pronounced</em> are about <a class="wiki-term" data-wiki="Visual_perception" href="https://en.wikipedia.org/wiki/Visual_perception" target="_blank" rel="noopener">perception</a>: no coordinate can measure how strong the effect feels, so the check does not pretend to. The page cites <em>The Mind's Eye</em> (Scientific American, 1986).</p>
+
+      <h2>Two families of straight lines</h2>
+      <p>The applet's slanted lines all share one slope. Let <code>t = Dist / tan(&theta;)</code>, where <code>&theta;</code> is the slant in degrees. Each line has ends <code>(x + t cos&theta;, 151 &minus; t sin&theta;)</code> and <code>(x &minus; t cos&theta;, 151 + t sin&theta;)</code> when it is drawn at the board's middle height, so its slope is <code>&minus;tan&theta;</code>. A fresh line starts every <code>Dist / sin&theta;</code> units along the board, and each start makes three almost overlapping lines. The upright stripes are filled rectangles <code>Space</code> apart, each <code>2 &times; trunc(Width/2)</code> units wide and as tall as the board.</p>
+      <blockquote>The angle between the two families is <code>|90 &minus; &theta;|</code> degrees. It falls by one degree for each degree you add to the slant, reaching zero when the slant is 90&deg;.</blockquote>
+      <p>The logic test compares every line and stripe with a second transcription of the applet's <code>DrawLines</code>, <code>DrawLine</code> and <code>DrawOcclusion</code> bytecode: all 76 slants with all 46 gaps, all 81 stripe gaps with all 86 widths, and 4,000 more settings. In every case the clipped ends are the same and the hidden and visible pieces lie on one line.</p>
+
+      <h2>What changes, and what does not</h2>
+      <p>The four controls are the applet's four scrollbars: line gap 5&ndash;50, slant 15&ndash;90&deg;, stripe gap 20&ndash;100 and stripe width 5&ndash;90; they start at 20, 60, 50 and 30. The page sets a black foreground and a white background. The original repainted every 40 milliseconds even though nothing moved; here the SVG is redrawn only when a setting changes. Colours come from the site's own light and dark themes instead of the applet's fixed palette.</p>
+      <p><strong>Deviation from the applet:</strong> the two dots stand in for the sliders on the slant and line gap, the bars can be lifted so you can check the geometry, and the original mouse and animation hooks (which changed nothing) are left out. The <a class="wiki-term" data-wiki="Optical_illusion" href="https://en.wikipedia.org/wiki/Optical_illusion" target="_blank" rel="noopener">optical illusion</a> itself is unchanged, and there is no win or loss, as in the applet.</p>
+
+      <p class="tip">Set the slant to 90&deg;, where the two families have the same inclination, and then lift the bars. Now try 15&deg;: the lines are just as straight both times.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Illusion.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="illusion-core.js"></script>
+<script src="illusion.js"></script>
+</body>
+</html>
