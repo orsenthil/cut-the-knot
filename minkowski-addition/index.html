@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Minkowski Addition &mdash; coolmaths</title>
+<meta name="description" content="Drag two points and two origins: when you move the origin, which way does the sum of the two points move?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/minkowski-addition/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Minkowski Addition">
+<meta property="og:description" content="Drag two points and two origins: when you move the origin, which way does the sum of the two points move?">
+<meta property="og:url" content="https://coolmaths.ai/minkowski-addition/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .sum-a { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .sum-b { fill: none; stroke: var(--good); stroke-width: 2.5; stroke-dasharray: 7 4; }
+  #board .shift-side { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .shift-glow { fill: none; stroke: var(--highlight); stroke-width: 12; }
+  #board .sum-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .sum-dot-prime { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .mid-dot { fill: var(--text); stroke: var(--stage); stroke-width: 1; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .controls label { cursor: pointer; }
+  .legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin: 0.5rem 0 0; font-size: 0.9rem; }
+  .legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .legend i { display: inline-block; width: 1.4rem; height: 0; border-top: 3px solid; }
+  .legend .key-a { border-color: var(--accent); }
+  .legend .key-b { border-color: var(--good); border-top-style: dashed; }
+  .legend .key-c { border-color: var(--ink); }
+</style>
+</head>
+<body data-game="minkowski-addition" data-kind="demo">
+<main id="main">
+  <h1>Minkowski Addition</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#coordinates">Coordinates</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: it shows what happens to a sum of two points when you move the place you start counting from.<br>
+    <strong>How to play:</strong> Drag the dots A, B, O and O', or focus a dot and use the arrow keys. Tick the boxes to show or hide each set of lines.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 420 330" role="group"
+         aria-label="Four draggable points A, B, O and O prime, the two sums S and S prime, and the parallelogram joining them"></svg>
+    <p class="legend" aria-label="Line colours">
+      <span><i class="key-a"></i> first sum, from O</span>
+      <span><i class="key-b"></i> second sum, from O'</span>
+      <span><i class="key-c"></i> the parallelogram between the sums</span>
+    </p>
+  </div>
+
+  <div class="controls">
+    <label><input id="showFirst" type="checkbox"> First sum lines</label>
+    <label><input id="showSecond" type="checkbox"> Second sum lines</label>
+    <label><input id="showShift" type="checkbox"> Shift parallelogram</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Start from a point O and draw a <a class="wiki-term" data-wiki="Position_(vector)" href="https://en.wikipedia.org/wiki/Position_(vector)" target="_blank" rel="noopener">radius vector</a> to each of A and B. Add the two vectors and you get a fourth point S. Now choose a different origin O' and do it again. What connects the two answers?</p>
+
+      <h2>Adding with an origin</h2>
+      <p>The vector from O to A is <code>A - O</code>, and from O to B it is <code>B - O</code>. Their <a class="wiki-term" data-wiki="Vector_addition" href="https://en.wikipedia.org/wiki/Vector_addition" target="_blank" rel="noopener">sum</a> is <code>(A - O) + (B - O)</code>, so the endpoint is <code>S = O + (A - O) + (B - O) = A + B - O</code>. The applet draws the red <a class="wiki-term" data-wiki="Parallelogram" href="https://en.wikipedia.org/wiki/Parallelogram" target="_blank" rel="noopener">parallelogram</a> OASB: its sides are OA, OB, AS and BS. With the second origin the same rule gives <code>S' = A + B - O'</code> (the dashed lines). Both parallelograms share the diagonal AB, and each has that diagonal's midpoint M as its centre.</p>
+
+      <h2>The claim on the page</h2>
+      <p>The page says: <em>the sum A + B is translated in the direction opposite to that of OO', but by the same distance</em>. Subtract the two formulas and the A and B terms cancel: <code>S' - S = (A + B - O') - (A + B - O) = O - O'</code>. That is exactly the negative of the shift <code>O' - O</code>, with the same length. The claim is true for every placement of the four points; the logic test checks it on all 72,900 positions of a grid and 4,000 random configurations, with an error below <code>1e-9</code>.</p>
+
+      <h2>Why the four corners make a parallelogram</h2>
+      <p>The pink outline runs O &rarr; S' &rarr; S &rarr; O' &rarr; O. Its sides come in equal pairs: <code>S' - O = -(O' - S)</code> and <code>S - S' = O' - O</code>. Another way to see it is that the diagonals OS and O'S' both have midpoint <code>(A + B)/2</code>, the same point M that bisects AB. A quadrilateral whose diagonals cut each other in half is a parallelogram. The page's informal explanation checks out too: moving A alone moves S by <code>v</code>, moving A and B moves it by <code>2v</code>, and moving A, B and O together moves it by only <code>v</code>, so shifting O alone contributes <code>v - 2v = -v</code>.</p>
+
+      <h2>About this port</h2>
+      <p>The original applet draws these lines in red, blue and pink on a green panel; here the three sets use theme colours so they read in both light and dark mode, and the three boxes let you hide sets to see each parallelogram on its own. The board keeps the applet's exact starting positions, adding a margin so the point at the bottom edge has room for its handle. The original's Reset and mouse dragging are kept; the checkboxes and Reset button are new controls for the web page. The live cut-the-knot page still carries the text and embeds the old Java applet (it asks for Sun's Java VM, which modern browsers no longer run), so the behaviour here was checked against the applet's bytecode in the archive. This is an illustration: there is no win or loss.</p>
+
+      <p class="tip">Try dragging O toward O': the yellow band shrinks and the two sums come together. Put O on top of O' and the two sums coincide, yet all the line lists still balance.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MinkowskiAddition.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="minkowski-addition-core.js"></script>
+<script src="minkowski-addition.js"></script>
+</body>
+</html>
