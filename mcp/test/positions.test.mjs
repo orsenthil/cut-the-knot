@@ -2495,6 +2495,16 @@ check("maxwell: saved cevians concur and the orthologic equations vanish", read[
 check("mcgee: equal tangents make S the midpoint of PQ", read["mcgee"]?.reading.valid === true && read["mcgee"].reading.drawable === true && read["mcgee"].reading.claims.AP_equals_BQ === true && read["mcgee"].reading.claims.S_is_midpoint_of_PQ === true);
 check("mcworter: the right angle at D holds in the saved figure", read["mcworter"]?.reading.claims.allHold === true && read["mcworter"].reading.angleB_aDA_bDegrees === 90);
 check("mcworter-2: Bottema's midpoint matches the closed form", read["mcworter-2"]?.reading.claims.midpointIndependent === true && read["mcworter-2"].reading.points.M.x === read["mcworter-2"].reading.closedFormMidpoint.x && read["mcworter-2"].reading.points.M.y === read["mcworter-2"].reading.closedFormMidpoint.y);
+check("medial-nagel: saved cevians meet at the Nagel point", read["medial-nagel"]?.valid === true && read["medial-nagel"].drawingPossible === true && typeof read["medial-nagel"].nagelPoint.x === "number");
+check("median-triangle: median triangle area is 3/4 of ABC", read["median-triangle"]?.valid === true && read["median-triangle"].core.blueShare === 0.75 && read["median-triangle"].core.heronOnMedians === read["median-triangle"].core.blueArea);
+check("menelaus: saved Ceva-mode product is +1 with no extensions", read["menelaus"]?.signedProduct === 1 && read["menelaus"].unsignedProduct === 1 && read["menelaus"].pointsOnExtensions === 0 && read["menelaus"].reading.signedProductMatches === true);
+check("menelaus-bisector: parity rule matches the saved drawing", read["menelaus-bisector"]?.reading.parity.verdictsMatchDrawing === true && read["menelaus-bisector"].reading.unsignedRatios.atA_c_over_b > 0);
+check("menelaus-from-ceva: six Ceva identities hold at the saved transversal", read["menelaus-from-ceva"]?.reading.menelaus.product === 1 && read["menelaus-from-ceva"].reading.menelaus.collinear === true && read["menelaus-from-ceva"].reading.ceva.one === 1);
+check("menelaus-proof: the saved product is 1 and directed product -1", read["menelaus-proof"]?.reading.product === 1 && read["menelaus-proof"].reading.directedProduct === -1 && read["menelaus-proof"].reading.collinear === true);
+check("midpoints: the saved empty chain round-trips", read["midpoints"]?.n === 0 && Object.values(read["midpoints"].matchesSaved).every(Boolean) === true);
+check("midpoints-in-isosceles-triangle: AD perpendicular CH with the page slip flagged", read["midpoints-in-isosceles-triangle"]?.ADperpCH === true && read["midpoints-in-isosceles-triangle"].rightAngleAtK === true && read["midpoints-in-isosceles-triangle"].pageCHperpAM === false);
+check("minkowski-addition: the sum shape shifts opposite to the origin", read["minkowski-addition"]?.savedReadable === true && read["minkowski-addition"].sumShift.x === -read["minkowski-addition"].shift.x && read["minkowski-addition"].sumShift.y === -read["minkowski-addition"].shift.y);
+check("miquel: the three pivot circles concur at the saved point", read["miquel"]?.concurrent === true && read["miquel"].largestConcurrencyError < 1e-8 && read["miquel"].savedMiquelPointMatches === true);
 {
   const wg = read.wgraphs;
   check("wgraphs: the cheapest edge is the only legal first mark", wg?.markedCount === 0 && wg.legalMoves.join() === "2" && wg.minimumSpanningTreeWeight === 16);
@@ -3173,6 +3183,30 @@ check("delta-hedging: one day in, 0.52 shares held", read["delta-hedging"]?.day 
   check("mcworter/right_triangle_at_d: B_a D A_b is a right isosceles triangle", right.angleB_aDA_bDegrees === 90 && right.claims.allHold === true);
   const midpoint = runGameLogic("mcworter-2", "bottema_midpoint", {});
   check("mcworter-2/bottema_midpoint: the midpoint stays fixed at b(1+c)/2", midpoint.reading.midpointGap === 0 && Object.values(midpoint.reading.claims).every(Boolean) === true);
+}
+
+// The batch-42 tutor actions also run their real cores, not just saved positions.
+{
+  const nagel = runGameLogic("medial-nagel", "nagel_point", {});
+  check("medial-nagel/nagel_point: 15 claims and cevians through M", nagel.allClaimsHold === true && nagel.claimsPassed === 15 && nagel.nagel.allThroughM === true);
+  const area = runGameLogic("median-triangle", "median_area", {});
+  check("median-triangle/median_area: three-quarter area from the medians", area.blueShare === 0.75 && area.exactlyThreeQuarters === true && area.heronOnMedians === area.blueArea);
+  const cm = runGameLogic("menelaus", "ceva_vs_menelaus", {});
+  check("menelaus/ceva_vs_menelaus: signed products +1 and -1", cm.ceva.signedProduct === 1 && cm.menelaus.signedProduct === -1 && cm.menelaus.collinear === true);
+  const bis = runGameLogic("menelaus-bisector", "angle_bisector_ratios", {});
+  check("menelaus-bisector/angle_bisector_ratios: parity gives concurrence or collinearity", bis.parity.evenExternalGivesPlusOne === true && bis.parity.oddExternalGivesMinusOne === true && bis.chosen.concurrent === true && bis.product === 1);
+  const derived = runGameLogic("menelaus-from-ceva", "ceva_to_menelaus", {});
+  check("menelaus-from-ceva/ceva_to_menelaus: six identities square to Menelaus", derived.ceva.eachEqualsOne === true && derived.ceva.squaringIdentityHolds === true && derived.menelaus.collinear === true);
+  const proof = runGameLogic("menelaus-proof", "product_in_all_modes", {});
+  check("menelaus-proof/product_in_all_modes: invariant holds in all four views", proof.invariantHoldsInEveryMode === true && proof.product === 1 && proof.directedProduct === -1);
+  const comp = runGameLogic("midpoints", "composition", { points: [[0, 0], [100, 0], [50, 100]] });
+  check("midpoints/composition: odd n has one closing start", comp.parity === "odd" && comp.closing.howMany === "one start" && comp.chain.targetAgrees === true);
+  const iso = runGameLogic("midpoints-in-isosceles-triangle", "construct", {});
+  check("midpoints-in-isosceles-triangle/construct: AD perpendicular CH", iso.anglesDegrees.AD_to_CH === 90 && iso.equalRatios.equal === true && iso.midpoints.D_halvesMH === true);
+  const shift = runGameLogic("minkowski-addition", "opposite_shift", {});
+  check("minkowski-addition/opposite_shift: equal opposite shifts and parallelogram", shift.oppositeSum.x === 0 && shift.oppositeSum.y === 0 && shift.shiftLengths.difference === 0 && shift.parallelogram.bothBisectedAtMidAB === true);
+  const pivot = runGameLogic("miquel", "pivot_circles", {});
+  check("miquel/pivot_circles: three circles meet at one Miquel point", pivot.concurrent === true && pivot.largestConcurrencyError < 1e-8);
 }
 
 // A game with no reader, and a position that makes no sense.

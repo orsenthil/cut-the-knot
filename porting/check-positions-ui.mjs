@@ -1386,6 +1386,16 @@ const GAMES = {
   "mcgee": (page) => dragFirstHandle(page),
   "mcworter": (page) => dragFirstHandle(page),
   "mcworter-2": (page) => dragFirstHandle(page),
+  "medial-nagel": (page) => dragFirstHandle(page),
+  "median-triangle": (page) => dragFirstHandle(page),
+  "menelaus": (page) => dragFirstHandle(page),
+  "menelaus-bisector": (page) => dragFirstHandle(page),
+  "menelaus-from-ceva": (page) => dragFirstHandle(page),
+  "menelaus-proof": (page) => dragFirstHandle(page),
+  "midpoints": (page) => dragFirstHandle(page),
+  "midpoints-in-isosceles-triangle": (page) => dragFirstHandle(page),
+  "minkowski-addition": (page) => dragFirstHandle(page),
+  "miquel": (page) => dragFirstHandle(page),
   "binomial-option-tree": async (page) => {
     await page.selectOption("#nIn", "6");
   },

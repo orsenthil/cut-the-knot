@@ -889,6 +889,16 @@ const CORE_GLOBALS = {
   "mcgee/mcgee-core.js": ["McgeeCore"],
   "mcworter/mcworter-core.js": ["McworterCore"],
   "mcworter-2/mcworter-2-core.js": ["Mcworter2Core"],
+  "medial-nagel/medial-nagel-core.js": ["MedialNagelCore"],
+  "median-triangle/median-triangle-core.js": ["MedianTriangleCore"],
+  "menelaus/menelaus-core.js": ["MenelausCore"],
+  "menelaus-bisector/menelaus-bisector-core.js": ["MenelausBisectorCore"],
+  "menelaus-from-ceva/menelaus-from-ceva-core.js": ["MenelausFromCevaCore"],
+  "menelaus-proof/menelaus-proof-core.js": ["MenelausProofCore"],
+  "midpoints/midpoints-core.js": ["MidpointsCore"],
+  "midpoints-in-isosceles-triangle/midpoints-in-isosceles-triangle-core.js": ["MidpointsInIsoscelesTriangleCore"],
+  "minkowski-addition/minkowski-addition-core.js": ["MinkowskiAdditionCore"],
+  "miquel/miquel-core.js": ["MiquelCore"],
 };
 
 const games = [];
