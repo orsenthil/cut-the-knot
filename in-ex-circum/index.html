@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>In Ex Circum &mdash; coolmaths</title>
+<meta name="description" content="Drag a triangle's corners and watch the halfway points between its centre and the three outside centres. Do they always land on the circle through the corners?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/in-ex-circum/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="In Ex Circum">
+<meta property="og:description" content="Drag a triangle's corners and watch the halfway points between its centre and the three outside centres. Do they always land on the circle through the corners?">
+<meta property="og:url" content="https://coolmaths.ai/in-ex-circum/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .ex-side { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 4; }
+  #board .bisector { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 5 4; }
+  #board .circumcircle { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .circumcircle.claimed { stroke: var(--bad); stroke-width: 3; }
+  #board .incircle { fill: var(--good); fill-opacity: 0.08; stroke: var(--good); stroke-width: 1.5; }
+  #board .excircle { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: 2 5; }
+  #board .claim-line { fill: none; stroke: var(--bad); stroke-width: 2; }
+  #board .claim-line.claim-two { stroke-dasharray: 7 4; }
+  #board .claim-line.claim-three { stroke-dasharray: 2 4; }
+  #board .angle-mark { fill: none; stroke: var(--highlight); stroke-width: 2; }
+  #board .right-mark { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .in-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .ex-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .mid-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 2; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 15px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .in-label { fill: var(--good); }
+  #board .ex-label { fill: var(--accent); }
+  #board .mid-label { fill: var(--bad); }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+</style>
+</head>
+<body data-game="in-ex-circum" data-kind="demo">
+<main id="main">
+  <h1>In Ex Circum</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move the corners of a triangle and see where the halfway points between its centre and its three outside centres land.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a corner and use the arrow keys. Press Show claim and Check midpoints to see what always stays true.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="A triangle with its incenter and three excenters, the halfway dots, and the circle through the triangle's corners"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the triangle to its starting shape">Reset triangle</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point names">Hide names</button>
+    <button id="claimBtn" type="button" aria-pressed="false" aria-label="Toggle the circle and the six halfway segments">Show claim</button>
+    <button id="hint1Btn" type="button" aria-pressed="false" aria-label="Toggle the angle marks and the excentral triangle">Show angle marks</button>
+    <button id="hint2Btn" type="button" aria-pressed="false" aria-label="Toggle the bisectors and right angles at the corners">Show bisectors</button>
+    <button id="checkBtn" type="button" aria-label="Check the midpoint claim for this triangle">Check midpoints</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The centre inside a triangle and the three centres outside it look far apart. Yet the dots halfway along the segments that join them keep landing on the circle drawn through the three corners. Here is why that is not luck.</p>
+
+      <h2>A triangle hidden outside the first one</h2>
+      <p>Each <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">angle bisector</a> of ABC is perpendicular to the outside bisector at the same corner. The outside bisectors meet at the three <a class="wiki-term" data-wiki="Excentral_triangle" href="https://en.wikipedia.org/wiki/Excentral_triangle" target="_blank" rel="noopener">excenters</a> I<sub>a</sub>, I<sub>b</sub>, I<sub>c</sub>, forming the excentral triangle. Press Show bisectors to see the six right angles, and Show angle marks for the matching pairs of angles.</p>
+      <p>The sides of that outer triangle pass through A, B and C at right angles to the lines from its vertices, so ABC is its <a class="wiki-term" data-wiki="Orthic_triangle" href="https://en.wikipedia.org/wiki/Orthic_triangle" target="_blank" rel="noopener">orthic triangle</a>. The <a class="wiki-term" data-wiki="Incenter" href="https://en.wikipedia.org/wiki/Incenter" target="_blank" rel="noopener">incenter</a> I is the outer triangle's orthocentre.</p>
+
+      <h2>One circle does two jobs</h2>
+      <p>A <a class="wiki-term" data-wiki="Nine-point_circle" href="https://en.wikipedia.org/wiki/Nine-point_circle" target="_blank" rel="noopener">nine-point circle</a> passes through three feet of altitudes, three side midpoints and three Euler points. For the outer triangle these are A, B, C; the midpoints of I<sub>a</sub>I<sub>b</sub>, I<sub>b</sub>I<sub>c</sub>, I<sub>c</sub>I<sub>a</sub>; and the midpoints from its orthocentre I to its vertices. The last three are exactly</p>
+      <blockquote><code>M<sub>a</sub> = (I + I<sub>a</sub>) / 2</code>, &nbsp; <code>M<sub>b</sub> = (I + I<sub>b</sub>) / 2</code>, &nbsp; <code>M<sub>c</sub> = (I + I<sub>c</sub>) / 2</code>.</blockquote>
+      <p>That circle is also the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of ABC, so all three halfway dots lie on it. The logic test checks this and the other named points on hundreds of triangles: all hold.</p>
+
+      <h2>The arc midpoints, and the source</h2>
+      <p>There is more: each dot is also the midpoint of the arc of the circumcircle that its segment crosses. For example M<sub>a</sub> is equally far from B, C, I and I<sub>a</sub>. The check script constructs those arc midpoints a second way — as the circle through the opposite side and I — and confirms the page's extra claim throughout.</p>
+      <p>The live cut-the-knot page no longer embeds the Java applet; an archived 2018 capture shows a GeoGebra sketch in its place. This port takes its construction from the original InExCircum bytecode and its written claim from that same page: the midpoints of the segments joining the incenter to the excenters lie on the circumcircle.</p>
+
+      <p class="tip">Try pulling one corner so the triangle is long and thin: the outside centres fly away, but the halfway dots still sit on the circle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/InExCircum.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="in-ex-circum-core.js"></script>
+<script src="in-ex-circum.js"></script>
+</body>
+</html>
