@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hinged Pythagoras &mdash; coolmaths</title>
+<meta name="description" content="Two equal squares are cut into the same four triangles. Turn the hinged pieces: can you make the empty spaces show why a² + b² = c²?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hinged-pythagoras/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hinged Pythagoras">
+<meta property="og:description" content="Two equal squares are cut into the same four triangles. Turn the hinged pieces: can you make the empty spaces show why a² + b² = c²?">
+<meta property="og:url" content="https://coolmaths.ai/hinged-pythagoras/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 48rem; margin: 0 auto; padding: 0.6rem; }
+  #board { display: block; width: 100%; max-width: 100%; height: auto; touch-action: none; }
+  #board .frame { fill: none; stroke: var(--ink); stroke-width: 2.4; }
+  #board .piece { stroke: var(--ink); stroke-width: 1.5; stroke-linejoin: round; }
+  #board .piece-left { fill: var(--highlight); }
+  #board .piece-fixed { fill: var(--highlight); }
+  #board .piece-turned { fill: var(--accent); fill-opacity: 0.6; }
+  #board .guide { stroke: var(--accent); stroke-width: 2.4; stroke-dasharray: 6 4; }
+  #board .hinge-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .drag-ring { fill: none; stroke: var(--bad); stroke-width: 2.4; }
+  #board .area-label { fill: var(--text); font-size: 18px; font-weight: 700; text-anchor: middle; pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .m-handle { fill: var(--good); }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 6; }
+  #readout {
+    margin: 0.5rem 0 0; text-align: center; font-size: 0.95rem;
+    font-variant-numeric: tabular-nums; overflow-wrap: anywhere; color: var(--text);
+  }
+  .angle-control {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.7rem;
+    margin: 0.5rem auto 0; max-width: 40rem;
+  }
+  .angle-control label { font-size: 0.95rem; }
+  .angle-control input { flex: 1 1 10rem; min-width: 8rem; accent-color: var(--accent); }
+  #angleOut { min-width: 3.2rem; text-align: right; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="hinged-pythagoras" data-kind="demo">
+<main id="main">
+  <h1>Hinged Pythagoras</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#area">Area</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two squares are cut into the same four triangles, and two of the pieces swing on hinges. There is nothing to win: the pieces show why the squares always fit.<br>
+    <strong>How to play:</strong> Drag the round point along the bottom of the left square, or focus it and use the arrow keys. Turn the slider to 90° to see the two squares appear, then press Reset to start again.
+  </div>
+
+  <div class="controls angle-control">
+    <label for="angleRange">Turn the hinged pieces</label>
+    <input id="angleRange" type="range" min="0" max="95" step="1" value="0"
+           aria-label="Rotation of the hinged triangles, from 0 to 95 degrees">
+    <output id="angleOut" for="angleRange">0°</output>
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 460" role="group"
+         aria-label="Two equal squares. Each is cut into four right triangles. In the right square two triangles turn on hinges: at 90 degrees the spaces left are two smaller squares. Drag hinge M along the bottom edge of the left square."></svg>
+    <p id="readout" aria-live="polite"></p>
+  </div>
+
+  <div class="controls">
+    <button id="ninetyBtn" type="button" class="primary" aria-label="Turn the hinged triangles to 90 degrees">Turn to 90°</button>
+    <button id="resetBtn" type="button" aria-label="Reset the hinge and the rotation to the starting position">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The two squares start out cut in exactly the same way. Turn the two hinged pieces on the right and the empty space changes from one tilted square into two smaller squares. Nothing is added or taken away, so their areas must match.</p>
+
+      <h2>One tilted square on the left</h2>
+      <p>Write the two parts of the bottom edge as <code>a</code> and <code>b</code>, so the square's side is <code>a + b</code>. Each of the four cuts makes a <a class="wiki-term" data-wiki="Right_triangle" href="https://en.wikipedia.org/wiki/Right_triangle" target="_blank" rel="noopener">right triangle</a> with legs <code>a</code> and <code>b</code>. The space left in the middle is a square whose side is the third side <code>c</code>, so its <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> is <code>c²</code>. The big square's area is therefore <code>c² + 4·(a·b/2)</code>.</p>
+
+      <h2>Turn the hinges to 90°</h2>
+      <p>The right square holds the same four triangles. Two of them stay put; the other two turn around the marked hinges. At <code>90°</code> the turning pieces meet the fixed ones and leave a square of side <code>b</code> above a square of side <code>a</code>. Their areas are <code>b²</code> and <code>a²</code>. Subtract the same four triangles from both equal squares and you get <code>c² = a² + b²</code>, the <a class="wiki-term" data-wiki="Pythagorean_theorem" href="https://en.wikipedia.org/wiki/Pythagorean_theorem" target="_blank" rel="noopener">Pythagorean theorem</a>. This is a <a class="wiki-term" data-wiki="Dissection_puzzle" href="https://en.wikipedia.org/wiki/Dissection_puzzle" target="_blank" rel="noopener">hinged dissection</a>: the pieces never change shape, only position. The logic test checked every whole-pixel hinge position on the applet's canvas, all 96 slider settings, and compared every drawn point with a second reading of the applet's code.</p>
+
+      <h2>What the original page claims</h2>
+      <p>Page and applet disagree about the label. The applet's own info string calls this <em>Proof #36</em>, but Proof #36 is a different dissection by J. E. Böttcher. The page's Explanation link points to <em>Proof #9</em>, which says a rearrangement of rigid pieces makes the <a class="wiki-term" data-wiki="Algebra" href="https://en.wikipedia.org/wiki/Algebra" target="_blank" rel="noopener">algebra</a> of Proof #4 unnecessary: Proof #4 computes the same big square as <code>(a+b)² = 4·(a·b/2) + c²</code>. This port follows the page. The sibling applets use other dissections: HingedPythagoras3's page points to Proof #2 (two squares and two triangles) and HingedPythagoras2's to Proof #10 (a hinged version of Proof #3). This one is Proof #9's four triangles and one tilted square, with a rotation slider from 0 to 95 degrees; the applet's alignment line appears from 90 degrees on. J. C. Eves, <em>Pythagoras, his Theorem and some gadgets</em>, Math. Mag. 27 (1954), 161–167, is the reference the page gives.</p>
+
+      <p class="tip">Set the hinge near one end of the edge: one triangle becomes very thin. The two open squares still add up to the tilted square.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HingedPythagoras.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="hinged-pythagoras-core.js"></script>
+<script src="hinged-pythagoras.js"></script>
+</body>
+</html>
