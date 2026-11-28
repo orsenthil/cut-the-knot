@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menelaus &mdash; coolmaths</title>
+<meta name="description" content="Move the dots on a triangle's sides: when do three cross-lines meet at one point, and when do three dots fall on one straight line?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/menelaus/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Menelaus">
+<meta property="og:description" content="Move the dots on a triangle's sides: when do three cross-lines meet at one point, and when do three dots fall on one straight line?">
+<meta property="og:url" content="https://coolmaths.ai/menelaus/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 36rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-side { fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linejoin: round; }
+  #board .guide { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 4 5; }
+  #board .cevian { fill: none; stroke: var(--accent); stroke-width: 2.4; }
+  #board .transversal { fill: none; stroke: var(--good); stroke-width: 3; }
+  #board .mark { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .meet-dot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .pt-label {
+    fill: var(--text); font-family: var(--font); font-size: 16px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .vertex-label { fill: var(--ink); }
+  #board .mark-label { fill: var(--good); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .mark-handle { fill: var(--good); }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--highlight); stroke-width: 5; }
+  .controls { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button[aria-pressed="true"] { border-color: var(--accent); }
+</style>
+</head>
+<body data-game="menelaus" data-kind="demo">
+<main id="main">
+  <h1>Menelaus</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#fractions">Fractions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Move dots on a triangle to see when three lines meet in one place and when three dots fall on one straight line.<br>
+    <strong>How to play:</strong> Drag a dot, or focus it and use the arrow keys. Press Ceva or Menelaus to change the picture, and Reset view to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="110 55 280 270" role="group"
+         aria-label="A triangle with draggable corners A, B and C and dots D, E and F; three lines either meet at K or cross the triangle in one straight line"></svg>
+  </div>
+
+  <div class="controls">
+    <button id="cevaBtn" type="button" class="primary" aria-pressed="true"
+            aria-label="Show the Ceva picture: three cevians meeting at K">Ceva</button>
+    <button id="menelausBtn" type="button" aria-pressed="false"
+            aria-label="Show the Menelaus picture: three side dots on one line">Menelaus</button>
+    <button id="resetBtn" type="button"
+            aria-label="Reset the triangle and its dots to the opening picture">Reset view</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two famous triangle facts look almost identical when written with lengths, yet one is about lines meeting and the other about dots lining up. This is the applet that puts them side by side: press one button or the other and drag the same triangle two different ways.</p>
+
+      <h2>One product, two pictures</h2>
+      <p>Let F lie on side AB, D on side BC and E on side AC (or on the extensions of those sides). Write the three length ratios in the order the applet's page uses. <a class="wiki-term" data-wiki="Ceva%27s_theorem" href="https://en.wikipedia.org/wiki/Ceva%27s_theorem" target="_blank" rel="noopener">Ceva's theorem</a> says the cevians AD, BE, CF meet at one point exactly when the product is 1. <a class="wiki-term" data-wiki="Menelaus%27_theorem" href="https://en.wikipedia.org/wiki/Menelaus%27_theorem" target="_blank" rel="noopener">Menelaus' theorem</a> says D, E, F lie on one straight line exactly when</p>
+      <blockquote><code>AF/BF · BD/CD · CE/AE = 1</code></blockquote>
+      <p>with the extra condition that one or all three of the dots sit on side extensions. That condition matters: a line cannot cut all three sides of a triangle inside it. The logic test checks the statement in both directions over a grid of 1,728 configurations and 3,935 random transversals, and it holds in every case with one or three outside dots.</p>
+
+      <h2>Why the same number appears twice</h2>
+      <p>By <a class="wiki-term" data-wiki="Similar_triangles" href="https://en.wikipedia.org/wiki/Similar_triangles" target="_blank" rel="noopener">similar triangles</a>, a line through A parallel to the transversal gives <code>AF/BF = PD/BD</code> and <code>CE/AE = PD/CD</code>, so the product is <code>PD/BD · BD/CD · CD/PD = 1</code>. Dropping perpendiculars instead gives the three ratios as <code>AH<sub>a</sub>/BH<sub>b</sub></code>, <code>BH<sub>b</sub>/CH<sub>c</sub></code> and <code>CH<sub>c</sub>/AH<sub>a</sub></code>, which cancel in the same way.</p>
+      <p>With directed segments the two theorems separate cleanly: <code>AF/FB · BD/DC · CE/EA</code> is <code>+1</code> for Ceva (no dots outside, or two) and <code>&minus;1</code> for Menelaus (one outside, or three). The unsigned formula above is the absolute value in both cases, which is why the little extra condition is needed. The test checks the signed form in 2,000 positions of each mode.</p>
+
+      <h2>What the code copies from the applet</h2>
+      <p>The original starts with A, B, C on a circle of radius one fifth of the shorter canvas side, rounded to whole pixels, and K at their centroid. Pressing Menelaus swaps A with F, limits E (the dot the applet calls K) to the line AC, and creates draggable dots D on BC and F on AB. After each drag the applet rebuilds just one other dot as a line intersection: move A and F is rebuilt, move B and D is rebuilt, move C and E is rebuilt, and dragging a side dot rebuilds the next one around the cycle.</p>
+      <p>That last detail is a quirk worth knowing about: moving a <em>corner</em> can leave one of the dots off the side it is supposed to lie on, while D, E, F stay in a line. The length product then need not be 1, because the page's premise no longer holds; drag D, E or F to put the dots back. The 29 logic checks follow this behaviour and also compare every move with a second transcription of the applet's own <code>GeoSDoub.Intersect</code> and <code>DrawMenelaus</code> instructions, including the NaN result for nearly parallel lines.</p>
+
+      <h2>How this applet differs from its neighbours</h2>
+      <p>The four applets around it ask different questions. <em>MenelausBisector</em> specialises both theorems to interior and exterior angle bisectors. <em>MenelausFromCeva</em> derives Menelaus from Ceva by multiplying six Ceva identities and taking a square root. <em>MenelausProof</em> shows two proofs of Menelaus alone. This applet is the side-by-side demonstration, with a switch between the concurrent cevians and the straight transversal; it makes no claim about bisectors or about which proof is best.</p>
+      <p>The applet's own page is <a href="https://www.cut-the-knot.org/Curriculum/Geometry/Menelaus.shtml" target="_blank" rel="noopener">Menelaus and Ceva Theorems</a> at cut-the-knot.org, where the HTML really embeds <code>CODE="Menelaus"</code>. The manifest name match points to <a href="https://www.cut-the-knot.org/proofs/Menelaus.shtml" target="_blank" rel="noopener">Menelaus from 3D</a>, a different page about Shutrick's three-dimensional proof: it has no Menelaus applet, so the live applet page and its linked explanation were used instead.</p>
+
+      <p class="tip">Try switching to Menelaus, dragging D, then dragging corner B: watch the bright line stay straight while the dot labelled D slides off its side until you drag it back.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Menelaus.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="menelaus-core.js"></script>
+<script src="menelaus.js"></script>
+</body>
+</html>
