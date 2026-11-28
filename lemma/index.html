@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lemma &mdash; coolmaths</title>
+<meta name="description" content="A curved shape made from four semicircles sits beside a circle on the upright line CF. Drag the point: does the shape's area always match the circle's?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/lemma/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Lemma">
+<meta property="og:description" content="A curved shape made from four semicircles sits beside a circle on the upright line CF. Drag the point: does the shape's area always match the circle's?">
+<meta property="og:url" content="https://coolmaths.ai/lemma/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage { width: 100%; max-width: 38rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .salinon-fill { fill: var(--accent); fill-opacity: 0.22; }
+  #board .salinon-cut { fill: var(--stage); }
+  #board .cf-circle { fill: var(--good); fill-opacity: 0.10; }
+  #board .outline { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+  #board .cf-outline { fill: none; stroke: var(--good); stroke-width: 2.5; stroke-dasharray: 6 3; }
+  #board .diameter { stroke: var(--muted); stroke-width: 2; }
+  #board .cf-line { stroke: var(--good); stroke-width: 2; }
+  #board .spoke { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--ink); stroke-width: 4; }
+  #board .point-label { fill: var(--text); font-size: 12px; pointer-events: none; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .controls button { min-height: 2.5rem; }
+  .controls .option { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.95rem; min-width: 0; white-space: normal; }
+  .controls input[type="checkbox"] { width: 1.15rem; height: 1.15rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="lemma" data-kind="demo">
+<main id="main">
+  <h1>Lemma</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#area">Area</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> A curved shape made from four half-circles, next to a circle that sits on the upright line CF.<br>
+    <strong>How to play:</strong> Drag the blue dot along the bottom line, or focus it and use the arrow keys. Press a button to jump to an end of the line.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 360 240" role="group"
+         aria-label="A large semicircle on AB, two smaller ones on AD and BE, an inverted one on DE, a draggable point D, and a circle on the vertical diameter CF."></svg>
+  </div>
+
+  <div class="controls">
+    <button id="resetBtn" type="button" class="primary" aria-label="Put point D back at its starting place">Reset</button>
+    <button id="symBtn" type="button" aria-label="Move D to O, where D and E meet at the middle">Symmetric (D = E)</button>
+    <label class="option" for="shadeChk"><input id="shadeChk" type="checkbox" checked aria-label="Show or hide the coloured areas"> Shade the areas</label>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Move the blue point and the curved shape changes size. Yet the number for its area below always matches the number for the circle on CF. Why must they agree?</p>
+
+      <h2>Euclid's quiet identity</h2>
+      <p>The article begins with Proposition II.10 of <a class="wiki-term" data-wiki="Euclid%27s_Elements" href="https://en.wikipedia.org/wiki/Euclid%27s_Elements" target="_blank" rel="noopener">Euclid's Elements</a>: if a straight line is bisected and then extended, then</p>
+      <blockquote><code>(2m + n)&sup2; + n&sup2; = 2(m&sup2; + (m + n)&sup2;)</code></blockquote>
+      <p>Put <code>a = m + n</code> and <code>b = m</code>, and it reads more clearly as</p>
+      <blockquote><code>(a + b)&sup2; + (a &minus; b)&sup2; = 2(a&sup2; + b&sup2;)</code></blockquote>
+      <p>Here the bisected line is DE, so <code>m = EO</code> and the added piece is <code>n = AD</code>. Then <code>a = OA</code>, <code>b = EO</code>, and the identity says <code>EA&sup2; + AD&sup2; = 2(EO&sup2; + OA&sup2;)</code>. The logic test checks both forms for all 12,321 pairs of whole numbers up to 110, and again for 2,000 large random pairs: the claim is true.</p>
+
+      <h2>From squares to half-circles</h2>
+      <p>Write <code>L = AD = BE</code>. Since E is as far from B as D is from A, DE = AB &minus; 2L and <code>CF = OA + EO = AB &minus; L</code>. The article's next step, <code>AB&sup2; + DE&sup2; = 2(CF&sup2; + AD&sup2;)</code>, follows from the same identity. A <a class="wiki-term" data-wiki="Semicircle" href="https://en.wikipedia.org/wiki/Semicircle" target="_blank" rel="noopener">semicircle</a> on diameter <code>d</code> has <a class="wiki-term" data-wiki="Area" href="https://en.wikipedia.org/wiki/Area" target="_blank" rel="noopener">area</a> <code>&pi;d&sup2;/8</code>, so multiplying by that common factor turns the squares into half-circles:</p>
+      <blockquote><code>semi(AB) + semi(DE) = circle(CF) + semi(AD) + semi(BE)</code></blockquote>
+      <p>Move the two small half-circles from the right to the left and the <a class="wiki-term" data-wiki="Salinon" href="https://en.wikipedia.org/wiki/Salinon" target="_blank" rel="noopener">salinon</a> is left on one side, the circle on CF on the other. This is Archimedes' Proposition 14, and the test confirms the identity for every one of the 111 lengths the applet can draw: <code>&pi;(AB &minus; L)&sup2;/4</code> on both sides, exactly.</p>
+
+      <h2>What the Java applet drew</h2>
+      <p>The original applet started its dot 30% of the way from A to O, and the dot could only slide along that left half of the diameter: moving it to O made D and E meet at the centre, while moving it to A made the two small half-circles vanish. Its blue dot was picked up only when the mouse was within 5 pixels, and its drop test oddly demanded a point a little <em>above</em> the diameter although the dot always sat on it; both are presentation quirks and are not copied here. The applet's own "about" text called itself a demonstration of regular polygons, a leftover from another applet: the page's salinon description wins.</p>
+      <p>The live cut-the-knot page no longer embeds the Java applet; the archived page from 2012 does. The red fills here echo Roger Nelsen's <em>proof without words</em>, which the article says the applet was hinting at. The faint dashed spokes are the applet's own guide lines from the ends to C and from D, E to F.</p>
+
+      <h2>The symmetric extreme</h2>
+      <p>Press <strong>Symmetric (D = E)</strong>: now DE is zero, CF equals OA, and the shape is the symmetric <a class="wiki-term" data-wiki="Arbelos" href="https://en.wikipedia.org/wiki/Arbelos" target="_blank" rel="noopener">arbelos</a> that the article mentions. The big half-circle has twice the area of the two small ones together, so the leftover equals the circle on the radius OA. At the other end, D = A, the salinon fills the whole big half-circle plus the inverted one, and the circle on CF is as large as it gets. The test checks both ends, and that the area falls strictly between them.</p>
+
+      <p class="tip">Try the Symmetric button, then drag the dot all the way back to A. Watch the two area numbers in the status line: they change together but never stop being equal.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/proofs/Lemma.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="lemma-core.js"></script>
+<script src="lemma.js"></script>
+</body>
+</html>
