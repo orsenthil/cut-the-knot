@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La Hire &mdash; coolmaths</title>
+<meta name="description" content="Drag A until it lands on B's polar line. Will B then land on A's polar too? Explore La Hire's theorem in a circle.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/lahire/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="La Hire">
+<meta property="og:description" content="Drag A until it lands on B's polar line. Will B then land on A's polar too? Explore La Hire's theorem in a circle.">
+<meta property="og:url" content="https://coolmaths.ai/lahire/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 40rem;
+    padding: 0.5rem;
+    overflow-x: auto;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    min-width: 20rem;
+    height: auto;
+    touch-action: none;
+  }
+  #board .main-circle { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .rim-hit {
+    fill: none;
+    stroke: transparent;
+    stroke-width: 18;
+    pointer-events: stroke;
+    cursor: grab;
+  }
+  #board .polar-line {
+    stroke: var(--bad);
+    stroke-width: 2;
+    stroke-dasharray: 8 5;
+  }
+  #board .ray { stroke: var(--accent); stroke-width: 3; }
+  #board .inverse-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .pt-label {
+    fill: var(--text);
+    font-size: 1.3rem;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  #board .geom-handle {
+    fill: var(--accent);
+    stroke: var(--stage);
+    stroke-width: 2;
+    cursor: grab;
+  }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .eye { fill: var(--stage); stroke: var(--ink); stroke-width: 2; }
+  #board .eye-pupil { fill: var(--accent); }
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.8rem; }
+  .option { display: inline-flex; align-items: center; gap: 0.4rem; }
+</style>
+</head>
+<body data-game="lahire" data-kind="demo">
+<main id="main">
+  <h1>La Hire</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: nobody wins, but see if you can put A on B's red polar line.<br>
+    <strong>How to play:</strong> Drag O, R, A or B, or press Tab and use the arrow keys (Shift for bigger steps). Tick "Show names" to name the dots, or press "Reset picture" to start again.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 600 450" role="group"
+         aria-label="A circle with a rim point R and two movable points A and B, each with a red polar line"></svg>
+  </div>
+
+  <div class="controls">
+    <label class="option"><input id="namesChk" type="checkbox" checked> Show names</label>
+    <button id="newBtn" type="button" class="primary" aria-label="Put the circle and all four points back where they started">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two red lines, two movable points, and a circle. Put A on the line belonging to B and something happens to the line belonging to A. That is La Hire's theorem, and the applet was made to let you find it by playing with the dots.</p>
+
+      <h2>The mirror inside the circle</h2>
+      <p>The circle has centre O and radius R. Each point P has an inverse point P&prime; on the ray from O, placed so that <code>OP &times; OP&prime; = R&sup2;</code>. The red line through P&prime; at right angles to OP is called the <a class="wiki-term" data-wiki="Inversive_geometry" href="https://en.wikipedia.org/wiki/Inversive_geometry" target="_blank" rel="noopener">polar</a> of P. Drag R to change the circle and watch both red lines swing around: they are always perpendicular to the ray from O to their own point.</p>
+
+      <h2>Why the favour is returned</h2>
+      <p>A point lies on B's polar exactly when <code>(A&minus;O) &middot; (B&minus;O) = R&sup2;</code>. That expression is symmetric: swapping the names A and B does not change it. So if A is on B's polar, B must be on A's polar. The page also proves this with two right triangles: <code>OA/OB = OC/OD</code>, hence <code>OA &times; OD = OB &times; OC = R&sup2;</code>. The logic test checked the symmetry and both products at 560 grid positions, with A placed all along B's polar.</p>
+
+      <h2>When the three dots line up</h2>
+      <p>The page warns that its triangle proof fails when O, A and B are in a straight line: the two polars are parallel and the triangles squash into segments. The statement itself still holds &mdash; then A is exactly the inverse of B and B is the inverse of A. The test checked this special case too. One small difference from the exact theorem: the applet calls a "touch" whenever A is within 1.5 drawing units of B's polar, and that test is not symmetric when A and B are at different distances from O. The blue lines and the two green dots appear at that moment even if A is a hair off the line.</p>
+
+      <h2>What changed from the old applet</h2>
+      <p>The <a href="https://www.cut-the-knot.org/pythagoras/LaHire.shtml" target="_blank" rel="noopener">original page</a> still asks for a Java plug-in. This port keeps the same opening picture (O at one fifth across and two thirds down, R one eighth of the height to the left, A four radii out, B two radii up), the same four draggable points, the same Show names option and the same red polars, blue joins and marked inverse points. It draws them in SVG with today's colours, makes the three little eyes simpler, and adds a Reset button; the mathematics is unchanged.</p>
+
+      <p class="tip">Try dragging B close to the circle, then use the arrow keys on A until A lands on B's red line. Look at where the blue ray from B cuts its line: that dot is the inverse of B.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/pythagoras/LaHire.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="lahire-core.js"></script>
+<script src="lahire.js"></script>
+</body>
+</html>
