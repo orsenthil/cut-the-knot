@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hering Illusion &mdash; coolmaths</title>
+<meta name="description" content="Straight blue bands sit across a fan of straight lines and look as though they bend. Move the sliders and see that not one line in the picture is curved.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/hering-illusion/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Hering Illusion">
+<meta property="og:description" content="Straight blue bands sit across a fan of straight lines and look as though they bend. Move the sliders and see that not one line in the picture is curved.">
+<meta property="og:url" content="https://coolmaths.ai/hering-illusion/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  :root { --band: #2050c8; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --band: #6a90ff; }
+  }
+  :root[data-theme="dark"] { --band: #6a90ff; }
+
+  #stage { width: 100%; max-width: 34rem; padding: 0.5rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .ray { fill: none; stroke: var(--ink); stroke-width: 1; }
+  #board .band { fill: none; stroke: var(--band); stroke-width: 1.6; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { gap: 0.5rem 1rem; max-width: 100%; }
+  .controls label { flex-wrap: wrap; white-space: normal; max-width: 100%; }
+  .controls input[type="range"] { width: 9rem; max-width: 45vw; }
+  .controls output { min-width: 2.5em; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="hering-illusion" data-kind="demo">
+<main id="main">
+  <h1>Hering Illusion</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#paradoxes">Paradoxes</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Straight blue bands can look bent when other straight lines cross them; here there is nothing to win, just a picture to play with.<br>
+    <strong>How to play:</strong> Move the three sliders to change the fan, the gap and the blue bands, or drag the dot on the top band. You can focus that dot and use the arrow keys too.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 480 300" role="group"
+         aria-label="Straight blue bands across a fan of straight lines that all pass through the middle"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="n">Fan lines <input id="n" type="range" min="0" max="45" step="1" value="25" aria-label="Number of fan lines, from 0 to 45"><output id="nVal" for="n">25</output></label>
+    <label for="diff">Band gap <input id="diff" type="range" min="0" max="195" step="1" value="80" aria-label="Gap between the two blue bands, from 0 to 195"><output id="diffVal" for="diff">80</output></label>
+    <label for="width">Band lines <input id="width" type="range" min="1" max="29" step="1" value="3" aria-label="Half the number of lines in each blue band, from 1 to 29"><output id="widthVal" for="width">3</output></label>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the fan lines, band gap and band thickness to their starting values">Reset the picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>The two blue bands look as though they bow away from the middle. Look closely and you will not find a single curved stroke in the whole picture. This page follows the original Java applet, whose bytecode still draws only straight segments.</p>
+
+      <h2>What the page says, and what a test can check</h2>
+      <p>The <a class="wiki-term" data-wiki="Hering_illusion" href="https://en.wikipedia.org/wiki/Hering_illusion" target="_blank" rel="noopener">Hering illusion</a> is named for the German doctor <a class="wiki-term" data-wiki="Ewald_Hering" href="https://en.wikipedia.org/wiki/Ewald_Hering" target="_blank" rel="noopener">Ewald Hering</a>, who described it in 1861. The cut-the-knot page also says the <a class="wiki-term" data-wiki="Orbison_illusion" href="https://en.wikipedia.org/wiki/Orbison_illusion" target="_blank" rel="noopener">Orbison illusion</a> is a variant and the <a class="wiki-term" data-wiki="Wundt_illusion" href="https://en.wikipedia.org/wiki/Wundt_illusion" target="_blank" rel="noopener">Wundt illusion</a> gives a similar but inverted effect. Those are claims about what people see and about history, so a logic test cannot prove them; the dates and the family of illusions are recorded on the linked pages. The live cut-the-knot page no longer runs the Java applet: it offers a Wolfram Demonstration instead and keeps a still image of the old picture. This port takes its rules and options from the original applet's bytecode and from that page. What the test <em>can</em> check is the geometric claim behind the trick: every stroke is a <a class="wiki-term" data-wiki="Line_(geometry)" href="https://en.wikipedia.org/wiki/Line_(geometry)" target="_blank" rel="noopener">straight line</a>.</p>
+
+      <h2>The fan all meets in the middle</h2>
+      <p>With <code>N</code> fan lines the applet steps <code>d = 3 &times; Width / N</code> and draws, for <code>i = 0, 1, &hellip;, N</code>, from <code>(round(-Width + d&times;i), 0)</code> to <code>(round(2&times;Width - d&times;i), Height)</code>. That is <code>N+1</code> lines, one more than the slider says — a harmless quirk kept here. At half the height each line sits at the average of its two ends, which is the middle of the canvas. On this 480-unit board the rounded ends give exactly that middle for every slider value; on some other widths they miss it by one pixel. When <code>N = 0</code> the loop is skipped, so no fan is drawn and there is no division by zero.</p>
+
+      <h2>Two bundles of blue lines</h2>
+      <p>Let <code>y = (Height - Diff) / 2</code>, with Java's whole-number division. For every <code>w</code> from <code>-Width</code> to <code>Width</code> the applet draws a flat blue line at <code>y + w</code> and another at <code>Height - y + w</code>. So each bundle holds <code>2&times;Width + 1</code> lines, one unit apart. Their centres are <code>Diff</code> apart when <code>Height - Diff</code> is even, and one unit further apart when it is odd — the rounding is real, not a mistake in the port. The three slider ranges come from the applet's scrollbars: a Java scrollbar stops at <code>maximum - visibleAmount</code>, so the usable values are 0&hellip;45, 0&hellip;195 and 1&hellip;29.</p>
+
+      <h2>Straight lines, bowing eyes</h2>
+      <p>The test compares the core with a second reading of the bytecode for all <code>46 &times; 196 &times; 29 = 261,496</code> slider settings on this board, plus every fan size on four other board sizes. Every one of those pictures contains only upright or flat strokes, the blue lines stay one unit apart, and the fan keeps aiming at the middle. It is the surrounding <a class="wiki-term" data-wiki="Optical_illusion" href="https://en.wikipedia.org/wiki/Optical_illusion" target="_blank" rel="noopener">optical illusion</a> that makes them look curved; one common explanation is that we overestimate the angles where the fan crosses the bands.</p>
+
+      <p class="tip">Try setting the band gap to 0: the two blue bundles lie on top of each other and the bend disappears. Then put the fan lines at 45 and bring the gap back.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/HeringIllusion.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="hering-illusion-core.js"></script>
+<script src="hering-illusion.js"></script>
+</body>
+</html>
