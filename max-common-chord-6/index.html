@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Max Common Chord 6 &mdash; coolmaths</title>
+<meta name="description" content="Two circles meet at P and Q. Which line through P makes AP×PB as large as possible, and how does that best chord connect the two circles' centres to the equal angles at P?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/max-common-chord-6/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Max Common Chord 6">
+<meta property="og:description" content="Two circles meet at P and Q. Which line through P makes AP×PB as large as possible, and how does that best chord connect the two circles' centres to the equal angles at P?">
+<meta property="og:url" content="https://coolmaths.ai/max-common-chord-6/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 42rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .circle-e { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .circle-f { fill: none; stroke: var(--good); stroke-width: 2.5; }
+  #board .circle-o { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 7 5; }
+  #board .circle-eqf { fill: none; stroke: var(--highlight); stroke-width: 2; stroke-dasharray: 4 5; }
+  #board .circle-ab { fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-dasharray: 3 4; opacity: 0.7; }
+  #board .line-pq { stroke: var(--muted); stroke-width: 1.5; }
+  #board .line-sn { stroke: var(--highlight); stroke-width: 1.8; stroke-dasharray: 6 4; }
+  #board .chord-ab { stroke: var(--ink); stroke-width: 3.5; stroke-linecap: round; }
+  #board .aux-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 1.5; }
+  #board .mid-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 1.5; }
+  #board .angle-arc { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .right-mark { fill: none; stroke: var(--good); stroke-width: 2; }
+  #board .point-label { fill: var(--text); font: 600 1.1rem var(--font); pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="max-common-chord-6" data-kind="demo">
+<main id="main">
+  <h1>Max Common Chord 6</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a drawing, not a game: two circles meet at P and Q, and a straight line through P cuts a piece AB between them that can be made bigger or smaller.<br>
+    <strong>How to play:</strong> Drag A or B to slide the line, or drag P or Q to change the circles; focus a dot and use the arrow keys. Pick “circles” or “chord”, tick “names”, or press “Show the best chord”.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 640 460" role="group"
+         aria-label="Two circles meeting at P and Q, a chord AB through P, and the auxiliary circles and points that locate the longest chord"></svg>
+  </div>
+
+  <div class="controls">
+    <span id="drag-label">Drag:</span>
+    <div role="group" aria-labelledby="drag-label">
+      <label><input type="radio" name="mode" value="chord" checked> chord</label>
+      <label><input type="radio" name="mode" value="circles"> circles</label>
+    </div>
+    <label><input id="names" type="checkbox"> names</label>
+    <button id="bestBtn" type="button" class="primary" aria-label="Place A and B at the chord with the largest AP times PB">Show the best chord</button>
+    <button id="resetBtn" type="button" aria-label="Put the four dots back where they started">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Two answers to a 1975 olympiad problem look unrelated: one uses angles, the other uses a circle through the two circle centres. This drawing shows why they are the same answer.</p>
+
+      <h2>Turn the product into one distance</h2>
+      <p>Let the line through P meet the first circle again at A and the second at B. The <a class="wiki-term" data-wiki="Intersecting_chords_theorem" href="https://en.wikipedia.org/wiki/Intersecting_chords_theorem" target="_blank" rel="noopener">intersecting chords theorem</a> says <code>AP × PB = PQ × PR</code>, where R is the second meeting of the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> of A, B, Q with the line PQ. PQ is fixed, so making the product biggest is the same as pushing R as far as possible along PQ. Since R is the mirror of Q in the foot N of the perpendicular from the circle's centre S to PQ, that distance is twice QN. It is largest when SN just touches the circle C(O) through the two original centres and Q — that is, when the radius OS is parallel to PQ.</p>
+
+      <h2>The final touch</h2>
+      <p>At that chosen S, the point W where AE meets BF lies on both C(O) and the circle C(S) centred at S through Q. The line RW is a diameter of C(S), so the angles RAW and RBW are right angles, by <a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a>. Because A, R, E are lined up with the first <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> direction (and B, R, F with the second), RA and RB are tangents to the two given circles. That condition is exactly the angle answer: <code>∠EPA = ∠FPB</code>.</p>
+
+      <h2>The other route</h2>
+      <p>Hubert Shutrick also noticed that SW is perpendicular to AB. Since S is equally far from A and B, W is the midpoint of AB. The line through E parallel to AB then cuts the angle at Q in half, and the same equal angles at P come out again. Press “names” to see W, S and R, and press “Show the best chord” to put the chord where both routes agree.</p>
+
+      <h2>What was checked</h2>
+      <p>The original page is a fill-in-the-blank discussion; its blank about the two angles subtended by a diameter is answered “right”. The logic test compares the drawing with a second transcription of the applet's own construction in 600 layouts, and in 120 of them checks the collinearity, equal radii, tangency, W, diameter and equal-angle claims. A scan of 1,440 directions in 30 layouts finds no chord with a larger product than the one C(S) gives. The applet has only two checkboxes; the best-chord button here is a reading aid and changes none of the rules.</p>
+
+      <p class="tip">Try this: press “Show the best chord”, tick “names”, then choose “circles” and drag A. Watch how the matching chord moves as the two circles change.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/MaxCommonChord6.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="max-common-chord-6-core.js"></script>
+<script src="max-common-chord-6.js"></script>
+</body>
+</html>
