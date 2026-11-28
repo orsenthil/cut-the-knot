@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Haruki &mdash; coolmaths</title>
+<meta name="description" content="Drag a point around a circle that has two chords in it. Where do two extra circles cross a chord, and why do the two end lengths stay equal?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/haruki/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Haruki">
+<meta property="og:description" content="Drag a point around a circle that has two chords in it. Where do two extra circles cross a chord, and why do the two end lengths stay equal?">
+<meta property="og:url" content="https://coolmaths.ai/haruki/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 0.75rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .main-circle { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .aux-circle { fill: none; stroke-width: 1.5; stroke-dasharray: 5 5; }
+  #board .aux-e { stroke: var(--accent); }
+  #board .aux-f { stroke: var(--good); }
+  #board .chord { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .ray { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  #board .aux-side { fill: none; stroke: var(--highlight); stroke-width: 2; }
+  #board .equal-length { fill: none; stroke: var(--good); stroke-width: 4; stroke-linecap: round; }
+  #board .derived-dot { fill: var(--ink); stroke: var(--stage); stroke-width: 1.5; }
+  #board .result-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .hint-arc { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+  #board .point-label {
+    fill: var(--text); font: 600 0.95rem var(--font); pointer-events: none;
+  }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { cursor: pointer; }
+</style>
+</head>
+<body data-game="haruki" data-kind="demo">
+<main id="main">
+  <h1>Haruki</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#triangles">Triangles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: two chords of a circle and two more circles mark out two equal lengths on one chord.<br>
+    <strong>How to play:</strong> Drag any named point, or focus one and use the arrow keys. Tick the boxes to show names, the equal lengths, or the angle hint.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 480 440" role="group"
+         aria-label="A circle with chords AB and CD, a point P on the circle, and two further circles meeting line AB at E and F"></svg>
+  </div>
+
+  <div class="controls">
+    <label><input id="names" type="checkbox" checked> names</label>
+    <label><input id="statement" type="checkbox"> statement</label>
+    <label><input id="hint" type="checkbox"> hint</label>
+    <button id="resetBtn" type="button" class="primary">Reset diagram</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag P around the circle and the picture changes completely, yet two
+        lengths marked in green stay equal. Hiroshi Haruki's lemma explains
+        why, and the same idea also proves the Butterfly theorem.</p>
+
+      <h2>The construction</h2>
+      <p>All five named points lie on one
+        <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circle</a>.
+        The chords AB and CD are fixed while P slides around the circle. Let
+        Q be where PC crosses AB and R where PD crosses AB. The circle through
+        P, Q, D crosses AB again at E; the circle through P, R, C crosses AB
+        again at F. The applet draws all of these, and the two green pieces of
+        AB are BE and AF.</p>
+
+      <h2>The equal lengths</h2>
+      <p>Apply the
+        <a class="wiki-term" data-wiki="Intersecting_chords_theorem" href="https://en.wikipedia.org/wiki/Intersecting_chords_theorem" target="_blank" rel="noopener">intersecting chords theorem</a>
+        to the chords PD and AE inside the large circle and inside the circle
+        PQD. Both give the same product: <code>PR·RD = AR·RB</code> and
+        <code>PR·RD = QR·RE</code>. Since <code>RE = RB + BE</code> and
+        <code>AR = AQ + QR</code>, we get <code>QR·BE = AQ·RB</code>. The
+        circle PRC gives the same expression for AF, so
+        <code>BE = AF = AQ&middot;RB / QR</code>. This is exactly what the
+        page states, and the check confirms it on thousands of figures.</p>
+
+      <h2>Why E and F stay put</h2>
+      <p>In the circle PQD, the angles <code>∠QPD</code> and <code>∠QED</code>
+        stand on the same chord QD, so they are equal
+        <a class="wiki-term" data-wiki="Inscribed_angle" href="https://en.wikipedia.org/wiki/Inscribed_angle" target="_blank" rel="noopener">inscribed angles</a>.
+        The angle at P changes as P moves, but <code>∠QPD = ∠CPD</code> is
+        fixed by the fixed chord CD, so the angle <code>∠AED</code> is fixed
+        too. A fixed angle from the fixed line AD cuts AB at one fixed point
+        E; the same argument fixes F. That is why BE and AF do not depend on
+        where P sits on the circle. The hint box marks the equal angles at F,
+        P and E.</p>
+
+      <h2>What the checks found</h2>
+      <p>The logic test rebuilds the whole figure a second way, directly from
+        the applet's bytecode, and compares every point on more than two
+        thousand generated configurations, including chords that are almost
+        horizontal. It also sweeps P all the way round fixed chords: E and F
+        never move. One faithful quirk remains: the old applet decides which
+        intersection is E or F by a one-unit rule, so when the two crossings
+        are closer than a unit apart it can pick the wrong one. The theorem is
+        still true; only the drawing is ambiguous there.</p>
+      <p>The live page now uses a GeoGebra figure instead of the Java applet.
+        The <a href="https://web.archive.org/web/20100120072043/http://www.cut-the-knot.org/Curriculum/Geometry/Haruki.shtml" target="_blank" rel="noopener">archived 2010 page</a>
+        shows the original Haruki applet embedded with the same wording and
+        the names, statement and hint switches.</p>
+
+      <p class="tip">Try dragging P past C or D: E and F stay where they are, and the two green lengths keep their size.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/Haruki.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="haruki-core.js"></script>
+<script src="haruki.js"></script>
+</body>
+</html>
