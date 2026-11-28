@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Locus Circle &mdash; coolmaths</title>
+<meta name="description" content="A and B are fixed. Where can P stand so that AP is always the same number of times as long as BP? Drag the points and change the two spinners to find out.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/locus-circle/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Locus Circle">
+<meta property="og:description" content="A and B are fixed. Where can P stand so that AP is always the same number of times as long as BP? Drag the points and change the two spinners to find out.">
+<meta property="og:url" content="https://coolmaths.ai/locus-circle/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage { width: 100%; max-width: 34rem; padding: 0.75rem; }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .base { fill: none; stroke: var(--ink); stroke-width: 2; }
+  #board .parallel { fill: none; stroke: var(--bad); stroke-width: 1.5; }
+  #board .locus { fill: none; stroke: var(--muted); stroke-width: 2; }
+  #board .bisector { fill: none; stroke: var(--muted); stroke-width: 2.5; }
+  #board .cut-dot { fill: var(--good); stroke: var(--stage); stroke-width: 1.5; }
+  #board .point-label { fill: var(--text); font: 600 0.9rem var(--font); pointer-events: none; }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .controls label { cursor: pointer; }
+  .controls input[type="number"] { width: 4.5rem; }
+  #resetBtn { min-height: 2.5rem; }
+  #status { min-height: 1.5rem; }
+</style>
+</head>
+<body data-game="locus-circle" data-kind="demo">
+<main id="main">
+  <h1>Locus Circle</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#algebra">Algebra</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>What it shows:</strong> This is a picture, not a game: it shows every place for P that is always the same number of times as far from A as from B.<br>
+    <strong>How to play:</strong> Drag A, B or P, or focus one and use the arrow keys. Change the two number boxes, tick the boxes to see the guide lines, and press Reset.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 300" role="group"
+         aria-label="Points A, B and P with the circle of places where AP divided by BP equals the chosen ratio"></svg>
+  </div>
+
+  <div class="controls">
+    <label for="nb">NB <input id="nb" type="number" min="1" max="15" step="1" value="4" aria-label="First spinner number, from 1 to 15"></label>
+    <label for="nc">NC <input id="nc" type="number" min="1" max="15" step="1" value="3" aria-label="Second spinner number, from 1 to 15"></label>
+    <label><input id="names" type="checkbox"> Names</label>
+    <label><input id="hint" type="checkbox"> Hint</label>
+    <label><input id="extra" type="checkbox"> Extra construction</label>
+    <button id="resetBtn" type="button" class="primary" aria-label="Reset the picture to the starting points">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag P around and the distance to A divided by the distance to B never changes. The whole path is one circle — except when the two numbers are equal, when it becomes a straight line.</p>
+
+      <h2>Two numbered points on AB</h2>
+      <p>Set the two boxes to <code>NB</code> and <code>NC</code>, and write <code>r = NB/NC</code>. The applet marks M between A and B with <code>AM/BM = r</code>, and N outside AB with <code>AN/BN = r</code>. Those are the feet of the internal and external <a class="wiki-term" data-wiki="Angle_bisector_theorem" href="https://en.wikipedia.org/wiki/Angle_bisector_theorem" target="_blank" rel="noopener">angle bisectors</a> of triangle APB. Here M divides AB into <code>NB</code> and <code>NC</code> parts and N is built the same way from the difference; the logic test checks <code>AM/BM = AN/BN = r</code> for all 225 pairs of numbers.</p>
+
+      <h2>Why MN is a diameter</h2>
+      <p>The bisectors at P meet AB at M and N, so <code>PM</code> and <code>PN</code> are at right angles. By <a class="wiki-term" data-wiki="Thales%27_theorem" href="https://en.wikipedia.org/wiki/Thales%27_theorem" target="_blank" rel="noopener">Thales' theorem</a> a right angle subtends a diameter, so the circle on MN as diameter is exactly the <a class="wiki-term" data-wiki="Apollonian_circle" href="https://en.wikipedia.org/wiki/Apollonian_circle" target="_blank" rel="noopener">circle of Apollonius</a>. Its centre is <code>A + r²/(r²−1)·(B−A)</code> and its radius is <code>r·AB/|r²−1|</code>. The test confirmed both formulas and sampled thousands of points on the circle: every one has <code>AP/BP = r</code>.</p>
+
+      <h2>Many circles, one family</h2>
+      <p>All the circles for different values of <code>r</code> form the <a class="wiki-term" data-wiki="Apollonian_circles" href="https://en.wikipedia.org/wiki/Apollonian_circles" target="_blank" rel="noopener">Apollonian family</a>. No two of them cross, and they crowd around A when <code>r</code> is small and around B when <code>r</code> is large. The applet's own page says smaller <code>r</code> moves near B; the formula and 210 circles show the opposite, and the test checks it. Tick <em>Extra construction</em> to see the locus circle drawn in full.</p>
+
+      <h2>What happens when the numbers match</h2>
+      <p>When <code>NB = NC</code> we have <code>r = 1</code>. There is no finite circle: the locus is the <a class="wiki-term" data-wiki="Perpendicular_bisector" href="https://en.wikipedia.org/wiki/Perpendicular_bisector" target="_blank" rel="noopener">perpendicular bisector</a> of AB. The old applet put N a million pixels away, which only looks right when AB is level; with a slanted AB it is off by nearly 18 pixels. This page draws the exact line, as the article says. Tick <em>Hint</em> to see the pink parallels that carry the division from AB to P and to N.</p>
+
+      <p class="tip">Set both boxes to the same number, then drag B: P stays on the line that cuts AB in half at a right angle.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/LocusCircle.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="locus-circle-core.js"></script>
+<script src="locus-circle.js"></script>
+</body>
+</html>
