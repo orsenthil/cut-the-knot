@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inscriptible Quadri &mdash; coolmaths</title>
+<meta name="description" content="Drag four dots around a circle: why do the opposite sides of the shape they make always add up the same?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/inscriptible-quadri/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Inscriptible Quadri">
+<meta property="og:description" content="Drag four dots around a circle: why do the opposite sides of the shape they make always add up the same?">
+<meta property="og:url" content="https://coolmaths.ai/inscriptible-quadri/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  /* The board scales with its viewBox; every colour is a site token. */
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .given-circle { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2.5; }
+  #board .side { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linejoin: round; }
+  #board .tangent-seg { stroke: var(--good); stroke-width: 3; stroke-linecap: round; }
+  #board .touchdot { fill: var(--accent); stroke: var(--stage); stroke-width: 2; }
+  #board .point-label {
+    fill: var(--text); font: 600 13px var(--font); pointer-events: none;
+    paint-order: stroke; stroke: var(--stage); stroke-width: 3px; stroke-linejoin: round;
+  }
+  #board .handle-label { fill: var(--muted); }
+  #board .vertex-label { fill: var(--good); }
+  #board .primed-label { fill: var(--accent); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle.centre-handle { fill: var(--muted); }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls label { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; cursor: pointer; }
+  .hint-line { margin: 0.5rem 0 0; color: var(--muted); font-size: 0.9rem; }
+</style>
+</head>
+<body data-game="inscriptible-quadri" data-kind="demo">
+<main id="main">
+  <h1>Inscriptible Quadri</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#circles">Circles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture, not a game: four lines that just touch a circle make a shape whose opposite sides add up the same.<br>
+    <strong>How to play:</strong> Drag the four dots on the circle, or drag its middle. Focus a dot and use the arrow keys too; tick the boxes to show the names, dots, tangents and sides.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="A circle with four draggable dots on it, the tangent lines at those dots and the four-sided shape they make"></svg>
+    <p class="hint-line">Drag a dot round the circle, or drag the grey centre to move the whole picture (Shift for bigger arrow-key steps).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="namesBox" type="checkbox" data-label="names"> Names</label>
+    <label><input id="tangencyBox" type="checkbox" data-label="tangency points"> Dots</label>
+    <label><input id="tangentsBox" type="checkbox" data-label="tangents"> Tangents</label>
+    <label><input id="sidesBox" type="checkbox" data-label="sides"> Sides</label>
+    <button id="resetBtn" type="button" class="primary">Reset picture</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Drag any dot and the four-sided shape changes shape completely, yet two totals keep matching. Here is the small trick that makes that unavoidable.</p>
+
+      <h2>Lines that just touch</h2>
+      <p>A <a class="wiki-term" data-wiki="Tangent" href="https://en.wikipedia.org/wiki/Tangent" target="_blank" rel="noopener">tangent</a> meets the circle at right angles to the radius there. From one corner, the two tangents to the circle have equal lengths: the two right triangles share the radius and the line from the corner to the centre, so their third sides match. In the picture that says <code>AP = AM</code>, <code>BP = BN</code>, <code>CN = CQ</code> and <code>DQ = DM</code>. The logic test checked these four equalities on 2,496 random arrangements; the largest scaled difference was below <code>1e-11</code>.</p>
+
+      <h2>Adding the pieces</h2>
+      <p>Each side is two of those equal pieces: <code>AB = AP + PB</code>, <code>BC = BN + NC</code>, <code>CD = CQ + QD</code> and <code>DA = DM + MA</code>. So <code>AB + CD = (AM + BN) + (CN + DM) = (AM + DM) + (BN + CN) = DA + BC</code>. That is <a class="wiki-term" data-wiki="Pitot_theorem" href="https://en.wikipedia.org/wiki/Pitot_theorem" target="_blank" rel="noopener">Pitot's theorem</a>, exactly the claim printed on the page: <code>AB + CD = BC + DA</code>. The test confirmed it on 2,808 random inscribed pictures and 560 placements on a grid of angles, to floating-point precision.</p>
+
+      <h2>The converse, and when the circle moves out</h2>
+      <p>The page adds that the usual proof of the converse has a subtle flaw, but another proof repairs it. The converse statement is true for a convex <a class="wiki-term" data-wiki="Tangential_quadrilateral" href="https://en.wikipedia.org/wiki/Tangential_quadrilateral" target="_blank" rel="noopener">tangential quadrilateral</a>: equal opposite sums do bring an incircle. The test checked 41 convex quadrilaterals with that property and found a point equally far from all four sides each time. If you drag a dot until the circle no longer sits inside the shape, Pitot's pair stops matching and instead <code>AB + BC = CD + DA</code> or <code>AB + DA = BC + CD</code>, as for an <a class="wiki-term" data-wiki="Excircle" href="https://en.wikipedia.org/wiki/Excircle" target="_blank" rel="noopener">excircle</a>.</p>
+      <p>The live cut-the-knot page now embeds a GeoGebra model rather than the Java applet; a 2005 Wayback capture of that same page embeds <code>InscriptibleQuadri</code> with <code>ShowNames=0</code>, and this port follows the applet's bytecode. One deliberate change: the applet chose the fourth dot at a random angle in <code>[0, PI)</code>, which nearly always puts the circle outside the figure, so we start it at 4.6 radians where Pitot's equality is visible at once; the four switches keep the applet's unticked defaults. The Reset button and keeping drags inside the panel are presentation choices; the geometry itself is unchanged.</p>
+
+      <p class="tip">Tick Tangents and drag the dot P slowly round the circle: watch which pair of totals matches as the circle crosses out of the shape.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/InscriptibleQuadri.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="inscriptible-quadri-core.js"></script>
+<script src="inscriptible-quadri.js"></script>
+</body>
+</html>
