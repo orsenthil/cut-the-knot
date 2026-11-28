@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mc Worter 2 &mdash; coolmaths</title>
+<meta name="description" content="Drag the corner of a triangle while two similar parallelograms grow on its sides. Can the dot halfway between their far corners ever move? See why McWorter's generalization of Bottema's theorem says no.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/mcworter-2/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Mc Worter 2">
+<meta property="og:description" content="Drag the corner of a triangle while two similar parallelograms grow on its sides. Can the dot halfway between their far corners ever move? See why McWorter's generalization of Bottema's theorem says no.">
+<meta property="og:url" content="https://coolmaths.ai/mcworter-2/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 34rem;
+    padding: 1rem;
+  }
+  #board { display: block; width: 100%; height: auto; touch-action: none; }
+  #board .tri-guide {
+    fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 5 5;
+  }
+  #board .flank-a {
+    fill: var(--accent); fill-opacity: 0.12;
+    stroke: var(--ink); stroke-width: 2; stroke-linejoin: round;
+  }
+  #board .flank-b {
+    fill: var(--highlight); fill-opacity: 0.16;
+    stroke: var(--ink); stroke-width: 2; stroke-linejoin: round;
+  }
+  #board .mid-line { fill: none; stroke: var(--bad); stroke-width: 2.6; }
+  #board .mid-dot { fill: var(--bad); stroke: var(--stage); stroke-width: 2; }
+  #board .glabel {
+    fill: var(--text); font-family: var(--font); font-size: 14px;
+    font-weight: 600; pointer-events: none;
+  }
+  #board .mid-label { fill: var(--bad); }
+  #board .flank-label { fill: var(--muted); }
+  #board .geom-handle { fill: var(--accent); stroke: var(--stage); stroke-width: 2; cursor: grab; }
+  #board .geom-handle:active { cursor: grabbing; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  .controls { flex-wrap: wrap; gap: 0.5rem; }
+  .slider-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .slider-row label { font-weight: 600; }
+  .slider-row input[type="range"] {
+    flex: 1 1 9rem; max-width: 16rem; min-width: 7rem; accent-color: var(--accent);
+  }
+  .slider-row output { min-width: 4.5rem; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body data-game="mcworter-2" data-kind="demo">
+<main id="main">
+  <h1>Mc Worter 2</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#constructions">Constructions</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> Two four-sided shapes grow on two sides of a triangle. Watch the red dot: it always sits halfway between the shapes' far corners.<br>
+    <strong>How to play:</strong> Drag A, B or C with a mouse or finger, or focus a point and use the arrow keys. Move the two sliders to change the shapes, then press Check the claim.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="A triangle with two similar parallelograms on its sides, the segment joining their far corners and its midpoint"></svg>
+  </div>
+
+  <div class="slider-row">
+    <label for="coef">Scale</label>
+    <input id="coef" type="range" min="-20" max="28" step="1" value="0"
+           aria-label="Parallelogram scale slider, from minus twenty to twenty eight; zero gives scale one">
+    <output id="coefValue" for="coef">K = 1.00</output>
+  </div>
+  <div class="slider-row">
+    <label for="angle">Turn</label>
+    <input id="angle" type="range" min="-90" max="90" step="1" value="0"
+           aria-label="Turn angle slider, from zero to one hundred eighty degrees; zero gives ninety degrees">
+    <output id="angleValue" for="angle">90°</output>
+  </div>
+
+  <div class="controls">
+    <button id="newBtn" type="button" class="primary" aria-label="Reset the three triangle points to their starting positions">Reset</button>
+    <button id="namesBtn" type="button" aria-pressed="true" aria-label="Toggle the point names">Hide names</button>
+    <button id="checkBtn" type="button" aria-label="Check that the midpoint stays put and the angles stay equal">Check the claim</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>Start with Bottema's picture: two squares share a corner of a triangle, and the point halfway between their far corners never moves. This applet asks a bigger question. What if the squares are stretched and tilted into two matching parallelograms? The dot still will not move.</p>
+
+      <h2>From squares to parallelograms</h2>
+      <p>At the sliders' starting values the two flanks are <a class="wiki-term" data-wiki="Square_(geometry)" href="https://en.wikipedia.org/wiki/Square_(geometry)" target="_blank" rel="noopener">squares</a>. The scale slider runs from −20 to 28 and sets <code>K = (value + 20) / 20</code>, so <code>K</code> goes from 0 to 2.4. The turn slider runs from −90 to 90 and sets the angle to <code>value + 90</code> degrees, so it goes from 0° to 180°. (Those upper values come from the AWT scrollbars' <code>maximum − visibleAmount</code>: the applet declares 30 and 100 with thumbs of width 2 and 10.) Together the sliders replace the quarter turn by any complex multiplier <code>c = K·e^(−i·angle)</code>. The two four-sided flanks stay similar: one side is scaled by <code>K</code> and turned through the chosen angle, and the other side is copied from the triangle.</p>
+      <p>This is the difference from the first McWorter applet. That one keeps the squares, adds the point <code>D</code> completing <code>ADBC</code> and studies a right isosceles triangle at <code>D</code>. Here there is no <code>D</code>: the only treasure is the fixed <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> <code>M</code>.</p>
+
+      <h2>Why M ignores C</h2>
+      <p>Put <code>A</code> at the origin, write <code>B = b</code>, <code>C = g</code>, and treat points as <a class="wiki-term" data-wiki="Complex_number" href="https://en.wikipedia.org/wiki/Complex_number" target="_blank" rel="noopener">complex numbers</a>. The applet constructs</p>
+      <blockquote><code>B_a = c·g</code><br><code>A_c = g + c·(b − g)</code><br><code>A_b = A_c + (b − g) = b + c·(b − g).</code></blockquote>
+      <p>Now the terms containing <code>g</code> cancel in the average:</p>
+      <blockquote><code>M = (A_b + B_a) / 2 = (c·g + b + c·b − c·g) / 2 = b·(1 + c) / 2.</code></blockquote>
+      <p>No <code>g</code> appears on the right. For a triangle anywhere on the page the same formula is <code>M = (A + B)/2 + c·(B − A)/2</code>. Moving <code>C</code> changes both flanks but not their midpoint.</p>
+
+      <h2>The equal angles</h2>
+      <p>The angle <code>B_aAC</code> compares the rays <code>A→B_a = c·(C − A)</code> and <code>A→C</code>. The angle <code>BCA_c</code> compares <code>C→B</code> and <code>C→A_c = c·(B − C)</code>. Both are just the size of a <a class="wiki-term" data-wiki="Rotation_(mathematics)" href="https://en.wikipedia.org/wiki/Rotation_(mathematics)" target="_blank" rel="noopener">rotation</a> through the chosen angle, so the page's claim that the angles are equal holds for every slider setting with <code>K &gt; 0</code>. At the lowest scale, <code>K = 0</code>, both flanks collapse onto the triangle and those angles are no longer defined; the midpoint claim still holds. The logic test checks this exception rather than hiding it.</p>
+
+      <h2>What the test checks</h2>
+      <p>The test writes the applet's <code>Compute</code>, <code>ComputePoint</code>, <code>CompleteParallelogram</code>, <code>Midpoint</code> and rotation a second time straight from the bytecode. It compares the two versions at all <code>49 × 181 = 8869</code> slider pairs, at a grid of positions of <code>C</code> under six settings and at 500 random triangles. In every case the two transcripts agree, the flanks close up with the same scale and angles, and the midpoint matches <code>b(1+c)/2</code>. The formula and the fixed-point claim are true, and the default settings really do give squares.</p>
+
+      <p class="tip">Try pushing the scale slider to its lowest value: the flanks vanish, but the red dot stays exactly where it was.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/McWorter2.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="mcworter-2-core.js"></script>
+<script src="mcworter-2.js"></script>
+</body>
+</html>
