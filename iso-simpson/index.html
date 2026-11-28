@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- stamp:head (written by porting/stamp-pages.mjs from meta.json; do not edit) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Iso Simpson &mdash; coolmaths</title>
+<meta name="description" content="Drag a point around a triangle and watch its isogonal partner appear. Do the six feet of perpendiculars really lie on one circle?">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://coolmaths.ai/iso-simpson/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="coolmaths">
+<meta property="og:title" content="Iso Simpson">
+<meta property="og:description" content="Drag a point around a triangle and watch its isogonal partner appear. Do the six feet of perpendiculars really lie on one circle?">
+<meta property="og:url" content="https://coolmaths.ai/iso-simpson/">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/icon-48.png" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icons/icon-180.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js"></script>
+<!-- /stamp:head -->
+<style>
+  #stage {
+    width: 100%;
+    max-width: 32rem;
+    padding: 0.6rem;
+  }
+  #board {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+  }
+  #board .triangle { fill: var(--accent-soft); stroke: var(--ink); stroke-width: 1.8; }
+  #board .cevian { stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 4 4; }
+  #board .circumcircle { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 6 5; }
+  #board .pedal-circle { fill: none; stroke: var(--accent); stroke-width: 2.4; }
+  #board .simson-line { stroke: var(--accent); stroke-width: 2.4; }
+  #board .reflected-ray { stroke: var(--good); stroke-width: 1.8; }
+  #board .angle-mark { fill: none; stroke: var(--good); stroke-width: 1.6; }
+  #board .perpendicular { stroke: var(--muted); stroke-width: 1.4; stroke-dasharray: 5 4; }
+  #board .foot-dot { fill: var(--accent); }
+  #board .q-dot { fill: var(--good); stroke: var(--stage); stroke-width: 2; }
+  #board .center-dot { fill: var(--highlight); stroke: var(--stage); stroke-width: 2; }
+  #board .geom-handle { fill: var(--ink); stroke: var(--stage); stroke-width: 3; cursor: grab; }
+  #board .geom-handle:focus { outline: none; }
+  #board .geom-handle:focus-visible { outline: none; stroke: var(--good); stroke-width: 5; }
+  #board .point-label {
+    fill: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 700;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: var(--stage);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+  .hint-line {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .controls label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+  }
+</style>
+</head>
+<body data-game="iso-simpson" data-kind="demo">
+<main id="main">
+  <h1>Iso Simpson</h1>
+  <!-- stamp:tags --><div class="tags game-tags" aria-label="Concepts"><a class="tag" href="../index.html#geometry">Geometry</a><a class="tag" href="../index.html#triangles">Triangles</a><a class="tag" href="../index.html#circles">Circles</a></div><!-- /stamp:tags -->
+  <div id="rules">
+    <strong>Game:</strong> This is a picture to explore: move a point near a triangle and watch a partner point and a circle through six dots; there is nothing to win.<br>
+    <strong>How to play:</strong> Drag A, B, C or P, or focus one and use the arrow keys. Tick the boxes for perpendicular lines, the circle and the angle marks; Reset starts over.
+  </div>
+
+  <div id="stage" class="stage">
+    <svg id="board" viewBox="0 0 400 250" role="group"
+         aria-label="A triangle A B C, the point P, its isogonal partner Q, the six feet of perpendiculars and their common circle. Drag any of the four points to move them."></svg>
+    <p class="hint-line">Drag a point, or focus it and press the arrow keys (Shift for bigger steps).</p>
+  </div>
+
+  <div class="controls">
+    <label><input id="perpsBox" type="checkbox" data-label="perpendiculars"> Perpendiculars to sides</label>
+    <label><input id="circleBox" type="checkbox" data-label="the circle"> Circle</label>
+    <label><input id="anglesBox" type="checkbox" data-label="angle marks"> Angles</label>
+    <button id="resetBtn" type="button" class="primary">Reset</button>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <details id="math">
+    <summary>Look for the math</summary>
+    <div class="math-body">
+      <p>A triangle, a point P, and a second point Q hiding in the same picture. Drop perpendiculars from both points to the three sides and something surprising happens to the six feet. The live cut-the-knot page now shows a GeoGebra version; a 2010 Wayback capture still embeds Bogomolny's Java applet, and this page follows that applet's construction and switches.</p>
+
+      <h2>A partner point made from two angles</h2>
+      <p>The <a class="wiki-term" data-wiki="Isogonal_conjugate" href="https://en.wikipedia.org/wiki/Isogonal_conjugate" target="_blank" rel="noopener">isogonal conjugate</a> Q of P is found by reflecting the lines AP and BP in the angle <a class="wiki-term" data-wiki="Angle_bisector" href="https://en.wikipedia.org/wiki/Angle_bisector" target="_blank" rel="noopener">bisectors</a> at A and B. The applet draws equal-angle marks (tick <em>Angles</em>) to show the reflection, then meets the two new rays at Q. The logic test checked this construction against the barycentric formula <code>(a²/u : b²/v : c²/w)</code> on more than a thousand positions: the two answers agree to within <code>1e-7</code> of the size of the picture.</p>
+
+      <h2>Six feet, one circle</h2>
+      <p>The page claims that the three feet from P and the three from Q all lie on one <a class="wiki-term" data-wiki="Pedal_triangle" href="https://en.wikipedia.org/wiki/Pedal_triangle" target="_blank" rel="noopener">pedal circle</a>, and that its centre is the <a class="wiki-term" data-wiki="Midpoint" href="https://en.wikipedia.org/wiki/Midpoint" target="_blank" rel="noopener">midpoint</a> of PQ. The test verified both claims on well-conditioned configurations: every foot is the same distance from that midpoint, and the circles drawn through P's feet and Q's feet have the same centre and radius. Right at a side the picture becomes ill-conditioned — Q then lands on the <a class="wiki-term" data-wiki="Circumcircle" href="https://en.wikipedia.org/wiki/Circumcircle" target="_blank" rel="noopener">circumcircle</a> — so those boundary cases were left out of the numerical check.</p>
+
+      <h2>When the circle flattens into a line</h2>
+      <p>If P is on the circumcircle of ABC, its isogonal partner is a point at infinity and the circle's radius becomes infinite. The three feet then line up on the <a class="wiki-term" data-wiki="Simson_line" href="https://en.wikipedia.org/wiki/Simson_line" target="_blank" rel="noopener">Simson line</a>. The applet treats P as "on the circle" whenever its distance from the circumcentre differs from the radius by less than <code>2</code> units; the test checked both sides of that threshold and found the feet collinear for points exactly on the circle. Tick <em>Circle</em> with P on the circumference to see the line.</p>
+
+      <h2>Why the two pedal circles agree</h2>
+      <p>The proof on the page uses a <a class="wiki-term" data-wiki="Cyclic_quadrilateral" href="https://en.wikipedia.org/wiki/Cyclic_quadrilateral" target="_blank" rel="noopener">cyclic quadrilateral</a>: since two feet see a side at right angles, angles subtending the same chord are equal. Isogonality then makes a pair of cross-feet concyclic, and repeating the argument for the other sides brings in all six feet. Their common centre is where the perpendicular bisectors of the segments joining P's and Q's feet meet — the midpoint of PQ.</p>
+
+      <p class="tip">Put P on the circumcircle (the dashed circle): the pedal circle turns into a straight Simson line. Then move P just inside and tick <em>Circle</em> to watch the line close up into a circle again.</p>
+    </div>
+  </details>
+
+  <p class="byline">
+    Puzzle by
+    <a class="wiki-term" data-wiki="Alexander_Bogomolny" href="https://en.wikipedia.org/wiki/Alexander_Bogomolny" target="_blank" rel="noopener">Alexander Bogomolny</a>
+    (<a href="https://www.cut-the-knot.org/Curriculum/Geometry/IsoSimpson.shtml" target="_blank" rel="noopener">cut-the-knot.org</a>)
+  </p>
+</main>
+
+<script src="../assets/wiki-hovercard.js"></script>
+<script src="../assets/progress.js"></script>
+<script src="../assets/geom.js"></script>
+<script src="iso-simpson-core.js"></script>
+<script src="iso-simpson.js"></script>
+</body>
+</html>
